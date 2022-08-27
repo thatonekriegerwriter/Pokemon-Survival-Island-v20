@@ -1,0 +1,25 @@
+GameData::EncounterType.register({
+  :id             => :BerryTree,
+  :type           => :none,
+  :old_slots      => [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1]
+})
+
+GameData::EncounterType.register({
+  :id             => :Bait,
+  :type           => :none,
+  :old_slots      => [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1]
+})
+
+GameData::EncounterType.register({
+  :id             => :CaveDeep,
+  :type           => :cave,
+  :trigger_chance => 5,
+  :old_slots      => [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1]
+})
+
+
+GameData::EncounterType.register({
+  :id             => :Comet,
+  :type           => :none,
+  :old_slots      => [20, 20, 10, 10, 10, 10, 5, 5, 4, 4, 1, 1]
+})

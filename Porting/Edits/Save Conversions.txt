@@ -1,0 +1,54 @@
+
+SaveData.register_conversion(:v19_add_number_battled) do
+  essentials_version 19.2
+  display_title 'Adding number battled metric to Pokédex'
+  to_value :player do |player|
+    player.pokedex.instance_eval do
+      @number_battled = {} if @number_battled.nil?
+    end
+  end
+end
+
+
+SaveData.register_conversion(:v19_add_number_caught) do
+  essentials_version 19.2
+  display_title 'Adding number caught metric to Pokédex'
+  to_value :player do |player|
+    player.pokedex.instance_eval do
+      @number_caught = {} if @number_caught.nil?
+    end
+  end
+end
+
+
+SaveData.register_conversion(:v19_moves_seen) do
+  essentials_version 19.2
+  display_title 'Adding moves seen metric to Pokédex'
+  to_value :player do |player|
+    player.pokedex.instance_eval do
+      @moves_seen = {} if @moves_seen.nil?
+    end
+  end
+end
+
+
+SaveData.register_conversion(:v19_weakness_seen) do
+  essentials_version 19.2
+  display_title 'Adding moves seen metric to Pokédex'
+  to_value :player do |player|
+    player.pokedex.instance_eval do
+      @weakness_seen = {} if @weakness_seen.nil?
+    end
+  end
+end
+
+
+SaveData.register_conversion(:v19_evolved_seen) do
+  essentials_version 19.2
+  display_title 'Adding moves seen metric to Pokédex'
+  to_value :player do |player|
+    player.pokedex.instance_eval do
+      @evolved_seen = {} if @evolved_seen.nil?
+    end
+  end
+end

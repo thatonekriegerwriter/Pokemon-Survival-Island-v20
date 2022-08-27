@@ -1,0 +1,27 @@
+
+  def pbCanRun?
+    return false if $game_temp.in_menu || $game_temp.in_battle ||
+                    @move_route_forcing || $game_temp.message_window_showing ||
+                    pbMapInterpreterRunning? || $Trainer.playerstamina==0
+    input = ($PokemonSystem.runstyle == 1) ^ Input.press?(Input::ACTION)
+    return input && $Trainer.has_running_shoes && !jumping? &&
+       !$PokemonGlobal.diving && !$PokemonGlobal.surfing &&
+       !$PokemonGlobal.bicycle && !$game_player.pbTerrainTag.must_walk
+  end
+
+  def update_command
+    if $game_player.pbTerrainTag.ice
+      self.move_speed = 4     # Sliding on ice
+    elsif !moving? && !@move_route_forcing && $PokemonGlobal
+      if $PokemonGlobal.bicycle
+        self.move_speed = 5   # Cycling
+      elsif pbCanRun? || $PokemonGlobal.surfing
+        self.move_speed = 4   # Running, surfing
+      elsif $PokemonGlobal.car
+        self.move_speed = 6   # Running, surfing
+      else
+        self.move_speed = 3   # Walking, diving
+      end
+    end
+    super
+  end

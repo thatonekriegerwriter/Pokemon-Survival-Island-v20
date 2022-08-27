@@ -1,0 +1,19 @@
+
+    attr_reader :can_knockdown
+
+
+
+      @can_knockdown          = hash[:can_knockdown]          || false
+
+
+    def can_knockdown_freely
+      return @can_knockdown
+    end
+
+
+
+GameData::TerrainTag.register({
+  :id                     => :Tree,
+  :id_number              => 17
+})
+

@@ -1,0 +1,11 @@
+
+    attr_reader :durability
+      @durability       = hash[:durability]        || 0
+
+
+  # Does NOT include Red Orb/Blue Orb
+    def is_foodwater?;      return @type == 13; end   # Does NOT include Red Orb/Blue Orb
+    def is_medicine?;      return @type == 14; end   # Does NOT include Red Orb/Blue Orb
+    def is_offitem?;      return @type == 15; end   # Does NOT include Red Orb/Blue Orb
+    def is_tool?;          return @type == 16; end
+      

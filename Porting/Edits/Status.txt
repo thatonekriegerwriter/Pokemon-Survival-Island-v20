@@ -1,0 +1,15 @@
+
+# Pokémon Legends: Arceus
+GameData::Status.register({
+  :id        => :FROSTBITE,
+  :id_number => 6,
+  :name      => _INTL("Frostbitten"),
+  :animation => "Frozen"
+})
+# Pokémon Legends: Arceus
+GameData::Status.register({
+  :id        => :DROWSY,
+  :id_number => 7,
+  :name      => _INTL("Drowsy"),
+  :animation => "Sleep"
+})

@@ -1,0 +1,10 @@
+
+      "Loyalty"      => [:loyalty,       "u"],
+      "Water"        => [:water,       "u"],
+      "Food"         => [:food,       "u"],
+      "Sleep"        => [:sleep,       "u"],
+
+
+
+        pkmn.happiness = pkmn_data[:happiness] if pkmn_data[:happiness]
+        pkmn.loyalty = pkmn_data[:loyalty] if pkmn_data[:loyalty]

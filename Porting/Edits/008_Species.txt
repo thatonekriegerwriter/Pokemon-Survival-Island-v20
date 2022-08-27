@@ -1,0 +1,20 @@
+
+    attr_reader :loyalty
+    attr_reader :food
+    attr_reader :water
+    attr_reader :sleep
+
+
+
+
+        "Loyalty"           => [0, "u"],
+        "Food"              => [0, "u"],
+        "Water"             => [0, "u"],
+        "Sleep"             => [0, "u"],
+
+
+
+      @loyalty               = hash[:loyalty]               || 1  
+      @food                  = hash[:food]                  || 100  
+      @water                 = hash[:water]                 || 100 
+      @sleep                 = hash[:sleep]                 || 100   

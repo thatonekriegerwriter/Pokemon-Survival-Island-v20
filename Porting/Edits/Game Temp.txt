@@ -1,0 +1,3 @@
+  attr_accessor :hud_calling             # hud calling flag
+
+

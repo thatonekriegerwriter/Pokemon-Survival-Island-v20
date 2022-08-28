@@ -1,5 +1,0 @@
-GameData::BattleWeather.register({
-  :id        => :Fog,
-  :name      => _INTL("Fog"),
-  :animation => "Fog"
-})

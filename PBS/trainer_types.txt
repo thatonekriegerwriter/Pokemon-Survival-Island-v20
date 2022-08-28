@@ -61,7 +61,7 @@ Gender = Male
 BaseMoney = 88
 SkillLevel = 32
 #-------------------------------
-[CHANNELER]
+[CHANELLER]
 Name = Channeler
 Gender = Female
 BaseMoney = 32
@@ -118,7 +118,7 @@ Name = Poké Maniac
 Gender = Male
 BaseMoney = 64
 #-------------------------------
-[POKEMONBREEDER]
+[POKEMONBREEDER_F]
 Name = Pokémon Breeder
 Gender = Female
 BaseMoney = 48
@@ -397,5 +397,281 @@ VictoryBGM = Battle victory leader
 Name = Champion
 Gender = Male
 BaseMoney = 100
-BattleBGM = Battle Champion
+BattleBGM = Battle Elite
 VictoryBGM = Battle victory leader
+#-------------------------------
+[GARYOAK]
+Name = Battling Prodigy
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[RED]
+Name = Battling Prodigy
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEZORUA]
+Name = Trickster Pokemon
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+#-------------------------------
+[POKEDUG]
+Name = Mole Pokemon
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+#-------------------------------
+[BRANDEN]
+Name = Soldier
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+#-------------------------------
+[GARYOAK2]
+Name = Better Than You
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[RED2]
+Name = Silent Killer
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[MEWTWOBOSS]
+Name = Psychic God
+Gender = Male
+BaseMoney = 200
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_Hiro]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 60
+#-------------------------------
+[POKEMONTRAINER_Kris]
+Name = Pokémon Trainer
+Gender = Female
+BaseMoney = 60
+#-------------------------------
+[POKEMONTRAINER_Blue]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 60
+#-------------------------------
+[GARYOAK3]
+Name = Battling Prodigy
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[RED3]
+Name = Battling Prodigy
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[NIGILMIN]
+Name = Brainwashed Xatu
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[NIGIL]
+Name = Shadow Pokemon
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[PIRATEGRUNT]
+Name = Pirate
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[PIRATEGRUNTB]
+Name = Pirate
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[PIRATEBOSS]
+Name = Rocket Boss
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[MONKEYKING]
+Name = Monkey King
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_Lucas]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_Dawn]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[PIRATEBOSS2]
+Name = Rocket Boss
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[PIRATEBOSS3]
+Name = Rocket Boss
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[TEAMROCKET_JessieJames]
+Name = Rocket Grunt
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[TEAMROCKET_JamesJessie]
+Name = Rocket Grunt
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_Blue2]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_Red2]
+Name = Pokémon Trainer
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[LEADER_RED]
+Name = Gym Leader
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[LEADER_BLUE]
+Name = Gym Leader
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[CYNTHIA]
+Name = Legend
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[DARKPLAYER]
+Name = Creator
+Gender = Female
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONBREEDER_M]
+Name = Pokémon Breeder
+Gender = Male
+BaseMoney = 48
+#-------------------------------
+[LEADER_Jarl]
+Name = Gym Leader
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Gym Leader
+VictoryBGM = Battle victory leader
+#-------------------------------
+[LEADERROCKET]
+Name = Gym Leader
+Gender = Male
+BaseMoney = 100
+BattleBGM = Battle Gym Leader
+VictoryBGM = Battle victory leader
+#-------------------------------
+[HEXMANIAC]
+Name = Hex Maniac
+Gender = Female
+BaseMoney = 48
+#-------------------------------
+[LEADER_Janine]
+Name = Gym Leader
+Gender = Female
+BaseMoney = 48
+#-------------------------------
+[ROCKET_VETERAN_F]
+Name = Rocket Veteran
+Gender = Female
+BaseMoney = 48
+#-------------------------------
+[POKEMONTRAINER_Green]
+Name = Pokémon Trainer
+Gender = Female
+BaseMoney = 60
+#-------------------------------
+[PI]
+Name = Private Eye
+Gender = Male
+BaseMoney = 48
+#-------------------------------
+[POKEMONTRAINER_RocketM]
+Name = Rocket Grunt
+Gender = Male
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONTRAINER_RocketF]
+Name = Rocket Grunt
+Gender = Female
+BaseMoney = 100
+SkillLevel = 50
+BattleBGM = BattleGary
+#-------------------------------
+[POKEMONBREEDER]
+Name = Pokémon Breeder
+Gender = Female
+BaseMoney = 48
+#-------------------------------
+[CHANNELER]
+Name = Channeler
+Gender = Female
+BaseMoney = 48

@@ -1,0 +1,35 @@
+Name         = Item Maniac
+Version      = 1.1.0
+Credits      = eattwo
+
+#===================================================================================================================
+#  CREATING AN ITEM MANIAC
+#===================================================================================================================
+#  Creating an item maniac is very simple.
+#  1) Create an empty event for your item maniac (or copy a PokeMart attendant event)
+#  2) Add a script to your event commands containing a list of the items you want the maniac to buy:
+#     pbItemManiac([:TINYMUSHROOM,:BIGMUSHROOM])
+#   - Ensure every item in the list is present in the items PBS document
+#  3) Interact with the event! The default item maniac should now be working properly!
+#
+#===================================================================================================================
+#  VERSION 1.1.0 UPDATES
+#===================================================================================================================
+#   If you wish to change the defaults, you can add 3 more parameters to the event command:
+#   pbItemManiac([:TINYMUSHROOM,:BIGMUSHROOM],6,"Hello, General Kenobi","Goodbye, General Kenobi")
+#
+#     - The initial list remains the items that you can sell
+#     - The number (in this case, 6) is the price multiplier (default is 5)
+#     - The first quote is the initiation phrase. In this case the ItemManiac will say "Hello, General Kenobi"
+#       when you interact with them.
+#     - the second quote is the exit phrase. In this case the ItemManiac will say "Goodbye, General Kenobi" when
+#       you are finished interacting with the ItemManiac
+#
+#   This change also allows the addition of multiple ItemManiacs in your game with different quotes and multipliers
+#   which was not possible in v1.0.0
+#
+#   An additional update with this patch is allowing non-integer values for the multiplier.
+#   This is currently handled by rounding up/down for the individual item price, making it an integer.
+#     - So... a standard potion sells for 200, setting the multiplier to 3.3333333 will set the price to 667
+#       rather than send an error like it did previously.
+#===================================================================================================================

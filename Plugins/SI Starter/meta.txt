@@ -1,0 +1,3 @@
+Name         = SI Starter
+Version      = God Knows
+Credits      = ferriswheel42

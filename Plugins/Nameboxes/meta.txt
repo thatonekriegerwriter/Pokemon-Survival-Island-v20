@@ -1,0 +1,3 @@
+﻿Name      = NameBoxes
+Version   = 1.0
+Credits   = MrGela/Theo

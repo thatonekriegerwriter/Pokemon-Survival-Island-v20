@@ -5560,9 +5560,9 @@ Price = 0
 Flags = KeyItem, Tool
 Description = 
 #-------------------------------
-[LEATHERBOTTLE]
-Name = Leather Bottle
-NamePlural = Leather Bottle
+[GLASSBOTTLE]
+Name = Glass Bottle
+NamePlural = Glass Bottle
 Pocket = 11
 Price = 5
 Flags = Tool

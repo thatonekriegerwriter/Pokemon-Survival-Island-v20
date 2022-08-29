@@ -465,7 +465,7 @@ return 1
 elsif item == :FRESHWATER
 $player.playerwater+=20
 $player.playersaturation+=10#207 is Saturation
-$PokemonBag.pbStoreItem(:WATERBOTTLE,1)
+$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 #You can add more if you want
@@ -524,7 +524,7 @@ $player.playerwater-=11#206 is Thirst
 $player.playersaturation+=11#207 is Saturation
 $player.playersleep+=10#208 is Sleep
 return 1
-$PokemonBag.pbStoreItem(:WATERBOTTLE,1)
+$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :LEMONADE
@@ -532,7 +532,7 @@ $player.playersaturation+=11#207 is Saturation
 $player.playerwater+=10#206 is Thirst
 $player.playersleep+=7#208 is Sleep
 return 1
-$PokemonBag.pbStoreItem(:WATERBOTTLE,1)
+$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :HONEY
@@ -543,7 +543,7 @@ return 1
 elsif item == :MOOMOOMILK
 $player.playersaturation+=10
 $player.playerwater+=15
-$PokemonBag.pbStoreItem(:WATERBOTTLE,1)
+$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :CSLOWPOKETAIL
@@ -634,7 +634,7 @@ elsif item == :SITRUSJUICE
 $player.playersaturation+=20#207 is Saturation
 $player.playerwater+=25#206 is Thirst
 $player.playerfood+=0#205 is Hunger
-$PokemonBag.pbStoreItem(:WATERBOTTLE,1)
+$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :BERRYMASH
@@ -781,6 +781,20 @@ if $game_player.pbFacingTerrainTag.can_surf
 	next 0
 end
 })
+
+ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Want to pick up water?"))
+    if pbConfirmMessage(message)
+       $PokemonBag.pbStoreItem(:WATER,1)
+	end
+	next 4
+   else
+    Kernel.pbMessage(_INTL("That is not water."))
+	next 0
+end
+})
+
 ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
 if $game_player.pbFacingTerrainTag.can_knockdown
      message=(_INTL("Want to knock down some branches?"))

@@ -299,7 +299,7 @@ def giveAdventureItemList(itemlist)
 	if item == [] 
 	item = :ORANBERRY
 	end
-    pbMessage(_INTL("{1} ",item))
+#    pbMessage(_INTL("{1} ",item))
     itemdata = GameData::Item.get(item)
     name = (count>1) ? itemdata.name_plural : itemdata.name
     string += count.to_s+" "+name+", "

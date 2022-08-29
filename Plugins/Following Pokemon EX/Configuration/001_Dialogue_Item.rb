@@ -15,10 +15,8 @@ EventHandlers.add(:following_pkmn_item, :battle_map, proc { |_pkmn, _random_val|
 #-------------------------------------------------------------------------------
 EventHandlers.add(:following_pkmn_item, :regular, proc { |_pkmn, _random_val|
   items = [
-    :POTION,        :SUPERPOTION,  :FULLRESTORE,    :REVIVE,        :PPUP,
-    :PPMAX,         :RARECANDY,    :REPEL,          :MAXREPEL,      :ESCAPEROPE,
-    :HONEY,         :TINYMUSHROOM, :PEARL,          :NUGGET,        :GREATBALL,
-    :ULTRABALL,     :THUNDERSTONE, :MOONSTONE,      :SUNSTONE,      :DUSKSTONE,
+    :HONEY,         :TINYMUSHROOM, :PEARL,          :NUGGET,        :THUNDERSTONE, 
+	:MOONSTONE,      :SUNSTONE,    :DUSKSTONE,
     :REDAPRICORN,   :BLUEAPRICORN, :YELLOWAPRICORN, :GREENAPRICORN, :PINKAPRICORN,
     :BLACKAPRICORN, :WHITEAPRICORN
   ]

@@ -20,7 +20,7 @@ $sleeptimer = 0
 $staminatimer = 0
 
 
-EventHandlers.add(:on_player_step_taken_can_transfer, :eggtech,
+EventHandlers.add(:on_step_taken, :eggtech,
   proc {
 
 if $PokemonSystem.survivalmode==0
@@ -354,14 +354,14 @@ end
 def pbSleepRestore
  $player.playerstamina = $player.playermaxstamina
  if $player.playersleep<200
-  $player.playersleep=$player.playersleep+($game_variables[247]*6)
+  $player.playersleep=$player.playersleep+($game_variables[247]*9)
  end
  if $player.playersaturation<1
-   $player.playerfood=$player.playerfood-($game_variables[247]*3)
-   $player.playerwater=$player.playerwater-($game_variables[247]*3)
+   $player.playerfood=$player.playerfood-($game_variables[247]*2)
+   $player.playerwater=$player.playerwater-($game_variables[247]*2)
    
   else
-   $player.playersaturation=$player.playersaturation-($game_variables[247]*3)
+   $player.playersaturation=$player.playersaturation-($game_variables[247]*2)
  end
   deposited = pbDayCareDeposited
   if deposited==2 && $PokemonGlobal.daycareEgg==0
@@ -454,12 +454,12 @@ elsif item == :SITRUSBERRY
 $player.playerfood+=5
 $player.playersaturation+=7
 $player.playerwater+=1
-$player.playerhealth += (0.25*$player.playerhealth)
+$player.playerhealth += 4
 return 1
 elsif item == :BERRYJUICE
-$player.playerfood+=6
-$player.playersaturation+=4
-$player.playerwater+=4
+$player.playerfood+=2
+$player.playersaturation+=2
+$player.playerwater+=10
 $player.playerhealth += 2
 return 1
 elsif item == :FRESHWATER
@@ -890,8 +890,7 @@ end
       base = -2 if PBDayNight.isEvening?(pbGetTimeNow)
       base = -3 if PBDayNight.isNight?(pbGetTimeNow)
       bonus = -4 if $player.playerstamina < 0
-    
-    $player.playersleep += (gain + base + bonus) if rand(100) == 1
+    $player.playersleep += (gain + base + bonus) if rand(100) <= 1
   end
 
   def pbchangeSaturation
@@ -903,7 +902,7 @@ end
             $player.playersaturation=50 
 		 end
 	end
-    $player.playersaturation -= 1 if rand(100) == 1 && $game_variables[256]== 0
+    $player.playersaturation -= 1 if rand(100) <= 3
     $player.playersaturation -= 4 if rand(100) == 1 && $game_variables[256]==(:LCLOAK)#take from saturation
 	end
 

@@ -37,6 +37,10 @@ if $PokemonBag.pbHasItem?(:PORTABLEPC)
   $game_switches[406]=true 
 end
 
+if $PokemonBag.pbHasItem?(:ITEMCRATE)
+  $game_switches[406]=true 
+end
+
 if $PokemonBag.pbHasItem?(:BEDROLL)
   $game_switches[407]=true 
 end

@@ -275,7 +275,7 @@ class Adventure_Scene
 		@adventureparty = @adventure.party
 		@cursorpos = 0
 		@off = false
-		@fastcollect = false
+		@fastcollect = true
 		if defined?(ScrollingSprite)
 			@sprites["background"] = IconSprite.new(0,0,@viewport)
 			@sprites["background"] = ScrollingSprite.new(@viewport)

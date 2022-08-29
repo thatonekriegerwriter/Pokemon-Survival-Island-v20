@@ -6,19 +6,19 @@ module FollowingPkmn
 
   # Animation IDs from followers
   # Change this if you are not using the Animations.rxdata provided in the script.
-  ANIMATION_COME_OUT        = 30
-  ANIMATION_COME_IN         = 29
+  ANIMATION_COME_OUT        = 41
+  ANIMATION_COME_IN         = 40
 
-  ANIMATION_EMOTE_HEART     = 9
-  ANIMATION_EMOTE_MUSIC     = 12
-  ANIMATION_EMOTE_HAPPY     = 10
-  ANIMATION_EMOTE_ELIPSES   = 13
-  ANIMATION_EMOTE_ANGRY     = 15
-  ANIMATION_EMOTE_POISON    = 17
+  ANIMATION_EMOTE_HEART     = 30
+  ANIMATION_EMOTE_MUSIC     = 33
+  ANIMATION_EMOTE_HAPPY     = 32
+  ANIMATION_EMOTE_ELIPSES   = 39
+  ANIMATION_EMOTE_ANGRY     = 37
+  ANIMATION_EMOTE_POISON    = 38
 
   # The key the player needs to press to toggle followers. Set this to nil if
   # you want to disable this feature. (:JUMPUP is the A key by default)
-  TOGGLE_FOLLOWER_KEY       = :JUMPUP
+  TOGGLE_FOLLOWER_KEY       = :JUMPDOWN
 
   # Show the option to toggle Following Pokemon in the Options screen.
   SHOW_TOGGLE_IN_OPTIONS    = true

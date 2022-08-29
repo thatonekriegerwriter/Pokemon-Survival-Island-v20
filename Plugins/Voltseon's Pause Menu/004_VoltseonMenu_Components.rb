@@ -275,7 +275,6 @@ class PokemonPartyHud < Component
     @status.dispose
     @infobmp.dispose
     @itembmp .dispose
-    @shinybmp.dispose
   end
 end
 

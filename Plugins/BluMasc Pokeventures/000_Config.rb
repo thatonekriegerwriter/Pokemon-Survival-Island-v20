@@ -9,16 +9,18 @@ module PokeventureConfig
   CollectItemsFromBattles = true # Collect Items from defeated Pokemon
   # Form of this list is [ItemID,chance]
   Items = [
-    [:POKETOY,30], [:POKEBALL,30], [:FRESHWATER,30], [:REPEL,30], [:HEARTSCALE,16],
-    [:THUNDERSTONE,10], [:WATERSTONE,10], [:LEAFSTONE,10], [:MOONSTONE,10], [:FIRESTONE,10],
-    [:SUNSTONE,10], [:SHINYSTONE,10], [:DUSKSTONE,10], [:DAWNSTONE,10],
-	[:EVERSTONE,10], [:OVALSTONE,10],[:LEMONADE,10], [:ENERGYROOT,10], [:PEARL,10], [:BIGPEARL,10], [:SUPERREPEL,10],  
-    [:MASTERBALL,1], [:PEARLSTRING,1]
+    [:ORANBERRY,30], [:SITRUSBERRY,30], [:ACORN,30], [:STONE,30], [:HEARTSCALE,16],
+    [:IRONORE,20], [:POTATO,20], [:COPPERORE,20], [:GOLDORE,20], [:TEALEAF,20],
+    [:SLOWPOKETAIL,10], [:SILVERORE,10], [:BAIT,10], [:MEAT,10], [:COAL,10], [:WATER,10],
+	[:FIRESTONE,7],[:LEAFSTONE,7],
+	[:COCOABEAN,5], [:EXPCANDYS,5],[:REVIVALHERB,5], [:ENERGYROOT,5], [:MOOMOOMILK,5], [:LEMON,5], [:SUPERREPEL,5],
+	[:POISONDART,3],[:SLEEPDART,3],[:PARALYZDART,3],[:ICEDART,3],[:FIREDART,3],
+    [:WATERBOTTLE,1], [:PEARL,1], [:EXPCANDYM,1]
   ]
-  ChanceToGetEnemyItem = 5 # as a 1 in x chance
+  ChanceToGetEnemyItem = 10 # as a 1 in x chance
   # Friends
   FindFriends = true # If there is Space should there be a chance for wild pokèmon to join you.
-  ChanceToFindFriend = 5 # as a 1 in x chance
+  ChanceToFindFriend = 50 # as a 1 in x chance
   AreFoundFriendsBrilliant = true #have higher ivs and a higher shiny chance
   ChanceToFindEggs = true
   # Exp
@@ -29,9 +31,9 @@ module PokeventureConfig
   PkmnList = [[:PIKACHU,1], [:CHARMANDER,3], [:SQUIRTLE,3], [:BULBASAUR,3], [:EEVEE,1]]
   # Form of this list is [ItemID,chance]
   EggList = [[:PICHU,5],[:CLEFFA,5],[:IGGLYBUFF,5],[:TOGEPI,5],[:TYROGUE,5],[:SMOOCHUM,5],[:ELEKID,5],[:MAGBY,5],[:BUDEW,5],
-            [:CHINGLING,5],[:BONSLY,5],[:MIMEJR,5],[:HAPPINY,5],[:MUCHLAX,5],[:RIOLU,5],[:MANTYKE,5],[:PHIONE,2],
-            [:MANAPHY,1],[:KUBFU,1]]
-  GlobalLeveling = true # makes the level of the encounters balanced around the number of badges instead of the location (always on if globalPkmn is on)
+            [:CHINGLING,5],[:BONSLY,5],[:MIMEJR,5],[:HAPPINY,5],[:MUCHLAX,5],[:RIOLU,5],[:MANTYKE,5],[:PUPPERON,5],
+            [:VULPIII,5],[:SMUJJ,5]]
+  GlobalLeveling = false # makes the level of the encounters balanced around the number of badges instead of the location (always on if globalPkmn is on)
   #level per badge [min,max] can add more if you have more badges in your game
   PkmnLevel = [
 	[2,15],		#0 Badges

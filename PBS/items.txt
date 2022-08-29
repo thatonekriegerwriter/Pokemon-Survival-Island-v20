@@ -94,7 +94,7 @@ NamePlural = Fire Stones
 Pocket = 1
 Price = 3000
 FieldUse = OnPokemon
-Flags = EvolutionStone,Fling_30
+Flags = EvolutionStone,Fling_30,Coal
 Description = A peculiar stone that makes certain species of Pokémon evolve. It is colored orange.
 #-------------------------------
 [THUNDERSTONE]
@@ -833,7 +833,7 @@ Name = Heat Rock
 NamePlural = Heat Rocks
 Pocket = 1
 Price = 4000
-Flags = Fling_60
+Flags = Fling_60,Coal
 Description = A Pokémon held item that extends the duration of the move Sunny Day used by the holder.
 #-------------------------------
 [DAMPROCK]
@@ -1358,7 +1358,7 @@ NamePlural = Charcoals
 Pocket = 1
 Price = 3000
 SellPrice = 500
-Flags = Fling_30
+Flags = Fling_30,Coal
 Description = An item to be held by a Pokémon. It is a combustible fuel that boosts the power of Fire-type moves.
 #-------------------------------
 [MYSTICWATER]
@@ -2760,81 +2760,81 @@ Description = A spray-type medicine. It heals all the status problems of a singl
 [PEWTERCRUNCHIES]
 Name = Pewter Crunchies
 NamePlural = Pewter Crunchies
-Pocket = 2
+Pocket = 9
 Price = 250
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Pewter City's famous crunchy snack. They can be used to heal all status conditions of a single Pokémon.
 #-------------------------------
 [RAGECANDYBAR]
 Name = Rage Candy Bar
 NamePlural = Rage Candy Bars
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Mahogany Town's famous candy. It can be used once to heal all the status conditions of a Pokémon.
 #-------------------------------
 [LAVACOOKIE]
 Name = Lava Cookie
 NamePlural = Lava Cookies
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Lavaridge Town's local specialty. It heals all the status problems of one Pokémon.
 #-------------------------------
 [OLDGATEAU]
 Name = Old Gateau
 NamePlural = Old Gateaux
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Old Chateau's hidden specialty. It heals all the status problems of a single Pokémon.
 #-------------------------------
 [CASTELIACONE]
 Name = Casteliacone
 NamePlural = Casteliacones
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Castelia City's specialty, soft-serve ice cream. It heals all the status problems of a single Pokémon.
 #-------------------------------
 [LUMIOSEGALETTE]
 Name = Lumiose Galette
 NamePlural = Lumiose Galettes
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = A popular treat in Lumiose City. It can be used once to heal all the status conditions of a Pokémon.
 #-------------------------------
 [SHALOURSABLE]
 Name = Shalour Sable
 NamePlural = Shalour Sables
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Shalour City's famous shortbread. It can be used once to heal all the status conditions of a Pokémon.
 #-------------------------------
 [BIGMALASADA]
 Name = Big Malasada
 NamePlural = Big Malasadas
-Pocket = 2
+Pocket = 9
 Price = 350
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = The Alola region's specialty--fried bread. It can be used once to heal all the status conditions of a Pokémon.
 #-------------------------------
 [REVIVE]
@@ -2860,62 +2860,62 @@ Description = A medicine that revives a fainted Pokémon. It fully restores the 
 [BERRYJUICE]
 Name = Berry Juice
 NamePlural = Berry Juices
-Pocket = 2
+Pocket = 9
 Price = 100
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = A 100% pure juice made of Berries. It restores the HP of one Pokémon by just 20 points.
 #-------------------------------
 [SWEETHEART]
 Name = Sweet Heart
 NamePlural = Sweet Hearts
-Pocket = 2
+Pocket = 9
 Price = 3000
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Very sweet chocolate. It restores the HP of one Pokémon by only 20 points.
 #-------------------------------
 [FRESHWATER]
 Name = Fresh Water
 NamePlural = Fresh Waters
-Pocket = 2
+Pocket = 9
 Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Water with high mineral content. It can be used to restore 30 HP to a single Pokémon.
 #-------------------------------
 [SODAPOP]
 Name = Soda Pop
 NamePlural = Soda Pops
-Pocket = 2
+Pocket = 9
 Price = 300
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = A highly carbonated soda drink. It can be used to restore 50 HP to a single Pokémon.
 #-------------------------------
 [LEMONADE]
 Name = Lemonade
 NamePlural = Lemonades
-Pocket = 2
+Pocket = 9
 Price = 350
 SellPrice = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = A very sweet and refreshing drink. It can be used to restore 70 HP to a single Pokémon.
 #-------------------------------
 [MOOMOOMILK]
 Name = Moomoo Milk
 NamePlural = Moomoo Milks
-Pocket = 2
+Pocket = 9
 Price = 600
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 100 points.
 #-------------------------------
 [ENERGYPOWDER]
@@ -2965,7 +2965,7 @@ Pocket = 2
 Price = 8000
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,FoodWater
 Description = Honey that Dynamax Vespiquen produces. It has the same effect as a Max Revive.
 #-------------------------------
 [ETHER]
@@ -4903,6 +4903,15 @@ FieldUse = Direct
 Flags = KeyItem
 Description = A folding Bicycle that enables much faster movement than the Running Shoes.
 #-------------------------------
+[ADVENTURERULES]
+Name = Surviving in the Wilderness
+NamePlural = Surviving in the Wilderness
+Pocket = 8
+Price = 0
+FieldUse = Direct
+Flags = KeyItem
+Description = A Basic Guide to Surviving in the Wilderness.
+#-------------------------------
 [OLDROD]
 Name = Old Rod
 NamePlural = Old Rods
@@ -5796,7 +5805,7 @@ Name = Wooden Plank
 NamePlural = Wooden Plank
 Pocket = 1
 Price = 0
-Flags = Fling_10
+Flags = Fling_10,Coal
 Description = 
 #-------------------------------
 [IRON2]
@@ -5812,7 +5821,7 @@ Name = Wooden Log
 NamePlural = Wooden Logs
 Pocket = 1
 Price = 0
-Flags = Fling_10
+Flags = Fling_10,Coal
 Description = 
 #-------------------------------
 [TUMBLEROCK]
@@ -5828,7 +5837,7 @@ Name = Coal
 NamePlural = Coals
 Pocket = 1
 Price = 0
-Flags = Fling_10
+Flags = Fling_10,Coal
 Description = 
 #-------------------------------
 [SPEEDCOMET]
@@ -6797,7 +6806,7 @@ Name = Acorn
 NamePlural = Acorns
 Pocket = 5
 Price = 5
-Flags = Berry
+Flags = Berry,Coal
 Description = 
 #-------------------------------
 [MEAT]

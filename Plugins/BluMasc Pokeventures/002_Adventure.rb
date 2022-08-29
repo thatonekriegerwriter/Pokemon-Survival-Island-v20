@@ -131,7 +131,7 @@ class Adventure
 	def itemcollect
 		@party.each do |pkmn|
 			if pkmn.hasItem?
-				item = GameData::Item.get(pkmn.item).id
+				item = GameData::Item.get(pkmn.item)
 				@items.append(item)
 				pkmn.item = nil
 			end
@@ -290,11 +290,20 @@ def giveAdventureItemList(itemlist)
     else
       count=1
     end
+	if item == [:ABSORBBULB] 
+	item = :ABSORBBULB
+	end
+	if item == :COCOABEANS 
+	item = :COCOABEAN
+	end
+	if item == [] 
+	item = :ORANBERRY
+	end
+    pbMessage(_INTL("{1} ",item))
     itemdata = GameData::Item.get(item)
     name = (count>1) ? itemdata.name_plural : itemdata.name
     string += count.to_s+" "+name+", "
     $PokemonBag.pbStoreItem(item,count)
     list.delete(item)
   end
-  Kernel.pbMessage(string[0...-2])
 end

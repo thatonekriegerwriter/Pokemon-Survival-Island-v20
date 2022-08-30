@@ -254,76 +254,42 @@ end
 
 })
 
-EventHandlers.add(:on_map_or_spriteset_change, :efegrhjttjtjtj,
-  proc {
+EventHandlers.add(:on_enter_map, :setup_new_map,
+  proc { |old_map_id|
+  if $PokemonSystem.survivalmode == 0 && $PokemonSystem.temperature == 0 && GameData::MapMetadata.get($game_map.map_id).outdoor_map
 
-#------------------------------------------------------------------------------#
-#--------------------------Temperature                 ------------------------#
-#------------------------------------------------------------------------------#
-#  pbEachPokemon { |poke,_box|
-#	  poke.changeHappiness("neglected",poke)
-#	  poke.changeLoyalty("neglected",poke)
-#  }
-
-  if !GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:None, 0, 0)
+    map_infos = pbLoadMapInfos
+    new_map_metadata = $game_map.metadata
+    weather_chance = rand(100)
+  if $game_map.name == map_infos[old_map_id].name
+      old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
+      next if old_map_metadata&.weather
+   elsif pbIsSpring == true
+   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 30 && $game_map.name  == "Temperate Zone"
+   elsif  pbIsSummer == true
+#######################################################################################################################################
+   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:Sun, rand(9)+1, rand(19)+1)  if weather_chance <= 25 
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 50 && $game_map.name  == "Temperate Zone"
+   elsif pbIsAutumn  == true
+################################################################################################################################################
+   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:HeavyRain, rand(9)+1, rand(19)+1) if weather_chance <= 15
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 50 && $game_map.name  == "Temperate Zone"
+   $game_screen.weather(:HeavyRain, rand(9)+1, rand(19)+1)  if weather_chance <= 90 && $game_map.name  == "Temperate Zone"
+   elsif pbIsWinter  == true
+################################################################################################################################################
+   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
+   $game_screen.weather(:Snow, rand(9)+1, rand(19)+1) if weather_chance <= 15 && !$game_screen.weather_type==:Blizzard
+   $game_screen.weather(:Blizzard, rand(9)+1, rand(19)+1) if weather_chance <= 40 && !$game_screen.weather_type==:Snow
+   $game_screen.weather(:Snow, rand(9)+1, rand(19)+1) if weather_chance <= 15 && (!$game_screen.weather_type==:Blizzard || !$game_screen.weather_type==:Rain)&& $game_map.name  == "Temperate Zone"
+   $game_screen.weather(:Blizzard, rand(9)+1, rand(19)+1) if weather_chance <= 50 && (!$game_screen.weather_type==:Snow || !$game_screen.weather_type==:Rain)&& $game_map.name  == "Temperate Zone"
+   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 35 && $game_map.name  == "Temperate Zone" && (!$game_screen.weather_type==:Blizzard || !$game_screen.weather_type==:Snow)
   end
   
-if $PokemonSystem.survivalmode == 0 && GameData::MapMetadata.get($game_map.map_id).outdoor_map
-
-  if pbIsSpring == true && GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:Rain, 9, 20)  if rand(200) <= 25
-   $game_variables[387] += 0 if rand(50) == 1 #ambienttemperature
-  end
-
-  if pbIsSummer == true && GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:Sun, 9, 20)  if rand(200) <= 50 && !($game_screen.weather_type==:Rain)
-   $game_variables[387] += 3 if rand(50) == 1 #ambienttemperature
-  end
-
-  if pbIsAutumn  == true && GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:Rain, 9, 20)  if rand(200) <= 25
-   $game_screen.weather(:HeavyRain, 9, 20) if rand(200) <= 15
-   $game_variables[387] -= 2 if rand(40) == 5 #ambienttemperature
-  end
-
-  if pbIsWinter  == true && GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:Snow, 9, 20) if rand(200) <= 40 && !($game_screen.weather_type==:Blizzard)
-   $game_screen.weather(:Blizzard, 9, 20) if rand(200) <= 15 && !($game_screen.weather_type==:Snow)
-   $game_variables[387] -= 4 if rand(20) == 5 #ambienttemperature
-   if ($game_screen.weather_type==:Rain)
-      $game_screen.weather(:Snow, 9, 20) if rand(200) <= 40 && !($game_screen.weather_type==:Blizzard)
-  	  $game_screen.weather(:Blizzard, 9, 20) if rand(200) <= 15 && !($game_screen.weather_type==:Snow)
-  end
-
-end
- case $game_variables[384] #Month
-   when 0 #Jan
-    $game_variables[387] -= 3 if rand(50) == 1 #ambienttemperature
-   when 1 #Feb
-    $game_variables[387] -= 5 if rand(50) == 1 #ambienttemperature
-   when 2 #Mar
-    $game_variables[387] += 1 if rand(50) == 1 #ambienttemperature
-   when 3 #April
-    $game_variables[387] += 2 if rand(50) == 1 #ambienttemperature
-   when 4 #may
-    $game_variables[387] += 2 if rand(50) == 1 #ambienttemperature
-   when 5 #june
-    $game_variables[387] += 3 if rand(50) == 1 #ambienttemperature
-   when 6 #july
-    $game_variables[387] += 2 if rand(40) == 5 #ambienttemperature
-   when 7 #august
-    $game_variables[387] += 6 if rand(20) == 5 #ambienttemperature
-   when 8 #september
-    $game_variables[387] += 0 if rand(50) == 1 #ambienttemperature
-   when 9 #october
-    $game_variables[387] += 3 if rand(50) == 1 #ambienttemperature
-   when 10 #november
-    $game_variables[387] -= 2 if rand(40) == 5 #ambienttemperature
-   when 11 #december
-    $game_variables[387] -= 3 if rand(20) == 5 #ambienttemperature
- end
-
 
 
  case $game_variables[382] #Day
@@ -343,13 +309,77 @@ end
 
  end
 
+if checkHours(23)
+ pbAmbientTemperature
+ pbSetTemperature
+end 
 #------------------------------------------------------------------------------#
 #------------------------------------------------------------------------------#
 end
 
+
 })
 
+EventHandlers.add(:on_map_or_spriteset_change, :efegrhjttjtjtj,
+  proc {
 
+#------------------------------------------------------------------------------#
+#--------------------------Temperature                 ------------------------#
+#------------------------------------------------------------------------------#
+#  pbEachPokemon { |poke,_box|
+#	  poke.changeHappiness("neglected",poke)
+#	  poke.changeLoyalty("neglected",poke)
+#  }
+
+
+  
+
+
+
+})
+
+def checkHours(hour) # Hour is 0..23
+  timeNow = pbGetTimeNow.hour
+  timeHour = hour
+  return true if timeNow == timeHour 
+end
+
+def pbSetTemperature
+  $PokemonSystem.temperaturemeasurement = 18 if (pbGetTimeNow.mon==3 && pbGetTimeNow.day==22)
+  $PokemonSystem.temperaturemeasurement = 35 if (pbGetTimeNow.mon==6 && pbGetTimeNow.day==21)
+  $PokemonSystem.temperaturemeasurement = 12 if (pbGetTimeNow.mon==9 && pbGetTimeNow.day==21)
+  $PokemonSystem.temperaturemeasurement = 0 if (pbGetTimeNow.mon == 10 && pbGetTimeNow.day ==22)
+end
+
+def pbAmbientTemperature
+   case pbGetTimeNow.mon
+   when 0 #Jan
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-7 #ambienttemperature
+   when 1 #Feb
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-5
+   when 2 #Mar
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-1
+   when 3 #April
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-0
+   when 4 #may
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+1
+   when 5 #june
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+2
+   when 6 #july
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+5
+   when 7 #august
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+7
+   when 8 #september
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+1
+   when 9 #october
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+3
+   when 10 #november
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+4
+   when 11 #december
+    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+6
+ end
+
+end
 
 def pbSleepRestore
  $player.playerstamina = $player.playermaxstamina

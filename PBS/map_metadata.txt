@@ -24,7 +24,6 @@ Outdoor = true
 ShowArea = true
 Bicycle = true
 HealingSpot = 4,21,12
-Weather = Rain,80
 BattleBack = Forest
 MapSize = 0,
 #-------------------------------
@@ -33,13 +32,11 @@ Name = Temperate Zone
 Outdoor = true
 ShowArea = true
 Bicycle = true
-Weather = Rain,80
 #-------------------------------
 [006]   # Temperate Zone
 Name = Temperate Zone
 Outdoor = true
 ShowArea = true
-Weather = Rain,80
 SnapEdges = true
 BattleBack = Forest
 #-------------------------------
@@ -47,7 +44,6 @@ BattleBack = Forest
 Name = Temperate Zone
 Outdoor = true
 ShowArea = true
-Weather = Rain,60
 BattleBack = Forest
 #-------------------------------
 [008]   # Temperate Zone
@@ -61,7 +57,6 @@ BattleBack = Forest
 Name = Temperate Zone
 Outdoor = true
 ShowArea = true
-Weather = Rain,0
 BattleBack = Forest
 #-------------------------------
 [010]   # Temperate Base

@@ -5810,7 +5810,7 @@ Description =
 #-------------------------------
 [IRON2]
 Name = Fine Iron Bar
-NamePlural = Shining Comet Shard
+NamePlural = Fine Iron Bars
 Pocket = 1
 Price = 0
 Flags = Fling_10

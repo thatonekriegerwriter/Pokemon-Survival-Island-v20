@@ -254,8 +254,8 @@ class PokemonPartyHud < Component
       status = 0
       if pokemon.fainted?
         status = GameData::Status::DATA.keys.length / 2
-      elsif pokemon.status != :NONE
-        status = GameData::Status.get(pokemon.status).id_number
+#      elsif pokemon.status != :NONE
+#        status = GameData::Status.get(pokemon.status).id
       elsif pokemon.pokerusStage == 1
         status = GameData::Status::DATA.keys.length / 2 + 1
       end

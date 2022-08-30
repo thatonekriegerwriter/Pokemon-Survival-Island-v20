@@ -15,7 +15,7 @@ TrainerType = POKEMONTRAINER_Red
 WalkCharset = 3M.png
 RunCharset = 3M.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 3M.png
 FishCharset = 3MFish.png
 #-------------------------------
 [2]
@@ -23,7 +23,7 @@ TrainerType = POKEMONTRAINER_Leaf
 WalkCharset = 4F.png
 RunCharset = 4F.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 4F.png
 FishCharset = 4FFishing.png
 #-------------------------------
 [3]
@@ -31,7 +31,7 @@ TrainerType = POKEMONTRAINER_Hiro
 WalkCharset = 2M.png
 RunCharset = 2M.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 2M.png
 FishCharset = 2MFishing.png
 #-------------------------------
 [4]
@@ -39,7 +39,7 @@ TrainerType = POKEMONTRAINER_Kris
 WalkCharset = 1F.png
 RunCharset = 1F.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 1F.png
 FishCharset = 1FFishing.png
 #-------------------------------
 [5]
@@ -47,7 +47,7 @@ TrainerType = POKEMONTRAINER_Brendan
 WalkCharset = 4M.png
 RunCharset = 4M.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 4M.png
 FishCharset = 4MFishing.png
 #-------------------------------
 [6]
@@ -55,7 +55,7 @@ TrainerType = POKEMONTRAINER_May
 WalkCharset = 3F.png
 RunCharset = 3F.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 3F.png
 FishCharset = 3FFishing.png
 #-------------------------------
 [7]
@@ -63,15 +63,15 @@ TrainerType = POKEMONTRAINER_Lucas
 WalkCharset = 1M.png
 RunCharset = 1M.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 1M.png
 FishCharset = 1MFishing.png
 #-------------------------------
 [8]
 TrainerType = POKEMONTRAINER_Dawn
-WalkCharset = 2F
-RunCharset = 2F
+WalkCharset = 2F.png
+RunCharset = 2F.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 2F.png
 FishCharset = 2FFishing.png
 #-------------------------------
 [9]
@@ -79,7 +79,7 @@ TrainerType = POKEMONTRAINER_RocketM
 WalkCharset = 0RMWalk.png
 RunCharset = 0RM.png
 CycleCharset = 0bike.png
-SurfCharset = 
+SurfCharset = 2F.png
 FishCharset = 0RMFish.png
 #-------------------------------
 [10]
@@ -87,8 +87,8 @@ TrainerType = POKEMONTRAINER_RocketF
 WalkCharset = 0RFWalk_1.png
 RunCharset = 0RFWalk_1.png
 CycleCharset = 0bike.png
-SurfCharset = 
-FishCharset = 
+SurfCharset = 2F.png
+FishCharset = 0RMFish.png
 #-------------------------------
 [11]
 TrainerType = POKEMONRANGER_F

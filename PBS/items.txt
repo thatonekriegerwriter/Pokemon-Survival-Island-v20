@@ -2645,7 +2645,7 @@ Pocket = 2
 Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Medicine
 Description = A spray-type medicine for treating wounds. It can be used to restore 20 HP to a single Pokémon.
 #-------------------------------
 [SUPERPOTION]
@@ -2655,7 +2655,7 @@ Pocket = 2
 Price = 700
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Medicine
 Description = A spray-type medicine for treating wounds. It can be used to restore 60 HP to a single Pokémon.
 #-------------------------------
 [HYPERPOTION]
@@ -2665,7 +2665,7 @@ Pocket = 2
 Price = 1500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Medicine
 Description = A spray-type medicine for treating wounds. It can be used to restore 120 HP to a single Pokémon.
 #-------------------------------
 [MAXPOTION]
@@ -2675,7 +2675,7 @@ Pocket = 2
 Price = 2500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Medicine
 Description = A spray-type medicine for treating wounds. It can completely restore the max HP of a single Pokémon.
 #-------------------------------
 [FULLRESTORE]
@@ -2685,7 +2685,7 @@ Pocket = 2
 Price = 3000
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Medicine
 Description = A medicine that fully restores the HP and heals any status problems of a single Pokémon.
 #-------------------------------
 [SACREDASH]
@@ -5452,7 +5452,8 @@ Name = Bait
 NamePlural = Baits
 Pocket = 11
 Price = 5
-Flags = Tool
+FieldUse = Direct
+Flags = Tool,Berry
 Description = A spongy, aromatic fungus that attracts Pokémon, it can be used to attract Pokémon, or escape ongoing fights.
 #-------------------------------
 [MACHETE]
@@ -5517,6 +5518,7 @@ Name = Poison Dart
 NamePlural = Poison Darts
 Pocket = 11
 Price = 0
+BattleUse = OnFoe
 Flags = Tool
 Description = A handcrafted dart gun that poisons a Pokémon in battle.
 #-------------------------------
@@ -5525,6 +5527,7 @@ Name = Sleep Dart
 NamePlural = Sleep Darts
 Pocket = 11
 Price = 0
+BattleUse = OnFoe
 Flags = Tool
 Description = A handcrafted dart gun that sedates a Pokémon in battle.
 #-------------------------------
@@ -5533,6 +5536,7 @@ Name = Paralysis Dart
 NamePlural = Paralysis Darts
 Pocket = 11
 Price = 0
+BattleUse = OnFoe
 Flags = Tool
 Description = A handcrafted dart gun that stuns a Pokémon in battle.
 #-------------------------------
@@ -5541,6 +5545,7 @@ Name = Ice Dart
 NamePlural = Ice Darts
 Pocket = 11
 Price = 0
+BattleUse = OnFoe
 Flags = Tool
 Description = A handcrafted dart gun that freezes a Pokémon in battle.
 #-------------------------------
@@ -5549,6 +5554,7 @@ Name = Fire Dart
 NamePlural = Fire Darts
 Pocket = 11
 Price = 0
+BattleUse = OnFoe
 Flags = Tool
 Description = A handcrafted dart gun that burns a Pokémon in battle.
 #-------------------------------
@@ -5565,6 +5571,7 @@ Name = Glass Bottle
 NamePlural = Glass Bottle
 Pocket = 11
 Price = 5
+FieldUse = Direct
 Flags = Tool
 Description = 
 #-------------------------------
@@ -8068,6 +8075,7 @@ Name = Portable Campsite
 NamePlural = Portable Campsites
 Pocket = 11
 Price = 0
+FieldUse = Direct
 Flags = Fling_10
 Description = A Camp that can be set up anywhere, it's one use.
 #-------------------------------

@@ -139,7 +139,7 @@ class SurvivalHud < Component
     text4 =_INTL("HP")
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 34,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,56,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,78,1,@sleepColor,@shadowColor],[text4,Graphics.width/2 - 8,12,1,@sleepColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 34,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,56,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,78,1,@sleepColor,@shadowColor],[text4,Graphics.width/2 - 8,12,1,@healthColor,@shadowColor]])
   end
 end
 

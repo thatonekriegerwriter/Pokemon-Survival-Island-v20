@@ -40,7 +40,7 @@ WalkCharset = 1F.png
 RunCharset = 1F.png
 CycleCharset = 0bike.png
 SurfCharset = 1F.png
-FishCharset = 1FFishing.png
+FishCharset = 1FFish.png
 #-------------------------------
 [5]
 TrainerType = POKEMONTRAINER_Brendan

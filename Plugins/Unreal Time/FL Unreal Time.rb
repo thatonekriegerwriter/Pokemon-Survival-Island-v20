@@ -234,9 +234,9 @@ if UnrealTime::ENABLED
       return if (UnrealTime::SWITCH_STOPS>0 && 
         $game_switches[UnrealTime::SWITCH_STOPS])		
         deposited = pbDayCareDeposited
-       if deposited==2 && $PokemonGlobal.daycareEgg==0
-        $PokemonGlobal.daycareEggSteps = 0 if !$PokemonGlobal.daycareEggSteps
-        $PokemonGlobal.daycareEggSteps += 1
+       if deposited==2 && day_care.egg_generated==0
+        day_care.step_counter = 0 if !day_care.egg_generated
+        day_care.step_counter += 1
 	   end
 	   if $Trainer.playerhealth < 1 && $PokemonSystem.survivalmode == 0
            pbStartOver

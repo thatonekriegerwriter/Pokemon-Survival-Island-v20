@@ -20,8 +20,11 @@ $sleeptimer = 0
 $staminatimer = 0
 
 
-EventHandlers.add(:on_step_taken, :eggtech,
+EventHandlers.add(:on_step_taken, :feehshtrsgAWAEGEA,
   proc {
+
+
+pbDiscord
 
 if $PokemonSystem.survivalmode==0
 pbchangeFood
@@ -29,8 +32,6 @@ pbchangeWater
 pbchangeHealth
 pbchangeSaturation
 pbchangeSleep
-end
-pbDiscord
 
 if $foodtimer == 150  
     if $player.playerfood >= 80
@@ -115,13 +116,9 @@ else
  $staminatimer = $staminatimer+1 if rand(5) < 2
 end
 
-
-if $game_switches[54]==false 
- if $PokemonSystem.survivalmode == 0
-   Achievements.incrementProgress("SURVIVOR",1)
-   $game_switches[54]=true 
- end
 end
+
+
 
 $game_switches[70]=true
 #pbchangeStamina
@@ -882,14 +879,10 @@ end
     if $player.playerfood < 0
 	   $player.playerfood=0
 	end
-    if $game_variables[256]==(:SSHIRT)
-      if $player.playerfood>150
-        $player.playerfood=150  #food
-	  end
-    elsif $player.playerfood>100
+    if $player.playerfood>100
         $player.playerfood=100
-  end
-    $player.playerfood -= 1 if rand(100) == 1 && $player.playersaturation==0 && $game_variables[256]== 0
+    end
+    $player.playerfood -= 1 if rand(100) == 1 && $player.playersaturation==0
     $player.playerfood += 1 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && !$player.playersaturation==0
     $player.playerfood += 0 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && $player.playersaturation==0
     $player.playerwater += 2 if rand(100) == 1 && $game_variables[256]==(:LJACKET)
@@ -899,14 +892,10 @@ end
     if $player.playerwater < 0
 	   $player.playerwater=0
 	end
-    if $game_variables[256]==(:SSHIRT) 
-       if $player.playerwater>150
-        $player.playerwater=150  #thirst
-	   end
-    elsif $player.playerwater>100
+    if $player.playerwater>100
         $player.playerwater=100  #sleep
 	end
-    $player.playerwater -= 1 if rand(100) ==1 && $player.playersaturation==0 && $game_variables[256]== 0
+    $player.playerwater -= 1 if rand(100) == 1 && $player.playersaturation==0
     $player.playerwater += 1 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && !$player.playersaturation==0
     $player.playerwater += 0 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && $player.playersaturation==0
     $player.playerwater += 2 if rand(100) == 1 && $game_variables[256]==(:SEASHOES) && $PokemonGlobal.surfing
@@ -918,11 +907,7 @@ end
     if $player.playersleep < 0
 	   $player.playersleep=0
 	end
-    if $game_variables[256]==(:SSHIRT)
-        if $player.playersleep>150
-           $player.playersleep=150 
-		end
-    elsif $player.playersleep>200
+    if $player.playersleep>200
         $player.playersleep=200  #sleep
 	end
       gain = 0
@@ -940,11 +925,6 @@ end
   def pbchangeSaturation
     if $player.playersaturation < 1
 	   $player.playersaturation=0
-	end
-    if $game_variables[256]==(:SSHIRT)
-         if $player.playersaturation>50
-            $player.playersaturation=50 
-		 end
 	end
     $player.playersaturation -= 1 if rand(100) <= 3
     $player.playersaturation -= 4 if rand(100) == 1 && $game_variables[256]==(:LCLOAK)#take from saturation

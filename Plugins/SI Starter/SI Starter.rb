@@ -114,7 +114,8 @@ def pbLegendaryStarter?(variable)
     starter=="REGIDRAGO"||
     starter=="GLASTRIER"||
     starter=="SPECTRIER"||
-    starter=="CALYREX"
+    starter=="CALYREX"||
+    starter=="DRAMPA"
   return false
 end
 
@@ -1162,8 +1163,8 @@ def pbCheckMoveType(type,va,wa)
   return false
 end
 
-def pbSetBaseEvolutionStarter(variable,wariable)
-  pkmn = GameData::Species.get(wariable).get_baby_species
+def pbSetBaseEvolutionStarter(variable)
+  pkmn = GameData::Species.get($game_variables[variable]).get_baby_species
   $game_variables[variable] = pkmn
 end
 

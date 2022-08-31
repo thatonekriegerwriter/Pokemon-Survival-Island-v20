@@ -29,11 +29,7 @@ end
 def pbBerryTree
   pbMessage("This is a Berry Tree.")
   if pbConfirmMessage(_INTL("Would you like to shake it?"))
-    if !BERRY_TREE_GALAR
       pbBerryTreeMain
-    else
-      return true
-    end
   else
     pbMessage(_INTL("Left it alone."))
   end

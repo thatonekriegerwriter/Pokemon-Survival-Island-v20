@@ -1,6 +1,6 @@
 ###---NEW---###
 def pbHasType?(type)
-  for pokemon in $Trainer.party
+  for pokemon in $player.party
     next if pokemon.egg?
     return true if pokemon.type1==type || pokemon.type2==type
   end
@@ -8,30 +8,30 @@ def pbHasType?(type)
 end
 
 def pbHasLegendaries?()
-  for pokemon in $Trainer.party
+  for pokemon in $player.party
     next if pokemon.egg?
     return true if
-    $Trainer.has_species?(isSpecies?::ARTICUNO) ||
-    $Trainer.has_species?(isSpecies?::ZAPDOS) ||
-    $Trainer.has_species?(isSpecies?::MOLTRES) ||
-    $Trainer.has_species?(isSpecies?::MEWTWO) ||
-    $Trainer.has_species?(isSpecies?::MEW) ||
-    $Trainer.has_species?(isSpecies?::CELEBI) ||
-    $Trainer.has_species?(isSpecies?::ENTEI) ||
-    $Trainer.has_species?(isSpecies?::RAIKOU) ||
-    $Trainer.has_species?(isSpecies?::SUICUNE) ||
-    $Trainer.has_species?(isSpecies?::LUGIA) ||
-    $Trainer.has_species?(isSpecies?::HOOH) ||
-    $Trainer.has_species?(isSpecies?::REGICE) ||
-    $Trainer.has_species?(isSpecies?::REGISTEEL) ||
-    $Trainer.has_species?(isSpecies?::REGIROCK) ||
-    $Trainer.has_species?(isSpecies?::LATIOS) ||
-    $Trainer.has_species?(isSpecies?::LATIAS) ||
-    $Trainer.has_species?(isSpecies?::KYOGRE) ||
-    $Trainer.has_species?(isSpecies?::GROUDON) ||
-    $Trainer.has_species?(isSpecies?::RAYQUAZA) ||
-    $Trainer.has_species?(isSpecies?::JIRACHI) ||
-    $Trainer.has_species?(isSpecies?::DEOXYS)
+    $player.has_species?(isSpecies?::ARTICUNO) ||
+    $player.has_species?(isSpecies?::ZAPDOS) ||
+    $player.has_species?(isSpecies?::MOLTRES) ||
+    $player.has_species?(isSpecies?::MEWTWO) ||
+    $player.has_species?(isSpecies?::MEW) ||
+    $player.has_species?(isSpecies?::CELEBI) ||
+    $player.has_species?(isSpecies?::ENTEI) ||
+    $player.has_species?(isSpecies?::RAIKOU) ||
+    $player.has_species?(isSpecies?::SUICUNE) ||
+    $player.has_species?(isSpecies?::LUGIA) ||
+    $player.has_species?(isSpecies?::HOOH) ||
+    $player.has_species?(isSpecies?::REGICE) ||
+    $player.has_species?(isSpecies?::REGISTEEL) ||
+    $player.has_species?(isSpecies?::REGIROCK) ||
+    $player.has_species?(isSpecies?::LATIOS) ||
+    $player.has_species?(isSpecies?::LATIAS) ||
+    $player.has_species?(isSpecies?::KYOGRE) ||
+    $player.has_species?(isSpecies?::GROUDON) ||
+    $player.has_species?(isSpecies?::RAYQUAZA) ||
+    $player.has_species?(isSpecies?::JIRACHI) ||
+    $player.has_species?(isSpecies?::DEOXYS)
   end
   return false
 end
@@ -1038,7 +1038,7 @@ def pbRandomStarter(typ)
     spoke=[]
     tyo=typ
     for i in 0...allstarters.length
-      poke=Pokemon.new(GameData::Species.get(allstarters[i]),20,$Trainer)
+      poke=Pokemon.new(GameData::Species.get(allstarters[i]),20,$player)
       if tyo==pbHasType?(poke.type1)||tyo==pbHasType?(poke.type2)
         spoke=spoke.push(allstarters[i])
       end 
@@ -1151,7 +1151,7 @@ def pbIsLowestEvolutionStarter?(variable)
 end
 
 def pbCheckMoveType(type,va,wa)
-  $Trainer.pokemon_party.each do |pkmn|
+  $player.pokemon_party.each do |pkmn|
     pkmn.moves.each do |m|
       if m.type == type
         $game_variables[va] = pkmn.name

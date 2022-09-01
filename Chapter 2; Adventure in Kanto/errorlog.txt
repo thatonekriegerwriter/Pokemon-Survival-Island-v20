@@ -1,0 +1,3618 @@
+
+=================
+
+[2021-12-11 18:30:04 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.4]
+
+Exception: Errno::ENOENT
+Message: File No such file or directory @ rb_sysopen - PBS/items.txt not found.
+
+Backtrace:
+373:Compiler:188:in `initialize'
+373:Compiler:188:in `open'
+373:Compiler:188:in `pbCompilerEachCommentedLine'
+374:Compiler_CompilePBS:306:in `compile_items'
+373:Compiler:699:in `compile_all'
+[v19.1 Hotfixes] Debug bug fixes.rb:68:in `compile_all'
+[Elite Battle: DX] EBDX Compiler.rb:98:in `compile_all'
+373:Compiler:849:in `main'
+382:Main:28:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+
+=================
+
+[2022-02-05 00:24:16 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: undefined class/module Adventure
+
+Backtrace:
+025:SaveData:28:in `load'
+025:SaveData:28:in `load'
+025:SaveData:28:in `block in get_data_from_file'
+025:SaveData:27:in `open'
+025:SaveData:27:in `get_data_from_file'
+025:SaveData:45:in `read_from_file'
+[Multiple save (v.19)] Multiple save file.rb:127:in `set_up_system'
+382:Main:30:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+015:Errors:71:in `pbCriticalCode'
+
+=================
+
+[2022-02-05 00:47:13 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: NoMethodError
+Message: undefined method `text_skip' for nil:NilClass
+
+Backtrace:
+[Easy Text Skip] Easy Text Skip.rb:271:in `block in pbMessageDisplay'
+[Easy Text Skip] Easy Text Skip.rb:187:in `loop'
+[Easy Text Skip] Easy Text Skip.rb:187:in `pbMessageDisplay'
+089:Messages:836:in `pbMessage'
+373:Compiler_MapsAndEvents:42:in `import_new_maps'
+370:Compiler:807:in `main'
+381:Main:28:in `mainFunctionDebug'
+381:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+381:Main:18:in `mainFunction'
+
+=================
+
+[2022-02-05 00:53:27 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 00:55:05 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 00:56:35 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 01:05:32 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 7 (coords 10,4), map 46 (Oak's Lab):
+Exception: NoMethodError
+Message: undefined method `length=' for [#<Pokemon WARTORTLE Lv.21>, #<Pokemon ZUBAT Lv.19>, #<Pokemon NIDORANmA Lv.15>, #<Pokemon VULPIX Lv.21>, #<Pokemon VULPIX Lv.20>, #<Pokemon CHARMANDER Lv.18>]:Array
+
+***Full script:
+pbAddPokemon(:PALSSIO, 5)
+
+
+Backtrace:
+[Easy Replace Party] Easy Replace Party.rb:87:in `pbStorePokemon'
+340:Utilities_Pokemon:59:in `pbNicknameAndStore'
+340:Utilities_Pokemon:75:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 01:10:30 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 7 (coords 10,4), map 46 (Oak's Lab):
+Exception: NoMethodError
+Message: undefined method `length=' for [#<Pokemon WARTORTLE Lv.21>, #<Pokemon ZUBAT Lv.19>, #<Pokemon NIDORANmA Lv.15>, #<Pokemon VULPIX Lv.21>, #<Pokemon VULPIX Lv.20>]:Array
+
+***Full script:
+pbAddPokemon(:PALSSIO, 5)
+
+
+Backtrace:
+[Easy Replace Party] Easy Replace Party.rb:87:in `pbStorePokemon'
+340:Utilities_Pokemon:59:in `pbNicknameAndStore'
+340:Utilities_Pokemon:75:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 01:11:55 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 7 (coords 10,4), map 46 (Oak's Lab):
+Exception: NoMethodError
+Message: undefined method `pbDisplayPaused' for #<Interpreter @event_id: 7>
+
+***Full script:
+pbAddPokemon(:PALSSIO, 5)
+
+
+Backtrace:
+[Easy Replace Party] Easy Replace Party.rb:144:in `pbStorePokemon'
+340:Utilities_Pokemon:59:in `pbNicknameAndStore'
+340:Utilities_Pokemon:75:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 01:12:51 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 7 (coords 10,4), map 46 (Oak's Lab):
+Exception: NoMethodError
+Message: undefined method `pbDisplayPaused' for #<Interpreter @event_id: 7>
+
+***Full script:
+pbAddPokemon(:PALSSIO, 5)
+
+
+Backtrace:
+[Easy Replace Party] Easy Replace Party.rb:144:in `pbStorePokemon'
+340:Utilities_Pokemon:59:in `pbNicknameAndStore'
+340:Utilities_Pokemon:75:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 01:18:55 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 01:20:10 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 01:29:13 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 11,1), map 53 (Olivine City Pokemon Center):
+Exception: NoMethodError
+Message: undefined method `now=' for Time:Class
+
+***Full script:
+if $game_variables[422]>0
+ $game_variables[421]=Time.now-pbGet(422)
+end
+Time.now=pbGet(422)
+
+
+Backtrace:
+(eval):4:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 10:56:06 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 14 (coords 23,57), map 298 (Cremini Town):
+Exception: RuntimeError
+Message: Unknown ID CREMLINIKEY.
+
+***Full script:
+$PokemonBag.pbHasItem?(:CREMLINIKEY)
+
+Backtrace:
+101:GameData:32:in `get'
+244:PokemonBag:91:in `pbQuantity'
+244:PokemonBag:97:in `pbHasItem?'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 11:14:45 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 14 (coords 23,57), map 298 (Cremini Town):
+Exception: RuntimeError
+Message: Unknown ID CREMINIKEY.
+
+***Full script:
+$PokemonBag.pbHasItem?(:CREMINIKEY)
+
+Backtrace:
+101:GameData:32:in `get'
+244:PokemonBag:91:in `pbQuantity'
+244:PokemonBag:97:in `pbHasItem?'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:252:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-05 12:37:21 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 14 (coords 23,57), map 298 (Cremini Town):
+Exception: RuntimeError
+Message: Unknown ID CREMINIKEY.
+
+***Full script:
+$PokemonBag.pbHasItem?(:CREMINIKEY)
+
+Backtrace:
+101:GameData:32:in `get'
+244:PokemonBag:91:in `pbQuantity'
+244:PokemonBag:97:in `pbHasItem?'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-05 12:37:57 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Field WORKID is not a positive integer
+File PBS/items.txt, line 1048
+2011,CREMINIKEY,House Key (Cremini),1952,WORKID,Silph Card,Silph Card,8,2100,"A Key to your house in Cremini Town.",2,0,6,,8,2100,"A Card identifying you as an Employee of Silph Co.",2,0,6,
+
+
+
+Backtrace:
+370:Compiler:295:in `csvPosInt!'
+370:Compiler:413:in `block in pbGetCsvRecord'
+370:Compiler:398:in `each'
+370:Compiler:398:in `pbGetCsvRecord'
+371:Compiler_CompilePBS:307:in `block in compile_items'
+370:Compiler:197:in `block (2 levels) in pbCompilerEachCommentedLine'
+370:Compiler:191:in `each_line'
+370:Compiler:191:in `block in pbCompilerEachCommentedLine'
+370:Compiler:188:in `open'
+370:Compiler:188:in `pbCompilerEachCommentedLine'
+
+=================
+
+[2022-02-05 12:39:14 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Field A Key to your house in Cremini Town. is not a positive integer
+File PBS/items.txt, line 1048
+2011,CREMINIKEY,House Key (Cremini),8,2100,"A Key to your house in Cremini Town.",2,0,6,
+
+
+
+Backtrace:
+370:Compiler:295:in `csvPosInt!'
+370:Compiler:413:in `block in pbGetCsvRecord'
+370:Compiler:398:in `each'
+370:Compiler:398:in `pbGetCsvRecord'
+371:Compiler_CompilePBS:307:in `block in compile_items'
+370:Compiler:197:in `block (2 levels) in pbCompilerEachCommentedLine'
+370:Compiler:191:in `each_line'
+370:Compiler:191:in `block in pbCompilerEachCommentedLine'
+370:Compiler:188:in `open'
+370:Compiler:188:in `pbCompilerEachCommentedLine'
+
+=================
+
+[2022-02-05 12:59:58 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `*' for nil:NilClass
+
+Backtrace:
+166:Move_Effects_080-0FF:164:in `pbBaseDamage'
+190:AI_Move_Utilities:193:in `pbMoveBaseDamage'
+188:AI_Move:254:in `pbGetMoveScoreDamage'
+188:AI_Move:232:in `pbGetMoveScore'
+188:AI_Move:141:in `block in pbRegisterMoveTrainer'
+172:PokeBattle_Battle:422:in `block in eachBattler'
+172:PokeBattle_Battle:422:in `each'
+172:PokeBattle_Battle:422:in `eachBattler'
+188:AI_Move:138:in `pbRegisterMoveTrainer'
+188:AI_Move:22:in `block in pbChooseMoves'
+
+=================
+
+[2022-02-05 13:00:10 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `*' for nil:NilClass
+
+Backtrace:
+166:Move_Effects_080-0FF:164:in `pbBaseDamage'
+190:AI_Move_Utilities:193:in `pbMoveBaseDamage'
+188:AI_Move:254:in `pbGetMoveScoreDamage'
+188:AI_Move:232:in `pbGetMoveScore'
+188:AI_Move:141:in `block in pbRegisterMoveTrainer'
+172:PokeBattle_Battle:422:in `block in eachBattler'
+172:PokeBattle_Battle:422:in `each'
+172:PokeBattle_Battle:422:in `eachBattler'
+188:AI_Move:138:in `pbRegisterMoveTrainer'
+188:AI_Move:22:in `block in pbChooseMoves'
+
+=================
+
+[2022-02-05 13:06:38 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `nature' for nil:NilClass
+
+Backtrace:
+[Loyalty and Happiness] L&H Interactions.rb:2630:in `changeHappiness'
+239:Item_BattleEffects:644:in `block in <main>'
+035:Event_Handlers:199:in `trigger'
+237:Item_Utilities:101:in `triggerBattleUseOnPokemon'
+177:Battle_Action_UseItem:94:in `pbUseItemOnPokemon'
+[Elite Battle: DX] Scripted Battles.rb:27:in `pbUseItemOnPokemon'
+181:Battle_Phase_Attack:77:in `block in pbAttackPhaseItems'
+181:Battle_Phase_Attack:70:in `each'
+181:Battle_Phase_Attack:70:in `pbAttackPhaseItems'
+[ZUD Plugin] Battle Mechanics.rb:342:in `pbAttackPhase'
+
+=================
+
+[2022-02-05 13:14:14 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 6,4), map 299 (Day Care):
+Exception: NoMethodError
+Message: undefined method `muFriendCareDeposited' for #<Interpreter @event_id: 2>
+
+***Full script:
+muFriendCareDeposited("PEWTER") == 0
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-05 13:18:33 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `erase' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:517:in `block in refresh'
+050:Game_DependentEvents:367:in `block in eachEvent'
+050:Game_DependentEvents:366:in `each'
+050:Game_DependentEvents:366:in `eachEvent'
+050:Game_DependentEvents:515:in `refresh'
+050:Game_DependentEvents:506:in `initialize'
+050:Game_DependentEvents:555:in `new'
+050:Game_DependentEvents:555:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+
+=================
+
+[2022-02-05 13:20:40 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 11,1), map 53 (Cremini Town Pokemon Center):
+Exception: NoMethodError
+Message: undefined method `now=' for Time:Class
+
+***Full script:
+if $game_variables[422]>0
+ $game_variables[421]=Time.now-pbGet(422)
+end
+Time.now=pbGet(422)
+
+
+Backtrace:
+(eval):4:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-05 13:26:29 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 11,1), map 53 (Cremini Town Pokemon Center):
+Exception: SyntaxError
+Message: (eval):1: syntax error, unexpected '(', expecting end-of-input
+$game_variables(422)=Time.now
+               ^
+
+
+***Full script:
+$game_variables(422)=Time.now
+
+
+Backtrace:
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-05 13:33:34 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `erase' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:517:in `block in refresh'
+050:Game_DependentEvents:367:in `block in eachEvent'
+050:Game_DependentEvents:366:in `each'
+050:Game_DependentEvents:366:in `eachEvent'
+050:Game_DependentEvents:515:in `refresh'
+050:Game_DependentEvents:506:in `initialize'
+050:Game_DependentEvents:555:in `new'
+050:Game_DependentEvents:555:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+
+=================
+
+[2022-02-05 13:34:44 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 1.
+
+Backtrace:
+101:GameData:32:in `get'
+220:Overworld_BerryPlants:112:in `updatePlantDetails'
+220:Overworld_BerryPlants:86:in `initialize'
+220:Overworld_BerryPlants:9:in `new'
+220:Overworld_BerryPlants:9:in `block (2 levels) in <main>'
+220:Overworld_BerryPlants:6:in `each'
+220:Overworld_BerryPlants:6:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+
+=================
+
+[2022-02-05 13:36:00 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `erase' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:517:in `block in refresh'
+050:Game_DependentEvents:367:in `block in eachEvent'
+050:Game_DependentEvents:366:in `each'
+050:Game_DependentEvents:366:in `eachEvent'
+050:Game_DependentEvents:515:in `refresh'
+050:Game_DependentEvents:506:in `initialize'
+050:Game_DependentEvents:555:in `new'
+050:Game_DependentEvents:555:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+
+=================
+
+[2022-02-10 01:59:27 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 18,0), map 102 (Gym):
+Exception: NoMethodError
+Message: undefined method `pbWarpDestination' for #<Interpreter @event_id: 2>
+
+***Full script:
+pbWarpDestination(28,26)
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:253:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:253:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-10 02:05:27 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:192:in `<'
+046:Game_Event:192:in `block in refresh'
+046:Game_Event:188:in `each'
+046:Game_Event:188:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-02-10 02:07:37 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:192:in `<'
+046:Game_Event:192:in `block in refresh'
+046:Game_Event:188:in `each'
+046:Game_Event:188:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-02-10 02:08:29 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:192:in `<'
+046:Game_Event:192:in `block in refresh'
+046:Game_Event:188:in `each'
+046:Game_Event:188:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-02-11 00:56:45 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 69.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:40:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+377:Overworld_VisibleEncounters:388:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:257:in `update'
+
+=================
+
+[2022-02-11 01:15:32 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 21 (coords 16,18), map 94 (Route 24):
+Exception: NameError
+Message: uninitialized constant Interpreter::PBTrainers
+
+***Full script:
+pbTrainerBattle(PBTrainers::CAMPER,"ETHAN",_I("Whoa!\nToo much!"),false,0,false,0)
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:253:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:253:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 00:49:31 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Undefined value SHEDNINJA in GameData::Species
+File PBS/trainers.txt, line 1032
+Pokemon = SHEDNINJA,10
+
+
+
+Backtrace:
+370:Compiler:331:in `checkEnumField'
+370:Compiler:307:in `csvEnumField!'
+370:Compiler:506:in `block in pbGetCsvRecord'
+370:Compiler:398:in `each'
+370:Compiler:398:in `pbGetCsvRecord'
+[ZUD Plugin] Compilers.rb:440:in `block in compile_trainers'
+370:Compiler:229:in `block (2 levels) in pbCompilerEachPreppedLine'
+370:Compiler:222:in `each_line'
+370:Compiler:222:in `block in pbCompilerEachPreppedLine'
+370:Compiler:219:in `open'
+
+=================
+
+[2022-02-12 00:51:49 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:192:in `<'
+046:Game_Event:192:in `block in refresh'
+046:Game_Event:188:in `each'
+046:Game_Event:188:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-02-12 00:54:31 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 5,10), map 123 (Condominiums 3F):
+Exception: ArgumentError
+Message: undefined class/module ExplorationState
+
+***Full script:
+pbSaveTest("Pokemon Survival Island","Exist",nil,18)
+
+Backtrace:
+024:SaveData:34:in `load'
+024:SaveData:34:in `load'
+024:SaveData:34:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+375:Save File Calls:16:in `pbSaveFile'
+375:Save File Calls:25:in `pbSaveTest'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 00:56:31 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 3 (coords 7,3), map 134 (Safari Zone Gate):
+Exception: ArgumentError
+Message: undefined class/module ExplorationState
+
+***Full script:
+pbSaveTest("Pokemon Survival Island","Exist",nil,18)
+
+Backtrace:
+024:SaveData:34:in `load'
+024:SaveData:34:in `load'
+024:SaveData:34:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+375:Save File Calls:16:in `pbSaveFile'
+375:Save File Calls:25:in `pbSaveTest'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 01:03:42 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 3 (coords 7,3), map 134 (Safari Zone Gate):
+Exception: ArgumentError
+Message: undefined class/module ExplorationState
+
+***Full script:
+pbSaveTest("Pokemon Survival Island","Exist",nil,18)
+
+Backtrace:
+024:SaveData:34:in `load'
+024:SaveData:34:in `load'
+024:SaveData:34:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+375:Save File Calls:16:in `pbSaveFile'
+375:Save File Calls:25:in `pbSaveTest'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 01:05:16 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 3 (coords 7,3), map 134 (Safari Zone Gate):
+Exception: ArgumentError
+Message: undefined class/module ExplorationState
+
+***Full script:
+pbSaveTest("Pokemon Survival Island","Exist",nil,18)
+
+Backtrace:
+024:SaveData:34:in `load'
+024:SaveData:34:in `load'
+024:SaveData:34:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+375:Save File Calls:16:in `pbSaveFile'
+375:Save File Calls:25:in `pbSaveTest'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 01:07:09 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 3 (coords 7,3), map 134 (Safari Zone Gate):
+Exception: ArgumentError
+Message: dump format error for symbol(0x61)
+
+***Full script:
+pbSaveTest("Pokemon Survival Island","Exist",nil,18)
+
+Backtrace:
+024:SaveData:34:in `load'
+024:SaveData:34:in `load'
+024:SaveData:34:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+375:Save File Calls:16:in `pbSaveFile'
+375:Save File Calls:25:in `pbSaveTest'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 01:09:34 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 10 (coords 36,25), map 242 (Safari Zone Center Area):
+Exception: ArgumentError
+Message: Party 1 has no Pokémon.
+
+***Full script:
+pbFightAddedPokemon(pbGet(401))
+
+Backtrace:
+172:PokeBattle_Battle:96:in `initialize'
+[ZUD Plugin] Battle Mechanics.rb:31:in `initialize'
+[Elite Battle: DX] Battle Core.rb:22:in `initialize'
+230:Overworld_BattleStarting:282:in `new'
+230:Overworld_BattleStarting:282:in `pbWildBattleCore'
+[Battle-Worn Opponents] Script.rb:219:in `pbWildBattleCore'
+375:Save File Calls:78:in `pbFightAddedPokemon'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:256:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-12 01:10:06 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `pbDisplayConfirm' for nil:NilClass
+
+Backtrace:
+[Easy Replace Party] Easy Replace Party.rb:88:in `pbStorePokemon'
+340:Utilities_Pokemon:59:in `pbNicknameAndStore'
+340:Utilities_Pokemon:80:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+364:Debug_MenuCommands:531:in `block in <main>'
+364:Debug_MenuCommands:36:in `call'
+363:Debug_Menus:129:in `block in pbDebugMenu'
+363:Debug_Menus:91:in `loop'
+363:Debug_Menus:91:in `pbDebugMenu'
+[Following Pokemon EX] Refresh.rb:117:in `pbDebugMenu'
+
+=================
+
+[2022-02-20 21:32:37 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-20 21:48:15 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: Errno::ENOENT
+Message: File Graphics/Characters/invisible not found.
+
+Backtrace:
+[Marin's Map Exporter] script.rb:123:in `initialize'
+[Marin's Map Exporter] script.rb:123:in `new'
+[Marin's Map Exporter] script.rb:123:in `block in initialize'
+[Marin's Map Exporter] script.rb:119:in `each'
+[Marin's Map Exporter] script.rb:119:in `initialize'
+[Marin's Map Exporter] script.rb:23:in `new'
+[Marin's Map Exporter] script.rb:23:in `pbExportMap'
+[Marin's Map Exporter] script.rb:54:in `block in pbExportAMap'
+[Marin's Map Exporter] script.rb:41:in `loop'
+[Marin's Map Exporter] script.rb:41:in `pbExportAMap'
+
+=================
+
+[2022-02-20 22:17:07 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 380.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:157:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+044:Game_MapFactory:148:in `setMapChanging'
+044:Game_MapFactory:22:in `setup'
+032:Scene_Map:72:in `transfer_player'
+[Following Pokemon EX] 004_Follower_Overrides.rb:719:in `transfer_player'
+[Following Pokemon EX] Refresh.rb:198:in `transfer_player'
+
+=================
+
+[2022-02-20 23:31:34 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-20 23:35:37 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: SDLError
+Message: Couldn't open C:\Users\Owner\Documents\GitHub\Pokemon-Survival-Island-v19\Chapter 2; Adventure in Kanto\ P
+
+Backtrace:
+339:Utilities:595:in `screenshot'
+339:Utilities:595:in `pbScreenCapture'
+007:Input:20:in `update'
+[Easy Mouse Script] script.rb:436:in `update'
+352:EditorScreens_MapConnections:563:in `block in pbMapScreenLoop'
+352:EditorScreens_MapConnections:561:in `loop'
+352:EditorScreens_MapConnections:561:in `pbMapScreenLoop'
+352:EditorScreens_MapConnections:587:in `block in pbConnectionsEditor'
+014:Errors:71:in `pbCriticalCode'
+352:EditorScreens_MapConnections:582:in `pbConnectionsEditor'
+
+=================
+
+[2022-02-20 23:36:15 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: SDLError
+Message: Couldn't open C:\Users\Owner\Documents\GitHub\Pokemon-Survival-Island-v19\Chapter 2; Adventure in Kanto\ P
+
+Backtrace:
+339:Utilities:595:in `screenshot'
+339:Utilities:595:in `pbScreenCapture'
+007:Input:20:in `update'
+[Easy Mouse Script] script.rb:436:in `update'
+352:EditorScreens_MapConnections:563:in `block in pbMapScreenLoop'
+352:EditorScreens_MapConnections:561:in `loop'
+352:EditorScreens_MapConnections:561:in `pbMapScreenLoop'
+352:EditorScreens_MapConnections:587:in `block in pbConnectionsEditor'
+014:Errors:71:in `pbCriticalCode'
+352:EditorScreens_MapConnections:582:in `pbConnectionsEditor'
+
+=================
+
+[2022-02-20 23:36:50 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: SDLError
+Message: Couldn't open C:\Users\Owner\Documents\GitHub\Pokemon-Survival-Island-v19\Chapter 2; Adventure in Kanto\ P
+
+Backtrace:
+339:Utilities:595:in `screenshot'
+339:Utilities:595:in `pbScreenCapture'
+007:Input:20:in `update'
+[Easy Mouse Script] script.rb:436:in `update'
+352:EditorScreens_MapConnections:561:in `block in pbMapScreenLoop'
+352:EditorScreens_MapConnections:559:in `loop'
+352:EditorScreens_MapConnections:559:in `pbMapScreenLoop'
+352:EditorScreens_MapConnections:585:in `block in pbConnectionsEditor'
+014:Errors:71:in `pbCriticalCode'
+352:EditorScreens_MapConnections:580:in `pbConnectionsEditor'
+
+=================
+
+[2022-02-20 23:38:59 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `saveToPng' for #<BitmapWrapper>
+
+Backtrace:
+381::14:in `CombineImages'
+352:EditorScreens_MapConnections:554:in `update'
+352:EditorScreens_MapConnections:565:in `block in pbMapScreenLoop'
+352:EditorScreens_MapConnections:562:in `loop'
+352:EditorScreens_MapConnections:562:in `pbMapScreenLoop'
+352:EditorScreens_MapConnections:588:in `block in pbConnectionsEditor'
+014:Errors:71:in `pbCriticalCode'
+352:EditorScreens_MapConnections:583:in `pbConnectionsEditor'
+364:Debug_MenuCommands:971:in `block (2 levels) in <main>'
+080:MessageConfig:566:in `pbFadeOutIn'
+
+=================
+
+[2022-02-20 23:41:39 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: Errno::ENOENT
+Message: File World_Map.png not found.
+
+Backtrace:
+381::14:in `initialize'
+381::14:in `new'
+381::14:in `CombineImages'
+352:EditorScreens_MapConnections:554:in `update'
+352:EditorScreens_MapConnections:565:in `block in pbMapScreenLoop'
+352:EditorScreens_MapConnections:562:in `loop'
+352:EditorScreens_MapConnections:562:in `pbMapScreenLoop'
+352:EditorScreens_MapConnections:588:in `block in pbConnectionsEditor'
+014:Errors:71:in `pbCriticalCode'
+352:EditorScreens_MapConnections:583:in `pbConnectionsEditor'
+
+=================
+
+[2022-02-20 23:42:34 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-20 23:57:54 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-21 00:03:10 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: TypeError
+Message: nil can't be coerced into Integer
+
+Backtrace:
+[Power] Survival Mode.rb:737:in `+'
+[Power] Survival Mode.rb:737:in `pbchangeStamina'
+[Power] Survival Mode.rb:24:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+377:Overworld_VisibleEncounters:388:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+
+=================
+
+[2022-02-21 00:26:31 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-21 01:07:18 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-02-25 21:22:50 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Field  is not a positive integer
+File PBS/trainers.txt, line 1093
+Pokemon = ESPEON,
+
+
+
+Backtrace:
+370:Compiler:295:in `csvPosInt!'
+370:Compiler:424:in `block in pbGetCsvRecord'
+370:Compiler:398:in `each'
+370:Compiler:398:in `pbGetCsvRecord'
+[ZUD Plugin] Compilers.rb:440:in `block in compile_trainers'
+370:Compiler:229:in `block (2 levels) in pbCompilerEachPreppedLine'
+370:Compiler:222:in `each_line'
+370:Compiler:222:in `block in pbCompilerEachPreppedLine'
+370:Compiler:219:in `open'
+370:Compiler:219:in `pbCompilerEachPreppedLine'
+
+=================
+
+[2022-02-25 21:23:57 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Undefined value TOOFBAT in GameData::Species
+File PBS/trainers.txt, line 1105
+Pokemon = TOOFBAT,80
+
+
+
+Backtrace:
+370:Compiler:331:in `checkEnumField'
+370:Compiler:307:in `csvEnumField!'
+370:Compiler:506:in `block in pbGetCsvRecord'
+370:Compiler:398:in `each'
+370:Compiler:398:in `pbGetCsvRecord'
+[ZUD Plugin] Compilers.rb:440:in `block in compile_trainers'
+370:Compiler:229:in `block (2 levels) in pbCompilerEachPreppedLine'
+370:Compiler:222:in `each_line'
+370:Compiler:222:in `block in pbCompilerEachPreppedLine'
+370:Compiler:219:in `open'
+
+=================
+
+[2022-02-25 21:44:05 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 0.
+
+Backtrace:
+101:GameData:32:in `get'
+[Elite Battle: DX] UI Bag.rb:505:in `useItem?'
+[Elite Battle: DX] UI Bag.rb:689:in `block in pbItemMenu'
+[Elite Battle: DX] UI Bag.rb:683:in `loop'
+[Elite Battle: DX] UI Bag.rb:683:in `pbItemMenu'
+180:Battle_Phase_Command:106:in `pbItemMenu'
+180:Battle_Phase_Command:217:in `block (2 levels) in pbCommandPhaseLoop'
+180:Battle_Phase_Command:206:in `loop'
+180:Battle_Phase_Command:206:in `block in pbCommandPhaseLoop'
+180:Battle_Phase_Command:191:in `loop'
+
+=================
+
+[2022-02-25 21:45:20 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `nature' for nil:NilClass
+
+Backtrace:
+[Loyalty and Happiness] L&H Interactions.rb:2630:in `changeHappiness'
+239:Item_BattleEffects:644:in `block in <main>'
+035:Event_Handlers:199:in `trigger'
+237:Item_Utilities:101:in `triggerBattleUseOnPokemon'
+177:Battle_Action_UseItem:94:in `pbUseItemOnPokemon'
+[Elite Battle: DX] Scripted Battles.rb:27:in `pbUseItemOnPokemon'
+181:Battle_Phase_Attack:77:in `block in pbAttackPhaseItems'
+181:Battle_Phase_Attack:70:in `each'
+181:Battle_Phase_Attack:70:in `pbAttackPhaseItems'
+[ZUD Plugin] Battle Mechanics.rb:342:in `pbAttackPhase'
+
+=================
+
+[2022-02-25 22:00:57 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 0 failed
+
+Backtrace:
+034:Interpreter_Commands:326:in `<='
+034:Interpreter_Commands:326:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-25 22:08:37 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 0 failed
+
+Backtrace:
+034:Interpreter_Commands:326:in `<='
+034:Interpreter_Commands:326:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+032:Scene_Map:166:in `update'
+
+=================
+
+[2022-02-25 22:12:07 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 16 (coords 20,16), map 5 (Route 1):
+Exception: NoMethodError
+Message: undefined method `money' for nil:NilClass
+
+***Full script:
+$trainer.money += 500
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-25 22:52:13 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 16 (coords 28,0), map 102 (Gym):
+Exception: NoMethodError
+Message: undefined method `pbWarpDestination' for #<Interpreter @event_id: 16>
+
+***Full script:
+pbWarpDestination(28,23)
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-25 22:56:15 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 4 (coords 2,5), map 116 (Gym):
+Exception: NoMethodError
+Message: undefined method `money' for nil:NilClass
+
+***Full script:
+$trainer.money += 750
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-25 23:05:25 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NameError
+Message: undefined local variable or method `pbPlayer' for #<PokeBattle_Move_000>
+
+Backtrace:
+162:Move_Usage:285:in `pbEffectivenessMessage'
+162:Move_Usage:308:in `pbHitEffectivenessMessages'
+155:Battler_UseMove:710:in `block in pbProcessMoveHit'
+155:Battler_UseMove:707:in `each'
+155:Battler_UseMove:707:in `pbProcessMoveHit'
+[Elite Battle: DX] Battler Info.rb:67:in `pbProcessMoveHit'
+155:Battler_UseMove:437:in `block in pbUseMove'
+155:Battler_UseMove:431:in `each'
+155:Battler_UseMove:431:in `pbUseMove'
+[ZUD Plugin] Move Conversions.rb:318:in `pbUseMove'
+
+=================
+
+[2022-02-25 23:05:29 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NameError
+Message: undefined local variable or method `pbPlayer' for #<PokeBattle_Move_000>
+
+Backtrace:
+162:Move_Usage:285:in `pbEffectivenessMessage'
+162:Move_Usage:308:in `pbHitEffectivenessMessages'
+155:Battler_UseMove:710:in `block in pbProcessMoveHit'
+155:Battler_UseMove:707:in `each'
+155:Battler_UseMove:707:in `pbProcessMoveHit'
+[Elite Battle: DX] Battler Info.rb:67:in `pbProcessMoveHit'
+155:Battler_UseMove:437:in `block in pbUseMove'
+155:Battler_UseMove:431:in `each'
+155:Battler_UseMove:431:in `pbUseMove'
+[ZUD Plugin] Move Conversions.rb:318:in `pbUseMove'
+
+=================
+
+[2022-02-25 23:05:34 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NameError
+Message: undefined local variable or method `pbPlayer' for #<PokeBattle_Move_000>
+
+Backtrace:
+162:Move_Usage:285:in `pbEffectivenessMessage'
+162:Move_Usage:308:in `pbHitEffectivenessMessages'
+155:Battler_UseMove:710:in `block in pbProcessMoveHit'
+155:Battler_UseMove:707:in `each'
+155:Battler_UseMove:707:in `pbProcessMoveHit'
+[Elite Battle: DX] Battler Info.rb:67:in `pbProcessMoveHit'
+155:Battler_UseMove:437:in `block in pbUseMove'
+155:Battler_UseMove:431:in `each'
+155:Battler_UseMove:431:in `pbUseMove'
+[ZUD Plugin] Move Conversions.rb:318:in `pbUseMove'
+
+=================
+
+[2022-02-25 23:07:52 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: Errno::ENOENT
+Message: File Data/species.dat not found.
+
+Backtrace:
+101:GameData:62:in `load_data'
+101:GameData:62:in `load'
+[ZUD Plugin] Compilers.rb:706:in `load_all'
+031:StartGame:13:in `initialize'
+[Elite Battle: DX] EBDX Setup.rb:95:in `initialize'
+382:Main:29:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+382:Main:18:in `mainFunction'
+382:Main:44:in `block in <main>'
+
+=================
+
+[2022-02-25 23:09:07 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: Errno::ENOENT
+Message: File Data/species.dat not found.
+
+Backtrace:
+101:GameData:62:in `load_data'
+101:GameData:62:in `load'
+[ZUD Plugin] Compilers.rb:706:in `load_all'
+031:StartGame:13:in `initialize'
+[Elite Battle: DX] EBDX Setup.rb:95:in `initialize'
+382:Main:29:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+382:Main:18:in `mainFunction'
+382:Main:44:in `block in <main>'
+
+=================
+
+[2022-02-25 23:09:33 -0700]
+[Pokémon Essentials version 19.1]
+[v19.1 Hotfixes 1.0.7]
+
+Error in Plugin [Power]:
+SyntaxError occurred.
+Line 248: Syntax error, unexpected end-of-input, expecting `end': [Power] CrystalClear.rb
+
+Backtrace:
+008:PluginManager:706:in `eval'
+008:PluginManager:706:in `block (2 levels) in runPlugins'
+008:PluginManager:696:in `each'
+008:PluginManager:696:in `block in runPlugins'
+008:PluginManager:690:in `each'
+008:PluginManager:690:in `runPlugins'
+382:Main:27:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+382:Main:18:in `mainFunction'
+
+=================
+
+[2022-02-25 23:10:20 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: Errno::ENOENT
+Message: File Data/species.dat not found.
+
+Backtrace:
+101:GameData:62:in `load_data'
+101:GameData:62:in `load'
+[ZUD Plugin] Compilers.rb:706:in `load_all'
+031:StartGame:13:in `initialize'
+[Elite Battle: DX] EBDX Setup.rb:95:in `initialize'
+382:Main:29:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+382:Main:18:in `mainFunction'
+382:Main:44:in `block in <main>'
+
+=================
+
+[2022-02-25 23:10:57 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: undefined class/module PokemonFamily
+
+Backtrace:
+024:SaveData:28:in `load'
+024:SaveData:28:in `load'
+024:SaveData:28:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+024:SaveData:45:in `read_from_file'
+[Multiple save (v.19)] Multiple save file.rb:127:in `set_up_system'
+382:Main:30:in `mainFunctionDebug'
+382:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+
+=================
+
+[2022-02-25 23:14:02 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: Invalid argument passed to method.
+Expected #<PokeBattle_Battler> to be one of [Symbol, GameData::Species, String, Integer], but got PokeBattle_Battler.
+
+Backtrace:
+015:Validation:29:in `validate'
+101:GameData:40:in `try_get'
+265:Player_Pokedex:320:in `register_weakness'
+162:Move_Usage:285:in `pbEffectivenessMessage'
+162:Move_Usage:308:in `pbHitEffectivenessMessages'
+155:Battler_UseMove:710:in `block in pbProcessMoveHit'
+155:Battler_UseMove:707:in `each'
+155:Battler_UseMove:707:in `pbProcessMoveHit'
+[Elite Battle: DX] Battler Info.rb:67:in `pbProcessMoveHit'
+155:Battler_UseMove:437:in `block in pbUseMove'
+
+=================
+
+[2022-02-25 23:18:21 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: Invalid argument passed to method.
+Expected #<PokeBattle_Battler> to be one of [Symbol, GameData::Species, String, Integer], but got PokeBattle_Battler.
+
+Backtrace:
+015:Validation:29:in `validate'
+101:GameData:26:in `get'
+162:Move_Usage:282:in `pbEffectivenessMessage'
+162:Move_Usage:306:in `pbHitEffectivenessMessages'
+155:Battler_UseMove:710:in `block in pbProcessMoveHit'
+155:Battler_UseMove:707:in `each'
+155:Battler_UseMove:707:in `pbProcessMoveHit'
+[Elite Battle: DX] Battler Info.rb:67:in `pbProcessMoveHit'
+155:Battler_UseMove:437:in `block in pbUseMove'
+155:Battler_UseMove:431:in `each'
+
+=================
+
+[2022-02-25 23:47:42 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: TypeError
+Message: nil can't be coerced into Integer
+
+Backtrace:
+[Loyalty and Happiness] L&H Interactions.rb:5240:in `+'
+[Loyalty and Happiness] L&H Interactions.rb:5240:in `changeLoyalty'
+[Loyalty and Happiness] Loyalty.rb:108:in `block (2 levels) in <main>'
+[Loyalty and Happiness] Loyalty.rb:107:in `each'
+[Loyalty and Happiness] Loyalty.rb:107:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:323:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+
+=================
+
+[2022-02-25 23:48:10 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: TypeError
+Message: nil can't be coerced into Integer
+
+Backtrace:
+[Loyalty and Happiness] L&H Interactions.rb:3933:in `+'
+[Loyalty and Happiness] L&H Interactions.rb:3933:in `changeHappiness'
+215:Overworld:82:in `block (2 levels) in <main>'
+215:Overworld:81:in `each'
+215:Overworld:81:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:323:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+
+=================
+
+[2022-02-25 23:50:21 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: min argument must be smaller than max argument
+
+Backtrace:
+174:Battle_ExpAndMoveLearning:84:in `clamp'
+174:Battle_ExpAndMoveLearning:84:in `block in pbGainEVsOne'
+111:Stat:28:in `block in each_main'
+101:GameData:58:in `block in each'
+101:GameData:58:in `each'
+101:GameData:58:in `each'
+111:Stat:28:in `each_main'
+174:Battle_ExpAndMoveLearning:83:in `pbGainEVsOne'
+174:Battle_ExpAndMoveLearning:38:in `block (2 levels) in pbGainExp'
+172:PokeBattle_Battle:389:in `block in eachInTeam'
+
+=================
+
+[2022-02-25 23:50:24 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: min argument must be smaller than max argument
+
+Backtrace:
+174:Battle_ExpAndMoveLearning:84:in `clamp'
+174:Battle_ExpAndMoveLearning:84:in `block in pbGainEVsOne'
+111:Stat:28:in `block in each_main'
+101:GameData:58:in `block in each'
+101:GameData:58:in `each'
+101:GameData:58:in `each'
+111:Stat:28:in `each_main'
+174:Battle_ExpAndMoveLearning:83:in `pbGainEVsOne'
+174:Battle_ExpAndMoveLearning:38:in `block (2 levels) in pbGainExp'
+172:PokeBattle_Battle:389:in `block in eachInTeam'
+
+=================
+
+[2022-02-25 23:50:26 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: min argument must be smaller than max argument
+
+Backtrace:
+174:Battle_ExpAndMoveLearning:84:in `clamp'
+174:Battle_ExpAndMoveLearning:84:in `block in pbGainEVsOne'
+111:Stat:28:in `block in each_main'
+101:GameData:58:in `block in each'
+101:GameData:58:in `each'
+101:GameData:58:in `each'
+111:Stat:28:in `each_main'
+174:Battle_ExpAndMoveLearning:83:in `pbGainEVsOne'
+174:Battle_ExpAndMoveLearning:38:in `block (2 levels) in pbGainExp'
+172:PokeBattle_Battle:389:in `block in eachInTeam'
+
+=================
+
+[2022-02-25 23:50:27 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: min argument must be smaller than max argument
+
+Backtrace:
+174:Battle_ExpAndMoveLearning:84:in `clamp'
+174:Battle_ExpAndMoveLearning:84:in `block in pbGainEVsOne'
+111:Stat:28:in `block in each_main'
+101:GameData:58:in `block in each'
+101:GameData:58:in `each'
+101:GameData:58:in `each'
+111:Stat:28:in `each_main'
+174:Battle_ExpAndMoveLearning:83:in `pbGainEVsOne'
+174:Battle_ExpAndMoveLearning:38:in `block (2 levels) in pbGainExp'
+172:PokeBattle_Battle:389:in `block in eachInTeam'
+
+=================
+
+[2022-02-26 00:10:33 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 4 (coords 3,13), map 129 (Department Store 4F):
+Exception: RuntimeError
+Message: Unknown ID RETROMAIL.
+
+***Full script:
+pbPokemonMart([
+:POKEDOLL,
+:RETROMAIL,
+:FIRESTONE,
+:THUNDERSTONE,
+:WATERSTONE,
+:LEAFSTONE
+])
+
+
+Backtrace:
+101:GameData:32:in `get'
+288:UI_PokeMart:652:in `block in pbPokemonMart'
+288:UI_PokeMart:651:in `each'
+288:UI_PokeMart:651:in `pbPokemonMart'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-02-26 00:18:56 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: SystemStackError
+Message: stack level too deep
+
+Backtrace:
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+212:PokeBattle_Clauses:166:in `pbFailsAgainstTarget?'
+
+=================
+
+[2022-02-26 12:45:18 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 325.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:175:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-02-26 13:27:57 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 277.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:175:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-02-26 13:28:47 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:192:in `<'
+046:Game_Event:192:in `block in refresh'
+046:Game_Event:188:in `each'
+046:Game_Event:188:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-02-26 13:36:36 -0700]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 382.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:175:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-03-26 12:40:51 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `dependentEvents' for nil:NilClass
+
+Backtrace:
+050:Game_DependentEvents:166:in `initialize'
+050:Game_DependentEvents:5:in `new'
+050:Game_DependentEvents:5:in `dependentEvents'
+[Following Pokemon EX] Internal Commands.rb:14:in `refresh'
+[Following Pokemon EX] Refresh.rb:118:in `pbDebugMenu'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block (2 levels) in pbStartLoadScreen'
+080:MessageConfig:566:in `pbFadeOutIn'
+[Multiple save (v.19)] Multiple save file.rb:327:in `block in pbStartLoadScreen'
+[Multiple save (v.19)] Multiple save file.rb:310:in `loop'
+[Multiple save (v.19)] Multiple save file.rb:310:in `pbStartLoadScreen'
+
+=================
+
+[2022-03-30 18:04:56 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NoMethodError
+Message: undefined method `w_current' for #<GameData::TerrainTag>
+
+Backtrace:
+[Power] handler.rb:115:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:323:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+032:Scene_Map:169:in `block in update'
+
+=================
+
+[2022-03-30 18:18:03 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 330.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-02 14:28:33 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Form 1 for species ID ZORUA is defined twice.
+File PBS/pokemonforms.txt, section ZORUA,1, key header
+
+
+
+
+Backtrace:
+371:Compiler_CompilePBS:594:in `block (2 levels) in compile_pokemon_forms'
+370:Compiler:141:in `block in pbEachFile=================='
+370:Compiler:106:in `block in pbEachFileSectionEx'
+370:Compiler:100:in `each_line'
+370:Compiler:100:in `pbEachFileSectionEx'
+370:Compiler:140:in `pbEachFile=================='
+371:Compiler_CompilePBS:578:in `block in compile_pokemon_forms'
+371:Compiler_CompilePBS:572:in `open'
+371:Compiler_CompilePBS:572:in `compile_pokemon_forms'
+370:Compiler:705:in `compile_all'
+
+=================
+
+[2022-04-02 14:58:50 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 11,6), map 322 (House 2):
+Exception: RuntimeError
+Message: Unknown ID PEWHOUSEKEYS.
+
+***Full script:
+pbReceiveItem(:PEWHOUSEKEYS)
+
+Backtrace:
+101:GameData:32:in `get'
+215:Overworld:749:in `pbReceiveItem'
+[Item Find] script.rb:143:in `pbReceiveItem'
+[Elite Battle: DX] EBDX Randomizer.rb:329:in `pbReceiveItem'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-04-02 16:22:21 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: NameError
+Message: undefined local variable or method `genwildpoke' for nil:NilClass
+
+Backtrace:
+340:Utilities_Pokemon:93:in `pbAddPokemon'
+[Elite Battle: DX] EBDX Randomizer.rb:304:in `pbAddPokemon'
+364:Debug_MenuCommands:531:in `block in <main>'
+364:Debug_MenuCommands:36:in `call'
+363:Debug_Menus:129:in `block in pbDebugMenu'
+363:Debug_Menus:91:in `loop'
+363:Debug_Menus:91:in `pbDebugMenu'
+[Following Pokemon EX] Refresh.rb:117:in `pbDebugMenu'
+[Voltseon's Pause Menu] 005_VoltseonMenu_Entries.rb:244:in `block in selected'
+080:MessageConfig:566:in `pbFadeOutIn'
+
+=================
+
+[2022-04-03 14:39:43 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 10 (coords 19,51), map 183 (Viridian Forest):
+Exception: NoMethodError
+Message: undefined method `money' for nil:NilClass
+
+***Full script:
+$trainer.money -= 500
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-04-03 17:25:11 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: ArgumentError
+Message: comparison of Time with 4 failed
+
+Backtrace:
+046:Game_Event:194:in `<'
+046:Game_Event:194:in `block in refresh'
+046:Game_Event:190:in `each'
+046:Game_Event:190:in `refresh'
+068:ParticleEngine:584:in `refresh'
+046:Game_Event:33:in `initialize'
+068:ParticleEngine:578:in `rescue in initialize'
+068:ParticleEngine:575:in `initialize'
+042:Game_Map:63:in `new'
+042:Game_Map:63:in `block in setup'
+
+=================
+
+[2022-04-03 17:43:25 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 20 (coords 13,8), map 87 (Fuchsia City):
+Exception: NoMethodError
+Message: undefined method `id' for :POTION:Symbol
+
+***Full script:
+pbItemBall(:POTION)
+
+Backtrace:
+[BOTW] BOTW.rb:145:in `itemAnim'
+[BOTW] BOTW.rb:156:in `pbItemBall'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-04-03 19:34:02 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 382.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-03 19:36:44 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 383.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-03 19:40:07 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 385.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-03 19:43:03 -0600]
+[Pokémon Essentials version 19.1]
+[v19.1 Hotfixes 1.0.7]
+
+Error in Plugin [Power]:
+NoMethodError occurred.
+Nilclass: undefined method `map_id' for nil
+
+Backtrace:
+[Power] Survival Mode.rb:166:in `<main>'
+008:PluginManager:706:in `eval'
+008:PluginManager:706:in `block (2 levels) in runPlugins'
+008:PluginManager:696:in `each'
+008:PluginManager:696:in `block in runPlugins'
+008:PluginManager:690:in `each'
+008:PluginManager:690:in `runPlugins'
+387:Main:27:in `mainFunctionDebug'
+387:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+
+=================
+
+[2022-04-03 19:43:41 -0600]
+[Pokémon Essentials version 19.1]
+[v19.1 Hotfixes 1.0.7]
+
+Error in Plugin [Power]:
+NoMethodError occurred.
+Nilclass: undefined method `map_id' for nil
+
+Backtrace:
+[Power] Survival Mode.rb:166:in `<main>'
+008:PluginManager:706:in `eval'
+008:PluginManager:706:in `block (2 levels) in runPlugins'
+008:PluginManager:696:in `each'
+008:PluginManager:696:in `block in runPlugins'
+008:PluginManager:690:in `each'
+008:PluginManager:690:in `runPlugins'
+387:Main:27:in `mainFunctionDebug'
+387:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+
+=================
+
+[2022-04-03 19:45:09 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 385.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-03 19:47:00 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 385.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:174:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+044:Game_MapFactory:148:in `setMapChanging'
+044:Game_MapFactory:22:in `setup'
+032:Scene_Map:72:in `transfer_player'
+[Following Pokemon EX] 004_Follower_Overrides.rb:719:in `transfer_player'
+[Following Pokemon EX] Refresh.rb:203:in `transfer_player'
+
+=================
+
+[2022-04-03 19:48:34 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Unknown ID 379.
+
+Backtrace:
+101:GameData:157:in `get'
+[Power] Survival Mode.rb:159:in `block in <main>'
+035:Event_Handlers:53:in `block in trigger'
+035:Event_Handlers:48:in `each'
+035:Event_Handlers:48:in `trigger'
+[Visible Overworld Wild Encounters] 001_visible overworld wild encounters script.rb:326:in `pbOnStepTaken'
+047:Game_Player:370:in `update_event_triggering'
+047:Game_Player:324:in `update'
+[Following Pokemon EX] 004_Follower_Overrides.rb:390:in `update'
+[Following Pokemon EX] Movement.rb:258:in `update'
+
+=================
+
+[2022-04-03 19:50:14 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 21 (coords 16,18), map 94 (Route 24):
+Exception: NameError
+Message: uninitialized constant Interpreter::PBTrainers
+
+***Full script:
+pbTrainerBattle(PBTrainers::CAMPER,"ETHAN",_I("Whoa!\nToo much!"),false,0,false,0)
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:352:in `command_111'
+034:Interpreter_Commands:29:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-07-07 20:12:14 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:15:17 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:25:21 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:27:55 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:29:13 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:30:40 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:39:56 -0600]
+[Pokémon Essentials version 19.1]
+[v19.1 Hotfixes 1.0.7]
+
+Error in Plugin [Power]:
+SyntaxError occurred.
+Line 602: Syntax error, unexpected `end', expecting end-of-input: [Power] Crafts.rb
+
+Backtrace:
+008:PluginManager:706:in `eval'
+008:PluginManager:706:in `block (2 levels) in runPlugins'
+008:PluginManager:696:in `each'
+008:PluginManager:696:in `block in runPlugins'
+008:PluginManager:690:in `each'
+008:PluginManager:690:in `runPlugins'
+387:Main:27:in `mainFunctionDebug'
+387:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+387:Main:18:in `mainFunction'
+
+=================
+
+[2022-07-07 20:40:28 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: RuntimeError
+Message: Item ID number '2072' is used twice.
+File PBS/items.txt, line 1145
+2072,HOPOBERRY,Hopo Berry,Hopo Berries,5,20,"A Berry that can be fed to a Pokémon to restore its PP.",0,0,5,
+
+
+
+
+Backtrace:
+371:Compiler_CompilePBS:311:in `block in compile_items'
+370:Compiler:197:in `block (2 levels) in pbCompilerEachCommentedLine'
+370:Compiler:191:in `each_line'
+370:Compiler:191:in `block in pbCompilerEachCommentedLine'
+370:Compiler:188:in `open'
+370:Compiler:188:in `pbCompilerEachCommentedLine'
+371:Compiler_CompilePBS:306:in `compile_items'
+370:Compiler:699:in `compile_all'
+[v19.1 Hotfixes] Debug bug fixes.rb:68:in `compile_all'
+[Elite Battle: DX] EBDX Compiler.rb:98:in `compile_all'
+
+=================
+
+[2022-07-07 20:41:44 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:45:08 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 51 (coords 3,36), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:CRAFTINGBENCH)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:42:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 20:56:28 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 50 (coords 6,39), map 49 (PokéCenter):
+Exception: RuntimeError
+Message: At least one ingredient or quantity value is invalid.
+
+***Full script:
+pbCraftingBench(:APRICORNCRAFTING)
+
+
+Backtrace:
+[Item Crafting UI] 001_UI_ItemCrafting.rb:273:in `block (2 levels) in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:269:in `block in pbItemCrafter'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `each'
+[Item Crafting UI] 001_UI_ItemCrafting.rb:266:in `pbItemCrafter'
+[Power] Crafts.rb:205:in `pbCraftingBench'
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+033:Interpreter:100:in `block in update'
+033:Interpreter:87:in `loop'
+
+=================
+
+[2022-07-07 21:08:36 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: SystemStackError
+Message: stack level too deep
+
+Backtrace:
+[Additional Animations - Overworld Encounters Add On] 002_add_on_additional_animations.rb:111:in `update'
+[Additional Despawn Methods - Overworld Encounters Add On] 005_add_on_additional_despawn_methods.rb:65:in `update'
+[Additional Animations - Overworld Encounters Add On] 002_add_on_additional_animations.rb:136:in `update'
+[Additional Despawn Methods - Overworld Encounters Add On] 005_add_on_additional_despawn_methods.rb:65:in `update'
+[Additional Animations - Overworld Encounters Add On] 002_add_on_additional_animations.rb:136:in `update'
+[Additional Despawn Methods - Overworld Encounters Add On] 005_add_on_additional_despawn_methods.rb:65:in `update'
+[Additional Animations - Overworld Encounters Add On] 002_add_on_additional_animations.rb:136:in `update'
+[Additional Despawn Methods - Overworld Encounters Add On] 005_add_on_additional_despawn_methods.rb:65:in `update'
+[Additional Animations - Overworld Encounters Add On] 002_add_on_additional_animations.rb:136:in `update'
+[Additional Despawn Methods - Overworld Encounters Add On] 005_add_on_additional_despawn_methods.rb:65:in `update'
+
+=================
+
+[2022-07-07 21:11:18 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+[EBDX v1.2.6]
+
+Exception: RuntimeError
+Message: Script error in event 2 (coords 76,38), map 18 (Route 15):
+Exception: NoMethodError
+Message: undefined method `pbBattleWinnings' for #<Interpreter @event_id: 2>
+
+***Full script:
+pbBattleWinnings(1)
+pbTrainerEnd
+
+
+Backtrace:
+(eval):1:in `execute_script'
+033:Interpreter:137:in `eval'
+033:Interpreter:137:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+
+
+Backtrace:
+033:Interpreter:189:in `rescue in execute_script'
+033:Interpreter:135:in `execute_script'
+034:Interpreter_Commands:1024:in `command_355'
+034:Interpreter_Commands:116:in `execute_command'
+033:Interpreter:127:in `block in update'
+033:Interpreter:87:in `loop'
+033:Interpreter:87:in `update'
+[Following Pokemon EX] Refresh.rb:258:in `update'
+032:Scene_Map:168:in `block in update'
+032:Scene_Map:166:in `loop'
+
+=================
+
+[2022-07-07 21:36:10 -0600]
+[Pokémon Essentials version 19.1]
+[Generation 8 Project v1.0.3]
+[v19.1 Hotfixes 1.0.7]
+
+Exception: Errno::ENOENT
+Message: File Data/species.dat not found.
+
+Backtrace:
+101:GameData:62:in `load_data'
+101:GameData:62:in `load'
+[ZUD Plugin] Compilers.rb:706:in `load_all'
+031:StartGame:13:in `initialize'
+[Elite Battle: DX] EBDX Setup.rb:95:in `initialize'
+387:Main:29:in `mainFunctionDebug'
+387:Main:18:in `block in mainFunction'
+014:Errors:71:in `pbCriticalCode'
+387:Main:18:in `mainFunction'
+387:Main:44:in `block in <main>'
+
+=================
+
+[2022-08-30 21:28:07 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Error in Plugin: [v19.1 Hotfixes]
+Exception: NameError
+Message: undefined method `pbGetMoveScoreFunctionCode' for class `PokeBattle_AI'
+
+Backtrace:
+[v19.1 Hotfixes] Battle bug fixes.rb:27:in `<class:PokeBattle_AI>'
+[v19.1 Hotfixes] Battle bug fixes.rb:26:in `<main>'
+008:PluginManager:653:in `eval'
+008:PluginManager:653:in `block (2 levels) in runPlugins'
+008:PluginManager:643:in `each'
+008:PluginManager:643:in `block in runPlugins'
+008:PluginManager:634:in `each'
+008:PluginManager:634:in `runPlugins'
+395:Main:28:in `mainFunctionDebug'
+395:Main:18:in `block in mainFunction'
+
+=================
+
+[2022-08-30 21:28:51 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: Errno::ENOENT
+Message: File No such file or directory @ rb_sysopen - PBS/map_connections.txt not found.
+
+Backtrace:
+383:Compiler:231:in `initialize'
+383:Compiler:231:in `open'
+383:Compiler:231:in `pbCompilerEachPreppedLine'
+384:Compiler_CompilePBS:62:in `compile_connections'
+383:Compiler:759:in `compile_pbs_files'
+[Essentials Deluxe] Compiler.rb:586:in `compile_all'
+[Essentials Deluxe] Compiler.rb:725:in `main'
+395:Main:29:in `mainFunctionDebug'
+395:Main:18:in `block in mainFunction'
+014:Errors:80:in `pbCriticalCode'
+
+=================
+
+[2022-08-30 21:29:35 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: Errno::ENOENT
+Message: File No such file or directory @ rb_sysopen - PBS/map_metadata.txt not found.
+
+Backtrace:
+384:Compiler_CompilePBS:1761:in `initialize'
+384:Compiler_CompilePBS:1761:in `open'
+384:Compiler_CompilePBS:1761:in `compile_map_metadata'
+383:Compiler:777:in `compile_pbs_files'
+[Essentials Deluxe] Compiler.rb:586:in `compile_all'
+[Essentials Deluxe] Compiler.rb:725:in `main'
+395:Main:29:in `mainFunctionDebug'
+395:Main:18:in `block in mainFunction'
+014:Errors:80:in `pbCriticalCode'
+395:Main:18:in `mainFunction'
+
+=================
+
+[2022-08-30 21:31:08 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: NoMethodError
+Message: undefined method `gsub' for nil:NilClass
+
+Backtrace:
+386:Compiler_MapsAndEvents:1055:in `replace_old_battle_scripts'
+386:Compiler_MapsAndEvents:1441:in `block in fix_event_use'
+386:Compiler_MapsAndEvents:271:in `block in pbEachPage'
+386:Compiler_MapsAndEvents:271:in `each'
+386:Compiler_MapsAndEvents:271:in `pbEachPage'
+386:Compiler_MapsAndEvents:1078:in `fix_event_use'
+386:Compiler_MapsAndEvents:1654:in `block (2 levels) in compile_trainer_events'
+386:Compiler_MapsAndEvents:1637:in `each_key'
+386:Compiler_MapsAndEvents:1637:in `block in compile_trainer_events'
+386:Compiler_MapsAndEvents:1630:in `each'
+
+=================
+
+[2022-08-30 21:31:58 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: NoMethodError
+Message: undefined method `gsub' for nil:NilClass
+
+Backtrace:
+386:Compiler_MapsAndEvents:1046:in `replace_old_battle_scripts'
+386:Compiler_MapsAndEvents:1432:in `block in fix_event_use'
+386:Compiler_MapsAndEvents:271:in `block in pbEachPage'
+386:Compiler_MapsAndEvents:271:in `each'
+386:Compiler_MapsAndEvents:271:in `pbEachPage'
+386:Compiler_MapsAndEvents:1069:in `fix_event_use'
+386:Compiler_MapsAndEvents:1645:in `block (2 levels) in compile_trainer_events'
+386:Compiler_MapsAndEvents:1628:in `each_key'
+386:Compiler_MapsAndEvents:1628:in `block in compile_trainer_events'
+386:Compiler_MapsAndEvents:1621:in `each'
+
+=================
+
+[2022-08-30 21:33:07 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: ArgumentError
+Message: undefined class/module PBMove
+
+Backtrace:
+024:SaveData:28:in `load'
+024:SaveData:28:in `load'
+024:SaveData:28:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+024:SaveData:45:in `read_from_file'
+[Multiple save] 3 - Set up system.rb:8:in `set_up_system'
+395:Main:31:in `mainFunctionDebug'
+395:Main:18:in `block in mainFunction'
+014:Errors:80:in `pbCriticalCode'
+
+=================
+
+[2022-08-30 21:33:35 -0600]
+[Pokémon Essentials version 20.1]
+[v20.1 Hotfixes 1.0.3]
+
+Exception: ArgumentError
+Message: undefined class/module PBMove
+
+Backtrace:
+024:SaveData:28:in `load'
+024:SaveData:28:in `load'
+024:SaveData:28:in `block in get_data_from_file'
+024:SaveData:27:in `open'
+024:SaveData:27:in `get_data_from_file'
+024:SaveData:45:in `read_from_file'
+[Multiple save] 3 - Set up system.rb:8:in `set_up_system'
+395:Main:31:in `mainFunctionDebug'
+395:Main:18:in `block in mainFunction'
+014:Errors:80:in `pbCriticalCode'

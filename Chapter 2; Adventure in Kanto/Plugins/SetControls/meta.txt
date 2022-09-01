@@ -1,0 +1,3 @@
+Name       = Set Controls
+Version    = 1.0.0
+Essentials = 20.1

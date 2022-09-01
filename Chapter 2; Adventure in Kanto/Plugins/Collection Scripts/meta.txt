@@ -1,0 +1,2 @@
+Name         = Collection Scripts
+Version      = 1

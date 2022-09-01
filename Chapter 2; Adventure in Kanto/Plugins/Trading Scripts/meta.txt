@@ -1,0 +1,2 @@
+Name         = Trading Scripts
+Version      = 1

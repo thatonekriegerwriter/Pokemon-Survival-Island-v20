@@ -130,16 +130,12 @@ Pokemon = LILLIPUP,4
     Gender = male
     Moves = TACKLE,SNARL,ENDURE,LEER
     IV = 0,31,0,31,31,31
-Pokemon = PIDGEY,3
+Pokemon = PUMPKABOO,3
     IV = 0,31,0,31,31,31
 #-------------------------------
 [RED,Red]
 LoseText = "..."
-Pokemon = BULBASAUR,4
-    Name = Saur
-    Gender = male
-    Moves = TACKLE,VINEWHIP,SOLARBEAM,SLEEPPOWDER
-    Item = MEADOWPLATE
+Pokemon = DEWPIDER,4
     IV = 31,31,31,31,31,31
 Pokemon = PIKACHU,5
     Name = Pika

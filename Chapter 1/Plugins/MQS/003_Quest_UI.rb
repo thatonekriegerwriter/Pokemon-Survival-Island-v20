@@ -269,7 +269,11 @@ class QuestList_Scene
     # Vary text according to map name
     loc = originalMap.include?("Route") ? "on" : "in"
     # Format time
+	if $PokemonBag.pbHasItem?(:CALENDAR)
     time = quest.time.strftime("%B %d %Y %H:%M")
+	else
+    time = "???"
+	end
     if getActiveQuests.include?(quest.id)
       time_text = "start"
     elsif getCompletedQuests.include?(quest.id)

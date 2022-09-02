@@ -507,7 +507,7 @@ def pbIntroQuestionare
     case command
     when 0   # Withdraw Item
     when 1   # Deposit Item
-	$player.playerclass = Catcher
+	$player.playerclass = "Catcher"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -543,7 +543,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 2   # Toss Item
-	$player.playerclass = Runner
+	$player.playerclass = "Runner"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -579,7 +579,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 3   # Toss Item
-	$player.playerclass = Guardian
+	$player.playerclass = "Guardian"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -615,7 +615,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 4   # Toss Item
-	$player.playerclass = Hunter
+	$player.playerclass = "Hunter"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -651,7 +651,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 5   # Toss Item
-	$player.playerclass = Assassin
+	$player.playerclass = "Assassin"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -687,7 +687,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 6   # Toss Item
-	$player.playerclass = Monk
+	$player.playerclass = "Monk"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -723,7 +723,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 7   # Toss Item
-	$player.playerclass = Alchemist
+	$player.playerclass = "Alchemist"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -759,7 +759,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 8   # Toss Item
-	$player.playerclass = Breeder
+	$player.playerclass = "Breeder"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -795,7 +795,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 9   # Toss Item
-	$player.playerclass = Warrior
+	$player.playerclass = "Warrior"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -831,7 +831,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 10   # Toss Item
-	$player.playerclass = Healer
+	$player.playerclass = "Healer"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))
@@ -867,7 +867,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     when 11   # Toss Item
-	$player.playerclass = Mechanist
+	$player.playerclass = "Mechanist"
 	 if $player.playerclass == "Runner" #$game_variables[50]==1 Runner
       pbMessage(_INTL("You are a Runner."))
       pbMessage(_INTL("You get less overworld encounters, that's just how you are."))

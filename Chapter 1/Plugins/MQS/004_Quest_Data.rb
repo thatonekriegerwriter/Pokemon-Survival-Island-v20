@@ -7,31 +7,28 @@ module QuestModule
   }
   
   # Here's the simplest example of a single-stage quest with everything specified
-  Quest1 = {
+  PSIMQ1 = {
     :ID => "1",
-    :Name => "Introductions",
-    :QuestGiver => "Little Boy",
-    :Stage1 => "Look for clues.",
-    :Location1 => "Lappet Town",
-    :QuestDescription => "Some wild Pokémon stole a little boy's favourite toy. Find those troublemakers and help him get it back.",
-    :RewardString => "Something shiny!"
+    :Name => "Survival Island",
+    :QuestGiver => "nil",
+    :Stage1 => "Find your bag.",
+    :Stage2 => "Look through everything in your bag throughly.",
+    :Stage3 => "Survive.",
+    :Location1 => "nil",
+    :QuestDescription => "Your Ship has crashed on this island, try and survive.",
+    :RewardString => "nil"
   }
   
   # Here's an extension of the above that includes multiple stages
-  Quest2 = {
+  MSISQ1 = {
     :ID => "2",
-    :Name => "Introductions",
-    :QuestGiver => "Little Boy",
-    :Stage1 => "Look for clues.",
-    :Stage2 => "Follow the trail.",
-    :Stage3 => "Catch the troublemakers!",
-    :Location1 => "Lappet Town",
-    :Location2 => "Viridian Forest",
-    :Location3 => "Route 3",
-	:StageLabel1 => "1",
-	:StageLabel2 => "2",
-    :QuestDescription => "Some wild Pokémon stole a little boy's favourite toy. Find those troublemakers and help him get it back.",
-    :RewardString => "Something shiny!"
+    :Name => "Climbing Gear",
+    :QuestGiver => "nil",
+    :Stage1 => "Find your Climbing Gear.",
+    :Stage1 => "Maybe your Climbing Gear is in there.",
+    :Location1 => "nil"
+    :QuestDescription => "Find your climbing gear.",
+    :RewardString => "nil"
   }
   
   # Here's an example of a quest with lots of stages that also doesn't have a stage location defined for every stage

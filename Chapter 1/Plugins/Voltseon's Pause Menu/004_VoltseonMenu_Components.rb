@@ -306,7 +306,7 @@ class DateAndTimeHud < Component
     text = _INTL("{1} {2} {3}",Time.now.day.to_i,pbGetAbbrevMonthName(Time.now.month.to_i),Time.now.year.to_i) if $PokemonBag.pbHasItem?(:CALENDAR)
     text = _INTL("",Time.now.day.to_i,pbGetAbbrevMonthName(Time.now.month.to_i),Time.now.year.to_i) if !$PokemonBag.pbHasItem?(:CALENDAR)
     text2 = _INTL("{1}",pbGetTimeNow.strftime("%I:%M %p")) if $PokemonBag.pbHasItem?(:CLOCK)
-    text2 = _INTL("{1}",pbGetTimeNow.strftime("%I:%M %p")) if !$PokemonBag.pbHasItem?(:CLOCK)
+    text2 = _INTL("",pbGetTimeNow.strftime("%I:%M %p")) if !$PokemonBag.pbHasItem?(:CLOCK)
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
     pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,

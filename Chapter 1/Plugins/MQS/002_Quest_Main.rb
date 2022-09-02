@@ -13,7 +13,7 @@ class Quest
   def initialize(id,color,story)
     self.id       = id
     self.stage    = 1
-    self.time     = Time.now
+    self.time     = pbGetTimeNow
     self.location = $game_map.name
     self.new      = true
     self.color    = color
@@ -68,7 +68,7 @@ class Player_Quests
       end
     end
     @active_quests.push(Quest.new(quest,color,story))
-    pbMessage(_INTL("\\se[{1}]<ac><c2=#{colorQuest("red")}>New quest discovered!</c2>\nCheck your quest log for more details!</ac>",QUEST_JINGLE))
+  pbSEPlay(QUEST_JINGLE)
   end
   
   def failQuest(quest,color,story)
@@ -93,7 +93,7 @@ class Player_Quests
         temp_quest = @active_quests[i]
         temp_quest.color = color if color != nil
         temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
-        temp_quest.time = Time.now
+        temp_quest.time = pbGetTimeNow
         @failed_quests.push(temp_quest)
         @active_quests.delete_at(i)
         found = true
@@ -129,11 +129,11 @@ class Player_Quests
         temp_quest = @active_quests[i]
         temp_quest.color = color if color != nil
         temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
-        temp_quest.time = Time.now
+        temp_quest.time = pbGetTimeNow
         @completed_quests.push(temp_quest)
         @active_quests.delete_at(i)
         found = true
-        pbMessage(_INTL("\\se[{1}]<ac><c2=#{colorQuest("red")}>Quest completed!</c2>\nYour quest log has been updated!</ac>",QUEST_JINGLE))
+  pbSEPlay(QUEST_JINGLE)
         break
       end
     end
@@ -154,7 +154,7 @@ class Player_Quests
         @active_quests[i].color = color if color != nil
         @active_quests[i].new = true # Setting this back to true makes the "!" icon appear when the quest updates
         found = true
-        pbMessage(_INTL("\\se[{1}]<ac><c2=#{colorQuest("red")}>New task added!</c2>\nYour quest log has been updated!</ac>",QUEST_JINGLE))
+  pbSEPlay(QUEST_JINGLE)
       end
       return if found
     end
@@ -333,5 +333,5 @@ def getCurrentStage(quest)
 end
 
 def taskCompleteJingle
-  pbMessage(_INTL("\\se[{1}]<ac><c2=#{colorQuest("red")}>Task completed!</c2>\nYour quest log has been updated!</ac>",QUEST_JINGLE))
+  pbSEPlay(QUEST_JINGLE)
 end

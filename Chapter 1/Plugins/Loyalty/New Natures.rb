@@ -11,3 +11,9 @@ GameData::Nature.register({
   :name         => _INTL("Loving"),
   :stat_changes => [[:HP, 20], [:ATTACK, -10], [:DEFENSE, -10], [:SPEED, -10], [:SPECIAL_ATTACK, -10], [:SPECIAL_DEFENSE, -10]]
 })
+
+GameData::Nature.register({
+  :id           => :GREEDY,
+  :id_number    => 27,
+  :name         => _INTL("Greedy")
+})

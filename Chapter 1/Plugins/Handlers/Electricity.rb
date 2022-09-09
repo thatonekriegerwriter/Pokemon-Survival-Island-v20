@@ -74,7 +74,7 @@ coal=0
 pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
-coal = screen.pbChooseItemScreen
+coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
 }
 if coal
 $PokemonBag.pbDeleteItem(coal,1)

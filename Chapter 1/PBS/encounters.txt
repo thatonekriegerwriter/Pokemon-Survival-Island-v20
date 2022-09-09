@@ -528,7 +528,7 @@ Bait
     5,TORCHIC,5
     4,FALINKS,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 Adventure,1
     20,BLITZLE,5
@@ -632,7 +632,7 @@ Bait
     5,TORCHIC,5
     4,FALINKS,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 Adventure,1
     20,BLITZLE,5
@@ -954,7 +954,7 @@ Bait
     5,ROCKRUFF,5
     4,PARASECT,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 Adventure,1
     20,LARVITAR,5
@@ -967,7 +967,7 @@ Adventure,1
     5,ROCKRUFF,5
     4,PARASECT,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 #-------------------------------
 [017] # Mountain Zone
@@ -1071,7 +1071,7 @@ Adventure,1
     5,ROCKRUFF,5
     4,PARASECT,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 #-------------------------------
 [019] # Mountain Zone
@@ -1175,7 +1175,7 @@ Adventure,1
     5,ROCKRUFF,5
     4,PARASECT,5
     4,YAMPER,5
-    1,DITTO,5
+    1,DREEPY,5
     1,RAICHU,5
 #-------------------------------
 [022] # Cave

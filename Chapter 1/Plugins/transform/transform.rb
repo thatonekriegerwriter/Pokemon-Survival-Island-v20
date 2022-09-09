@@ -2,7 +2,7 @@
 
 #This one's just to save space lol
 def pbSetRunningShoes(status)
-  $Trainer.has_running_shoes = status
+  $player.has_running_shoes = status
 #v18  $PokemonGlobal.runningShoes = status
 end
 
@@ -23,7 +23,7 @@ end
 
 #Returns the normal walksprite for the player character
 def pbGetNormalChar
-  meta = GameData::Metadata.get_player($Trainer.character_ID)
+  meta = GameData::Metadata.get_player($player.character_ID)
   graphic = pbGetPlayerCharset(meta,1,nil,true)
   return graphic
 end
@@ -180,10 +180,22 @@ end
 #Lets the player select a Pokemon from their party, and turns them into the
 #matching overworld sprite
 def pbSelectPokeTransform
-  pbChoosePokemon(1,3)
-  if $game_variables[1] >= 0
-    pokemon=$Trainer.party[$game_variables[1]]
+PokemonSelection.choose(
+     PokemonSelection::Parameters.new
+           .setMinPokemon(1)
+           .setMaxPokemon(1)
+           .setCanCancel(true))
+    pokemon=$player.party[0]
+    pbTransformPoke(pokemon)
+end
+
+def pbSelectPokeTransform2
+PokemonSelection.choose(
+     PokemonSelection::Parameters.new
+           .setMinPokemon(2)
+           .setMaxPokemon(2)
+           .setCanCancel(true))
+    pokemon=$player.party[0]
     pbTransformPoke(pokemon)
   end
-end
 

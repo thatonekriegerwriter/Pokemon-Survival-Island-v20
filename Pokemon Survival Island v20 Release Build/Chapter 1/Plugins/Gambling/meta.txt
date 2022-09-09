@@ -1,0 +1,2 @@
+Name         = Gamlbing
+Version      = 1

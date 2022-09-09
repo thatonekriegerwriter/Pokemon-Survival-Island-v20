@@ -8561,3 +8561,119 @@ Pocket = 1
 Price = 10
 Flags = Fling_30
 Description = Throw one into certain Pokémon Dens, and it may lure a rare wild Dynamaxed Pokémon.
+
+#-------------------------------
+[GOLDSTONE]
+Name = Gold Stone
+NamePlural = Gold Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint gold energy.
+#-------------------------------
+[REDSTONE]
+Name = Red Stone
+NamePlural = Red Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint red energy.
+#-------------------------------
+[BLUESTONE]
+Name = Blue Stone
+NamePlural = Blue Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint blue energy.
+#-------------------------------
+[BLACKSTONE]
+Name = Black Stone
+NamePlural = Blue Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint black energy.
+#-------------------------------
+[WHITESTONE]
+Name = White Stone
+NamePlural = White Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint white energy.
+#-------------------------------
+[GREENSTONE]
+Name = Green Stone
+NamePlural = Green Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with a faint green energy.
+
+#-------------------------------
+[RAINBOWSTONE]
+Name = Rainbow Stone
+NamePlural = Rainbow Stones
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationStone
+Description = A Stone shining with the energy of multitudes.
+#-------------------------------
+[REDMARK]
+Name = Red Mark
+NamePlural = Red Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description =A Mark whos very Essence oozes that of Attack.
+#-------------------------------
+[BLUEMARK]
+Name = Blue Mark
+NamePlural = Blue Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description = A Mark whos very Essence oozes that of Defense.
+#-------------------------------
+[BLACKMARK]
+Name = Black Mark
+NamePlural = Black Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description = A Mark whos very Essence oozes that of Special Defense.
+#-------------------------------
+[WHITEMARK]
+Name = White Mark
+NamePlural = White Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description = A Mark whos very Essence oozes that of Special Attack.
+#-------------------------------
+[GREENMARK]
+Name = Green Mark
+NamePlural = Green Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description = A Mark whos very Essence oozes that of Speed.
+
+#-------------------------------
+[GREYMARK]
+Name = Grey Mark
+NamePlural = Grey Marks
+Pocket = 8
+Price = 0
+Flags = KeyItem,ReincarnationBoon,ReincarnationBane
+Description = A Mark whos very Essence oozes that of Balance.
+#-------------------------------
+[MAGFRAG]
+Name = Magic Fragments
+NamePlural = Magic Fragment
+Pocket = 1
+Price = 0
+Flags = 
+Description = A Fragment used to Power a Reincarnation Sigil.
+

@@ -21,17 +21,31 @@ Pokemon = ONIX,14
     IV = 20,20,20,20,20,20
     Ball = HEAVYBALL
 #-------------------------------
-[TEAMROCKET_M,Grunt,1]
-LoseText = "You're too good for me!"
-Pokemon = WEEPINBELL,21
+[TEAMROCKET_M,Rocket Grunt,1]
+LoseText = "Gah! I gotta tell my partner about this!"
+NumPkmn = 3
+Pokemon = STARAVIA,21
+Pokemon = TAUROS,21
+Pokemon = RATICATE,21
+    Form = 1
     Shadow = yes
+Pokemon = ABSOL,21
+    Shadow = yes
+Pokemon = GRAVELER,21
+Pokemon = HAWLUCHA,21
 #-------------------------------
-[TEAMROCKET_F,Grunt,1]
+[TEAMROCKET_M,Rocket Grunt,2]
+NumPkmn = 2
+Pokemon = STARAVIA,21
+Pokemon = TAUROS,21
+Pokemon = GRAVELER,21
+Pokemon = HAWLUCHA,21
+#-------------------------------
+[TEAMROCKET_F,Rocket Grunt,1]
 LoseText = "You're too good for me!"
 Pokemon = BURMY,19
 Pokemon = WINGULL,19
 Pokemon = ELECTABUZZ,20
-    Shadow = yes
 #-------------------------------
 [YOUNGSTER,Ben]
 LoseText = "Aww, I lost."
@@ -960,10 +974,17 @@ LoseText = "..."
 Pokemon = PORYGON,25
 Pokemon = MAGNETON,20
 #-------------------------------
-[TEAMROCKET_M,Grunt]
+[TEAMROCKET_M,Purple Haired Grunt]
 LoseText = "..."
+NumPkmn = 2
+Guaranteed = 1
+Pokemon = MACHOKE,30
+    Moves = BODYSLAM,DYNAMICPUNCH,ROCKSMASH,BULKUP
+    Shadow = True
 Pokemon = FALINKS,40
 Pokemon = RIOLU,30
+Pokemon = DUGTRIO,30
+    Shadow = True
 #-------------------------------
 [LASS,Yelly]
 LoseText = "..."
@@ -1089,6 +1110,54 @@ Pokemon = LUNATONE,3
 Pokemon = SPHEAL,3
 #-------------------------------
 [GENTLEMAN,William]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Red,Brent]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Leaf,Donna]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Hiro,Jace]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Kris,Sevii]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Brendan,John]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Dawn,Alice]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_Lucas,David]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_May,Samantha]
 LoseText = "... darn..."
 Pokemon = HATTREM,20
 Pokemon = MEOWSTIC,20

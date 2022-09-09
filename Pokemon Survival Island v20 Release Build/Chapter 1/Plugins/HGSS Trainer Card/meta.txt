@@ -1,0 +1,4 @@
+Name         = HGSS Trainer Card
+Version      = 1.0
+Website      = https://reliccastle.com/resources/388/
+Credits      = Mr. Gela, DarrylBD99

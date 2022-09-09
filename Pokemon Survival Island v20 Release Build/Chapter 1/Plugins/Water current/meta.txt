@@ -1,0 +1,4 @@
+﻿Name      = Water current
+Version   = 1.0
+Website   = https://github.com/Jack1324567/PE-Custom-Script
+Credits   = Michael, Marcello/Reborn Team, bo4p5687

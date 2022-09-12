@@ -2627,10 +2627,46 @@ end
     gain=0 if gain.nil?
 	pkmn.loyalty = 100 if @loyalty.nil?
     bonus=0 if bonus.nil?
+	bonus=10 if pkmn.nature == :LOVING
 	bonus = bonus+rand(5)+5 if $player.playerclass == "Monk"
     @loyalty = (@loyalty + gain + base + bonus).clamp(0, 255)
   end
   
   
 end
- 
+
+EventHandlers.add(:on_step_taken, :angrysteps,
+  proc {
+  $PokemonGlobal.happinessSteps = 0 if !$PokemonGlobal.happinessSteps
+  $PokemonGlobal.happinessSteps += 1
+  if $PokemonGlobal.happinessSteps>=326
+for i in 0...$PokemonStorage.maxBoxes
+ for j in 0...$PokemonStorage.maxPokemon(i)
+  pkmn = $PokemonStorage[i][j]
+  if pkmn!=nil
+   pkmn.changeHappiness("powder",pkmn) if rand(2)==0
+  end 
+ end
+end
+    $PokemonGlobal.happinessSteps = 0
+  end
+  }
+)
+
+EventHandlers.add(:on_step_taken, :angrystepsl,
+  proc {
+  $PokemonGlobal.loyaltySteps = 0 if !$PokemonGlobal.loyaltySteps
+  $PokemonGlobal.loyaltySteps += 1
+  if $PokemonGlobal.loyaltySteps>=326
+for i in 0...$PokemonStorage.maxBoxes
+ for j in 0...$PokemonStorage.maxPokemon(i)
+  pkmn = $PokemonStorage[i][j]
+  if pkmn!=nil
+   pkmn.changeLoyalty("powder",pkmn) if rand(2)==0
+  end 
+ end
+end
+    $PokemonGlobal.loyaltySteps = 0
+  end
+  }
+)

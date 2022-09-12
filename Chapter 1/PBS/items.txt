@@ -5407,6 +5407,14 @@ Price = 0
 Flags = KeyItem, Tool
 Description = A set of ropes that can be used to climb rocky hills.
 #-------------------------------
+[SUPPLIESOG]
+Name = Supplies
+NamePlural = Supplies
+Pocket = 11
+Price = 0
+Flags = KeyItem, Tool
+Description = Supplies for digging out bases.
+#-------------------------------
 [ADVANCEDSUPPLIES]
 Name = Professional Climbing Equipment
 NamePlural = Professional Climbing Equipment

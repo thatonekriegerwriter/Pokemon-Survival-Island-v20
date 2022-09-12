@@ -1336,7 +1336,7 @@ Adventure,1
     1,GABITE,5
     1,TORKOAL,5
 #-------------------------------
-[026] # Test Map
+[026] # Southern Beach
 Land,21
     80,BULBASAUR,5
 #-------------------------------
@@ -2494,8 +2494,8 @@ Comet
     1,RESHIRAM,5
     1,ZEKROM,5
 Land,21
-    1,LYCANROC_1,5
     5,RATTATA_1,5
+    1,LYCANROC_1,5
     1,SHUPPET,5
 #-------------------------------
 [057] # Temperate Ocean
@@ -2848,7 +2848,7 @@ LandNight,21
     1,FARFETCHD,5,15
     1,SCYTHER,7,20
 #-------------------------------
-[065]
+[065] # Ravine
 OverworldLandMorning,21
     20,HOPPIP,2,8
     20,SUNKERN,5,10
@@ -3036,23 +3036,23 @@ Bait
 Cave,5
     20,NOIBAT,3,5
     20,SWINUB,4
-    10,SNORUNT,2
     10,PILOSWINE,2,5
-    10,ZUBAT,5
+    10,SNORUNT,2
     10,VANILLITE,2
+    10,ZUBAT,5
     5,MACHOP,3
     5,SABLEYE,5
     4,GLACEON,6
     4,GLALIE,3
-    1,SMOOCHUM,10
     1,NOIVERN,3,5
+    1,SMOOCHUM,10
 OverworldCave,5
     20,NOIBAT,3,5
     20,SWINUB,4
-    10,ZUBAT,2
     10,PILOSWINE,2,5
     10,SANDYGAST,5
     10,VANILLITE,2
+    10,ZUBAT,2
     5,MACHOP,3
     5,SABLEYE,5
     4,GLACEON,6
@@ -3081,8 +3081,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3120,8 +3120,8 @@ LandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3193,8 +3193,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3232,8 +3232,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3305,8 +3305,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3344,8 +3344,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3396,7 +3396,7 @@ Bait
     1,CARNIVINE,5
     1,SNIVY,5
 #-------------------------------
-[075] # Winter Zone
+[075] # DM
 Water,2
     60,SPHEAL,30,33
     30,SEALEO,27,35
@@ -3417,8 +3417,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3456,8 +3456,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3529,8 +3529,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3568,8 +3568,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3641,8 +3641,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3680,8 +3680,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3753,8 +3753,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3792,8 +3792,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3865,8 +3865,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3904,8 +3904,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -3977,8 +3977,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -4016,8 +4016,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -4089,8 +4089,8 @@ GoodRod
     20,DEWGONG,3,8
     20,PIPLUP,7,13
 OverworldLandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -4128,8 +4128,8 @@ OverworldLandNight,21
     1,GLACEON,5,24
     1,MAMOSWINE,7,12
 LandMorning,21
-    20,SNOM,5,10
     20,SNOM,5,15
+    20,SNOM,5,10
     10,AMAURA,5,11
     10,BERGMITE,5,11
     10,CUBCHOO,5,11
@@ -5273,7 +5273,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[135] # Humid Zone
+[135] # MQ
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5307,7 +5307,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[136] # Humid Zone
+[136] # Temperate Ocean (East)
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5341,7 +5341,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[137] # Humid Zone
+[137] # MAP137
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5409,7 +5409,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[139] # Humid Zone
+[139]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5443,7 +5443,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[140] # Humid Zone
+[140]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5477,7 +5477,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[141] # Humid Zone
+[141]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5545,7 +5545,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[143] # Humid Zone
+[143]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5579,7 +5579,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[144] # Humid Zone
+[144]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5613,7 +5613,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[145] # Humid Zone
+[145]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5647,7 +5647,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[156] # Humid Zone
+[156]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5681,7 +5681,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[157] # Humid Area R
+[157]
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5715,7 +5715,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[158] # Humid Area B
+[158] # Humid Zone
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5749,7 +5749,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[159] # Humid Area BR
+[159] # Humid Zone
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5783,7 +5783,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[160] # Humid Area RR
+[160] # Humid Zone
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -5817,7 +5817,7 @@ GoodRod
     20,TYMPOLE,3,8
     20,WISHIWASHI,7,13
 #-------------------------------
-[161] # Humid Area BRR
+[161] # Humid Zone
 OverworldCave,5
     20,CACNEA,5
     20,SANDILE,5
@@ -6029,8 +6029,8 @@ OldRod
     30,FEEBAS,7
 GoodRod
     60,DRATINI,5,15
-    20,DRATINI,3,8
     20,DRATINI,7,13
+    20,DRATINI,3,8
 Bait
     20,CATERPIE,5
     20,DEINO,5
@@ -7242,3 +7242,514 @@ Bait
     4,WISHIWASHI,5
     1,CARNIVINE,5
     1,SNIVY,5
+#-------------------------------
+[369] # Temperate Zone
+LandMorning
+    20,HOPPIP,5
+    20,SUNKERN,5
+    20,ROSELIA,2
+    20,SUNKERN,2
+    20,SENTRET,4
+    20,GROWLITHE,3
+    20,ODDISH,3
+    20,TAILLOW,3
+    20,SUNKERN,2
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,CYNDAQUIL,2
+LandDay
+    20,NIDORANmA,5
+    20,NIDORANfE,5
+    20,PIDGEY,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,VULPIX,2,5
+    20,ODDISH,3
+    20,TAILLOW,3
+    20,SCYTHER,2,10
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,TORCHIC,2
+LandNight
+    20,MINUN,2,3
+    20,PLUSLE,2,3
+    20,EKANS,2,5
+    20,SANDSHREW,2
+    20,MAREEP,2
+    20,JIGGLYPUFF,2
+    20,ODDISH,3
+    20,POOCHYENA,5
+    20,DROWZEE,6
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,HYPNO,10
+#-------------------------------
+[370] # Temperate Zone
+Land
+    20,SPEAROW,5
+    20,RATTATA,5
+    20,PIDGEY,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,POOCHYENA,3,5
+    20,SQUIRTLE,2
+#-------------------------------
+[371] # Temperate Zone
+Land
+    20,TAILLOW,3
+    20,RATTATA,5
+    20,PIDGEY,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,MARILL,3,5
+    20,SQUIRTLE,2
+#-------------------------------
+[372] # Temperate Zone
+Land
+    20,TAILLOW,3
+    20,RATTATA,5
+    20,PIDGEY,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,MARILL,3,5
+    20,SQUIRTLE,2
+#-------------------------------
+[373] # Temperate Zone
+LandMorning
+    20,HOPPIP,5
+    20,SUNKERN,5
+    20,ROSELIA,2
+    20,SUNKERN,2,10
+    20,SENTRET,4
+    20,PONYTA,3
+    20,ODDISH,3
+    20,TAILLOW,3
+    20,SUNKERN,2
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,CYNDAQUIL,2
+LandDay
+    20,TAILLOW,3
+    20,RATTATA,5
+    20,NATU,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,MARILL,3,5
+    20,TORCHIC,2
+LandNight
+    20,MINUN,2,3
+    20,PLUSLE,2,3
+    20,EKANS,2,5
+    20,SANDSHREW,2
+    20,MAREEP,2
+    20,JIGGLYPUFF,2
+    20,ODDISH,3
+    20,POOCHYENA,5
+    20,DROWZEE,6
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,HYPNO,10
+#-------------------------------
+[374] # Temperate Zone
+LandMorning
+    20,HOPPIP,5
+    20,SUNKERN,5
+    20,ROSELIA,2
+    20,SUNKERN,2
+    20,SENTRET,4
+    20,PONYTA,3
+    20,ODDISH,3
+    20,TAILLOW,3
+    20,SUNKERN,2
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,CYNDAQUIL,2
+LandDay
+    20,TAILLOW,3
+    20,RATTATA,5
+    20,NATU,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,MARILL,3,5
+    20,TORCHIC,2
+LandNight
+    20,MINUN,2,3
+    20,PLUSLE,2,3
+    20,EKANS,2,5
+    20,SANDSHREW,2
+    20,MAREEP,2
+    20,JIGGLYPUFF,2
+    20,ODDISH,3
+    20,POOCHYENA,5
+    20,DROWZEE,6
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,HYPNO,10
+#-------------------------------
+[377] # Temperate Zone
+LandMorning
+    20,HOPPIP,5
+    20,SUNKERN,5
+    20,ROSELIA,2
+    20,SUNKERN,2
+    20,SENTRET,4
+    20,PONYTA,3
+    20,ODDISH,3
+    20,TAILLOW,3
+    20,SUNKERN,2
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,CYNDAQUIL,2
+LandDay
+    20,TAILLOW,3
+    20,RATTATA,5
+    20,NATU,5
+    20,ZIGZAGOON,2
+    20,SENTRET,4
+    20,HOPPIP,3
+    20,ODDISH,3
+    20,TANGELA,3
+    20,SUNKERN,2
+    20,LOTAD,3
+    20,MARILL,3,5
+    20,TORCHIC,2
+LandNight
+    20,MINUN,2,3
+    20,PLUSLE,2,3
+    20,EKANS,2,5
+    20,SANDSHREW,2
+    20,MAREEP,2
+    20,JIGGLYPUFF,2
+    20,ODDISH,3
+    20,POOCHYENA,5
+    20,DROWZEE,6
+    20,PHANPY,3
+    20,FARFETCHD,3,5
+    20,HYPNO,10
+#-------------------------------
+[380] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[381] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[382] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[386] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[388] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[389] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[390] # Mountain Zone
+LandMorning
+    20,GEODUDE,5
+    20,MANKEY,5
+    20,SLUGMA,2
+    20,CUBONE,2
+    20,MANKEY,4
+    20,MACHOP,3
+    20,MAGMAR,5
+    20,ARON,3
+    20,SHUCKLE,2,4
+    20,PHANPY,3
+    20,AERODACTYL,3,5
+    20,CHARMANDER,2,5
+LandDay
+    20,GEODUDE,5
+    20,MACHOP,5
+    20,CUBONE,5
+    20,SANDSHREW,2
+    20,SENTRET,4
+    20,TEDDIURSA,2,5
+    20,MAKUHITA,3
+    20,NUMEL,3
+    20,MAGMAR,2,10
+    20,PHANPY,3
+    20,ABSOL,3,5
+    20,CHARMANDER,2,5
+LandNight
+    20,GEODUDE,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,CLEFAIRY,5
+    20,MEDITITE,2
+    20,ABSOL,2
+    20,MACHOP,3
+    20,CLEFAIRY,5
+    20,LARVITAR,6
+    20,AERODACTYL,3
+    20,SNORLAX,3,5
+    20,CHARMANDER,10
+#-------------------------------
+[391] # Mountain Interior
+Cave
+    20,ZUBAT,2,3
+    20,SPOINK,4
+    20,GLIGAR,2,5
+    20,MAWILE,5
+    20,MAKUHITA,2
+    20,GOLBAT,2
+    20,MACHOP,3
+    20,SABLEYE,5
+    20,NOSEPASS,6
+    20,DIGLETT,3
+    20,WHISMUR,3,5
+    20,DUNSPARCE,10

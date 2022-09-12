@@ -11,7 +11,7 @@ class MenuEntryPokemon < MenuEntry
     hiddenmove = nil
     pbFadeOutIn(99999) {
       sscene = PokemonParty_Scene.new
-      sscreen = PokemonPartyScreen.new(sscene,$Trainer.party)
+      sscreen = PokemonPartyScreen.new(sscene,$player.party)
       hiddenmove = sscreen.pbPokemonScreen
     }
     if hiddenmove
@@ -22,7 +22,7 @@ class MenuEntryPokemon < MenuEntry
     end
   end
 
-  def selectable?; return ($Trainer.party_count > 0); end
+  def selectable?; return ($player.party_count > 0); end
 end
 #-------------------------------------------------------------------------------
 # Entry for Pokedex Screen
@@ -34,8 +34,8 @@ class MenuEntryPokedex < MenuEntry
   end
 
   def selected(menu)
-    if $Trainer.pokedex.accessible_dexes.length == 1
-      $PokemonGlobal.pokedexDex = $Trainer.pokedex.accessible_dexes[0]
+    if $player.pokedex.accessible_dexes.length == 1
+      $PokemonGlobal.pokedexDex = $player.pokedex.accessible_dexes[0]
       pbFadeOutIn(99999) {
         scene = PokemonPokedex_Scene.new
         screen = PokemonPokedexScreen.new(scene)
@@ -51,7 +51,7 @@ class MenuEntryPokedex < MenuEntry
   end
 
   def selectable?
-    return ($Trainer.has_pokedex && $Trainer.pokedex.accessible_dexes.length > 0)
+    return ($player.has_pokedex && $player.pokedex.accessible_dexes.length > 0)
   end
 end
 #-------------------------------------------------------------------------------
@@ -170,7 +170,7 @@ class MenuEntryPokegear < MenuEntry
     }
   end
 
-  def selectable?; return $Trainer.has_pokegear; end
+  def selectable?; return $player.has_pokegear; end
 end
 #-------------------------------------------------------------------------------
 # Entry for Trainer Card Screen
@@ -178,7 +178,7 @@ end
 class MenuEntryTrainer < MenuEntry
   def initialize
     @icon = "menuTrainer"
-    @name = $Trainer.name
+    @name = $player.name
   end
 
   def selected(menu)
@@ -307,6 +307,41 @@ class MenuEntryExitBugContest < MenuEntry
   end
 
   def selectable?; return pbInBugContest?; end
+end
+
+
+class MenuEntryExitDemo < MenuEntry
+  def initialize
+    @icon = "menuBack"
+    @name = "Quit Demo"
+  end
+
+  def selected(menu)
+    menu.pbHideMenu
+    if pbConfirmMessage(_INTL("Would you like to end the Demo now?"))
+	  pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
+      $game_temp.in_menu = false
+	  pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
+	  pbMessage(_INTL("It sounds like an alarm."))
+    $game_temp.player_new_map_id    = 1
+    $game_temp.player_new_x         = 22
+    $game_temp.player_new_y         = 3
+    $game_temp.player_new_direction = 1
+    $scene.transfer_player(false)
+    $game_map.autoplay
+    $game_map.refresh
+	Game.save
+	$player.playermode = 1 
+	$scene = pbCallTitle
+    while $scene != nil
+      $scene.main
+    end
+    Graphics.transition(20)
+    end
+    menu.pbShowMenu
+  end
+
+  def selectable?; return true if $player.playermode == 0; end
 end
 #-------------------------------------------------------------------------------
 # Entry for quitting the game

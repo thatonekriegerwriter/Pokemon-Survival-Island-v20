@@ -238,7 +238,7 @@ if UnrealTime::ENABLED
         day_care.step_counter = 0 if !day_care.egg_generated
         day_care.step_counter += 1
 	   end
-	   if $Trainer.playerhealth < 1 && $PokemonSystem.survivalmode == 0
+	   if $player.playerhealth < 1 && $PokemonSystem.survivalmode == 0
            pbStartOver
        end 
         pbchangeStamina

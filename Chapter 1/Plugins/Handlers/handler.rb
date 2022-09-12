@@ -1,3 +1,31 @@
+EventHandlers.add(:on_player_step_taken_can_transfer, :effefefefefehhttrfeeffeeffefej,
+  proc {
+  if $PokemonSystem.playermode == 0 
+     if $player.demotimer <= 0 && $game_temp.in_menu == false
+	     pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
+	     pbMessage(_INTL("It sounds like an alarm."))
+    $game_temp.player_new_map_id    = 1
+    $game_temp.player_new_x         = 22
+    $game_temp.player_new_y         = 3
+    $game_temp.player_new_direction = 1
+    $scene.transfer_player(false)
+    $game_map.autoplay
+    $game_map.refresh
+	Game.save
+	$PokemonSystem.playermode = 1 
+	$scene = pbCallTitle
+    while $scene != nil
+      $scene.main
+    end
+    Graphics.transition(20)
+	 else
+     $player.demotimer = $player.demotimer.to_i-1
+	 end
+end
+
+
+})
+
 EventHandlers.add(:on_player_step_taken_can_transfer, :effefefefefehhttj,
   proc {
 if $PokemonBag.pbHasItem?(:SPRINKLER)
@@ -107,8 +135,8 @@ Events.onTrainerPartyLoad += proc { |_sender, trainer|
   if trainer[0] # I saw this on other codes so I put it in
     party = trainer[0].party   # trainer[0][2] from old code no longer exists. This seems to be where that same value is now located
     if $game_switches[141]==true # Feel free to change which Switch you want or condition to trigger this.
-      if pbBalancedLevel($Trainer.party) > pbBalancedLevel(trainer[0].party) + 3 #Used to see if levels even should be adjusted. The +3 makes it so your party level needs to be 3 levels higher before this kicks in. Feel free to adjust.
-      levelAdjust = pbBalancedLevel($Trainer.party) - pbBalancedLevel(trainer[0].party) #Calculate the difference before the for loop incase values change in the middle of the loop
+      if pbBalancedLevel($player.party) > pbBalancedLevel(trainer[0].party) + 3 #Used to see if levels even should be adjusted. The +3 makes it so your party level needs to be 3 levels higher before this kicks in. Feel free to adjust.
+      levelAdjust = pbBalancedLevel($player.party) - pbBalancedLevel(trainer[0].party) #Calculate the difference before the for loop incase values change in the middle of the loop
         for i in party
           # Increases level by the party level difference. Allowing the pokemon in the team to keep their level differences from each other.
           #I add to the level instead of overriding it so that the internal team level differences don't change and are not random.
@@ -130,7 +158,7 @@ pbChooseNonEggPokemon(1,3)
   case $game_variables[3]
      when "Gloom"
     Kernel.pbMessage(_INTL("Gloom evolves into Vileplume."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:VILEPLUME)
@@ -139,7 +167,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Weepingbell"
     Kernel.pbMessage(_INTL("Weepingbell evolves into Victreebell."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:VECTREEBEL)
@@ -148,7 +176,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Exeggcute" 
     Kernel.pbMessage(_INTL("Exeggcute evolves into Exeggcutor."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:EXEGGCUTOR)
@@ -157,7 +185,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Eevee"
     Kernel.pbMessage(_INTL("Eevee evolves into Leafeon."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:LEAFEON)
@@ -166,7 +194,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Nuzleaf"
     Kernel.pbMessage(_INTL("Nuzleaf evolves into Shiftry."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:SHIFTRY)
@@ -175,7 +203,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Pansage"
     Kernel.pbMessage(_INTL("Pansage evolves into Semisage."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:SEMISAGE)
@@ -184,7 +212,7 @@ pbChooseNonEggPokemon(1,3)
 }
      when "Cherubi"
     Kernel.pbMessage(_INTL("Cherubi evolves into Cherrim."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:STEENEE)
@@ -194,7 +222,7 @@ pbChooseNonEggPokemon(1,3)
     Kernel.pbMessage(_INTL("OH! How abnormal!"))
      when "Bounsweet"
     Kernel.pbMessage(_INTL("Bounsweet evolves into Steenee."))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:CHERRIM)
@@ -216,7 +244,7 @@ pbChooseNonEggPokemon(1,3)
 	
      when "Jolteon","Vaporeon","Sylveon","Leafeon","Flareon","Glaceon","Umbreon","Espeon"
     Kernel.pbMessage(_INTL("Stand back!"))
-	pkmn=$Trainer.party[$game_variables[1]]
+	pkmn=$player.party[$game_variables[1]]
 	pbFadeOutInWithMusic {
     evo = PokemonEvolutionScene.new
     evo.pbStartScreen(pbGetPokemon(1),:EEVEE)
@@ -277,18 +305,18 @@ def pbOakFix
   pkmn.permaFaint=false
   pkmn.heal_HP
   $game_variables[472] = pkmn.clone
-  if $Trainer.firstPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(0)
-  elsif $Trainer.secondPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(1)
-  elsif $Trainer.thirdPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(2)
-  elsif $Trainer.fourthPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(3)
-  elsif $Trainer.fifthPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(4)
-  elsif $Trainer.sixthPokemon.isSpecies?(:pkmn)
-     $Trainer.remove_pokemon_at_index(5)
+  if $player.firstPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(0)
+  elsif $player.secondPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(1)
+  elsif $player.thirdPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(2)
+  elsif $player.fourthPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(3)
+  elsif $player.fifthPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(4)
+  elsif $player.sixthPokemon.isSpecies?(:pkmn)
+     $player.remove_pokemon_at_index(5)
   end
 end
 
@@ -380,7 +408,7 @@ end
 #===============================================================================
 def pbGenerateEggHome
   return if $game_variables[496] < 2
-  raise _INTL("Can't store the egg.") if $Trainer.party_full?
+  raise _INTL("Can't store the egg.") if $player.party_full?
   pkmn0 = $game_variables[497]
   pkmn1 = $game_variables[498]
   mother = nil
@@ -602,12 +630,12 @@ def pbGenerateEggHome
   egg.steps_to_hatch = egg.species_data.hatch_steps
   egg.givePokerus if rand(65536) < Settings::POKERUS_CHANCE
   # Add egg to party
-  $Trainer.party[$Trainer.party.length] = egg
+  $player.party[$player.party.length] = egg
 end
 
 def pbGenerateEggHome2
   return if $game_variables[496] < 4
-  raise _INTL("Can't store the egg.") if $Trainer.party_full?
+  raise _INTL("Can't store the egg.") if $player.party_full?
   pkmn0 = $game_variables[499]
   pkmn1 = $game_variables[500]
   mother = nil
@@ -829,7 +857,7 @@ def pbGenerateEggHome2
   egg.steps_to_hatch = egg.species_data.hatch_steps
   egg.givePokerus if rand(65536) < Settings::POKERUS_CHANCE
   # Add egg to party
-  $Trainer.party[$Trainer.party.length] = egg
+  $player.party[$player.party.length] = egg
 end
 
 #===============================================================================

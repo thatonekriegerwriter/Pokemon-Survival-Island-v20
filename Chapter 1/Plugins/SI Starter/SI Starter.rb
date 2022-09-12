@@ -114,9 +114,7 @@ def pbLegendaryStarter?(variable)
     starter=="REGIDRAGO"||
     starter=="GLASTRIER"||
     starter=="SPECTRIER"||
-    starter=="CALYREX"||
-    starter=="DRAMPA"||
-    starter=="ROTOM"
+    starter=="CALYREX"
   return false
 end
 

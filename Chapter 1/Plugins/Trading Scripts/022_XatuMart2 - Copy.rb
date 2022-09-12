@@ -116,7 +116,7 @@ class TradingMart3Scene
     @sprites["Item_Hov"].opacity=0
     
     @sprites["Item_icon"]=IconSprite.new(0,0,@viewport)   
-    @sprites["Item_icon"].setBitmap(pbItemIconFile(GameData::Item.try_get(RECIPEMART3[@item][0])))
+    @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(RECIPEMART3[@item][0])))
     @sprites["Item_icon"].x=220+10
     @sprites["Item_icon"].y=40
     @sprites["Item_icon"].opacity=0
@@ -132,7 +132,7 @@ class TradingMart3Scene
     @sprites["Item_1"].y=100
     
     @sprites["Item_1_icon"]=IconSprite.new(0,0,@viewport)    
-    @sprites["Item_1_icon"].setBitmap((@mat1!=-1) ? pbItemIconFile(GameData::Item.try_get(@mat1)) : "")
+    @sprites["Item_1_icon"].setBitmap((@mat1!=-1) ? GameData::Item.icon_filename(GameData::Item.try_get(@mat1)) : "")
     @sprites["Item_1_icon"].x=65+10
     @sprites["Item_1_icon"].y=100+10
     @sprites["Item_1_icon"].opacity=0
@@ -148,7 +148,7 @@ class TradingMart3Scene
     @sprites["Item_2"].y=185
     
     @sprites["Item_2_icon"]=IconSprite.new(0,0,@viewport)    
-    @sprites["Item_2_icon"].setBitmap((@mat2!=-1) ? pbItemIconFile(GameData::Item.try_get(@mat2)) : "")
+    @sprites["Item_2_icon"].setBitmap((@mat2!=-1) ? GameData::Item.icon_filename(GameData::Item.try_get(@mat2)) : "")
     @sprites["Item_2_icon"].x=65+10
     @sprites["Item_2_icon"].y=185+10
     @sprites["Item_2_icon"].opacity=0
@@ -218,12 +218,12 @@ class TradingMart3Scene
         @sprites["Cancel_Hov"].opacity=0
         @sprites["Item"].opacity=0
         @sprites["Item_Hov"].opacity=255
-        @sprites["Item_icon"].setBitmap(pbItemIconFile(GameData::Item.try_get(RECIPEMART3[@item][0])))
+        @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(RECIPEMART3[@item][0])))
         if $game_variables[CRAFTVAR][@item]
             @sprites["unknown"].opacity=0
             @sprites["Item_icon"].opacity=255
-            @sprites["Item_1_icon"].setBitmap(RECIPEMART3[@item][2]? pbItemIconFile(GameData::Item.try_get(RECIPEMART3[@item][2][0])) : "") # Vendily
-            @sprites["Item_2_icon"].setBitmap(RECIPEMART3[@item][3]? pbItemIconFile(GameData::Item.try_get(RECIPEMART3[@item][3][0])) : "") # Vendily
+            @sprites["Item_1_icon"].setBitmap(RECIPEMART3[@item][2]? GameData::Item.icon_filename(GameData::Item.try_get(RECIPEMART3[@item][2][0])) : "") # Vendily
+            @sprites["Item_2_icon"].setBitmap(RECIPEMART3[@item][3]? GameData::Item.icon_filename(GameData::Item.try_get(RECIPEMART3[@item][3][0])) : "") # Vendily
             @sprites["Item_1_icon"].opacity= RECIPEMART3[@item][2] ? 255 : 0
             @sprites["Item_2_icon"].opacity=RECIPEMART3[@item][3] ? 255 : 0
             @mat1=RECIPEMART3[@item][2]? RECIPEMART3[@item][2][0] : -1
@@ -272,7 +272,7 @@ class TradingMart3Scene
                 $PokemonBag.pbDeleteItem(@mat2,@cost2)
               end
               self.text
-              Kernel.pbMessage(_INTL("{1} {2}'s were traded for each other.", @amount, GameData::Item.get(GameData::Item.try_get(RECIPEMART3[@item][0])).name))
+              Kernel.pbMessage(_INTL("{1} and {2} were traded for each other.", GameData::Item.get(GameData::Item.try_get(@mat1)).name, GameData::Item.get(GameData::Item.try_get(RECIPEMART3[@item][0])).name))
             end
           else
             Kernel.pbMessage(_INTL("The Xatu doesn't feel like you should trade for that yet."))
@@ -320,7 +320,7 @@ class TradingMart3Scene
     textos.push([@text1,175,115,false,baseColor,shadowColor])
     textos.push([@text2,175,198+5,false,baseColor,shadowColor])
     textos.push([@text3,75,30,false,baseColor,shadowColor])
-    textos.push(["Craft",230,280+5,false,baseColor,shadowColor])
+    textos.push(["Trade",230,280+5,false,baseColor,shadowColor])
     textos.push(["Cancel",230,330+5,false,baseColor,shadowColor])
     pbDrawTextPositions(overlay,textos)
   end

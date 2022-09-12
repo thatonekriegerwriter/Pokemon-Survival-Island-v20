@@ -28,7 +28,7 @@
 
 module VisibleEncounterSettings
 
-  LET_NORMAL_ENCOUNTERS_SPAWN = true # default false
+  LET_NORMAL_ENCOUNTERS_SPAWN = false # default false
   # This parameter must be true or false. This parameter comes in play when
   # there is no specific overworld encounter type defined in the PBS "encounters.txt"
   # false - means: if there is no specific overworld ecounter type in the PBS 

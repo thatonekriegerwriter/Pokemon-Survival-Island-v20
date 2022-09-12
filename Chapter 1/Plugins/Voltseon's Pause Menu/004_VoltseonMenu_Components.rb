@@ -22,6 +22,26 @@ class SafariHud < Component
   end
 end
 
+class DemoHud < Component
+  def startComponent(viewport)
+    super(viewport)
+    @sprites["overlay"] = BitmapSprite.new(Graphics.width/2,96,viewport)
+    @sprites["overlay"].ox = @sprites["overlay"].bitmap.width
+    @sprites["overlay"].x = Graphics.width
+    @baseColor   = MENU_TEXTCOLOR[$PokemonSystem.current_menu_theme] || Color.new(248,248,248)
+    @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
+  end
+
+  def shouldDraw?; return true if $player.playermode == 0; end
+
+  def refresh
+    text = _INTL("Time: {1}",$player.demotimer)
+    @sprites["overlay"].bitmap.clear
+    pbSetSystemFont(@sprites["overlay"].bitmap)
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,@baseColor,@shadowColor]])
+  end
+end
+
 #-------------------------------------------------------------------------------
 # Survival Hud component
 #-------------------------------------------------------------------------------
@@ -193,7 +213,7 @@ class PokemonPartyHud < Component
     @shinybmp  = Bitmap.new(MENU_FILE_PATH + "overlayShiny")
   end
 
-  def shouldDraw?; return $Trainer.party_count > 0; end
+  def shouldDraw?; return $player.party_count > 0; end
 
   def refresh
     # Iterate through all the player's Pokémon
@@ -204,8 +224,8 @@ class PokemonPartyHud < Component
       @sprites["pokemon#{i}"] = nil
       @sprites.delete("pokemon#{i}")
     end
-    for i in 0...$Trainer.party.length
-      pokemon = $Trainer.party[i]
+    for i in 0...$player.party.length
+      pokemon = $player.party[i]
       next if !pokemon
       spacing = (Graphics.width/8) * i
       # Pokémon Icon

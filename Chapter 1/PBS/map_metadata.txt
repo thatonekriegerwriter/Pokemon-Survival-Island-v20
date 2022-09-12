@@ -154,7 +154,7 @@ BattleBack = mountain
 Name = Transition Room
 Outdoor = false
 #-------------------------------
-[026]   # Test Map
+[026]   # Southern Beach
 Name = Test Map
 Outdoor = false
 #-------------------------------
@@ -388,7 +388,7 @@ Name = Winter Zone
 Outdoor = true
 Weather = Blizzard,20
 #-------------------------------
-[075]   # Winter Zone
+[075]   # DM
 Name = Winter Zone
 Outdoor = true
 #-------------------------------
@@ -425,7 +425,7 @@ Outdoor = true
 Name = Winter Zone
 Outdoor = true
 #-------------------------------
-[084]   # Winter Zone
+[084]
 Name = Winter Zone
 Outdoor = true
 #-------------------------------
@@ -433,7 +433,7 @@ Outdoor = true
 Name = Winter Zone
 Outdoor = true
 #-------------------------------
-[086]   # Winter Zone
+[086]
 Name = Winter Zone
 Outdoor = true
 #-------------------------------
@@ -631,15 +631,15 @@ Outdoor = true
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[135]   # Humid Zone
+[135]   # MQ
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[136]   # Humid Zone
+[136]   # Temperate Ocean (East)
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[137]   # Humid Zone
+[137]   # MAP137
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
@@ -647,15 +647,15 @@ Outdoor = true
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[139]   # Humid Zone
+[139]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[140]   # Humid Zone
+[140]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[141]   # Humid Zone
+[141]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
@@ -663,15 +663,15 @@ Outdoor = true
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[143]   # Humid Zone
+[143]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[144]   # Humid Zone
+[144]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[145]   # Humid Zone
+[145]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
@@ -716,27 +716,27 @@ Outdoor = true
 Name = Greenhouse
 Outdoor = false
 #-------------------------------
-[156]   # Humid Zone
+[156]
 Name = Humid Zone
 Outdoor = true
 #-------------------------------
-[157]   # Humid Area R
+[157]
 Name = Humid Area R
 Outdoor = true
 #-------------------------------
-[158]   # Humid Area B
+[158]   # Humid Zone
 Name = Humid Area B
 Outdoor = true
 #-------------------------------
-[159]   # Humid Area BR
+[159]   # Humid Zone
 Name = Humid Area BR
 Outdoor = true
 #-------------------------------
-[160]   # Humid Area RR
+[160]   # Humid Zone
 Name = Humid Area RR
 Outdoor = true
 #-------------------------------
-[161]   # Humid Area BRR
+[161]   # Humid Zone
 Name = Humid Area BRR
 Outdoor = true
 #-------------------------------
@@ -925,7 +925,7 @@ Name = Forest Zone
 Outdoor = true
 #-------------------------------
 [207]   # Northern Area 
-Name = Northern Area 
+Name = Northern Area
 Outdoor = true
 #-------------------------------
 [208]   # Northern Area
@@ -971,7 +971,7 @@ Name = Cave
 Outdoor = true
 BattleBack = Cave
 #-------------------------------
-[218]   # Temperate-Snowy Zone
+[218]   # Southern Beach
 Name = Temperate-Snowy Zone
 Outdoor = true
 #-------------------------------
@@ -1031,19 +1031,20 @@ Outdoor = true
 Name = Tent
 Outdoor = true
 #-------------------------------
-[233]   # Tent
+[233]   # Southern Beach
 Name = Tent
 Outdoor = true
 #-------------------------------
-[234]   # Tent
+[234]   # Southern Beach
 Name = Tent
 Outdoor = true
 #-------------------------------
-[235]   # Tent
+[235]   # Temperate Ocean
 Name = Tent
 Outdoor = true
 #-------------------------------
-[236]
+[236]   # Temperate Ocean
+Name = Temperate Ocean
 Outdoor = true
 #-------------------------------
 [237]
@@ -1067,7 +1068,7 @@ Outdoor = true
 Name = 3
 Outdoor = true
 #-------------------------------
-[243]   # Temperate Zone
+[243]   # Temperate Ocean
 Name = Temperate Zone
 Outdoor = true
 #-------------------------------
@@ -1226,29 +1227,29 @@ Outdoor = false
 Name = Mountain Skies
 Outdoor = true
 #-------------------------------
-[284]   # Monkey Cave
+[284]
 Name = Monkey Cave
 Outdoor = false
 BattleBack = Cave
 #-------------------------------
-[285]   # The Monkey Kings Lair
+[285]
 Name = The Monkey Kings Lair
 Outdoor = false
 BattleBack = Cave
 #-------------------------------
-[286]   # Xatu Home
+[286]
 Name = Xatu Home
 Outdoor = true
 #-------------------------------
-[287]   # Xatu Home
+[287]
 Name = Xatu Home
 Outdoor = true
 #-------------------------------
-[288]   # Xatu Home
+[288]
 Name = Xatu Home
 Outdoor = true
 #-------------------------------
-[289]   # Xatu Home
+[289]
 Name = Xatu Home
 Outdoor = true
 #-------------------------------

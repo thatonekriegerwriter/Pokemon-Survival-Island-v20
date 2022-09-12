@@ -412,7 +412,7 @@ Name = Battling Prodigy
 Gender = Male
 BaseMoney = 100
 SkillLevel = 50
-BattleBGM = BattleGary
+BattleBGM = BattleRed
 #-------------------------------
 [POKEZORUA]
 Name = Trickster Pokemon

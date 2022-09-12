@@ -184,3 +184,9 @@ def pbCallBub(status=0,value=0)
   $game_temp.speechbubble_talking=get_character(value).id
   $game_temp.speechbubble_bubble=status
 end
+
+
+
+
+
+

@@ -1,5 +1,20 @@
 #Call NeoCI.ChoosePlayerCharacter
 #Return the item internal number or 0 if canceled
+
+VARIABLE1=4926
+VARIABLE2=4927
+VARIABLE3=4928
+VARIABLE4=4929
+VARIABLE5=4930
+VARIABLE6=4931
+VARIABLE7=4932
+VARIABLE1N=4933
+VARIABLE2N=4934
+VARIABLE3N=4935
+VARIABLE4N=4936
+VARIABLE5N=4937
+VARIABLE6N=4938
+VARIABLE7N=4939
 module NeoCI
  def self.ChoosePlayerCharacter()
   pbToneChangeAll(Tone.new(-255,-255,-255),8)
@@ -230,19 +245,19 @@ end
 
 
 
-  def partsetpart(wari)
+  def partsetpart(wari,vari)
      loop do
 	 if wari == 0
      partner = rand(7)+1
 	 if partner == $player.character_ID || partner == $player.runpartner1 || partner == $player.runpartner2 ||  partner == $player.runpartner3 || partner == $player.runpartner4 ||  partner == $player.runpartner5 || partner == $player.runpartner6 ||  partner == $player.runpartner7
-	 
+	   
 	 else
-	 wari = partner
-	 return partner
+	 pbSet(wari, partner)
+	 vari = partner
 	 break
 	 end
   else
-     ret wari
+     return wari
   end
 end
 end

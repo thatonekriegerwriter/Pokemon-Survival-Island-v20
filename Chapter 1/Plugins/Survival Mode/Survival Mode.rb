@@ -33,6 +33,10 @@ pbchangeHealth
 pbchangeSaturation
 pbchangeSleep
 
+  if !GameData::MapMetadata.get($game_map.map_id).outdoor_map
+   $game_screen.weather(:None, 0, 0)
+  end
+  
 if $foodtimer == 150  
     if $player.playerfood >= 80
       $scene.spriteset.addUserAnimation(9, $game_player.x, $game_player.y, true, 3)
@@ -244,9 +248,7 @@ pbLifeCheck
 end
 =end
 
-  if !GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:None, 0, 0)
-  end
+
 
 
 })
@@ -390,7 +392,7 @@ def pbSleepRestore
   else
    $player.playersaturation=$player.playersaturation-($game_variables[247]*2)
  end
-  deposited = pbDayCareDeposited
+  deposited = DayCare.count
   if deposited==2 && $PokemonGlobal.daycareEgg==0
     $PokemonGlobal.daycareEggSteps = 0 if !$PokemonGlobal.daycareEggSteps
     $PokemonGlobal.daycareEggSteps += (1*$game_variables[247]*10)
@@ -802,6 +804,7 @@ if $game_player.pbFacingTerrainTag.can_surf
     if pbConfirmMessage(message)
        $PokemonBag.pbStoreItem(:WATER,1)
 	end
+	$bag.remove(:WATERBOTTLE,1)
 	next 4
    else
     Kernel.pbMessage(_INTL("That is not water."))
@@ -815,6 +818,7 @@ if $game_player.pbFacingTerrainTag.can_surf
     if pbConfirmMessage(message)
        $PokemonBag.pbStoreItem(:WATER,1)
 	end
+	$bag.remove(:GLASSBOTTLE,1)
 	next 4
    else
     Kernel.pbMessage(_INTL("That is not water."))
@@ -828,7 +832,7 @@ if $game_player.pbFacingTerrainTag.can_knockdown
     if pbConfirmMessage(message)
        $PokemonBag.pbStoreItem(:ACORN,(rand(6)))
 	end
-	next 4
+	next 2
    else
     Kernel.pbMessage(_INTL("That is not a tree."))
 	next 0

@@ -5,9 +5,9 @@ StartMoney = 0
 StartItemStorage = POTION
 Home = 10,12,11,2
 StorageCreator = Bill
-WildBattleBGM = Normal Battle
-TrainerBattleBGM = 005-Boss01
-SurfBGM = Surfing
+WildBattleBGM = Normal Battle2
+TrainerBattleBGM = The Power to Fight
+SurfBGM = Ship
 BicycleBGM = Airship
 #-------------------------------
 [1]

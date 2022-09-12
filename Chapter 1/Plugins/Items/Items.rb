@@ -7,7 +7,7 @@ ItemHandlers::UseInField.add(:LCLOAK,proc{|item|
   else
   $game_variables[256]=(:LCLOAK) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:PROTECTIVEVEST,proc{|item|
@@ -18,7 +18,7 @@ ItemHandlers::UseInField.add(:PROTECTIVEVEST,proc{|item|
   else
   $game_variables[256]=(:PROTECTIVEVEST) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:SEASHOES,proc{|item|
@@ -29,7 +29,7 @@ ItemHandlers::UseInField.add(:SEASHOES,proc{|item|
   else
   $game_variables[256]=(:SEASHOES) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:LJACKET,proc{|item|
@@ -40,7 +40,7 @@ ItemHandlers::UseInField.add(:LJACKET,proc{|item|
   else
   $game_variables[256]=(:LJACKET) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:SSHIRT,proc{|item|
@@ -51,7 +51,7 @@ ItemHandlers::UseInField.add(:SSHIRT,proc{|item|
   else
   $game_variables[256]=(:SSHIRT) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:GHOSTMAIL,proc{|item|
@@ -62,7 +62,7 @@ ItemHandlers::UseInField.add(:GHOSTMAIL,proc{|item|
   else
   $game_variables[256]=(:GHOSTMAIL) 
   end
-    next 3
+    next 2
 })
 
 ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
@@ -73,7 +73,7 @@ ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
   else
   $game_variables[256]=(:IRONARMOR) 
   end
-    next 3
+    next 2
 })
 
 
@@ -93,7 +93,7 @@ ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
      $PokemonBag.pbStoreItem(PORTABLECAMP,1)
      pbMessage(_INTL("You decide against sleeping."))
    end
-     next 3
+     next 2
 })
 
 ItemHandlers::UseInField.add(:BERRYBLENDER,proc{|item|

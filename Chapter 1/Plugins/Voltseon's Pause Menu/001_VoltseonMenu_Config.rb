@@ -24,14 +24,14 @@ MENU_FILE_PATH = "Graphics/Pictures/Voltseon's Pause Menu/"
 MENU_ENTRIES = [
 	"MenuEntryPokemon", "MenuEntryPokedex", "MenuEntryBag",
 	"MenuEntryTrainer", "MenuEntryCraft", "MenuEntryVentures", "MenuEntrySave","MenuEntryPokegear" , "MenuEntryExitBugContest",
-	"MenuEntryExitSafari", "MenuEntryDebug", "MenuEntryOptions","MenuEntryControls",
+	"MenuEntryExitSafari", "MenuEntryDebug", "MenuEntryOptions","MenuEntryControls","MenuEntryExitDemo",
 	"MenuEntryQuests", "MenuEntryAchievements", "MenuEntryQuit"
 ]
 
 # An array of aLL the Menu Component Classes from 004_VoltseonMenu_Components
 # that need to be loaded
 MENU_COMPONENTS = [
- "BugContestHud", "PokemonPartyHud", "NewQuestHud", "DateAndTimeHud", "SurvivalHud"
+ "BugContestHud", "PokemonPartyHud", "NewQuestHud", "DateAndTimeHud", "SurvivalHud", "DemoHud"
 ]
 
 # The default theme for the menu screen

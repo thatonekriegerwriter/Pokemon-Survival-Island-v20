@@ -20,7 +20,7 @@ module QuestModule
   }
   
   # Here's an extension of the above that includes multiple stages
-  MSISQ1 = {
+  PSISQ1 = {
     :ID => "2",
     :Name => "Climbing Gear",
     :QuestGiver => "nil",
@@ -32,7 +32,7 @@ module QuestModule
   }
   
 
-  MSISQDS = {
+  PSISQDS = {
     :ID => "3",
     :Name => "Ol' Cro's Boat",
     :QuestGiver => "Ol' Cro",

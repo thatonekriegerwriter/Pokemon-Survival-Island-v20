@@ -12,19 +12,104 @@
 #\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\#
 #==============================================================================#
 #Thanks Maurili and Vendily for the Original Hunger Script                     #
+class PokemonGlobalMetadata
 
-$foodtimer = 0
-$watertimer = 0
-$healthtimer = 0
-$sleeptimer = 0
-$staminatimer = 0
+  attr_accessor :pkmnfoodSteps
+  attr_accessor :pkmnthirstSteps
+  attr_accessor :playerfoodSteps
+  attr_accessor :playerwaterSteps
+  attr_accessor :playersleepSteps
+  attr_accessor :playersaturationSteps
+  
+  
+  EventHandlers.add(:on_step_taken, :foodstepsplayer,
+  proc {
+  $PokemonGlobal.playerfoodSteps = 0 if !$PokemonGlobal.playerfoodSteps
+  $PokemonGlobal.playerfoodSteps += 1 if $SurvivalMode.playersaturation == 0
+  if $PokemonGlobal.playerfoodSteps>=100
+    $player.playerfood -= 1 if rand(100) == 1
+    $PokemonGlobal.playerfoodSteps = 0
+  end
+  }
+)
+
+  EventHandlers.add(:on_step_taken, :waterstepsplayer,
+  proc {
+  $PokemonGlobal.playerwaterSteps = 0 if !$PokemonGlobal.playerwaterSteps
+  $PokemonGlobal.playerwaterSteps += 1 if $SurvivalMode.playersaturation == 0
+  if $PokemonGlobal.playerwaterSteps>=100
+    $player.playerwater -= 1 if rand(100) == 1
+    $PokemonGlobal.playerwaterSteps = 0
+  end
+  }
+)
+
+  EventHandlers.add(:on_step_taken, :saturationstepsplayer,
+  proc {
+  $PokemonGlobal.playersaturationSteps = 100 if !$PokemonGlobal.playersaturationSteps
+  $PokemonGlobal.playersaturationSteps += 1
+  if $PokemonGlobal.playersaturationSteps>=100
+    $player.playersaturation -= 1 if rand(100) <= 3
+    $PokemonGlobal.playersaturationSteps = 0
+  end
+  }
+)
+
+
+end
+
+
+class SurvivalMode
+  attr_reader :playerwater  #206
+  attr_reader :playerfood   #205
+  attr_reader :playersleep   #208
+  attr_reader :playersaturation #207
+  attr_reader :playerhealth #225
+  attr_reader :playerstamina
+  attr_reader :playermaxstamina
+  attr_reader :playerstaminamod
+
+
+
+  
+  def playerwater=(value)
+    validate value => Integer
+    @playerwater = value.clamp(0, 100)
+  end
+  def playerfood=(value)
+    validate value => Integer
+    @playerfood = value.clamp(0, 100)
+  end
+  def playersaturation=(value)
+    validate value => Integer
+    @playersaturation = value.clamp(0, 100)
+  end
+  def playersleep=(value)
+    validate value => Integer
+    @playersleep = value.clamp(0, 200)
+  end
+  def playerhealth=(value)
+    validate value => Integer
+    @playerhealth = value.clamp(0, 100)
+  end
+  def playerstamina=(value)
+    validate value => Integer
+    @playerstamina = value.clamp(0, 1000)
+  end
+  
+  def initialize  
+    @playerwater   = 100   # Text speed (0=slow, 1=normal, 2=fast)
+    @playerfood = 100     # Battle effects (animations) (0=on, 1=off)
+    @playersaturation = 200     # Battle style (0=switch, 1=set)
+    @playersleep = 100     # Battle style (0=switch, 1=set)
+    @playerhealth  = 100     # Default window frame (see also Settings::MENU_WINDOWSKINS)
+    @playerstamina  = 50     # Speech frame
+  end
+
 
 
 EventHandlers.add(:on_step_taken, :feehshtrsgAWAEGEA,
   proc {
-
-
-pbDiscord
 
 if $PokemonSystem.survivalmode==0
 pbchangeFood
@@ -33,192 +118,13 @@ pbchangeHealth
 pbchangeSaturation
 pbchangeSleep
 
-  if !GameData::MapMetadata.get($game_map.map_id).outdoor_map
-   $game_screen.weather(:None, 0, 0)
-  end
-  
-if $foodtimer == 150  
-    if $player.playerfood >= 80
-      $scene.spriteset.addUserAnimation(9, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerfood >= 75
-      $scene.spriteset.addUserAnimation(9, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerfood >= 50
-      $scene.spriteset.addUserAnimation(8, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerfood >= 25
-      $scene.spriteset.addUserAnimation(8, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerfood <= 24
-      $scene.spriteset.addUserAnimation(10, $game_player.x, $game_player.y, true, 3)
-    end  
-   $foodtimer = 0	
-else 
- $foodtimer = $foodtimer+1 if rand(5) < 2
-end
-
-if $watertimer == 150
-    if $player.playerwater >= 80
-      $scene.spriteset.addUserAnimation(22, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerwater >= 75
-      $scene.spriteset.addUserAnimation(22, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerwater >= 50
-      $scene.spriteset.addUserAnimation(23, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerwater >= 25
-      $scene.spriteset.addUserAnimation(23, $game_player.x, $game_player.y, true, 3)
-    elsif $player.playerwater <= 24
-      $scene.spriteset.addUserAnimation(24, $game_player.x, $game_player.y, true, 3)
-    end   
-   $watertimer = 0
-else 
- $watertimer = $watertimer+1 if rand(7) < 2
-end
-
-if $healthtimer == 150
- 	if $player.playerhealth >= 80
-      $scene.spriteset.addUserAnimation(17, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerhealth >= 50
-      $scene.spriteset.addUserAnimation(16, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerhealth >= 25
-      $scene.spriteset.addUserAnimation(15, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerhealth <= 24
-      $scene.spriteset.addUserAnimation(14, $game_player.x, $game_player.y, true, 3)
-   end
-   $healthtimer = 0
-else 
- $healthtimer = $healthtimer+1 if rand(7) < 3
-end
-
-if $sleeptimer == 200
-    if $player.playersleep >= 80
-      $scene.spriteset.addUserAnimation(12, $game_player.x, $game_player.y, true, 3)
-       elsif $player.playersleep >= 75
-      $scene.spriteset.addUserAnimation(12, $game_player.x, $game_player.y, true, 3)
-         elsif $player.playersleep >= 50
-      $scene.spriteset.addUserAnimation(13, $game_player.x, $game_player.y, true, 3)
-           elsif $player.playersleep >= 25
-      $scene.spriteset.addUserAnimation(13, $game_player.x, $game_player.y, true, 3)
-                elsif $player.playersleep <= 24
-      $scene.spriteset.addUserAnimation(11, $game_player.x, $game_player.y, true, 3)
-       end 
-   $sleeptimer = 0
-else 
- $sleeptimer = $sleeptimer+1 if rand(5) < 2
-end
-
-if $staminatimer == 50
- 	if $player.playerstamina >= 80
-      $scene.spriteset.addUserAnimation(17, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerstamina >= 50
-      $scene.spriteset.addUserAnimation(19, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerstamina >= 25
-      $scene.spriteset.addUserAnimation(19, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerstamina <= 24
-      $scene.spriteset.addUserAnimation(20, $game_player.x, $game_player.y, true, 3)
-   elsif $player.playerstamina <= 0
-      $scene.spriteset.addUserAnimation(21, $game_player.x, $game_player.y, true, 3)
-   end
-   $staminatimer = 0
-else 
- $staminatimer = $staminatimer+1 if rand(5) < 2
-end
 
 end
 
 
 
-$game_switches[70]=true
-#pbchangeStamina
+SurvivalModeConfig::POKEMON_SURVIVAL
 
-
- if $player.pokemon_count==6 && $game_switches[75]=true
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
-  if rand(255)==3
-  $player.party[1].changeFood
-  pbPokeAging($player.party[1])
-  end
-  if rand(255)==5
-  $player.party[2].changeFood
-  pbPokeAging($player.party[2])
-  end
-  if rand(255)==7
-  $player.party[3].changeFood
-  pbPokeAging($player.party[3])
-  end
-  if rand(255)==8
-  $player.party[4].changeFood
-  pbPokeAging($player.party[4])
-  end
-  if rand(255)==17
-  $player.party[5].changeFood
-  pbPokeAging($player.party[5])
-  end
- elsif $player.pokemon_count==5
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
-  if rand(255)==3
-  $player.party[1].changeFood
-  pbPokeAging($player.party[1])
-  end
-  if rand(255)==5
-  $player.party[2].changeFood
-  pbPokeAging($player.party[2])
-  end
-  if rand(255)==7
-  $player.party[3].changeFood
-  pbPokeAging($player.party[3])
-  end
-  if rand(255)==8
-  $player.party[4].changeFood
-  pbPokeAging($player.party[4])
-  end
- elsif $player.pokemon_count==4
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
-  if rand(255)==3
-  $player.party[1].changeFood
-  pbPokeAging($player.party[1])
-  end
-  if rand(255)==5
-  $player.party[2].changeFood
-  pbPokeAging($player.party[2])
-  end
-  if rand(255)==7
-  $player.party[3].changeFood
-  pbPokeAging($player.party[3])
-  end
- elsif $player.pokemon_count==3
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
-  if rand(255)==3
-  $player.party[1].changeFood
-  pbPokeAging($player.party[1])
-  end
-  if rand(255)==5
-  $player.party[2].changeFood
-  pbPokeAging($player.party[2])
-  end
- elsif $player.pokemon_count==2
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
-  if rand(255)==3
-  $player.party[1].changeFood
-  pbPokeAging($player.party[1])
-  end
- elsif $player.pokemon_count==1
-  if rand(255)==1
-  $player.party[0].changeFood
-  pbPokeAging($player.party[0])
-  end
- end
 
 if rand(255)==1
  $player.pokemon_party.each do |pkmn|
@@ -232,23 +138,6 @@ $player.pokemon_party.each do |pkmn|
     pbMessage(_INTL("{1} seems to have passed due to old age!"))
   end
 end
- 
-
-
-=begin
-if $game_switches[75]==true && $PokemonSystem.survivalmode = 1 && $PokemonSystem.nuzlockemode = 1 && ($game_variables[30]=0 || $game_variables[30]=1)
-   $game_variables[30]=2
-   $PokemonSystem.survivalmode = 0
-   $PokemonSystem.nuzlockemode = 0
-   
-end
-data = EliteBattle.get_data(:NUZLOCKE, :Metrics, :RULES); data = [] if data.nil?
-if $PokemonSystem.survivalmode == 0 && $game_switches[75]==false && $game_variables[204]==2 && (EliteBattle.get(:nuzlocke) && (data.include?(:NOREVIVE) || data.include?(:PERMADEATH)))
-pbLifeCheck
-end
-=end
-
-
 
 
 })
@@ -319,23 +208,7 @@ end
 
 })
 
-EventHandlers.add(:on_map_or_spriteset_change, :efegrhjttjtjtj,
-  proc {
 
-#------------------------------------------------------------------------------#
-#--------------------------Temperature                 ------------------------#
-#------------------------------------------------------------------------------#
-#  pbEachPokemon { |poke,_box|
-#	  poke.changeHappiness("neglected",poke)
-#	  poke.changeLoyalty("neglected",poke)
-#  }
-
-
-  
-
-
-
-})
 
 def checkHours(hour) # Hour is 0..23
   timeNow = pbGetTimeNow.hour
@@ -886,10 +759,7 @@ end
     if $player.playerfood>100
         $player.playerfood=100
     end
-    $player.playerfood -= 1 if rand(100) == 1 && $player.playersaturation==0
-    $player.playerfood += 1 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && !$player.playersaturation==0
-    $player.playerfood += 0 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && $player.playersaturation==0
-    $player.playerwater += 2 if rand(100) == 1 && $game_variables[256]==(:LJACKET)
+    $player.playerfood -= 1 if rand(100) == 1
   end
 
   def pbchangeWater
@@ -939,7 +809,7 @@ end
   
   else
 	if PBDayNight.isDay?(pbGetTimeNow) && 
-	   $player.playermaxstamina=100+$player.playerstaminamod
+	   $player..playerstaminamod=100+$player.playerstaminamod
 	end
 	if PBDayNight.isMorning?(pbGetTimeNow)
 	   $player.playermaxstamina=100+$player.playerstaminamod
@@ -983,48 +853,10 @@ end
 	end
   end
 
-=begin
-def pbLifeCheck
-   data = EliteBattle.get_data(:NUZLOCKE, :Metrics, :RULES); data = [] if data.nil?
- if $PokemonSystem.survivalmode = 0 && $game_variables[204]==2 && (EliteBattle.get(:nuzlocke) && (data.include?(:NOREVIVE) || data.include?(:PERMADEATH)))
-   Kernel.pbMessage(_INTL("Ah. "))
-   Kernel.pbMessage(_INTL("I see. "))
-   Kernel.pbMessage(_INTL("You are in it for the challenge. "))
-   Kernel.pbMessage(_INTL("By doing this, you not only put yourself at risk. "))
-   Kernel.pbMessage(_INTL("but you risk your own POKeMON too. "))
-   Kernel.pbMessage(_INTL("I bring you another choice. "))
-   Kernel.pbMessage(_INTL("You may also enable POKeMON needing to eat and drink. "))
-   Kernel.pbMessage(_INTL("Pokemon will age, and they may die from that. "))
-   Kernel.pbMessage(_INTL("Their Life expectancy is entirely based on their hardships. "))
-   message=_INTL("Do you wish to activate Pokemon Survival Mode?")
-    if pbConfirmMessage(message)
-	      Kernel.pbMessage(_INTL("You cannot come to terms with this from the Menu. "))
-		  Kernel.pbMessage(_INTL("Your choice is made. "))
-		  $game_switches[75]=true
-	else
-		  Kernel.pbMessage(_INTL("Understandable. "))
-	end
-end
-end
-=end	
+
 	
-	
-	
-def pbLifeCheckChecking
-  if $game_switches[75]==true
-     return true
-  else
-     return false
-end
-end
-	
-	
-	
-#  if pbLifeCheckChecking == true
-#    pkmn.food = (rand(100)+1)
-#    pkmn.water = (rand(100)+1)
-#    pkmn.sleep = (rand(40)+1)
-#  end
+
+
 def pbPokeAging(pkmn)
    oldtimenow=0
    timenow=0
@@ -1040,3 +872,4 @@ def pbPokeAging(pkmn)
    end
 end
 
+end

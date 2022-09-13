@@ -108,6 +108,110 @@ class SurvivalMode
 
 
 
+  def pbchangeFood
+    if $player.playerfood < 0
+	   $player.playerfood=0
+	end
+    if $player.playerfood>100
+        $player.playerfood=100
+    end
+    $player.playerfood -= 1 if rand(100) == 1
+  end
+
+  def pbchangeWater
+    if $player.playerwater < 0
+	   $player.playerwater=0
+	end
+    if $player.playerwater>100
+        $player.playerwater=100  #sleep
+	end
+    $player.playerwater -= 1 if rand(100) == 1 && $player.playersaturation==0
+    $player.playerwater += 1 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && !$player.playersaturation==0
+    $player.playerwater += 0 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && $player.playersaturation==0
+    $player.playerwater += 2 if rand(100) == 1 && $game_variables[256]==(:SEASHOES) && $PokemonGlobal.surfing
+	
+	
+    end
+      
+  def pbchangeSleep
+    if $player.playersleep < 0
+	   $player.playersleep=0
+	end
+    if $player.playersleep>200
+        $player.playersleep=200  #sleep
+	end
+      gain = 0
+	  base = 0
+	  bonus = 0
+      base = -1 if PBDayNight.isDay?(pbGetTimeNow)
+      base = 0 if PBDayNight.isMorning?(pbGetTimeNow)
+      base = -1 if PBDayNight.isAfternoon?(pbGetTimeNow)
+      base = -2 if PBDayNight.isEvening?(pbGetTimeNow)
+      base = -3 if PBDayNight.isNight?(pbGetTimeNow)
+      bonus = -4 if $player.playerstamina < 0
+    $player.playersleep += (gain + base + bonus) if rand(100) <= 1
+  end
+
+  def pbchangeSaturation
+    if $player.playersaturation < 1
+	   $player.playersaturation=0
+	end
+    $player.playersaturation -= 1 if rand(100) <= 3
+    $player.playersaturation -= 4 if rand(100) == 1 && $game_variables[256]==(:LCLOAK)#take from saturation
+	end
+
+  def pbchangeStamina
+  if $PokemonSystem.survivalmode == 1
+  
+  else
+	if PBDayNight.isDay?(pbGetTimeNow) && 
+	   $player..playerstaminamod=100+$player.playerstaminamod
+	end
+	if PBDayNight.isMorning?(pbGetTimeNow)
+	   $player.playermaxstamina=100+$player.playerstaminamod
+	end
+	if PBDayNight.isAfternoon?(pbGetTimeNow)
+	   $player.playermaxstamina=100+$player.playerstaminamod
+	end
+	if PBDayNight.isEvening?(pbGetTimeNow)
+	   $player.playermaxstamina=70+$player.playerstaminamod
+	end
+	if PBDayNight.isNight?(pbGetTimeNow)
+	   $player.playermaxstamina=25+$player.playerstaminamod
+	end
+    if $player.playerstamina < 0
+	   $player.playerstamina=0
+	end
+	if $player.playerstamina > $player.playermaxstamina
+	   $player.playerstamina = $player.playermaxstamina
+	end
+	if $game_player.can_run?
+	   $player.playerstamina-=1 if rand(25) == 1
+	else
+	   $player.playerstamina+=3 if rand(50) == 1
+	end
+	end
+end
+
+  def pbchangeHealth
+    if $player.playerhealth < 0
+	   $player.playerhealth=0
+	end
+	if $game_variables[256]==(:IRONARMOR)
+	    if $player.playerhealth>150
+         $player.playerhealth=150
+		end
+		
+    else 
+	  if $player.playerhealth>100
+        $player.playerhealth=100 
+	   end
+	end
+  end
+
+
+	
+
 EventHandlers.add(:on_step_taken, :feehshtrsgAWAEGEA,
   proc {
 
@@ -210,11 +314,7 @@ end
 
 
 
-def checkHours(hour) # Hour is 0..23
-  timeNow = pbGetTimeNow.hour
-  timeHour = hour
-  return true if timeNow == timeHour 
-end
+
 
 def pbSetTemperature
   $PokemonSystem.temperaturemeasurement = 18 if (pbGetTimeNow.mon==3 && pbGetTimeNow.day==22)
@@ -671,46 +771,6 @@ end
 end
 
 
-ItemHandlers::UseFromBag.add(:WATERBOTTLE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:WATER,1)
-	end
-	$bag.remove(:WATERBOTTLE,1)
-	next 4
-   else
-    Kernel.pbMessage(_INTL("That is not water."))
-	next 0
-end
-})
-
-ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:WATER,1)
-	end
-	$bag.remove(:GLASSBOTTLE,1)
-	next 4
-   else
-    Kernel.pbMessage(_INTL("That is not water."))
-	next 0
-end
-})
-
-ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_knockdown
-     message=(_INTL("Want to knock down some branches?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:ACORN,(rand(6)))
-	end
-	next 2
-   else
-    Kernel.pbMessage(_INTL("That is not a tree."))
-	next 0
-end
-})
 
 class Pokemon
 
@@ -718,11 +778,6 @@ class Pokemon
     gain = 0
     food_range = @food / 100
     gain = [-1, -2, -2][food_range]
-#    if gain > 0
-#      gain += 1 if @obtain_map == $game_map.map_id
-#      gain += 1 if @poke_ball == :LUXURYBALL
-#      gain = (gain * 1.5).floor if hasItem?(:SOOTHEBELL)
-#    end
     @food = (@food + gain).clamp(0, 255)
   end
   
@@ -730,11 +785,6 @@ class Pokemon
     gain = 0
     water_range = @water / 100
     gain = [-1, -2, -2][water_range]
-#    if gain > 0
-#      gain += 1 if @obtain_map == $game_map.map_id
-#      gain += 1 if @poke_ball == :LUXURYBALL
-#      gain = (gain * 1.5).floor if hasItem?(:SOOTHEBELL)
-#    end
     @water = (@water + gain).clamp(0, 255)
   end
   
@@ -742,122 +792,13 @@ class Pokemon
     gain = 0
     age_range = @age / 100
     gain = [-1, -2, -2][age_range]
-#    if gain > 0
-#      gain += 1 if @obtain_map == $game_map.map_id
-#      gain += 1 if @poke_ball == :LUXURYBALL
-#      gain = (gain * 1.5).floor if hasItem?(:SOOTHEBELL)
-#    end
     @age = (@age + gain).clamp(0, 255)
   end
-end
-
-
-  def pbchangeFood
-    if $player.playerfood < 0
-	   $player.playerfood=0
-	end
-    if $player.playerfood>100
-        $player.playerfood=100
-    end
-    $player.playerfood -= 1 if rand(100) == 1
-  end
-
-  def pbchangeWater
-    if $player.playerwater < 0
-	   $player.playerwater=0
-	end
-    if $player.playerwater>100
-        $player.playerwater=100  #sleep
-	end
-    $player.playerwater -= 1 if rand(100) == 1 && $player.playersaturation==0
-    $player.playerwater += 1 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && !$player.playersaturation==0
-    $player.playerwater += 0 if rand(100) == 1 && $game_variables[256]==(:LCLOAK) && $player.playersaturation==0
-    $player.playerwater += 2 if rand(100) == 1 && $game_variables[256]==(:SEASHOES) && $PokemonGlobal.surfing
-	
-	
-    end
-      
-  def pbchangeSleep
-    if $player.playersleep < 0
-	   $player.playersleep=0
-	end
-    if $player.playersleep>200
-        $player.playersleep=200  #sleep
-	end
-      gain = 0
-	  base = 0
-	  bonus = 0
-      base = -1 if PBDayNight.isDay?(pbGetTimeNow)
-      base = 0 if PBDayNight.isMorning?(pbGetTimeNow)
-      base = -1 if PBDayNight.isAfternoon?(pbGetTimeNow)
-      base = -2 if PBDayNight.isEvening?(pbGetTimeNow)
-      base = -3 if PBDayNight.isNight?(pbGetTimeNow)
-      bonus = -4 if $player.playerstamina < 0
-    $player.playersleep += (gain + base + bonus) if rand(100) <= 1
-  end
-
-  def pbchangeSaturation
-    if $player.playersaturation < 1
-	   $player.playersaturation=0
-	end
-    $player.playersaturation -= 1 if rand(100) <= 3
-    $player.playersaturation -= 4 if rand(100) == 1 && $game_variables[256]==(:LCLOAK)#take from saturation
-	end
-
-  def pbchangeStamina
-  if $PokemonSystem.survivalmode == 1
   
-  else
-	if PBDayNight.isDay?(pbGetTimeNow) && 
-	   $player..playerstaminamod=100+$player.playerstaminamod
-	end
-	if PBDayNight.isMorning?(pbGetTimeNow)
-	   $player.playermaxstamina=100+$player.playerstaminamod
-	end
-	if PBDayNight.isAfternoon?(pbGetTimeNow)
-	   $player.playermaxstamina=100+$player.playerstaminamod
-	end
-	if PBDayNight.isEvening?(pbGetTimeNow)
-	   $player.playermaxstamina=70+$player.playerstaminamod
-	end
-	if PBDayNight.isNight?(pbGetTimeNow)
-	   $player.playermaxstamina=25+$player.playerstaminamod
-	end
-    if $player.playerstamina < 0
-	   $player.playerstamina=0
-	end
-	if $player.playerstamina > $player.playermaxstamina
-	   $player.playerstamina = $player.playermaxstamina
-	end
-	if $game_player.can_run?
-	   $player.playerstamina-=1 if rand(25) == 1
-	else
-	   $player.playerstamina+=3 if rand(50) == 1
-	end
-	end
-end
-
-  def pbchangeHealth
-    if $player.playerhealth < 0
-	   $player.playerhealth=0
-	end
-	if $game_variables[256]==(:IRONARMOR)
-	    if $player.playerhealth>150
-         $player.playerhealth=150
-		end
-		
-    else 
-	  if $player.playerhealth>100
-        $player.playerhealth=100 
-	   end
-	end
-  end
-
-
-	
-
-
-def pbPokeAging(pkmn)
+  
+  
+  
+  def pbPokeAging(pkmn)
    oldtimenow=0
    timenow=0
    time=0
@@ -871,5 +812,18 @@ def pbPokeAging(pkmn)
      pkmn.permadeath=true
    end
 end
+end
 
+
+
+
+
+end
+
+
+
+def checkHours(hour) # Hour is 0..23
+  timeNow = pbGetTimeNow.hour
+  timeHour = hour
+  return true if timeNow == timeHour 
 end

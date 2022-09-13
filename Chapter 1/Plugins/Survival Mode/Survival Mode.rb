@@ -56,6 +56,17 @@ class PokemonGlobalMetadata
 )
 
 
+  EventHandlers.add(:on_step_taken, :saturationstepspkmn,
+  proc {
+  $PokemonGlobal.pkmnfoodSteps = 100 if !$PokemonGlobal.pkmnfoodSteps
+  $PokemonGlobal.pkmnfoodSteps += 1
+  if $PokemonGlobal.pkmnfoodSteps>=100
+    $player.playersaturation -= 1 if rand(100) <= 3
+    $PokemonGlobal.pkmnfoodSteps = 0
+  end
+  }
+)
+
 end
 
 

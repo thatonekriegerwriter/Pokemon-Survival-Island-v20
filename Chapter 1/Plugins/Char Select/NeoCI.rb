@@ -242,28 +242,3 @@ end
 
 
 
-
-
-
-  def partsetpart(wari,vari)
-     loop do
-	 if wari == 0
-     partner = rand(7)+1
-	 if partner == $player.character_ID || partner == $player.runpartner1 || partner == $player.runpartner2 ||  partner == $player.runpartner3 || partner == $player.runpartner4 ||  partner == $player.runpartner5 || partner == $player.runpartner6 ||  partner == $player.runpartner7
-	   
-	 else
-	 pbSet(wari, partner)
-	 vari = partner
-	 break
-	 end
-  else
-     return wari
-  end
-end
-end
-
-  def partnerschoosepartner(wari)
-    if $player.character_ID == wari
-	  return false
-	end
-end

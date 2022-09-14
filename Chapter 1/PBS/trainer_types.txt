@@ -533,7 +533,7 @@ BattleBGM = BattleGary
 #-------------------------------
 [POKEMONTRAINER_Dawn]
 Name = Pokémon Trainer
-Gender = Male
+Gender = Female
 BaseMoney = 100
 SkillLevel = 50
 BattleBGM = BattleGary

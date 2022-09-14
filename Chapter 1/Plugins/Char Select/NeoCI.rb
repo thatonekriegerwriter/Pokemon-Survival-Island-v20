@@ -8,6 +8,7 @@ VARIABLE4=4929
 VARIABLE5=4930
 VARIABLE6=4931
 VARIABLE7=4932
+VARIABLE8=4941 #PlayerCharacter
 VARIABLE1N=4933
 VARIABLE2N=4934
 VARIABLE3N=4935
@@ -180,6 +181,7 @@ class CharacterSelect_Scene
                #pbRefresh
                @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
 			   playerCharacter=playerCharacter+1
+			   pbChangePlayer(playerCharacter)
                return playerCharacter
            else
              return -1
@@ -242,3 +244,46 @@ end
 
 
 
+def getPlayerCharacterforPartner(wari)
+ case $player.gender
+   when 0
+     case $player.trainer_type 
+         when "POKEMONTRAINER_Red" 
+		     $game_variables[VARIABLE8] == 1
+         when "POKEMONTRAINER_Brendan" 
+		     $game_variables[VARIABLE8] == 3 #May
+         when "POKEMONTRAINER_Hiro" 
+		     $game_variables[VARIABLE8] == 5 #Kris
+         when "POKEMONTRAINER_Lucas" 
+		     $game_variables[VARIABLE8] == 7 #Dawn
+	 end 
+   when 1
+     case $player.trainer_type 
+         when "POKEMONTRAINER_Leaf" 
+		     $game_variables[VARIABLE8] == 2 #Red
+         when "POKEMONTRAINER_May" 
+		     $game_variables[VARIABLE8] == 4 #Brenden
+         when "POKEMONTRAINER_Kris" 
+		     $game_variables[VARIABLE8] == 6 #Hiro
+         when "POKEMONTRAINER_Dawn" 
+		     $game_variables[VARIABLE8] == 8 #Lucas
+	 end 
+end   
+
+
+loop do
+chance = rand(7)+1
+      $game_variables[VARIABLES1] = chance
+      $game_variables[VARIABLES2] = chance
+      $game_variables[VARIABLES3] = chance
+      $game_variables[VARIABLES4] = chance
+      $game_variables[VARIABLES5] = chance
+      $game_variables[VARIABLES6] = chance
+      $game_variables[VARIABLES7] = chance
+  if chance == $game_variables[VARIABLE8] || $game_variables[VARIABLE7] == $game_variables[VARIABLE6] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE5] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE4] || $game_variables[VARIABLE7] == $game_variables[VARIABLE3] || $game_variables[VARIABLE7] == $game_variables[VARIABLE2] || $game_variables[VARIABLE7] == $game_variables[VARIABLE1] || $game_variables[VARIABLE6] == $game_variables[VARIABLE5] || $game_variables[VARIABLE6] == $game_variables[VARIABLE4] || $game_variables[VARIABLE6] == $game_variables[VARIABLE3] || $game_variables[VARIABLE6] == $game_variables[VARIABLE2] || $game_variables[VARIABLE6] == $game_variables[VARIABLE1] || $game_variables[VARIABLE5] == $game_variables[VARIABLE4] || $game_variables[VARIABLE5] == $game_variables[VARIABLE3] || $game_variables[VARIABLE5] == $game_variables[VARIABLE2] || $game_variables[VARIABLE5] == $game_variables[VARIABLE1] || $game_variables[VARIABLE4] == $game_variables[VARIABLE3] ||	 $game_variables[VARIABLE4] == $game_variables[VARIABLE2] || $game_variables[VARIABLE4] == $game_variables[VARIABLE1] || $game_variables[VARIABLE3] == $game_variables[VARIABLE2] || $game_variables[VARIABLE3] == $game_variables[VARIABLE1] || $game_variables[VARIABLE2] == $game_variables[VARIABLE1]\
+	
+  else
+   break
+  end
+end
+end

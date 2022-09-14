@@ -53,7 +53,7 @@ class Adventure_Scene
 					return false
 				else
 					$PokemonStorage.pbStoreCaught(@party[pos].dup)
-					$Trainer.remove_pokemon_at_index(pos)
+					$player.remove_pokemon_at_index(pos)
 					return true
 				end
 			elsif answer == 2
@@ -62,11 +62,11 @@ class Adventure_Scene
 		end
 	end
 	def pbMoveToAdventure(pos)
-		if $Trainer.has_other_able_pokemon?(pos) 
+		if $player.has_other_able_pokemon?(pos) 
 			if !@adventure.party_full?
 				@party[pos].play_cry
 				@adventure.add_pokemon(@party[pos].dup)
-				$Trainer.remove_pokemon_at_index(pos)
+				$player.remove_pokemon_at_index(pos)
 			else
 				pbMessage(_INTL("The adventuring Party is already full!"))
 			end
@@ -75,7 +75,7 @@ class Adventure_Scene
 		end
 	end
 	def pbMoveToParty(pos) 
-		if !$Trainer.party_full?
+		if !$player.party_full?
 			@party.append(@adventureparty[pos].dup)
 			@adventure.remove_pokemon_at_index(pos)
 		else
@@ -103,7 +103,7 @@ class Adventure_Scene
 					screen = PokemonStorageScreen.new(scene,$PokemonStorage)
 					screen.pbStartScreen(0)
 				}
-				$PokemonStorage.party = $Trainer.party
+				$PokemonStorage.party = $player.party
 			elsif pbConfirmMessage(_INTL("Do you want to send all adventurers to the PC?"))
 				@adventure.sendEveryoneToBox
 			end
@@ -545,7 +545,7 @@ class PokemonStorage
 	
 	def party
 		return @party if !@party.nil?
-		return $Trainer.party
+		return $player.party
 	
 	end
 	def party=(value)
@@ -554,14 +554,14 @@ class PokemonStorage
 
 	def party_full?
 		return @party.length >= Settings::MAX_PARTY_SIZE if !@party.nil?
-		return $Trainer.party_full?
+		return $player.party_full?
 	end
 end
 
 def pbStartAdventureMenu
 	pbFadeOutIn(99999) {
 		scene = Adventure_Scene.new
-		screen = Adventure_Screen.new(scene,$Trainer.party)
+		screen = Adventure_Screen.new(scene,$player.party)
 		screen.pbStartScreen
      }
 end

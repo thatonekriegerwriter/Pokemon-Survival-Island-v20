@@ -24,13 +24,13 @@ class Adventure
 				egg.steps_to_hatch = 0
 				speciesname = egg.speciesName
 				egg.name           = nil
-				egg.owner          = Pokemon::Owner.new_from_trainer($Trainer)
+				egg.owner          = Pokemon::Owner.new_from_trainer($player)
 				egg.happiness      = 100
 				egg.timeEggHatched = pbGetTimeNow
 				egg.obtain_method  = 1   # hatched from egg
 				egg.hatched_map    = $game_map.map_id
-				$Trainer.pokedex.register(egg)
-				$Trainer.pokedex.set_owned(egg.species)
+				$player.pokedex.register(egg)
+				$player.pokedex.set_owned(egg.species)
 				egg.record_first_moves
 			end
 		end
@@ -81,7 +81,7 @@ class Adventure
 		end
 		if !encounter.nil? && !encounter[0].nil?
 			if PokeventureConfig::GlobalLeveling || encounter[1].nil?
-				badges = $Trainer.badge_count
+				badges = $player.badge_count
 				levels = PokeventureConfig::PkmnLevel[[PokeventureConfig::PkmnLevel.length()-1,badges].min]
 				encounter[1] = rand(levels[0]...levels[1])
 			end
@@ -99,12 +99,12 @@ class Adventure
 				if PokeventureConfig::FindFriends && 0 == rand(PokeventureConfig::ChanceToFindFriend-1) && !party_full? 
 					poke.generateBrilliant if (PokeventureConfig::AreFoundFriendsBrilliant && defined?(poke.generateBrilliant))
 					poke.name= nil
-					poke.owner= Pokemon::Owner.new_from_trainer($Trainer)
+					poke.owner= Pokemon::Owner.new_from_trainer($player)
 					poke.obtain_method= 0  
 					poke.obtain_text= "Encountered on an adventure!"
 					poke.timeReceived= pbGetTimeNow
-					$Trainer.pokedex.register(poke)
-					$Trainer.pokedex.set_owned(poke.species)
+					$player.pokedex.register(poke)
+					$player.pokedex.set_owned(poke.species)
 					@party.append(poke)
 				end
 				if PokeventureConfig::CollectItemsFromBattles && 0 ==rand(PokeventureConfig::ChanceToGetEnemyItem)
@@ -168,7 +168,7 @@ class Adventure
 		@party.each { |pkmn| pkmn.heal }
 	end
 	def pbPlayer
-		return $Trainer 
+		return $player 
 	end
 	def pbGainAventureExp(pkmn,defeatedBattler,numPartic)
 		growth_rate = pkmn.growth_rate

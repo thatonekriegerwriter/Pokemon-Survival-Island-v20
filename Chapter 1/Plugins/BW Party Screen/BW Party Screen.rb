@@ -1672,7 +1672,9 @@ MenuHandlers.add(:party_menu_tend, :feed, {
   "name"      => _INTL("Feed"),
   "order"     => 20,
   "effect"    => proc { |screen, party, party_idx|
-      pbMessage(_INTL("This has not been implimented yet."))
+    pkmn = party[party_idx]
+    item = screen.scene.pbChooseItem($bag) {
+      pbEatingPkmn(item,pkmn)}
   }
 })
 

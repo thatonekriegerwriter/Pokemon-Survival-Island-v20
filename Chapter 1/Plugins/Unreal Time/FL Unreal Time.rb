@@ -61,7 +61,7 @@ module UnrealTime
   # Time proportion here. 
   # So if it is 100, one second in real time will be 100 seconds in game.
   # If it is 60, one second in real time will be one minute in game.
-  PROPORTION=30
+  PROPORTION=60
 
   # Starting on Essentials v17, the map tone only try to refresh tone each 30 
   # real time seconds. 
@@ -238,10 +238,6 @@ if UnrealTime::ENABLED
         day_care.step_counter = 0 if !day_care.egg_generated
         day_care.step_counter += 1
 	   end
-	   if $player.playerhealth < 1 && $PokemonSystem.survivalmode == 0
-           pbStartOver
-       end 
-        pbchangeStamina
       self.newFrameCount+=1
     end
     

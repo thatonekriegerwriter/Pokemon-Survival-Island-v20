@@ -1,0 +1,4 @@
+Name = Held Item Drops
+Version = 1.0
+Credits = thatonekriegerwriter, TungstenBasilisk, Cilerba, Vendily, TechSkylander1518, and Kingfisher for making me remember to update it.
+Essentials = 20

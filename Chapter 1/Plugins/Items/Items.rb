@@ -125,7 +125,8 @@ ItemHandlers::UseOnPokemon.add(:SUSPO,proc { |item,pkmn,scene|
           pkmn.obtain_method  = 1
           pkmn.food  = 100
           pkmn.water  = 100
-          pkmn.sleep  = 1
+          pkmn.age  = 1
+          pkmn.lifespan  = 50
 		  pkmn.permaFaint = false
           next true
          else

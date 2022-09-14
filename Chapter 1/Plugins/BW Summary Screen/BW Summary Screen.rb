@@ -1296,7 +1296,7 @@
        [_INTL("Water"),10,242,0,base,shadow],
        [_INTL("{1}/100",@pokemon.water{1}),126,242,0,base,shadow],
        [_INTL("Age"),10,262,0,base,shadow],
-       [_INTL("{1}",@pokemon.sleep{1}),126,262,0,base,shadow],
+       [_INTL("{1}",@pokemon.age{1}),126,262,0,base,shadow],
     ]
     # Draw all text
     pbDrawTextPositions(overlay,textpos)

@@ -1,21 +1,7 @@
 #Call NeoCI.ChoosePlayerCharacter
 #Return the item internal number or 0 if canceled
 
-VARIABLE1=4926
-VARIABLE2=4927
-VARIABLE3=4928
-VARIABLE4=4929
-VARIABLE5=4930
-VARIABLE6=4931
-VARIABLE7=4932
-VARIABLE8=4941 #PlayerCharacter
-VARIABLE1N=4933
-VARIABLE2N=4934
-VARIABLE3N=4935
-VARIABLE4N=4936
-VARIABLE5N=4937
-VARIABLE6N=4938
-VARIABLE7N=4939
+
 module NeoCI
  def self.ChoosePlayerCharacter()
   pbToneChangeAll(Tone.new(-255,-255,-255),8)
@@ -243,8 +229,31 @@ class PokemonCharacterSelect
 end
 
 
+VARIABLE1=4926
+VARIABLE2=4927
+VARIABLE3=4928
+VARIABLE4=4929
+VARIABLE5=4930
+VARIABLE6=4931
+VARIABLE7=4932
+VARIABLE8=4941 #PlayerCharacter
+VARIABLE1N=4933
+VARIABLE2N=4934
+VARIABLE3N=4935
+VARIABLE4N=4936
+VARIABLE5N=4937
+VARIABLE6N=4938
+VARIABLE7N=4939
 
-def getPlayerCharacterforPartner(wari)
+def getPlayerCharacterforPartner
+  $game_variables[VARIABLE1] = 0
+  $game_variables[VARIABLE2] = 0
+  $game_variables[VARIABLE3] = 0
+  $game_variables[VARIABLE4] = 0
+  $game_variables[VARIABLE5] = 0
+  $game_variables[VARIABLE6] = 0
+  $game_variables[VARIABLE7] = 0
+  $game_variables[VARIABLE8] = 0
  case $player.gender
    when 0
      case $player.trainer_type 
@@ -272,15 +281,28 @@ end
 
 
 loop do
-chance = rand(7)+1
-      $game_variables[VARIABLES1] = chance
-      $game_variables[VARIABLES2] = chance
-      $game_variables[VARIABLES3] = chance
-      $game_variables[VARIABLES4] = chance
-      $game_variables[VARIABLES5] = chance
-      $game_variables[VARIABLES6] = chance
-      $game_variables[VARIABLES7] = chance
-  if chance == $game_variables[VARIABLE8] || $game_variables[VARIABLE7] == $game_variables[VARIABLE6] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE5] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE4] || $game_variables[VARIABLE7] == $game_variables[VARIABLE3] || $game_variables[VARIABLE7] == $game_variables[VARIABLE2] || $game_variables[VARIABLE7] == $game_variables[VARIABLE1] || $game_variables[VARIABLE6] == $game_variables[VARIABLE5] || $game_variables[VARIABLE6] == $game_variables[VARIABLE4] || $game_variables[VARIABLE6] == $game_variables[VARIABLE3] || $game_variables[VARIABLE6] == $game_variables[VARIABLE2] || $game_variables[VARIABLE6] == $game_variables[VARIABLE1] || $game_variables[VARIABLE5] == $game_variables[VARIABLE4] || $game_variables[VARIABLE5] == $game_variables[VARIABLE3] || $game_variables[VARIABLE5] == $game_variables[VARIABLE2] || $game_variables[VARIABLE5] == $game_variables[VARIABLE1] || $game_variables[VARIABLE4] == $game_variables[VARIABLE3] ||	 $game_variables[VARIABLE4] == $game_variables[VARIABLE2] || $game_variables[VARIABLE4] == $game_variables[VARIABLE1] || $game_variables[VARIABLE3] == $game_variables[VARIABLE2] || $game_variables[VARIABLE3] == $game_variables[VARIABLE1] || $game_variables[VARIABLE2] == $game_variables[VARIABLE1]\
+    if $game_variables[VARIABLE1] == $game_variables[VARIABLE8] || $game_variables[VARIABLE1] == $game_variables[VARIABLE7] || $game_variables[VARIABLE1] == $game_variables[VARIABLE6] || $game_variables[VARIABLE1] == $game_variables[VARIABLE5] || $game_variables[VARIABLE1] == $game_variables[VARIABLE4] || $game_variables[VARIABLE1] == $game_variables[VARIABLE3] || $game_variables[VARIABLE1] == $game_variables[VARIABLE2]
+      $game_variables[VARIABLE1] = rand(7)+1
+	end
+    if $game_variables[VARIABLE2] == $game_variables[VARIABLE8] || $game_variables[VARIABLE2] == $game_variables[VARIABLE7] || $game_variables[VARIABLE2] == $game_variables[VARIABLE6] || $game_variables[VARIABLE2] == $game_variables[VARIABLE5] || $game_variables[VARIABLE2] == $game_variables[VARIABLE4] || $game_variables[VARIABLE2] == $game_variables[VARIABLE3]
+      $game_variables[VARIABLE2] = rand(7)+1
+	end
+    if $game_variables[VARIABLE3] == $game_variables[VARIABLE8] || $game_variables[VARIABLE3] == $game_variables[VARIABLE7] || $game_variables[VARIABLE3] == $game_variables[VARIABLE6] || $game_variables[VARIABLE3] == $game_variables[VARIABLE5] || $game_variables[VARIABLE3] == $game_variables[VARIABLE4]
+      $game_variables[VARIABLE3] = rand(7)+1
+	end
+    if $game_variables[VARIABLE4] == $game_variables[VARIABLE8] || $game_variables[VARIABLE4] == $game_variables[VARIABLE7] || $game_variables[VARIABLE4] == $game_variables[VARIABLE6] || $game_variables[VARIABLE4] == $game_variables[VARIABLE5]
+      $game_variables[VARIABLE4] = rand(7)+1
+	end
+    if $game_variables[VARIABLE5] == $game_variables[VARIABLE8] || $game_variables[VARIABLE5] == $game_variables[VARIABLE7] || $game_variables[VARIABLE5] == $game_variables[VARIABLE6]
+      $game_variables[VARIABLE5] = rand(7)+1
+	end
+    if $game_variables[VARIABLE6] == $game_variables[VARIABLE8] || $game_variables[VARIABLE6] == $game_variables[VARIABLE7]
+      $game_variables[VARIABLE6] = rand(7)+1
+	end
+    if $game_variables[VARIABLE7] == $game_variables[VARIABLE8]
+      $game_variables[VARIABLE7] = rand(7)+1
+	end
+  if  $game_variables[VARIABLE8] == $game_variables[VARIABLE7] || $game_variables[VARIABLE8] == $game_variables[VARIABLE6] || $game_variables[VARIABLE8] == $game_variables[VARIABLE5] || $game_variables[VARIABLE8] == $game_variables[VARIABLE4] || $game_variables[VARIABLE8] == $game_variables[VARIABLE3] ||$game_variables[VARIABLE8] == $game_variables[VARIABLE2] ||$game_variables[VARIABLE8] == $game_variables[VARIABLE1] ||   $game_variables[VARIABLE7] == $game_variables[VARIABLE6] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE5] ||  $game_variables[VARIABLE7] == $game_variables[VARIABLE4] || $game_variables[VARIABLE7] == $game_variables[VARIABLE3] || $game_variables[VARIABLE7] == $game_variables[VARIABLE2] || $game_variables[VARIABLE7] == $game_variables[VARIABLE1] || $game_variables[VARIABLE6] == $game_variables[VARIABLE5] || $game_variables[VARIABLE6] == $game_variables[VARIABLE4] || $game_variables[VARIABLE6] == $game_variables[VARIABLE3] || $game_variables[VARIABLE6] == $game_variables[VARIABLE2] || $game_variables[VARIABLE6] == $game_variables[VARIABLE1] || $game_variables[VARIABLE5] == $game_variables[VARIABLE4] || $game_variables[VARIABLE5] == $game_variables[VARIABLE3] || $game_variables[VARIABLE5] == $game_variables[VARIABLE2] || $game_variables[VARIABLE5] == $game_variables[VARIABLE1] || $game_variables[VARIABLE4] == $game_variables[VARIABLE3] ||	 $game_variables[VARIABLE4] == $game_variables[VARIABLE2] || $game_variables[VARIABLE4] == $game_variables[VARIABLE1] || $game_variables[VARIABLE3] == $game_variables[VARIABLE2] || $game_variables[VARIABLE3] == $game_variables[VARIABLE1] || $game_variables[VARIABLE2] == $game_variables[VARIABLE1]\
 	
   else
    break

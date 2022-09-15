@@ -7,7 +7,7 @@ class PokemonColorVariants
   # General
   #-----------------------------------------------------------------------------
   # The odds of a newly generated Pokémon being colored (out of 65536).
-  HUE_POKEMON_CHANCE = 256 # default: 256 (256/65536 = 1/256)
+  HUE_POKEMON_CHANCE = 512 # default: 256 (256/65536 = 1/256)
   
   # Use only specific hues 
   SPECIFIC_HUE_ONLY = false

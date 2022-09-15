@@ -92,6 +92,7 @@ module FollowingPkmn
     fname.gsub!("Graphics/Characters/", "")
     FollowingPkmn.get_event&.character_name = fname
     FollowingPkmn.get_data&.character_name  = fname
+	FollowingPkmn.pokemon_color_variants(pkmn) if PluginManager.installed?("Pokemon Color Variants")
     if FollowingPkmn.get_event&.move_route_forcing
       hue = pkmn.respond_to?(:superHue) && pkmn.superShiny? ? pkmn.superHue : 0
       FollowingPkmn.get_event&.character_hue  = hue

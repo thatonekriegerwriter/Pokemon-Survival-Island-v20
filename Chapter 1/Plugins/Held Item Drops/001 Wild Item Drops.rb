@@ -20,10 +20,8 @@ class Battle::Scene
     case firstPkmn.ability_id
     when :COMPOUNDEYES
       chances = [ItemDropsConfig::Common_Compound_Chance,ItemDropsConfig::Uncommon_Compound_Chance,ItemDropsConfig::Rare_Compound_Chance]
-      chances = [60,40,15]
     when :SUPERLUCK
       chances = [ItemDropsConfig::Common_SuperLuck_Chance,ItemDropsConfig::Uncommon_SuperLuck_Chance,ItemDropsConfig::Rare_SuperLuck_Chance]
-      chances = [50,50,50]
     end
   end
     droprnd = rand(100)

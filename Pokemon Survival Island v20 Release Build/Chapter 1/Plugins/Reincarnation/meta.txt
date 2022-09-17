@@ -1,2 +1,0 @@
-Name      = Reincarnation
-Version   = 1.0

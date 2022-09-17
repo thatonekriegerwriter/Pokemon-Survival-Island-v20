@@ -1,3 +1,0 @@
-﻿Name      = Battle-Worn Opponents
-Website   = https://github.com/Jack1324567/PE-Custom-Script
-Credits   = Ulithium_Dragon, bo4p5687

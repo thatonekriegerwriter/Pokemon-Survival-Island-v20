@@ -1,2 +1,0 @@
-Name = Achievements
-Version = 1.0

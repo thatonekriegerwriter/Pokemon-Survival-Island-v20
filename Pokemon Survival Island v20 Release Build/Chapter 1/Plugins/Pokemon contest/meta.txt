@@ -1,4 +1,0 @@
-Name      = Pokemon Contests Script
-Version   = 1.0
-Website   = https://github.com/Jack1324567/PE-Custom-Script
-Credits   = mej71, Maruno, FL, JV, Umbreon/Hansiec, Saving Raven, FL, Luka S.J., TastyRedTomato, bo4p5687

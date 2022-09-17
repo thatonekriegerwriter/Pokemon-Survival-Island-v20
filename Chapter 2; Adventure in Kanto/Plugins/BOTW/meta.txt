@@ -1,2 +1,0 @@
-Name         = BOTW
-Version      = 1

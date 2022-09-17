@@ -1,4 +1,0 @@
-Name = Better Healing Machine
-Version = 1.0
-Credits = mej71, Rua
-

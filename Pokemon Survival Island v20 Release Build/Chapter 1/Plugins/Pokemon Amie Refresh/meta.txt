@@ -1,4 +1,0 @@
-Name      = Pokemon Amie/ Refresh
-Version   = 1.0
-Website   = https://github.com/Jack1324567/PE-Custom-Script
-Credits   = rigbycwts, Pizza Sun, Luka S.J., BhagyaJyoti, bo4p5687

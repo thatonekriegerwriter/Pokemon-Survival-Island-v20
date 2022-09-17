@@ -1,3 +1,0 @@
-Name         = SI Crafting
-Version      = God Knows
-Credits      = ferriswheel42

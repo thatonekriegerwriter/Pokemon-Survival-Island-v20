@@ -18,13 +18,13 @@
     // If this fails, the version defaults to 1.
     // (default: 0)
     //
-    // "rgssVersion": 1,
+ "rgssVersion": 0,
 
     // Create a debug context and log
     // OpenGL debug information to the console
     // (default: disabled)
     //
-    // "debugMode": false,
+ "debugMode": true,
 
 
     // Continuously print average FPS to console.
@@ -52,14 +52,14 @@
     // as opposed to stretch-to-fill
     // (default: enabled)
     //
-    // "fixedAspectRatio": true,
+ "fixedAspectRatio": false,
 
 
     // Apply linear interpolation when game screen
     // is upscaled
     // (default: disabled)
     //
-    //  "smoothScaling": true,
+    // "smoothScaling": false,
 
 
     // Sync screen redraws to the monitor refresh rate
@@ -96,7 +96,7 @@
     // This option may be force-disabled at build time.
     // (0 = disabled)
     //
-    // "fixedFramerate": 0,
+ "fixedFramerate": 30,
 
 
     // Skip (don't draw) frames when behind.
@@ -104,7 +104,7 @@
     // default value when the game starts.
     // (default: disabled)
     //
-    // "frameSkip": false,
+    // "frameSkip": true,
 
 
     // Use a fixed framerate that is approx. equal to the
@@ -116,7 +116,7 @@
     // This option may be force-disabled at build time.
     // (default: disabled)
     //
- "syncToRefreshrate": true,
+    // "syncToRefreshrate": true,
 
 
     // Don't use alpha blending when rendering text
@@ -164,7 +164,7 @@
     // fullscreen
     // (default: disabled)
     //
-    // "anyAltToggleFS": false,
+ "anyAltToggleFS": true,
 
 
     // Enable F12 game reset
@@ -280,7 +280,7 @@
     // will keep in its cache.
     // (default: 100)
     //
-    // "JITMaxCache": 100,
+ "JITMaxCache": 1000,
     
     // Determines how many times a function has to be
     // called before it is compiled.

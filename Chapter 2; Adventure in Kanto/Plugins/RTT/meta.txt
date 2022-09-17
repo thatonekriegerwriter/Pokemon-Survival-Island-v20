@@ -1,5 +1,0 @@
-Name       = Randomized Trainer Teams
-Version    = 1.0.0
-Essentials = 20.1
-Link       = https://reliccastle.com/resources/906/  
-Credits    = Kotaro

@@ -1,0 +1,3 @@
+Name         = Achievements
+Version      = 1.1
+Essentials   = 20

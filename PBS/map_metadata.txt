@@ -1,0 +1,1740 @@
+﻿# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[001]   # INTRO
+Name = INTRO
+Outdoor = false
+ShowArea = false
+BattleBack = 
+#-------------------------------
+[002]   # Cave
+Name = Cave
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = true
+#-------------------------------
+[003]   # S.S. Glittering
+Name = S.S. Glittering
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[004]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = true
+HealingSpot = 4,21,12
+BattleBack = Forest
+#-------------------------------
+[005]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = true
+#-------------------------------
+[006]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+SnapEdges = true
+BattleBack = Forest
+#-------------------------------
+[007]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Forest
+#-------------------------------
+[008]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+DiveMap = 9
+BattleBack = Forest
+#-------------------------------
+[009]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Forest
+#-------------------------------
+[010]   # Temperate Base
+Name = Temperate Base
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Forest
+#-------------------------------
+[011]   # Memory
+Name = Memory
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BicycleAlways = false
+Weather = Rain,0
+#-------------------------------
+[012]   # Stone Temple
+Name = Stone Temple
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Ruins
+#-------------------------------
+[013]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+#-------------------------------
+[014]   # Stone Temple Cave
+Name = Stone Temple Cave
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Cave
+#-------------------------------
+[015]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[016]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+HealingSpot = 16,22,28
+BattleBack = Mountain
+#-------------------------------
+[017]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Mountain
+#-------------------------------
+[018]   # Red and Blue's Cabin
+Name = Red and Blue's Cabin
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[019]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+SafariMap = true
+BattleBack = Mountain
+#-------------------------------
+[020]   # Rocky Base
+Name = Rocky Base
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = false
+BicycleAlways = false
+BattleBack = Cave
+#-------------------------------
+[021]   # 1
+Name = 1
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = false
+#-------------------------------
+[022]   # Cave
+Name = Cave
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = true
+DarkMap = true
+SnapEdges = false
+BattleBack = Cave
+#-------------------------------
+[023]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = false
+#-------------------------------
+[024]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = false
+BattleBack = mountain
+#-------------------------------
+[025]   # Transition Room
+Name = Transition Room
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[026]   # Temperate Coast
+Name = Test Map
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[027]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Forest
+#-------------------------------
+[028]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Mountain
+#-------------------------------
+[029]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Mountain
+#-------------------------------
+[030]   # Temperate Highlands
+Name = Temperate Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Mountain
+#-------------------------------
+[031]   # Mountain Interior
+Name = Mountain Interior
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[033]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Bicycle = true
+BattleBack = Swamp
+#-------------------------------
+[034]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Swamp
+#-------------------------------
+[035]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Swamp
+#-------------------------------
+[036]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Weather = Rain,100
+DarkMap = false
+BattleBack = Swamp
+#-------------------------------
+[037]   # Water Temple
+Name = Water Temple
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[038]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[039]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[040]   # Forested Base
+Name = Forested Base
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[041]   # Base Path
+Name = Base Path
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[042]   # Southern Ocean
+Name = Southern Ocean
+Outdoor = true
+MapPosition = 0,0,0
+DiveMap = 114
+#-------------------------------
+[043]   # Route 1
+Name = Route 1
+Outdoor = false
+MapPosition = 0,0,0
+DarkMap = false
+SnapEdges = true
+BattleBack = Forest
+#-------------------------------
+[044]   # Temperate Inland
+Name = Temperate Inland
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Snow
+#-------------------------------
+[045]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Forest
+#-------------------------------
+[046]   # MAP046
+Name = MAP046
+Outdoor = false
+MapPosition = 0,0,0
+ShowArea = true
+BattleBack = Forest
+#-------------------------------
+[047]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+SnapEdges = false
+BattleBack = Forest
+#-------------------------------
+[048]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[049]   # Rocket
+Name = Rocket
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[050]   # MAP050
+Name = MAP050
+Outdoor = false
+MapPosition = 0,0,0
+SnapEdges = true
+#-------------------------------
+[051]   # 5
+Name = 5
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[052]   # South
+Name = South
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[053]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[054]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[055]   # Player Cabin
+Name = Player Cabin
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[056]   # Home Interior
+Name = Home Interior
+Outdoor = false
+MapPosition = 0,0,0
+HealingSpot = 55,24,11
+SnapEdges = true
+#-------------------------------
+[057]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[058]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[059]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+DiveMap = 66
+#-------------------------------
+[060]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[061]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[062]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[063]   # Xatu's Cave
+Name = Xatu's Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[064]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = false
+Weather = Rain,20
+BattleBack = Forest
+#-------------------------------
+[065]   # Ravine
+Name = Ravine
+Outdoor = true
+MapPosition = 0,0,0
+Weather = Rain,20
+BattleBack = Forest
+#-------------------------------
+[066]   # UnderwaterCave
+Name = UnderwaterCave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[067]   # Xatu's Cave
+Name = Xatu's Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[068]   # Temperate Inland
+Name = Temperate Inland
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[070]   # William's Cabin
+Name = William's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[071]   # Ice Cave
+Name = Ice Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[072]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+ShowArea = true
+Weather = Blizzard,20
+#-------------------------------
+[073]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+Weather = Snow,20
+#-------------------------------
+[074]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+Weather = Blizzard,20
+#-------------------------------
+[075]   # DM
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[076]   # Cave
+Name = Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[077]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[078]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[079]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[080]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[081]   # MAP081
+Name = MAP081
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[082]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[083]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[084]
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[085]   # Frigid Highlands
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[086]
+Name = Frigid Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[087]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[088]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[089]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[090]   # Xatu Mart
+Name = Xatu Mart
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[091]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[092]   # Xatu Inn
+Name = Xatu Inn
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[093]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[094]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[095]   # Reviver Xatu Home
+Name = Reviver Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[096]   # Xatu Home
+Name = Xatu Home
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[097]   # Blue's Cave
+Name = Blue's Cave
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[098]   # Ice Temple
+Name = Ice Temple
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[099]   # Ice Temple
+Name = Ice Temple
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[100]   # Ice Temple
+Name = Ice Temple
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[101]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[102]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[103]   # Red and Blue's Cabin
+Name = Red and Blue's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[104]   # Southern Ocean
+Name = Southern Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[105]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[106]   # Temperate Area
+Name = Temperate Area
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[107]   # Mountain Area
+Name = Mountain Area
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[108]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[109]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[110]   # Temperate Marsh
+Name = Temperate Marsh
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[111]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[112]   # Deep Caves
+Name = Deep Caves
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[113]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[114]   # Southern Ocean U
+Name = Southern Ocean U
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[115]   # Your Cabin
+Name = Your Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[116]   # William's Cabin
+Name = William's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[117]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[118]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[119]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[120]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[121]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[122]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[123]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[124]   # S.S. Glittering
+Name = S.S. Glittering
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[125]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[126]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[127]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[128]   # Kitchen
+Name = Kitchen
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[129]   # Captain's Quarters
+Name = Captain's Quarters
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[130]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[131]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[132]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[133]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[134]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[135]   # MQ
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[136]   # Temperate Ocean (East)
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[137]   # MAP137
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[138]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[139]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[140]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[141]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[142]   # Tropical Coast
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[143]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[144]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[145]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[146]   # S.S Glittering
+Name = S.S Glittering
+Outdoor = true
+MapPosition = 0,0,0
+SnapEdges = true
+#-------------------------------
+[147]   # Greenhouse
+Name = Greenhouse
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[148]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[149]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[150]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[151]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[152]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[153]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[154]   # Greenhouse
+Name = Greenhouse
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[155]   # Greenhouse
+Name = Greenhouse
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[156]
+Name = Tropical Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[157]
+Name = Tropical Coast R
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[158]   # Tropical Coast
+Name = Tropical Coast B
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[159]   # Tropical Coast
+Name = Tropical Coast BR
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[160]   # Tropical Coast
+Name = Tropical Coast RR
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[161]   # Tropical Coast
+Name = Tropical Coast BRR
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[162]   # Red's Cabin
+Name = Red's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[163]   # Deep Caves
+Name = Deep Caves
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[164]   # Island 1
+Name = Island 1
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[165]   # Prologue
+Name = Prologue
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[166]   # Red and Blue's Cabin
+Name = Red and Blue's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[167]   # In the Middle
+Name = In the Middle
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[168]   # Tiny Island
+Name = Tiny Island
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[169]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[170]   # William's Cabin
+Name = William's Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[171]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[172]   # S.S Glittering
+Name = S.S Glittering
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[173]   # S.S Glittering
+Name = S.S Glittering
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[174]   # Kitchen
+Name = Kitchen
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[175]   # Captain's Quarters
+Name = Captain's Quarters
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[176]   # S.S Glittering
+Name = S.S Glittering
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[177]   # S.S. Glittering
+Name = S.S. Glittering
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[178]   # Cedar City
+Name = Cedar City
+Outdoor = true
+MapPosition = 0,0,0
+SnapEdges = true
+#-------------------------------
+[179]   # Lab
+Name = Lab
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[180]   # Rocket Hideout B1F
+Name = Rocket Hideout B1F
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[181]   # PokéCenter
+Name = PokéCenter
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[182]   # Studio City
+Name = Studio City
+Outdoor = true
+MapPosition = 0,0,0
+SnapEdges = true
+#-------------------------------
+[183]   # Pokemon Trainers School
+Name = Pokemon Trainers School
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[184]   # House 1
+Name = House 1
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[185]   # House 2
+Name = House 2
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[186]   # House 3
+Name = House 3
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[187]   # House 4
+Name = House 4
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[188]   # Bike Shop
+Name = Bike Shop
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[189]   # Safari Zone Warden's House
+Name = Safari Zone Warden's House
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[190]   # Museum
+Name = Museum
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[191]   # PokéCenter
+Name = PokéCenter
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[192]   # Department Store 1F
+Name = Department Store 1F
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[193]   # Department Store 2F
+Name = Department Store 2F
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[194]   # Department Store 3F
+Name = Department Store 3F
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[195]   # Department Store Rooftop
+Name = Department Store Rooftop
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[196]   # Other.
+Name = Other.
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[197]   # Deep Caves
+Name = Deep Caves
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[198]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[199]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[200]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[201]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[202]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[203]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[204]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[205]   # Temperate Shore
+Name = Temperate Shore
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[206]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[207]   # Tropical Highlands 
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[208]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[209]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[210]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[211]   # Deep Caves
+Name = Deep Caves
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[212]   # MAP212
+Name = MAP212
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[213]   # Ice Cave
+Name = Ice Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[214]   # Temple Prime
+Name = Temple Prime
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[215]   # Department Store Elevator
+Name = Department Store Elevator
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[216]   # Apartment Complex
+Name = Apartment Complex
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[217]   # Cave
+Name = Cave
+Outdoor = true
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[218]   # Temperate Coast
+Name = Temperate Inland
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[219]   # Player Room
+Name = Player Room
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[220]   # Apartment Complex
+Name = Apartment Complex
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[221]   # Apartment Complex
+Name = Apartment Complex
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[222]   # 1
+Name = 1
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[223]   # Office 2012
+Name = Office 2012
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[224]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[225]   # Abandoned Cabin
+Name = Abandoned Cabin
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[226]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[227]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[228]   # S.S Glittering Wreck
+Name = S.S Glittering Wreck
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[229]   # Kitchen
+Name = Kitchen
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[230]   # Captain's Quarters
+Name = Captain's Quarters
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[231]   # S.S. Glittering
+Name = S.S. Glittering
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[232]   # Tent
+Name = Tent
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[233]   # Temperate Coast
+Name = Tent
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[234]   # Temperate Coast
+Name = Tent
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[235]   # Temperate Ocean
+Name = Tent
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[236]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[237]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[238]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[239]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[240]   # Office 2012
+Name = Office 2012
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[241]   # 2
+Name = 2
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[242]   # 3
+Name = 3
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[243]   # Temperate Ocean
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[244]   # Temperate Forest
+Name = Temperate Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[245]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[246]   # Post-Game
+Name = Post-Game
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[247]   # Sky
+Name = Sky
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[248]   # Temperate Skies
+Name = Temperate Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[249]   # Temperate Skies
+Name = Temperate Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[250]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[251]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[252]   # Temperate Skies
+Name = Temperate Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[253]   # Ocean Skies
+Name = Ocean Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[254]   # Ocean Skies
+Name = Ocean Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[255]   # Temperate Skies
+Name = Temperate Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[256]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[257]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[258]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[259]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[260]   # Temperate Skies
+Name = Temperate Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[261]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[262]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[263]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[264]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[265]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[266]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[267]   # Forested Base
+Name = Forested Base
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[268]   # 4
+Name = 4
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[269]   # MAP269
+Name = MAP269
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[270]   # 6
+Name = 6
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[271]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[272]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[273]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[274]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[275]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[276]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[278]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[279]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[280]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[281]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[282]   # Passage
+Name = Passage
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[283]   # Mountain Skies
+Name = Mountain Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[284]
+Name = Monkey Cave
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[285]
+Name = The Monkey Kings Lair
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[286]
+Name = Xatu Home
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[287]
+Name = Xatu Home
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[288]
+Name = Xatu Home
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[289]
+Name = Xatu Home
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[290]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[291]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[292]   # END
+Name = END
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[293]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[294]   # Shore Skies
+Name = Shore Skies
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[295]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[296]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[297]   # Dungeons
+Name = Dungeons
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[298]   # Bee Forest
+Name = Bee Forest
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[299]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[300]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[302]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[303]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[304]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[305]
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[306]   # MAP306
+Name = MAP306
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[307]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[308]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[309]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[310]   # Temperate Ocean
+Name = Temperate Ocean
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[311]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[312]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[313]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[314]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[315]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[316]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[317]   # Tropical Highlands
+Name = Tropical Highlands
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[318]   # Western Temperate
+Name = Western Temperate
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[319]   # Western Temperate
+Name = Western Temperate
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[320]   # Western Temperate
+Name = Western Temperate
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[321]
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[322]   # Temperate Caves
+Name = Temperate Caves
+Outdoor = false
+MapPosition = 0,0,0
+Dungeon = true
+BattleBack = Cave
+#-------------------------------
+[333]   # Temperate Caves
+Name = Temperate Caves
+Outdoor = false
+MapPosition = 0,0,0
+Dungeon = true
+BattleBack = Cave
+#-------------------------------
+[334]   # Temperate Caves
+Name = Temperate Caves
+Outdoor = false
+MapPosition = 0,0,0
+Dungeon = true
+BattleBack = Cave
+#-------------------------------
+[335]   # Temperate Caves
+Name = Temperate Caves
+Outdoor = false
+MapPosition = 0,0,0
+Dungeon = true
+BattleBack = Cave
+#-------------------------------
+[336]   # Temperate Caves
+Name = Temperate Caves
+Outdoor = false
+MapPosition = 0,0,0
+BattleBack = Cave
+#-------------------------------
+[349]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[350]   # Temperate Coast
+Name = Temperate Coast
+Outdoor = true
+MapPosition = 0,0,0
+#-------------------------------
+[351]   # Home Interior
+Name = Home Interior
+Outdoor = false
+MapPosition = 0,0,0
+#-------------------------------
+[352]   # Home Interior
+Name = Home Interior
+Outdoor = false
+MapPosition = 0,0,0

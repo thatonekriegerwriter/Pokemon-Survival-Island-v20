@@ -200,7 +200,8 @@ class Battle::Battler
         if side.effects[effect] != setting
           side.effects[effect] = setting 
           @battle.pbDisplay(_INTL(msg, team)) if msg && !skip_message.include?(effect)
-          if [PBEffects::StealthRock, PBEffects::Steelsurge, PBEffects::StickyWeb].include?(effect)
+          if [PBEffects::StealthRock, PBEffects::StickyWeb].include?(effect) ||
+             PluginManager.installed?("ZUD Mechanics") && effect == PBEffects::Steelsurge
             repeat_message = effect if !setting
           end
         end

@@ -9,9 +9,9 @@
 class Battle::Scene
   def dx_midbattle(idxBattler, idxTarget, *triggers)
     return if !$game_temp.dx_midbattle?
-    alt_battler  = nil
+    alt_trainer = alt_battler = nil
     base_battler = midbattle_Battler(idxBattler, idxTarget, :Self)
-    idxTrainer   = (idxBattler) ? @battle.pbGetOwnerIndexFromBattlerIndex(idxBattler) : 0
+    base_trainer = (idxBattler) ? @battle.pbGetOwnerIndexFromBattlerIndex(idxBattler) : 0
     midbattle    = $game_temp.dx_midbattle
     all_triggers = []
     triggers.each do |trigger| 
@@ -62,6 +62,7 @@ class Battle::Scene
         end
         delay = false
         for key in keys
+          trainer = (alt_trainer.nil?) ? base_trainer : alt_trainer
           battler = (alt_battler.nil?) ? base_battler : alt_battler
           value = midbattle[trigger][key[1]]
           case key[0]
@@ -70,6 +71,12 @@ class Battle::Scene
           #---------------------------------------------------------------------
           when :battler
             alt_battler = midbattle_Battler(idxBattler, idxTarget, value)
+          #---------------------------------------------------------------------
+          # Sets the trainer.
+          #---------------------------------------------------------------------
+          when :trainer
+            temp_battler = midbattle_Battler(idxBattler, idxTarget, value)
+            alt_trainer = @battle.pbGetOwnerIndexFromBattlerIndex(temp_battler.index)
           #---------------------------------------------------------------------
           # Renames a battler.
           #---------------------------------------------------------------------	
@@ -101,8 +108,8 @@ class Battle::Scene
           #---------------------------------------------------------------------
           # Displays text and speech.
           #---------------------------------------------------------------------
-          when :text, :message        then pbMidbattleSpeech(idxTrainer, idxTarget, battler, value, false)
-          when :speech, :dialogue     then pbMidbattleSpeech(idxTrainer, idxTarget, battler, value)
+          when :text, :message        then pbMidbattleSpeech(trainer, idxTarget, battler, value, false)
+          when :speech, :dialogue     then pbMidbattleSpeech(trainer, idxTarget, battler, value)
           #---------------------------------------------------------------------
           # Plays an animation.
           #---------------------------------------------------------------------
@@ -220,8 +227,8 @@ class Battle::Scene
       battler = (idxTarget) ? @battle.battlers[idxTarget] : default.pbDirectOpposing
       if battler.allAllies.length > 0 
         case index
-        when :Opposing1 then return battler.allAllies.first
-        when :Opposing2 then return battler.allAllies.last
+        when :OpposingAlly  then return battler.allAllies.first
+        when :OpposingAlly2 then return battler.allAllies.last
         end
       end
       return battler

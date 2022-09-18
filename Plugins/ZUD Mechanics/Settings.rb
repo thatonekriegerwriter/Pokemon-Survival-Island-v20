@@ -69,7 +69,7 @@ module Settings
 # By default, this array contains the map ID's for the Pokemon Gym, Pokemon League, 
 # and Battle Facilities found in Essential's default maps.
 #-------------------------------------------------------------------------------
-  POWERSPOTS = []
+  POWERSPOTS = [10, 37, 56, 59, 61, 64]
 #-------------------------------------------------------------------------------
 # Similar to the POWERSPOTS array, except this array contains map ID's that are
 # exclusively used to Dynamax Eternatus into Eternamax Eternatus. This Pokemon

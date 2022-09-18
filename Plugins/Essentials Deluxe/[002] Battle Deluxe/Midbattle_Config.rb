@@ -132,7 +132,7 @@ module EssentialsDeluxe
       :hp      => 4,
       :status  => :NONE,
       :ability => [:MOTORDRIVE, true],
-      :item    => [:CELLBATTERY, "{1} equipped a Cell Battery it found in the appliance!"],
+      :item    => [:CELLBATTERY, "{1} equipped a Cell Battery it found in the appliance!"]
     },
     "superEffective" => {
       :battler => :Self,

@@ -290,6 +290,9 @@ def giveAdventureItemList(itemlist)
     else
       count=1
     end
+	if item == [:GRIPCLAW] 
+	item = :GRIPCLAW
+	end
 	if item == [:ABSORBBULB] 
 	item = :ABSORBBULB
 	end

@@ -5588,6 +5588,7 @@ Category = Balloon
 Pokedex = When faced with a larger opponent, it swallows as much water as it can to match the opponent's size.
 Generation = 2
 WildItemUncommon = POISONBARB
+Evolutions = OVERQWIL,None,
 #-------------------------------
 [SCIZOR]
 Name = Scizor
@@ -5695,7 +5696,7 @@ Category = Sharp Claw
 Pokedex = It has a cunning yet savage disposition. It waits for parents to leave their nests, and then it sneaks in to steal their eggs.
 Generation = 2
 WildItemUncommon = QUICKCLAW
-Evolutions = WEAVILE,NightHoldItem,RAZORCLAW
+Evolutions = WEAVILE,NightHoldItem,RAZORCLAW,SNEASLER,None,
 #-------------------------------
 [TEDDIURSA]
 Name = Teddiursa
@@ -14487,6 +14488,7 @@ Pokedex = Anglers love the fight this Pokémon puts up on the hook. And there ar
 FormName = Red-Striped Form
 Generation = 5
 WildItemUncommon = DEEPSEATOOTH
+Evolutions = BASCULEGION,None,
 #-------------------------------
 [SANDILE]
 Name = Sandile

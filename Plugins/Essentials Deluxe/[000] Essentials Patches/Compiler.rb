@@ -64,6 +64,9 @@ module Compiler
     plugin_write_all
     if !PLUGIN_FILES.empty?
       Console.echo_h1 _INTL("Writing all PBS/Plugin files")
+      if PluginManager.installed?("Field Skills")
+        write_field_skills
+      end
       if PluginManager.installed?("ZUD Mechanics")
         write_dynamax_metrics
         write_power_moves
@@ -579,6 +582,10 @@ module Compiler
         path = "PBS/Plugins/#{plugin}/#{file}.txt"
         mustCompile = true if safeExists?(path)
       end
+      if plugin == "Field Skills"
+        path = "PBS/Plugins/#{plugin}/field_skills.txt"
+        mustCompile = true if !safeExists?(path)
+      end
     end
     return if !mustCompile
     FileLineData.clear
@@ -587,11 +594,15 @@ module Compiler
     if !PLUGIN_FILES.empty?
       echoln ""
       Console.echo_h1 _INTL("Compiling additional plugin data")
-	  compile_plugin_abilities
+      compile_plugin_abilities
       compile_plugin_items
       compile_plugin_moves
       compile_plugin_species_data
       echoln ""
+      if PluginManager.installed?("Field Skills")
+        Console.echo_li "Field Skills"
+        compile_field_skills     # Depends on Species
+      end
       if PluginManager.installed?("ZUD Mechanics")
         Console.echo_li "ZUD Mechanics"
         compile_lair_maps

@@ -142,6 +142,7 @@ def raid_GenerateBanlist
                    :TOXTRICITY, 
                    :INDEEDEE, 
                    :URSHIFU,
+                   :DARMANITAN,
                    :BASCULEGION,
                    :ENAMORUS]
   #-----------------------------------------------------------------------------

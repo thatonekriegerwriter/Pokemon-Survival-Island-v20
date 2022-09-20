@@ -112,6 +112,7 @@
   #
   #===============================================================================
   class PokemonSummary_Scene
+    SHOW_FAMILY_EGG = true 
     MARK_WIDTH  = 16
     MARK_HEIGHT = 16
 
@@ -122,6 +123,24 @@
         @sprites["background"].ox-= -1
         @sprites["background"].oy-= -1
       end
+    if SHOW_FAMILY_EGG && @pokemon.egg?
+      if Input.trigger?(Input::LEFT) && @page==6
+        @page=1
+        pbPlayCursorSE()
+        dorefresh=true
+      end
+      if Input.trigger?(Input::RIGHT) && @page==1
+        @page=6
+        pbPlayCursorSE()
+        dorefresh=true
+      end
+    end
+    if dorefresh
+      case @page
+        when 1; drawPageOneEgg
+        when 6; drawPageSix
+      end
+    end
     end
     def pbStartScene(party, partyindex, inbattle = false)
       @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -343,6 +362,10 @@
           bitmap.blt(x + (i * MARK_WIDTH), y, @markingbitmap.bitmap, markrect)
         end
       end
+def get_parent_icon(parent)
+    return parent ? parent.icon_filename : GameData::Species.icon_filename(nil)
+end
+
 
   #===============================================================================
   # IV Ratings - Shows IV ratings on Page 3 (Stats)
@@ -1308,6 +1331,86 @@
 	
   end
 
+  def drawPageSix
+    overlay=@sprites["overlay"].bitmap
+    base=Color.new(248,248,248)
+    shadow=Color.new(104,104,104)
+    textpos=[]
+    if @pokemon.egg?
+      overlay.clear
+      pbSetSystemFont(overlay)
+      @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
+      ballimage = sprintf(
+        "Graphics/Pictures/Summary/icon_ball_%s", @pokemon.poke_ball
+      )
+      if !pbResolveBitmap(ballimage)
+        ballimage = sprintf(
+          "Graphics/Pictures/Summary/icon_ball_%02d", 
+          pbGetBallType(@pokemon.poke_ball)
+        )
+      end
+      pbDrawImagePositions(overlay,[[ballimage,150,60,0,0,-1,-1]])
+      textpos=[
+         [_INTL("TRAINER MEMO"),26,10,0,base,shadow],
+         [@pokemon.name,46,56,0,base,shadow],
+         [_INTL("Item"),66,312,0,base,shadow]
+      ]
+      textpos.push([
+        _INTL("None"),16,346,0,Color.new(192,200,208),Color.new(208,216,224)
+      ])
+      drawMarkings(overlay,84,292)
+    end  
+    # Draw parents
+    parents_y = [78,244]
+    for i in 0...2
+      parent_text_line_1_y = parents_y[i]-6
+      parent_text_line_2_y = parent_text_line_1_y + 34
+      parent = @pokemon&.family&.[](i)
+      overlay.blt(
+        20,parents_y[i],
+        AnimatedBitmap.new(get_parent_icon(parent)).bitmap,Rect.new(0,0,64,64)
+      )
+      textpos.push([
+        parent ? parent.name : _INTL("???"),
+        150,parent_text_line_1_y,0,base,shadow
+      ])
+      parent_species_name = "/" 
+      if parent
+        parent_species_name += GameData::Species.get(parent.species).name
+      else
+        parent_species_name += _INTL("???")
+      end
+      if ["♂","♀"].include?(parent_species_name.split('').last)
+        parent_species_name=parent_species_name[0..-2]
+      end
+      textpos.push([parent_species_name,160,parent_text_line_2_y,0,base,shadow])
+      if parent
+        if parent.gender==0
+          textpos.push([
+            _INTL("♂"),200,parent_text_line_2_y,1,
+            Color.new(24,112,216),Color.new(136,168,208)
+          ])
+        elsif parent.gender==1
+          textpos.push([
+            _INTL("♀"),200,parent_text_line_2_y,1,
+            Color.new(248,56,32),Color.new(224,152,144)
+          ])
+        end
+      end
+      for j in 0...2
+        overlay.blt(
+          [154,207][j],68+parents_y[i],
+          AnimatedBitmap.new(get_parent_icon(parent&.[](j))).bitmap,
+          Rect.new(0,0,64,64)
+        )
+      end
+    end
+    pbDrawTextPositions(overlay,textpos)
+    @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
+  end
+
+
+
     def drawSelectedRibbon(ribbonid)
       # Draw all of page five
       drawPage(5)
@@ -1342,7 +1445,9 @@
       newindex = @partyindex
       while newindex > 0
         newindex -= 1
-        if @party[newindex] && (@page == 1 || !@party[newindex].egg?)
+        if @party[newindex] && (@page == 1 || !@party[newindex].egg? || (
+        @page==6 && SHOW_FAMILY_EGG
+      )) 
           @partyindex = newindex
           break
         end
@@ -1353,7 +1458,9 @@
       newindex = @partyindex
       while newindex < @party.length - 1
         newindex += 1
-        if @party[newindex] && (@page == 1 || !@party[newindex].egg?)
+        if @party[newindex] && (@page == 1 || !@party[newindex].egg? || (
+        @page==6 && SHOW_FAMILY_EGG
+      ))
           @partyindex = newindex
           break
         end
@@ -1366,6 +1473,10 @@
       @sprites["itemicon"].item = @pokemon.item_id
       pbSEStop
       @pokemon.play_cry
+    if SHOW_FAMILY_EGG && @pokemon.egg? && @page==6
+      @ignore_refresh=true
+      drawPageSix
+    end
     end
 
     def pbMoveSelection
@@ -1753,7 +1864,7 @@
           oldpage = @page
           @page -= 1
           @page = 1 if @page < 1
-          @page = 5 if @page > 5
+          @page = 6 if @page > 6
           if @page != oldpage   # Move to next page
             pbSEPlay("GUI summary change page")
             @ribbonOffset = 0
@@ -1763,7 +1874,7 @@
           oldpage = @page
           @page += 1
           @page = 1 if @page < 1
-          @page = 5 if @page > 5
+          @page = 6 if @page > 6
           if @page != oldpage   # Move to next page
             pbSEPlay("GUI summary change page")
             @ribbonOffset = 0
@@ -1842,215 +1953,3 @@
   end
 
 
-
-#===============================================================================
-# * Family Tree - by FL (Credits will be apreciated)
-#===============================================================================
-#
-# This script is for Pokémon Essentials. It displays a sixth page at pokémon
-# summary showing a little info about the pokémon mother, father, grandmothers
-# and grandfathers if the pokémon has any.
-#
-#===============================================================================
-#
-# To this script works, put it above PSystem_System. Put a 512x384 background
-# for this screen in "Graphics/Pictures/Summary/" as "bg_6" and as "bg_6_egg".
-# This last one is only necessary if SHOWFAMILYEGG is true. You also need to
-# update the below pictures on same folder in order to reflect the summary
-# icon change:
-# - bg_1
-# - bg_2
-# - bg_3
-# - bg_4
-# - bg_movedetail
-# - bg_5
-#
-# -At PField_DayCare, before line '$player.party[$player.party.length]=egg'
-# add line 'egg.family = PokemonFamily.new(egg, father, mother)'
-#
-# -At PScreen_Summary, change both lines '@page = 5 if @page>5'
-# to '@page=6 if @page>6'
-#
-# -Before line 'if Input.trigger?(Input::A)' add line 'handleInputsEgg'
-#
-# -After line 'when 5; drawPageFive' add 'when 6; drawPageSix'
-#
-# -Change line '_INTL("RIBBONS")][page-1]' into:
-#
-# _INTL("RIBBONS"),
-# _INTL("FAMILY TREE")][page-1]
-#
-# -Change both lines 
-# 'if @party[newindex] && (@page==1 || !@party[newindex].egg?)' into:
-#
-# if @party[newindex] && 
-#   (@page==1 || !@party[newindex].egg? || (@page==6 && SHOWFAMILYEGG))
-#
-# -Change both
-# 
-#  pbSEStop; pbPlayCry(@pokemon)
-#  @ribbonOffset = 0
-#  dorefresh = true
-#
-# into:
-#
-#  pbSEStop; pbPlayCry(@pokemon)
-#  @ribbonOffset = 0
-#  if SHOWFAMILYEGG && @pokemon.isEgg? && @page==6
-#    dorefresh = false
-#    drawPageSix
-#  else
-#    dorefresh = true
-#  end
-#
-#===============================================================================
-
-class PokemonSummary_Scene
-  SHOWFAMILYEGG = true # when true, family tree is also showed in egg screen.
-
-  def drawPageSix
-    overlay=@sprites["overlay"].bitmap
-    base=Color.new(248,248,248)
-    shadow=Color.new(104,104,104)
-    textpos=[]
-    if @pokemon.egg?
-      overlay.clear
-      pbSetSystemFont(overlay)
-      @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
-      ballimage = sprintf(
-        "Graphics/Pictures/Summary/icon_ball_%s", @pokemon.poke_ball
-      )
-      if !pbResolveBitmap(ballimage)
-        ballimage = sprintf(
-          "Graphics/Pictures/Summary/icon_ball_%02d", 
-          pbGetBallType(@pokemon.poke_ball)
-        )
-      end
-      pbDrawImagePositions(overlay,[[ballimage,150,60,0,0,-1,-1]])
-      textpos=[
-         [_INTL("TRAINER MEMO"),26,10,0,base,shadow],
-         [@pokemon.name,46,56,0,base,shadow],
-         [_INTL("Item"),66,312,0,base,shadow]
-      ]
-      textpos.push([
-        _INTL("None"),16,346,0,Color.new(192,200,208),Color.new(208,216,224)
-      ])
-      drawMarkings(overlay,84,292)
-    end  
-    # Draw parents
-    parents_y = [78,234]
-    for i in 0...2
-      parent_text_line_1_y = parents_y[i]-6
-      parent_text_line_2_y = parent_text_line_1_y + 32
-      parent = @pokemon&.family&.[](i)
-      overlay.blt(
-        20,parents_y[i],
-        AnimatedBitmap.new(get_parent_icon(parent)).bitmap,Rect.new(0,0,64,64)
-      )
-      textpos.push([
-        parent ? parent.name : _INTL("???"),
-        70,parent_text_line_1_y,0,base,shadow
-      ])
-      parent_species_name = "/" 
-      if parent
-        parent_species_name += GameData::Species.get(parent.species).name
-      else
-        parent_species_name += _INTL("???")
-      end
-      if ["♂","♀"].include?(parent_species_name.split('').last)
-        parent_species_name=parent_species_name[0..-2]
-      end
-      textpos.push([parent_species_name,80,parent_text_line_2_y,0,base,shadow])
-      if parent
-        if parent.gender==0
-          textpos.push([
-            _INTL("♂"),200,parent_text_line_2_y,1,
-            Color.new(24,112,216),Color.new(136,168,208)
-          ])
-        elsif parent.gender==1
-          textpos.push([
-            _INTL("♀"),200,parent_text_line_2_y,1,
-            Color.new(248,56,32),Color.new(224,152,144)
-          ])
-        end
-      end
-      for j in 0...2
-        overlay.blt(
-          [144,177][j],68+parents_y[i],
-          AnimatedBitmap.new(get_parent_icon(parent&.[](j))).bitmap,
-          Rect.new(0,0,64,64)
-        )
-      end
-    end
-    pbDrawTextPositions(overlay,textpos)
-    @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
-  end
-
-  def get_parent_icon(parent)
-    return parent ? parent.icon_filename : GameData::Species.icon_filename(nil)
-  end
-end
-
-
-class PokemonFamily
-  MAX_GENERATIONS = 3 # Tree stored generation limit
-
-  attr_reader :mother # PokemonFamily object
-  attr_reader :father # PokemonFamily object
-
-  attr_reader :species
-  attr_reader :form
-  attr_reader :gender
-  attr_reader :shiny
-  attr_reader :name # nickname
-  # You can add more data here and on initialize class. Just
-  # don't store the entire pokémon object.
-
-  def initialize(pokemon, father=nil,mother=nil)
-    @father = format_parent(pokemon, father, 0)
-    @mother = format_parent(pokemon, mother, 1)
-    initialize_cub_data(pokemon) if !father || !mother
-    apply_generation_limit(MAX_GENERATIONS)
-  end
-
-  # [0] = father, [1] = mother
-  def [](value)
-    return case value
-      when 0; @father
-      when 1; @mother
-      else; nil
-    end
-  end
-
-  def format_parent(pokemon, parent, index)
-    return pokemon.family[index] if pokemon.family && pokemon.family[index]
-    return PokemonFamily.new(parent) if parent
-    return nil
-  end
-
-  def initialize_cub_data(pokemon)
-    @species=pokemon.species
-    @form=pokemon.form
-    @gender=pokemon.gender
-    @shiny=pokemon.shiny?
-    @name=pokemon.name
-  end
-
-  def apply_generation_limit(generation)
-    if generation>1
-      @father.apply_generation_limit(generation-1) if @father
-      @mother.apply_generation_limit(generation-1) if @mother
-    else
-      @father=nil
-      @mother=nil
-    end
-  end
-
-  def icon_filename
-    return GameData::Species.icon_filename(@species, @form, @gender, @shiny)
-  end
-end 
-
-class Pokemon
-  attr_accessor :family
-end

@@ -661,3 +661,11 @@ class Battle::Scene
     pbFlashRefresh
   end
 end
+
+
+#-------------------------------------------------------------------------------
+# Battle Facility compatibility.
+#-------------------------------------------------------------------------------
+class Battle::DebugSceneNoLogging
+  def dx_midbattle(idxBattler, idxTarget, *triggers); end
+end

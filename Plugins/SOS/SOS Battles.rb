@@ -7,7 +7,7 @@
 #  but does have a method that can be edited to do so.
 # The script also defines the manually used effect of the Adrenaline Orb item.
 #===============================================================================
-# To use it, you must add species that are able to SOS call in the SOS_CALL_RATES
+# To use it, you must add species that are able to SOS call in the SOS_WHITELIST_RATES
 #  hash. The key is the species symbol, and the value is the rate in percentage
 #  the mon will call at.
 #   AKA. :BULBASAUR=>100 is a valid entry
@@ -36,15 +36,25 @@
 #  pbSpecialSOSMons. By default, it just passes through the regular array used.
 # The method also takes the calling battler, if you wish to check its properties.
 #===============================================================================
-# * Hash containing base species call rates
-# * Hash containing species called allies
-# * Switch id to enable/disable SOS battles. Set to <1 to not check.
-#=============================================================================== 
 
-  SOS_CALL_RATES={}
-  SOS_CALL_MONS={}
+
+
+# * Switch id to enable/disable SOS battles. Set to <1 to not check.
   NO_SOS_BATTLES = -1
-   
+# * Setting to Toggle between Whitelist or Blacklist, if WHITELIST = True, only Pokemon in SOS_WHITELIST_RATES will appear.
+# * If WHITELIST = False, it will check the SOS_BLACKLIST to see if a Pokemon is banned from calling. If Whitelist is false, a SOS_RATE must be defined.
+  
+  WHITELIST = true 
+# * Hash containing base species call rates
+  SOS_WHITELIST_RATES={} 
+# * Hash containing blacklisted Pokemon.
+  SOS_BLACKLIST={}
+# * If using the Blacklist, all Pokemon have the same rate of being called.
+  SOS_RATE=5
+  # * Hash containing species called allies
+  SOS_CALL_MONS={}
+  
+  
   class Battle
     attr_accessor :adrenalineorb
     attr_accessor :lastturncalled
@@ -59,92 +69,11 @@
     def pbSpecialSOSMons(caller,mons)
       return mons
     end
-	
-	
-def pbLegendaryStarter?(variable)
-    starter=variable
-  return true if
-    starter=="ARTICUNO" ||
-    starter=="ZAPDOS" ||
-    starter=="MOLTRES" ||
-    starter=="MEWTWO" ||
-    starter=="MEW" ||
-    starter=="RAIKOU" ||
-    starter=="ENTEI" ||
-    starter=="SUICUNE" ||
-    starter=="LUGIA" ||
-    starter=="HOOH" ||
-    starter=="CELEBI" ||
-    starter=="REGIROCK" ||
-    starter=="REGICE" ||
-    starter=="REGISTEEL" ||
-    starter=="LATIAS" ||
-    starter=="LATIOS" ||
-    starter=="KYOGRE" ||
-    starter=="GROUDON" ||
-    starter=="RAYQUAZA" ||
-    starter=="JIRACHI" ||
-    starter=="DEOXYS" ||
-    starter=="UXIE" ||
-    starter=="MESPRIT" ||
-    starter=="AZELF" ||
-    starter=="DIALGA" ||
-    starter=="PALKIA" ||
-    starter=="HEATRAN" ||
-    starter=="REGIGIGAS" ||
-    starter=="GIRATINA" ||
-    starter=="CRESSELIA" ||
-    starter=="MANAPHY" ||
-    starter=="DARKRAI" ||
-    starter=="SHAYMIN" ||
-    starter=="ARCEUS" ||
-    starter=="VICTINI" ||
-    starter=="COBALION" ||
-    starter=="TERRAKION" ||
-    starter=="VIRIZION" ||
-    starter=="TORNADUS" ||
-    starter=="THUNDURUS" ||
-    starter=="RESHIRAM" ||
-    starter=="ZEKROM" ||
-    starter=="LANDORUS" ||
-    starter=="KYUREM" ||
-    starter=="KELDEO" ||
-    starter=="MELOETTA" ||
-    starter=="GENESECT"||
-    starter=="XERNEAS"||
-    starter=="YVELTAL"||
-    starter=="ZYGARDE"||
-    starter=="TYPENULL"||
-    starter=="SILVALLY"||
-    starter=="TAPUBULU"||
-    starter=="TAPUFINI"||
-    starter=="TAPULELE"||
-    starter=="TAPUKOKO"||
-    starter=="COSMOG"||
-    starter=="COSMOEM"||
-    starter=="SOLGALEO"||
-    starter=="LUNALA"||
-    starter=="NECROZMA"||
-    starter=="NIHILEGO"||
-    starter=="ZACIAN"||
-    starter=="ZAMAZENTA"||
-    starter=="ETERNATUS"||
-    starter=="KUBFU"||
-    starter=="URSHIFU"||
-    starter=="REGIELEKI"||
-    starter=="REGIDRAGO"||
-    starter=="GLASTRIER"||
-    starter=="SPECTRIER"||
-    starter=="CALYREX"
-  return false
-end
-    
     
     def pbCallForHelp(caller)
       cspecies=GameData::Species.get(caller.species).species
-      rate=5
+      rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       return if rate==0 # should never trigger anyways but you never know.
-	  return if pbLegendaryStarter?(cspecies) == true
       pbDisplay(_INTL("{1} called for help!", caller.pbThis))
       rate*=4 # base rate
       rate=rate.to_f # don't want to lose decimal points
@@ -175,9 +104,9 @@ end
       when 2
         idxOther = (caller.index+2)%4
       end
-      if (idxOther>=0 && pbRandom(100)<rate) || ($DEBUG && Input.press?(Input::CTRL))
+      if idxOther>=0 && pbRandom(100)<rate
         @lastturnanswered=true
-        mons=[caller.species]
+        mons=SOS_CALL_MONS[cspecies] || [caller.species]
         mons=pbSpecialSOSMons(caller,mons)
         mon=mons[pbRandom(mons.length)]
         alevel=caller.level-1
@@ -283,9 +212,9 @@ end
       return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
-	  return true if $DEBUG && Input.press?(Input::CTRL)
-      species=GameData::Species.get(self.species).name
-      rate=5
+      cspecies=GameData::Species.get(self.species).name
+	  return false if SOS_BLACKLIST[cspecies]
+      rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       # not a species that calls
       return false if rate==0
       rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
@@ -380,7 +309,7 @@ end
       sendOutAnim = SOSJoinAnimation.new(@sprites,@viewport,
           @battle.pbGetOwnerIndexFromBattlerIndex(battlerindex)+1,
           @battle.battlers[battlerindex])
-      dataBoxAnim = Animation::DataBoxDisappear.new(@sprites,@viewport,battlerindex)
+      dataBoxAnim = Animation::DataBoxAppear.new(@sprites,@viewport,battlerindex)
       sendOutAnims.push([sendOutAnim,dataBoxAnim,false])
       # Play all animations
       loop do
@@ -403,20 +332,22 @@ end
         @battle.battlers[battlerindex].eachAlly{|b|
           sendanim=SOSAdjustAnimation.new(@sprites,@viewport,
             @battle.pbGetOwnerIndexFromBattlerIndex(b.index)+1,b)
-          dataanim=Animation::DataBoxDisappear.new(@sprites,@viewport,b.index)
+          dataanim=Animation::DataBoxAppear.new(@sprites,@viewport,b.index)
           sendOutAnims.push([sendanim,dataanim,false,b])
         }
       end
-      loop do
-        sendOutAnims.each do |a|
-          next if a[2]
-          a[0].update
-          a[1].update if a[0].animDone?
-          a[2] = true if a[1].animDone?
-        end
-        pbUpdate
-        break if !sendOutAnims.any? { |a| !a[2] }
+    loop do
+      sendOutAnims.each do |a|
+        next if a[2]
+        a[0].update
+        a[1].update if a[0].animDone?
+        a[2] = true if a[1].animDone?
       end
+      pbUpdate
+      if !inPartyAnimation? && sendOutAnims.none? { |a| !a[2] }
+        break
+      end
+    end
       adjustAnims.each {|a| a[0].dispose}
       sendOutAnims.each { |a| a[0].dispose; a[1].dispose }
       # Play shininess animations for shiny Pokémon
@@ -509,5 +440,5 @@ end
    
   ItemHandlers::UseInBattle.add(:ADRENALINEORB,proc { |item,battler,battle|
     battle.adrenalineorb=true
-    battle.pbDisplayPaused(_INTL("The {1} makes the wild Pokémon nervous!",PBItems.getName(item)))
+    battle.pbDisplayPaused(_INTL("The {1} makes the wild Pokémon nervous!",GameData::Item.get(item).name))
   })

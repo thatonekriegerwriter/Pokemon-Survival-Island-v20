@@ -40,21 +40,12 @@
 # * Hash containing species called allies
 # * Switch id to enable/disable SOS battles. Set to <1 to not check.
 #=============================================================================== 
-begin
-  PluginManager.register({
-    :name    => "SOS Battles",
-    :version => "1.1",
-    :link    => "https://reliccastle.com/resources/444/",
-    :credits => "Vendily"
-  })
-  rescue
-    raise "This script only funtions in v19."
-  end
+
   SOS_CALL_RATES={}
   SOS_CALL_MONS={}
   NO_SOS_BATTLES = -1
    
-  class PokeBattle_Battle
+  class Battle
     attr_accessor :adrenalineorb
     attr_accessor :lastturncalled
     attr_accessor :lastturnanswered
@@ -68,12 +59,92 @@ begin
     def pbSpecialSOSMons(caller,mons)
       return mons
     end
+	
+	
+def pbLegendaryStarter?(variable)
+    starter=variable
+  return true if
+    starter=="ARTICUNO" ||
+    starter=="ZAPDOS" ||
+    starter=="MOLTRES" ||
+    starter=="MEWTWO" ||
+    starter=="MEW" ||
+    starter=="RAIKOU" ||
+    starter=="ENTEI" ||
+    starter=="SUICUNE" ||
+    starter=="LUGIA" ||
+    starter=="HOOH" ||
+    starter=="CELEBI" ||
+    starter=="REGIROCK" ||
+    starter=="REGICE" ||
+    starter=="REGISTEEL" ||
+    starter=="LATIAS" ||
+    starter=="LATIOS" ||
+    starter=="KYOGRE" ||
+    starter=="GROUDON" ||
+    starter=="RAYQUAZA" ||
+    starter=="JIRACHI" ||
+    starter=="DEOXYS" ||
+    starter=="UXIE" ||
+    starter=="MESPRIT" ||
+    starter=="AZELF" ||
+    starter=="DIALGA" ||
+    starter=="PALKIA" ||
+    starter=="HEATRAN" ||
+    starter=="REGIGIGAS" ||
+    starter=="GIRATINA" ||
+    starter=="CRESSELIA" ||
+    starter=="MANAPHY" ||
+    starter=="DARKRAI" ||
+    starter=="SHAYMIN" ||
+    starter=="ARCEUS" ||
+    starter=="VICTINI" ||
+    starter=="COBALION" ||
+    starter=="TERRAKION" ||
+    starter=="VIRIZION" ||
+    starter=="TORNADUS" ||
+    starter=="THUNDURUS" ||
+    starter=="RESHIRAM" ||
+    starter=="ZEKROM" ||
+    starter=="LANDORUS" ||
+    starter=="KYUREM" ||
+    starter=="KELDEO" ||
+    starter=="MELOETTA" ||
+    starter=="GENESECT"||
+    starter=="XERNEAS"||
+    starter=="YVELTAL"||
+    starter=="ZYGARDE"||
+    starter=="TYPENULL"||
+    starter=="SILVALLY"||
+    starter=="TAPUBULU"||
+    starter=="TAPUFINI"||
+    starter=="TAPULELE"||
+    starter=="TAPUKOKO"||
+    starter=="COSMOG"||
+    starter=="COSMOEM"||
+    starter=="SOLGALEO"||
+    starter=="LUNALA"||
+    starter=="NECROZMA"||
+    starter=="NIHILEGO"||
+    starter=="ZACIAN"||
+    starter=="ZAMAZENTA"||
+    starter=="ETERNATUS"||
+    starter=="KUBFU"||
+    starter=="URSHIFU"||
+    starter=="REGIELEKI"||
+    starter=="REGIDRAGO"||
+    starter=="GLASTRIER"||
+    starter=="SPECTRIER"||
+    starter=="CALYREX"
+  return false
+end
     
     
     def pbCallForHelp(caller)
       cspecies=GameData::Species.get(caller.species).species
-      rate=SOS_CALL_RATES[cspecies] || 0
+      rate=5
       return if rate==0 # should never trigger anyways but you never know.
+	  return if pbLegendaryStarter?(cspecies) == true
       pbDisplay(_INTL("{1} called for help!", caller.pbThis))
       rate*=4 # base rate
       rate=rate.to_f # don't want to lose decimal points
@@ -104,9 +175,9 @@ begin
       when 2
         idxOther = (caller.index+2)%4
       end
-      if idxOther>=0 && pbRandom(100)<rate
+      if (idxOther>=0 && pbRandom(100)<rate) || ($DEBUG && Input.press?(Input::CTRL))
         @lastturnanswered=true
-        mons=SOS_CALL_MONS[cspecies] || [caller.species]
+        mons=[caller.species]
         mons=pbSpecialSOSMons(caller,mons)
         mon=mons[pbRandom(mons.length)]
         alevel=caller.level-1
@@ -122,7 +193,7 @@ begin
         # prevent cheap shot
         @battlers[idxOther].lastRoundMoved=@turnCount
         # required to gain exp and to do "switch in" effects, like Spikes
-        pbOnActiveOne(@battlers[idxOther])
+        pbOnBattlerEnteringBattle(@battlers[idxOther])
         @party2.push(ally)
         @party2order.push(@party2order.length)
       else
@@ -140,11 +211,11 @@ begin
       chances = [60,20,5] if firstpoke.hasActiveAbility?(:COMPOUNDEYES)
       itemrnd = rand(100)
       if itemrnd<chances[0] || (items[0]==items[1] && items[1]==items[2])
-        genwildpoke.item=(items[0])
+        genwildpoke.item=(items[0].sample)
       elsif itemrnd<(chances[0]+chances[1])
-        genwildpoke.item=(items[1])
+        genwildpoke.item=(items[1].sample)
       elsif itemrnd<(chances[0]+chances[1]+chances[2])
-        genwildpoke.item=(items[2])
+        genwildpoke.item=(items[2].sample)
       end
       if $PokemonBag.pbHasItem?(:SHINYCHARM)
         for i in 0...2   # 3 times as likely
@@ -188,13 +259,13 @@ begin
       elsif firstpoke.hasActiveAbility?(:SYNCHRONIZE)
         genwildpoke.nature=firstpoke.nature if rand(10)<5
       end
-      Events.onWildPokemonCreate.trigger(nil,genwildpoke)
+      EventHandlers.trigger(:on_wild_pokemon_created, genwildpoke)
       return genwildpoke
     end
     
   end
    
-  class PokeBattle_Battler
+  class Battle::Battler
     def pbCanCall?
       return false if NO_SOS_BATTLES>0 &&  $game_switches[NO_SOS_BATTLES]
       # only wild battles
@@ -212,8 +283,9 @@ begin
       return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
+	  return true if $DEBUG && Input.press?(Input::CTRL)
       species=GameData::Species.get(self.species).name
-      rate=SOS_CALL_RATES[self.species] || 0
+      rate=5
       # not a species that calls
       return false if rate==0
       rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
@@ -224,78 +296,68 @@ begin
     
 
     def pbProcessTurn(choice,tryFlee=true)
-      return false if fainted?
-      # Wild roaming Pokémon always flee if possible
-      if tryFlee && @battle.wildBattle? && opposes? &&
-         @battle.rules["alwaysflee"] && @battle.pbCanRun?(@index)
-        pbBeginTurn(choice)
-        pbSEPlay("Battle flee")
-        @battle.pbDisplay(_INTL("{1} fled from battle!",pbThis))
-        @battle.decision = 3
-        pbEndTurn(choice)
-        return true
+    return false if fainted?
+    # Wild roaming Pokémon always flee if possible
+    if tryFlee && wild? &&
+       @battle.rules["alwaysflee"] && @battle.pbCanRun?(@index)
+      pbBeginTurn(choice)
+      pbSEPlay("Battle flee")
+      @battle.pbDisplay(_INTL("{1} fled from battle!", pbThis))
+      @battle.decision = 3
+      pbEndTurn(choice)
+      return true
+    end
+    # Shift with the battler next to this one
+    if choice[0] == :Shift
+      idxOther = -1
+      case @battle.pbSideSize(@index)
+      when 2
+        idxOther = (@index + 2) % 4
+      when 3
+        if @index != 2 && @index != 3   # If not in middle spot already
+          idxOther = (@index.even?) ? 2 : 3
+        end
       end
-      # Shift with the battler next to this one
-      if choice[0]==:Shift
-        idxOther = -1
+      if idxOther >= 0
+        @battle.pbSwapBattlers(@index, idxOther)
         case @battle.pbSideSize(@index)
         when 2
-          idxOther = (@index+2)%4
+          @battle.pbDisplay(_INTL("{1} moved across!", pbThis))
         when 3
-          if @index!=2 && @index!=3   # If not in middle spot already
-            idxOther = ((@index%2)==0) ? 2 : 3
-          end
+          @battle.pbDisplay(_INTL("{1} moved to the center!", pbThis))
         end
-        if idxOther>=0
-          @battle.pbSwapBattlers(@index,idxOther)
-          case @battle.pbSideSize(@index)
-          when 2
-            @battle.pbDisplay(_INTL("{1} moved across!",pbThis))
-          when 3
-            @battle.pbDisplay(_INTL("{1} moved to the center!",pbThis))
-          end
-        end
-        pbBeginTurn(choice)
-        pbCancelMoves
-        @lastRoundMoved = @battle.turnCount   # Done something this round
-        return true
       end
-      if pbCanCall?
+      pbBeginTurn(choice)
+      pbCancelMoves
+      @lastRoundMoved = @battle.turnCount   # Done something this round
+      return true
+    end
+    # If this battler's action for this round wasn't "use a move"
+    if pbCanCall?
         pbCancelMoves
         @battle.pbCallForHelp(self)
         @lastRoundMoved = @battle.turnCount
         pbEndTurn(choice)
         return true
-      end
-      # If this battler's action for this round wasn't "use a move"
-      if choice[0]!=:UseMove
-        # Clean up effects that end at battler's turn
-        pbBeginTurn(choice)
-        pbEndTurn(choice)
-        return false
-      end
-      # Turn is skipped if Pursuit was used during switch
-      if @effects[PBEffects::Pursuit]
-        @effects[PBEffects::Pursuit] = false
-        pbCancelMoves
-        pbEndTurn(choice)
-        @battle.pbJudge
-        return false
-      end
-      # Use the move
-      PBDebug.log("[Move usage] #{pbThis} started using #{choice[2].name}")
-      PBDebug.logonerr{
-        pbUseMove(choice,choice[2]==@battle.struggle)
-      }
-      @battle.pbJudge
-      # Update priority order
-      #    @battle.pbCalculatePriority if NEWEST_BATTLE_MECHANICS
-      @battle.pbCalculatePriority if Settings::RECALCULATE_TURN_ORDER_AFTER_SPEED_CHANGES
-      return true
     end
+	if choice[0] != :UseMove
+      # Clean up effects that end at battler's turn
+      pbBeginTurn(choice)
+      pbEndTurn(choice)
+      return false
+    end
+    # Use the move
+    PBDebug.log("[Move usage] #{pbThis} started using #{choice[2].name}")
+    PBDebug.logonerr {
+      pbUseMove(choice, choice[2] == @battle.struggle)
+    }
+    @battle.pbJudge
+    # Update priority order
+    @battle.pbCalculatePriority if Settings::RECALCULATE_TURN_ORDER_AFTER_SPEED_CHANGES
+    return true
   end
-   
-  class PokeBattle_Scene
+end
+  class Battle::Scene
     def pbSOSJoin(battlerindex,pkmn)
       pbRefresh
       sendOutAnims=[]
@@ -306,11 +368,11 @@ begin
             @battle.pbSideSize(battlerindex),@viewport)
         setupbox=true
         @sprites["targetWindow"].dispose
-        @sprites["targetWindow"] = TargetMenuDisplay.new(@viewport,200,@battle.sideSizes)
+        @sprites["targetWindow"] = TargetMenu.new(@viewport, 200, @battle.sideSizes)
         @sprites["targetWindow"].visible=false
         pbCreatePokemonSprite(battlerindex)
         @battle.battlers[battlerindex].eachAlly{|b|
-          adjustAnims.push([DataBoxDisappearAnimation.new(@sprites,@viewport,b.index),b])
+          adjustAnims.push([Animation::DataBoxDisappear.new(@sprites,@viewport,b.index),b])
         }
       end
       pkmn = @battle.battlers[battlerindex].effects[PBEffects::Illusion] || pkmn
@@ -318,7 +380,7 @@ begin
       sendOutAnim = SOSJoinAnimation.new(@sprites,@viewport,
           @battle.pbGetOwnerIndexFromBattlerIndex(battlerindex)+1,
           @battle.battlers[battlerindex])
-      dataBoxAnim = DataBoxAppearAnimation.new(@sprites,@viewport,battlerindex)
+      dataBoxAnim = Animation::DataBoxDisappear.new(@sprites,@viewport,battlerindex)
       sendOutAnims.push([sendOutAnim,dataBoxAnim,false])
       # Play all animations
       loop do
@@ -341,7 +403,7 @@ begin
         @battle.battlers[battlerindex].eachAlly{|b|
           sendanim=SOSAdjustAnimation.new(@sprites,@viewport,
             @battle.pbGetOwnerIndexFromBattlerIndex(b.index)+1,b)
-          dataanim=DataBoxAppearAnimation.new(@sprites,@viewport,b.index)
+          dataanim=Animation::DataBoxDisappear.new(@sprites,@viewport,b.index)
           sendOutAnims.push([sendanim,dataanim,false,b])
         }
       end
@@ -364,8 +426,8 @@ begin
     end
   end
    
-  class SOSJoinAnimation < PokeBattle_Animation
-    include PokeBattle_BallAnimationMixin
+  class SOSJoinAnimation < Battle::Scene::Animation
+    include Battle::Scene::Animation::BallAnimationMixin
    
     def initialize(sprites,viewport,idxTrainer,battler)
       @idxTrainer     = idxTrainer
@@ -388,7 +450,7 @@ begin
       battlerY = batSprite.y
       delay = 0
       # Set up battler sprite
-      battler = addSprite(batSprite,PictureOrigin::Bottom)
+      battler = addSprite(batSprite,PictureOrigin::BOTTOM)
       battler.setXY(0,battlerX,battlerY)
       battler.setTone(0,col)
       # Battler animation
@@ -400,7 +462,7 @@ begin
       battler.moveTone(delay+5,10,col,[batSprite,:pbPlayIntroAnimation])
       if @shadowVisible
         # Set up shadow sprite
-        shadow = addSprite(shaSprite,PictureOrigin::Center)
+        shadow = addSprite(shaSprite,PictureOrigin::CENTER)
         shadow.setOpacity(0,0)
         # Shadow animation
         shadow.setVisible(delay,@shadowVisible)
@@ -409,15 +471,15 @@ begin
     end
   end
    
-  class PokemonBattlerSprite < RPG::Sprite
+  class Battle::Scene::BattlerSprite < RPG::Sprite
     attr_accessor   :sideSize
   end
-  class PokemonBattlerShadowSprite < RPG::Sprite
+  class Battle::Scene::BattlerShadowSprite < RPG::Sprite
     attr_accessor   :sideSize
   end
    
-  class SOSAdjustAnimation < PokeBattle_Animation
-    include PokeBattle_BallAnimationMixin
+  class SOSAdjustAnimation < Battle::Scene::Animation
+    include Battle::Scene::Animation::BallAnimationMixin
    
     def initialize(sprites,viewport,idxTrainer,battler)
       @idxTrainer     = idxTrainer
@@ -433,7 +495,7 @@ begin
       shaSprite.sideSize=@battler.battle.pbSideSize(@battler.index)
       batSprite.pbSetPosition
       shaSprite.pbSetPosition if @shadowVisible
-      battler = addSprite(batSprite,PictureOrigin::Bottom)
+      battler = addSprite(batSprite,PictureOrigin::BOTTOM)
     end
   end
    

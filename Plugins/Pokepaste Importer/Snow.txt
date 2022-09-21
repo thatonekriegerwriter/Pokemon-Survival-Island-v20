@@ -1,0 +1,67 @@
+PEEPO (Meganium) (F) @ Focus Band
+IVs: 3 HP / 14 Atk / 6 Def / 7 SpA / 7 SpD / 1 Spe
+EVs: 94 HP / 167 Atk / 210 Def / 137 SpA / 137 SpD / 8 Spe
+Ability: Overgrow
+Level: 59
+Hardy Nature
+- Cut
+- Ancient Power
+- Synthesis
+- Razor Leaf
+
+SUNFLOWER (Venusaur) (F) @ Exp. Share
+IVs: 0 HP / 10 Atk / 6 Def / 2 SpA / 2 SpD / 6 Spe
+EVs: 76 HP / 151 Atk / 171 Def / 19 SpA / 19 SpD / 13 Spe
+Ability: Overgrow
+Level: 36
+Hardy Nature
+- Giga Drain
+- Razor Leaf
+- Leech Seed
+- Ancient Power
+
+FINN (Gyarados) (F) @ Exp. Share
+IVs: 8 HP / 15 Atk / 10 Def / 10 SpA / 10 SpD / 10 Spe
+EVs: 199 HP / 101 Atk / 232 Def / 65 SpA / 65 SpD / 22 Spe
+Ability: Intimidate
+Level: 30
+Shiny: Yes
+Hardy Nature
+- Whirlpool
+- Surf
+- Strength
+- Rock Smash
+
+LILAC (Scizor) (F) @ Guard Spec.
+IVs: 15 HP / 1 Atk / 11 Def / 13 SpA / 13 SpD / 11 Spe
+EVs: 231 HP / 59 Atk / 143 Def / 204 SpA / 204 SpD / 14 Spe
+Ability: Swarm
+Level: 40
+Hardy Nature
+- False Swipe
+- Fly
+- Metal Claw
+- Karate Chop
+
+ADALYNE (Bellossom) (F) @ Exp. Share
+IVs: 8 HP / 15 Atk / 10 Def / 10 SpA / 10 SpD / 10 Spe
+EVs: 39 HP / 192 Atk / 12 Def / 161 SpA / 161 SpD / 242 Spe
+Ability: Chlorophyll
+Level: 42
+Shiny: Yes
+Hardy Nature
+- Hidden Power [Fighting]
+- Stun Spore
+- Sleep Powder
+- Acid
+
+MIDNA (Ariados) (F) @ Exp. Share
+IVs: 10 HP / 1 Atk / 4 Def / 14 SpA / 14 SpD / 1 Spe
+EVs: 210 HP / 204 Atk / 151 Def / 88 SpA / 88 SpD / 127 Spe
+Ability: Swarm
+Level: 31
+Hardy Nature
+- Poison Sting
+- Shadow Ball
+- Flash
+- Dig

@@ -1,0 +1,77 @@
+Politoed (F) @ Lucky Egg
+IVs: 7 HP / 10 Atk / 13 Def / 1 SpA / 1 SpD / 13 Spe
+EVs: 217 HP / 70 Atk / 45 Def / 189 SpA / 189 SpD / 38 Spe
+Ability: Water Absorb
+Level: 78
+Hardy Nature
+- Surf
+- Lovely Kiss
+- Cross Chop
+- Whirlpool
+
+Espeon (F) @ Lucky Egg
+IVs: 10 HP / 1 Atk / 4 Def / 2 SpA / 2 SpD / 15 Spe
+EVs: 131 HP / 75 Atk / 168 Def / 92 SpA / 92 SpD / 104 Spe
+Ability: Synchronize
+Level: 80
+Hardy Nature
+- Psybeam
+- Sand Attack
+- Psychic
+- Psych Up
+
+TOOFBAT (Crobat) (F) @ Lucky Egg
+IVs: 12 HP / 7 Atk / 7 Def / 10 SpA / 10 SpD / 6 Spe
+EVs: 187 HP / 89 Atk / 116 Def / 254 SpA / 254 SpD / 253 Spe
+Ability: Inner Focus
+Level: 80
+Hardy Nature
+- Wing Attack
+- Fly
+- Giga Drain
+- Shadow Ball
+
+XANDER (Vulpix) (F) @ Lucky Egg
+IVs: 11 HP / 15 Atk / 6 Def / 9 SpA / 9 SpD / 5 Spe
+EVs: 57 HP / 171 Atk / 248 Def / 168 SpA / 168 SpD / 49 Spe
+Ability: Flash Fire
+Level: 77
+Hardy Nature
+- Flamethrower
+- Headbutt
+- Fire Blast
+- Aurora Beam
+
+Dragonite (F) @ Lucky Egg
+IVs: 10 HP / 11 Atk / 10 Def / 12 SpA / 12 SpD / 11 Spe
+EVs: 129 HP / 111 Atk / 103 Def / 30 SpA / 30 SpD / 29 Spe
+Ability: Inner Focus
+Level: 80
+Hardy Nature
+- Hyper Beam
+- Thunderbolt
+- Earthquake
+- Outrage
+
+STONKSBABY (Donphan) (F) @ Lucky Egg
+IVs: 10 HP / 15 Atk / 10 Def / 2 SpA / 2 SpD / 15 Spe
+EVs: 26 HP / 155 Atk / 158 Def / 183 SpA / 183 SpD / 205 Spe
+Ability: Sturdy
+Level: 80
+Hardy Nature
+- Earthquake
+- Ancient Power
+- Rapid Spin
+- Strength
+
+
+Heracross (F) @ Exp. Share
+IVs: 1 HP / 0 Atk / 8 Def / 7 SpA / 7 SpD / 6 Spe
+EVs: 211 HP / 84 Atk / 172 Def / 38 SpA / 38 SpD / 213 Spe
+Ability: Swarm
+Level: 35
+Hardy Nature
+- Vital Throw
+- Horn Attack
+- Cut
+- Cross Chop

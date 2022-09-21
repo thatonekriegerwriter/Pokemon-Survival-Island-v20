@@ -1,0 +1,135 @@
+BOWSER (Blastoise) (F)
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+EVs: 189 HP / 176 Atk / 158 Def / 4 SpA / 4 SpD / 162 Spe
+Ability: Torrent
+Level: 36
+Hardy Nature
+- Rapid Spin
+- Protect
+- Water Gun
+- Bite
+
+Skarmory (F) @ Amulet Coin
+IVs: 14 HP / 15 Atk / 9 Def / 0 SpA / 0 SpD / 15 Spe
+EVs: 155 HP / 240 Atk / 2 Def / 4 SpA / 4 SpD / 235 Spe
+Ability: Keen Eye
+Hardy Nature
+- Drill Peck
+- Steel Wing
+- Return
+- Spikes
+
+CHUEY (Raichu) (F) @ Lucky Egg
+IVs: 8 HP / 15 Atk / 10 Def / 10 SpA / 10 SpD / 10 Spe
+EVs: 85 HP / 216 Atk / 43 Def / 69 SpA / 69 SpD / 8 Spe
+Ability: Static
+Level: 71
+Shiny: Yes
+Hardy Nature
+- Thunderbolt
+- Extreme Speed
+- Petal Dance
+- Ice Punch
+
+Scyther (F) @ Amulet Coin
+IVs: 13 HP / 3 Atk / 13 Def / 9 SpA / 9 SpD / 14 Spe
+EVs: 140 HP / 45 Atk / 144 Def / 9 SpA / 9 SpD / 68 Spe
+Ability: Swarm
+Hardy Nature
+- Fly
+- False Swipe
+- Karate Chop
+- Twineedle
+
+Blissey (F)
+IVs: 2 HP / 12 Atk / 8 Def / 12 SpA / 12 SpD / 15 Spe
+EVs: 145 HP / 71 Atk / 129 Def / 167 SpA / 167 SpD / 17 Spe
+Ability: Natural Cure
+Level: 52
+Hardy Nature
+- Seismic Toss
+- Sing
+- Minimize
+- Soft-Boiled
+
+Celebi
+IVs: 15 HP / 11 Atk / 13 Def / 15 SpA / 15 SpD / 11 Spe
+Ability: Natural Cure
+Level: 60
+Hardy Nature
+- Ancient Power
+- Future Sight
+- Baton Pass
+- Perish Song
+
+Gengar (F)
+IVs: 7 HP / 8 Atk / 5 Def / 13 SpA / 13 SpD / 3 Spe
+EVs: 178 HP / 255 Atk / 233 Def / 182 SpA / 182 SpD / 22 Spe
+Ability: Levitate
+Level: 55
+Hardy Nature
+- Confuse Ray
+- Destiny Bond
+- Pursuit
+- Explosion
+
+Togetic (F)
+IVs: 0 HP / 0 Atk / 14 Def / 10 SpA / 10 SpD / 10 Spe
+EVs: 116 HP / 117 Atk / 54 Def / 57 SpA / 57 SpD / 196 Spe
+Ability: Hustle
+Hardy Nature
+- Flamethrower
+- Thunderbolt
+- Surf
+- Thunder Wave
+
+Alakazam (F)
+IVs: 15 HP / 15 Atk / 11 Def / 9 SpA / 9 SpD / 7 Spe
+EVs: 19 HP / 57 Atk / 60 Def / 139 SpA / 139 SpD / 85 Spe
+Ability: Synchronize
+Hardy Nature
+- Psychic
+- Ice Punch
+- Disable
+- Recover
+
+Snorlax (F)
+IVs: 11 HP / 15 Atk / 14 Def / 11 SpA / 11 SpD / 5 Spe
+Ability: Immunity
+Level: 60
+Hardy Nature
+- Strength
+- Body Slam
+- Rollout
+- Hyper Beam
+
+BIG DUCKUM (Porygon2)
+IVs: 12 HP / 5 Atk / 11 Def / 8 SpA / 8 SpD / 12 Spe
+EVs: 120 HP / 194 Atk / 121 Def / 242 SpA / 242 SpD / 140 Spe
+Ability: Trace
+Hardy Nature
+- Ice Beam
+- Tri Attack
+- Recover
+- Thunderbolt
+
+Umbreon (F) @ Lucky Egg
+IVs: 15 HP / 15 Atk / 5 Def / 11 SpA / 11 SpD / 7 Spe
+EVs: 65 HP / 16 Atk / 185 Def / 176 SpA / 176 SpD / 51 Spe
+Ability: Synchronize
+Level: 71
+Hardy Nature
+- Feint Attack
+- Confuse Ray
+- Sand Attack
+- Tri Attack
+
+WYRMHEIM (Dragonite) (F) @ Exp. Share
+IVs: 15 HP / 15 Atk / 15 Def / 11 SpA / 11 SpD / 11 Spe
+EVs: 255 HP / 255 Atk / 255 Def / 255 SpA / 255 SpD / 89 Spe
+Ability: Inner Focus
+Hardy Nature
+- Thunder Wave
+- Outrage
+- Extreme Speed
+- Hyper Beam

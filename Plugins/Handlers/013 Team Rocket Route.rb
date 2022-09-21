@@ -1,9 +1,9 @@
 def pbTrainerSteal(vari)
  vari = GameData::TrainerType.get(vari).name
  if vari == "Lass" || vari == "Youngster" || vari == "Twins"
-  $Trainer.rocketstealing = 1 
+  $player.rocketstealing = 1 
 else 
-  $Trainer.rocketstealing = 0 
+  $player.rocketstealing = 0 
   end
   end
 
@@ -39,11 +39,11 @@ module PokeBattle_BattleCommon
     else
       pbDisplayBrief(_INTL("{1} threw a {2}!",pbPlayer.name,itemName))
     end
-	if $Trainer.rocketbadges == 1 && $Trainer.rocketstealing == 1 && $Trainer.rocketstealcount == 0
+	if $player.rocketbadges == 1 && $player.rocketstealing == 1 && $player.rocketstealcount == 0
          pbDisplay(_INTL("You are intimidating enough to Catch it!"))
-		 $Trainer.rocketstealcount = 1
+		 $player.rocketstealcount = 1
 	else
-	if $Trainer.rocketstealcount == 1
+	if $player.rocketstealcount == 1
          pbDisplay(_INTL("You already caught a POKeMON this fight!"))
       return
 	  end

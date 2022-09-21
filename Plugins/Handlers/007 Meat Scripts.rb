@@ -1,6 +1,4 @@
 def pbCookMeat
-
-
      Kernel.pbMessage(_INTL("You decide to use this POKeMON for food."))
 	   if pbGetPokemon(1)== :MAGIKARP
         $player.remove_pokemon_at_index(pbGet(1))

@@ -44,11 +44,16 @@
 # * Setting to Toggle between Whitelist or Blacklist, if WHITELIST = True, only Pokemon in SOS_WHITELIST_RATES will appear.
 # * If WHITELIST = False, it will check the SOS_BLACKLIST to see if a Pokemon is banned from calling. If Whitelist is false, a SOS_RATE must be defined.
   
-  WHITELIST = true 
+  WHITELIST = false 
 # * Hash containing base species call rates
   SOS_WHITELIST_RATES={} 
 # * Hash containing blacklisted Pokemon.
-  SOS_BLACKLIST={}
+  SOS_BLACKLIST=[
+    :ARTICUNO,:ZAPDOS,:MOLTRES,:MEWTWO,:MEW,:RAIKOU,:ENTEI,:SUICUNE,:LUGIA,:HOOH,:CELEBI,:REGIROCK,:REGICE,:REGISTEEL,:LATIAS,:LATIOS,
+    :KYOGRE,:GROUDON,:RAYQUAZA,:JIRACHI,:DEOXYS,:UXIE,:MESPRIT,:AZELF,:DIALGA,:PALKIA,:HEATRAN,:REGIGIGAS,:GIRATINA,:CRESSELIA,:MANAPHY,
+    :DARKRAI,:SHAYMIN,:ARCEUS,:VICTINI,:COBALION,:TERRAKION,:VIRIZION,:TORNADUS,:THUNDURUS,:RESHIRAM,:ZEKROM,:LANDORUS,:KYUREM,:KELDEO,
+    :MELOETTA,:GENESECT,:XERNEAS,:YVELTAL,:ZYGARDE,:TYPENULL,:SILVALLY,:TAPUBULU,:TAPUFINI,:TAPULELE,:TAPUKOKO,:COSMOG,:COSMOEM,:SOLGALEO,
+	:LUNALA,:NECROZMA,:NIHILEGO,:ZACIAN,:ZAMAZENTA,:ETERNATUS,:KUBFU,:URSHIFU,:REGIELEKI,:REGIDRAGO,:GLASTRIER,:SPECTRIER,:CALYREX]
 # * If using the Blacklist, all Pokemon have the same rate of being called.
   SOS_RATE=5
   # * Hash containing species called allies
@@ -73,6 +78,10 @@
     def pbCallForHelp(caller)
       cspecies=GameData::Species.get(caller.species).species
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
+	  blacklistedmons = SOS_BLACKLIST
+      for i in 0..blacklistedmons.length
+	  return if blacklistedmons[i] = cspecies
+      end
       return if rate==0 # should never trigger anyways but you never know.
       pbDisplay(_INTL("{1} called for help!", caller.pbThis))
       rate*=4 # base rate
@@ -212,8 +221,12 @@
       return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
-      cspecies=GameData::Species.get(self.species).name
-	  return false if SOS_BLACKLIST[cspecies]
+      cspecies=GameData::Species.get(self.species).species
+	  blacklistedmons = SOS_BLACKLIST
+      for i in 0..blacklistedmons.length
+	  return false if blacklistedmons[i] = cspecies
+      end
+#	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       # not a species that calls
       return false if rate==0

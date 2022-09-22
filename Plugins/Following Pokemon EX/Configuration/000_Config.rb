@@ -2,7 +2,7 @@ module FollowingPkmn
   # Common event that contains "FollowingPkmn.talk" in  a script command
   # Change this if you want a separate common event to play when talking to
   # Following Pokemon. Otherwise, set this to nil.
-  FOLLOWER_COMMON_EVENT     = nil
+  FOLLOWER_COMMON_EVENT     = 5
 
   # Animation IDs from followers
   # Change this if you are not using the Animations.rxdata provided in the script.

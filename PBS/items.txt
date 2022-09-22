@@ -5380,7 +5380,7 @@ Name = Calendar
 NamePlural = Calendars
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A small pocket calendar that you use to track the days.
 #-------------------------------
 [APOWERMONITOR]
@@ -5388,7 +5388,7 @@ Name = Power Monitor
 NamePlural = Power Monitors
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A small device you built to monitor the power back at your house.
 #-------------------------------
 [CLOCK]
@@ -5396,7 +5396,7 @@ Name = Clock
 NamePlural = Clocks
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A simple clock you crafted that you use to tell the time.
 #-------------------------------
 [SUPPLIES]
@@ -5404,7 +5404,7 @@ Name = Basic Climbing Equipment
 NamePlural = Basic Climbing Equipment
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A set of ropes that can be used to climb rocky hills.
 #-------------------------------
 [SUPPLIESOG]
@@ -5412,7 +5412,7 @@ Name = Supplies
 NamePlural = Supplies
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = Supplies for digging out bases.
 #-------------------------------
 [ADVANCEDSUPPLIES]
@@ -5420,7 +5420,7 @@ Name = Professional Climbing Equipment
 NamePlural = Professional Climbing Equipment
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A sturdier set of supplies that can be used for navigating even the steepest of mountains and valleys.
 #-------------------------------
 [SNATCHER]
@@ -5510,7 +5510,7 @@ NamePlural = Local Maps
 Pocket = 11
 Price = 0
 FieldUse = Direct
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = A very convenient map that can be viewed anytime. It even shows your present location.
 #-------------------------------
 [MEGASTONE]
@@ -5571,7 +5571,7 @@ Name = Iron Canteen
 NamePlural = Iron Canteen
 Pocket = 11
 Price = 0
-Flags = KeyItem, Tool
+Flags = KeyItem,Tool
 Description = 
 #-------------------------------
 [GLASSBOTTLE]
@@ -8569,7 +8569,6 @@ Pocket = 1
 Price = 10
 Flags = Fling_30
 Description = Throw one into certain Pokémon Dens, and it may lure a rare wild Dynamaxed Pokémon.
-
 #-------------------------------
 [GOLDSTONE]
 Name = Gold Stone
@@ -8618,7 +8617,6 @@ Pocket = 8
 Price = 0
 Flags = KeyItem,ReincarnationStone
 Description = A Stone shining with a faint green energy.
-
 #-------------------------------
 [RAINBOWSTONE]
 Name = Rainbow Stone
@@ -8634,7 +8632,7 @@ NamePlural = Red Marks
 Pocket = 8
 Price = 0
 Flags = KeyItem,ReincarnationBoon,ReincarnationBane
-Description =A Mark whos very Essence oozes that of Attack.
+Description = A Mark whos very Essence oozes that of Attack.
 #-------------------------------
 [BLUEMARK]
 Name = Blue Mark
@@ -8667,7 +8665,6 @@ Pocket = 8
 Price = 0
 Flags = KeyItem,ReincarnationBoon,ReincarnationBane
 Description = A Mark whos very Essence oozes that of Speed.
-
 #-------------------------------
 [GREYMARK]
 Name = Grey Mark
@@ -8684,4 +8681,29 @@ Pocket = 1
 Price = 0
 Flags = 
 Description = A Fragment used to Power a Reincarnation Sigil.
-
+#-------------------------------
+[BERSERKGENE]
+Name = Berserk Gene
+NamePlural = Berserk Genes
+Pocket = 1
+Price = 1000
+Flags = Fling_20
+Description = A genetically modified sample of Mew's DNA. Holding this may cause egg mutations.
+#-------------------------------
+[DIVINEPLATE]
+Name = Divine Plate
+NamePlural = Divine Plates
+Pocket = 1
+Price = 20000
+SellPrice = 1000
+Flags = Fling_90
+Description = The merged form of all 17 Arceus plates. The divine power it emits may be harnessed to create new life.
+#-------------------------------
+[FALSEPLATE]
+Name = False Plate
+NamePlural = False Plates
+Pocket = 1
+Price = 20000
+SellPrice = 1000
+Flags = Fling_90
+Description = A man-made attempt at creating a Divine Plate. The odd power it emits may be harnessed to create new life.

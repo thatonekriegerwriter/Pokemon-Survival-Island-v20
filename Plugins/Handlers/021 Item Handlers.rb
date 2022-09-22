@@ -1,3 +1,28 @@
+def pbHasCrate?
+ return true if $bag.has(:PORTABLEPC)
+ return true if $bag.has(:ITEMCRATE)
+end
+
+def pbHasGrinder?
+ return true if $bag.has(:GRINDER)
+ return true if $bag.has(:ELECTRICGRINDER)
+end
+
+def pbHasApricorn?
+ return true if $bag.has(:APRICORNCRAFTING)
+ return true if $bag.has(:APRICORNMACHINE)
+end
+
+def pbHasFurnace?
+ return true if $bag.has(:FURNACE)
+ return true if $bag.has(:ELECTRICFURNACE)
+end
+
+def pbHasCrafting?
+ return true if $bag.has(:CRAFTINGBENCH)
+ return true if $bag.has(::UPGRADEDCRAFTINGBENCH)
+end
+
 ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
     scene.pbDisplay(_INTL("It won't have any effect."))

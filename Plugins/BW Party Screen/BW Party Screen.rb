@@ -1627,10 +1627,14 @@ MenuHandlers.add(:party_menu_tend, :pet, {
   "name"      => _INTL("Pet"),
   "order"     => 10,
   "effect"    => proc { |screen, party, party_idx|
+	  if pbPetCheck == true
       pkmn = party[party_idx]
       pkmn.changeHappiness("groom",pkmn)
       pbMessage(_INTL("You pet {1}!",pkmn.name))
       pkmn.cute += 5
+	  else
+      pbMessage(_INTL("It's best not to pamper {1} too much!",pkmn.name))
+	  end
   }
 })
 
@@ -1639,9 +1643,13 @@ MenuHandlers.add(:party_menu_tend, :groom, {
   "order"     => 15,
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
+	  if pbGroomCheck == true
       pkmn.changeLoyalty("groom",pkmn)
       pbMessage(_INTL("You brush {1}!",pkmn.name))
       pkmn.beauty += 5
+	  else
+      pbMessage(_INTL("It's best not to pamper {1} too much!",pkmn.name))
+	  end
   }
 })
 
@@ -1672,9 +1680,8 @@ MenuHandlers.add(:party_menu_tend, :feed, {
   "name"      => _INTL("Feed"),
   "order"     => 20,
   "effect"    => proc { |screen, party, party_idx|
-    pkmn = party[party_idx]
-    item = screen.scene.pbChooseItem($bag) {
-      pbEatingPkmn(item,pkmn)}
+    pkmn = party[party_idx] 
+    pbEatingPkmn(pkmn)
   }
 })
 

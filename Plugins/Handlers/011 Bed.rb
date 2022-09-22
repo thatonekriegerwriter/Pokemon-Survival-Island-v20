@@ -65,6 +65,7 @@ pbSetPokemonCenter
 				if pbPokerus?
 			    pbMessage(_INTL("Your Pokemon seems a little off tonight."))
 				end 
+				$game_variables[29] = (3600*hours)
 				pbSleepRestore(hours)
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100

@@ -39,7 +39,7 @@ if Settings::SUMMARY_SHINY_LEAF
     def drawPage(page)
       enhanced_drawPage(page)
       overlay = @sprites["overlay"].bitmap
-	  coords = (PluginManager.installed?("BW Summary Screen")) ? [Graphics.width - 18, 114] : [182, 124]
+      coords = (PluginManager.installed?("BW Summary Screen")) ? [Graphics.width - 18, 114] : [182, 124]
       pbDisplayShinyLeaf(@pokemon, overlay, coords[0], coords[1])
     end
   end
@@ -135,14 +135,14 @@ if Settings::SUMMARY_IV_RATINGS
     def drawPageThree
       enhanced_drawPageThree
       overlay = @sprites["overlay"].bitmap
-	  coords = (PluginManager.installed?("BW Summary Screen")) ? [110, 82] : [465, 82]
+      coords = (PluginManager.installed?("BW Summary Screen")) ? [110, 82] : [465, 82]
       pbDisplayIVRating(@pokemon, overlay, coords[0], coords[1])
     end
 	
-	def pbDisplayIVRating(*args)
-	  return if args.length == 0
-	  pbDisplayIVRatings(*args)
-	end
+    def pbDisplayIVRating(*args)
+      return if args.length == 0
+      pbDisplayIVRatings(*args)
+    end
   end
 end
 
@@ -180,9 +180,9 @@ def pbDisplayIVRatings(pokemon, overlay, xpos, ypos, horizontal = false)
       end
     end
     imagepos.push([path, xpos + (i * offset_x), ypos + (i * offset_y), icon * 16, 0, 16, 16])
-	if s.id == :HP && !horizontal
-	  ypos += (PluginManager.installed?("BW Summary Screen")) ? 18 : 12 
-	end
+    if s.id == :HP && !horizontal
+      ypos += (PluginManager.installed?("BW Summary Screen")) ? 18 : 12 
+    end
     i += 1
   end
   pbDrawImagePositions(overlay, imagepos)
@@ -198,8 +198,9 @@ if Settings::SUMMARY_EGG_GROUPS
     def drawPageTwo
       enhanced_drawPageTwo
       overlay = @sprites["overlay"].bitmap
-	  coords = (PluginManager.installed?("BW Summary Screen")) ? [142, 260] : [364, 338]
-      pbDisplayEggGroups(@pokemon, overlay, coords[0], coords[1], "Egg Groups:")
+      coords = (PluginManager.installed?("BW Summary Screen")) ? [162, 326] : [364, 338]
+      vertical = (PluginManager.installed?("BW Summary Screen")) ? true : false
+      pbDisplayEggGroups(@pokemon, overlay, coords[0], coords[1], "Egg Groups:", vertical)
     end
   end
 end
@@ -209,7 +210,7 @@ if Settings::POKEDEX_EGG_GROUPS
     alias enhanced_drawPageInfo drawPageInfo
     def drawPageInfo
       enhanced_drawPageInfo
-	  return if !$player.owned?(@species)
+      return if !$player.owned?(@species)
       overlay = @sprites["overlay"].bitmap
       species_data = GameData::Species.get_species_form(@species, @form)
       pbDisplayEggGroups(species_data, overlay, 148, 204, true)
@@ -243,12 +244,20 @@ def pbDisplayEggGroups(pokemon, overlay, xpos, ypos, showDisplay = nil, vertical
     isGenderless = (GameData::Species.get(pokemon).gender_ratio == :Genderless && pokemon != :DITTO)
   end
   if showDisplay.is_a?(String)
-    if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
-      base   = Color.new(41, 86, 143)
-      shadow = Color.new(150, 177, 210)
+    if PluginManager.installed?("BW Summary Screen")
+      base   = Color.new(255, 255, 255)
+      shadow = Color.new(123, 123, 123)
+      if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
+        base   = Color.new(250, 213, 165)
+        shadow = Color.new(204, 85, 0)
+      end
     else
       base   = Color.new(64, 64, 64)
       shadow = Color.new(176, 176, 176)
+      if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
+        base   = Color.new(204, 85, 0)
+        shadow = Color.new(218, 160, 109)
+      end
     end
     textpos = [ [_INTL("#{showDisplay}"), xpos - 130, ypos + 2, 0, base, shadow] ]
     pbDrawTextPositions(overlay, textpos)
@@ -265,8 +274,6 @@ def pbDisplayEggGroups(pokemon, overlay, xpos, ypos, showDisplay = nil, vertical
     eggGroupRect = Rect.new(0, egg_groups[compat1] * 28, 64, 28)
     overlay.blt(xpos, ypos, eggGroupbitmap.bitmap, eggGroupRect)
   else
-    xpos -= 14 if vertical
-    ypos -= 14 if vertical
     offset_x = (vertical) ? 0  : 68
     offset_y = (vertical) ? 28 : 0
     eggGroup1Rect = Rect.new(0, egg_groups[compat1] * 28, 64, 28)

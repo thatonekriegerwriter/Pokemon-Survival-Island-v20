@@ -142,8 +142,8 @@ def raid_GenerateBanlist
                    :TOXTRICITY, 
                    :INDEEDEE, 
                    :URSHIFU,
-                   :DARMANITAN,
                    :BASCULEGION,
+                   :DARMANITAN,
                    :ENAMORUS]
   #-----------------------------------------------------------------------------
   # All other forms not listed above are added to the raid banlist. Exceptions

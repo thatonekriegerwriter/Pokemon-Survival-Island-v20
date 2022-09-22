@@ -1,0 +1,22 @@
+In file pokemon.txt
+You can add pokemon stats like this form:
+
+Pokemon, [max speed, max power, max skill, max stamina, max jump],[speed, power, skill, stamina, jump]
+
+Example:
+BULBASAUR,[3,3,4,4,3],[2,2,3,3,3]
+
+In file form.txt
+You can add pokemon stats like this form:
+
+Pokemon, [form1, form2],[max speed, max power, max skill, max stamina, max jump],[speed, power, skill, stamina, jump]
+
+Example:
+SHAYMIN,[1],[5,4,4,3,5],[3,4,3,3,5]
+
+If you don't set numbers, it will set random from 0 to 5 each stats when player get pokemon and random from 1 to 5 max stats
+You can have space between number and number but in this case `],[` you must write like this to avoid error.
+One more time, when ] and [, use this form ],[
+
+File pokemon will store form 0 and other forms if it has same stats.
+Remember: file pokemon store form 0.

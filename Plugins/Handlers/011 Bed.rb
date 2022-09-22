@@ -1,57 +1,16 @@
 def heal_BED(wari,pkmn)
     chance = rand(8)
   return if pkmn.egg?
-  case wari
-   when 1
-    newHP = pkmn.hp + pkmn.totalhp / 8
+  if wari >= 8
+    pkmn.heal_HP
+    pkmn.heal_status
+    pkmn.heal_PP
+  else 
+    newHP = pkmn.hp + ((pkmn.totalhp * wari)/8) 
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     pkmn.hp = newHP
-    pkmn.heal_status if chance == 0
-    pkmn.heal_PP if chance == 0
-   when 2
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*2)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 1
-    pkmn.heal_PP if chance <= 1
-   when 3
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*3)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 2
-    pkmn.heal_PP if chance <= 2
-   when 4
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*4)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 3
-    pkmn.heal_PP if chance <= 3
-   when 5
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*5)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 4
-    pkmn.heal_PP if chance <= 4
-   when 6
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*6)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 5
-    pkmn.heal_PP if chance <= 5
-   when 7
-    newHP = pkmn.hp + ((pkmn.totalhp / 8)*7)
-    newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    pkmn.hp = newHP
-    pkmn.heal_status if chance <= 6
-    pkmn.heal_PP if chance <= 6
-   when 8
-      pkmn.heal_HP
-      pkmn.heal_status
-      pkmn.heal_PP
-   else
-      pkmn.heal_HP
-      pkmn.heal_status
-      pkmn.heal_PP
+    pkmn.heal_status if chance <= (wari-1)
+    pkmn.heal_PP if chance <= (wari-1)
   end
   @ready_to_evolve = false
 end

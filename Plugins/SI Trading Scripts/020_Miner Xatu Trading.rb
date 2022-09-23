@@ -3,18 +3,18 @@
 # *Item Crafter scene created by TheKrazyGamer/kcgcrazy/TheKraazyGamer
 # *Please Give Credit if used
 #
-# *to add an item of your own just add it to the RECIPEXS array.
+# *to add an item of your own just add it to the type array.
 #   Add The ITEMID,AMOUNT to be crafted,required MATERIALS and COSTS
 #   and also BOOLEAN values for it being unlocked or not.
 #   If a Second Material is not being used, enter nil.
 #
 #   Here is an example!
 #
-# RECIPEXS=[
+# type=[
 #  [:ITEMID,CRAFT_AMOUNT,[:MATERIAL1,COST],[:MATERIAL2,COST],IS_UNLOCKED?]
 #  ]
 ############################################################
-# RECIPEXS=[
+# type=[
 # [:POKEBALL,1,[:WHTAPRICORN,5],nil,false],
 # [:GREATBALL,1,[:WHTAPRICORN,15],[:BLKAPRICORN,5],false],
 # [:ULTRABALL,1,[:WHTAPRICORN,15],[:GRNAPRICORN,15],false],
@@ -50,6 +50,7 @@
 #===============================================================================
 
 CRAFTVAR = 100 # number used for available $game_variable.
+CRAFTVAR2 = 99 # number used for available $game_variable.
 
 $exit = 0
 $isUnlocked = []
@@ -57,7 +58,131 @@ $isUnlocked = []
 # This is your Items, Material etc.
 ###############################################################################
 
-RECIPEXS=[
+RECIPE1=[
+[:YELLOWAPRICORN,1,[:STARPIECE,1],nil, true],
+[:LEPPABERRY,1,[:RAREBONE,1],nil, true],
+[:STARFBERRY,1,[:HEARTSCALE,1],nil, true],
+[:OCCABERRY,1,[:HEATROCK,1],nil, true],
+[:PASSHOBERRY,1,[:DAMPROCK,1],nil, true],
+[:SHUCABERRY,1,[:SMOOTHROCK,1],nil, true],
+[:YACHEBERRY,1,[:ICYROCK,1],nil, true],
+[:JOYSCENT,1,[:REDSHARD,1],nil, true],
+[:EXCITESCENT,1,[:GREENSHARD,1],nil, true],
+[:VIVIDSCENT,1,[:YELLOWSHARD,1],nil, true],
+[:BLUEFLUTE,1,[:BLUESHARD,1],nil, true],
+[:WHITEAPRICORN,1,[:LIGHTCLAY,1],nil, true],
+[:CHARCOAL,1,[:FIRESTONE,1],nil, true],
+[:MYSTICWATER,1,[:WATERSTONE,1],nil, true],
+[:BRIGHTPOWDER,1,[:THUNDERSTONE,1],nil, true],
+[:MIRACLESEED,1,[:LEAFSTONE,1],nil, true],
+[:ROSELIBERRY,1,[:MOONSTONE,1],nil, true],
+[:SILKSCARF,1,[:SUNSTONE,1],nil, true],
+[:LUCKYEGG,1,[:OVALSTONE,1],nil, true],
+[:ABILITYCAPSULE,1,[:EVERSTONE,1],nil, true],
+[:EXPSHARE,1,[:SILVERORE,1],nil, true],
+[:ABILITYPATCH,1,[:EVIOLITE,1],nil, true],
+[:IRON2,2,[:IRONBALL,1],nil, true],
+[:STONE,2,[:HARDSTONE,1],nil, true],
+[:SPELLTAG,1,[:ODDKEYSTONE,1],nil, true],
+[:SWIFTWING,1,[:INSECTPLATE,1],nil, true],
+[:COLBURBERRY,1,[:DREADPLATE,1],nil, true],
+[:DRAGONFANG,1,[:DRACOPLATE,1],nil, true],
+[:TM15,1,[:ZAPPLATE,1],nil, true],
+[:BLACKBELT,1,[:FISTPLATE,1],nil, true],
+[:TM11,1,[:FLAMEPLATE,1],nil, true],
+[:ROSEINCENSE,1,[:MEADOWPLATE,1],nil, true],
+[:SOFTSAND,1,[:EARTHPLATE,1],nil, true],
+[:WEAKNESSPOLICY,1,[:ICICLEPLATE,1],nil, true],
+[:BLACKSLUDGE,1,[:TOXICPLATE,1],nil, true],
+[:MAGOSTBERRY,1,[:MINDPLATE,1],nil, true],
+[:CORNNBERRY,1,[:STONEPLATE,1],nil, true],
+[:FLYINGGEM,1,[:SKYPLATE,1],nil, true],
+[:WIDELENS,1,[:SPOOKYPLATE,1],nil, true],
+[:TM37,1,[:IRONPLATE,1],nil, true],
+[:SAFETYGOGGLES,1,[:SPLASHPLATE,1],nil, true],
+[:FLYINGGEM,1,[:NOMELBERRY,1],nil, true],
+[:ASSAULTVEST,1,[:SMOKEBALL,1],nil, true]
+]
+RECIPE2=[
+[:FULLINCENSE,1,[:STARPIECE,2],nil, true],
+[:LAXINCENSE,1,[:STARPIECE,2],nil, true],
+[:LUCKINCENSE,1,[:STARPIECE,2],nil, true],
+[:PUREINCENSE,1,[:STARPIECE,2],nil, true],
+[:SEAINCENSE,1,[:STARPIECE,2],nil, true],
+[:WAVEINCENSE,1,[:STARPIECE,2],nil, true],
+[:ROSEINCENSE,1,[:STARPIECE,2],nil, true],
+[:ODDINCENSE,1,[:STARPIECE,2],nil, true],
+[:ROCKINCENSE,1,[:STARPIECE,2],nil, true],
+[:EVERSTONE,1,[:STARPIECE,2],nil, true],
+[:DESTINYKNOT,1,[:STARPIECE,20],nil, true],
+[:ABILITYCAPSULE,1,[:STARPIECE,4],nil, true]
+]
+RECIPE3=[
+[:TM93,1,[:STARPIECE,2],nil, true],
+[:TM86,1,[:STARPIECE,2],nil, true],
+[:TM87,1,[:STARPIECE,2],nil, true],
+[:TM35,1,[:STARPIECE,2],nil, true],
+[:TM30,1,[:STARPIECE,2],nil, true],
+[:TM22,1,[:STARPIECE,2],nil, true],
+[:TM24,1,[:STARPIECE,2],nil, true],
+[:TM02,1,[:STARPIECE,2],nil, true],
+[:TM10,1,[:STARPIECE,2],nil, true],
+[:TM64,1,[:STARPIECE,2],nil, true],
+[:TM62,1,[:STARPIECE,2],nil, true],
+[:TM81,1,[:STARPIECE,2],nil, true],
+[:TM92,1,[:STARPIECE,2],nil, true],
+[:TM38,1,[:STARPIECE,2],nil, true],
+[:TM29,1,[:STARPIECE,2],nil, true],
+[:TM23,1,[:STARPIECE,2],nil, true],
+[:TM46,1,[:STARPIECE,2],nil, true],
+[:TM48,1,[:STARPIECE,2],nil, true],
+[:TM18,1,[:STARPIECE,2],nil, true],
+[:TM17,1,[:STARPIECE,2],nil, true],
+[:TM27,1,[:STARPIECE,2],nil, true],
+[:TM04,1,[:STARPIECE,2],nil, true],
+[:TM43,1,[:STARPIECE,2],nil, true],
+[:TM36,1,[:STARPIECE,2],nil, true],
+[:TM37,1,[:STARPIECE,2],nil, true],
+[:TM15,1,[:STARPIECE,2],nil, true],
+[:TM37,1,[:STARPIECE,2],nil, true],
+[:TM48,1,[:STARPIECE,2],nil, true],
+[:TM59,1,[:STARPIECE,2],nil, true],
+[:TM71,1,[:STARPIECE,2],nil, true],
+[:TM75,1,[:STARPIECE,2],nil, true],
+[:TM08,1,[:STARPIECE,2],nil, true],
+[:TM76,1,[:STARPIECE,2],nil, true],
+[:TM70,1,[:STARPIECE,2],nil, true],
+[:TM87,1,[:STARPIECE,2],nil, true],
+[:TM78,1,[:STARPIECE,2],nil, true],
+[:TM28,1,[:STARPIECE,2],nil, true],
+[:TM01,1,[:STARPIECE,2],nil, true],
+[:TM96,1,[:STARPIECE,2],nil, true],
+[:TM98,1,[:STARPIECE,2],nil, true],
+[:TM94,1,[:STARPIECE,2],nil, true],
+[:TM12,1,[:STARPIECE,2],nil, true],
+[:TM99,1,[:STARPIECE,2],nil, true]
+]
+RECIPE4=[
+[:POTION,1,[:STARPIECE,1],nil, true],
+[:SUPERPOTION,1,[:STARPIECE,3],nil, true],
+[:BLACKFLUTE,1,[:STARPIECE,2],nil, true],
+[:EVIOLITE,1,[:STARPIECE,3],nil, true],
+[:SACREDASH,1,[:STARPIECE,15],nil, true],
+[:LEFTOVERS,1,[:STARPIECE,3],nil, true],
+[:FULLINCENSE,1,[:STARPIECE,2],nil, true],
+[:LAXINCENSE,1,[:STARPIECE,2],nil, true],
+[:LUCKINCENSE,1,[:STARPIECE,2],nil, true],
+[:PUREINCENSE,1,[:STARPIECE,2],nil, true],
+[:SEAINCENSE,1,[:STARPIECE,2],nil, true],
+[:WAVEINCENSE,1,[:STARPIECE,2],nil, true],
+[:ROSEINCENSE,1,[:STARPIECE,2],nil, true],
+[:ODDINCENSE,1,[:STARPIECE,2],nil, true],
+[:ROCKINCENSE,1,[:STARPIECE,2],nil, true],
+[:WATERBOTTLE,1,[:STARPIECE,1],nil, true],
+[:POKEDOLL,1,[:STARPIECE,1],nil, true],
+[:SNOWMAIL,1,[:STARPIECE,1],nil, true]
+]
+RECIPE5=[
 [:YELLOWAPRICORN,1,[:STARPIECE,1],nil, true],
 [:LEPPABERRY,1,[:RAREBONE,1],nil, true],
 [:STARFBERRY,1,[:HEARTSCALE,1],nil, true],
@@ -103,30 +228,38 @@ RECIPEXS=[
 [:ASSAULTVEST,1,[:SMOKEBALL,1],nil, true]
 ]
 
+
 ###############################################################################
 
-# This goes through the RECIPEXS array and adds the true or false value from it
+# This goes through the type array and adds the true or false value from it
 # to the $game_variables[CRAFTVAR] array
-    for i in 0...RECIPEXS.length
-     $isUnlocked[i] = RECIPEXS[i][4]
-    end
+
    
   def setupCraftUnlocks
    $game_variables[CRAFTVAR] = $isUnlocked
   end
-
+  
+  
+  def pbTradingScene(type)
+	 for i in 0...type.length
+     $isUnlocked[i] = type[i][4]
+    end
+     setupCraftUnlocks
+	 TradingScene.new(type)
+  end
 #From here onwards you DO NOT change anything.
 class TradingScene
 
-  def initialize
+  def initialize(type)
     @close = $exit
+	@type = type
     @select=3
     @item=0
-    @mat1=RECIPEXS[@item][2]? RECIPEXS[@item][2][0] : -1 # the amount for first item
-    @mat2=RECIPEXS[@item][3]? RECIPEXS[@item][3][0] : -1 # the amount for first item
-    @cost1=RECIPEXS[@item][2]? RECIPEXS[@item][2][1] : 0 # the amount for first item
-    @cost2=RECIPEXS[@item][3]? RECIPEXS[@item][3][1] : 0 # the amount for first item
-    @amount=RECIPEXS[@item][1] # the amount for the first item made
+    @mat1=@type[@item][2]? @type[@item][2][0] : -1 # the amount for first item
+    @mat2=@type[@item][3]? @type[@item][3][0] : -1 # the amount for first item
+    @cost1=@type[@item][2]? @type[@item][2][1] : 0 # the amount for first item
+    @cost2=@type[@item][3]? @type[@item][3][1] : 0 # the amount for first item
+    @amount=@type[@item][1] # the amount for the first item made
                   
     @viewport=Viewport.new(0,0,Graphics.width,Graphics.height)
     @viewport.z=99999
@@ -147,7 +280,7 @@ class TradingScene
     @sprites["Item_Hov"].opacity=0
     
     @sprites["Item_icon"]=IconSprite.new(0,0,@viewport)   
-    @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(RECIPEXS[@item][0])))
+    @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(@type[@item][0])))
     @sprites["Item_icon"].x=220+10
     @sprites["Item_icon"].y=40
     @sprites["Item_icon"].opacity=0
@@ -249,19 +382,19 @@ class TradingScene
         @sprites["Cancel_Hov"].opacity=0
         @sprites["Item"].opacity=0
         @sprites["Item_Hov"].opacity=255
-        @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(RECIPEXS[@item][0])))
+        @sprites["Item_icon"].setBitmap(GameData::Item.icon_filename(GameData::Item.try_get(@type[@item][0])))
         if $game_variables[CRAFTVAR][@item]
             @sprites["unknown"].opacity=0
             @sprites["Item_icon"].opacity=255
-            @sprites["Item_1_icon"].setBitmap(RECIPEXS[@item][2]? GameData::Item.icon_filename(GameData::Item.try_get(RECIPEXS[@item][2][0])) : "") # Vendily
-            @sprites["Item_2_icon"].setBitmap(RECIPEXS[@item][3]? GameData::Item.icon_filename(GameData::Item.try_get(RECIPEXS[@item][3][0])) : "") # Vendily
-            @sprites["Item_1_icon"].opacity= RECIPEXS[@item][2] ? 255 : 0
-            @sprites["Item_2_icon"].opacity=RECIPEXS[@item][3] ? 255 : 0
-            @mat1=RECIPEXS[@item][2]? RECIPEXS[@item][2][0] : -1
-            @mat2=RECIPEXS[@item][3]? RECIPEXS[@item][3][0] : -1
-            @cost1=RECIPEXS[@item][2]? RECIPEXS[@item][2][1] : 0
-            @cost2=RECIPEXS[@item][3]? RECIPEXS[@item][3][1] : 0
-            @amount=RECIPEXS[@item][1]
+            @sprites["Item_1_icon"].setBitmap(@type[@item][2]? GameData::Item.icon_filename(GameData::Item.try_get(@type[@item][2][0])) : "") # Vendily
+            @sprites["Item_2_icon"].setBitmap(@type[@item][3]? GameData::Item.icon_filename(GameData::Item.try_get(@type[@item][3][0])) : "") # Vendily
+            @sprites["Item_1_icon"].opacity= @type[@item][2] ? 255 : 0
+            @sprites["Item_2_icon"].opacity=@type[@item][3] ? 255 : 0
+            @mat1=@type[@item][2]? @type[@item][2][0] : -1
+            @mat2=@type[@item][3]? @type[@item][3][0] : -1
+            @cost1=@type[@item][2]? @type[@item][2][1] : 0
+            @cost2=@type[@item][3]? @type[@item][3][1] : 0
+            @amount=@type[@item][1]
           else
             @sprites["unknown"].opacity=255
             @sprites["Item_icon"].opacity=0
@@ -271,15 +404,15 @@ class TradingScene
           self.text
           
         # When pressing Right
-        if Input.trigger?(Input::RIGHT)  && @item < RECIPEXS.length-1
+        if Input.trigger?(Input::RIGHT)  && @item < @type.length-1
           @item+=1
-        elsif Input.trigger?(Input::RIGHT)  && @item ==RECIPEXS.length-1 # Make it run though the selection after last item.
+        elsif Input.trigger?(Input::RIGHT)  && @item ==@type.length-1 # Make it run though the selection after last item.
           @item = 0
         end
         if Input.trigger?(Input::LEFT) && @item >0
           @item-=1
         elsif Input.trigger?(Input::LEFT) && @item ==0 # Make it run though the selection after first item.
-          @item = RECIPEXS.length-1
+          @item = @type.length-1
         end
       end    
       # When pressing Left.
@@ -297,13 +430,13 @@ class TradingScene
             if $PokemonBag.pbQuantity(@mat1)<@cost1 || (@mat2!=-1 && $PokemonBag.pbQuantity(@mat2) <@cost2) #Seth Edited 
               Kernel.pbMessage(_INTL("The Xatu can see you do not have enough items for that."))
             else
-              $PokemonBag.pbStoreItem(RECIPEXS[@item][0],@amount)
+              $PokemonBag.pbStoreItem(@type[@item][0],@amount)
               $PokemonBag.pbDeleteItem(@mat1,@cost1)
               if @mat2!=-1
                 $PokemonBag.pbDeleteItem(@mat2,@cost2)
               end
               self.text
-              Kernel.pbMessage(_INTL("{1} and {2} were traded for each other.", GameData::Item.get(GameData::Item.try_get(@mat1)).name, GameData::Item.get(GameData::Item.try_get(RECIPEXS[@item][0])).name))
+              Kernel.pbMessage(_INTL("{1} and {2} were traded for each other.", GameData::Item.get(GameData::Item.try_get(@mat1)).name, GameData::Item.get(GameData::Item.try_get(@type[@item][0])).name))
             end
           else
             Kernel.pbMessage(_INTL("The Xatu doesn't feel like you should trade for that yet."))
@@ -347,7 +480,7 @@ class TradingScene
       @text1=_INTL("UNKNOWN")
       @text2=_INTL("UNKNOWN")
     end
-    @text3=_INTL("{1} / {2}", @item + 1, RECIPEXS.length)
+    @text3=_INTL("{1} / {2}", @item + 1, @type.length)
     textos.push([@text1,175,115,false,baseColor,shadowColor])
     textos.push([@text2,175,198+5,false,baseColor,shadowColor])
     textos.push([@text3,75,30,false,baseColor,shadowColor])

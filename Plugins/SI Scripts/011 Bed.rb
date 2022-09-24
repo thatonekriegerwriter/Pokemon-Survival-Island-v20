@@ -21,11 +21,13 @@ command = 0
 pbSetPokemonCenter
   loop do
       cmdSleep  = -1
+      cmdNap   = -1
       cmdSave   = -1
       cmdDreamConnect = -1
       cmdPickUp = -1
       commands = []
       commands[cmdSleep  = commands.length] = _INTL("Sleep")
+      commands[cmdNap  = commands.length] = _INTL("Nap")
       commands[cmdSave   = commands.length] = _INTL("Save")
       commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
       commands[cmdPickUp  = commands.length] = _INTL("Pick Up") if temperate==false
@@ -80,6 +82,38 @@ pbSetPokemonCenter
 			        pbMessage(_INTL("You really need to sleep."))
 				end
 		  end
+      elsif cmdNap >= 0 && command == cmdNap   # Summary
+			    pbMessage(_INTL("You lay down to take a nap."))
+				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
+			    hours = 0.5
+				$game_variables[29] = (3600*hours)
+	            pbMEPlay("Pokemon Healing")
+				pbWait(40)
+				pbRandomEvent
+				chance = rand(3)
+				if chance == 0
+                 for i in 0...party.length
+                 pkmn = party[i]
+                 pkmn.heal_HP
+                 pkmn.heal_status
+                 pkmn.heal_PP
+				 end
+				 pbSleepRestore(hours)
+			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
+			     pbMessage(_INTL("You wake up feeling great!"))
+				 elsif chance == 1
+			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
+			     pbMessage(_INTL("You wake up not feeling any different."))
+				 else
+			     $player.pokemon_party.each do |pkmn|
+			        pkmn.changeSleep
+			        pkmn.changeSleep
+			        pkmn.changeSleep
+			     end
+				   $player.playersleep -= 24
+				 pbToneChangeAll(Tone.new(0,0,0,0),20)
+			     pbMessage(_INTL("You wake up feeling worse than before."))
+				 end
       elsif cmdSave >= 0 && command == cmdSave   # Summary
        scene = PokemonSave_Scene.new
        screen = PokemonSaveScreen.new(scene)

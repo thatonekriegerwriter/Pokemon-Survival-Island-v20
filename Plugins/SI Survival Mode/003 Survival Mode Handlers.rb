@@ -131,14 +131,14 @@ end
   proc {
   if $PokemonSystem.survivalmode==0
   $PokemonGlobal.pkmnsleepSteps = 0 if !$PokemonGlobal.pkmnsleepSteps
-  $PokemonGlobal.pkmnthirstSteps += 1
-  if $PokemonGlobal.pkmnthirstSteps>=100
+  $PokemonGlobal.pkmnsleepSteps += 1
+  if $PokemonGlobal.pkmnsleepSteps>=100
     if rand(100)==1
        $player.pokemon_party.each do |pkmn|
-          pkmn.changeWater
+          pkmn.changeSleep
        end
     end
-    $PokemonGlobal.pkmnthirstSteps = 0
+    $PokemonGlobal.pkmnsleepSteps = 0
   end
   end
   }

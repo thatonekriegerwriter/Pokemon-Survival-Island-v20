@@ -1,4 +1,4 @@
 Name         = Pokepaste Importer
-Version      = 1.0
+Version      = 1.1
 Essentials   = 20.1
 Credits      = Grogro

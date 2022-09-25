@@ -32,12 +32,15 @@ def nametospecies(name) #make the pkmn name something the game can read
 		return(species.id)
       end
     end
-	n=name.split("-")
-	GameData::Species.each_species do |species|
-	  if species.real_name==n[0]
-		return(species.id)
-	  end
-    end
+	if name!=nil
+		n=name.split("-") 
+		GameData::Species.each_species do |species|
+			if species.real_name==n[0]
+				return(species.id)
+			end
+		end
+	end
+	return(nil)
 end
 
 def nametoitem(pkmn,iname)  #make the item name something the game can read
@@ -80,54 +83,56 @@ end
 
 def findform(name,pkmn)	#make the form name something the game can read
 	specie=pkmn.species
-	n=name.split("-")
-	if n.length>1
-		exspecie=[:ARCEUS,:GENESECT,:ZACIAN,:SILVALLY,:ZAMAZENTA]
-		if n[1]!="Mega" && n[1]!="Primal" && !exspecie.include?(specie) && n[1]!="Complete"
-			formcmds = []
-			GameData::Species.each do |sp|
-				next if sp.species != specie
-				form_name = sp.form_name
-				form_name = _INTL("Unnamed form") if !form_name || form_name.empty?
-				formcmds.push(form_name)
-			end
-			for i in 0...formcmds.length		#exceptions: pkmn that learn move when changing form
-				if formcmds[i].include?(n[1])
-					if specie==:CALYREX && i==2
-						pkmn.learn_move(:ASTRALBARRAGE)
-					end
-					if specie==:CALYREX && i==1
-						pkmn.learn_move(:GLACIALLANCE)
-					end
-					if specie==:NECROZMA && i==1
-						pkmn.learn_move(:SUNSTEELSTRIKE)
-					end
-					if specie==:NECROZMA && i==2
-						pkmn.learn_move(:MOONGEISTBEAM)
-					end
-					if specie==:KYUREM && i==1
-						pkmn.learn_move(:ICEBURN)
-						pkmn.learn_move(:FUSIONFLARE)
-					end
-					if specie==:KYUREM && i==2
-						pkmn.learn_move(:FREEZESHOCK)
-						pkmn.learn_move(:FUSIONBOLT)
-					end
-					if specie==:ROTOM
-						pkmn.learn_move(:OVERHEAT) if i==1
-						pkmn.learn_move(:HYDROPUMP) if i==2
-						pkmn.learn_move(:BLIZZARD) if i==3
-						pkmn.learn_move(:AIRSLASH) if i==4
-						pkmn.learn_move(:LEAFSTORM) if i==5
-					end
+	if name!=nil
+		n=name.split("-")
+		if n.length>1
+			exspecie=[:ARCEUS,:GENESECT,:ZACIAN,:SILVALLY,:ZAMAZENTA]
+			if n[1]!="Mega" && n[1]!="Primal" && !exspecie.include?(specie) && n[1]!="Complete"
+				formcmds = []
+				GameData::Species.each do |sp|
+					next if sp.species != specie
+					form_name = sp.form_name
+					form_name = _INTL("Unnamed form") if !form_name || form_name.empty?
+					formcmds.push(form_name)
+				end
+				for i in 0...formcmds.length		#exceptions: pkmn that learn move when changing form
+					if formcmds[i].include?(n[1])
+						if specie==:CALYREX && i==2
+							pkmn.learn_move(:ASTRALBARRAGE)
+						end
+						if specie==:CALYREX && i==1
+							pkmn.learn_move(:GLACIALLANCE)
+						end
+						if specie==:NECROZMA && i==1
+							pkmn.learn_move(:SUNSTEELSTRIKE)
+						end
+						if specie==:NECROZMA && i==2
+							pkmn.learn_move(:MOONGEISTBEAM)
+						end
+						if specie==:KYUREM && i==1
+							pkmn.learn_move(:ICEBURN)
+							pkmn.learn_move(:FUSIONFLARE)
+						end
+						if specie==:KYUREM && i==2
+							pkmn.learn_move(:FREEZESHOCK)
+							pkmn.learn_move(:FUSIONBOLT)
+						end
+						if specie==:ROTOM
+							pkmn.learn_move(:OVERHEAT) if i==1
+							pkmn.learn_move(:HYDROPUMP) if i==2
+							pkmn.learn_move(:BLIZZARD) if i==3
+							pkmn.learn_move(:AIRSLASH) if i==4
+							pkmn.learn_move(:LEAFSTORM) if i==5
+						end
 
-					return(i)
+						return(i)
+					end
 				end
 			end
-		end
-		if specie==:GRENINJA
-			if n[1]=="Ash"
-				return(1)
+			if specie==:GRENINJA
+				if n[1]=="Ash"
+					return(1)
+				end
 			end
 		end
 	end	
@@ -201,15 +206,91 @@ def nametomove(pkmn,name)
 	end
 end
 
-def caracpkmn(pktext)
-	id=nametospecies(pktext[0][0])
-	pkmn = Pokemon.new(id,100)
-	pkmn.form=findform(pktext[0][0],pkmn)
-	if pktext[0][1]=="@"
-		nametoitem(pkmn,pktext[0][2...pktext[0].length])
+def nickname(name)
+	if name.length>1
+		nick=""
+		for i in 0...name.length
+			nick<<name[i]
+			nick<<" "
+		end
 	else
-		nametoitem(pkmn,pktext[0][3...pktext[0].length])
-		if pktext[0][1]=="(M)"
+		nick=name[0]
+	end
+	return(nick)
+end
+
+def caracpkmn(pktext)
+	id=nil
+	k=0
+	while id==nil && k<pktext[0].length	#nickname check
+		text=pktext[0][k].split("(")
+		if text.length>1
+			text=text[1].split(")")
+		end
+		id=nametospecies(text[0])
+		k+=1			
+	end
+	k-=1
+	if id==nil	#tapu check
+		k=0
+		while id==nil && k<pktext[0].length
+			text=pktext[0][k].split("(")
+			if text.length>1
+				text=text[1].split(")")
+			end
+			if k+1<pktext[0].length 
+				t=pktext[0][k+1].split("(")
+				if t.length>1
+					t=t[1].split(")")
+				end
+				tname=""
+				tname<<text[0]
+				tname<<" "
+				tname<<t[0]
+				id=nametospecies(tname)
+			end
+			k+=1			
+		end
+		
+	end
+	tapun=0
+	if id==nil		#tapu with a nickname check
+		k=0
+		while id==nil && k<pktext[0].length
+			text=pktext[0][k].split("(")
+			if text.length>1
+				text=text[1].split(")")
+			end
+			if k+1<pktext[0].length 
+				t=pktext[0][k+1].split("(")
+				t=t[0].split(")") if t[0]!=nil
+				tname=""
+				tname<<text[0]
+				tname<<" "
+				tname<<t[0] if t[0]!=nil
+				id=nametospecies(tname)
+			end
+			k+=1			
+		end
+		tapun=1	#tapu with nickname detected
+	end
+	if id==nil
+		p ("pkmn name was not recognized.Generating Ditto instead.")
+		id =:DITTO
+	end
+	pkmn = Pokemon.new(id,100)
+	pkmn.form=findform(pktext[0][k],pkmn)
+	if tapun==0
+		nick=nickname(pktext[0][0...k])
+	else
+		nick=nickname(pktext[0][0...k-1])
+	end
+	pkmn.name=nick
+	if pktext[0][1+k]=="@"
+		nametoitem(pkmn,pktext[0][2+k...pktext[0].length])
+	else
+		nametoitem(pkmn,pktext[0][3+k...pktext[0].length])
+		if pktext[0][1+k]=="(M)"
 			pkmn.makeMale 
 		else
 			pkmn.makeFemale

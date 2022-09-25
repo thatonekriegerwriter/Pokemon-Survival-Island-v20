@@ -52,6 +52,8 @@ module QuestModule
     :RewardString => "nil"
   }
   
+  #Stage 2 is for without the Partner.
+  #Stage 3 is for with the partner.
   PSISQ2 = {
     :ID => "5",
     :Name => "Pollyanna",

@@ -343,15 +343,7 @@ class PokemonTrainerCard_Scene
        [_INTL("{1}%",$player.playerwater.to_s_formatted),190,217,1,thirstColor,shadowColor],
        [_INTL("SLP"),34,246,0,baseColor,shadowColor],
        [_INTL(trainersleep),302,246,1,sleepColor,shadowColor],
-       [_INTL("{1}%",$player.playersleep.to_s_formatted),190,246,1,sleepColor,shadowColor],
-      [_INTL("{1}",$player.playeremotional.to_s_formatted), 82, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",$player.playerintelligence.to_s_formatted), 132, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",$player.playerphysical.to_s_formatted), 178, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",rand(99).to_s_formatted), 226, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",rand(99).to_s_formatted), 274, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",rand(99).to_s_formatted), 322, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",rand(99).to_s_formatted), 370, 310, 0, baseColor, shadowColor],
-      [_INTL("{1}",rand(99).to_s_formatted), 418, 310, 0, baseColor, shadowColor],
+       [_INTL("{1}%",$player.playersleep.to_s_formatted),190,246,1,sleepColor,shadowColor]
     ]
     pbDrawTextPositions(overlay, textPositions)
 =begin

@@ -9,7 +9,7 @@ module QuestModule
   # Here's the simplest example of a single-stage quest with everything specified
   PSIMQ1 = {
     :ID => "1",
-    :Name => "Survival Island",
+    :Name => "Survival Island (I)",
     :QuestGiver => "nil",
     :Stage1 => "Find your bag.",
     :Stage2 => "Look through everything in your bag throughly.",
@@ -32,7 +32,6 @@ module QuestModule
     :RewardString => "nil"
   }
   
-
   PSISQDS = {
     :ID => "3",
     :Name => "Ol' Cro's Boat",
@@ -43,6 +42,27 @@ module QuestModule
     :RewardString => "nil"
   }
   
+  PSIMQ2 = {
+    :ID => "4",
+    :Name => "Survival Island (II)",
+    :QuestGiver => "nil",
+    :Stage1 => "Explore the Island.",
+    :Location1 => "nil",
+    :QuestDescription => "You've met a few people on your Travels, see if you can meet more.",
+    :RewardString => "nil"
+  }
+  
+  PSISQ2 = {
+    :ID => "5",
+    :Name => "Pollyanna",
+    :QuestGiver => "nil",
+    :Stage1 => "Hear them out.",
+    :Stage2 => "Locate the Missing Pokemon.",
+    :Stage3 => "Locate the Missing Pokemon.",
+    :Location1 => "Temperate Swamp",
+    :QuestDescription => "Locate the Missing Pokemon.",
+    :RewardString => "nil"
+  }
   # Here's an example of not defining the quest giver and reward text
   Quest4 = {
     :ID => "4",

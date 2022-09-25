@@ -165,6 +165,14 @@ class Player_Quests
       @active_quests.push(questNew)
     end
   end
+
+  def getisQuestFailed(quest)
+    for i in 0...@failed_quests.length
+      if @failed_quests[i].id == quest
+        return true
+      end
+    end
+end
 end
 
 #===============================================================================
@@ -242,6 +250,7 @@ def getFailedQuests
   end
   return failed
 end
+
 
 #===============================================================================
 # Class that contains utility methods to return quest properties

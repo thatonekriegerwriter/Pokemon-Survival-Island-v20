@@ -201,7 +201,7 @@ class MenuEntryTrainer < MenuEntry
     pbFadeOutIn(99999) {
       scene = PokemonTrainerCard_Scene.new
       screen = PokemonTrainerCardScreen.new(scene)
-      screen.pbStartScreen
+      screen.pbStartScreen(false)
     }
   end
 

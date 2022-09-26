@@ -353,7 +353,8 @@ end
 def genteam(file,inf,sup)	#main script
 	cut=cutfile(file,sup)
 	for i in inf...sup
-		pbAddPokemon(caracpkmn(cut[i]))
+		$game_switches[(i+4501)] = (caracpkmn(cut[i]))
+        pbMessage(_INTL("{1}.",$game_switches[(i+4501)].name))
 	end
 end
 

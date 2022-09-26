@@ -64,7 +64,6 @@ Hardy Nature
 - Rapid Spin
 - Strength
 
-
 Heracross (F) @ Exp. Share
 IVs: 1 HP / 0 Atk / 8 Def / 7 SpA / 7 SpD / 6 Spe
 EVs: 211 HP / 84 Atk / 172 Def / 38 SpA / 38 SpD / 213 Spe

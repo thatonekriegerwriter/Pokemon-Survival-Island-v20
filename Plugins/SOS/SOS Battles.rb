@@ -46,7 +46,7 @@
   
   WHITELIST = false 
 # * Hash containing base species call rates
-  SOS_WHITELIST_RATES={} 
+  SOS_WHITELIST_RATES={:SPEAROW=>25} 
 # * Hash containing blacklisted Pokemon.
   SOS_BLACKLIST=[
     :ARTICUNO,:ZAPDOS,:MOLTRES,:MEWTWO,:MEW,:RAIKOU,:ENTEI,:SUICUNE,:LUGIA,:HOOH,:CELEBI,:REGIROCK,:REGICE,:REGISTEEL,:LATIAS,:LATIOS,
@@ -201,8 +201,69 @@
       return genwildpoke
     end
     
+	
+	
+	
+	def pbAttackPlayer(caller)
+      cspecies=GameData::Species.get(caller.species).species
+      rate=5
+      return if rate==0 # should never trigger anyways but you never know.
+      pbDisplay(_INTL("{1} attacked {2}!", caller.pbThis,pbPlayer.name))
+      rate*=4 # base rate
+      rate=rate.to_f # don't want to lose decimal points
+      intimidate=false
+      caller.eachOpposing{ |b|
+        if b.hasActiveAbility?(:INTIMIDATE) ||
+           b.hasActiveAbility?(:UNNERVE) ||
+           b.hasActiveAbility?(:PRESSURE)
+          intimidate=true
+          break
+        end
+      }
+      rate*=1.2 if intimidate
+      if @lastturncalled==@turnCount-1
+        rate*=1.5
+      end
+      if !@lastturnanswered
+        rate*=3.0
+      end
+	  if $player.playerhealth < 50 && $player.playerhealth > 25
+      rate*=3.0
+	  end
+	  if $player.playerhealth < 25
+      rate*=4.0 
+	  end
+      rate=rate.round # rounding it off.
+      if pbRandom(100)<rate
+	  if caller.shadowPokemon? && !@battle.trainerBattle? 
+        injury = rand(40)+2
+        @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        $player.playerhealth -= injury 
+      elsif user.shadowPokemon? && @battle.trainerBattle? 
+         chance = rand(2)
+         if chance == 1
+           injury = rand(40)+2
+           @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+           $player.playerhealth -= injury
+          else
+           injury = rand(40)+2
+           @battle.pbDisplayBrief(_INTL("The incoming {2} hits the opposing Trainer for {1} Damage!", injury, pbPlayer.name))
+         end
+      elsif @battle.wildBattle?
+        injury = rand(20)+2
+        @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        $player.playerhealth -= injury 
+	  else 
+	   return
+	  end
+      else
+        pbDisplay(_INTL("Thankfully, it missed!!"))
+      end
+    end
   end
    
+	
+	
   class Battle::Battler
     def pbCanCall?
       return false if NO_SOS_BATTLES>0 &&  $game_switches[NO_SOS_BATTLES]
@@ -233,6 +294,34 @@
       rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
       rate*=5 if self.hp<=(self.totalhp/4)
       rate*=2 if @battle.adrenalineorb
+      return @battle.pbRandom(100)<rate
+    end
+	
+	def pbCanAttackPlayer?(caller)
+      return true if self.shadowPokemon?
+      return false if @battle.trainerBattle? 
+      # only wild mons
+      return false if !opposes?
+      # can't call in triple+ battles (don't want to figure out where the battler needs to be)
+      return false if @battle.pbSideSize(@index)>=3
+      # can't call if partner already in
+      allies=@battle.battlers.select {|b| b && !b.fainted? && !b.opposes?(@index) && b.index!=@index}
+      return false if allies.length>0
+      # just to be safe
+      return false if self.fainted?
+      # no call if status
+      return false if self.pbHasAnyStatus?
+      # no call if multiturn attack
+      return false if usingMultiTurnAttack?
+      cspecies=GameData::Species.get(self.species).species
+#	  return true if $DEBUG && Input.press?(Input::CTRL)
+      rate=5
+      # not a species that calls
+      return false if rate==0
+      rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
+      rate*=5 if self.hp<=(self.totalhp/4)
+      rate*=3 if $player.playerhealth < 50 && $player.playerhealth > 25
+      rate*=4 if $player.playerhealth < 25
       return @battle.pbRandom(100)<rate
     end
     
@@ -278,6 +367,13 @@
     if pbCanCall?
         pbCancelMoves
         @battle.pbCallForHelp(self)
+        @lastRoundMoved = @battle.turnCount
+        pbEndTurn(choice)
+        return true
+    end
+    if pbCanAttackPlayer?(self)
+        pbCancelMoves
+        @battle.pbAttackPlayer(self)
         @lastRoundMoved = @battle.turnCount
         pbEndTurn(choice)
         return true

@@ -298,6 +298,7 @@
     end
 	
 	def pbCanAttackPlayer?(caller)
+      return false if $player.survivalmode == 1 
       return true if self.shadowPokemon?
       return false if @battle.trainerBattle? 
       # only wild mons

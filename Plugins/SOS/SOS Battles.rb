@@ -205,10 +205,10 @@
 	
 	
 	def pbAttackPlayer(caller)
-      cspecies=GameData::Species.get(caller.species).species
+      cspecies=caller.species
       rate=5
       return if rate==0 # should never trigger anyways but you never know.
-      pbDisplay(_INTL("{1} attacked {2}!", caller.pbThis,pbPlayer.name))
+      pbDisplay(_INTL("{1} lunged at {2} for an attack!", caller.pbThis,pbPlayer.name))
       rate*=4 # base rate
       rate=rate.to_f # don't want to lose decimal points
       intimidate=false

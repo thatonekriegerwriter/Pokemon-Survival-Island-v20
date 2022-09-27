@@ -76,11 +76,11 @@
     end
     
     def pbCallForHelp(caller)
-      cspecies=GameData::Species.get(caller.species).species
+      cspecies=caller.species
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
 	  blacklistedmons = SOS_BLACKLIST
       for i in 0..blacklistedmons.length
-	  return if blacklistedmons[i] = cspecies
+	  return if blacklistedmons[i] == cspecies
       end
       return if rate==0 # should never trigger anyways but you never know.
       pbDisplay(_INTL("{1} called for help!", caller.pbThis))
@@ -282,10 +282,10 @@
       return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
-      cspecies=GameData::Species.get(self.species).species
+      cspecies=self.species
 	  blacklistedmons = SOS_BLACKLIST
       for i in 0..blacklistedmons.length
-	  return false if blacklistedmons[i] = cspecies
+	  return false if blacklistedmons[i] == cspecies
       end
 #	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0

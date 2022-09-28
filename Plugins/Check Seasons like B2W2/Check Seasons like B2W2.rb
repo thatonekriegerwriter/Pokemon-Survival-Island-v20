@@ -60,5 +60,6 @@ class Scene_Map
   def update
     ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
     season_map_update
+	pbToneChangeAll(Tone.new(0,0,0,0),20)
   end
 end

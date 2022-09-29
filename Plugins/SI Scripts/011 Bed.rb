@@ -126,6 +126,8 @@ pbSetPokemonCenter
 		    this_event = pbMapInterpreter.get_self
 		    pbSetSelfSwitch(this_event.id, "A", false)  
 		  end
+	  elsif Input.triggerex?(:X)
+	    break
 	  else
 	    break
       end

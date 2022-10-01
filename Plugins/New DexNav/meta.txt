@@ -1,0 +1,10 @@
+Name         = New DexNav
+Version      = 2.3
+Essentials = 20
+Website      = https://reliccastle.com/members/7217/
+Credits      = Phantombass: the majority of the fixes to this script,suzerain: backbone for New DexNav,NuriYuri and the developers of SimpleEncounterUI
+
+#Changelog#
+
+#2.3
+#Fixed the DexNav crashing when searching for Pokémon with no hidden abilities.

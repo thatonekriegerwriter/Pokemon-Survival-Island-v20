@@ -113,4 +113,7 @@ module FollowingPkmn
     return true
   end
   #-----------------------------------------------------------------------------
+  def self.has_follower?
+    return $PokemonGlobal.followers.length > 1
+  end
 end

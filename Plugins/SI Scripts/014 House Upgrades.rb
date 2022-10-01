@@ -1,4 +1,4 @@
-def HouseUpgrades
+def pbHouseUpgrades
 amount = 0
 command = 0
   loop do
@@ -14,7 +14,7 @@ command = 0
                     _INTL("Exit")],2)
     case command
     when 0   # Use Statue
-	  if $bag.quantity(:WOODENPLANKS)>=200 && $bag.remove(:WOODENPLANKS,200)
+	  if $bag.quantity(:WOODENPLANKS)>=200 && $bag.remove(:WOODENPLANKS,200) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[496]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -25,8 +25,8 @@ command = 0
 	  break
 	  end
     when 1   # Use Statue
-	  if $bag.quantity(:WOODENPLANKS)>=500 && $bag.remove(:WOODENPLANKS,500) 
-      if $bag.quantity(:STONE)>=50 && $bag.remove(:STONE,50)
+	  if $bag.quantity(:WOODENPLANKS)>=500 && $bag.remove(:WOODENPLANKS,500)  || $DEBUG && Input.press?(Input::CTRL)
+      if $bag.quantity(:STONE)>=50 && $bag.remove(:STONE,50) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[495]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -42,8 +42,8 @@ command = 0
 	  break
 	  end
     when 2   # Use Statue
-	  if $bag.quantity(:PICKAXE)>=5 && $bag.remove(:PICKAXE,5) 
-      if $bag.quantity(:WOODENPLANKS)>=50 && $bag.remove(:WOODENPLANKS,50)
+	  if $bag.quantity(:PICKAXE)>=5 && $bag.remove(:PICKAXE,5)  || $DEBUG && Input.press?(Input::CTRL)
+      if $bag.quantity(:WOODENPLANKS)>=50 && $bag.remove(:WOODENPLANKS,50) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[498]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -59,7 +59,7 @@ command = 0
 	  break
 	  end
     when 3   # Use Statue
-	  if $bag.quantity(:STONE)>=50 && $bag.remove(:STONE,50)
+	  if $bag.quantity(:STONE)>=50 && $bag.remove(:STONE,50) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[494]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -70,8 +70,8 @@ command = 0
 	  break
 	  end
     when 4   # Use Statue
-	 if $bag.quantity(:HARDSTONE)>=50 && $bag.remove(:HARDSTONE,50) 
-      if $bag.quantity(:MINDPLATE)>=5 && $bag.remove(:MINDPLATE,5)
+	 if $bag.quantity(:HARDSTONE)>=50 && $bag.remove(:HARDSTONE,50)  || $DEBUG && Input.press?(Input::CTRL)
+      if $bag.quantity(:MINDPLATE)>=5 && $bag.remove(:MINDPLATE,5) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[479]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -87,7 +87,7 @@ command = 0
 	  break
 	  end
     when 5   # Use Statue
-	  if $bag.quantity(:BONEDUST)>=50 && $bag.remove(:BONEDUST,50)
+	  if $bag.quantity(:BONEDUST)>=50 && $bag.remove(:BONEDUST,50) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[478]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
@@ -105,9 +105,9 @@ command = 0
 end
 
 
-def BuildingHouses
-	  if $bag.quantity(:WOODENPLANKS)>=300 && $bag.remove(:WOODENPLANKS,300) 
-      if $bag.quantity(:STONE)>=150 && $bag.remove(:STONE,150)
+def pbBuildingHouses
+	  if $bag.quantity(:WOODENPLANKS)>=300 && $bag.remove(:WOODENPLANKS,300)  || $DEBUG && Input.press?(Input::CTRL)
+      if $bag.quantity(:STONE)>=150 && $bag.remove(:STONE,150) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   pbAchievementGet(4)
 	   advanceQuestToStage(:PSIMQ1, 4)
@@ -127,9 +127,9 @@ def BuildingHouses
 end
 
 
-def BuildingFarms
+def pbBuildingFarms
 amount = 0
-	  if $bag.quantity(:WOODENPLANKS)>=500 && $bag.remove(:WOODENPLANKS,500)
+	  if $bag.quantity(:WOODENPLANKS)>=500 && $bag.remove(:WOODENPLANKS,500) || $DEBUG && Input.press?(Input::CTRL)
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[203]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)

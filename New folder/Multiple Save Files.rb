@@ -129,7 +129,11 @@ module Game
 		SaveData.changeFILEPATH($storenamefilesave.nil? ? FileSave.name : $storenamefilesave)
     SaveData.move_old_windows_save if System.platform[/Windows/]
     save_data = (SaveData.exists?) ? SaveData.read_from_file(SaveData::FILE_PATH) : {}
-    SaveData.initialize_bootup_values
+    if save_data.empty?
+      SaveData.initialize_bootup_values
+    else
+      SaveData.load_bootup_values(save_data)
+    end
     # Set resize factor
     pbSetResizeFactor([$PokemonSystem.screensize, 4].min)
     # Set language (and choose language if there is no save file)
@@ -311,46 +315,13 @@ class PokemonLoadScreen
 					return if !file.staymenu
 				}
       when cmd_new_game
-		          @scene.pbEndScene
-	commands = []
-    cmd_psia     = -1
-    cmd_demo     = -1
-    commands[cmd_psia = commands.length] = _INTL('Play Pokemon SI: Adventures')
-    commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
-		@scene.pbStartScene(commands, false, nil, 0, nil, 0)
-		@scene.pbStartScene2
-    loop do
-      command = @scene.pbChoose(commands)
-      pbPlayDecisionSE if command != cmd_quit
-      case command
-      when cmd_psia
-		  $PokemonSystem.playermode = 1
-		  $PokemonSystem.difficulty = 1
-		  $PokemonSystem.nuzlockemode = 1
-		  $PokemonSystem.survivalmode = 1
-		  @scene.pbEndScene
+        @scene.pbEndScene
 				if Settings::LANGUAGES.length >= 2 && show_continue
 					$PokemonSystem.language = pbChooseLanguage
 					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
 				end
         Game.start_new
         return
-      when cmd_demo
-		  $PokemonSystem.playermode = 0
-		  $PokemonSystem.difficulty = 1
-		  $PokemonSystem.nuzlockemode = 1
-		  $PokemonSystem.survivalmode = 1
-		          @scene.pbEndScene
-				if Settings::LANGUAGES.length >= 2 && show_continue
-					$PokemonSystem.language = pbChooseLanguage
-					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
-				end
-        Game.start_new
-        return
-      end
-    end
-
-
       when cmd_debug
         pbFadeOutIn { pbDebugMenu(false) }
       when cmd_quit

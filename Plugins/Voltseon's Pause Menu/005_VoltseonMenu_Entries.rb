@@ -208,6 +208,25 @@ class MenuEntryTrainer < MenuEntry
   def selectable?; return true; end
 end
 #-------------------------------------------------------------------------------
+# Entry for Badge Case
+#-------------------------------------------------------------------------------
+class MenuEntryBadge < MenuEntry
+  def initialize
+    @icon = "menuBadge"
+    @name = "Badge Case"
+  end
+
+  def selected(menu)
+    pbFadeOutIn {
+      scene = BadgeCase_Scene.new
+      screen = BadgeCaseScreen.new(scene)
+      screen.pbStartScreen
+    }
+  end
+
+  def selectable?; return $bag.has?(:BADGECASE); end
+end
+#-------------------------------------------------------------------------------
 # Entry for Save Screen
 #-------------------------------------------------------------------------------
 class MenuEntrySave < MenuEntry

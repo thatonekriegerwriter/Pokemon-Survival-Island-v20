@@ -42,151 +42,18 @@ module Game
     $scene = Scene_Map.new
     SaveData.load_new_game_values
     $stats.play_sessions += 1
+    if $PokemonSystem.playermode == 1
     $map_factory = PokemonMapFactory.new($data_system.start_map_id)
     $game_player.moveto($data_system.start_x, $data_system.start_y)
+    else
+    $map_factory = PokemonMapFactory.new(394)
+    $game_player.moveto(000, 001)
+    end
     $game_player.refresh
     $PokemonEncounters = PokemonEncounters.new
     $PokemonEncounters.setup($game_map.map_id)
     $game_map.autoplay
     $game_map.update
-  end
-end
-
-module NavNums
-  Dispose = 900 #Edit this to whatever switch you would like, it's not needed unless you're using the DexNav plugin
-end
-
-class PokemonPauseMenu_Scene
-  def pbStartScene
-    if $game_switches[NavNums::Dispose] == false
-      cap = LEVEL_CAP[$game_system.level_cap]
-      @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
-      @viewport.z = 99999
-      @sprites = {}
-      @sprites["cmdwindow"] = Window_CommandPokemon.new([])
-      @sprites["cmdwindow"].visible = false
-      @sprites["cmdwindow"].viewport = @viewport
-      @sprites["infowindow"] = Window_UnformattedTextPokemon.newWithSize("", 0, 0, 32, 32, @viewport)
-      @sprites["infowindow"].visible = false
-      @sprites["helpwindow"] = Window_UnformattedTextPokemon.newWithSize("", 0, 0, 32, 32, @viewport)
-      @sprites["helpwindow"].visible = false
-      @sprites["levelcapwindow"] = Window_UnformattedTextPokemon.newWithSize("Level Cap: #{cap}",0,64,208,64,@viewport)
-      @sprites["levelcapwindow"].visible = false
-      @infostate = false
-      @helpstate = false
-      $close_dexnav = 0
-      $sprites = @sprites
-      pbSEPlay("GUI menu open")
-    else
-      $viewport1.dispose
-      $currentDexSearch = nil
-      $close_dexnav = 1
-      $game_switches[NavNums::Dispose] = false
-      pbSEPlay("GUI menu close")
-      return
-    end
-  end
-  def pbShowCommands(commands)
-    if $game_switches[NavNums::Dispose] == false && $close_dexnav < 1
-      ret = -1
-      cmdwindow = @sprites["cmdwindow"]
-      cmdwindow.commands = commands
-      cmdwindow.index    = $game_temp.menu_last_choice
-      cmdwindow.resizeToFit(commands)
-      cmdwindow.x        = Graphics.width - cmdwindow.width
-      cmdwindow.y        = 0
-      cmdwindow.visible  = true
-      loop do
-        cmdwindow.update
-        Graphics.update
-        Input.update
-        pbUpdateSceneMap
-        if Input.trigger?(Input::BACK) || Input.trigger?(Input::ACTION)
-          ret = -1
-          break
-        elsif Input.trigger?(Input::USE)
-          ret = cmdwindow.index
-          $game_temp.menu_last_choice = ret
-          break
-        end
-      end
-    else
-      ret = -1
-    end
-    $close_dexnav -= 1
-    return ret
-  end
-  def pbShowLevelCap
-    if $PokemonSystem.level_caps == 0 && !$currentDexSearch
-      @sprites["levelcapwindow"].visible = true
-    end
-  end
-  def pbHideLevelCap
-    @sprites["levelcapwindow"].visible = false
-  end
-  def pbShowMenu
-    @sprites["cmdwindow"].visible = true
-    @sprites["levelcapwindow"].visible = true if $PokemonSystem.level_caps
-    @sprites["infowindow"].visible = @infostate
-    @sprites["helpwindow"].visible = @helpstate
-  end
-
-  def pbHideMenu
-    @sprites["cmdwindow"].visible = false
-    @sprites["levelcapwindow"].visible = false if $PokemonSystem.level_caps
-    @sprites["infowindow"].visible = false
-    @sprites["helpwindow"].visible = false
-  end
-end
-
-class PokemonPauseMenu
-  def pbShowLevelCap
-    @scene.pbShowLevelCap
-  end
-
-  def pbHideLevelCap
-    @scene.pbHideLevelCap
-  end
-
-  def pbStartPokemonMenu
-    if !$player
-      if $DEBUG
-        pbMessage(_INTL("The player trainer was not defined, so the pause menu can't be displayed."))
-        pbMessage(_INTL("Please see the documentation to learn how to set up the trainer player."))
-      end
-      return
-    end
-    @scene.pbStartScene
-    # Show extra info window if relevant
-    pbShowInfo
-    if $close_dexnav != 1
-      $PokemonSystem.level_caps == 0 ? pbShowLevelCap : pbHideLevelCap
-    end
-    # Get all commands
-    command_list = []
-    commands = []
-    MenuHandlers.each_available(:pause_menu) do |option, hash, name|
-      command_list.push(name)
-      commands.push(hash)
-    end
-    # Main loop
-    end_scene = false
-    loop do
-      if !$currentDexSearch
-        choice = @scene.pbShowCommands(command_list)
-      else
-        choice = -1
-      end
-      if choice < 0
-        pbPlayCloseMenuSE if !$currentDexSearch
-        end_scene = true
-        break
-      end
-      break if commands[choice]["effect"].call(@scene)
-    end
-    if $close_dexnav != 0
-      @scene.pbEndScene if end_scene
-    end
   end
 end
 
@@ -267,7 +134,7 @@ class Battle
     end
     exp = i if i >= 0
     # Boost Exp gained with high affection
-    if Settings::AFFECTION_EFFECTS && @internalBattle && pkmn.affection_level >= 4 && !pkmn.mega?
+    if @internalBattle && pkmn.happiness >= 240 && !pkmn.mega?
       exp = exp * 6 / 5
       isOutsider = true   # To show the "boosted Exp" message
     end
@@ -292,11 +159,11 @@ class Battle
     end
     # Give Exp
     if pkmn.shadowPokemon?
-      if pkmn.heartStage <= 3
         pkmn.exp += expGained
         $stats.total_exp_gained += expGained
-      end
-      return
+      if pkmn.level == 20 && pkmn.shadowPokemon?
+       return
+	    end
     end
     $stats.total_exp_gained += expGained
     tempExp1 = pkmn.exp
@@ -326,7 +193,49 @@ class Battle
       oldSpDef   = pkmn.spdef
       oldSpeed   = pkmn.speed
       if battler&.pokemon
-        battler.pokemon.changeHappiness("levelup")
+        battler.pokemon.changeHappiness("levelup",battler)
+        battler.pokemon.changeLoyalty("levelup",battler)
+      end
+      if pkmn.shadowPokemon?
+         potato = pkmn.level
+         if potato == 12
+          if rand(100) <= 5
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 13
+          if rand(100) <= 10
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 14
+          if rand(100) <= 15
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 15
+          if rand(100) <= 20
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 16
+          if rand(100) <= 25
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 17
+          if rand(100) <= 30
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 18
+          if rand(100) <= 35
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 19
+          if rand(100) <= 40
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato >= 20
+          if rand(100) <= 50
+          pkmn.nature=:HATEFUL
+          end
+         else
+       end
       end
       pkmn.calc_stats
       battler&.pbUpdate(false)
@@ -337,16 +246,32 @@ class Battle
       # Learn all moves learned at this level
       moveList = pkmn.getMoveList
       moveList.each { |m| pbLearnMove(idxParty, m[1]) if m[0] == curLevel }
+      newspecies=pkmn.check_evolution_on_level_up
+          old_item=pkmn.item
+          if newspecies
+            pbFadeOutInWithMusic(99999){
+            evo=PokemonEvolutionScene.new
+            evo.pbStartScreen(pkmn,newspecies)
+            evo.pbEvolution
+            evo.pbEndScreen
+            if battler
+              @scene.pbChangePokemon(@battlers[battler.index],@battlers[battler.index].pokemon)
+              battler.name=pkmn.name
+            end
+          }
+          if battler
+            pkmn.moves.each_with_index do |m,i|
+              battler.moves[i] = Battle::Move.from_pokemon_move(self,m)
+            end
+            battler.pbCheckFormOnMovesetChange
+            if pkmn.item!=old_item
+              battler.item=pkmn.item
+              battler.setInitialItem(pkmn.item)
+              battler.setRecycleItem(pkmn.item)
+            end
+          end
+        end
     end
   end
-end
-
-MenuHandlers.add(:options_menu, :level_caps, {
-  "name"        => _INTL("Level Caps"),
-  "order"       => 90,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("On"), _INTL("Off")],
-  "description" => _INTL("Choose whether you will have hard level caps."),
-  "get_proc"    => proc { next $PokemonSystem.level_caps},
-  "set_proc"    => proc { |value, _sceme| $PokemonSystem.level_caps = value }
-})
+  end
+  

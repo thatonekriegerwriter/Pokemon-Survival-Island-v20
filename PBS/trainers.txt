@@ -37,9 +37,27 @@ Pokemon = HAWLUCHA,21
 [TEAMROCKET_M,Rocket Grunt,2]
 NumPkmn = 2
 Pokemon = STARAVIA,21
+    Shadow = yes
 Pokemon = TAUROS,21
 Pokemon = GRAVELER,21
 Pokemon = HAWLUCHA,21
+#-------------------------------
+[TEAMROCKET_M,Rocket Grunt,3]
+NumPkmn = 6
+Pokemon = HOUNDOUR,21
+Pokemon = AZUMARILL,21
+Pokemon = SHELLDER,21
+Pokemon = STEELIX,21
+Pokemon = DEWGONG,21
+Pokemon = GOLEM,21
+Pokemon = SANDSLASH,21
+Pokemon = STEELIX,21
+Pokemon = DEINO,21
+    Shadow = yes
+Pokemon = OBSTAGOON,21
+    Shadow = yes
+Pokemon = SHIFTRY,21
+    Shadow = yes
 #-------------------------------
 [TEAMROCKET_F,Rocket Grunt,1]
 LoseText = "You're too good for me!"

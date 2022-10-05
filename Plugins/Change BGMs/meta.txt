@@ -1,0 +1,3 @@
+Name		= Change BGMs
+Version		= 1.0
+Credits		= aiyinsi,DerxwnaKapsyla

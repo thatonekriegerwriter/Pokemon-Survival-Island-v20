@@ -963,7 +963,7 @@ Pokedex = While young, it has six gorgeous tails. When it grows, several new tai
 FormName = Kantonian Form
 Generation = 1
 WildItemUncommon = CHARCOAL
-Evolutions = NINETALES,Item,FIRESTONE,KITSUVEN,HasMove,WARMFRONT
+Evolutions = NINETALES,Item,FIRESTONE,VULRECUR,HasMove,WARMFRONT
 #-------------------------------
 [NINETALES]
 Name = Ninetales
@@ -24174,8 +24174,8 @@ Category = Newborn Fox
 Pokedex = Vulpiii stay in small litters with their mother until they are old enough to move on their own.
 Evolutions = NINETALES,Item,FIRESTONE,VULPIX,Level,17
 #-------------------------------
-[KITSUVEN]
-Name = Kitsuven
+[VULRECUR]
+Name = VULRECUR
 Types = FIRE,WIND
 BaseStats = 70,70,50,80,70,60
 GenderRatio = Female50Percent
@@ -24196,7 +24196,7 @@ Color = Red
 Shape = Quadruped
 Habitat = Grassland
 Category = Fox
-Pokedex = Kitsuven are old enough to be feared by people for their power back when the world was more primative.
+Pokedex = With their Tail count being so close to Nine, this Pokemon is immensely powerful, but it is still holding off from evolving into Ninetales for some reason.
 Evolutions = NINETALES,Item,FIRESTONE
 #-------------------------------
 [WYRDEER]

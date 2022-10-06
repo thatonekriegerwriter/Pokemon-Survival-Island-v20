@@ -57,6 +57,7 @@ module Game
   end
 end
 
+
 class Battle
   def pbGainExpOne(idxParty, defeatedBattler, numPartic, expShare, expAll, showMessages = true)
     pkmn = pbParty(0)[idxParty]   # The Pokémon gaining Exp from defeatedBattler
@@ -159,11 +160,11 @@ class Battle
     end
     # Give Exp
     if pkmn.shadowPokemon?
+      if pkmn.level == 20 && pkmn.shadowPokemon?
         pkmn.exp += expGained
         $stats.total_exp_gained += expGained
-      if pkmn.level == 20 && pkmn.shadowPokemon?
-       return
-	    end
+      end
+      return
     end
     $stats.total_exp_gained += expGained
     tempExp1 = pkmn.exp
@@ -273,5 +274,24 @@ class Battle
         end
     end
   end
+end
+
+ItemHandlers::UseOnPokemon.add(:RARECANDY,proc { |item,pkmn,scene|
+  if pkmn.level>=GameData::GrowthRate.max_level || pkmn.shadowPokemon? || (pkmn.level>=LEVEL_CAP[$game_system.level_cap] && $PokemonSystem.level_caps == 0)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
   end
-  
+  pbChangeLevel(pkmn,pkmn.level+1,scene)
+  scene.pbHardRefresh
+  next true
+})
+
+MenuHandlers.add(:options_menu, :level_caps, {
+  "name"        => _INTL("Level Caps"),
+  "order"       => 90,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether you will have hard level caps."),
+  "get_proc"    => proc { next $PokemonSystem.level_caps},
+  "set_proc"    => proc { |value, _sceme| $PokemonSystem.level_caps = value }
+})

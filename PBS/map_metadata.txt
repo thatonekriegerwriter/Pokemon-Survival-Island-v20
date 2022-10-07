@@ -871,27 +871,27 @@ Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [157]
-Name = Tropical Coast R
+Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [158]   # Tropical Coast
-Name = Tropical Coast B
+Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [159]   # Tropical Coast
-Name = Tropical Coast BR
+Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [160]   # Tropical Coast
-Name = Tropical Coast RR
+Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [161]   # Tropical Coast
-Name = Tropical Coast BRR
+Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------

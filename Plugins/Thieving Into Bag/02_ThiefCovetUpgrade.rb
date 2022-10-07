@@ -3,7 +3,7 @@
 #===============================================================================
 class Battle::Move::UserTakesTargetItem < Battle::Move
   def pbEffectAfterAllHits(user, target)
-    return if user.wild?   # Wild Pokémon can't thieve
+#    return if user.wild?   # Wild Pokémon can't thieve
     return if user.fainted?
     return if target.damageState.unaffected || target.damageState.substitute
     return if !target.item || user.item

@@ -24,8 +24,8 @@ class Game_System
   end
 end
 #Define all your levels caps in this array. Every time you run Game.level_cap_update, it will move to the next level cap in the array.
-LEVEL_CAP = [11,15]
-
+LEVEL_CAP = [22,33,40,47,59]
+#LEVEL_CAP = [Temperate,Mountain,Ice,Water]
 
 module Game
   def self.level_cap_update

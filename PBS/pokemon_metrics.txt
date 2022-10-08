@@ -8112,13 +8112,13 @@ FrontSprite = 0,25
 ShadowX = 0
 ShadowSize = 2
 #-------------------------------
-[KITSUVEN]
+[VULRECUR]
 BackSprite = 0,12
 FrontSprite = 0,12
 ShadowX = 0
 ShadowSize = 2
 #-------------------------------
-[KITSUVEN,1]
+[VULRECUR,1]
 BackSprite = 0,11
 FrontSprite = 6,11
 ShadowX = 0

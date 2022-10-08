@@ -190,8 +190,12 @@ class PokemonPartyScreen
       next if choice < 0 || choice >= commands.length
       case commands[choice]
       when Hash
-        ret = commands[choice]["effect"].call(self, @party, party_idx)
-        break if ret.is_a?(Array) && !ret.empty?
+        if command_list[choice] == _INTL("Skills")
+          ret = commands[choice]["effect"].call(self, @party, party_idx)
+          break if !ret.nil?
+        else
+          commands[choice]["effect"].call(self, @party, party_idx)
+        end
       when Integer
         move = pkmn.moves[commands[choice]]
         if [:MILKDRINK, :SOFTBOILED].include?(move.id)

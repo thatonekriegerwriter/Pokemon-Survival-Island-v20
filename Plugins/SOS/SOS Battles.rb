@@ -287,7 +287,7 @@
       for i in 0..blacklistedmons.length
 	  return false if blacklistedmons[i] == cspecies
       end
-#	  return true if $DEBUG && Input.press?(Input::CTRL)
+	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       # not a species that calls
       return false if rate==0
@@ -298,7 +298,7 @@
     end
 	
 	def pbCanAttackPlayer?(caller)
-      return false if $player.survivalmode == 1 
+      return false if $PokemonSystem.survivalmode == 1 
       return true if self.shadowPokemon?
       return false if @battle.trainerBattle? 
       # only wild mons
@@ -315,7 +315,7 @@
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
       cspecies=GameData::Species.get(self.species).species
-#	  return true if $DEBUG && Input.press?(Input::CTRL)
+	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=5
       # not a species that calls
       return false if rate==0

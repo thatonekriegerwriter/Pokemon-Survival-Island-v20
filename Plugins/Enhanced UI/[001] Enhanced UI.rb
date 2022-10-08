@@ -39,7 +39,7 @@ if Settings::SUMMARY_SHINY_LEAF
     def drawPage(page)
       enhanced_drawPage(page)
       overlay = @sprites["overlay"].bitmap
-      coords = (PluginManager.installed?("BW Summary Screen")) ? [Graphics.width - 18, 114] : [182, 124]
+	  coords = (PluginManager.installed?("BW Summary Screen")) ? [Graphics.width - 18, 114] : [182, 124]
       pbDisplayShinyLeaf(@pokemon, overlay, coords[0], coords[1])
     end
   end
@@ -135,14 +135,14 @@ if Settings::SUMMARY_IV_RATINGS
     def drawPageThree
       enhanced_drawPageThree
       overlay = @sprites["overlay"].bitmap
-      coords = (PluginManager.installed?("BW Summary Screen")) ? [110, 82] : [465, 82]
+	  coords = (PluginManager.installed?("BW Summary Screen")) ? [110, 82] : [465, 82]
       pbDisplayIVRating(@pokemon, overlay, coords[0], coords[1])
     end
 	
-    def pbDisplayIVRating(*args)
-      return if args.length == 0
-      pbDisplayIVRatings(*args)
-    end
+	def pbDisplayIVRating(*args)
+	  return if args.length == 0
+	  pbDisplayIVRatings(*args)
+	end
   end
 end
 
@@ -180,9 +180,9 @@ def pbDisplayIVRatings(pokemon, overlay, xpos, ypos, horizontal = false)
       end
     end
     imagepos.push([path, xpos + (i * offset_x), ypos + (i * offset_y), icon * 16, 0, 16, 16])
-    if s.id == :HP && !horizontal
-      ypos += (PluginManager.installed?("BW Summary Screen")) ? 18 : 12 
-    end
+	if s.id == :HP && !horizontal
+	  ypos += (PluginManager.installed?("BW Summary Screen")) ? 18 : 12 
+	end
     i += 1
   end
   pbDrawImagePositions(overlay, imagepos)
@@ -198,8 +198,8 @@ if Settings::SUMMARY_EGG_GROUPS
     def drawPageTwo
       enhanced_drawPageTwo
       overlay = @sprites["overlay"].bitmap
-      coords = (PluginManager.installed?("BW Summary Screen")) ? [162, 326] : [364, 338]
-      vertical = (PluginManager.installed?("BW Summary Screen")) ? true : false
+	  coords = (PluginManager.installed?("BW Summary Screen")) ? [162, 326] : [364, 338]
+	  vertical = (PluginManager.installed?("BW Summary Screen")) ? true : false
       pbDisplayEggGroups(@pokemon, overlay, coords[0], coords[1], "Egg Groups:", vertical)
     end
   end
@@ -210,7 +210,7 @@ if Settings::POKEDEX_EGG_GROUPS
     alias enhanced_drawPageInfo drawPageInfo
     def drawPageInfo
       enhanced_drawPageInfo
-      return if !$player.owned?(@species)
+	  return if !$player.owned?(@species)
       overlay = @sprites["overlay"].bitmap
       species_data = GameData::Species.get_species_form(@species, @form)
       pbDisplayEggGroups(species_data, overlay, 148, 204, true)
@@ -244,20 +244,15 @@ def pbDisplayEggGroups(pokemon, overlay, xpos, ypos, showDisplay = nil, vertical
     isGenderless = (GameData::Species.get(pokemon).gender_ratio == :Genderless && pokemon != :DITTO)
   end
   if showDisplay.is_a?(String)
-    if PluginManager.installed?("BW Summary Screen")
-      base   = Color.new(255, 255, 255)
+    if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
+      base   = Color.new(250, 213, 165)
+      shadow = Color.new(204, 85, 0)
+    elsif PluginManager.installed?("BW Summary Screen")
+	  base   = Color.new(255, 255, 255)
       shadow = Color.new(123, 123, 123)
-      if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
-        base   = Color.new(250, 213, 165)
-        shadow = Color.new(204, 85, 0)
-      end
-    else
+	else
       base   = Color.new(64, 64, 64)
       shadow = Color.new(176, 176, 176)
-      if egg_groups[compat1] > 14 || egg_groups[compat2] > 14
-        base   = Color.new(204, 85, 0)
-        shadow = Color.new(218, 160, 109)
-      end
     end
     textpos = [ [_INTL("#{showDisplay}"), xpos - 130, ypos + 2, 0, base, shadow] ]
     pbDrawTextPositions(overlay, textpos)
@@ -280,5 +275,212 @@ def pbDisplayEggGroups(pokemon, overlay, xpos, ypos, showDisplay = nil, vertical
     eggGroup2Rect = Rect.new(0, egg_groups[compat2] * 28, 64, 28)
     overlay.blt(xpos, ypos, eggGroupbitmap.bitmap, eggGroup1Rect)
     overlay.blt(xpos + offset_x, ypos + offset_y, eggGroupbitmap.bitmap, eggGroup2Rect)
+  end
+end
+
+
+#===============================================================================
+# Battle Move Window
+#===============================================================================
+class Battle::Scene
+  alias enhanced_pbInitSprites pbInitSprites
+  def pbInitSprites
+    enhanced_pbInitSprites
+    idx = 0
+    @moveUIToggle = false
+    @sprites["moveinfo"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
+    @sprites["moveinfo"].z = 200
+    @sprites["moveinfo"].visible = @moveUIToggle
+    pbSetSmallFont(@sprites["moveinfo"].bitmap)
+    @moveUIOverlay = @sprites["moveinfo"].bitmap
+    @targetIcons = []
+    @battle.allBattlers.each do |b|
+      next if b.index.even?
+      @sprites["effectiveness_icon#{b.index}"] = PokemonIconSprite.new(b.pokemon, @viewport)
+      @sprites["effectiveness_icon#{b.index}"].visible = false
+      @sprites["effectiveness_icon#{b.index}"].setOffset(PictureOrigin::LEFT)
+      @sprites["effectiveness_icon#{b.index}"].z = 201
+      @sprites["effectiveness_icon#{b.index}"].x = Graphics.width - 64 - (idx * 64)
+      @sprites["effectiveness_icon#{b.index}"].y = 68
+      idx += 1
+    end
+  end
+  
+  #-----------------------------------------------------------------------------
+  # Refreshes Pokemon icons for effectiveness display.
+  #-----------------------------------------------------------------------------
+  def pbUpdateTargetIcons
+    @battle.allBattlers.each do |b|
+      next if b.index.even?
+      if b && !b.fainted?
+        @sprites["effectiveness_icon#{b.index}"].pokemon = b.pokemon
+        @sprites["effectiveness_icon#{b.index}"].visible = @moveUIToggle
+      else
+        @sprites["effectiveness_icon#{b.index}"].visible = false
+      end
+    end
+  end
+  
+  #-----------------------------------------------------------------------------
+  # Toggles the visibility of the move window.
+  #-----------------------------------------------------------------------------
+  def pbToggleMoveInfo(battler, index = 0)
+    @moveUIToggle = !@moveUIToggle
+    (@moveUIToggle) ? pbSEPlay("GUI party switch") : pbPlayCloseMenuSE
+    @sprites["moveinfo"].visible = @moveUIToggle
+    pbToggleFocusPanel(false) if PluginManager.installed?("Focus Meter System")
+    pbUpdateTargetIcons
+    pbUpdateMoveInfoWindow(battler, index)
+  end
+  
+  #-----------------------------------------------------------------------------
+  # Draws the move window.
+  #-----------------------------------------------------------------------------
+  def pbUpdateMoveInfoWindow(battler, index)
+    @moveUIOverlay.clear
+    return if !@moveUIToggle
+    xpos = 0
+    ypos = 94
+    move = battler.moves[index]
+    path = "Graphics/Plugins/Enhanced UI/"
+    #---------------------------------------------------------------------------
+    # Draws the menu, and icons for move type and category.
+    #---------------------------------------------------------------------------
+    typenumber = GameData::Type.get(move.type).icon_position
+    imagePos = [
+      [path + "move_window",         xpos, ypos],
+      ["Graphics/Pictures/types",    xpos + 272, ypos + 4, 0, typenumber * 28, 64, 28],
+      ["Graphics/Pictures/category", xpos + 336, ypos + 4, 0, move.category * 28, 64, 28]
+    ]
+    #---------------------------------------------------------------------------
+    # Draws the effectiveness display for each opponent.
+    #---------------------------------------------------------------------------
+    idx = 0
+    @battle.allBattlers.each do |b|
+      next if b.index.even?
+      if b && !b.fainted? && move.category < 2
+        unknown_species = ($player.pokedex.battled_count(b.species) == 0 && !$player.pokedex.owned?(b.species))
+        value = Effectiveness.calculate(move.type, b.types[0], b.types[1])
+        if unknown_species                             then effct = 0
+        elsif Effectiveness.ineffective?(value)        then effct = 1
+        elsif Effectiveness.not_very_effective?(value) then effct = 2
+        elsif Effectiveness.super_effective?(value)    then effct = 3
+        else effct = 4
+        end
+        imagePos.push([path + "move_effectiveness", Graphics.width - 64 - (idx * 64), ypos - 76, effct * 64, 0, 64, 76])
+        @sprites["effectiveness_icon#{b.index}"].visible = true
+      else
+        @sprites["effectiveness_icon#{b.index}"].visible = false
+      end
+      idx += 1
+    end
+    #---------------------------------------------------------------------------
+    # Draws icons for each relevant move flag.
+    #---------------------------------------------------------------------------
+    flagX = xpos + 5
+    flagY = ypos + 32
+    flagIcons = []
+    if PluginManager.installed?("ZUD Mechanics")
+      if move.zMove?
+        flagIcons.push([path + "move_icons", flagX + (flagIcons.length * 26), flagY, 0 * 26, 0, 26, 28])
+      elsif move.maxMove?
+        flagIcons.push([path + "move_icons", flagX + (flagIcons.length * 26), flagY, 1 * 26, 0, 26, 28])
+      end
+    end
+    if GameData::Target.get(move.target).targets_foe
+      flagIcons.push([path + "move_icons", flagX + (flagIcons.length * 26), flagY, 2 * 26, 0, 26, 28]) if !move.flags.include?("CanProtect")
+      flagIcons.push([path + "move_icons", flagX + (flagIcons.length * 26), flagY, 3 * 26, 0, 26, 28]) if !move.flags.include?("CanMirrorMove")
+    end
+    move.flags.each do |flag|
+      idx = -1
+      case flag
+      when "Contact"             then idx = 4
+      when "TramplesMinimize"    then idx = 5
+      when "HighCriticalHitRate" then idx = 6
+      when "ThawsUser"           then idx = 7
+      when "Sound"               then idx = 8
+      when "Punching"            then idx = 9
+      when "Biting"              then idx = 10
+      when "Bomb"                then idx = 11
+      when "Pulse"               then idx = 12
+      when "Powder"              then idx = 13
+      when "Dance"               then idx = 14
+      end
+      next if idx < 0
+      flagIcons.push([path + "move_icons", flagX + (flagIcons.length * 26), flagY, idx * 26, 0, 26, 28])
+    end
+    imagePos += flagIcons
+    pbDrawImagePositions(@moveUIOverlay, imagePos)
+    #---------------------------------------------------------------------------
+    # Sets up move data.
+    #---------------------------------------------------------------------------
+    base = Color.new(232, 232, 232)
+    shadow = Color.new(72, 72, 72)
+    raised_base = Color.new(50, 205, 50)
+    raised_shadow = Color.new(9, 121, 105)
+    lowered_base = Color.new(248, 72, 72)
+    lowered_shadow = Color.new(136, 48, 48)
+    power = (move.baseDamage == 0) ? "---" : (move.baseDamage == 1) ? "???" : move.baseDamage.to_s
+    accuracy = (move.accuracy == 0) ? "---" : move.accuracy.to_s
+    effectrate = (move.addlEffect == 0) ? "---" : [:ICEFANG, :FIREFANG, :THUNDEFANG].include?(move.id) ? "10%" : move.addlEffect.to_s + "%"
+    dmg_base = acc_base = eff_base = base
+    dmg_shadow = acc_shadow = eff_shadow = shadow
+    #---------------------------------------------------------------------------
+    # Adjusts color of move attributes if affected by Strong/Agile styles.
+    #---------------------------------------------------------------------------
+    if PluginManager.installed?("PLA Battle Styles") && move.mastered?
+      case battler.style_trigger
+      when 1
+        if move.baseDamage > 1
+          dmg_base = raised_base
+          dmg_shadow = raised_shadow
+        end
+        if ![0, 100].include?(move.old_accuracy)
+          acc_base = raised_base
+          acc_shadow = raised_shadow
+        end
+        if ![0, 100].include?(move.old_addlEffect)
+          eff_base = raised_base
+          eff_shadow = raised_shadow
+        end
+      when 2
+        if move.baseDamage > 1 
+          dmg_base = lowered_base
+          dmg_shadow = lowered_shadow
+        end
+      end
+    end
+    #---------------------------------------------------------------------------
+    # Draws move data text.
+    #---------------------------------------------------------------------------
+    textPos = [
+      [move.name,       xpos + 10,            ypos + 8,  0, base, shadow],
+      [_INTL("Pow:"),   Graphics.width - 86,  ypos + 10, 2, base, shadow],
+      [_INTL("Acc:"),   Graphics.width - 86,  ypos + 39, 2, base, shadow],
+      [_INTL("Effct:"), xpos + 287,           ypos + 39, 0, base, shadow],
+      [power,           Graphics.width - 34,  ypos + 10, 2, dmg_base, dmg_shadow],
+      [accuracy,        Graphics.width - 34,  ypos + 39, 2, acc_base, acc_shadow],
+      [effectrate,      Graphics.width - 146, ypos + 39, 2, eff_base, eff_shadow]
+    ]
+    if PluginManager.installed?("ZUD Mechanics") && move.zMove? && move.category == 2
+      if GameData::PowerMove.stat_booster?(move.id)
+        stats, stage = GameData::PowerMove.stat_with_stage(move.id)
+        statname = (stats.length > 1) ? "stats" : GameData::Stat.get(stats.first).name
+        case stage
+        when 3 then boost = " drastically"
+        when 2 then boost = " sharply"
+        else        boost = ""
+        end
+        text = _INTL("Raises the user's #{statname}#{boost}.")
+      elsif GameData::PowerMove.boosts_crit?(move.id)  then text = _INTL("Raises the user's critical hit rate.")
+      elsif GameData::PowerMove.resets_stats?(move.id) then text = _INTL("Resets the user's lowered stat stages.")
+      elsif GameData::PowerMove.heals_self?(move.id)   then text = _INTL("Fully restores the user's HP.")
+      elsif GameData::PowerMove.heals_switch?(move.id) then text = _INTL("Fully restores an incoming Pokémon's HP.")
+      elsif GameData::PowerMove.focus_user?(move.id)   then text = _INTL("The user becomes the center of attention.")
+      end
+      textPos.push(["Z-Power: #{text}", xpos + 10, ypos + 128, 0, raised_base, raised_shadow]) if text
+    end
+    pbDrawTextPositions(@moveUIOverlay, textPos)
+    drawTextEx(@moveUIOverlay, xpos + 10, ypos + 70, Graphics.width - 10, 2, GameData::Move.get(move.id).description, base, shadow)
   end
 end

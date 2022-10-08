@@ -1324,6 +1324,9 @@ else
     gain = 0
     bonus = 0
     pkmn = wari
+	if @loyalty.nil?
+	@loyalty = 0
+	end
 	base = 0
      base = 0 if pkmn.nature ==   :LOVING
      base = 0 if pkmn.nature ==   :HATEFUL

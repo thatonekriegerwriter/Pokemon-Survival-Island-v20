@@ -247,9 +247,9 @@ Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
 WildItemUncommon = SNOWBALL
-Evolutions = NINETALES,Item,ICESTONE,KITSUVEN,HasMove,COLDFRONT
+Evolutions = NINETALES,Item,ICESTONE,VULRECUR,HasMove,COLDFRONT
 #-------------------------------
-[KITSUVEN,1]
+[VULRECUR,1]
 FormName = Alolan Form
 Types = ICE,WIND
 Abilities = SNOWWARNING,RECEIVER

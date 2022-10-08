@@ -125,7 +125,9 @@ def raid_GenerateBanlist
                    :THUNDURUS, 
                    :LANDORUS, 
                    :VIVILLON,
-                   :FURFROU, 
+                   :FURFROU,
+                   :DARUMAKA,
+                   :DARMANITAN,			   
                    :FLABEBE, 
                    :FLOETTE, 
                    :FLORGES, 
@@ -143,7 +145,6 @@ def raid_GenerateBanlist
                    :INDEEDEE, 
                    :URSHIFU,
                    :BASCULEGION,
-                   :DARMANITAN,
                    :ENAMORUS]
   #-----------------------------------------------------------------------------
   # All other forms not listed above are added to the raid banlist. Exceptions

@@ -276,16 +276,61 @@ class Battle
   end
 end
 
-ItemHandlers::UseOnPokemon.add(:RARECANDY,proc { |item,pkmn,scene|
-  if pkmn.level>=GameData::GrowthRate.max_level || pkmn.shadowPokemon? || (pkmn.level>=LEVEL_CAP[$game_system.level_cap] && $PokemonSystem.level_caps == 0)
+ItemHandlers::UseOnPokemonMaximum.add(:RARECANDY, proc { |item, pkmn|
+  if $PokemonSystem.level_caps == 1
+    next GameData::GrowthRate.max_level - pkmn.level
+  else
+    next LEVEL_CAP[$game_system.level_cap] - pkmn.level
+  end
+})
+
+
+ItemHandlers::UseOnPokemon.add(:RARECANDY, proc { |item, qty, pkmn, scene|
+  if pkmn.shadowPokemon?
     scene.pbDisplay(_INTL("It won't have any effect."))
     next false
   end
-  pbChangeLevel(pkmn,pkmn.level+1,scene)
+  if $PokemonSystem.level_caps == 1
+    if pkmn.level >= GameData::GrowthRate.max_level
+      new_species = pkmn.check_evolution_on_level_up
+      if !Settings::RARE_CANDY_USABLE_AT_MAX_LEVEL || !new_species
+        scene.pbDisplay(_INTL("It won't have any effect."))
+        next false
+      end
+      # Check for evolution
+      pbFadeOutInWithMusic {
+        evo = PokemonEvolutionScene.new
+        evo.pbStartScreen(pkmn, new_species)
+        evo.pbEvolution
+        evo.pbEndScreen
+        scene.pbRefresh if scene.is_a?(PokemonPartyScreen)
+      }
+      next true
+    end
+  else
+    if pkmn.level >= LEVEL_CAP[$game_system.level_cap]
+      new_species = pkmn.check_evolution_on_level_up
+      if !Settings::RARE_CANDY_USABLE_AT_MAX_LEVEL || !new_species
+        scene.pbDisplay(_INTL("It won't have any effect."))
+        next false
+      end
+      # Check for evolution
+      pbFadeOutInWithMusic {
+        evo = PokemonEvolutionScene.new
+        evo.pbStartScreen(pkmn, new_species)
+        evo.pbEvolution
+        evo.pbEndScreen
+        scene.pbRefresh if scene.is_a?(PokemonPartyScreen)
+      }
+      next true
+    end
+  end
+  # Level up
+  pbChangeLevel(pkmn, pkmn.level + qty, scene)
   scene.pbHardRefresh
   next true
 })
-
+=begin
 MenuHandlers.add(:options_menu, :level_caps, {
   "name"        => _INTL("Level Caps"),
   "order"       => 90,
@@ -295,3 +340,4 @@ MenuHandlers.add(:options_menu, :level_caps, {
   "get_proc"    => proc { next $PokemonSystem.level_caps},
   "set_proc"    => proc { |value, _sceme| $PokemonSystem.level_caps = value }
 })
+=end

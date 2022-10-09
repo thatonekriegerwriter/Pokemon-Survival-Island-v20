@@ -114,7 +114,7 @@ EventHandlers.add(:on_leave_tile, :remove_spawned_box_pokemon,
     else
       raise ArgumentError.new(_INTL("Actually, this should not be possible"))
     end
-    oldMap.remove_box_pokemon_events
+    #oldMap.remove_box_pokemon_events
     # alternatively: updating the sprites (old and slow but working):
     $scene.disposeSpritesets
     $scene.createSpritesets

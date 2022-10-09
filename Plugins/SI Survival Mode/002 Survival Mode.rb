@@ -159,9 +159,9 @@ def pbSleepRestore(wari)
 #       Stamina   #
   $player.playerstamina = $player.playermaxstamina
 #       Sleep     #
-  $player.playersleep=$player.playersleep+(wari*9)
+  $player.playersleep = $player.playersleep.to_i+(wari*9)
   if $player.playersleep > 200
-  $player.playersleep= 200  
+  $player.playersleep = 200  
   end
 #       FoodWater     #
  if $player.playersaturation==0
@@ -175,7 +175,10 @@ def pbSleepRestore(wari)
 
 				party = $player.party
                  for i in 0...party.length
-                 pkmn = party[i]
+				pkmn = party[i]
+				if pkmn.sleep.nil?
+				 pkmn.sleep = 100
+				end
 				 pkmn.sleep=pkmn.sleep+(wari*9)
 				 if pkmn.sleep > 100
 				 pkmn.sleep= 100  

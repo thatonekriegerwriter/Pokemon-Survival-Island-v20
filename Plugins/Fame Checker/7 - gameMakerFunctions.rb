@@ -8,7 +8,7 @@ module FameChecker
     # player has encountered a specific person, is often times called when first meeting them in person
     # however isn't limited to those uses.
   # this function is usually to be called during a scripting event with that person, 
-	# but isn't supposed to be displayed    FameChecker.hasEncountered(famousPersonName, hasMet = true)
+	# but isn't supposed to be displayed    FameChecker.hasencountered(famousPersonName, hasMet = true)
   def self.hasEncountered(famousPersonName, hasMet = true)
     FameChecker.checkSetup
     FameChecker.runSetup
@@ -75,7 +75,7 @@ module FameChecker
   # personName = string, represents the name of a specific person, all names must be different, example "BROCK"
   # fileName = string, represents the image that will be displayed on screen for a specific person,
     # example "old_lady.png", note that you should have the file within the Small_sprites folder
-  # textBoxText = array of strings, must be of size 2, represents the value that appears within the blue frame, example ["VERIDIAN CITY", "GYM SIGN"]
+  # textBoxText = array of strings, must be of size 2, represents the value that appears within the BLUE frame, example ["VERIDIAN CITY", "GYM SIGN"]
   # selectText = array of strings, represents the text that is displayed when you select that specific info person, 
     # example ["Oak is an interesting man, he apparently created MISSINGNO!","I get it, you're skeptical, but it's true, he really did!"]
     # note, this can be any size, just make sure to seperate sentances in this way.
@@ -108,17 +108,17 @@ module FameChecker
   # please ensure that the files are within Graphics/Pictures/FameChecker/Big_Sprites else it will throw an error
   def self.setupFamousPeople()
     # template
-    self.createFamousPerson("Brent", "BRENT.png", false)
-    self.createFamousPerson("Donna", "DONNA.png", false)
-    self.createFamousPerson("Alice", "ALICE.png", false)
-    self.createFamousPerson("Jace", "JACE.png", false)
-    self.createFamousPerson("David", "DAVID.png", false)
-    self.createFamousPerson("John", "JOHN.png", false)
-    self.createFamousPerson("Samantha", "SAMANTHA.png", false)
-    self.createFamousPerson("Sevii", "SEVII.png", false)
-    self.createFamousPerson("Blue", "BLUE.png", false)
-    self.createFamousPerson("Red", "RED.png", false)
-    self.createFamousPerson("Boss", "BOSS.png", true)
+    self.createFamousPerson("BRENT", "BRENT.png", false)
+    self.createFamousPerson("DONNA", "DONNA.png", false)
+    self.createFamousPerson("ALICE", "ALICE.png", false)
+    self.createFamousPerson("JACE", "JACE.png", false)
+    self.createFamousPerson("DAVID", "DAVID.png", false)
+    self.createFamousPerson("JOHN", "JOHN.png", false)
+    self.createFamousPerson("SAMANTHA", "SAMANTHA.png", false)
+    self.createFamousPerson("SEVII", "SEVII.png", false)
+    self.createFamousPerson("BLUE", "BLUE.png", false)
+    self.createFamousPerson("RED", "RED.png", false)
+    self.createFamousPerson("BOSS", "BOSS.png", true)
     self.createFamousPerson("???", "000.png", false)
   end
 
@@ -128,140 +128,140 @@ module FameChecker
   def self.setupFameInfo()
     # template
 	if $game_variables[4926]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	elsif $game_variables[4926]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa1"], "Check Affinity.",true)
     end
 	if $game_variables[4927]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	elsif $game_variables[4927]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa2"], "Check Affinity.",true)
     end
 	if $game_variables[4928]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	elsif $game_variables[4928]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa3"], "Check Affinity.",true)
     end
 	if $game_variables[4929]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	elsif $game_variables[4929]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa4"], "Check Affinity.",true)
     end
 	if $game_variables[4930]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	elsif $game_variables[4930]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa5"], "Check Affinity.",true)
     end
 	if $game_variables[4931]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	elsif $game_variables[4931]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa6"], "Check Affinity.",true)
     end
 	if $game_variables[4932]==1
-       self.createFameInfo("Brent", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("BRENT", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==2
-       self.createFameInfo("Donna", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("DONNA", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==3
-       self.createFameInfo("Jace", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("JACE", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==4
-       self.createFameInfo("Sevii", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("SEVII", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==5
-       self.createFameInfo("John", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("JOHN", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==6
-       self.createFameInfo("Samantha", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("SAMANTHA", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==7
-       self.createFameInfo("David", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("DAVID", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	elsif $game_variables[4932]==8
-       self.createFameInfo("Alice", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
+       self.createFameInfo("ALICE", "base.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
 	else 
        self.createFameInfo("???", "unknown.png", ["Affinity", " "], ["\\pa7"], "Check Affinity.",true)
     end
-    self.createFameInfo("Blue", "base.png", ["Affinity", " "], ["\\pab"], "Check Affinity.",true)
-    self.createFameInfo("Red", "base.png", ["Affinity", " "], ["\\par"], "Check Affinity.",true)
-    self.createFameInfo("Boss", "pkb.png", ["Boss", "  "], ["Your boss was nice enough to take you on a trip!","The Plan was to start a POKeMON journey, but it didn't go to plan."], "The Pokemon World.",true)
+    self.createFameInfo("BLUE", "base.png", ["Affinity", " "], ["\\pab"], "Check Affinity.",true)
+    self.createFameInfo("RED", "base.png", ["Affinity", " "], ["\\par"], "Check Affinity.",true)
+    self.createFameInfo("BOSS", "pkb.png", ["BOSS", "  "], ["Your BOSS was nice enough to take you on a trip!","The Plan was to start a POKeMON journey, but it didn't go to plan."], "The Pokemon World.",true)
 end
 end

@@ -57,7 +57,7 @@ pbSetPokemonCenter
                  pkmn = party[i]
 				 heal_BED(hours,pkmn)
 				 end
-				pbWait(40)
+				pbWait(80)
 				pbRandomEvent
 				if $game_switches[157]==true && $game_variables[423] >= 1
 				$player.money +=(500*pbGet(350))
@@ -85,15 +85,14 @@ pbSetPokemonCenter
       elsif cmdNap >= 0 && command == cmdNap   # Summary
 			    pbMessage(_INTL("You lay down to take a nap."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
-			    hours = 0.5
-				$game_variables[29] = (3600*hours)
+			    hours = 1
+				$game_variables[29] = ((3600*hours)/2).round
 	            pbMEPlay("Pokemon Healing")
 				pbWait(40)
 				pbRandomEvent
 				chance = rand(3)
 				if chance == 0
-                 for i in 0...party.length
-                 pkmn = party[i]
+				$player.pokemon_party.each do |pkmn|
                  pkmn.heal_HP
                  pkmn.heal_status
                  pkmn.heal_PP

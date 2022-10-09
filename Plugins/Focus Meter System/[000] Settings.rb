@@ -24,14 +24,14 @@ module Settings
   # 3 = Vertical style - A vertical meter displays at the inner edge of databoxes.
   # 4 = Advanced style - The entire databox itself becomes the meter.
   #-----------------------------------------------------------------------------
-  FOCUS_METER_STYLE = 1
+  FOCUS_METER_STYLE = 4
   
   #-----------------------------------------------------------------------------
   # Shows opponent's focus meter when "true", hides them when "false".
   # Note that opponent meters may be automatically hidden regardless of this
   # setting when using certain meter styles in certain battle sizes.
   #-----------------------------------------------------------------------------
-  SHOW_FOE_FOCUS_METER = true
+  SHOW_FOE_FOCUS_METER = false
   
   #-----------------------------------------------------------------------------
   # The maximum number of points needed before the focus meter is full.
@@ -63,7 +63,7 @@ module Settings
   # 2 = Displays the current percentage of meter filled (ex. 25%)
   # 3 = Displays the actual meter value out of the max value (ex. 25/100)
   #-----------------------------------------------------------------------------
-  FOCUS_PANEL_DISPLAY = 1
+  FOCUS_PANEL_DISPLAY = 0
   
   #-----------------------------------------------------------------------------
   # Sets the keyboard key used to toggle the focus panel in battle.

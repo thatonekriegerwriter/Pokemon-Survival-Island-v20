@@ -155,7 +155,7 @@
       elsif itemrnd<(chances[0]+chances[1]+chances[2])
         genwildpoke.item=(items[2].sample)
       end
-      if $PokemonBag.pbHasItem?(:SHINYCHARM)
+      if $bag.has?(:SHINYCHARM)
         for i in 0...2   # 3 times as likely
           break if genwildpoke.shiny?
           genwildpoke.personalID = rand(65536)|(rand(65536)<<16)

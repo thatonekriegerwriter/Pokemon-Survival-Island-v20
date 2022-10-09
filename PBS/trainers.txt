@@ -151,31 +151,31 @@ Pokemon = BLASTOISE,63
 LoseText = "Damn, you beat me."
 NumPkmn = 1
 Guaranteed = 1
-Pokemon = EEVEE,5
+Pokemon = EEVEE,10
     Name = Investment
     Gender = female
     Moves = TACKLE,GROWL,QUICKATTACK,CHARM
     Item = NORMALGEM
     IV = 0,31,0,0,31,0
-Pokemon = LILLIPUP,4
+Pokemon = LILLIPUP,9
     Name = Puppo
     Gender = male
     Moves = TACKLE,SNARL,ENDURE,LEER
     IV = 0,31,0,31,31,31
-Pokemon = PUMPKABOO,3
+Pokemon = PUMPKABOO,6
     IV = 0,31,0,31,31,31
 #-------------------------------
 [RED,Red]
 LoseText = "..."
-Pokemon = DEWPIDER,4
+Pokemon = DEWPIDER,14
     IV = 31,31,31,31,31,31
-Pokemon = PIKACHU,5
+Pokemon = PIKACHU,15
     Name = Pika
     Gender = female
     Moves = THUNDERBOLT,QUICKATTACK,VOLTTACKLE,SUBSTITUTE
     Item = LIGHTBALL
     IV = 31,31,31,31,31,31
-Pokemon = POLIWAG,5
+Pokemon = POLIWAG,15
     Name = Poli
     Gender = male
     Moves = WATERGUN,HYPNOSIS,BUBBLEBEAM,REST
@@ -344,7 +344,6 @@ Pokemon = NIDOQUEEN,40
     Item = BERRYJUICE
 #-------------------------------
 [GARYOAK3,Blue]
-LoseText = "This island takes a lot out of you."
 Pokemon = STOUTLAND,42
     Name = Puppo
     Gender = male

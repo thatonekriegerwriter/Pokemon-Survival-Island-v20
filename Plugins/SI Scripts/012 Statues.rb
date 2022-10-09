@@ -23,6 +23,7 @@ command = 0
                     [_INTL("Use Statue"),
                     _INTL("Save Game"),
                     _INTL("Exit")],2)
+	pbDisposeMessageWindow(msgwindow)
     case command
     when 0   # Use Statue
     pbDisposeMessageWindow(msgwindow)

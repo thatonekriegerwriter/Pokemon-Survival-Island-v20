@@ -115,6 +115,7 @@ LandMorning,21
     4,SUNKERN,2,10
     1,CYNDAQUIL,2,22
     1,FARFETCHD,3,7
+    1,CASTFORM,3,7
 OverworldLandMorning,21
     20,HOPPIP,2,8
     20,SUNKERN,5,10
@@ -124,6 +125,7 @@ OverworldLandMorning,21
     10,SUNKERN,2,7
     5,ODDISH,3,9
     5,TAILLOW,3,11
+    5,PONYTA,3,11
     4,PHANPY,3,18
     4,SUNKERN,2,10
     1,CYNDAQUIL,2,22
@@ -131,6 +133,7 @@ OverworldLandMorning,21
 LandDay,21
     20,NIDORANfE,5,7
     20,NIDORANmA,5,7
+    20,RATTATA,3,11
     10,FURRET,4,9
     10,PIDGEY,5,7
     10,SANDSHREW,2,9
@@ -144,6 +147,7 @@ LandDay,21
 OverworldLandDay,21
     20,NIDORANfE,5,7
     20,NIDORANmA,5,7
+    20,ZIGZAGOON,3,11
     10,FURRET,4,9
     10,PIDGEY,5,7
     10,SANDSHREW,2,9

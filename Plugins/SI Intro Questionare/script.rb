@@ -1,4 +1,6 @@
 def pbIntroQuestionare
+      if $DEBUG && Input.press?(Input::CTRL)
+	  else
       pbMessage(_INTL("Answer the following questions however you feel strongest."))
       pbMessage(_INTL("There will be a word, Choose the first thing that comes to mind."))
       cmd = pbMessage(_INTL("Arcanine"),[
@@ -488,6 +490,7 @@ def pbIntroQuestionare
 	 elsif $player.playerclass == "Catcher"#$game_variables[50]==12
       pbMessage(_INTL("You are a catcher."))
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
+	 end
 	 end
       pbMessage(_INTL("Of course, you don't have to be what your answers give, you can choose what you want to be!"))
   command = 0

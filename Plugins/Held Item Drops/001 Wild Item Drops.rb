@@ -62,7 +62,7 @@ class Battle::Scene
 	   end
       end
     }
-    @battleEnd = true
+	@battleEnd = true
     pbBGMPlay(pbGetWildVictoryBGM)
   end
 

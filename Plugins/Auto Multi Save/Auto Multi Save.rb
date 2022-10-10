@@ -221,6 +221,41 @@ class PokemonLoadScreen
     @scene = scene
     @selected_file = SaveData.get_newest_save_slot
   end
+  # @param file_path [String] file to load save data from
+  # @return [Hash] save data
+  def load_save_file(file_path)
+    save_data = SaveData.read_from_file(file_path)
+    unless SaveData.valid?(save_data)
+      if File.file?(file_path + ".bak")
+        pbMessage(_INTL("The save file is corrupt. A backup will be loaded."))
+        save_data = load_save_file(file_path + ".bak")
+      else
+        self.prompt_save_deletion(file_path)
+        return {}
+      end
+    end
+    return save_data
+  end
+
+  # Called if save file is invalid.
+  # Prompts the player to delete the save files.
+  def prompt_save_deletion(file_path)
+    pbMessage(_INTL("A save file is corrupt, or is incompatible with this game."))
+    self.delete_save_data(file_path) if pbConfirmMessageSerious(
+      _INTL("Do you want to delete that save file? The game will exit afterwards either way.")
+    )
+    exit
+  end
+
+  # nil deletes all, otherwise just the given file
+  def delete_save_data(file_path=nil)
+    begin
+      SaveData.delete_file(file_path)
+      pbMessage(_INTL("The save data was deleted."))
+    rescue SystemCallError
+      pbMessage(_INTL("The save data could not be deleted."))
+    end
+  end
 
   def pbStartLoadScreen
     save_file_list = SaveData::AUTO_SLOTS + SaveData::MANUAL_SLOTS

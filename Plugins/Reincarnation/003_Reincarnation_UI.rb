@@ -134,13 +134,6 @@ class Reincarnation_UI
     @sprites["reincarnatore"]=IconSprite.new(266,35,@viewport)
     @sprites["reincarnatore"].setBitmap(filenamD)
     @sprites["reincarnatore"].visible = true
-    @sprites["nature2e"].visible = false
-    @sprites["ivse"].visible = false
-    @sprites["donatorB"].visible = true
-    @sprites["reincarnator"].visible = true
-    @sprites["nature2"].visible = true
-    @sprites["ivs"].visible = true
-    @sprites["begin"].visible = true
     
     filenamE="Graphics/Pictures/Reincarnation/donatorexpand"
     @sprites["donatorAe"]=IconSprite.new(266,85,@viewport)
@@ -354,7 +347,6 @@ class Reincarnation_UI
     @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2) if @pkmnnat2==0 ||  @pkmnnat2==-1  ||  @pkmnnat2==""  ||  @pkmnnat2==nil
     @sprites["F"].text=_INTL("Stat Modifier",@pkmniv) if @pkmniv==0 ||  @pkmniv==-1  ||  @pkmniv==""  ||  @pkmniv==nil
 	  
-      #_INTL("♂") : _INTL("♀")
       selectionNum=@selection
       if Input.trigger?(Input::UP)
 	    if @selection==0 && @reincarnpkmn!=0
@@ -594,7 +586,7 @@ class Reincarnation_UI
           @selection=0
         end
       end
-      #if Input.trigger?(Input::ACTION)
+
       if Input.trigger?(Input::USE)
         if @selection==0
 		loop do
@@ -1197,15 +1189,15 @@ end
     @sprites["SPDOldN"].windowskin=nil
     @sprites["SPDOldN"].visible=false
     @sprites["SPDStar"]=IconSprite.new(132,342,@viewport)
-      if @oldsdefiv > 30
+      if @oldspdiv > 30
         @sprites["SPDStar"].setBitmap(filenamRatingS)
-      elsif @oldsdefiv > 22 && @oldsdefiv < 31
+      elsif @oldspdiv > 22 && @oldspdiv < 31
         @sprites["SPDStar"].setBitmap(filenamRatingA)
-      elsif @oldsdefiv > 15 && @oldsdefiv < 23
+      elsif @oldspdiv > 15 && @oldspdiv < 23
         @sprites["SPDStar"].setBitmap(filenamRatingB)
-      elsif @oldsdefiv > 7 && @oldsdefiv < 16
+      elsif @oldspdiv > 7 && @oldspdiv < 16
         @sprites["SPDStar"].setBitmap(filenamRatingC)
-      elsif @oldsdefiv > 0 && @oldsdefiv < 8
+      elsif @oldspdiv > 0 && @oldspdiv < 8
         @sprites["SPDStar"].setBitmap(filenamRatingD)
       else
         @sprites["SPDStar"].setBitmap(filenamRatingF)
@@ -1240,6 +1232,7 @@ end
     pbPrepareWindow(@sprites["ATKNewN"])
     @sprites["ATKNewN"].x=424
     @sprites["ATKNewN"].y=192
+    @sprites["ATKNewN"].width=Graphics.width-48
     @sprites["ATKNewN"].width=Graphics.width-48
     @sprites["ATKNewN"].height=Graphics.height
     @sprites["ATKNewN"].baseColor=Color.new(240,240,240)
@@ -1406,8 +1399,9 @@ end
     @sprites["DEFStar"].visible = true
     @sprites["ATKStar"].visible = true
     @sprites["HPStar"].visible = true
+	@testing = true
 		end
-        else
+        elsif @selection==5
           pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
@@ -1423,12 +1417,144 @@ filenamH =GameData::Item.icon_filename(@pkmniv)
     @icons["itemResult6"].setBitmap(filenamH)
     @icons["itemResult6"].visible=true
 end
-        end
+       elsif @selection==7 && @testing == true
+          pbFadeOutIn(99999){
+	      @selection = 0
+		  @sprites["HPOld"].visible=false
+        @sprites["ATKOld"].visible=false
+        @sprites["DEFOld"].visible=false
+        @sprites["SATKOld"].visible=false
+        @sprites["SDEFOld"].visible=false
+        @sprites["SPDOld"].visible=false
+        @sprites["HPNew"].visible=false
+        @sprites["ATKNew"].visible=false
+        @sprites["DEFNew"].visible=false
+        @sprites["SATKNew"].visible=false
+        @sprites["SDEFNew"].visible=false
+        @sprites["SPDNew"].visible=false
+        @sprites["PkmnName"].visible=false
+        @sprites["PkmnLevel50"].visible=false
+        @sprites["PkmnAbility"].visible=false
+        @sprites["HPOldN"].visible=false
+        @sprites["ATKOldN"].visible=false
+        @sprites["DEFOldN"].visible=false
+        @sprites["SATKOldN"].visible=false
+        @sprites["SDEFOldN"].visible=false
+        @sprites["SPDOldN"].visible=false
+        @sprites["HPNewN"].visible=false
+        @sprites["ATKNewN"].visible=false
+        @sprites["DEFNewN"].visible=false
+        @sprites["SATKNewN"].visible=false
+        @sprites["SDEFNewN"].visible=false
+        @sprites["SPDNewN"].visible=false
+    @sprites["SPDStarNew"].visible = false
+    @sprites["SDEFStarNew"].visible = false
+    @sprites["SATKStarNew"].visible = false
+    @sprites["DEFStarNew"].visible = false
+    @sprites["ATKStarNew"].visible = false
+    @sprites["HPStarNew"].visible = false
+    @sprites["SPDStar"].visible = false
+    @sprites["SDEFStar"].visible = false
+    @sprites["SATKStar"].visible = false
+    @sprites["DEFStar"].visible = false
+    @sprites["ATKStar"].visible = false
+    @sprites["HPStar"].visible = false
+    @sprites["pokeview"].visible = false
+    @sprites["F"].visible=true
+    @sprites["E"].visible=true
+    @sprites["D"].visible=true
+    @sprites["C"].visible=true
+    @sprites["B"].visible=true
+    @sprites["A"].visible=true
+	if donator2pokemonicon1 !=0
+    donator2pokemonicon1.visible=false
+	end
+	if donator2pokemonicon2 !=0
+    donator2pokemonicon2.visible=false
+	end
+	if donatorpokemonicon2 !=0
+    donatorpokemonicon2.visible=false
+	end
+	if donatorpokemonicon1 !=0
+    donatorpokemonicon1.visible=false
+	end
+	if reincarnpokemonicon !=0
+    reincarnpokemonicon.visible=false
+	end
+	if reincarnpokemonicon1 !=0
+    reincarnpokemonicon1.visible=false
+	end
+	@reincarnpkmn=0
+	@donApkmn=0
+	@donBpkmn=0
+	@pkmnnat1=0
+	@pkmnnat2=0
+	@pkmniv=0
+    @icons["itemResult6"].visible=false
+    @icons["itemResult2"].visible=false
+    @icons["itemResult4"].visible=false
+    @icons["itemResult1"].visible=false
+    @sprites["donatorAe"].visible = false
+    @sprites["donatorBe"].visible = false
+    @sprites["donatorAe"].visible = false
+    @sprites["nature2e"].visible = false
+    @sprites["ivse"].visible = false
+    @sprites["donatorB"].visible = true
+    @sprites["reincarnator"].visible = true
+    @sprites["nature2"].visible = true
+    @sprites["ivs"].visible = true
+    @sprites["begin"].visible = true
+    @sprites["nature2e"].visible = false
+    @sprites["nature1e"].visible = false
+    @sprites["ivse"].visible = false
+    @sprites["donatorB"].visible = true
+    @sprites["donatorA"].visible = true
+    @sprites["reincarnatore"].visible = true
+    @sprites["nature2"].visible = true
+    @sprites["pokemon"].visible = false
+    @sprites["nature1"].visible = true
+    @sprites["ivs"].visible = true
+    @sprites["begin"].visible = true
+    @sprites["Item3Orb"].x=166
+    @sprites["Item3Orb"].y=87
+    @sprites["Item2Orb"].x=91
+    @sprites["Item2Orb"].y=87
+    @sprites["Item1Orb"].x=128
+    @sprites["Item1Orb"].y=185
+    @sprites["Don2Orb"].x=178
+    @sprites["Don2Orb"].y=210
+    @sprites["Don1Orb"].x=65
+    @sprites["Don1Orb"].y=210
+    @sprites["ReOrb"].x=122
+    @sprites["ReOrb"].y=91
+    @sprites["sigil"].x=-30
+    @sprites["sigil"].y=25
+    @sprites["begin"].y=350
+		  if @sprites["icon_#{6}"]!=nil
+          @sprites["icon_#{6}"] = nil
+		  end
+		  if @sprites["icon_#{5}"]!=nil
+          @sprites["icon_#{5}"] = nil
+		  end
+		  if @sprites["icon_#{6}"]!=nil
+          @sprites["icon_#{6}"] = nil
+		  end
+		  if @sprites["icon_#{4}"]!=nil
+          @sprites["icon_#{4}"] = nil
+		  end
+		  if @sprites["icon_#{5}"]!=nil
+          @sprites["icon_#{5}"] = nil
+		  end
+	@sprites["A"].text=_INTL("Recipient",@reincarnpkmn)
+    @sprites["B"].text=_INTL("Donor 1",@donApkmn)
+    @sprites["C"].text=_INTL("Donor 2",@donBpkmn)
+    @sprites["D"].text=_INTL("Stat Boon", @pkmnnat1)
+    @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2)
+    @sprites["F"].text=_INTL("Stat Modifier",@pkmniv)
+		}  
+       end
       end
        #Cancel
-	  if Input.trigger?(Input::USE) && @selection==7 && @sprites["HPStar"].visible == true
-	  break
-	end
       if Input.trigger?(Input::BACK)
         break
       end     

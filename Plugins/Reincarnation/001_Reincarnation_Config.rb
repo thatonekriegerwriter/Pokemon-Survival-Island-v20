@@ -57,6 +57,6 @@ SET_TO_LEVEL 				= Settings::EGG_LEVEL # Default: 1
 #This only works if autoremove is off.
 
 
-NUZLOCKE_REINCARNATION = true
+NUZLOCKE_REINCARNATION = false
 
 end

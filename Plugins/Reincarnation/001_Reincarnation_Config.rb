@@ -30,9 +30,9 @@ BANE_NEUTRAL		= :GREYMARK
 
 # If you want your reincarnation to cost an item, defined in COST_ITEM, and the amount of that item, COST_AMOUNT
 
-REINCARNATION_HAS_COST 		= false
+REINCARNATION_HAS_COST 		= true
 COST_ITEM 					= :MAGFRAG
-COST_AMOUNT 				= 1
+COST_AMOUNT 				= 10
 
 # If you want the Magic Stones or Boon/Bane to be taken away from use.
 #  Options:

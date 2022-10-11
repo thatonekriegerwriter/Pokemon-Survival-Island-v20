@@ -82,6 +82,12 @@ class Reincarnation_UI
     @sprites["Item3Orb"].visible = true
 	end
 	
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+	filenamCost =GameData::Item.icon_filename(ReincarnationConfig::COST_ITEM) 
+    @sprites["crystal"]=IconSprite.new(120,336,@viewport)
+    @sprites["crystal"].setBitmap(filenamCost)
+    @sprites["crystal"].visible=true
+	end
     filenamBack="Graphics/Pictures/Reincarnation/ReincarnationBack"
     @sprites["back"]=IconSprite.new(0,0,@viewport)
     @sprites["back"].setBitmap(filenamBack)
@@ -263,6 +269,18 @@ class Reincarnation_UI
     @sprites["F"].viewport=@viewport
     @sprites["F"].windowskin=nil
 	
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@sprites["crystalamt"])
+    @sprites["crystalamt"].x=119
+    @sprites["crystalamt"].y=336
+    @sprites["crystalamt"].width=Graphics.width-48
+    @sprites["crystalamt"].height=Graphics.height
+    @sprites["crystalamt"].baseColor=Color.new(240,240,240)
+    @sprites["crystalamt"].shadowColor=Color.new(40,40,40)
+    @sprites["crystalamt"].viewport=@viewport
+    @sprites["crystalamt"].windowskin=nil
+	end
 #Viewport Stuff
 	
 	
@@ -276,13 +294,18 @@ class Reincarnation_UI
     @sprites["C"].visible=true
     @sprites["B"].visible=true
     @sprites["A"].visible=true
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"].visible=true
+	end
 	@sprites["A"].text=_INTL("Recipient",@reincarnpkmn) if @reincarnpkmn==0 ||  @reincarnpkmn==-1  ||  @reincarnpkmn==""  ||  @reincarnpkmn==nil
     @sprites["B"].text=_INTL("Donor 1",@donApkmn) if @donApkmn==0 ||  @donApkmn==-1  ||  @donApkmn==""  ||  @donApkmn==nil
     @sprites["C"].text=_INTL("Donor 2",@donBpkmn) if @donBpkmn==0 ||  @donBpkmn==-1  ||  @donBpkmn==""  ||  @donBpkmn==nil
     @sprites["D"].text=_INTL("Stat Boon", @pkmnnat1) if @pkmnnat1==0 ||  @pkmnnat1==-1  ||  @pkmnnat1==""  ||  @pkmnnat1==nil
     @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2) if @pkmnnat2==0 ||  @pkmnnat2==-1  ||  @pkmnnat2==""  ||  @pkmnnat2==nil
     @sprites["F"].text=_INTL("Stat Modifier",@pkmniv) if @pkmniv==0 ||  @pkmniv==-1  ||  @pkmniv==""  ||  @pkmniv==nil
-	
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+	@sprites["crystalamt"].text=_INTL("x{1}",ReincarnationConfig::COST_AMOUNT) if ReincarnationConfig::COST_AMOUNT > 1
+end
 	
     @sprites["HPOld"]=Window_UnformattedTextPokemon.new("")
     @sprites["ATKOld"]=Window_UnformattedTextPokemon.new("")
@@ -790,6 +813,10 @@ end
         @sprites["D"].visible = false
         @sprites["E"].visible = false
         @sprites["F"].visible = false
+		if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"].visible=false
+    @sprites["crystal"].visible=false
+	end
         @icons["itemResult2"].visible=false
         @icons["itemResult3"].visible=false
         @icons["itemResult1"].visible=false
@@ -1581,12 +1608,12 @@ end
 		  if @sprites["icon_#{5}"]!=nil
           @sprites["icon_#{5}"] = nil
 		  end
-	@reincarnpkmn=nil
-	@donApkmn=nil
-	@donBpkmn=nil
-	@pkmnnat1=nil
-	@pkmnnat2=nil
-	@pkmniv=nil
+	@reincarnpkmn=0
+	@donApkmn=0
+	@donBpkmn=0
+	@pkmnnat1=0
+	@pkmnnat2=0
+	@pkmniv=0
 	
           @sprites["B"].x=366
           @sprites["A"].x=315 ## Don't Remove
@@ -1596,6 +1623,11 @@ end
     @sprites["D"].text=_INTL("Stat Boon", @pkmnnat1)
     @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2)
     @sprites["F"].text=_INTL("Stat Modifier",@pkmniv)
+
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"].visible=true
+    @sprites["crystal"].visible=true
+	end
 	
 	      @selection = 0
 			  @donBpkmnsp = 0
@@ -1615,6 +1647,10 @@ end
         break
 		else
           pbFadeOutIn(99999){
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"].visible=true
+    @sprites["crystal"].visible=true
+	end
     @sprites["F"].visible=true
     @sprites["E"].visible=true
     @sprites["D"].visible=true
@@ -1715,6 +1751,10 @@ end
 			  @donBpkmnsp = 0
 			  @donApkmnsp = 0
 			  @reincarnpkmnsp = 0
+	if ReincarnationConfig::REINCARNATION_HAS_COST == true
+    @sprites["crystalamt"].visible=true
+    @sprites["crystal"].visible=true
+	end
 	
 		  $game_variables[3] = nil
 		  $game_variables[1] = nil

@@ -284,21 +284,80 @@ class Reincarnation_UI
     @sprites["F"].text=_INTL("Stat Modifier",@pkmniv) if @pkmniv==0 ||  @pkmniv==-1  ||  @pkmniv==""  ||  @pkmniv==nil
 	
 	
+    @sprites["HPOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["ATKOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["DEFOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SATKOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SDEFOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SPDOld"]=Window_UnformattedTextPokemon.new("")
+    @sprites["HPNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["ATKNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["DEFNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SATKNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SDEFNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SPDNew"]=Window_UnformattedTextPokemon.new("")
+    @sprites["PkmnName"]=Window_UnformattedTextPokemon.new("")
+    @sprites["PkmnLevel"]=Window_UnformattedTextPokemon.new("")
+    @sprites["PkmnLevel50"]=Window_UnformattedTextPokemon.new("")
+    @sprites["PkmnAbility"]=Window_UnformattedTextPokemon.new("")
+    @sprites["PkmnAbilityDesc"]=Window_UnformattedTextPokemon.new("")
+    @sprites["HPOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["ATKOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["DEFOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SATKOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SDEFOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SPDOldN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["HPNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["ATKNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["DEFNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SATKNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SDEFNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["SPDNewN"]=Window_UnformattedTextPokemon.new("")
+    @sprites["HPOld"].visible=false
+    @sprites["ATKOld"].visible=false
+    @sprites["DEFOld"].visible=false
+    @sprites["SATKOld"].visible=false
+    @sprites["SDEFOld"].visible=false
+    @sprites["SPDOld"].visible=false
+    @sprites["HPNew"].visible=false
+    @sprites["ATKNew"].visible=false
+    @sprites["DEFNew"].visible=false
+    @sprites["SATKNew"].visible=false
+    @sprites["SDEFNew"].visible=false
+    @sprites["SPDNew"].visible=false
+    @sprites["PkmnName"].visible=false
+    @sprites["PkmnLevel"].visible=false
+    @sprites["PkmnLevel50"].visible=false
+    @sprites["PkmnAbility"].visible=false
+    @sprites["PkmnAbilityDesc"].visible=false
+    @sprites["HPOldN"].visible=false
+    @sprites["ATKOldN"].visible=false
+    @sprites["DEFOldN"].visible=false
+    @sprites["SATKOldN"].visible=false
+    @sprites["SDEFOldN"].visible=false
+    @sprites["SPDOldN"].visible=false
+    @sprites["HPNewN"].visible=false
+    @sprites["ATKNewN"].visible=false
+    @sprites["DEFNewN"].visible=false
+    @sprites["SATKNewN"].visible=false
+    @sprites["SDEFNewN"].visible=false
+    @sprites["SPDNewN"].visible=false
 	
 #finishing
     pbFadeInAndShow(@sprites)
 	end
-  end
+  
 
-  def pbEndScene
+  def pbEndScene(playingBGM,pos)
     pbFadeOutAndHide(@icons)
     pbFadeOutAndHide(@sprites)
     pbDisposeSpriteHash(@icons)
     pbDisposeSpriteHash(@sprites)
     @viewport.dispose
-		map_id = $game_map.map_id
-		map = load_data(sprintf("Data/Map%03d.rxdata",map_id))
-		pbBGMPlay(map.bgm)
+          pbFadeOutIn(99999){
+	pbBGMFade(1.0)	  
+    $game_system.bgm_position = pos
+    $game_system.bgm_resume(playingBGM)}
   end
 
 
@@ -353,7 +412,9 @@ class Reincarnation_UI
 	    if @selection==0 && @reincarnpkmn!=0
 		  pbSEPlay("GUI party switch")
           @sprites["reincarnatore"].visible = false
+		  if !@sprites["icon_#{4}"].nil?
           @sprites["icon_#{4}"].visible = false
+		  end
           @sprites["begin"].y=340
           #@sprites["A"].x=422
           @sprites["A"].x=366
@@ -392,6 +453,7 @@ class Reincarnation_UI
           @sprites["A"].y=25
           #@sprites["B"].x=422
           @sprites["B"].x=366
+          @sprites["A"].x=315 ## Don't Remove
           #@sprites["B"].y=85
           @sprites["B"].y=75
         elsif @selection==2
@@ -449,6 +511,7 @@ class Reincarnation_UI
           #@sprites["F"].y=285
           @sprites["F"].y=275
 		  @sprites["ivse"].visible = true
+          @icons["itemResult3"].visible=true
           @selection-=1
         else
 		  pbSEPlay("GUI party switch")
@@ -566,7 +629,9 @@ class Reincarnation_UI
           @sprites["A"].x=315
           #@sprites["A"].y=35
           @sprites["A"].y=25
+		  if !@sprites["icon_#{4}"].nil?
           @sprites["icon_#{4}"].visible = true
+		  end
           @sprites["begin"].y=350
           @selection=0
         else
@@ -590,7 +655,6 @@ class Reincarnation_UI
 
       if Input.trigger?(Input::USE)
         if @selection==0
-		loop do
 		  pbChoosePokemon(1,3)
 		  if @reincarnpkmnsp!= 0
           reincarnpokemonicon.visible = false
@@ -602,8 +666,8 @@ class Reincarnation_UI
 		  @reincarnpkmnsp = ($player.party[pbGet(1)])
 		  if @reincarnpkmnsp == @donApkmnsp || @reincarnpkmnsp == @donBpkmnsp
               pbMessage(_INTL("{1} has already been chosen! Choose Another!", @reincarnpkmn))
+			  @reincarnpkmn = 0
 			  @reincarnpkmnsp = 0
-			  break
 		  else
 		  i = @reincarnpkmnsp.species_data 
 		  @sprites["icon_#{0}"] = PokemonSpeciesIconSprite.new(i.id,@viewport)
@@ -618,12 +682,9 @@ class Reincarnation_UI
 		  reincarnpokemonicon = @sprites["icon_#{4}"]
 		  $game_variables[3] = nil
 		  $game_variables[1] = nil
-			  break
 		  end
 		end
-		  end
         elsif @selection==1
-		loop do
 		  pbChoosePokemon(1,3)
 		  if @donApkmnsp!= 0
           donatorpokemonicon1.visible = false
@@ -635,8 +696,8 @@ class Reincarnation_UI
 		  @donApkmnsp = ($player.party[pbGet(1)])
 		  if @donApkmnsp == @reincarnpkmnsp || @donApkmnsp == @donBpkmnsp
               pbMessage(_INTL("{1} has already been chosen! Choose Another!", @donApkmn))
+			  @donApkmn = 0
 			  @donApkmnsp = 0
-			  break
 		  else
 		  i = @donApkmnsp.species_data
 		  @sprites["icon_#{1}"] = PokemonSpeciesIconSprite.new(i.id,@viewport)
@@ -651,12 +712,9 @@ class Reincarnation_UI
 		  donatorpokemonicon2 = @sprites["icon_#{5}"]
 		  $game_variables[3] = nil
 		  $game_variables[1] = nil
-			  break
 		  end
 		 end
-		  end
         elsif @selection==2
-		 loop do
 		  pbChoosePokemon(1,3)
 		  if @donBpkmnsp != 0
           donator2pokemonicon1.visible = false
@@ -668,8 +726,8 @@ class Reincarnation_UI
 		  @donBpkmnsp = ($player.party[pbGet(1)])
 		  if @donBpkmnsp == @donApkmnsp || @donBpkmnsp == @reincarnpkmnsp
               pbMessage(_INTL("{1} has already been chosen! Choose Another!", @donBpkmn))
+			  @donBpkmn = 0
 			  @donBpkmnsp = 0
-			  break
 		  else
 		  i = @donBpkmnsp.species_data
 		  @sprites["icon_#{2}"] = PokemonSpeciesIconSprite.new(i.id,@viewport)
@@ -684,8 +742,6 @@ class Reincarnation_UI
 		  donator2pokemonicon2 = @sprites["icon_#{6}"]
 		  $game_variables[3] = nil
 		  $game_variables[1] = nil
-			  break
-		  end
 		  end
 		  end
         elsif @selection==3
@@ -847,35 +903,6 @@ end
 	    filenamRatingB="Graphics/Pictures/Reincarnation/RatingB"
 	    filenamRatingA="Graphics/Pictures/Reincarnation/RatingA"
 	    filenamRatingS="Graphics/Pictures/Reincarnation/RatingS"
-    @sprites["HPOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["ATKOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["DEFOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SATKOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SDEFOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SPDOld"]=Window_UnformattedTextPokemon.new("")
-    @sprites["HPNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["ATKNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["DEFNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SATKNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SDEFNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SPDNew"]=Window_UnformattedTextPokemon.new("")
-    @sprites["PkmnName"]=Window_UnformattedTextPokemon.new("")
-    @sprites["PkmnLevel"]=Window_UnformattedTextPokemon.new("")
-    @sprites["PkmnLevel50"]=Window_UnformattedTextPokemon.new("")
-    @sprites["PkmnAbility"]=Window_UnformattedTextPokemon.new("")
-    @sprites["PkmnAbilityDesc"]=Window_UnformattedTextPokemon.new("")
-    @sprites["HPOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["ATKOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["DEFOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SATKOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SDEFOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SPDOldN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["HPNewN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["ATKNewN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["DEFNewN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SATKNewN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SDEFNewN"]=Window_UnformattedTextPokemon.new("")
-    @sprites["SPDNewN"]=Window_UnformattedTextPokemon.new("")
     pbPrepareWindow(@sprites["HPOld"])
     @sprites["HPOld"].x=14
     @sprites["HPOld"].y=160
@@ -1422,7 +1449,12 @@ filenamH =GameData::Item.icon_filename(@pkmniv)
     @icons["itemResult6"].visible=true
 end
        elsif @selection==7 && @inui == true
-		  @sprites["HPOld"].visible=false
+
+		if pbConfirmMessage(_INTL("Do you wish to quit?",@reincarnpkmnsp.name))
+		   break
+		else
+          pbFadeOutIn(99999){
+		  		  @sprites["HPOld"].visible=false
         @sprites["ATKOld"].visible=false
         @sprites["DEFOld"].visible=false
         @sprites["SATKOld"].visible=false
@@ -1462,10 +1494,8 @@ end
     @sprites["ATKStar"].visible = false
     @sprites["HPStar"].visible = false
     @sprites["pokeview"].visible = false
-		if pbConfirmMessage(_INTL("Do you wish to quit?",@reincarnpkmnsp.name))
-		   break
-		else
-          pbFadeOutIn(99999){
+        @sprites["pokemon"].visible = false
+    @sprites["A"].x=366
     @sprites["F"].visible=true
     @sprites["E"].visible=true
     @sprites["D"].visible=true
@@ -1557,12 +1587,16 @@ end
 	@pkmnnat1=nil
 	@pkmnnat2=nil
 	@pkmniv=nil
+	
+          @sprites["B"].x=366
+          @sprites["A"].x=315 ## Don't Remove
 	@sprites["A"].text=_INTL("Recipient",@reincarnpkmn)
     @sprites["B"].text=_INTL("Donor 1",@donApkmn)
     @sprites["C"].text=_INTL("Donor 2",@donBpkmn)
     @sprites["D"].text=_INTL("Stat Boon", @pkmnnat1)
     @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2)
     @sprites["F"].text=_INTL("Stat Modifier",@pkmniv)
+	
 	      @selection = 0
 			  @donBpkmnsp = 0
 			  @donApkmnsp = 0
@@ -1579,6 +1613,113 @@ end
       if Input.trigger?(Input::BACK)
 		if pbConfirmMessage(_INTL("Do you wish to quit?"))
         break
+		else
+          pbFadeOutIn(99999){
+    @sprites["F"].visible=true
+    @sprites["E"].visible=true
+    @sprites["D"].visible=true
+    @sprites["C"].visible=true
+    @sprites["B"].visible=true
+    @sprites["A"].visible=true
+	if donator2pokemonicon1 !=0
+    donator2pokemonicon1.visible=false
+	end
+	if donator2pokemonicon2 !=0
+    donator2pokemonicon2.visible=false
+	end
+	if donatorpokemonicon2 !=0
+    donatorpokemonicon2.visible=false
+	end
+	if donatorpokemonicon1 !=0
+    donatorpokemonicon1.visible=false
+	end
+	if reincarnpokemonicon !=0
+    reincarnpokemonicon.visible=false
+	end
+	if reincarnpokemonicon1 !=0
+    reincarnpokemonicon1.visible=false
+	end
+	@reincarnpkmn=0
+	@donApkmn=0
+	@donBpkmn=0
+	@pkmnnat1=0
+	@pkmnnat2=0
+	@pkmniv=0
+    @icons["itemResult6"].visible=false
+    @icons["itemResult2"].visible=false
+    @icons["itemResult4"].visible=false
+    @icons["itemResult1"].visible=false
+    @sprites["donatorAe"].visible = false
+    @sprites["donatorBe"].visible = false
+    @sprites["donatorAe"].visible = false
+    @sprites["nature2e"].visible = false
+    @sprites["ivse"].visible = false
+    @sprites["donatorB"].visible = true
+    @sprites["reincarnator"].visible = true
+    @sprites["nature2"].visible = true
+    @sprites["ivs"].visible = true
+    @sprites["begin"].visible = true
+    @sprites["nature2e"].visible = false
+    @sprites["nature1e"].visible = false
+    @sprites["ivse"].visible = false
+    @sprites["donatorB"].visible = true
+    @sprites["donatorA"].visible = true
+    @sprites["reincarnatore"].visible = true
+    @sprites["nature2"].visible = true
+    @sprites["nature1"].visible = true
+    @sprites["ivs"].visible = true
+    @sprites["begin"].visible = true
+    @sprites["Item3Orb"].x=166
+    @sprites["Item3Orb"].y=87
+    @sprites["Item2Orb"].x=91
+    @sprites["Item2Orb"].y=87
+    @sprites["Item1Orb"].x=128
+    @sprites["Item1Orb"].y=185
+    @sprites["Don2Orb"].x=178
+    @sprites["Don2Orb"].y=210
+    @sprites["Don1Orb"].x=65
+    @sprites["Don1Orb"].y=210
+    @sprites["ReOrb"].x=122
+    @sprites["ReOrb"].y=91
+    @sprites["sigil"].x=-30
+    @sprites["sigil"].y=25
+    @sprites["begin"].y=350
+		  if @sprites["icon_#{6}"]!=nil
+          @sprites["icon_#{6}"] = nil
+		  end
+		  if @sprites["icon_#{5}"]!=nil
+          @sprites["icon_#{5}"] = nil
+		  end
+		  if @sprites["icon_#{6}"]!=nil
+          @sprites["icon_#{6}"] = nil
+		  end
+		  if @sprites["icon_#{4}"]!=nil
+          @sprites["icon_#{4}"] = nil
+		  end
+		  if @sprites["icon_#{5}"]!=nil
+          @sprites["icon_#{5}"] = nil
+		  end
+	@reincarnpkmn=nil
+	@donApkmn=nil
+	@donBpkmn=nil
+	@pkmnnat1=nil
+	@pkmnnat2=nil
+	@pkmniv=nil
+	@sprites["A"].text=_INTL("Recipient",@reincarnpkmn)
+    @sprites["B"].text=_INTL("Donor 1",@donApkmn)
+    @sprites["C"].text=_INTL("Donor 2",@donBpkmn)
+    @sprites["D"].text=_INTL("Stat Boon", @pkmnnat1)
+    @sprites["E"].text=_INTL("Stat Bane",@pkmnnat2)
+    @sprites["F"].text=_INTL("Stat Modifier",@pkmniv)
+	      @selection = 0
+			  @donBpkmnsp = 0
+			  @donApkmnsp = 0
+			  @reincarnpkmnsp = 0
+	
+		  $game_variables[3] = nil
+		  $game_variables[1] = nil
+	      @inui = false
+		}  
 		end
       end     
 	  if Input.trigger?(Input::SPECIAL)
@@ -1588,18 +1729,26 @@ end
 end
 def pbRefresh
 end
-
+end
 
 
 
 #Call Reincarnate.reincarnationWindow
 module Reincarnate
   def self.reincarnationWindow
-	pbBGMFade(1.0)
+  if $player.party.length < 1
+     pbMessage(_INTL("You don't have enough Pokemon to Reincarnate!", @reincarnpkmn))
+  elsif ReincarnationConfig::REINCARNATION_HAS_COST == true && $bag.quantity(ReincarnationConfig::COST_ITEM) < ReincarnationConfig::COST_AMOUNT
+       pbMessage(_INTL("You do not have enough {1} to use Reincarnation, you need at least {2}.", ReincarnationConfig::COST_ITEM,ReincarnationConfig::COST_AMOUNT)) 
+  else 
+  playingBGM = $game_system.getPlayingBGM
+  $game_system.bgm_pause(1.0)
+  pos = $game_system.bgm_position
           pbFadeOutIn {
   reScene=Reincarnation_UI.new
   reScene.pbStartScene
   recar=reScene.pbSelectreincarnation
-  reScene.pbEndScene}
+  reScene.pbEndScene(playingBGM,pos)}
+  end
  end
 end

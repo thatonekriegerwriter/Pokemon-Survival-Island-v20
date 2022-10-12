@@ -30,9 +30,9 @@ BANE_NEUTRAL		= :GREYMARK
 
 # If you want your reincarnation to cost an item, defined in COST_ITEM, and the amount of that item, COST_AMOUNT
 
-REINCARNATION_HAS_COST 		= true
+REINCARNATION_HAS_COST 		= false
 COST_ITEM 					= :MAGFRAG
-COST_AMOUNT 				= 10
+COST_AMOUNT 				= 1
 
 # If you want the Magic Stones or Boon/Bane to be taken away from use.
 #  Options:
@@ -51,12 +51,13 @@ CUSTOM_BG 					= "Graphics/Pictures/Reincarnation/ReincarnationBG"
 
 #After reincarnation set Pokemon to this level, if nil, will not change level.
 SET_TO_LEVEL 				= Settings::EGG_LEVEL # Default: 1
-
+REVERT_EVOLUTION            = true
+REVERT_MOVES                = false
 #Nuzlocke X Support 
 #Reincarnation can only be used if a Pokémon is fainted.
 #This only works if autoremove is off.
 
 
-NUZLOCKE_REINCARNATION = false
+NUZLOCKE_REINCARNATION = true
 
 end

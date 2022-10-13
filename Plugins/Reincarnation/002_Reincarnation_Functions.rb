@@ -125,6 +125,7 @@ class Reincarnation
 	  pkmn = pkmn
 	  reincarnatornature = 0
 	  chance2 = rand(5)
+	  chance3 = rand(4)
 	  if boon ==  ReincarnationConfig::BOON_NEUTRAL || bane == ReincarnationConfig::BOON_NEUTRAL || (boon == bane)
 	    if chance2 == 0
 	      reincarnatornature = :HARDY
@@ -146,6 +147,16 @@ class Reincarnation
 	      reincarnatornature = :ADAMANT
 		elsif bane == ReincarnationConfig::BANE_SDEF
 	      reincarnatornature = :NAUGHTY
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :LONELY
+	    elsif chance3 == 1
+	      reincarnatornature = :BRAVE
+	    elsif chance3 == 2
+	      reincarnatornature = :ADAMANT
+	    elsif chance3 == 3
+	      reincarnatornature = :NAUGHTY
+		end
 		end
 	  elsif boon == ReincarnationConfig::BOON_DEF 
 	    if bane == ReincarnationConfig::BANE_ATK
@@ -156,6 +167,16 @@ class Reincarnation
 	      reincarnatornature = :IMPISH
 		elsif bane == ReincarnationConfig::BANE_SDEF
 	      reincarnatornature = :LAX
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :BOLD
+	    elsif chance3 == 1
+	      reincarnatornature = :RELAXED
+	    elsif chance3 == 2
+	      reincarnatornature = :IMPISH
+	    elsif chance3 == 3
+	      reincarnatornature = :LAX
+		end
 		end
 	  elsif boon == ReincarnationConfig::BOON_SPEED
 	    if bane == ReincarnationConfig::BANE_ATK
@@ -166,6 +187,16 @@ class Reincarnation
 	      reincarnatornature = :JOLLY
 		elsif bane == ReincarnationConfig::BANE_SDEF
 	      reincarnatornature = :NAIVE
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :TIMID
+	    elsif chance3 == 1
+	      reincarnatornature = :HASTY
+	    elsif chance3 == 2
+	      reincarnatornature = :JOLLY
+	    elsif chance3 == 3
+	      reincarnatornature = :NAIVE
+		end
 		end
 	  elsif boon == ReincarnationConfig::BOON_SATK
 	    if bane == ReincarnationConfig::BANE_ATK
@@ -176,6 +207,16 @@ class Reincarnation
 	      reincarnatornature = :MILD
 		elsif bane == ReincarnationConfig::BANE_SDEF
 	      reincarnatornature = :RASH
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :RASH
+	    elsif chance3 == 1
+	      reincarnatornature = :MILD
+	    elsif chance3 == 2
+	      reincarnatornature = :QUIET
+	    elsif chance3 == 3
+	      reincarnatornature = :MODEST
+		end
 		end
 	  elsif boon == ReincarnationConfig::BOON_SDEF
 	    if bane == ReincarnationConfig::BANE_ATK
@@ -186,7 +227,118 @@ class Reincarnation
 	      reincarnatornature = :CAREFUL
 		elsif bane == ReincarnationConfig::BANE_DEF
 	      reincarnatornature = :GENTLE
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :CALM
+	    elsif chance3 == 1
+	      reincarnatornature = :SASSY
+	    elsif chance3 == 2
+	      reincarnatornature = :CAREFUL
+	    elsif chance3 == 3
+	      reincarnatornature = :GENTLE
 		end
+		end
+	  
+	  elsif bane == ReincarnationConfig::BANE_ATK
+	     if boon == ReincarnationConfig::BOON_DEF 
+	      reincarnatornature = :BOLD
+	     elsif boon == ReincarnationConfig::BOON_SATK
+	      reincarnatornature = :MODEST
+	     elsif boon == ReincarnationConfig::BOON_SDEF
+	      reincarnatornature = :CALM
+	     elsif boon == ReincarnationConfig::BOON_SPEED
+	      reincarnatornature = :TIMID
+		else 
+	    if chance3 == 0
+	      reincarnatornature = :BOLD
+	    elsif chance3 == 1
+	      reincarnatornature = :MODEST
+	    elsif chance3 == 2
+	      reincarnatornature = :CALM
+	    elsif chance3 == 3
+	      reincarnatornature = :TIMID
+		end
+		 end
+	  elsif bane == ReincarnationConfig::BANE_DEF
+	     if boon == ReincarnationConfig::BOON_ATK 
+	      reincarnatornature = :LONELY
+	     elsif boon == ReincarnationConfig::BOON_SATK
+	      reincarnatornature = :MILD
+	     elsif boon == ReincarnationConfig::BOON_SDEF
+	      reincarnatornature = :GENTLE
+	     elsif boon == ReincarnationConfig::BOON_SPEED
+	      reincarnatornature = :HASTY
+		 else
+	    if chance3 == 0
+	      reincarnatornature = :LONELY
+	    elsif chance3 == 1
+	      reincarnatornature = :MILD
+	    elsif chance3 == 2
+	      reincarnatornature = :GENTLE
+	    elsif chance3 == 3
+	      reincarnatornature = :HASTY
+		end
+		 end
+	  elsif bane == ReincarnationConfig::BANE_SATK
+	     if boon == ReincarnationConfig::BOON_ATK 
+	      reincarnatornature = :ADAMANT
+	     elsif boon == ReincarnationConfig::BOON_DEF 
+	      reincarnatornature = :IMPISH
+	     elsif boon == ReincarnationConfig::BOON_SDEF
+	      reincarnatornature = :CALM
+	     elsif boon == ReincarnationConfig::BOON_SPEED
+	      reincarnatornature = :JOLLY
+		 else
+	    if chance3 == 0
+	      reincarnatornature = :ADAMANT
+	    elsif chance3 == 1
+	      reincarnatornature = :IMPISH
+	    elsif chance3 == 2
+	      reincarnatornature = :CALM
+	    elsif chance3 == 3
+	      reincarnatornature = :JOLLY
+		end
+		 end
+	  elsif bane == ReincarnationConfig::BANE_SDEF
+	     if boon == ReincarnationConfig::BOON_ATK 
+	      reincarnatornature = :NAUGHTY
+	     elsif boon == ReincarnationConfig::BOON_DEF 
+	      reincarnatornature = :LAX
+	     elsif boon == ReincarnationConfig::BOON_SATK
+	      reincarnatornature = :RASH
+	     elsif boon == ReincarnationConfig::BOON_SPEED
+	      reincarnatornature = :NAIVE
+		 else
+	    if chance3 == 0
+	      reincarnatornature = :NAUGHTY
+	    elsif chance3 == 1
+	      reincarnatornature = :LAX
+	    elsif chance3 == 2
+	      reincarnatornature = :RASH
+	    elsif chance3 == 3
+	      reincarnatornature = :NAIVE
+		end
+		 end
+	  elsif bane == ReincarnationConfig::BANE_SPEED
+	     if boon == ReincarnationConfig::BOON_ATK 
+	      reincarnatornature = :BRAVE
+	     elsif boon == ReincarnationConfig::BOON_DEF 
+	      reincarnatornature = :RELAXED
+	     elsif boon == ReincarnationConfig::BOON_SATK
+	      reincarnatornature = :QUIET
+	     elsif boon == ReincarnationConfig::BOON_SDEF
+	      reincarnatornature = :SASSY
+		 else
+	    if chance3 == 0
+	      reincarnatornature = :BRAVE
+	    elsif chance3 == 1
+	      reincarnatornature = :RELAXED
+	    elsif chance3 == 2
+	      reincarnatornature = :QUIET
+	    elsif chance3 == 3
+	      reincarnatornature = :SASSY
+		end
+		 end
 	  end
 	   if ReincarnationConfig::NUZLOCKE_REINCARNATION == true && defined?(Nuzlocke.definedrules?) && pkmn.permaFaint == true
 	   pkmn.permaFaint = false
@@ -216,5 +368,6 @@ class Reincarnation
        pkmn.iv = ivs
 	   pkmn.nature = reincarnatornature
 	   pkmn.calc_stats
+	   return pkmn
 	end
 end

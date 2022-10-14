@@ -58,6 +58,6 @@ REVERT_MOVES                = false
 #This only works if autoremove is off.
 
 
-NUZLOCKE_REINCARNATION = true
+NUZLOCKE_REINCARNATION = false
 
 end

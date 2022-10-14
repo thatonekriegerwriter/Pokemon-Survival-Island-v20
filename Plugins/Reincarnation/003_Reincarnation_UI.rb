@@ -1,4 +1,25 @@
 ###---craftS
+
+#Call Reincarnate.reincarnationWindow
+module Reincarnate
+  def self.reincarnationWindow
+  if $player.party.length < 1
+     pbMessage(_INTL("You don't have enough Pokemon to Reincarnate!", @reincarnpkmn))
+  elsif ReincarnationConfig::REINCARNATION_HAS_COST == true && $bag.quantity(ReincarnationConfig::COST_ITEM) < ReincarnationConfig::COST_AMOUNT
+       pbMessage(_INTL("You do not have enough {1} to use Reincarnation, you need at least {2}.", ReincarnationConfig::COST_ITEM,ReincarnationConfig::COST_AMOUNT)) 
+  else 
+  playingBGM = $game_system.getPlayingBGM
+  $game_system.bgm_pause(1.0)
+  pos = $game_system.bgm_position
+          pbFadeOutIn {
+  reScene=Reincarnation_UI.new
+  reScene.pbStartScene
+  recar=reScene.pbSelectreincarnation
+  reScene.pbEndScene(playingBGM,pos)}
+  end
+ end
+end
+
 class Reincarnation_UI
 #################################
 ## Configuration
@@ -417,9 +438,15 @@ end
     @sprites["C"].text=_INTL("{1} ♀",@donBpkmn) if @donBpkmnsp.female?
     @sprites["C"].text=_INTL("{1} ",@donBpkmn) if @donBpkmnsp.genderless?
 	end
-    @sprites["D"].text=_INTL("{1}", @pkmnnat1) if @pkmnnat1!=0 ||  @pkmnnat1!=-1
-    @sprites["E"].text=_INTL("{1}",@pkmnnat2) if @pkmnnat2!=0 ||  @pkmnnat2!=-1
-    @sprites["F"].text=_INTL("{1}",@pkmniv) if @pkmniv!=0 ||  @pkmniv!=-1
+	 if @pkmnnat1!=0 &&  @pkmnnat1!=-1  && @pkmnnat1!="" &&  @pkmnnat1!=nil
+    @sprites["D"].text=_INTL("{1}", GameData::Item.get(@pkmnnat1).name)
+	end
+	 if @pkmnnat2!=0 &&  @pkmnnat2!=-1  &&  @pkmnnat2!=""  &&  @pkmnnat2!=nil
+    @sprites["E"].text=_INTL("{1}",GameData::Item.get(@pkmnnat2).name)
+	end
+	 if @pkmniv!=0 &&  @pkmniv!=-1  &&  @pkmniv!=""  &&  @pkmniv!=nil
+    @sprites["F"].text=_INTL("{1}",GameData::Item.get(@pkmniv).name)
+	end
 	@sprites["A"].text=_INTL("Recipient",@reincarnpkmn) if @reincarnpkmn==0 ||  @reincarnpkmn==-1  ||  @reincarnpkmn==""  ||  @reincarnpkmn==nil
     @sprites["B"].text=_INTL("Donor 1",@donApkmn) if @donApkmn==0 ||  @donApkmn==-1  ||  @donApkmn==""  ||  @donApkmn==nil
     @sprites["C"].text=_INTL("Donor 2",@donBpkmn) if @donBpkmn==0 ||  @donBpkmn==-1  ||  @donBpkmn==""  ||  @donBpkmn==nil
@@ -703,7 +730,7 @@ end
 
       if Input.trigger?(Input::USE)
         if @selection==0
-		  pbChoosePokemon(1,3)
+		  pbChooseReincarnatorPokemon(1,3)
 		  if @reincarnpkmnsp!= 0
           reincarnpokemonicon.visible = false
           reincarnpokemonicon1.visible = false
@@ -742,7 +769,7 @@ end
 			  @reincarnpkmnsp = 0
 		end
         elsif @selection==1
-		  pbChoosePokemon(1,3)
+		  pbChooseReincarnatorPokemon(1,3)
 		  if @donApkmnsp!= 0
           donatorpokemonicon1.visible = false
           donatorpokemonicon2.visible = false
@@ -781,7 +808,7 @@ end
 		  @donApkmn = 0
 		 end
         elsif @selection==2
-		  pbChoosePokemon(1,3)
+		  pbChooseReincarnatorPokemon(1,3)
 		  if @donBpkmnsp != 0
           donator2pokemonicon1.visible = false
           donator2pokemonicon2.visible = false
@@ -833,8 +860,6 @@ filenamF =GameData::Item.icon_filename(@pkmnnat1)
     @sprites["itemResult4"].setBitmap(filenamF)
     @sprites["itemResult4"].visible=true
 @sprites["itemResult1"].setBitmap(filenamF)
-@pkmnnat1sp = @pkmnnat1
-@pkmnnat1 = GameData::Item.get(item).name
 else 
 @sprites["itemResult4"].setBitmap("")
 @sprites["itemResult1"].setBitmap("")
@@ -848,8 +873,6 @@ screen = PokemonBagScreen.new(scene,$PokemonBag)
 if @pkmnnat2 != nil
 item = @pkmnnat2
 filenamG =GameData::Item.icon_filename(@pkmnnat2) 
-@pkmnnat2sp = @pkmnnat2
-@pkmnnat2 = GameData::Item.get(item).name
 @sprites["itemResult2"].setBitmap(filenamG)
     @sprites["itemResult5"]=IconSprite.new(158,78,@viewport)
     @sprites["itemResult5"].ox=0
@@ -975,7 +998,7 @@ end
 		@oldsatkiv = pkmn.iv[:SPECIAL_ATTACK]
 		@oldsdefiv = pkmn.iv[:SPECIAL_DEFENSE]
 		@oldspdiv = pkmn.iv[:SPEED]
-		pkmn = Reincarnation.begin_reincarnation(pkmn, @donApkmnsp, @donBpkmnsp, @pkmniv, @pkmnnat1, @pkmnnat2)
+		pkmn = Reincarnation.begin_reincarnation(pkmn, @donApkmnsp, @donBpkmnsp, @pkmniv, @pkmnnat1, @pkmnnat2sp,@oldhpiv,@oldatkiv,@olddefiv,@oldsatkiv,@oldsdefiv,@oldspdiv)
 		if pkmn == false
 		break
 		end
@@ -1544,8 +1567,6 @@ screen = PokemonBagScreen.new(scene,$PokemonBag)
 if @pkmniv != nil
 item = @pkmniv
 filenamH =GameData::Item.icon_filename(@pkmniv) 
-@pkmnivsp = @pkmniv
-@pkmniv = GameData::Item.get(item).name
 @sprites["itemResult3"].setBitmap(filenamH)
     @sprites["itemResult6"]=IconSprite.new(121,179,@viewport)
     @sprites["itemResult6"].ox=0
@@ -1941,23 +1962,46 @@ end
 end
 
 
-
-#Call Reincarnate.reincarnationWindow
-module Reincarnate
-  def self.reincarnationWindow
-  if $player.party.length < 1
-     pbMessage(_INTL("You don't have enough Pokemon to Reincarnate!", @reincarnpkmn))
-  elsif ReincarnationConfig::REINCARNATION_HAS_COST == true && $bag.quantity(ReincarnationConfig::COST_ITEM) < ReincarnationConfig::COST_AMOUNT
-       pbMessage(_INTL("You do not have enough {1} to use Reincarnation, you need at least {2}.", ReincarnationConfig::COST_ITEM,ReincarnationConfig::COST_AMOUNT)) 
-  else 
-  playingBGM = $game_system.getPlayingBGM
-  $game_system.bgm_pause(1.0)
-  pos = $game_system.bgm_position
-          pbFadeOutIn {
-  reScene=Reincarnation_UI.new
-  reScene.pbStartScene
-  recar=reScene.pbSelectreincarnation
-  reScene.pbEndScene(playingBGM,pos)}
+def pbChooseReincarnatorPokemon(variableNumber, nameVarNumber)
+  chosen = 0
+  pbFadeOutIn {
+    scene = PokemonParty_Scene.new
+    screen = PokemonPartyScreen.new(scene, $player.party)
+      screen.pbStartScene(_INTL("Choose a Pokémon."), false)
+      chosen = screen.pbReincarnationPokemon
+      screen.pbEndScene
+  }
+      if !chosen.nil? && chosen >= 0
+      pbSet(nameVarNumber, $player.party[chosen].name)
+      else
+      pbSet(nameVarNumber, "")
+      end
+	  if chosen.nil?
+	  chosen = -1
+	  end
+      pbSet(variableNumber, chosen)
   end
- end
-end
+
+  def pbReincarnationPokemon
+    loop do
+      pkmnid = @scene.pbChoosePokemon
+      break if pkmnid < 0   # Cancelled
+      pkmn = @party[pkmnid]
+      cmdEntry   = -1
+      cmdSummary = -1
+      commands = []
+      commands[cmdEntry = commands.length]   = _INTL("Select")
+      commands[cmdSummary = commands.length]   = _INTL("Summary")
+      commands[commands.length]                = _INTL("Cancel")
+      command = @scene.pbShowCommands(_INTL("Do what with {1}?", pkmn.name), commands) if pkmn
+      if cmdEntry >= 0 && command == cmdEntry
+      return pkmnid 
+      elsif cmdSummary >= 0 && command == cmdSummary
+        @scene.pbSummary(pkmnid) 
+	  elsif command && Input.trigger?(Input::BACK)
+	  else
+      end
+    end
+    @scene.pbEndScene
+  end
+

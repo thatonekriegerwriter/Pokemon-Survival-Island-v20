@@ -13,16 +13,15 @@ module GameData
 end
 
 class Reincarnation
-    def self.begin_reincarnation(pkmn, donator1 = nil, donator2 = nil, ivitem, boon, bane)
+    def self.begin_reincarnation(pkmn, donator1 = nil, donator2 = nil, ivitem, boon, bane,oldhpiv,oldatkiv,olddefiv,oldsatkiv,oldsdefiv,oldspdiv)
 	   if ReincarnationConfig::NUZLOCKE_REINCARNATION == true && defined?(Nuzlocke.definedrules?)
-       pbMessage(_INTL("{1} is not dead, reincarnation cannot occur.", pkmn)) 
+       pbMessage(_INTL("{1} is not dead, reincarnation cannot occur.", pkmn.name)) 
 	   return false
 	   end
 	   if ReincarnationConfig::REINCARNATION_HAS_COST == true && $bag.quantity(ReincarnationConfig::COST_ITEM) < ReincarnationConfig::COST_AMOUNT
        pbMessage(_INTL("You do not have enough {1}, you need at least {2}.", ReincarnationConfig::COST_ITEM,ReincarnationConfig::COST_AMOUNT)) 
 	   return false
 	   end
-	pkmn = pkmn
 	#Randomize Stats
   ivs = {}
   GameData::Stat.each_main { |s| ivs[s.id] = rand(Pokemon::IV_STAT_LIMIT + 1) }
@@ -43,27 +42,16 @@ class Reincarnation
 	     magstoninher = :SPEED
 	  end
 	  #Parents
-   if donator1.nil?
+	  
+   if donator1==0
   for i in 0...1
     parent = [donator2][i]
-    ivinherit[i] = :HP if ivitem == (ReincarnationConfig::MAGIC_STONE_HP)
-    ivinherit[i] = :ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_ATK)
-    ivinherit[i] = :DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_DEF)
-    ivinherit[i] = :SPECIAL_ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_SATK)
-    ivinherit[i] = :SPECIAL_DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_SDEF)
-    ivinherit[i] = :SPEED if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
     ivinherit[i] = magstoninher if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
   end
    
-   elsif donator2.nil?
+   elsif donator2==0
   for i in 0...1
     parent = [donator1][i]
-    ivinherit[i] = :HP if ivitem == (ReincarnationConfig::MAGIC_STONE_HP)
-    ivinherit[i] = :ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_ATK)
-    ivinherit[i] = :DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_DEF)
-    ivinherit[i] = :SPECIAL_ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_SATK)
-    ivinherit[i] = :SPECIAL_DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_SDEF)
-    ivinherit[i] = :SPEED if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
     ivinherit[i] = magstoninher if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
   end
    elsif donator2.nil? && donator1.nil?
@@ -71,12 +59,6 @@ class Reincarnation
    else
   for i in 0...2
     parent = [donator1,donator2][i]
-    ivinherit[i] = :HP if ivitem == (ReincarnationConfig::MAGIC_STONE_HP)
-    ivinherit[i] = :ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_ATK)
-    ivinherit[i] = :DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_DEF)
-    ivinherit[i] = :SPECIAL_ATTACK if ivitem == (ReincarnationConfig::MAGIC_STONE_SATK)
-    ivinherit[i] = :SPECIAL_DEFENSE if ivitem == (ReincarnationConfig::MAGIC_STONE_SDEF)
-    ivinherit[i] = :SPEED if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
     ivinherit[i] = magstoninher if ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT)
   end
   end
@@ -92,26 +74,30 @@ class Reincarnation
     r = (r+1)%2
   end
   limit = ivitem == (ReincarnationConfig::MAGIC_STONE_INHERIT) ? 5 : 3
-  if donator2.nil? || donator1.nil?
+  if donator2==0 || donator1==0
   if limit == 3
    limit = 2
   elsif limit == 5
    limit = 4
   end
+  end
   loop do
     freestats = []
     GameData::Stat.each_main { |s| freestats.push(s.id) if !ivinherit.include?(s.id) }
+          pbMessage(_INTL("{1}",freestats.length))
     break if freestats.length==0
     r = freestats[rand(freestats.length)]
-	if donator1.nil?
+	if donator1==0
     parent = [donator2][rand(1)]
     ivs[r] = parent.iv[r]
+          pbMessage(_INTL("{1}",ivs[r]))
     ivinherit.push(r)
-	elsif donator2.nil?
+	elsif donator2==0
     parent = [donator1][rand(1)]
     ivs[r] = parent.iv[r]
+          pbMessage(_INTL("{1}",ivs[r]))
     ivinherit.push(r)
-	elsif donator1.nil? && donator2.nil?
+	elsif donator1==0 && donator2==0
 	else
     parent = [donator1,donator2][rand(2)]
     ivs[r] = parent.iv[r]
@@ -120,7 +106,7 @@ class Reincarnation
     num += 1
     break if num>=limit
 	end
-	end
+
 		  chance2 = 0
 	  pkmn = pkmn
 	  reincarnatornature = 0
@@ -367,7 +353,21 @@ class Reincarnation
 	   end
        pkmn.iv = ivs
 	   pkmn.nature = reincarnatornature
+	   if ivitem == (ReincarnationConfig::MAGIC_STONE_HP)
+	   pkmn.iv[:HP] = oldhpiv
+	   elsif ivitem == (ReincarnationConfig::MAGIC_STONE_ATK)
+         pkmn.iv[:ATTACK] = oldatkiv
+	   elsif ivitem == (ReincarnationConfig::MAGIC_STONE_DEF)
+          pkmn.iv[:DEFENSE] = olddefiv
+	   elsif ivitem == (ReincarnationConfig::MAGIC_STONE_SATK)
+         pkmn.iv[:SPECIAL_ATTACK] = oldsatkiv
+	   elsif ivitem == (ReincarnationConfig::MAGIC_STONE_SDEF)
+         pkmn.iv[:SPECIAL_DEFENSE] = oldsdefiv
+	   elsif ivitem == (ReincarnationConfig::MAGIC_STONE_SPEED)
+         pkmn.iv[:SPEED] = oldspdiv
+	   end
 	   pkmn.calc_stats
+	   $game_variables[1] = 0
 	   return pkmn
 	end
 end

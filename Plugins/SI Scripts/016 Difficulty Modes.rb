@@ -349,7 +349,8 @@ class PokemonEncounters
 	   level = reroll_level
 	  end 
 	 end 
-
+    else 
+    level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
 	end
   else
     level = rand(encounter[2]..encounter[3])

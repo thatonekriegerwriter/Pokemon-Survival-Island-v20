@@ -21,7 +21,7 @@ module Deep_Marsh_Tiles
   MARSHGRASS_ID           = 31
   DEEPMARSHGRASS_ID       = 32
   TALLMARSHGRASS_ID       = 33
-  TALLDEEPMARSHGRASS_ID   = 4
+  TALLDEEPMARSHGRASS_ID   = 34
   #Chance for the player to sink into the ground the base 3 would mean 1/3 and so on.
   CHANCE = 3
 end  

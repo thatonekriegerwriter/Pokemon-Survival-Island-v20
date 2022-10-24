@@ -11,6 +11,17 @@ Tile = 0,walls
 DoubleWalls = true
 FloorPatchUnderWalls = true
 #-------------------------------
+[41]   # Dungeon cave water
+Autotile = 1,floor_patch
+Tile = 40,void
+Tile = 41,void_decoration
+Tile = 48,void_decoration_large
+Tile = 42,floor
+Tile = 50,floor_decoration_large
+Tile = 0,walls
+DoubleWalls = true
+FloorPatchUnderWalls = false
+#-------------------------------
 [23]   # Dungeon forest
 Autotile = 1,floor_decoration
 Tile = 40,void

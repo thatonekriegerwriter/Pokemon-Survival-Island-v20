@@ -208,6 +208,7 @@
       cspecies=caller.species
       rate=5
       return if rate==0 # should never trigger anyways but you never know.
+	  return if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       pbDisplay(_INTL("{1} lunged at {2} for an attack!", caller.pbThis,pbPlayer.name))
       rate*=4 # base rate
       rate=rate.to_f # don't want to lose decimal points
@@ -301,6 +302,7 @@
       return false if $PokemonSystem.survivalmode == 1 
       return true if self.shadowPokemon?
       return false if @battle.trainerBattle? 
+	  return false if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       # only wild mons
       return false if !opposes?
       # can't call in triple+ battles (don't want to figure out where the battler needs to be)

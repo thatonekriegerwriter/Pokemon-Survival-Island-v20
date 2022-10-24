@@ -233,7 +233,7 @@ Color = White
 Pokedex = Alolan Vulpii have very little control over their movements, they slide along the ground like it is ice.
 Generation = 7
 WildItemUncommon = SNOWBALL
-Evolutions = NINETALES,Item,ICESTONE,VULPIX,Level,17
+Evolutions = NINETALES,Item,ICESTONE,VULPIX,Level,14
 #-------------------------------
 [VULPIX,1]
 FormName = Alolan Form

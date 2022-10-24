@@ -1388,6 +1388,24 @@ SellPrice = 500
 Flags = Fling_30
 Description = An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
 #-------------------------------
+[PURESEED]
+Name = Pure Seed
+NamePlural = Pure Seeds
+Pocket = 1
+Price = 0
+SellPrice = 0
+Flags = Fling_30
+Description = An item that can be used to immediately move to the next staircase of a dungeon.
+#-------------------------------
+[WONDERORB]
+Name = Wonder Orb
+NamePlural = Wonder Orbs
+Pocket = 1
+Price = 0
+SellPrice = 0
+Flags = Fling_30
+Description = An item that when held, increases recruitment rate in dungeons.
+#-------------------------------
 [NEVERMELTICE]
 Name = Never-Melt Ice
 NamePlural = Never-Melt Ices

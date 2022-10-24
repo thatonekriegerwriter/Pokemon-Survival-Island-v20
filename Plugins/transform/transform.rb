@@ -142,7 +142,6 @@ end
 def pbDetransform(poof=true)
   graphic = pbGetNormalChar
   pbTransform("player",graphic,poof)
-  pbSetRunningShoes(true)
 end
 
 #Changes the player into a Pokemon's overworld sprite.
@@ -155,7 +154,7 @@ def pbTransformPoke(pokemon,form = 0, shiny = false, gender = nil)
     gender = pokemon.gender
     pokemon = pokemon.species
   end
-  no = GameData::Species.get(pokemon).id_number
+  no = GameData::Species.get(pokemon).id
     graphic = _INTL("Followers")
     if shiny == true
       graphic+= _INTL(" shiny")
@@ -185,6 +184,8 @@ PokemonSelection.choose(
            .setMinPokemon(1)
            .setMaxPokemon(1)
            .setCanCancel(true))
+	pbToneChangeAll(Tone.new(-255,-255,-255,0),5)
+	pbWait(6)
     pokemon=$player.party[0]
     pbTransformPoke(pokemon)
 end
@@ -195,6 +196,8 @@ PokemonSelection.choose(
            .setMinPokemon(2)
            .setMaxPokemon(2)
            .setCanCancel(true))
+	pbToneChangeAll(Tone.new(-255,-255,-255,0),5)
+	pbWait(6)
     pokemon=$player.party[0]
     pbTransformPoke(pokemon)
   end

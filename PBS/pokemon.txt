@@ -940,7 +940,7 @@ WildItemUncommon = MOONSTONE
 [VULPIX]
 Name = Vulpix
 Types = FIRE
-BaseStats = 38,41,40,65,50,65
+BaseStats = 38,46,45,75,60,65
 GenderRatio = Female75Percent
 GrowthRate = Medium
 BaseExp = 60
@@ -24172,10 +24172,10 @@ Shape = Quadruped
 Habitat = Grassland
 Category = Newborn Fox
 Pokedex = Vulpiii stay in small litters with their mother until they are old enough to move on their own.
-Evolutions = NINETALES,Item,FIRESTONE,VULPIX,Level,17
+Evolutions = NINETALES,Item,FIRESTONE,VULPIX,Level,14
 #-------------------------------
 [VULRECUR]
-Name = VULRECUR
+Name = Vulrecur
 Types = FIRE,WIND
 BaseStats = 70,70,50,80,70,60
 GenderRatio = Female50Percent

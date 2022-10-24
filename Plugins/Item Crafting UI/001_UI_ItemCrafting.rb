@@ -86,13 +86,15 @@ class ItemCraft_Scene
       Input.update
       pbUpdate
       if Input.trigger?(Input::RIGHT)
-        if index < @stock.length-1
+        if index < @stock.length-1 
 			else
           pbPlayCursorSE
 		    end
           hideIcons(index)
           volume = 1
+		  if !@stock[index+1][0].nil?
 	      item = GameData::Item.get(@stock[index+1][0])
+          end		  
 		  if item == :MASTERBALLC && !$bag.has?(:MASTERBALLPL)
 		    if index+1 == @stock.length-1
 			 

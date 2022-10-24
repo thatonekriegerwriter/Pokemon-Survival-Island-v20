@@ -1,0 +1,329 @@
+====FIELD====
+#   MORNING ONLY
+#191	 Sunkern
+#187	 Hoppip
+#315	 Roselia
+#077	 Ponyta
+#058	 Growlithe
+#083	 Farfetch'd
+#351	 Castform
+
+#   DAY
+#021	 Rattata
+#161	 Sentret
+#263	 Zigzagoon
+#029	 NidoranM
+#032	 NidoranF
+#084	 Doduo
+#276	 Taillow
+#114	 Tangela
+#108	 Lickitung
+#123	 Scyther
+#316	 Gulpin
+#115	 Kangaskhan
+#128	 Tauros
+#241	 Miltank
+#037	 Vulpix
+#335	 Zangoose
+
+#   NIGHT ONLY
+#043	 Oddish
+#203	 Girafarig
+#023	 Ekans
+#039	 Jigglypuff
+#179	 Mareep
+#261	 Poochyena
+#096	 Drowzee
+#309	 Electrike
+#311	 Plusle
+#312	 Minun
+#336	 Seviper
+#125	 Electabuzz
+#358	 Chimecho
+
+#   RARE
+#001	 Bulbasaur
+#152	 Chikorita
+#155	 Cyndaquil
+#255	 Torchic
+
+#   EVOLUTIONS
+#078	 Rapidash
+#192	 Sunflora
+#277	 Swellow
+#085	 Dodrio
+#188	 Skiploom
+#189	 Jumpluff
+#212	 Scizor
+#024	 Arbok
+#180	 Flaaffy
+#181	 Ampharos
+#162	 Furret
+#264	 Linoone
+#020	 Raticate
+#044	 Gloom
+#045	 Vileplume
+#182	 Bellossom
+#262	 Mightyena
+#239	 Elekid
+#310	 Manectric
+#038	 Ninetales
+#040	 Wigglytuff
+#174	 Igglybuff
+#033	 Nidorino
+#034	 Nidoking
+#030	 Nidorina
+#031	 Nidoqueen
+#317	 Swalot
+#097	 Hypno
+#059	 Arcanine
+#002	 Ivysaur
+#003	 Venusaur
+#153	 Bayleef
+#154	 Meganium
+#156	 Quilava
+#157	 Typhlosion
+#256	 Combusken
+#257	 Blaziken
+
+#   LEGENDARY
+#243	 Raikou
+#244	 Entei
+#245	 Suicune
+
+====LAKE/LAGOON====
+#   MORNING ONLY
+#194	 Wooper
+#183	 Marill
+
+#   DAY
+#118	 Goldeen
+#129	 Magikarp
+#098	 Krabby
+#341	 Corphish
+#339	 Remoraid
+#270	 Lotad
+#079	 Slowpoke
+#349	 Feebas
+
+#   NIGHT ONLY
+#283	 Surskit
+#054	 Psyduck
+#060	 Poliwag
+#147	 Dratini
+#340	 Whiscash
+#347	 Anorith
+
+#   RARE
+#258	 Mudkip
+#007	 Squirtle
+#158	 Totodile
+
+#   LEGENDARY
+#380	 Latias
+#381	 Latios
+
+#   EVOLUTIONS
+#130	 Gyarados
+#119	 Seaking
+#099	 Kingler
+#342	 Crawdaunt
+#271	 Lombre
+#272	 Ludicolo
+#284	 Masquerain
+#055	 Golduck
+#195	 Quagsire
+#061	 Poliwhirl
+#062	 Poliwrath
+#186	 Politoed
+#298	 Azurill
+#184	 Azumarill
+#080	 Slowbro
+#199	 Slowking
+#350	 Milotic
+#348	 Armaldo
+#148	 Dragonair
+#149	 Dragonite
+#008	 Wartortle
+#009	 Blastoise
+#159	 Croconaw
+#160	 Feraligatr
+#259	 Marshtomp
+#260	 Swampert
+
+====FOREST====
+#   MORNING ONLY
+#010	 Caterpie
+#165	 Ledyba
+#234	 Stantler
+-----TROPICAL
+#333	 Swablu
+#273	 Seedot
+#285	 Shroomish
+
+#   DAY
+#265	 Wurmple
+#016	 Pidgey
+#025	 Pikachu
+#167	 Spinarak
+#204	 Pineco
+#300	 Skitty
+#127	 Pinsir
+-----TROPICAL
+#287	 Slakoth
+#069	 Bellsprout
+#177	 Natu
+#102	 Exeggcute
+#190	 Aipom
+#214	 Heracross
+#357	 Tropius
+
+#   NIGHT ONLY
+#013	 Weedle
+#163	 Hoothoot
+#198	 Murkrow
+#314	 Illumise
+#313	 Volbeat
+#215	 Sneasel
+-----TROPICAL
+#290	 Nincada
+#355	 Duskull
+#048	 Venonat
+#193	 Yanma
+#046	 Paras
+
+#   RARE
+#252	 Treecko
+#175	 Togepi
+#352	 Kecleon
+#185	 Sudowoodo
+
+#   LEGENDARY
+#251	 Celebi
+
+#   EVOLUTIONS
+#011	 Metapod
+#012	 Butterfree
+#014	 Kakuna
+#015	 Beedrill
+#266	 Silcoon
+#267	 Beautifly
+#268	 Cascoon
+#269	 Dustox
+#017	 Pidgeotto
+#018	 Pidgeot
+#164	 Noctowl
+#178	 Xatu
+#172	 Pichu
+#026	 Raichu
+#070	 Weepinbell
+#071	 Victreebel
+#047	 Parasect
+#286	 Breloom
+#274	 Nuzleaf
+#275	 Shiftry
+#049	 Venomoth
+#166	 Ledian
+#168	 Ariados
+#291	 Ninjask
+#292	 Shedinja
+#176	 Togetic
+#356	 Dusclops
+#334	 Altaria
+#103	 Exeggutor
+#301	 Delcatty
+#288	 Vigoroth
+#289	 Slaking
+#205	 Forretress
+#253	 Grovyle
+#254	 Sceptile
+
+====SEA====
+#   MORNING ONLY
+#   DAY
+#   NIGHT ONLY
+#   RARE
+#   LEGENDARY
+#   EVOLUTIONS
+
+====CAVE====
+#   MORNING ONLY
+#   DAY
+#   NIGHT ONLY
+#   RARE
+#   LEGENDARY
+#   EVOLUTIONS
+
+====MOUNTAIN/VOLCANO====
+#   MORNING ONLY
+
+
+#   DAY
+#074	 Geodude
+#056	 Mankey
+#066	 Machop
+#104	 Cubone
+#218	 Slugma
+#322	 Numel
+#296	 Makuhita
+#213	 Shuckle
+#216	 Teddiursa
+#225	 Delibird
+#126	 Magmar
+
+#   NIGHT ONLY
+#359	 Absol
+#035	 Clefairy
+#325	 Spoink
+#307	 Meditite
+#207	 Gligar
+#304	 Aron
+#246	 Larvitar
+
+#   RARE
+#142	 Aerodactyl
+#004	 Charmander
+#143	 Snorlax
+
+#   LEGENDARY
+#385	 Jirachi
+
+#   EVOLUTIONS
+#005	 Charmeleon
+#006	 Charizard
+#075	 Graveler
+#076	 Golem
+#057	 Primeape
+#326	 Grumpig
+#067	 Machoke
+#068	 Machamp
+#173	 Cleffa
+#036	 Clefable
+#105	 Marowak
+#219	 Magcargo
+#323	 Camerupt
+#297	 Hariyama
+#308	 Medicham
+#217	 Ursaring
+#240	 Magby
+#324	 Torkoal
+#305	 Lairon
+#306	 Aggron
+#247	 Pupitar
+#248	 Tyranitar
+
+====BADLANDS====
+#   MORNING ONLY
+#   DAY
+#   NIGHT ONLY
+#   RARE
+#   LEGENDARY
+#   EVOLUTIONS
+
+====TOWN====
+#   MORNING ONLY
+#   DAY
+#   NIGHT ONLY
+#   RARE
+#   LEGENDARY
+#   EVOLUTIONS

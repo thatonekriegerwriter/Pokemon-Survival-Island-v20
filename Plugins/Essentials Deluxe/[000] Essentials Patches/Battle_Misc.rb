@@ -93,6 +93,7 @@ class Battle::Battler
   def display_base_moves
     return if @base_moves.empty?
     for i in 0...@moves.length
+	  next if !@base_moves[i]
       if @base_moves[i].is_a?(Battle::Move)
         @moves[i] = @base_moves[i]
       else
@@ -115,6 +116,7 @@ class Battle::Battler
   def hasStyles?;      return false; end
   def hasZodiacPower?; return false; end
   def celestial?;      return false; end
+  def focus_meter;     return 0;     end
 end
 
 
@@ -141,6 +143,7 @@ class Battle::FakeBattler
   def hasStyles?;      return false; end
   def hasZodiacPower?; return false; end
   def celestial?;      return false; end
+  def focus_meter;     return 0;     end
 end
 
 
@@ -195,6 +198,41 @@ class Battle::Move
       return true
     end
     return false
+  end
+end
+
+
+#-------------------------------------------------------------------------------
+# Sets up battler icons for displays used in other plugins.
+#-------------------------------------------------------------------------------
+class Battle::Scene
+  alias dx_pbInitSprites pbInitSprites
+  def pbInitSprites
+    dx_pbInitSprites
+    if !pbInSafari?
+      @battle.allBattlers.each do |b|
+        @sprites["battler_icon#{b.index}"] = PokemonIconSprite.new(b.pokemon, @viewport)
+        @sprites["battler_icon#{b.index}"].setOffset(PictureOrigin::CENTER)
+        @sprites["battler_icon#{b.index}"].visible = false
+        @sprites["battler_icon#{b.index}"].z = 400
+        pbAddSpriteOutline(["battler_icon#{b.index}", @viewport, b.pokemon, PictureOrigin::CENTER])
+      end
+    end
+  end
+  
+  # Compatibility with SOS Battles.
+  if PluginManager.installed?("SOS Battles")
+    alias dx_pbSOSJoin pbSOSJoin
+    def pbSOSJoin(battlerindex, pkmn)
+      dx_pbSOSJoin(battlerindex, pkmn)
+      if !@sprites["battler_icon#{battlerindex}"]
+        @sprites["battler_icon#{battlerindex}"] = PokemonIconSprite.new(pkmn, @viewport)
+        @sprites["battler_icon#{battlerindex}"].setOffset(PictureOrigin::CENTER)
+        @sprites["battler_icon#{battlerindex}"].visible = false
+        @sprites["battler_icon#{battlerindex}"].z = 400
+        pbAddSpriteOutline(["battler_icon#{battlerindex}", @viewport, pkmn, PictureOrigin::CENTER])
+      end
+    end
   end
 end
 

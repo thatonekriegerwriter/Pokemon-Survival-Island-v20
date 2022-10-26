@@ -285,12 +285,39 @@ class Battle::Scene
     return data
   end
   
+  def pbHidePluginUI
+    @battle.allBattlers.each { |b| @sprites["battler_icon#{b.index}"].visible = false }
+    pbHideMoveInfo
+    pbHideBattleInfo
+    pbHideFocusPanel
+  end
+  
   def pbHideMoveInfo
-    return if !defined?(@moveUIToggle)
-    @moveUIToggle = false
-    pbUpdateTargetIcons
-    @sprites["moveinfo"].visible = @moveUIToggle
-    @moveUIOverlay.clear
+    if defined?(@moveUIToggle)
+      @moveUIToggle = false
+      @sprites["moveinfo"].visible = false
+      @moveUIOverlay.clear
+    end
+  end
+  
+  def pbHideBattleInfo
+    if defined?(@infoUIToggle)
+      @infoUIToggle = false
+      @sprites["infobitmap"].visible = false
+      @sprites["infotext"].visible = false
+      @sprites["infoselect"].visible = false
+      @infoUIOverlay1.clear
+      @infoUIOverlay2.clear
+    end
+  end
+  
+  def pbHideFocusPanel
+    if defined?(@focusToggle)
+      @focusToggle = false
+      @sprites["panel"].visible = false
+      @sprites["focus"].visible = false
+      @focusOverlay.clear
+    end
   end
   
   def pbFightMenu(idxBattler, *params)
@@ -377,13 +404,13 @@ class Battle::Scene
       # Confirm Selection
       #=========================================================================
       if Input.trigger?(Input::USE)
-        pbHideMoveInfo
+        pbHidePluginUI
         # Z-Move fails if held crystal and selected move are incompatible.
         if data[:zmove]
           if cw.mode == 2
-            itemname = battler.item.name
-            movename = battler.moves[cw.index].name
             if !battler.hasCompatibleZMove?(battler.moves[cw.index])
+              itemname = battler.item.name
+              movename = battler.moves[cw.index].name
               @battle.pbDisplay(_INTL("{1} is not compatible with {2}!", movename, itemname))
               if battler.power_trigger
                 battler.power_trigger = false
@@ -395,8 +422,8 @@ class Battle::Scene
         # Style fails if selected move has not yet been mastered.
         elsif data[:style]
           if cw.mode == 2
-            movename = battler.moves[cw.index].name
             if !battler.moves[cw.index].mastered?
+              movename = battler.moves[cw.index].name
               @battle.pbDisplay(_INTL("{1} needs to be mastered first before it may be used in that style!", movename))
               battler.style_trigger = 0
               battler.toggle_style_moves
@@ -415,7 +442,7 @@ class Battle::Scene
       # Cancel Selection
       #=========================================================================
       elsif Input.trigger?(Input::BACK)
-        pbHideMoveInfo
+        pbHidePluginUI
         if data[:zmove]
           battler.display_base_moves if battler.power_trigger
           battler.power_trigger = false
@@ -496,13 +523,13 @@ class Battle::Scene
         # PLA Battle Styles
         #-----------------------------------------------------------------------
         if data[:style]
-          pbHideMoveInfo
+          pbHidePluginUI
           pbPlayPLASelection
           style_change = false
           apply_style = false
           cw.battleStyle = battler.style_trigger + 1
-          pbToggleFocusPanel(false) if PluginManager.installed?("Focus Meter System")
-          pbToggleStyleInfo(battler.style_trigger)
+          pbHideFocusPanel
+          pbToggleStyleInfo(battler.style_trigger, true)
           loop do
             pbUpdate(cw)
             old_style = battler.style_trigger
@@ -523,18 +550,20 @@ class Battle::Scene
               style_change = old_style != battler.style_trigger
               pbPlayCursorSE if style_change
             # Cancel style choice
-            elsif Input.trigger?(Input::BACK) || Input.trigger?(Input::ACTION)
+            elsif Input.trigger?(Input::BACK)
               battler.toggle_style_moves
               battler.style_trigger = 0
               cw.battleStyle = 0
-              pbToggleStyleInfo
+              pbToggleStyleInfo(0, false)
               pbPlayPLACancel
               break
             # Confirm style choice
-            elsif Input.trigger?(Input::USE)
+            elsif Input.trigger?(Input::USE) || Input.trigger?(Input::ACTION)
+              @battle.pbSetBattleMechanicUsage(idxBattler, "Style", -1)
+              cw.mode = 1
               if cw.battleStyle > 1
                 apply_style = true
-                pbPlayPLADecision
+                pbPlayPLASelection
               else
                 apply_style = true
                 battler.toggle_style_moves
@@ -543,21 +572,20 @@ class Battle::Scene
                 pbPlayPLACancel
               end
             end
+            # Apply style changes
             if style_change
               new_style = battler.style_trigger
-              battler.toggle_style_moves(new_style)
               cw.battleStyle = new_style + 1
+              battler.toggle_style_moves(new_style)
               pbShowWindow(FIGHT_BOX)
               pbSelectBattler(idxBattler)
-              newMode = (@battle.pbRegisteredStyle?(idxBattler)) ? 2 : 1
-              cw.mode = newMode if newMode != cw.mode
               cw.refreshButtonNames
-              pbToggleStyleInfo(new_style)
+              pbToggleStyleInfo(new_style, true)
               style_change = false
             end
             if apply_style
               cw.battleStyle += 2 if cw.battleStyle > 1
-              pbToggleStyleInfo
+              pbToggleStyleInfo(cw.battleStyle, false)
               break
             end
           end
@@ -578,7 +606,7 @@ class Battle::Scene
       #=========================================================================
       elsif Input.trigger?(Input::SPECIAL)
         if cw.shiftMode > 0
-          pbHideMoveInfo
+          pbHidePluginUI
           pbPlayDecisionSE
           break if yield -9
           needRefresh = true
@@ -589,7 +617,13 @@ class Battle::Scene
       #=========================================================================
       if PluginManager.installed?("Enhanced UI")
         if Input.triggerex?(Settings::MOVE_INFO_KEY)
+          pbHideBattleInfo
+          pbHideFocusPanel
           pbToggleMoveInfo(battler, cw.index)
+        elsif Input.triggerex?(Settings::BATTLE_INFO_KEY)
+          pbHideMoveInfo
+          pbHideFocusPanel
+          pbToggleBattleInfo
         end
       end
       if PluginManager.installed?("Focus Meter System")
@@ -606,12 +640,12 @@ class Battle::Scene
           needRefresh = true
         elsif Input.triggerex?(Settings::FOCUS_PANEL_KEY)
           pbHideMoveInfo
+          pbHideBattleInfo
           pbToggleFocusPanel
         end
       end
     end
-    pbHideMoveInfo
-    pbToggleFocusPanel(false) if PluginManager.installed?("Focus Meter System")
+    pbHidePluginUI
     @lastMove[idxBattler] = cw.index
   end
 end

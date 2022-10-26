@@ -1,0 +1,32 @@
+#-------------------------------
+[ODORSLEUTH]
+EditOnly =
+Description = Enables the user to hit a Ghost type with any type of move. It also enables the user to hit an evasive foe.
+#-------------------------------
+[FORESIGHT]
+EditOnly =
+Description = Enables the user to hit a Ghost type with any kind of move. It also enables the user to hit an evasive foe.
+#-------------------------------
+[MIRACLEEYE]
+EditOnly =
+Description = Enables the user to hit a Dark type with any type of move. It also enables the user to hit an evasive foe.
+#-------------------------------
+[LOCKON]
+EditOnly =
+Description = The user takes sure aim at the target. It ensures the next attack does not fail to hit the target.
+#-------------------------------
+[MINDREADER]
+EditOnly =
+Description = The user senses the foe's movements with its mind to ensure its next attack does not miss the foe.
+#-------------------------------
+[LASERFOCUS]
+EditOnly =
+Description = The user focuses intensely. The attack on the next turn always results in a critical hit.
+#-------------------------------
+[FOCUSPUNCH]
+EditOnly =
+Description = The user focuses its mind before launching a punch. It will fail if the user is hit before it is used.
+#-------------------------------
+[FOCUSENERGY]
+EditOnly =
+Description = The user takes a deep breath and focuses so that critical hits land more easily.

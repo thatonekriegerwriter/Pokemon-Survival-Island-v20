@@ -196,8 +196,8 @@ class Battle::Scene
       end
     end
     if foe_trainer
-      pbToggleDataboxes
       pbToggleBlackBars
+	  pbToggleDataboxes
       pbHideOpponent(idxTrainer)
     end
   end

@@ -346,12 +346,20 @@ class Battle::Battler
     return if @battle.pbAllFainted?(target.idxOpposingSide)
     return if !target.opposes?(attacker) || target.fainted?
     base = Settings::FOCUS_METER_SIZE / 10.0
-    base *= 2.0 if target.damageState.protected || target.damageState.substitute
-    base *= 2.0 if target.status != :NONE
-    base *= 2.0 if !target.movedThisRound? && target.effects[PBEffects::Flinch]
-    base *= 2.0 if target.hp <= target.totalhp / 2
-    base *= 2.0 if attacker.hasFocusedShot? || attacker.hasFocusedEffect? || attacker.hasFocusedStrike?
     total = base
+    # Target's raised Defense build more Focus when being hit by physical moves.
+    if move.physicalMove?
+      total += (base * target.stages[:DEFENSE]) / 2.0 if target.stages[:DEFENSE] > 0
+      total += base if target.pbOwnSide.effects[PBEffects::Reflect] > 0 || target.pbOwnSide.effects[PBEffects::AuroraVeil] > 0
+    # Target's raised Sp.Def build more Focus when being hit by special moves.
+    elsif move.specialMove?
+      total += (base * target.stages[:SPECIAL_DEFENSE]) / 2.0 if target.stages[:SPECIAL_DEFENSE] > 0
+      total += base if target.pbOwnSide.effects[PBEffects::LightScreen] > 0 || target.pbOwnSide.effects[PBEffects::AuroraVeil] > 0
+    end
+    total += base if target.status != :NONE
+    total += base if !target.movedThisRound? && target.effects[PBEffects::Flinch]
+    total *= 1.3 if target.damageState.protected || target.damageState.substitute || target.hp <= target.totalhp / 2
+    total *= 1.5 if attacker.hasFocusedShot? || attacker.hasFocusedEffect? || attacker.hasFocusedStrike?
     total += (base / 2.0) * numHits if numHits > 1
     if target.effects[PBEffects::FocusEnergy] > 0
       total *= target.effects[PBEffects::FocusEnergy]
@@ -438,10 +446,6 @@ class Battle::Battler
     #---------------------------------------------------------------------------
     # Evasion and Passive modifiers.
     #---------------------------------------------------------------------------
-    base *= 2.0 if target.status != :NONE
-    base *= 2.0 if !target.movedThisRound? && target.effects[PBEffects::Flinch]
-    base *= 2.0 if target.damageState.critical || target.hp <= target.totalhp / 2
-    base *= 2.0 if attacker.hasFocusedShot? || attacker.hasFocusedEffect? || attacker.hasFocusedStrike?
     total = base
     modifiers = {}
     modifiers[:base_accuracy]       = 0
@@ -451,7 +455,18 @@ class Battle::Battler
     modifiers[:evasion_multiplier]  = 1.0
     move.pbCalcAccuracyModifiers(attacker, target, modifiers)
     total += [0, base * (modifiers[:evasion_stage] - modifiers[:accuracy_stage])].max
+    if move.physicalMove?
+      total += (base * target.stages[:DEFENSE]) / 2.0 if target.stages[:DEFENSE] > 0
+      total += base if target.pbOwnSide.effects[PBEffects::Reflect] > 0 || target.pbOwnSide.effects[PBEffects::AuroraVeil] > 0
+    elsif move.specialMove?
+      total += (base * target.stages[:SPECIAL_DEFENSE]) / 2.0 if target.stages[:SPECIAL_DEFENSE] > 0
+      total += base if target.pbOwnSide.effects[PBEffects::LightScreen] > 0 || target.pbOwnSide.effects[PBEffects::AuroraVeil] > 0
+    end
+    total += base if target.status != :NONE
+    total += base if !target.movedThisRound? && target.effects[PBEffects::Flinch]
     total += base if target.hasActiveItem?([:BRIGHTPOWDER, :LAXINCENSE])
+    total *= 1.3 if target.damageState.protected || target.damageState.substitute || target.hp <= target.totalhp / 2
+    total *= 1.5 if attacker.hasFocusedShot? || attacker.hasFocusedEffect? || attacker.hasFocusedStrike?
     total *= modifiers[:evasion_multiplier]
     #---------------------------------------------------------------------------
     total += (base / 2.0) * numHits if numHits > 1

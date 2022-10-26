@@ -1,0 +1,48 @@
+#-------------------------------
+[STENCH]
+EditOnly =
+Description = The stench may cause the target to flinch.
+#-------------------------------
+[SANDVEIL]
+EditOnly =
+Description = Boosts the Pokémon's evasion in a sandstorm.
+#-------------------------------
+[COMPOUNDEYES]
+EditOnly =
+Description = The Pokémon's accuracy is boosted.
+#-------------------------------
+[SERENEGRACE]
+EditOnly =
+Description = Boosts the likelihood of added effects appearing.
+#-------------------------------
+[HUSTLE]
+EditOnly =
+Description = Boosts the Attack stat, but lowers accuracy.
+#-------------------------------
+[TANGLEDFEET]
+EditOnly =
+Description = Raises evasion if the Pokémon is confused.
+#-------------------------------
+[STEADFAST]
+EditOnly =
+Description = Raises Speed each time the Pokémon flinches.
+#-------------------------------
+[SNOWCLOAK]
+EditOnly =
+Description = Raises evasion in a hailstorm.
+#-------------------------------
+[SUPERLUCK]
+EditOnly =
+Description = Heightens the critical-hit ratios of moves.
+#-------------------------------
+[POISONTOUCH]
+EditOnly =
+Description = May poison targets when a Pokémon makes contact.
+#-------------------------------
+[VICTORYSTAR]
+EditOnly =
+Description = Boosts the accuracy of its allies and itself.
+#-------------------------------
+[QUICKDRAW]
+EditOnly =
+Description = Enables the Pokémon to move first occasionally.

@@ -60,8 +60,8 @@ class Battle::Battler
   end
   
   alias focus_pbCanSynchronizeStatus? pbCanSynchronizeStatus?
-  def pbCanSynchronizeStatus?
-    ret = focus_pbCanSynchronizeStatus?
+  def pbCanSynchronizeStatus?(newStatus, target)
+    ret = focus_pbCanSynchronizeStatus?(newStatus, target)
     ret = false if pbOwnSide.effects[PBEffects::FocusedGuard] > 0
     return ret
   end

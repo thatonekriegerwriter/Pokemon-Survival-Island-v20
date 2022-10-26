@@ -200,6 +200,7 @@ end
 #-------------------------------------------------------------------------------
 class Battle::Scene
   def pbCommandMenuEx(idxBattler, texts, mode = 0)
+    has_info  = PluginManager.installed?("Enhanced UI")
     can_focus = PluginManager.installed?("Focus Meter System")
     pbShowWindow(COMMAND_BOX)
     cw = @sprites["commandWindow"]
@@ -224,18 +225,22 @@ class Battle::Scene
         pbPlayDecisionSE
         ret = cw.index
         @lastCmd[idxBattler] = ret
-        pbToggleFocusPanel(false) if can_focus && ret > 0
+        pbHidePluginUI if can_focus && ret > 0
         break
       elsif Input.trigger?(Input::BACK) && mode > 0
         pbPlayCancelSE
         break
       elsif Input.trigger?(Input::F9) && $DEBUG
         pbPlayDecisionSE
-        pbToggleFocusPanel(false) if can_focus
+        pbHidePluginUI
         ret = -2
         break
+      elsif has_info && Input.triggerex?(Settings::BATTLE_INFO_KEY)
+        pbHideFocusPanel
+        pbToggleBattleInfo
       elsif can_focus && Input.triggerex?(Settings::FOCUS_PANEL_KEY)
-        pbToggleFocusPanel 
+        pbHideBattleInfo
+        pbToggleFocusPanel
       end
     end
     return ret

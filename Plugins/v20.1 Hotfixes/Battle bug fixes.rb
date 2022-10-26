@@ -410,3 +410,24 @@ Battle::AbilityEffects::StatusImmunityFromAlly.add(:PASTELVEIL,
 )
 
 Battle::AbilityEffects::StatusCure.copy(:IMMUNITY, :PASTELVEIL)
+
+#===============================================================================
+# Fixed moves that deal fixed damage showing an effectiveness message.
+#===============================================================================
+class Battle::Move
+  alias __hotfixes__pbEffectivenessMessage pbEffectivenessMessage
+  def pbEffectivenessMessage(user, target, numTargets = 1)
+    return if self.is_a?(Battle::Move::FixedDamageMove)
+    __hotfixes__pbEffectivenessMessage(user, target, numTargets)
+  end
+end
+
+#===============================================================================
+# Fixed Chip Away/Darkest Lariat/Sacred Sword not ignoring the target's evasion.
+#===============================================================================
+class Battle::Move::IgnoreTargetDefSpDefEvaStatStages < Battle::Move
+  def pbCalcAccuracyModifiers(user, target, modifiers)
+    super
+    modifiers[:evasion_stage] = 0
+  end
+end

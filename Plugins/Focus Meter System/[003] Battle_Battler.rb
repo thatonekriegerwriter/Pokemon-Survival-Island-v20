@@ -8,7 +8,7 @@ module PBEffects
   DampenFocus   = 314
   FullyFocused  = 315
   
-  # Side Effects
+  # Team Effects
   FocusedGuard  = 206
 end
 
@@ -19,6 +19,10 @@ class Battle::ActiveSide
     @effects[PBEffects::FocusedGuard] = 0
   end
 end
+
+$DELUXE_BATTLE_EFFECTS[:battler_default_false] += [PBEffects::DampenFocus]
+$DELUXE_BATTLE_EFFECTS[:battler_default_zero]  += [PBEffects::FocusLock, PBEffects::FullyFocused]
+$DELUXE_BATTLE_EFFECTS[:team_default_zero]     += [PBEffects::FocusedGuard]
 
 #===============================================================================
 # Core additions to Battle::Battler.

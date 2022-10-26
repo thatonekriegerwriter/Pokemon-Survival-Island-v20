@@ -111,3 +111,9 @@ module GameData
     SCHEMA["Focus"] = [:focus, "e", :Focus]
   end
 end
+
+#===============================================================================
+
+module Compiler
+  PLUGIN_FILES += ["Focus Meter"]
+end

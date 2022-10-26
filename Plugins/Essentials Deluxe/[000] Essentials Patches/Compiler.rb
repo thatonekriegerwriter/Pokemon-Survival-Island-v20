@@ -129,6 +129,7 @@ module Compiler
           f.write(sprintf("    Birthsign = %s\r\n", pkmn[:birthsign])) if PluginManager.installed?("Pokémon Birthsigns") && pkmn[:birthsign]
           f.write(sprintf("    DynamaxLvl = %d\r\n", pkmn[:dynamax_lvl])) if PluginManager.installed?("ZUD Mechanics") && pkmn[:dynamax_lvl]
           f.write("    Gigantamax = yes\r\n") if PluginManager.installed?("ZUD Mechanics") && pkmn[:gmaxfactor]
+		  f.write("    Mastery = yes\r\n") if PluginManager.installed?("PLA Battle Styles") && pkmn[:mastery] 
         end
       end
     }

@@ -1817,7 +1817,7 @@ Target = NearOther
 Priority = -3
 FunctionCode = FailsIfUserDamagedThisTurn
 Flags = Contact,CanProtect,Punching
-Description = The user focuses its mind before launching a punch. It will fail if the user is hit before it is used.
+Description = The user fully focuses before punching. The user will lose focus and fail if hit before attacking.
 #-------------------------------
 [HIGHJUMPKICK]
 Name = High Jump Kick
@@ -5910,7 +5910,7 @@ Accuracy = 0
 TotalPP = 30
 Target = User
 FunctionCode = RaiseUserCriticalHitRate2
-Description = The user takes a deep breath and focuses so that critical hits land more easily.
+Description = The user takes a deep breath and concentrates so that it may more easily gain focus.
 #-------------------------------
 [FOLLOWME]
 Name = Follow Me
@@ -5932,7 +5932,7 @@ TotalPP = 40
 Target = NearOther
 FunctionCode = StartNegateTargetEvasionStatStageAndGhostImmunity
 Flags = CanProtect,CanMirrorMove
-Description = Enables the user to hit a Ghost type with any kind of move. It also enables the user to hit an evasive foe.
+Description = Enables the user to hit a Ghost type with any kind of move. Ups focus gains from attacking the target.
 #-------------------------------
 [GLARE]
 Name = Glare
@@ -6036,7 +6036,7 @@ Accuracy = 0
 TotalPP = 30
 Target = User
 FunctionCode = EnsureNextCriticalHit
-Description = The user focuses intensely. The attack on the next turn always results in a critical hit.
+Description = The user shifts into the Critical Hit style and becomes fully focused.
 #-------------------------------
 [LEER]
 Name = Leer
@@ -6058,7 +6058,7 @@ TotalPP = 5
 Target = NearOther
 FunctionCode = EnsureNextMoveAlwaysHits
 Flags = CanProtect,CanMirrorMove
-Description = The user takes sure aim at the target. It ensures the next attack does not fail to hit the target.
+Description = The user shifts into the Accuracy style and takes aim. This causes it to become fully focused.
 #-------------------------------
 [LOVELYKISS]
 Name = Lovely Kiss
@@ -6143,7 +6143,7 @@ TotalPP = 5
 Target = NearOther
 FunctionCode = EnsureNextMoveAlwaysHits
 Flags = CanProtect,CanMirrorMove
-Description = The user senses the foe's movements with its mind to ensure its next attack does not miss the foe.
+Description = The user shifts into the Accuracy style and reads its target. This causes it to become fully focused.
 #-------------------------------
 [MINIMIZE]
 Name = Minimize
@@ -6195,7 +6195,7 @@ TotalPP = 40
 Target = NearOther
 FunctionCode = StartNegateTargetEvasionStatStageAndGhostImmunity
 Flags = CanProtect,CanMirrorMove
-Description = Enables the user to hit a Ghost type with any type of move. It also enables the user to hit an evasive foe.
+Description = Enables the user to hit a Ghost type with any type of move. Ups focus gains from attacking the target.
 #-------------------------------
 [PAINSPLIT]
 Name = Pain Split
@@ -7512,7 +7512,7 @@ TotalPP = 40
 Target = NearOther
 FunctionCode = StartNegateTargetEvasionStatStageAndDarkImmunity
 Flags = CanProtect,CanMirrorMove
-Description = Enables the user to hit a Dark type with any type of move. It also enables the user to hit an evasive foe.
+Description = Enables the user to hit a Dark type with any type of move. Ups focus gains from attacking the target.
 #-------------------------------
 [POWERSPLIT]
 Name = Power Split

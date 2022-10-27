@@ -637,7 +637,7 @@ Pocket = 1
 Price = 3000
 SellPrice = 2000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. It casts a tricky glare that lowers the opponent's accuracy.
+Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Evasion style.
 #-------------------------------
 [EVIOLITE]
 Name = Eviolite
@@ -1106,7 +1106,7 @@ Pocket = 1
 Price = 3000
 SellPrice = 2500
 Flags = Fling_80
-Description = An item to be held by a Pokémon. It is a sharply hooked claw that ups the holder's critical-hit ratio.
+Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Critical Hit style.
 #-------------------------------
 [SCOPELENS]
 Name = Scope Lens
@@ -1114,7 +1114,7 @@ NamePlural = Scope Lenses
 Pocket = 1
 Price = 4000
 Flags = Fling_30
-Description = An item to be held by a Pokémon. It is a lens that boosts the holder's critical-hit ratio.
+Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Critical Hit style.
 #-------------------------------
 [WIDELENS]
 Name = Wide Lens
@@ -1122,7 +1122,7 @@ NamePlural = Wide Lenses
 Pocket = 1
 Price = 4000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. It is a magnifying lens that slightly boosts the accuracy of moves.
+Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Accuracy style.
 #-------------------------------
 [ZOOMLENS]
 Name = Zoom Lens
@@ -1130,7 +1130,7 @@ NamePlural = Zoom Lenses
 Pocket = 1
 Price = 4000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. If the holder moves after its target, its accuracy will be boosted.
+Description = An item to be held by a Pokémon. Boosts focus in the Accuracy style if moving after the target.
 #-------------------------------
 [KINGSROCK]
 Name = King's Rock
@@ -1138,7 +1138,7 @@ NamePlural = King's Rocks
 Pocket = 1
 Price = 5000
 Flags = Fling_30
-Description = An item to be held by a Pokémon. When the holder inflicts damage, the target may flinch.
+Description = An item to be held by a Pokémon. May be used to cause flinching by holders in the Potency style.
 #-------------------------------
 [RAZORFANG]
 Name = Razor Fang
@@ -1146,7 +1146,7 @@ NamePlural = Razor Fangs
 Pocket = 1
 Price = 5000
 Flags = Fling_30
-Description = An item to be held by a Pokémon. It may make foes and allies flinch when the holder inflicts damage.
+Description = An item to be held by a Pokémon. May be used to cause flinching by holders in the Potency style.
 #-------------------------------
 [LAGGINGTAIL]
 Name = Lagging Tail
@@ -1163,7 +1163,7 @@ Pocket = 1
 Price = 3000
 SellPrice = 2000
 Flags = Fling_80
-Description = An item to be held by a Pokémon. A light, sharp claw that lets the bearer move first occasionally.
+Description = An item to be held by a Pokémon. May grant priority when used by holders in the Potency style.
 #-------------------------------
 [FOCUSBAND]
 Name = Focus Band
@@ -1172,7 +1172,7 @@ Pocket = 1
 Price = 3000
 SellPrice = 2000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. The holder may endure a potential KO attack, leaving it with just 1 HP.
+Description = An item to be held by a Pokémon. The holder may endure an attack, leaving it fully focused with just 1 HP.
 #-------------------------------
 [FOCUSSASH]
 Name = Focus Sash
@@ -1181,7 +1181,7 @@ Pocket = 1
 Price = 3000
 SellPrice = 2000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. If it has full HP, the holder will endure one potential KO attack, leaving 1 HP.
+Description = An item to be held by a Pokémon. The holder endures one attack from full HP, leaving it fully focused with 1 HP.
 #-------------------------------
 [FLAMEORB]
 Name = Flame Orb
@@ -1286,7 +1286,7 @@ NamePlural = Lax Incenses
 Pocket = 1
 Price = 5000
 Flags = Fling_10
-Description = An item to be held by a Pokémon. The tricky aroma of this incense may make attacks miss the holder.
+Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Evasion style.
 #-------------------------------
 [FULLINCENSE]
 Name = Full Incense
@@ -1393,7 +1393,6 @@ Name = Pure Seed
 NamePlural = Pure Seeds
 Pocket = 1
 Price = 0
-SellPrice = 0
 Flags = Fling_30
 Description = An item that can be used to immediately move to the next staircase of a dungeon.
 #-------------------------------
@@ -1402,7 +1401,6 @@ Name = Wonder Orb
 NamePlural = Wonder Orbs
 Pocket = 1
 Price = 0
-SellPrice = 0
 Flags = Fling_30
 Description = An item that when held, increases recruitment rate in dungeons.
 #-------------------------------
@@ -4793,7 +4791,7 @@ Pocket = 7
 Price = 1000
 BattleUse = OnBattler
 Flags = Fling_30
-Description = An item that raises the critical-hit ratio greatly. It wears off if the Pokémon is withdrawn.
+Description = It shifts a Pokémon into the Critical Hit style, and boosts focus gained. Wears off if withdrawn.
 #-------------------------------
 [DIREHIT2]
 Name = Dire Hit 2
@@ -4802,7 +4800,7 @@ Pocket = 7
 Price = 0
 BattleUse = OnBattler
 Flags = Fling_30
-Description = It sharply raises the critical-hit ratio. It wears off if the Pokémon is withdrawn.
+Description = It shifts a Pokémon into the Critical Hit style, and sharply boosts focus gained. Wears off if withdrawn.
 #-------------------------------
 [DIREHIT3]
 Name = Dire Hit 3
@@ -4811,7 +4809,7 @@ Pocket = 7
 Price = 0
 BattleUse = OnBattler
 Flags = Fling_30
-Description = It greatly raises the critical-hit ratio. It wears off if the Pokémon is withdrawn.
+Description = It shifts a Pokémon into the Critical Hit style, and greatly boosts focus gained. Wears off if withdrawn.
 #-------------------------------
 [GUARDSPEC]
 Name = Guard Spec.
@@ -6648,7 +6646,7 @@ NamePlural = Micle Berries
 Pocket = 5
 Price = 20
 Flags = Berry,Fling_10,NaturalGift_ROCK_100
-Description = If held by a Pokémon, it raises the accuracy of a move just once in a pinch.
+Description = If held by a Pokémon, it fully charges the holder's focus meter just once in a pinch.
 #-------------------------------
 [CUSTAPBERRY]
 Name = Custap Berry

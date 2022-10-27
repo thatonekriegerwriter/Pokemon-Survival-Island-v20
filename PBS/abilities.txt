@@ -2,7 +2,7 @@
 #-------------------------------
 [STENCH]
 Name = Stench
-Description = The stench may cause the target to flinch.
+Description = Focused Effects may cause flinching.
 #-------------------------------
 [DRIZZLE]
 Name = Drizzle
@@ -30,7 +30,7 @@ Description = The Pokémon is protected from paralysis.
 #-------------------------------
 [SANDVEIL]
 Name = Sand Veil
-Description = Boosts the Pokémon's evasion in a sandstorm.
+Description = Sandstorms boost focus in the Evasion style.
 #-------------------------------
 [STATIC]
 Name = Static
@@ -54,7 +54,7 @@ Description = Eliminates the effects of weather.
 #-------------------------------
 [COMPOUNDEYES]
 Name = Compound Eyes
-Description = The Pokémon's accuracy is boosted.
+Description = Boosts focus in the Accuracy style.
 #-------------------------------
 [INSOMNIA]
 Name = Insomnia
@@ -126,7 +126,7 @@ Description = Draws in all Electric-type moves to up Sp. Attack.
 #-------------------------------
 [SERENEGRACE]
 Name = Serene Grace
-Description = Boosts the likelihood of added effects appearing.
+Description = Boosts focus in the Potency style.
 #-------------------------------
 [SWIFTSWIM]
 Name = Swift Swim
@@ -158,8 +158,8 @@ Description = The Pokémon is protected from flinching.
 #-------------------------------
 [MAGMAARMOR]
 Name = Magma Armor
-Flags = FasterEggHatching
 Description = Prevents the Pokémon from becoming frozen.
+Flags = FasterEggHatching
 #-------------------------------
 [WATERVEIL]
 Name = Water Veil
@@ -195,8 +195,8 @@ Description = The Pokémon awakens quickly from sleep.
 #-------------------------------
 [FLAMEBODY]
 Name = Flame Body
-Flags = FasterEggHatching
 Description = Contact with the Pokémon may burn the attacker.
+Flags = FasterEggHatching
 #-------------------------------
 [RUNAWAY]
 Name = Run Away
@@ -220,7 +220,7 @@ Description = Pokémon can't attack on consecutive turns.
 #-------------------------------
 [HUSTLE]
 Name = Hustle
-Description = Boosts the Attack stat, but lowers accuracy.
+Description = Accuracy style ups Attack but halves focus.
 #-------------------------------
 [CUTECHARM]
 Name = Cute Charm
@@ -308,7 +308,7 @@ Description = Eliminates the effects of weather.
 #-------------------------------
 [TANGLEDFEET]
 Name = Tangled Feet
-Description = Raises evasion if the Pokémon is confused.
+Description = Moves are more likely to miss when confused.
 #-------------------------------
 [MOTORDRIVE]
 Name = Motor Drive
@@ -320,11 +320,11 @@ Description = Deals more damage to a foe of the same gender.
 #-------------------------------
 [STEADFAST]
 Name = Steadfast
-Description = Raises Speed each time the Pokémon flinches.
+Description = Ups Speed and focus when the user flinches.
 #-------------------------------
 [SNOWCLOAK]
 Name = Snow Cloak
-Description = Raises evasion in a hailstorm.
+Description = Hailstorms boost focus in the Evasion style.
 #-------------------------------
 [GLUTTONY]
 Name = Gluttony
@@ -420,7 +420,7 @@ Description = Moves can be used regardless of Abilities.
 #-------------------------------
 [SUPERLUCK]
 Name = Super Luck
-Description = Heightens the critical-hit ratios of moves.
+Description = Boosts focus in the Critical Hit style.
 #-------------------------------
 [AFTERMATH]
 Name = Aftermath
@@ -572,7 +572,7 @@ Description = Protects the Pokémon from damage from weather.
 #-------------------------------
 [POISONTOUCH]
 Name = Poison Touch
-Description = May poison targets when a Pokémon makes contact.
+Description = Focused Effects may poison on contact.
 #-------------------------------
 [REGENERATOR]
 Name = Regenerator
@@ -648,7 +648,7 @@ Description = Changes the Pokémon's shape when HP is halved.
 #-------------------------------
 [VICTORYSTAR]
 Name = Victory Star
-Description = Boosts the accuracy of its allies and itself.
+Description = Boosts focus for allies in the Accuracy style.
 #-------------------------------
 [TURBOBLAZE]
 Name = Turboblaze
@@ -972,8 +972,8 @@ Description = This Pokémon's moves cannot be redirected.
 #-------------------------------
 [STEAMENGINE]
 Name = Steam Engine
-Flags = FasterEggHatching
 Description = Boosts Speed drastically if hit by a Fire or Water move.
+Flags = FasterEggHatching
 #-------------------------------
 [PUNKROCK]
 Name = Punk Rock
@@ -1037,7 +1037,7 @@ Description = Changes between Full Belly and Hangry Mode each turn.
 #-------------------------------
 [QUICKDRAW]
 Name = Quick Draw
-Description = Enables the Pokémon to move first occasionally.
+Description = The user gains priority with Focused Effects.
 #-------------------------------
 [UNSEENFIST]
 Name = Unseen Fist

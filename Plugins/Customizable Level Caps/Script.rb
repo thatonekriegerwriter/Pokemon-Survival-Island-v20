@@ -395,7 +395,8 @@ class Battle
     end
   end
 end
-
+end 
+end
 ItemHandlers::UseOnPokemonMaximum.add(:RARECANDY, proc { |item, pkmn|
   if $PokemonSystem.level_caps == 1
     next GameData::GrowthRate.max_level - pkmn.level

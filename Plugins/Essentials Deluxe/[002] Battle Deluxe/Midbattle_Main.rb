@@ -26,8 +26,8 @@ class Battle::Scene
       next if !$game_temp.dx_midbattle[mid].has_key?(:delay)
       if $game_temp.dx_midbattle[mid][:delay].is_a?(Array)
         $game_temp.dx_midbattle[mid][:delay].each do |delay_trigger|
-        $game_temp.dx_midbattle[mid][:delay] = nil if all_triggers.include?(delay_trigger)
-      end
+          $game_temp.dx_midbattle[mid][:delay] = nil if all_triggers.include?(delay_trigger)
+        end
       else
         if all_triggers.include?($game_temp.dx_midbattle[mid][:delay])
           $game_temp.dx_midbattle[mid][:delay] = nil 

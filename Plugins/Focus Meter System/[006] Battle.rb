@@ -69,7 +69,8 @@ class Battle
     trigger = (battler.pbOwnedByPlayer?) ? "focus" : (battler.opposes?) ? "focus_foe" : "focus_ally"
     # The focus styles below may always be triggered.
     if style.id == :Enraged
-	  @scene.dx_midbattle(idxBattler, nil, trigger)
+      trigger = "focus_boss" if battler.opposes?
+      @scene.dx_midbattle(idxBattler, nil, trigger)
       pbDisplay(_INTL("{1} unleashes its {2}!", battler.pbThis, style.focus))
       pbFocusedRageEffects(idxBattler)
       return

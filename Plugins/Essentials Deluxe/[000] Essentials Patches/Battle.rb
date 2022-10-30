@@ -65,6 +65,7 @@ class Battle
     if PluginManager.installed?("Focus Meter System")
       return true if pbCanUseFocus?(idxBattler)
     end
+    return true if pbCanCustom?(idxBattler)
     return false
   end
   
@@ -93,6 +94,7 @@ class Battle
     pbUnregisterStyle(idxBattler)       if PluginManager.installed?("PLA Battle Styles")
     pbUnregisterZodiacPower(idxBattler) if PluginManager.installed?("Pokémon Birthsigns")
     pbUnregisterFocus(idxBattler)       if PluginManager.installed?("Focus Meter System")
+    pbUnregisterCustom(idxBattler)
     pbClearChoice(idxBattler)
   end
   
@@ -151,6 +153,9 @@ class Battle
           @focusMeter[side][i] = -1 if meter >= 0
         end
       end
+      @custom[side].each_with_index do |custom, i|
+        @custom[side][i] = -1 if custom >= 0
+      end
     end
     pbCommandPhaseLoop(true)
     return if @decision != 0
@@ -187,9 +192,10 @@ class Battle
     pbAttackPhaseUltraBurst
     pbAttackPhaseZMoves
     pbAttackPhaseDynamax
+    pbAttackPhaseCustom
+    pbAttackPhaseStyles
     pbAttackPhaseRaidBoss
     pbAttackPhaseCheer
-    pbAttackPhaseStyles
     pbAttackPhaseMoves
   end
 end
@@ -261,15 +267,16 @@ class Battle::AI
       @battle.pbRegisterUltraBurst(idxBattler) if pbEnemyShouldUltraBurst?(idxBattler)
       @battle.pbRegisterDynamax(idxBattler) if pbEnemyShouldDynamax?(idxBattler)
     end
-    if PluginManager.installed?("PLA Battle Styles")
-      @battle.pbRegisterStyle(idxBattler) if pbEnemyShouldUseStyle?(idxBattler)
-    end
     if PluginManager.installed?("Pokémon Birthsigns")
       @battle.pbRegisterZodiacPower(idxBattler) if pbEnemyShouldZodiacPower?(idxBattler)
     end
     if PluginManager.installed?("Focus Meter System")
       @battle.pbRegisterFocus(idxBattler) if pbEnemyShouldFocus?(idxBattler)
     end
+    @battle.pbRegisterCustom(idxBattler) if pbEnemyShouldCustom?(idxBattler)
     pbChooseMoves(idxBattler)
+    if PluginManager.installed?("PLA Battle Styles") # Purposefully set after move selection.
+      @battle.pbRegisterStyle(idxBattler) if pbEnemyShouldUseStyle?(idxBattler)
+    end
   end
 end

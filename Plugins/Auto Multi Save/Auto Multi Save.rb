@@ -32,19 +32,6 @@
 #   Maybe auto-save slots should act like a queue instead of cycling around.
 
 # Autosave every 30 steps
-EventHandlers.add(:on_player_step_taken, :effefefefefehhttrfeeffeeffefej,
-  proc {
-  if !defined?(pbAutosave)
-  $player.autosave_steps = 0 if !$player.autosave_steps
-  $player.autosave_steps += 1
-  if $player.autosave_steps >= 30
-    echo("Autosaving...")
-    $player.autosave_steps = 0
-    Game.auto_save
-    echoln("done.")
-  end
-  end
-})
 
 #===============================================================================
 #

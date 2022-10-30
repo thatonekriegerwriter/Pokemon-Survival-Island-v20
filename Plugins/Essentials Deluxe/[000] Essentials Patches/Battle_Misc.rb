@@ -81,7 +81,7 @@ class Battle::Battler
         pbSetPP(@base_moves[c], @base_moves[c].pp - 1)
       end
       if PluginManager.installed?("PLA Battle Styles") && @battle_style > 0
-        pbSetPP(move, move.pp - 1) if move.pp > 0
+        pbSetPP(move, move.pp - 1) if move.pp > 0 && move.mastered?
       end
     end
     return true

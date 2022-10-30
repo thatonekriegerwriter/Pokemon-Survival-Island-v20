@@ -156,6 +156,10 @@ class Battle::Battler
   
   def reset_focus_meter
     @battle.scene.pbFillFocusMeter(self, @focus_meter, 0, Settings::FOCUS_METER_SIZE)
+    if @focus_trigger
+      trigger = (pbOwnedByPlayer?) ? "focusEnd" : (opposes?) ? "focusEnd_foe" : "focusEnd_ally"
+      @battle.scene.dx_midbattle(@index, nil, trigger)
+    end
     @focus_timer = Settings::FOCUS_METER_TIMER
     @focus_trigger = false
     @focus_meter = 0

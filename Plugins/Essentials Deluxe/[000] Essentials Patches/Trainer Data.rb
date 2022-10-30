@@ -83,9 +83,7 @@ module GameData
           pkmn.gmax_factor = (pkmn_data[:gmaxfactor]) ? true : false
         end
 		if PluginManager.installed?("PLA Battle Styles")
-		  if pkmn_data[:mastery]
-			pkmn.moves.each { |m| m.mastered = m.canMaster? }
-          end
+	      pkmn.master_moveset if pkmn_data[:mastery]
         end
         #-----------------------------------------------------------------------
         if pkmn_data[:shadowness]

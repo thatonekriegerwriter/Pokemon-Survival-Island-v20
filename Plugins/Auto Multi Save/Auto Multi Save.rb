@@ -198,8 +198,18 @@ class PokemonLoad_Scene
       end
     end
   end
+  def pbChoose3(commands)
+    @sprites["cmdwindow"].commands = commands
+    loop do
+      Graphics.update
+      Input.update
+      pbUpdate
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Adventures is almost an entirely new game with a new story and areas.") if @sprites["cmdwindow"].index == 0
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Classic is the original game, but on a timer, any items or Pokemon carry over to the main game.") if @sprites["cmdwindow"].index == 1
+      @sprites["craftResult"].visible=true
+  end
 end
-
+end
 #===============================================================================
 #
 #===============================================================================
@@ -305,10 +315,11 @@ class PokemonLoadScreen
     commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
 		@scene.pbStartScene(commands, false, nil, 0, nil, 0)
     loop do
-      command = @scene.pbChoose(commands,false)
+      command = @scene.pbChoose3(commands)
       pbPlayDecisionSE if command != cmd_quit
       case command
       when cmd_psia
+          pbDisposeMessageWindow(msgwindow)
 		  $PokemonSystem.playermode = 1
 		  $PokemonSystem.difficulty = 1
 		  $PokemonSystem.nuzlockemode = 1
@@ -321,6 +332,7 @@ class PokemonLoadScreen
         Game.start_new
         return
       when cmd_demo
+	      pbDisposeMessageWindow(msgwindow)
 		  $PokemonSystem.playermode = 0
 		  $PokemonSystem.difficulty = 1
 		  $PokemonSystem.nuzlockemode = 1

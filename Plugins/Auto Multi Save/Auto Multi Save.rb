@@ -206,7 +206,11 @@ class PokemonLoad_Scene
       pbUpdate
       @sprites["craftResult"].text=_INTL("Pokemon SI: Adventures is almost an entirely new game with a new story and areas.") if @sprites["cmdwindow"].index == 0
       @sprites["craftResult"].text=_INTL("Pokemon SI: Classic is the original game, but on a timer, any items or Pokemon carry over to the main game.") if @sprites["cmdwindow"].index == 1
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Team Rocket Edition is an alternate campaign, where you play as a member of Team Rocket.") if @sprites["cmdwindow"].index == 2
       @sprites["craftResult"].visible=true
+      if Input.trigger?(Input::USE)
+        return @sprites["cmdwindow"].index
+	  end
   end
 end
 end
@@ -311,15 +315,18 @@ class PokemonLoadScreen
 	commands = []
     cmd_psia     = -1
     cmd_demo     = -1
+    cmd_rocket     = -1
     commands[cmd_psia = commands.length] = _INTL('Play Pokemon SI: Adventures')
     commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
+        if @save_data[:player].rocket_unlocked
+            commands[cmd_rocket = commands.length]  = _INTL('Play Pokemon SI: Team Rocket Edition')
+        end
 		@scene.pbStartScene(commands, false, nil, 0, nil, 0)
     loop do
       command = @scene.pbChoose3(commands)
       pbPlayDecisionSE if command != cmd_quit
       case command
       when cmd_psia
-          pbDisposeMessageWindow(msgwindow)
 		  $PokemonSystem.playermode = 1
 		  $PokemonSystem.difficulty = 1
 		  $PokemonSystem.nuzlockemode = 1
@@ -332,8 +339,20 @@ class PokemonLoadScreen
         Game.start_new
         return
       when cmd_demo
-	      pbDisposeMessageWindow(msgwindow)
 		  $PokemonSystem.playermode = 0
+		  $PokemonSystem.difficulty = 1
+		  $PokemonSystem.nuzlockemode = 1
+		  $PokemonSystem.survivalmode = 1
+	      $PokemonSystem.level_caps = 0
+		          @scene.pbEndScene
+				if Settings::LANGUAGES.length >= 2 && show_continue
+					$PokemonSystem.language = pbChooseLanguage
+					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
+				end
+        Game.start_new
+        return
+	  when cmd_rocket
+		  $PokemonSystem.playermode = 2
 		  $PokemonSystem.difficulty = 1
 		  $PokemonSystem.nuzlockemode = 1
 		  $PokemonSystem.survivalmode = 1

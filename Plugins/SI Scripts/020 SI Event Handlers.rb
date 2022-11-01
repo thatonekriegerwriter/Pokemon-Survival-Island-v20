@@ -28,8 +28,6 @@ EventHandlers.add(:on_player_step_taken_can_transfer, :effefefefefehhttrfeeffeef
       $scene.main
     end
     Graphics.transition(20)
-	 else
-     $player.demotimer = $player.demotimer.to_i-1
 	 end
 end
 
@@ -71,5 +69,4 @@ if $game_switches[421]==true
 end
 
 })
-
 

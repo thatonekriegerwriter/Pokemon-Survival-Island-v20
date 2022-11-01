@@ -24,7 +24,7 @@ module Settings
   #-----------------------------------------------------------------------------
   SUMMARY_IV_RATINGS = true
   STORAGE_IV_RATINGS = true
-  IV_DISPLAY_STYLE   = 0  # 0 = Stars, 1 = Letters
+  IV_DISPLAY_STYLE   = 1  # 0 = Stars, 1 = Letters
   
   #-----------------------------------------------------------------------------
   # Egg Groups

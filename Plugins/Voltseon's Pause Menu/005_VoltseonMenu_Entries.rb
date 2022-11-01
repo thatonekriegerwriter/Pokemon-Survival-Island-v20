@@ -245,7 +245,7 @@ class MenuEntrySave < MenuEntry
 
   def selectable?
      maps=[54,56,351,352,41,148,149,155,150,151,152,147,153,154]
-    return (!pbInBugContest? && $game_system && !$game_system.save_disabled && !pbInSafari? && maps.include?($game_map.map_id))
+    return (!pbInBugContest? && $game_system && !$game_system.save_disabled && !pbInSafari? && (maps.include?($game_map.map_id) || $PokemonSystem.playermode == 0)) 
   end
 end
 #-------------------------------------------------------------------------------
@@ -390,9 +390,6 @@ class MenuEntryQuit < MenuEntry
   def selected(menu)
     menu.pbHideMenu
     if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
-      scene = PokemonSave_Scene.new
-      screen = PokemonSaveScreen.new(scene)
-      screen.pbSaveScreen
       menu.pbEndScene
       $scene = nil
       exit!

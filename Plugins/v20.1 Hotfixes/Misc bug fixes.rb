@@ -698,6 +698,9 @@ module Game
     if $PokemonSystem.playermode == 1
     $map_factory = PokemonMapFactory.new($data_system.start_map_id)
     $game_player.moveto($data_system.start_x, $data_system.start_y)
+	elsif $PokemonSystem.playermode == 2
+    $map_factory = PokemonMapFactory.new(180)
+    $game_player.moveto(11, 8)
     else
     $map_factory = PokemonMapFactory.new(394)
     $game_player.moveto(000, 001)

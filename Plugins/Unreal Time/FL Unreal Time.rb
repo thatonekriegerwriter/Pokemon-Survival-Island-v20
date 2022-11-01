@@ -238,6 +238,10 @@ if UnrealTime::ENABLED
         day_care.step_counter = 0 if !day_care.egg_generated
         day_care.step_counter += 1
 	   end
+
+  if $PokemonSystem.playermode == 0 
+     $player.demotimer = $player.demotimer.to_i-1
+  end
       self.newFrameCount+=1
     end
     

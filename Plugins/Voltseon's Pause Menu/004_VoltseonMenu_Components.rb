@@ -32,10 +32,11 @@ class DemoHud < Component
     @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
   end
 
-  def shouldDraw?; return true if $player.playermode == 0; end
+  def shouldDraw?; return true if $PokemonSystem.playermode == 0; end
 
   def refresh
-    text = _INTL("Time: {1}",$player.demotimer)
+    remainingtime = ($player.demotimer/60/60)
+    text = _INTL("Hours left in Demo: {1}",remainingtime)
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
     pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,@baseColor,@shadowColor]])

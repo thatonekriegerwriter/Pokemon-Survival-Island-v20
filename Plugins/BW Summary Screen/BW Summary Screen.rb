@@ -1222,6 +1222,9 @@ end
     textColumn=300
     evColumn=390
     ivColumn=455
+	if @pokemon.loyalty.nil?
+	 @pokemon.loyalty = 75
+	end
     # Write various bits of text
     if @pokemon.happiness==0 
       verdict=_INTL("It simply hates your very essence.")
@@ -1238,7 +1241,7 @@ end
     elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=0&&@pokemon.happiness<=49
       verdict=_INTL("It sometimes listens.")
     elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It will listen on occasion")
+      verdict=_INTL("It will listen on occasion.")
     elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=0&&@pokemon.happiness<=49
       verdict=_INTL("It seems to be uninvested in you, but it listens when you call.")
     elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=0&&@pokemon.happiness<=49
@@ -1306,10 +1309,8 @@ end
     elsif @pokemon.loyalty>=250 && @pokemon.happiness>=250
       verdict=_INTL("You two are in sync!!!!!")
     end
+    if $DEBUG
     textpos = [
-#       [@pokemon.name,46,62,0,base,shadow],
-#       [@pokemon.level.to_s,46,92,0,Color.new(64,64,64),Color.new(176,176,176)],
-#       [_INTL("Item"),66,318,0,base,shadow],
        [_INTL("Happiness:"),10,62,0,base,shadow],
        [_INTL("{1}/255",@pokemon.happiness{1}),126,62,0,base,shadow],
        [_INTL("Loyalty"),10,92,0,base,shadow],
@@ -1321,10 +1322,24 @@ end
        [_INTL("Age"),10,262,0,base,shadow],
        [_INTL("{1}",@pokemon.age{1}),126,262,0,base,shadow],
     ]
+	else
+	    textpos = [
+       [_INTL("Food:"),10,222,0,base,shadow],
+       [_INTL("{1}/100",@pokemon.food{1}),126,222,0,base,shadow],
+       [_INTL("Water"),10,242,0,base,shadow],
+       [_INTL("{1}/100",@pokemon.water{1}),126,242,0,base,shadow],
+       [_INTL("Age"),10,262,0,base,shadow],
+       [_INTL("{1}",@pokemon.age{1}),126,262,0,base,shadow],
+    ]
+	end
     # Draw all text
     pbDrawTextPositions(overlay,textpos)
     # Show all ribbons  
+	if $DEBUG
 	drawTextEx(overlay,10,130,282,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
+	else
+	drawTextEx(overlay,10,70,282,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
+	end
     imagepos = []
     coord = 0
     pbDrawImagePositions(overlay,imagepos)

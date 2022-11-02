@@ -956,7 +956,7 @@ MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Water
 #-------------------------------
-[157]
+[157]   # Northern Area
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -1389,11 +1389,13 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[237]
+[237]   # Northern Area
+Name = Northern Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[238]
+[238]   # Northern Area
+Name = Northern Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
@@ -1909,3 +1911,110 @@ Name = Home Interior
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Indoor
+#-------------------------------
+[369]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[370]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[371]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[372]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[373]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[374]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[375]   # Cave
+Name = Cave
+Outdoor = false
+BattleBack = Cave
+#-------------------------------
+[376]   # Stone Temple
+Name = Stone Temple
+Outdoor = false
+BattleBack = Ruins
+#-------------------------------
+[377]   # Temperate Zone
+Name = Temperate Zone
+Outdoor = true
+BattleBack = Forest
+#-------------------------------
+[378]   # Stone Temple Cave
+Name = Stone Temple Cave
+Outdoor = false
+BattleBack = Forest
+#-------------------------------
+[379]   # Cave
+Name = Cave
+Outdoor = false
+BattleBack = Cave
+#-------------------------------
+[380]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[381]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[382]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[383]   # Cave
+Name = Cave
+Outdoor = false
+#-------------------------------
+[386]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[388]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[389]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[390]   # Mountain Zone
+Name = Mountain Zone
+Outdoor = true
+BattleBack = Mountain
+#-------------------------------
+[391]   # Mountain Interior
+Name = Mountain Interior
+Outdoor = false
+BattleBack = Cave
+#-------------------------------
+[393]   # Swamp Zone
+Name = Swamp Zone
+Outdoor = true
+#-------------------------------
+[395]   # Cave
+Name = Cave
+Outdoor = false

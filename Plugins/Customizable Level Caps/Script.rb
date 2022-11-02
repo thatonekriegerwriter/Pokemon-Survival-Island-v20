@@ -315,7 +315,6 @@ class Battle
       oldSpDef   = pkmn.spdef
       oldSpeed   = pkmn.speed
       if battler&.pokemon
-        battler.pokemon.changeHappiness("levelup")
         battler.pokemon.changeHappiness("levelup",battler)
         battler.pokemon.changeLoyalty("levelup",battler)
       end

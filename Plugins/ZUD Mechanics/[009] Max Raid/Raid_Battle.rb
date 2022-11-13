@@ -92,7 +92,7 @@ class RaidBattle < Battle
         end
         b.eachOpposing do |p|
           p.effects[PBEffects::GastroAcid] = true
-          GameData::Stat.each_battle { |s| p.stages[s.id] = 0 if p.stages[s.id] >0 }
+          GameData::Stat.each_battle { |s| p.stages[s.id] = 0 if p.stages[s.id] > 0 }
         end
       end
       #-------------------------------------------------------------------------
@@ -502,19 +502,6 @@ class Battle
     end
   end
   
-  #-----------------------------------------------------------------------------
-  # Resets Dynamax attributes on captured Pokemon.
-  #-----------------------------------------------------------------------------
-  alias zud_pbStorePokemon pbStorePokemon
-  def pbStorePokemon(pkmn)
-    if pkmn.isSpecies?(:ETERNATUS) || !pkmn.dynamax_able?
-      pkmn.gmax_factor = false
-      pkmn.dynamax_lvl = 0
-    end
-    raid_ResetPokemon(pkmn) if pkmn.dynamax?
-    zud_pbStorePokemon(pkmn)
-  end
-  
   def raid_ResetPokemon(pkmn)
     pkmn.dynamax = false
     pkmn.calc_stats
@@ -523,5 +510,21 @@ class Battle
       pkmn.dynamax_lvl /= 10
       pkmn.dynamax_lvl += rand(5)
     end
+  end
+end
+
+
+#===============================================================================
+# Resets Dynamax attributes on captured Pokemon.
+#===============================================================================
+module Battle::CatchAndStoreMixin
+  alias zud_pbStorePokemon pbStorePokemon
+  def pbStorePokemon(pkmn)
+    if pkmn.isSpecies?(:ETERNATUS) || !pkmn.dynamax_able?
+      pkmn.gmax_factor = false
+      pkmn.dynamax_lvl = 0
+    end
+    raid_ResetPokemon(pkmn) if pkmn.dynamax?
+    zud_pbStorePokemon(pkmn)
   end
 end

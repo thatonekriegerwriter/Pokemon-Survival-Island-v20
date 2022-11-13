@@ -1,0 +1,4 @@
+Name = BadgeCase
+Version = 2.0
+Essentials = 20.1
+Credits = Roei

@@ -1,9 +1,74 @@
 #===============================================================================
+# Draws an entire page of species sprites to appear in the Database.
+#===============================================================================
+class PokemonDatabaseSprite < Sprite
+  def initialize(list, page, viewport = nil)
+    super(viewport)
+    @pokemonsprites = []
+    xpos = 0
+    ypos = 42
+    offset = 1
+    RaidDataScene::PAGE_SIZE.times do |i|
+      index = RaidDataScene::PAGE_SIZE * page + i
+      break if index > list.length - 1
+      @pokemonsprites[i] = nil
+      pokemon = list[index]
+      pokemon = :WISHIWASHI_1 if pokemon == :WISHIWASHI 
+      offset += 1 if i >= RaidDataScene::ROW_SIZE * offset
+      @pokemonsprites[i] = PokemonSpeciesIconSprite.new(pokemon, viewport)
+      @pokemonsprites[i].viewport = self.viewport
+      @pokemonsprites[i].zoom_x = 0.5
+      @pokemonsprites[i].zoom_y = 0.5
+      xpos = 0 if xpos >= RaidDataScene::ROW_SIZE * RaidDataScene::ICON_GAP
+      xpos += RaidDataScene::ICON_GAP
+      @pokemonsprites[i].x = xpos
+      @pokemonsprites[i].y = ypos + RaidDataScene::ICON_GAP * offset
+    end
+    @contents = BitmapWrapper.new(324, 296)
+    self.bitmap = @contents
+    self.x = 0
+    self.y = 0
+  end
+  
+  def dispose
+    if !disposed?
+      RaidDataScene::PAGE_SIZE.times do |i|
+        @pokemonsprites[i]&.dispose
+        @pokemonsprites[i] = nil
+      end
+      @contents.dispose
+      super
+    end
+  end
+  
+  def visible=(value)
+    super
+    RaidDataScene::PAGE_SIZE.times do |i|
+      if @pokemonsprites[i] && !@pokemonsprites[i].disposed?
+        @pokemonsprites[i].visible = value
+      end
+    end
+  end
+  
+  def getPokemon(index)
+    return @pokemonsprites[index]
+  end
+  
+  def update
+    @pokemonsprites.each { |s| s.update }
+  end
+end
+
+
+#===============================================================================
 # Max Raid Database
 #===============================================================================
 class RaidDataScene
-  BASE   = Color.new(248, 248, 248)
-  SHADOW = Color.new(104, 104, 104)
+  PAGE_SIZE = 98
+  ROW_SIZE  = 14
+  ICON_GAP  = 32
+  BASE      = Color.new(248, 248, 248)
+  SHADOW    = Color.new(104, 104, 104)
   
   def pbUpdate
     pbUpdateSpriteHash(@sprites)
@@ -58,35 +123,6 @@ class RaidDataScene
     @sprites["results"] = IconSprite.new(0, 0, @viewport)
     @sprites["results"].setBitmap(@path + "data_results")
     @sprites["results"].visible = false
-    @xpos = 0
-    @ypos = 42
-    @pageLimit = 98
-    @rowLimit  = 14
-    @increment = 32
-    for i in 0...@pageLimit
-      @sprites["pkmnsprite#{i}"] = PokemonSpeciesIconSprite.new(0, @viewport)
-      @sprites["pkmnsprite#{i}"].zoom_x = 0.5
-      @sprites["pkmnsprite#{i}"].zoom_y = 0.5
-      @sprites["pkmnsprite#{i}"].visible = false
-      @xpos  = 0 if @xpos >= @rowLimit * @increment
-      @xpos += @increment
-      @sprites["pkmnsprite#{i}"].x = @xpos
-      if i < @rowLimit
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment
-      elsif i < @rowLimit * 2
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 2
-      elsif i < @rowLimit * 3
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 3
-      elsif i < @rowLimit * 4
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 4
-      elsif i < @rowLimit * 5
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 5
-      elsif i < @rowLimit * 6
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 6
-      else
-        @sprites["pkmnsprite#{i}"].y = @ypos + @increment * 7
-      end
-    end
     searchcmds = [
       _INTL("Show Pokémon"),
       _INTL("Filter: Raid"),
@@ -107,11 +143,6 @@ class RaidDataScene
     @sprites["filter"].shadowColor   = SHADOW
     @sprites["filter"].windowskin    = nil
     @sprites["filter"].visible       = false
-    @sprites["cursor"] = IconSprite.new(0, 0, @viewport)
-    @sprites["cursor"].setBitmap("Graphics/Pictures/Storage/cursor_point_1")
-    @sprites["cursor"].zoom_x        = 0.5
-    @sprites["cursor"].zoom_y        = 0.5
-    @sprites["cursor"].visible       = false
     @sprites["pagetext"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
     @pagetext = @sprites["pagetext"].bitmap
     pbSetSmallFont(@pagetext)
@@ -138,7 +169,7 @@ class RaidDataScene
     raid    = 4 if $player.badge_count >= 6
     raid    = 5 if $player.badge_count >= 8
     @raidlvl = "Raid: Lv. #{raid}"
-    region_names = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar"]
+    region_names = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"]
     regions = region_names.slice(0, Settings::GENERATION_LIMIT)
     if Settings::HIDE_UNSEEN_SPECIES
       pkmnCount = raid_GetSeenSpecies([], raid, nil, true).length
@@ -342,7 +373,7 @@ class RaidDataScene
     pkmnTotal  = @raidlist.length
     poke_name  = pbRaidFormName(@raidlist[select])
     for i in 0...pkmnTotal
-      maxpage += 1 if i >= @pageLimit * maxpage
+      maxpage += 1 if i >= PAGE_SIZE * maxpage
     end
     textPos.push([_INTL("{1}", poke_name), 256, 352, 2, BASE, SHADOW])
     drawTextEx(@pagetext, 35, 55, 150, 2, _INTL("{1}", @raidlvl), BASE, SHADOW)
@@ -357,55 +388,47 @@ class RaidDataScene
     @sprites["downarrow"].y = 298
     @sprites["downarrow"].play
     @sprites["downarrow"].visible = false
-    @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-    @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
-    @sprites["cursor"].visible = true
+    @sprites["pokelist"] = PokemonDatabaseSprite.new(@raidlist, 0, @viewport)
+    @sprites["cursor"] = IconSprite.new(0, 0, @viewport)
+    @sprites["cursor"].setBitmap("Graphics/Pictures/Storage/cursor_point_1")
+    @sprites["cursor"].zoom_x = 0.5
+    @sprites["cursor"].zoom_y = 0.5
+    @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+    @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
+    @sprites["cursor"].z = 1
     @sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
     @overlay = @sprites["overlay"].bitmap
     pbSetSystemFont(@overlay)
     pbDrawTextPositions(@overlay, textPos)
-    for i in 0...@raidlist.length
-      break if i >= @pageLimit
-      poke = GameData::Species.get(@raidlist[i]).species
-      form = GameData::Species.get(@raidlist[i]).form
-      form = 1 if poke == :WISHIWASHI
-      @sprites["pkmnsprite#{i}"].pbSetParams(poke, nil, form)
-      @sprites["pkmnsprite#{i}"].visible = true
-      pbUpdate
-    end
     pbSEPlay("GUI storage show party panel")
     loop do
       Graphics.update
       Input.update
       pbUpdate
-      if pkmnTotal > @pageLimit
+      if pkmnTotal > PAGE_SIZE
         @sprites["uparrow"].visible   = true
         @sprites["downarrow"].visible = true
         @sprites["uparrow"].visible   = false if offset <= 0
-        @sprites["downarrow"].visible = false if offset >= pkmnTotal - @pageLimit
+        @sprites["downarrow"].visible = false if offset >= pkmnTotal - PAGE_SIZE
       end
       #-------------------------------------------------------------------------
       # Scrolling upwards
       #-------------------------------------------------------------------------
       if Input.repeat?(Input::UP)
         Input.update
-        index -= @rowLimit
+        index -= ROW_SIZE
         # Previous page of species
-        if pkmnTotal > @pageLimit && offset > 0 && index < 0
-          for i in offset - @pageLimit...@raidlist.length
+        if pkmnTotal > PAGE_SIZE && offset > 0 && index < 0
+          for i in offset - PAGE_SIZE...@raidlist.length
             spritelist += 1
-            break if spritelist >= @pageLimit
-            poke = GameData::Species.get(@raidlist[i]).species
-            form = GameData::Species.get(@raidlist[i]).form
-            form = 1 if poke == :WISHIWASHI
-            @sprites["pkmnsprite#{spritelist}"].pbSetParams(poke, nil, form)
-            @sprites["pkmnsprite#{spritelist}"].visible = true
-            pbUpdate
+            break if spritelist >= PAGE_SIZE
           end
           page   -= 1
           offset -= spritelist
           spritelist = -1
           index      =  0
+          @sprites["pokelist"].dispose
+          @sprites["pokelist"] = PokemonDatabaseSprite.new(@raidlist, page - 1, @viewport)
           pbSEPlay("GUI summary change page")
         else
           pbPlayCursorSE
@@ -413,15 +436,15 @@ class RaidDataScene
         # Returns to last index
         if index < 0
           endsprite = 0
-          for i in 0...@pageLimit
-            next if !@sprites["pkmnsprite#{endsprite}"].visible
-            break if endsprite > @pageLimit
+          for i in 0...PAGE_SIZE
+            next if !@sprites["pokelist"].getPokemon(endsprite)
+            break if endsprite > PAGE_SIZE
             endsprite += 1 
           end
           index = endsprite - 1
         end
-        @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-        @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
+        @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+        @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
         @overlay.clear
         @pagetext.clear
         textPos.clear
@@ -436,37 +459,30 @@ class RaidDataScene
       #-------------------------------------------------------------------------
       elsif Input.repeat?(Input::DOWN)
         Input.update
-        index += @rowLimit
+        index += ROW_SIZE
         # Next page of species
-        if pkmnTotal > @pageLimit + offset && index > @pageLimit - 1
-          for i in 0...@pageLimit
-            @sprites["pkmnsprite#{i}"].visible = false
-          end
-          for i in @pageLimit + offset...@raidlist.length
+        if pkmnTotal > PAGE_SIZE + offset && index > PAGE_SIZE - 1
+          for i in PAGE_SIZE + offset...@raidlist.length
             spritelist += 1
-            break if spritelist >= @pageLimit
-            poke = GameData::Species.get(@raidlist[i]).species
-            form = GameData::Species.get(@raidlist[i]).form
-            form = 1 if poke == :WISHIWASHI
-            @sprites["pkmnsprite#{spritelist}"].pbSetParams(poke, nil, form)
-            @sprites["pkmnsprite#{spritelist}"].visible = true
-            pbUpdate
+            break if spritelist >= PAGE_SIZE
           end
           page   += 1
           offset += spritelist
-          offset += @pageLimit - spritelist if spritelist < @pageLimit
+          offset += PAGE_SIZE - spritelist if spritelist < PAGE_SIZE
           spritelist = -1
           index      =  0
+          @sprites["pokelist"].dispose
+          @sprites["pokelist"] = PokemonDatabaseSprite.new(@raidlist, page - 1, @viewport)
           pbSEPlay("GUI summary change page")
         else
           pbPlayCursorSE
         end
         # Returns to first index
-        index  = 0 if index > @pageLimit - 1
-        index  = 0 if !@sprites["pkmnsprite#{index}"].visible
-        if index < @pageLimit
-          @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-          @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
+        index  = 0 if index > PAGE_SIZE - 1
+        index  = 0 if !@sprites["pokelist"].getPokemon(index)
+        if index < PAGE_SIZE
+          @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+          @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
         end
         @overlay.clear
         @pagetext.clear
@@ -487,15 +503,15 @@ class RaidDataScene
         # Returns to last index
         if index < 0
           endsprite = 0
-          for i in 0...@pageLimit
-            next if !@sprites["pkmnsprite#{endsprite}"].visible
-            break if endsprite > @pageLimit
+          for i in 0...PAGE_SIZE
+            next if !@sprites["pokelist"].getPokemon(endsprite)
+            break if endsprite > PAGE_SIZE
             endsprite += 1 
           end
           index = endsprite - 1
         end
-        @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-        @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
+        @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+        @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
         @overlay.clear
         textPos.clear
         select = index + offset
@@ -506,15 +522,15 @@ class RaidDataScene
       # Scrolling right
       #-------------------------------------------------------------------------
       elsif Input.repeat?(Input::RIGHT)
-        if index < @pageLimit
+        if index < PAGE_SIZE
           pbPlayCursorSE
           Input.update
           index += 1
           # Returns to first index
-          index  = 0 if index > @pageLimit - 1
-          index  = 0 if !@sprites["pkmnsprite#{index}"].visible
-          @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-          @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
+          index  = 0 if index > PAGE_SIZE - 1
+          index  = 0 if !@sprites["pokelist"].getPokemon(index)
+          @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+          @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
           @overlay.clear
           textPos.clear
           select = index + offset
@@ -527,24 +543,20 @@ class RaidDataScene
       #-------------------------------------------------------------------------    
       elsif Input.trigger?(Input::JUMPUP)
         Input.update
-        if pkmnTotal > @pageLimit && page > 1
-          for i in offset - @pageLimit...@raidlist.length
+        if pkmnTotal > PAGE_SIZE && page > 1
+          for i in offset - PAGE_SIZE...@raidlist.length
             spritelist += 1
-            break if spritelist >= @pageLimit
-            poke = GameData::Species.get(@raidlist[i]).species
-            form = GameData::Species.get(@raidlist[i]).form
-            form = 1 if poke == :WISHIWASHI
-            @sprites["pkmnsprite#{spritelist}"].pbSetParams(poke, nil, form)
-            @sprites["pkmnsprite#{spritelist}"].visible = true
-            pbUpdate
+            break if spritelist >= PAGE_SIZE
           end
           page   -= 1
           offset -= spritelist
           spritelist = -1
           index      =  0
+          @sprites["pokelist"].dispose
+          @sprites["pokelist"] = PokemonDatabaseSprite.new(@raidlist, page - 1, @viewport)
+          @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+          @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
           pbSEPlay("GUI summary change page")
-          @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-          @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
           @overlay.clear
           @pagetext.clear
           textPos.clear
@@ -560,28 +572,21 @@ class RaidDataScene
       #-------------------------------------------------------------------------    
       elsif Input.trigger?(Input::JUMPDOWN)
         Input.update
-        if pkmnTotal > @pageLimit + offset && page < maxpage
-          for i in 0...@pageLimit
-            @sprites["pkmnsprite#{i}"].visible = false
-          end
-          for i in @pageLimit + offset...@raidlist.length
+        if pkmnTotal > PAGE_SIZE + offset && page < maxpage
+          for i in PAGE_SIZE + offset...@raidlist.length
             spritelist += 1
-            break if spritelist >= @pageLimit
-            poke = GameData::Species.get(@raidlist[i]).species
-            form = GameData::Species.get(@raidlist[i]).form
-            form = 1 if poke == :WISHIWASHI
-            @sprites["pkmnsprite#{spritelist}"].pbSetParams(poke, nil, form)
-            @sprites["pkmnsprite#{spritelist}"].visible = true
-            pbUpdate
+            break if spritelist >= PAGE_SIZE
           end
           page   += 1
           offset += spritelist
-          offset += @pageLimit - spritelist if spritelist < @pageLimit
+          offset += PAGE_SIZE - spritelist if spritelist < PAGE_SIZE
           spritelist = -1
           index      =  0
+          @sprites["pokelist"].dispose
+          @sprites["pokelist"] = PokemonDatabaseSprite.new(@raidlist, page - 1, @viewport)
+          @sprites["cursor"].x = @sprites["pokelist"].getPokemon(index).x + 10
+          @sprites["cursor"].y = @sprites["pokelist"].getPokemon(index).y - 10
           pbSEPlay("GUI summary change page")
-          @sprites["cursor"].x = @sprites["pkmnsprite#{index}"].x + 10
-          @sprites["cursor"].y = @sprites["pkmnsprite#{index}"].y - 10
           @overlay.clear
           @pagetext.clear
           textPos.clear
@@ -610,16 +615,12 @@ class RaidDataScene
       elsif Input.trigger?(Input::BACK)
         pbSEPlay("GUI storage hide party panel")
         pbFadeOutIn {
-          textPos.clear
+          @sprites["pokelist"].dispose
+          @sprites["cursor"].dispose
+          @sprites["uparrow"].dispose
+          @sprites["downarrow"].dispose
+          @sprites["results"].visible = false
           @pagetext.clear
-          @sprites["cursor"].visible    = false
-          @sprites["uparrow"].visible   = false
-          @sprites["downarrow"].visible = false
-          @sprites["results"].visible   = false
-          for i in 0...@raidlist.length
-            break if i >= @pageLimit
-            @sprites["pkmnsprite#{i}"].visible = false
-          end
           @overlay.clear
         }
         break
@@ -1020,7 +1021,7 @@ class RaidDataScene
     rules[:weather] = :None
     rules[:terrain] = :None
     rules[:environ] = :Cave
-	rules[:simple] = true
+    rules[:simple] = true
     pokemon[:form] = GameData::Species.get(pkmn).form
     pokemon[:gmaxfactor] = (GameData::Species.get(pkmn).hasGmax?) ? true : false
     raidmsg = (rules[:rank] == 6) ? "Legendary" : rules[:rank]

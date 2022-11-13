@@ -80,6 +80,7 @@ class Battle::Battler
   def raid_UseBaseMoves(choice)
     return if !@effects[PBEffects::MaxRaidBoss]
     return if @effects[PBEffects::ShieldCounter] > 0
+	return if choice[0] != :UseMove
     return if choice[2].statusMove?
     return if @base_moves.empty?
     self.display_base_moves

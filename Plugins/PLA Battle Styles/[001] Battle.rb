@@ -64,6 +64,7 @@ class Battle
   alias styles_pbEndOfRoundPhase pbEndOfRoundPhase
   def pbEndOfRoundPhase
     styles_pbEndOfRoundPhase
+    return if @decision > 0
     #---------------------------------------------------------------------------
     # Counts down the number of turns each battler remains in a selected style.
     allBattlers.each do |b|
@@ -89,9 +90,11 @@ class Battle
           @battleStyle[side][owner] = -1
           case side
           when 0
+            next if @player[owner].all_fainted?
             name = (owner == 0) ? _INTL("You") : @player[owner].full_name
             trigger = (owner == 0) ? "styleEnd" : "styleEnd_ally"
           when 1
+            next if @opponent[owner].all_fainted?
             name = (@opponent.nil?) ? _INTL("The opposing Pokémon") : @opponent[owner].full_name
             trigger = "styleEnd_foe"
           end

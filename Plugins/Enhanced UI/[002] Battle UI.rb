@@ -2,6 +2,28 @@
 # Initializes Battle UI elements.
 #===============================================================================
 class Battle::Scene
+  #-----------------------------------------------------------------------------
+  # White text.
+  #-----------------------------------------------------------------------------
+  BASE_LIGHT     = Color.new(232, 232, 232)
+  SHADOW_LIGHT   = Color.new(72, 72, 72)
+  #-----------------------------------------------------------------------------
+  # Black text.
+  #-----------------------------------------------------------------------------
+  BASE_DARK      = Color.new(56, 56, 56)
+  SHADOW_DARK    = Color.new(184, 184, 184)
+  #-----------------------------------------------------------------------------
+  # Green text. Used to display bonuses.
+  #-----------------------------------------------------------------------------
+  BASE_RAISED    = Color.new(50, 205, 50)
+  SHADOW_RAISED  = Color.new(9, 121, 105)
+  #-----------------------------------------------------------------------------
+  # Red text. Used to display penalties.
+  #-----------------------------------------------------------------------------
+  BASE_LOWERED   = Color.new(248, 72, 72)
+  SHADOW_LOWERED = Color.new(136, 48, 48)
+
+
   alias enhanced_pbInitSprites pbInitSprites
   def pbInitSprites
     enhanced_pbInitSprites
@@ -56,7 +78,8 @@ class Battle::Scene
     (@infoUIToggle) ? pbSEPlay("GUI party switch") : pbPlayCloseMenuSE
     @sprites["infobitmap"].visible = @infoUIToggle
     @sprites["infotext"].visible = @infoUIToggle
-    pbUpdateBattlerSelection(true)
+    pos = (@battle.pbSideBattlerCount(0) == 3) ? 1 : 0
+    pbUpdateBattlerSelection([0, pos], true)
   end
   
   
@@ -85,10 +108,13 @@ class Battle::Scene
         @sprites["battler_icon#{b.index}"].setOffset(PictureOrigin::CENTER)
         @sprites["battler_icon#{b.index}"].zoom_x = 1
         @sprites["battler_icon#{b.index}"].zoom_y = 1
+        @sprites["battler_icon#{b.index}"].applyDynamaxIcon(true)
+        color = (!b.dynamax?) ? Color.white : (b.isSpecies?(:CALYREX)) ? Color.new(36, 243, 243) : Color.new(250, 57, 96)
       else
         @sprites["battler_icon#{b.index}"].visible = false
       end
-      pbUpdateOutline("battler_icon#{b.index}", poke)
+      pbUpdateOutline("battler_icon#{b.index}", poke, true)
+      pbColorOutline("battler_icon#{b.index}", color)
       pbShowOutline("battler_icon#{b.index}", false)
     end
   end
@@ -107,6 +133,7 @@ class Battle::Scene
         @sprites["battler_icon#{b.index}"].y = 68
         @sprites["battler_icon#{b.index}"].zoom_x = 1
         @sprites["battler_icon#{b.index}"].zoom_y = 1
+        @sprites["battler_icon#{b.index}"].applyDynamaxIcon(true)
         idx += 1
       else
         @sprites["battler_icon#{b.index}"].visible = false
@@ -123,7 +150,7 @@ class Battle::Scene
     idxSide = 0
     idxPoke = (@battle.pbSideBattlerCount(0) < 3) ? 0 : 1
     @sprites["infoselect"].x = (@battle.pbSideBattlerCount(0) == 2) ? 68 : 173 
-    @sprites["infoselect"].y = 180
+    @sprites["infoselect"].y = 154
     battlers = [[], []]
     @battle.allSameSideBattlers.each { |b| battlers[0].push(b) }
     @battle.allOtherSideBattlers.reverse.each { |b| battlers[1].push(b) }
@@ -144,7 +171,7 @@ class Battle::Scene
         when Array
           idxSide, idxPoke = ret[0], ret[1]
           battler = battlers[idxSide][idxPoke]
-          pbUpdateBattlerSelection
+          pbUpdateBattlerSelection(ret)
           pbShowOutline("battler_icon#{battler.index}")
         when Numeric
           switchUI = ret
@@ -175,7 +202,8 @@ class Battle::Scene
         break
       end
       if oldSide != idxSide || oldPoke != idxPoke
-        @sprites["infoselect"].y = (idxSide == 0) ? 180 : 104
+        pbUpdateBattlerSelection([idxSide, idxPoke])
+        @sprites["infoselect"].y = (idxSide == 0) ? 154 : 78
         case @battle.pbSideBattlerCount(idxSide)
         when 1 then @sprites["infoselect"].x = 173
         when 2 then @sprites["infoselect"].x = 68 + (208 * idxPoke)
@@ -262,14 +290,12 @@ class Battle::Scene
   #-----------------------------------------------------------------------------
   # Draws the selection screen for the battle info UI.
   #-----------------------------------------------------------------------------
-  def pbUpdateBattlerSelection(select = false)
+  def pbUpdateBattlerSelection(index, select = false)
     @infoUIOverlay1.clear
     @infoUIOverlay2.clear
     return if !@infoUIToggle
     xpos = 0
-    ypos = 94
-    base = Color.new(232, 232, 232)
-    shadow = Color.new(72, 72, 72)
+    ypos = 68
     path = "Graphics/Plugins/Enhanced UI/Battle/"
     textPos = []
     imagePos1 = [[path + "battler_sel_bg", xpos, ypos]]
@@ -277,7 +303,11 @@ class Battle::Scene
     2.times do |side|
       count = @battle.pbSideBattlerCount(side)
       case side
-      when 0 # Player's side
+      #-------------------------------------------------------------------------
+      # Player's side.
+      #-------------------------------------------------------------------------
+      when 0
+        # Draws Pokemon selection.
         @battle.allSameSideBattlers.each_with_index do |b, i|
           case count
           when 1 then iconX, bgX = 202, 173
@@ -285,17 +315,35 @@ class Battle::Scene
           when 3 then iconX, bgX = 32 + (168 * i), 4 + (169 * i)
           end
           iconY = ypos + 114
-          nameX = iconX + 83
+          nameX = iconX + 82
+          if index == [side, i]
+            base, shadow = BASE_LIGHT, SHADOW_LIGHT
+            if b.dynamax?
+              shadow = (b.isSpecies?(:CALYREX)) ? Color.new(48, 206, 216) : Color.new(248, 32, 32)
+            end			  
+          else
+            base, shadow = BASE_DARK, SHADOW_DARK
+          end
           @sprites["battler_icon#{b.index}"].x = iconX
           @sprites["battler_icon#{b.index}"].y = iconY
           pbSetWithOutline("battler_icon#{b.index}", [iconX, iconY, 400])
           imagePos1.push([path + "battler_sel", bgX, iconY - 28, 0, 0, 166, 52])
           imagePos2.push([path + "battler_owner", bgX + 36, iconY + 11],
-                         [path + "battler_gender", bgX + 146, iconY - 38, b.gender * 22, 0, 22, 20])
-          textPos.push([_INTL("{1}", b.name), nameX, iconY - 16, 2, base, shadow],
-                       [@battle.pbGetOwnerFromBattlerIndex(b.index).name, nameX - 10, iconY + 13, 2, base, shadow])
+                         [path + "battler_gender", bgX + 146, iconY - 37, b.gender * 22, 0, 22, 20])
+          textPos.push([_INTL("{1}", b.pokemon.name), nameX, iconY - 16, 2, base, shadow],
+                       [@battle.pbGetOwnerFromBattlerIndex(b.index).name, nameX - 10, iconY + 13, 2, BASE_LIGHT, SHADOW_LIGHT])
         end
-      when 1 # Opponent's side
+        trainers = []
+        @battle.player.each { |p| trainers.push(p) if p.able_pokemon_count > 0 }
+        ballY = ypos + 154
+        ballXFirst = 35
+        ballXLast = Graphics.width - (16 * NUM_BALLS) - 35
+        ballOffset = 2
+      #-------------------------------------------------------------------------
+      # Opponent's side.
+      #-------------------------------------------------------------------------
+      when 1
+        # Draws Pokemon selection.
         @battle.allOtherSideBattlers.reverse.each_with_index do |b, i|
           case count
           when 1 then iconX, bgX = 202, 173
@@ -303,7 +351,15 @@ class Battle::Scene
           when 3 then iconX, bgX = 32 + (168 * i), 4 + (169 * i)
           end
           iconY = ypos + 38
-          nameX = iconX + 83
+          nameX = iconX + 82
+		      if index == [side, i]
+            base, shadow = BASE_LIGHT, SHADOW_LIGHT
+            if b.dynamax?
+              shadow = (b.isSpecies?(:CALYREX)) ? Color.new(48, 206, 216) : Color.new(248, 32, 32)
+            end			  
+          else
+            base, shadow = BASE_DARK, SHADOW_DARK
+          end
           @sprites["battler_icon#{b.index}"].x = iconX
           @sprites["battler_icon#{b.index}"].y = iconY
           pbSetWithOutline("battler_icon#{b.index}", [iconX, iconY, 400])
@@ -311,9 +367,38 @@ class Battle::Scene
           textPos.push([_INTL("{1}", b.displayPokemon.name), nameX, iconY - 16, 2, base, shadow])
           if @battle.trainerBattle?
             imagePos2.push([path + "battler_owner", bgX + 36, iconY + 11])
-            textPos.push([@battle.pbGetOwnerFromBattlerIndex(b.index).name, nameX - 10, iconY + 13, 2, base, shadow])
+            textPos.push([@battle.pbGetOwnerFromBattlerIndex(b.index).name, nameX - 10, iconY + 13, 2, BASE_LIGHT, SHADOW_LIGHT])
           end
-          imagePos2.push([path + "battler_gender", bgX + 146, iconY - 38, b.displayPokemon.gender * 22, 0, 22, 20])
+          imagePos2.push([path + "battler_gender", bgX + 146, iconY - 37, b.displayPokemon.gender * 22, 0, 22, 20])
+        end
+        trainers = []
+        @battle.opponent.each { |p| trainers.push(p) if p.able_pokemon_count > 0 } if @battle.opponent
+        ballY = ypos - 17
+        ballXFirst = Graphics.width - (16 * NUM_BALLS) - 35
+        ballXLast = 35
+        ballOffset = 3
+      end
+      #-------------------------------------------------------------------------
+      # Draws party ball lineups.
+      #-------------------------------------------------------------------------
+      ballXMiddle = (Graphics.width / 2) - 48
+      ballX = ballXMiddle
+      trainers.each do |trainer|
+        if trainers.length > 1
+          case trainer
+          when trainers.first then ballX = ballXFirst
+          when trainers.last  then ballX = ballXLast
+          else                     ballX = ballXMiddle
+          end
+        end
+        imagePos1.push([path + "battler_owner", ballX - 16, ballY - ballOffset])
+        NUM_BALLS.times do |slot|
+          idx = 0
+          if !trainer.party[slot]                   then idx = 3 # Empty
+          elsif !trainer.party[slot].able?          then idx = 2 # Fainted
+          elsif trainer.party[slot].status != :NONE then idx = 1 # Status
+          end
+          imagePos2.push([path + "battler_ball", ballX + (slot * 16), ballY, idx * 15, 0, 15, 15])
         end
       end
     end
@@ -334,8 +419,6 @@ class Battle::Scene
     @infoUIOverlay2.clear
     pbUpdateBattlerIcons
     return if !@infoUIToggle
-    base = Color.new(232, 232, 232)
-    shadow = Color.new(72, 72, 72)
     path = "Graphics/Plugins/Enhanced UI/Battle/"
     xpos = 28
     ypos = 25
@@ -348,9 +431,9 @@ class Battle::Scene
     imagePos = [[path + "battle_info_bg", 0, 0],
                 [path + "battle_info_ui", 0, 0],
                 [path + "battler_gender", xpos + 146, ypos + 24, poke.gender * 22, 0, 22, 20]]
-    textPos  = [[_INTL("{1}", poke.name), iconX + 83, iconY - 16, 2, base, shadow],
-                [_INTL("Lv. {1}", battler.level), xpos + 17, ypos + 100, 0, base, shadow],
-                [_INTL("Turn {1}", @battle.turnCount + 1), Graphics.width - xpos - 32, ypos + 6, 2, base, shadow]]
+    textPos  = [[_INTL("{1}", poke.name), iconX + 83, iconY - 16, 2, BASE_DARK, SHADOW_DARK],
+                [_INTL("Lv. {1}", battler.level), xpos + 17, ypos + 100, 0, BASE_LIGHT, SHADOW_LIGHT],
+                [_INTL("Turn {1}", @battle.turnCount + 1), Graphics.width - xpos - 32, ypos + 6, 2, BASE_LIGHT, SHADOW_LIGHT]]
     #---------------------------------------------------------------------------
     # Updates battler icon.
     @battle.allBattlers.each do |b|
@@ -378,7 +461,7 @@ class Battle::Scene
     # Displays owner's name for non-wild battlers.
     if !battler.wild?
       imagePos.push([path + "battler_owner", xpos - 34, ypos + 4])
-      textPos.push([@battle.pbGetOwnerFromBattlerIndex(battler.index).name, xpos + 32, ypos + 6, 2, base, shadow])
+      textPos.push([@battle.pbGetOwnerFromBattlerIndex(battler.index).name, xpos + 32, ypos + 6, 2, BASE_LIGHT, SHADOW_LIGHT])
     end
     #---------------------------------------------------------------------------
     # Displays HP, Item, and Ability information if battler is owned by the player.
@@ -389,11 +472,11 @@ class Battle::Scene
         [path + "battle_info_panel", panelX, 87, 0, 0, 218, 24]
       )
       textPos.push(
-        [_INTL("Abil."), xpos + 272, ypos + 42, 2, base, shadow],
-        [_INTL("Item"), xpos + 272, ypos + 66, 2, base, shadow],
-        [_INTL("{1}", battler.abilityName), xpos + 375, ypos + 42, 2, base, shadow],
-        [_INTL("{1}", battler.itemName), xpos + 375, ypos + 66, 2, base, shadow],
-        [sprintf("%d/%d", battler.hp, battler.totalhp), iconX + 73, iconY + 13, 2, base, shadow]
+        [_INTL("Abil."), xpos + 272, ypos + 42, 2, BASE_LIGHT, SHADOW_LIGHT],
+        [_INTL("Item"), xpos + 272, ypos + 66, 2, BASE_LIGHT, SHADOW_LIGHT],
+        [_INTL("{1}", battler.abilityName), xpos + 375, ypos + 42, 2, BASE_DARK, SHADOW_DARK],
+        [_INTL("{1}", battler.itemName), xpos + 375, ypos + 66, 2, BASE_DARK, SHADOW_DARK],
+        [sprintf("%d/%d", battler.hp, battler.totalhp), iconX + 73, iconY + 13, 2, BASE_LIGHT, SHADOW_LIGHT]
       )
     end
     #---------------------------------------------------------------------------
@@ -408,45 +491,37 @@ class Battle::Scene
      _INTL("Crit. Hit")
     ].each_with_index do |stat, i|
       if stat.is_a?(Array)
-        color = shadow
+        color = SHADOW_LIGHT
         if battler.pbOwnedByPlayer?
           battler.pokemon.nature_for_stats.stat_changes.each do |s|
             if stat[0] == s[0]
-              color = Color.new(136, 96, 72) if s[1] > 0
-              color = Color.new(64, 120, 152) if s[1] < 0
+              color = Color.new(136, 96, 72) if s[1] > 0  # Red Nature text.
+              color = Color.new(64, 120, 152) if s[1] < 0 # Blue Nature text.
             end
           end
         end
-        textPos.push([stat[1], xpos + 17, ypos + 135 + (i * 24), 0, base, color])
+        textPos.push([stat[1], xpos + 17, ypos + 135 + (i * 24), 0, BASE_LIGHT, color])
         stage = battler.stages[stat[0]]
       else
-        textPos.push([stat, xpos + 17, ypos + 135 + (i * 24), 0, base, shadow])
+        textPos.push([stat, xpos + 17, ypos + 135 + (i * 24), 0, BASE_LIGHT, SHADOW_LIGHT])
         stage = [battler.effects[PBEffects::FocusEnergy] + battler.effects[PBEffects::CriticalBoost], 4].min
       end
       arrow = (stage > 0) ? 0 : 1
       stage.abs.times { |t| imagePos.push([path + "battler_stats", xpos + 105 + (t * 18), ypos + 135 + (i * 24), arrow * 18, 0, 18, 18]) }
     end
     #---------------------------------------------------------------------------
-    # Draws panels and text for all relevant battle effects affecting the battler.
     effects = []
-    if @battle.field.weather != :None
-      count = @battle.field.weatherDuration
-      count = (count > 0) ? "#{count}/5" : "---"
-      effects.push([GameData::BattleWeather.get(@battle.field.weather).name, count])
-    end
-    if @battle.field.terrain != :None
-      count = @battle.field.terrainDuration
-      count = (count > 0) ? "#{count}/5" : "---"
-      effects.push([GameData::BattleTerrain.get(@battle.field.terrain).name + " " + _INTL("Terrain"), count])
-    end
+    # Effects that apply to the whole field.
     field_effects = {
       PBEffects::MudSportField   => [_INTL("Mud Sport"),       5],
       PBEffects::WaterSportField => [_INTL("Water Sport"),     5],
       PBEffects::TrickRoom       => [_INTL("Trick Room"),      5], 
       PBEffects::MagicRoom       => [_INTL("Magic Room"),      5],
       PBEffects::WonderRoom      => [_INTL("Wonder Room"),     5],
-      PBEffects::Gravity         => [_INTL("Gravity"),         5]
+      PBEffects::Gravity         => [_INTL("Gravity"),         5],
+      PBEffects::FairyLock       => [_INTL("Fairy Lock"),      2]
     }
+    # Effects that apply to one side of the field.
     team_effects = {
       PBEffects::AuroraVeil      => [_INTL("Aurora Veil"),     5], 
       PBEffects::Reflect         => [_INTL("Reflect"),         5],
@@ -456,17 +531,53 @@ class Battle::Scene
       PBEffects::LuckyChant      => [_INTL("Lucky Chant"),     5],
       PBEffects::Tailwind        => [_INTL("Tailwind"),        4],
       PBEffects::Rainbow         => [_INTL("Rainbow"),         4],
-      PBEffects::SeaOfFire       => [_INTL("Sea of Fire"),     4]
+      PBEffects::SeaOfFire       => [_INTL("Sea of Fire"),     4],
+      PBEffects::Swamp           => [_INTL("Swamp"),           4]
     }
+    # Effects that apply to an individual battler.
+    battler_effects = {
+      PBEffects::Disable         => [_INTL("Disable"),         5],
+      PBEffects::Embargo         => [_INTL("Embargo"),         5],
+      PBEffects::HealBlock       => [_INTL("Heal Block"),      5],
+      PBEffects::MagnetRise      => [_INTL("Magnet Rise"),     5],
+      PBEffects::Encore          => [_INTL("Encore"),          4],
+      PBEffects::Taunt           => [_INTL("Taunt"),           4],
+      PBEffects::PerishSong      => [_INTL("Perish Song"),     3],
+      PBEffects::Telekinesis     => [_INTL("Telekinesis"),     3],
+      PBEffects::ThroatChop      => [_INTL("Throat Chop"),     2]
+    }
+    if battler.effects[PBEffects::Trapping] > 0
+      moveName = GameData::Move.get(battler.effects[PBEffects::TrappingMove]).name
+      battler_effects[PBEffects::Trapping]  = [_INTL("{1}", moveName),   5]
+    end
+    # Adds plugin-specific effects.
     if PluginManager.installed?("ZUD Mechanics")
       team_effects[PBEffects::VineLash]     = [_INTL("G-Max Vine Lash"), 4]
       team_effects[PBEffects::Wildfire]     = [_INTL("G-Max Wildfire"),  4]
       team_effects[PBEffects::Cannonade]    = [_INTL("G-Max Cannonade"), 4]
       team_effects[PBEffects::Volcalith]    = [_INTL("G-Max Volcalith"), 4]
+      if battler.effects[PBEffects::Dynamax] > 0
+        count = (battler.effects[PBEffects::MaxRaidBoss]) ? "---" : "#{battler.effects[PBEffects::Dynamax]}/#{Settings::DYNAMAX_TURNS}"
+        effects.push([_INTL("Dynamax"), count])
+      end
     end
     if PluginManager.installed?("Focus Meter System")
       team_effects[PBEffects::FocusedGuard] = [_INTL("Focused Guard"),   4]
+      battler_effects[PBEffects::FocusLock] = [_INTL("Focus Lock"),      4]
     end
+    # Weather
+    if @battle.field.weather != :None
+      count = @battle.field.weatherDuration
+      count = (count > 0) ? "#{count}/5" : "---"
+      effects.push([GameData::BattleWeather.get(@battle.field.weather).name, count])
+    end
+    # Terrain
+    if @battle.field.terrain != :None
+      count = @battle.field.terrainDuration
+      count = (count > 0) ? "#{count}/5" : "---"
+      effects.push([GameData::BattleTerrain.get(@battle.field.terrain).name + " " + _INTL("Terrain"), count])
+    end
+    # Draws a list of each of the above effects currently in play.
     field_effects.each do |key, value|
       next if @battle.field.effects[key] == 0
       count = @battle.field.effects[key]
@@ -479,32 +590,49 @@ class Battle::Scene
       count = (count > 0) ? "#{count}/#{value[1]}" : "---"
       effects.push([value[0], count])
     end
+    battler_effects.each do |key, value|
+      next if battler.effects[key] == 0
+      count = battler.effects[key]
+      count = (count > 0) ? "#{count}/#{value[1]}" : "---"
+      effects.push([value[0], count])
+    end
+    # Draws panels and text for all relevant battle effects affecting the battler.
     effects.each_with_index do |effect, i|
       break if i == 8
       imagePos.push([path + "battle_info_panel", panelX, ypos + 132 + (i * 24), 0, 24, 218, 24])
-      textPos.push([effect[0], xpos + 321, ypos + 136 + (i * 24), 2, base, shadow],
-                   [effect[1], xpos + 425, ypos + 136 + (i * 24), 2, base, shadow])
+      textPos.push([effect[0], xpos + 321, ypos + 136 + (i * 24), 2, BASE_DARK, SHADOW_DARK],
+                   [effect[1], xpos + 425, ypos + 136 + (i * 24), 2, BASE_LIGHT, SHADOW_LIGHT])
     end
     #---------------------------------------------------------------------------
     # Draws the battler's last used move.
     if battler.lastMoveUsed
       move = GameData::Move.get(battler.lastMoveUsed).name
-      textPos.push([_INTL("Used: #{move}"), xpos + 314, ypos + 100, 2, base, shadow])
+      textPos.push([_INTL("Used: #{move}"), xpos + 314, ypos + 100, 2, BASE_LIGHT, SHADOW_LIGHT])
     end
     #---------------------------------------------------------------------------
     # Draws all of the above text and images.
     pbDrawImagePositions(@infoUIOverlay1, imagePos)
     pbDrawTextPositions(@infoUIOverlay2, textPos)
     #---------------------------------------------------------------------------
-    # Draws the battler's types. Doesn't display on newly encountered species.
-    if battler.pbOwnedByPlayer? || 
-       $player.pokedex.battled_count(poke.species) > 0 || $player.pokedex.owned?(poke.species)
-      typebitmap = AnimatedBitmap.new(_INTL("Graphics/Pictures/types"))
-      poke.types.each_with_index do |type, i|
-        type_number = GameData::Type.get(type).icon_position
-        type_rect = Rect.new(0, type_number * 28, 64, 28)
-        @infoUIOverlay1.blt(199, 55 + (i * 30), typebitmap.bitmap, type_rect)
-      end
+    # Draws the battler's types. Displays the "???" type on newly encountered species.
+    if battler.effects[PBEffects::Illusion] && !battler.pbOwnedByPlayer?
+      displayTypes = poke.types
+      displayTypes.push(battler.effects[PBEffects::Type3]) if battler.effects[PBEffects::Type3]
+    else
+      displayTypes = battler.pbTypes(true)
+    end
+    if !(battler.pbOwnedByPlayer? || 
+       $player.pokedex.battled_count(poke.species) > 0 || 
+       $player.pokedex.owned?(poke.species)) || 
+       displayTypes.empty?
+      displayTypes = [:QMARKS]
+    end
+    typeY = (displayTypes.length == 3) ? ypos + 7 : ypos + 37
+    typebitmap = AnimatedBitmap.new(_INTL("Graphics/Pictures/types"))
+    displayTypes.each_with_index do |type, i|
+      type_number = GameData::Type.get(type).icon_position
+      type_rect = Rect.new(0, type_number * 28, 64, 28)
+      @infoUIOverlay1.blt(xpos + 171, typeY + (i * 30), typebitmap.bitmap, type_rect)
     end
   end
   
@@ -587,17 +715,11 @@ class Battle::Scene
     pbDrawImagePositions(@moveUIOverlay, imagePos)
     #---------------------------------------------------------------------------
     # Sets up move data.
-    base = Color.new(232, 232, 232)
-    shadow = Color.new(72, 72, 72)
-    raised_base = Color.new(50, 205, 50)
-    raised_shadow = Color.new(9, 121, 105)
-    lowered_base = Color.new(248, 72, 72)
-    lowered_shadow = Color.new(136, 48, 48)
     power = (move.baseDamage == 0) ? "---" : (move.baseDamage == 1) ? "???" : move.baseDamage.to_s
     accuracy = (move.accuracy == 0) ? "---" : move.accuracy.to_s
     effectrate = (move.addlEffect == 0) ? "---" : [:ICEFANG, :FIREFANG, :THUNDEFANG].include?(move.id) ? "10%" : move.addlEffect.to_s + "%"
-    dmg_base = acc_base = eff_base = base
-    dmg_shadow = acc_shadow = eff_shadow = shadow
+    dmg_base = acc_base = eff_base = BASE_LIGHT
+    dmg_shadow = acc_shadow = eff_shadow = SHADOW_LIGHT
     textPos = []
     #---------------------------------------------------------------------------
     # Sets up additional text for Z-Moves. (ZUD)
@@ -617,61 +739,61 @@ class Battle::Scene
       elsif GameData::PowerMove.heals_switch?(move.id) then text = _INTL("Fully restores an incoming Pokémon's HP.")
       elsif GameData::PowerMove.focus_user?(move.id)   then text = _INTL("The user becomes the center of attention.")
       end
-      textPos.push([_INTL("Z-Power: #{text}"), xpos + 10, ypos + 128, 0, raised_base, raised_shadow]) if text
+      textPos.push([_INTL("Z-Power: #{text}"), xpos + 10, ypos + 128, 0, BASE_RAISED, SHADOW_RAISED]) if text
     #---------------------------------------------------------------------------
     # Sets up additional text for moves affected by Battle Styles. (PLA)
     elsif PluginManager.installed?("PLA Battle Styles") && move.mastered?
       case battler.style_trigger
       when 1
         if move.baseDamage > 1
-          dmg_base = raised_base
-          dmg_shadow = raised_shadow
+          dmg_base = BASE_RAISED
+          dmg_shadow = SHADOW_RAISED
         end
         if ![0, 100].include?(move.old_accuracy)
-          acc_base = raised_base
-          acc_shadow = raised_shadow
+          acc_base = BASE_RAISED
+          acc_shadow = SHADOW_RAISED
         end
         if ![0, 100].include?(move.old_addlEffect)
-          eff_base = raised_base
-          eff_shadow = raised_shadow
+          eff_base = BASE_RAISED
+          eff_shadow = SHADOW_RAISED
         end
         if move.strongStyleStatUp?
-          textPos.push([_INTL("Strong Style: Number of stat stages raised +1."), xpos + 10, ypos + 128, 0, raised_base, raised_shadow])
+          textPos.push([_INTL("Strong Style: Number of stat stages raised +1."), xpos + 10, ypos + 128, 0, BASE_RAISED, SHADOW_RAISED])
         elsif move.strongStyleStatDown?
-          textPos.push([_INTL("Strong Style: Number of stat stages lowered +1."), xpos + 10, ypos + 128, 0, raised_base, raised_shadow])
+          textPos.push([_INTL("Strong Style: Number of stat stages lowered +1."), xpos + 10, ypos + 128, 0, BASE_RAISED, SHADOW_RAISED])
         elsif move.strongStyleHealing?
-          textPos.push([_INTL("Strong Style: The amount of HP healed is increased."), xpos + 10, ypos + 128, 0, raised_base, raised_shadow])
+          textPos.push([_INTL("Strong Style: The amount of HP healed is increased."), xpos + 10, ypos + 128, 0, BASE_RAISED, SHADOW_RAISED])
         elsif move.strongStyleRecoil?
-          textPos.push([_INTL("Strong Style: The amount of recoil taken is increased."), xpos + 10, ypos + 128, 0, lowered_base, lowered_shadow])
+          textPos.push([_INTL("Strong Style: The amount of recoil taken is increased."), xpos + 10, ypos + 128, 0, BASE_LOWERED, SHADOW_LOWERED])
         end
       when 2
         if move.baseDamage > 1 
-          dmg_base = lowered_base
-          dmg_shadow = lowered_shadow
+          dmg_base = BASE_LOWERED
+          dmg_shadow = SHADOW_LOWERED
         end
         if move.agileStyleStatUp?
-          textPos.push([_INTL("Agile Style: Number of stat stages raised -1."), xpos + 10, ypos + 128, 0, lowered_base, lowered_shadow])
+          textPos.push([_INTL("Agile Style: Number of stat stages raised -1."), xpos + 10, ypos + 128, 0, BASE_LOWERED, SHADOW_LOWERED])
           elsif move.agileStyleStatDown?
-          textPos.push([_INTL("Agile Style: Number of stat stages lowered -1."), xpos + 10, ypos + 128, 0, lowered_base, lowered_shadow])
+          textPos.push([_INTL("Agile Style: Number of stat stages lowered -1."), xpos + 10, ypos + 128, 0, BASE_LOWERED, SHADOW_LOWERED])
         elsif move.agileStyleHealing?
-          textPos.push([_INTL("Agile Style: The amount of HP healed is reduced."), xpos + 10, ypos + 128, 0, lowered_base, lowered_shadow])
+          textPos.push([_INTL("Agile Style: The amount of HP healed is reduced."), xpos + 10, ypos + 128, 0, BASE_LOWERED, SHADOW_LOWERED])
         elsif move.agileStyleRecoil?
-          textPos.push([_INTL("Agile Style: The amount of recoil taken is reduced."), xpos + 10, ypos + 128, 0, raised_base, raised_shadow])
+          textPos.push([_INTL("Agile Style: The amount of recoil taken is reduced."), xpos + 10, ypos + 128, 0, BASE_RAISED, SHADOW_RAISED])
         end
       end
     end
     #---------------------------------------------------------------------------
     # Draws move data text.
     textPos.push(
-      [move.name,       xpos + 10,            ypos + 8,  0, base, shadow],
-      [_INTL("Pow:"),   Graphics.width - 86,  ypos + 10, 2, base, shadow],
-      [_INTL("Acc:"),   Graphics.width - 86,  ypos + 39, 2, base, shadow],
-      [_INTL("Effct:"), xpos + 287,           ypos + 39, 0, base, shadow],
+      [move.name,       xpos + 10,            ypos + 8,  0, BASE_LIGHT, SHADOW_LIGHT],
+      [_INTL("Pow:"),   Graphics.width - 86,  ypos + 10, 2, BASE_LIGHT, SHADOW_LIGHT],
+      [_INTL("Acc:"),   Graphics.width - 86,  ypos + 39, 2, BASE_LIGHT, SHADOW_LIGHT],
+      [_INTL("Effct:"), xpos + 287,           ypos + 39, 0, BASE_LIGHT, SHADOW_LIGHT],
       [power,           Graphics.width - 34,  ypos + 10, 2, dmg_base, dmg_shadow],
       [accuracy,        Graphics.width - 34,  ypos + 39, 2, acc_base, acc_shadow],
       [effectrate,      Graphics.width - 146, ypos + 39, 2, eff_base, eff_shadow]
     )
     pbDrawTextPositions(@moveUIOverlay, textPos)
-    drawTextEx(@moveUIOverlay, xpos + 10, ypos + 70, Graphics.width - 10, 2, GameData::Move.get(move.id).description, base, shadow)
+    drawTextEx(@moveUIOverlay, xpos + 10, ypos + 70, Graphics.width - 10, 2, GameData::Move.get(move.id).description, BASE_LIGHT, SHADOW_LIGHT)
   end
 end

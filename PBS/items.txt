@@ -8571,7 +8571,7 @@ Description = Reflective scales that act like a mirror. Pokémon are able to rec
 #-------------------------------
 [MAXPLUMAGE]
 Name = Max Plumage
-NamePlural = collections of Max Plumage
+NamePlural = bundles of Max Plumage
 Pocket = 2
 Price = 4000
 FieldUse = OnPokemon
@@ -8732,3 +8732,21 @@ Price = 3000
 FieldUse = OnPokemon
 Flags = Fling_30
 Description = A rare seed that can be used to master a Pokémon move so it can be used in the agile or strong styles.
+#-------------------------------
+[BOOSTERPACK]
+Name = Booster Pack
+NamePlural = Booster Packs
+Pocket = 1
+Price = 1000
+FieldUse = Direct
+Flags = Fling_30
+Description = A booster pack for Triple Triad game. Contains 5 cards.
+#-------------------------------
+[STARTERPACK]
+Name = Starter Pack
+NamePlural = Starter Packs
+Pocket = 1
+Price = 500
+FieldUse = Direct
+Flags = Fling_30
+Description = A booster pack for Triple Triad game. Contains 3 starter cards.

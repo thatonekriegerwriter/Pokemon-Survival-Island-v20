@@ -2,7 +2,16 @@
 # Revamps base Essentials code related to NPC Trainers to allow for plugin 
 # compatibility.
 #===============================================================================
-
+#Config	
+#Set NoSoftReset to true if you want to set the random teams once per savefile.
+#Else it's gonna randomize the teams each time you go into a fight which makes
+#it possible to soft reset in front of a trainer to change his/her team.
+NoSoftReset = true
+#Set FirstGuaranteed to true if you want the first Pokemon in the list to be
+#the guaranteed one 2 and more is gonna be downwards from there on.
+#Set it to false if you want the last pokemon listed to be the guarantee 2
+#and more is gonna be upwards from there on.
+FirstGuaranteed = false
 
 #-------------------------------------------------------------------------------
 # Rewrites Trainer data to consider plugin properties.
@@ -15,6 +24,9 @@ module GameData
     SCHEMA["DynamaxLvl"] = [:dynamax_lvl, "u"]
     SCHEMA["Gigantamax"] = [:gmaxfactor,  "b"]
 	SCHEMA["Mastery"]    = [:mastery,     "b"]
+	SCHEMA["Guaranteed"] = [:guaranteed,  "u"]
+	SCHEMA["NumPkmn"]    = [:numpkmn,  "u"]
+	SCHEMA["Loyalty"]    = [:loyalty,  "u"]
     
     def to_trainer
       tr_name = self.name
@@ -27,6 +39,33 @@ module GameData
       trainer.id        = $player.make_foreign_ID
       trainer.items     = @items.clone
       trainer.lose_text = self.lose_text
+	      if @numpkmn > 0      #byKota        
+            if FirstGuaranteed == true
+              pokemon_team2 = @pokemon.shift(@guara)
+            else 
+              pokemon_team2 = @pokemon.pop(@guara)
+            end  
+            pokemon_team3 = pokemon_team2.rotate(0)        
+            if NoSoftReset == true
+              ttype2 = @trainer_type.to_s
+              ttype = ttype2.codepoints
+              tname = @real_name.codepoints
+              playerID = $Trainer.id
+              hash = ttype, tname, @version, playerID
+              hash.flatten!
+              hash = hash.sum
+              srand(hash)
+            end
+            pokemon_team = @pokemon.sample(@numpkmn)
+            pokemon_team += pokemon_team2
+            if FirstGuaranteed == true
+              @pokemon = pokemon_team3.shift(@guara) + @pokemon
+            else
+              @pokemon = @pokemon + pokemon_team3.pop(@guara)
+            end  
+          else
+            pokemon_team = @pokemon
+          end	
       @pokemon.each do |pkmn_data|
         species = GameData::Species.get(pkmn_data[:species]).species
         pkmn = Pokemon.new(species, pkmn_data[:level], trainer, false)
@@ -67,6 +106,7 @@ module GameData
           end
         end
         pkmn.happiness = pkmn_data[:happiness] if pkmn_data[:happiness]
+        pkmn.loyalty = pkmn_data[:loyalty] if pkmn_data[:loyalty]
         pkmn.name = pkmn_data[:name] if pkmn_data[:name] && !pkmn_data[:name].empty?
         #-----------------------------------------------------------------------
         # Sets the default values for plugin properties on trainer's Pokemon.
@@ -144,13 +184,16 @@ module TrainerPokemonProperty
       initsetting[:iv],
       initsetting[:ev],
       initsetting[:happiness],
+      initsetting[:loyalty],
+      initsetting[:happiness],
       initsetting[:poke_ball],
       initsetting[:trainer_ace],
       initsetting[:focus],
       initsetting[:birthsign],
       initsetting[:dynamax_lvl], 
       initsetting[:gmaxfactor],
-	  initsetting[:mastery]
+	  initsetting[:mastery],
+      initsetting[:loyalty]
     ])
     max_level = GameData::GrowthRate.max_level
     pkmn_properties = [
@@ -210,6 +253,7 @@ module TrainerPokemonProperty
        [_INTL("IVs"),           IVsProperty.new(Pokemon::IV_STAT_LIMIT), _INTL("Individual values for each of the Pokémon's stats.")],
        [_INTL("EVs"),           EVsProperty.new(Pokemon::EV_STAT_LIMIT), _INTL("Effort values for each of the Pokémon's stats.")],
        [_INTL("Happiness"),     LimitProperty2.new(255),                 _INTL("Happiness of the Pokémon (0-255).")],
+       [_INTL("Loyalty"),       LimitProperty2.new(255),                 _INTL("Loyalty of the Pokémon (0-255).")],
        [_INTL("Poké Ball"),     BallProperty.new(oldsetting),            _INTL("The kind of Poké Ball the Pokémon is kept in.")],
        [_INTL("Ace"),           BooleanProperty2,                        _INTL("Flags this Pokémon as this trainer's ace. Used by certain plugins below.")],
        property_Focus, property_Birthsign, property_DynamaxLvl, property_GmaxFactor, property_Mastery
@@ -238,7 +282,8 @@ module TrainerPokemonProperty
       :birthsign       => oldsetting[18 + Pokemon::MAX_MOVES],
       :dynamax_lvl     => oldsetting[19 + Pokemon::MAX_MOVES],
       :gmaxfactor      => oldsetting[20 + Pokemon::MAX_MOVES],
-	  :mastery         => oldsetting[21 + Pokemon::MAX_MOVES]
+	  :mastery         => oldsetting[21 + Pokemon::MAX_MOVES],
+	  :loyalty         => oldsetting[22 + Pokemon::MAX_MOVES]
     }
     moves = []
     Pokemon::MAX_MOVES.times do |i|

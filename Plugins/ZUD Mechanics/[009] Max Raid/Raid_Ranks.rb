@@ -121,6 +121,7 @@ def raid_GenerateBanlist
                    :DEERLING,
                    :SAWSBUCK,
                    :BASCULIN, 
+                   :DARMANITAN,
                    :TORNADUS, 
                    :THUNDURUS, 
                    :LANDORUS, 

@@ -1,0 +1,2 @@
+Name         = triple triad
+Version      = 1

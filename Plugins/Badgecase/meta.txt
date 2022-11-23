@@ -1,4 +1,0 @@
-Name = BadgeCase
-Version = 1.0
-Essentials = 20.1
-Credits = roei110

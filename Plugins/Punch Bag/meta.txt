@@ -1,0 +1,4 @@
+Name         = Punch Bag
+Version      = 1.1
+Essentials   = 20.1
+Credits      = Grogro

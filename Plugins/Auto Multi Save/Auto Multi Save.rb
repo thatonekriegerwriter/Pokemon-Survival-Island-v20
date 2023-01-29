@@ -320,9 +320,12 @@ class PokemonLoadScreen
     cmd_rocket     = -1
     commands[cmd_psia = commands.length] = _INTL('Play Pokemon SI: Adventures')
     commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
+	    if @save_data[:player].nil?
+		else
         if @save_data[:player].rocket_unlocked
             commands[cmd_rocket = commands.length]  = _INTL('Play Pokemon SI: Team Rocket Edition')
         end
+		end
 		@scene.pbStartScene(commands, false, nil, 0, nil, 0)
     loop do
       command = @scene.pbChoose3(commands)

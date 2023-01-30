@@ -354,6 +354,7 @@ class PokemonLoadScreen
 					$PokemonSystem.language = pbChooseLanguage
 					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
 				end
+		  $PokemonSystem.playermode = 0
         Game.start_new
         return
 	  when cmd_rocket

@@ -107,21 +107,6 @@ EventHandlers.add(:on_wild_pokemon_created, :wild_mastery,
 
 
 #===============================================================================
-# Move mastery debug tool.
-#===============================================================================
-MenuHandlers.add(:pokemon_debug_menu, :master_moves, {
-  "name"   => _INTL("Master moves"),
-  "parent" => :moves,
-  "effect" => proc { |pkmn, pkmnid, heldpoke, settingUpBattle, screen|
-    pkmn.master_moveset
-    screen.pbDisplay(_INTL("{1}'s eligible moves were mastered.", pkmn.name))
-    screen.pbRefreshSingle(pkmnid)
-    next false
-  }
-})
-
-
-#===============================================================================
 # Compiles a text file of master-able moves.
 #===============================================================================
 module Compiler

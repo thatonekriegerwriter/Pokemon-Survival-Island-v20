@@ -71,6 +71,7 @@ Name = Temperate Base
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Forest
+Flags = PowerSpot
 #-------------------------------
 [011]   # Memory
 Name = Memory
@@ -254,6 +255,7 @@ Name = Water Temple
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Indoor
+Flags = PowerSpot
 #-------------------------------
 [038]   # Temperate Ocean
 Name = Temperate Ocean
@@ -374,6 +376,7 @@ HealingSpot = 55,24,11
 MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = Indoor
+Flags = PowerSpot
 #-------------------------------
 [057]   # Temperate Ocean
 Name = Temperate Ocean
@@ -393,6 +396,7 @@ Outdoor = true
 MapPosition = 0,0,0
 DiveMap = 66
 BattleBack = Water
+Flags = PowerSpot
 #-------------------------------
 [060]   # Temperate Ocean
 Name = Temperate Ocean
@@ -405,6 +409,7 @@ Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
+Flags = PowerSpot
 #-------------------------------
 [062]   # Temperate Ocean
 Name = Temperate Ocean
@@ -425,6 +430,7 @@ ShowArea = false
 Weather = Rain,20
 MapPosition = 0,0,0
 BattleBack = Forest
+Flags = PowerSpot
 #-------------------------------
 [065]   # Ravine
 Name = Ravine

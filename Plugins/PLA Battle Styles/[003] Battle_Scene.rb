@@ -13,6 +13,9 @@ class Battle::Scene
     @styleOverlay = @sprites["styleinfo"].bitmap
   end
   
+  #-----------------------------------------------------------------------------
+  # Toggles the style info display.
+  #-----------------------------------------------------------------------------
   def pbUpdateStyleWindow(style = 0, info = false)
     @styleOverlay.clear
     xpos = Graphics.width / 2
@@ -65,6 +68,9 @@ class Battle::Scene
     pbUpdateStyleWindow(style, info)
   end
   
+  #-----------------------------------------------------------------------------
+  # Calls the Battle Style animation.
+  #-----------------------------------------------------------------------------
   def pbShowBattleStyle(battlers, battler)
     styleAnim = Animation::BattleStyle.new(@sprites, @viewport, battlers, battler)
     loop do
@@ -73,6 +79,98 @@ class Battle::Scene
       break if styleAnim.animDone?
     end
     styleAnim.dispose
+  end
+  
+  #-----------------------------------------------------------------------------
+  # Toggles the use of Battle Styles in the Fight Menu.
+  #-----------------------------------------------------------------------------
+  def pbFightMenu_BattleStyle(battler, cw)
+    pbHidePluginUI
+    pbPlayPLASelection
+    style_change = false
+    apply_style = false
+    cw.battleStyle = battler.style_trigger + 1
+    pbHideFocusPanel
+    show_info = Settings::SHOW_STYLE_INFO_DEFAULT
+    pbToggleStyleInfo(battler.style_trigger, true, show_info)
+    loop do
+      pbUpdate(cw)
+      old_style = battler.style_trigger
+      #-------------------------------------------------------------------------
+      # Strong Style
+      if Input.trigger?(Input::LEFT)
+        case old_style
+        when 0 then battler.style_trigger = 1
+        when 2 then battler.style_trigger = 0
+        end
+        style_change = old_style != battler.style_trigger
+        pbPlayCursorSE if style_change
+      #-------------------------------------------------------------------------
+      # Agile Style
+      elsif Input.trigger?(Input::RIGHT)
+        case old_style
+        when 0 then battler.style_trigger = 2
+        when 1 then battler.style_trigger = 0
+        end  
+        style_change = old_style != battler.style_trigger
+        pbPlayCursorSE if style_change
+      #-------------------------------------------------------------------------
+      # Cancel style choice
+      elsif Input.trigger?(Input::BACK)
+        @battle.pbSetBattleMechanicUsage(battler.index, "Style", 0)
+        battler.toggle_style_moves
+        battler.style_trigger = 0
+        cw.battleStyle = 0
+        pbToggleStyleInfo(0, false)
+        pbPlayPLACancel
+        break
+      #-------------------------------------------------------------------------
+      # Toggles style info
+      elsif Input.trigger?(Input::SPECIAL)
+        if battler.style_trigger > 0
+          show_info = !show_info
+          pbSEPlay("GUI party switch")
+          pbToggleStyleInfo(battler.style_trigger, true, show_info)
+        end
+      #-------------------------------------------------------------------------
+      # Confirm style choice
+      elsif Input.trigger?(Input::USE) || Input.trigger?(Input::ACTION)
+        if cw.battleStyle > 1
+          apply_style = true
+          pbPlayPLASelection
+        else
+          apply_style = true
+          battler.toggle_style_moves
+          battler.style_trigger = 0
+          cw.battleStyle = 0
+          pbPlayPLACancel
+        end
+        if battler.style_trigger > 0
+          @battle.pbSetBattleMechanicUsage(battler.index, "Style", -1)
+          cw.mode = 1
+        else
+          @battle.pbSetBattleMechanicUsage(battler.index, "Style", 0)
+        end
+      end
+      #-------------------------------------------------------------------------
+      # Apply style changes
+      if style_change
+        new_style = battler.style_trigger
+        cw.battleStyle = new_style + 1
+        battler.toggle_style_moves(new_style)
+        pbShowWindow(FIGHT_BOX)
+        pbSelectBattler(battler.index)
+        cw.refreshButtonNames
+        pbToggleStyleInfo(new_style, true, show_info)
+        style_change = false
+      end
+      if apply_style
+        cw.battleStyle += 2 if cw.battleStyle > 1
+        pbToggleStyleInfo(cw.battleStyle, false)
+        break
+      end
+    end
+    return Settings::MENU_TRIGGER_BATTLE_STYLE, true
   end
 end
 
@@ -145,7 +243,7 @@ class Battle::Scene::Animation::BattleStyle < Battle::Scene::Animation
     # Fades out battler's databox.
     #---------------------------------------------------------------------------
     @battlers.each do |b|
-      next if b == @battler
+      next if !b || b.fainted? || b == @battler
       box = addSprite(@sprites["dataBox_#{b.index}"])
       box.moveOpacity(delay, 3, 0)
     end
@@ -157,6 +255,7 @@ class Battle::Scene::Animation::BattleStyle < Battle::Scene::Animation
     battleBG = addSprite(@sprites["battle_bg"])
     battleBG.moveTone(delay, 4, tone)
     @battlers.each do |b|
+	  next if !b || b.fainted?
       battler = addSprite(@sprites["pokemon_#{b.index}"], PictureOrigin::BOTTOM)
       shadow = addSprite(@sprites["shadow_#{b.index}"], PictureOrigin::CENTER)
       box = addSprite(@sprites["dataBox_#{b.index}"])
@@ -181,6 +280,7 @@ class Battle::Scene::Animation::BattleStyle < Battle::Scene::Animation
     tone = Tone.new(0, 0, 0, 0)
     battleBG.moveTone(delay, 6, tone)
     @battlers.each do |b|
+	  next if !b || b.fainted?
       battler = addSprite(@sprites["pokemon_#{b.index}"], PictureOrigin::BOTTOM)
       shadow = addSprite(@sprites["shadow_#{b.index}"], PictureOrigin::CENTER)
       box = addSprite(@sprites["dataBox_#{b.index}"])
@@ -192,7 +292,7 @@ class Battle::Scene::Animation::BattleStyle < Battle::Scene::Animation
     # Fades in battler's databox.
     #---------------------------------------------------------------------------
     @battlers.each do |b|
-      next if b == @battler
+      next if !b || b.fainted? || b == @battler
       box = addSprite(@sprites["dataBox_#{b.index}"])
       box.moveOpacity(delay + 6, 3, 255)
     end

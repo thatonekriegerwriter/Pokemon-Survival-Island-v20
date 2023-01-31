@@ -8480,7 +8480,7 @@ NamePlural = Z-Boosters
 Pocket = 7
 Price = 4000
 BattleUse = Direct
-Flags = Fling_30
+Flags = Fling_30,UsesAllBattleActions
 Description = A crystal brimming with Z-Power. It can fully recharge your Z-Ring in battle.
 #-------------------------------
 [DYNAMAXBAND]
@@ -8497,7 +8497,7 @@ NamePlural = Wishing Stars
 Pocket = 7
 Price = 4000
 BattleUse = Direct
-Flags = Fling_50
+Flags = Fling_50,UsesAllBattleActions
 Description = A stone that radiates Dynamax energy. It can fully recharge your Dynamax Band in battle.
 #-------------------------------
 [WISHINGPIECE]
@@ -8544,7 +8544,7 @@ Description = Maxes out the Dynamax Level of a single Pokémon. A higher level m
 #-------------------------------
 [MAXSOUP]
 Name = Max Soup
-NamePlural = helpings of Max Soup
+NamePlural = Max Soups
 Pocket = 2
 Price = 10000
 FieldUse = OnPokemon
@@ -8553,7 +8553,7 @@ Description = A soup that packs a huge kick. Certain Pokémon that consume it ma
 #-------------------------------
 [MAXEGGS]
 Name = Max Eggs
-NamePlural = clutches of Max Eggs
+NamePlural = Max Eggs
 Pocket = 2
 Price = 20000
 FieldUse = Direct
@@ -8562,7 +8562,7 @@ Description = A bundle of highly nutritious, jumbo-sized eggs. Grants the entire
 #-------------------------------
 [MAXSCALES]
 Name = Max Scales
-NamePlural = sets of Max Scales
+NamePlural = Max Scales
 Pocket = 2
 Price = 4000
 FieldUse = OnPokemon
@@ -8571,7 +8571,7 @@ Description = Reflective scales that act like a mirror. Pokémon are able to rec
 #-------------------------------
 [MAXPLUMAGE]
 Name = Max Plumage
-NamePlural = bundles of Max Plumage
+NamePlural = Max Plumage
 Pocket = 2
 Price = 4000
 FieldUse = OnPokemon

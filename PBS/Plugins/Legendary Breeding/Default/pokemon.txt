@@ -464,3 +464,23 @@ EggGroups     = Undiscovered
 EggMoves      =
 EggGroups     = Undiscovered
 Flags         =
+#-------------------------------
+[WOCHIEN]
+GenderRatio   = Genderless
+EggMoves      =
+EggGroups     = Undiscovered
+#-------------------------------
+[CHIENPAO]
+GenderRatio   = Genderless
+EggMoves      =
+EggGroups     = Undiscovered
+#-------------------------------
+[TINGLU]
+GenderRatio   = Genderless
+EggMoves      =
+EggGroups     = Undiscovered
+#-------------------------------
+[CHIYU]
+GenderRatio   = Genderless
+EggMoves      =
+EggGroups     = Undiscovered

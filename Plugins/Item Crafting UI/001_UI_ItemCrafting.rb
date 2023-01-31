@@ -90,22 +90,22 @@ class ItemCraft_Scene
 			else
           pbPlayCursorSE
 		    end
-          hideIcons(index)
-          volume = 1
-		  if !@stock[index+1][0].nil?
-	      item = GameData::Item.get(@stock[index+1][0])
-          end		  
+          volume = 1	  
 		  if item == :MASTERBALLC && !$bag.has?(:MASTERBALLPL)
 		    if index+1 == @stock.length-1
 			 
 			else
+          hideIcons(index)
           index += 2
-		    end
-		  else
-          index += 1
-		  end
           @switching = true
           pbRedrawItem(index,volume)
+		    end
+		  elsif index+1 != @stock.length
+          hideIcons(index)
+          index += 1
+          @switching = true
+          pbRedrawItem(index,volume)
+		  end
         end
       if Input.trigger?(Input::LEFT)
         if index > 0
@@ -121,12 +121,14 @@ class ItemCraft_Scene
 			
 			else
           index -= 2
+          @switching = true
+          pbRedrawItem(index,volume)
 		  end
 		  else
           index -= 1
-		  end
           @switching = true
           pbRedrawItem(index,volume)
+		  end
         end
       end
       if Input.trigger?(Input::UP)

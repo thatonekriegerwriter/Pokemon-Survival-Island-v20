@@ -135,26 +135,29 @@ class Server:
     # Connecting, validate the party, and connect to peer if possible.
     def handle_connecting(self, s, st, message):
         record = RecordParser(message.decode("utf8"))
-        assert record.str() == "find"
-        version = record.str()
-        if not StrictVersion(version) >= GAME_VERSION:
-            self.disconnect(s, "invalid version")
-        peer_id = record.int()
-        name = record.str()
-        id = record.int()
-        ttype = record.str()
-        party = record.raw_all()
-        if not self.valid_party(record):
-            self.disconnect(s, "invalid party")
+        if record.str() != "find":
+            self.disconnect(s, "bad assert")
         else:
-            st.state = Finding(peer_id, name, id, ttype, party)
-            # Is the peer already waiting?
-            for s_, st_ in self.clients.items():
-                if (st is not st_ and
-                    isinstance(st_.state, Finding) and
-                    public_id(st_.state.id) == peer_id and
-                    st_.state.peer_id == public_id(id)):
-                    self.connect(s, s_)
+            version = record.str()
+            if not StrictVersion(version) >= GAME_VERSION:
+                self.disconnect(s, "invalid version")
+            else:
+                peer_id = record.int()
+                name = record.str()
+                id = record.int()
+                ttype = record.str()
+                party = record.raw_all()
+                if not self.valid_party(record):
+                    self.disconnect(s, "invalid party")
+                else:
+                    st.state = Finding(peer_id, name, id, ttype, party)
+                    # Is the peer already waiting?
+                    for s_, st_ in self.clients.items():
+                        if (st is not st_ and
+                            isinstance(st_.state, Finding) and
+                            public_id(st_.state.id) == peer_id and
+                            st_.state.peer_id == public_id(id)):
+                            self.connect(s, s_)
 
     # Finding, simply ignore messages until the peer connects.
     def handle_finding(self, s, st, message):

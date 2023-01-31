@@ -53,103 +53,6 @@ class PokemonSummary_Scene
 end
 
 #===============================================================================
-# Debug tool added to "Level/Stats" for manually changing focus style.
-#===============================================================================
-MenuHandlers.add(:pokemon_debug_menu, :set_focus, {
-  "name"   => _INTL("Set focus"),
-  "parent" => :level_stats,
-  "effect" => proc { |pkmn, pkmnid, heldpoke, settingUpBattle, screen|
-    if $game_switches[Settings::NO_FOCUS_MECHANIC]
-      screen.pbDisplay(_INTL("[NO_FOCUS_MECHANIC] switch has been enabled."))
-    else
-      commands = []
-      ids = []
-      GameData::Focus.each do |focus|
-        commands[focus.icon_position] = _INTL("{1}", focus.name)
-        ids[focus.icon_position] = focus.id
-      end
-      commands.push(_INTL("[Reset]"))
-      cmd = ids.index(pkmn.focus_id || ids[0])
-      loop do
-        msg = _INTL("Focus is set to {1}.", GameData::Focus.get(pkmn.focus_style).name)
-        cmd = screen.pbShowCommands(msg, commands, cmd)
-        break if cmd < 0
-        if cmd >= 0 && cmd < commands.length - 1
-          pkmn.focus_style = ids[cmd]
-        elsif cmd == commands.length - 1
-          pkmn.focus_style = nil
-        end
-        screen.pbRefreshSingle(pkmnid)
-      end
-    end
-    next false
-  }
-})
-
-#===============================================================================
-# Gives a demo party to showcase focus styles.
-#===============================================================================
-def pbFocusDemoParty
-  party = [:LUCARIO, :FROSLASS, :ABSOL, :MUK, :PORYGON2, :GALLADE]
-  $player.party.clear
-  party.each do |species|
-    pkmn = Pokemon.new(species, 30)
-    $player.party.push(pkmn)
-    $player.pokedex.register(pkmn)
-    $player.pokedex.set_owned(species)
-    case species
-    when :LUCARIO
-      pkmn.focus_style = :Accuracy
-      pkmn.learn_move(:FORESIGHT)
-      pkmn.learn_move(:FOCUSBLAST)
-      pkmn.learn_move(:METALSOUND)
-      pkmn.learn_move(:SHADOWBALL)
-      pkmn.item = :WIDELENS
-    when :FROSLASS
-      pkmn.focus_style = :Evasion
-      pkmn.learn_move(:HAIL)
-      pkmn.learn_move(:DOUBLETEAM)
-      pkmn.learn_move(:WILLOWISP)
-      pkmn.learn_move(:WEATHERBALL)
-      pkmn.ability = :SNOWCLOAK
-      pkmn.item = :BRIGHTPOWDER
-    when :ABSOL
-      pkmn.focus_style = :Critical
-      pkmn.learn_move(:FOCUSENERGY)
-      pkmn.learn_move(:NIGHTSLASH)
-      pkmn.learn_move(:PSYCHOCUT)
-      pkmn.learn_move(:SLASH)
-      pkmn.ability = :SUPERLUCK
-      pkmn.item = :RAZORCLAW
-    when :MUK
-      pkmn.focus_style = :Potency
-      pkmn.learn_move(:SLUDGEBOMB)
-      pkmn.learn_move(:FIREBLAST)
-      pkmn.learn_move(:SHADOWBALL)
-      pkmn.learn_move(:THUNDERBOLT)
-      pkmn.ability = :STENCH
-      pkmn.item = :QUICKCLAW
-    when :PORYGON2
-      pkmn.focus_style = :Passive
-      pkmn.learn_move(:RECOVER)
-      pkmn.learn_move(:THUNDERWAVE)
-      pkmn.learn_move(:TRIATTACK)
-      pkmn.learn_move(:FLASH)
-      pkmn.ability = :TRACE
-      pkmn.item = :LEFTOVERS
-    when :GALLADE
-      pkmn.learn_move(:FOCUSPUNCH)
-      pkmn.learn_move(:LASERFOCUS)
-      pkmn.learn_move(:ICEPUNCH)
-      pkmn.learn_move(:SHADOWSNEAK)
-      pkmn.ability = :STEADFAST
-      pkmn.item = :FOCUSSASH
-    end
-  end
-  pbMessage(_INTL("Filled party with demo Pokémon."))
-end
-
-#===============================================================================
 # Simple "Focus Tutor" NPC Event to change focus styles of party Pokemon.
 #===============================================================================
 def pbFocusTrainer(gender = -1)
@@ -171,7 +74,7 @@ def pbFocusTrainer(gender = -1)
       pbMessage(_INTL("#{g}Hmm? Changed your mind, eh?"))
       pbMessage(_INTL("#{g}Perhaps you are the one who requires focus training!"))
     else
-      poke = $Trainer.party[pbGet(1)]
+      poke = $player.party[pbGet(1)]
       focus = GameData::Focus.try_get(poke.focus_style)
       focus = GameData::Focus.get(:None) if !focus
       pbMessage(_INTL("#{g}{1}'s focus is currently in the {2} style.", poke.name, focus.name))

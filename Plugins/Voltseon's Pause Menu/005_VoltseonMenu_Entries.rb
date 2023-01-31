@@ -376,7 +376,7 @@ class MenuEntryExitDemo < MenuEntry
     menu.pbShowMenu
   end
 
-  def selectable?; return true if $player.playermode == 0; end
+  def selectable?; return true if $PokemonSystem.playermode == 0; end
 end
 #-------------------------------------------------------------------------------
 # Entry for quitting the game

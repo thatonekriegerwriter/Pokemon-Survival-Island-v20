@@ -67,10 +67,10 @@ def pbDungeonMain
 end
 	   
 def pbCollectionMain
-  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE]
+  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:CLEVERFEATHER,:SWIFTFEATHER,:SWIFTFEATHER,:SWIFTFEATHER]
   chanceCollect=rand(6)  #Encounters 2/10 of the time
   if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
-    vbItem = vbItems[rand(21)]
+    vbItem = vbItems[rand(25)]
     pbItemBall(vbItem)
   elsif  chanceCollect==1 ||  chanceCollect==4
     pbMessage("You didn't find anything.")

@@ -13,7 +13,10 @@ class PokemonDatabaseSprite < Sprite
       break if index > list.length - 1
       @pokemonsprites[i] = nil
       pokemon = list[index]
-      pokemon = :WISHIWASHI_1 if pokemon == :WISHIWASHI 
+      case pokemon
+      when :WISHIWASHI then pokemon = :WISHIWASHI_1
+      when :PALAFIN    then pokemon = :PALAFIN_1
+      end
       offset += 1 if i >= RaidDataScene::ROW_SIZE * offset
       @pokemonsprites[i] = PokemonSpeciesIconSprite.new(pokemon, viewport)
       @pokemonsprites[i].viewport = self.viewport
@@ -88,9 +91,9 @@ class RaidDataScene
     poke = GameData::Species.get(species)
     form_name = poke.form_name || ""
     if dataPage
-      hide_base_name = [:CASTFORM, :ROTOM, :GIRATINA, :ARCEUS, :KYUREM, :KELDEO,
-                        :MELOETTA, :GENESECT, :FURFROU, :AEGISLASH, :XERNEAS, :ZYGARDE,
-                        :WISHIWASHI, :SILVALLY, :MIMIKYU, :CRAMORANT, :EISCUE, :MORPEKO]
+      hide_base_name = [:CASTFORM, :ROTOM, :GIRATINA, :ARCEUS, :KYUREM, :KELDEO, :MELOETTA, 
+                        :GENESECT, :FURFROU, :AEGISLASH, :XERNEAS, :ZYGARDE, :WISHIWASHI, 
+                        :SILVALLY, :MIMIKYU, :CRAMORANT, :EISCUE, :MORPEKO, :PALAFIN]
       form_name = "" if hide_base_name.include?(poke.id)
       form_name = "Own Tempo" if poke.species == :ROCKRUFF && poke.form != 0
       form_name = form_name[0..12] + "..." if form_name.length > 15
@@ -169,7 +172,7 @@ class RaidDataScene
     raid    = 4 if $player.badge_count >= 6
     raid    = 5 if $player.badge_count >= 8
     @raidlvl = "Raid: Lv. #{raid}"
-    region_names = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar", "Paldea"]
+    region_names = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar/Hisui", "Paldea"]
     regions = region_names.slice(0, Settings::GENERATION_LIMIT)
     if Settings::HIDE_UNSEEN_SPECIES
       pkmnCount = raid_GetSeenSpecies([], raid, nil, true).length
@@ -639,9 +642,14 @@ class RaidDataScene
     yposT       = 36   # Y position of top move row.
     yposB       = 224  # Y position of bottom move row.
     pkmn        = GameData::Species.get(pkmn)
-    form        = pkmn.form
-    form        = 0 if pkmn.species == :MINIOR
-    form        = 1 if pkmn.species == :WISHIWASHI
+	case pkmn.species
+	when :MINIOR
+	  form = 0
+	when :WISHIWASHI, :PALAFIN
+	  form = 1
+	else
+	  form = pkmn.form
+	end
     habitat     = GameData::Habitat.get(pkmn.habitat).name
     ranks       = raid_RanksAppearedIn(pkmn.id)
     moves       = raid_GenerateMovelists(pkmn.id)
@@ -804,7 +812,7 @@ class RaidDataScene
     @movebitmap = AnimatedBitmap.new(_INTL(@path + "data_moves"))
     pbSetSpeciesData(pkmn)
     pkmndata = GameData::Species.get(pkmn)
-    form = (pkmndata.species == :WISHIWASHI) ? 1 : pkmndata.form
+    form = ([:WISHIWASHI, :PALAFIN].include?(pkmndata.species)) ? 1 : pkmndata.form
     GameData::Species.play_cry_from_species(pkmndata.species, form)
     raidforms = pkmndata.get_raid_forms
     loop do
@@ -903,9 +911,9 @@ class RaidDataScene
       elsif Input.repeat?(Input::LEFT)
         if raidforms.length > 1 && pkmn != raidforms.first
           prev_form = pkmn
-          raidforms.each do |form|
-            break if form == pkmn
-            prev_form = form
+          raidforms.each do |f|
+            break if f == pkmn
+            prev_form = f
           end
           pkmn = prev_form
           page    = 0
@@ -922,9 +930,9 @@ class RaidDataScene
       elsif Input.repeat?(Input::RIGHT)
         if raidforms.length > 1 && pkmn != raidforms.last
           next_form = pkmn
-          raidforms.reverse.each do |form|
-            break if form == pkmn
-            next_form = form
+          raidforms.reverse.each do |f|
+            break if f == pkmn
+            next_form = f
           end
           pkmn = next_form
           page    = 0
@@ -992,7 +1000,6 @@ class RaidDataScene
       elsif Input.trigger?(Input::ACTION)
         Input.update
         pkmndata = GameData::Species.get(pkmn)
-        form = (pkmndata.species == :WISHIWASHI) ? 1 : pkmndata.form
         GameData::Species.play_cry_from_species(pkmndata.species, form)
       #-------------------------------------------------------------------------
       # Returns to selection mode.
@@ -1005,245 +1012,6 @@ class RaidDataScene
     end
     pbDisposeSpriteHash(@datasprites)
     @dataviewport.dispose
-  end
-  
-  
-  #-----------------------------------------------------------------------------
-  # Sets up a Max Raid battle in debug mode.
-  #-----------------------------------------------------------------------------
-  def pbDebugMaxRaidBattle(pkmn)
-    rules = {}
-    pokemon = {}
-    ranks = raid_RanksAppearedIn(pkmn)
-    rules[:rank] = ranks[0]
-    rules[:hard] = (rules[:rank] == 6) ? true : false
-    rules[:size] = Settings::MAXRAID_SIZE
-    rules[:weather] = :None
-    rules[:terrain] = :None
-    rules[:environ] = :Cave
-    rules[:simple] = true
-    pokemon[:form] = GameData::Species.get(pkmn).form
-    pokemon[:gmaxfactor] = (GameData::Species.get(pkmn).hasGmax?) ? true : false
-    raidmsg = (rules[:rank] == 6) ? "Legendary" : rules[:rank]
-    hardmsg =  rules[:hard] ? "Hard" : "Normal"
-    sizemsg = ["1v1", "2v1", "3v1"]
-    gmaxmsg   = (pokemon[:gmaxfactor]) ? "Yes" : "No"
-    eternamax = (pkmn == :ETERNATUS) ? true : false
-    maxtype   = (eternamax) ? "Eternamax" : "Gigantamax"
-    cmd = 0
-    criteria = [
-      _INTL("Start Battle"),
-      _INTL("Set Party"),
-      _INTL("Raid Level [{1}]", raidmsg),
-      _INTL("Raid Size [{1}]", sizemsg[rules[:size] - 1]),
-      _INTL("Difficulty [{1}]", hardmsg),
-      _INTL("{1} [{2}]", maxtype, gmaxmsg),
-      _INTL("Weather [{1}]", GameData::BattleWeather.get(rules[:weather]).name),
-      _INTL("Terrain [{1}]", GameData::BattleTerrain.get(rules[:terrain]).name),
-      _INTL("Environment [{1}]", GameData::Environment.get(rules[:environ]).name),
-      _INTL("Back")
-    ]
-    loop do
-      Input.update
-      cmd = pbShowCommands(nil, criteria, -1, cmd)
-      #-------------------------------------------------------------------------
-      # Cancel & Reset
-      #-------------------------------------------------------------------------
-      if cmd == 9 || cmd < 0
-        pbPlayCancelSE
-        pbMessage(_INTL("Battle cancelled."))
-        break
-      end
-      #-------------------------------------------------------------------------
-      # Start Battle
-      #-------------------------------------------------------------------------
-      if cmd == 0
-        pbFadeOutIn {
-          pbSEPlay("Door enter")
-          Input.update
-          MaxRaidBattle.start(pkmn, rules, pokemon)
-          pbWait(20)
-          pbSEPlay("Door exit")
-        }
-        for i in $Trainer.party; i.heal; end
-        break
-      #-------------------------------------------------------------------------
-      # View party screen
-      #-------------------------------------------------------------------------
-      elsif cmd == 1
-        Input.update
-        pbPlayDecisionSE
-        pbPokemonScreen
-      #-------------------------------------------------------------------------
-      # Set Raid Level
-      #-------------------------------------------------------------------------
-      elsif cmd == 2
-        choice = 0
-        stars = []
-        ranks.each { |r| stars.push(r.to_s) }
-        if rules[:rank] < 6
-          loop do
-            Input.update
-            choice = pbShowCommands(nil, stars, -1, choice)
-            pbPlayDecisionSE if choice == -1
-            if choice > -1
-              rules[:rank] = ranks[choice]
-              pbMessage(_INTL("Raid level set to {1}.", rules[:rank]))
-            end
-            break
-          end
-        else
-          pbMessage(_INTL("This species may only appear in Legendary raids."))
-        end
-      #-------------------------------------------------------------------------
-      # Set Raid Size
-      #-------------------------------------------------------------------------
-      elsif cmd == 3
-        choice = 0
-        loop do
-          Input.update
-          choice = pbShowCommands(nil, sizemsg, -1, choice)
-          pbPlayDecisionSE if choice == -1
-          if choice > -1
-            rules[:size] = choice + 1
-            pbMessage(_INTL("Raid size is set to {1}.", sizemsg[choice]))
-          end
-          break
-        end
-      #-------------------------------------------------------------------------
-      # Set Difficulty mode
-      #-------------------------------------------------------------------------    
-      elsif cmd == 4
-        if rules[:rank] < 6
-          loop do
-            Input.update
-            pbPlayDecisionSE
-            if !rules[:hard]
-              rules[:hard] = true
-              pbMessage(_INTL("Hard Mode enabled."))
-            else
-              rules[:hard] = false
-              pbMessage(_INTL("Hard Mode disabled."))
-            end
-            break
-          end
-        else
-          pbMessage(_INTL("Difficulty for Legendary raids cannot be changed."))
-        end
-      #-------------------------------------------------------------------------
-      # Set Gigantamax
-      #-------------------------------------------------------------------------
-      elsif cmd == 5
-        if GameData::Species.get(pkmn).hasGmax?
-          if !eternamax
-            loop do
-              Input.update
-              pbPlayDecisionSE
-              if !pokemon[:gmaxfactor]
-                pokemon[:gmaxfactor] = true
-                pbMessage(_INTL("Gigantamax Factor applied."))
-              else
-                pokemon[:gmaxfactor] = false
-                pbMessage(_INTL("Gigantamax Factor removed."))
-              end
-              break
-            end
-          else
-            pbMessage(_INTL("This species can only appear in its Eternamax Form."))
-          end
-        else
-          pbMessage(_INTL("This species is unable to Gigantamax."))
-        end
-      #-------------------------------------------------------------------------
-      # Set Weather
-      #-------------------------------------------------------------------------
-      elsif cmd == 6
-        weather    = []
-        weather_id = []
-        GameData::BattleWeather.each do |w|
-          next if w.id == :HarshSun
-          next if w.id == :HeavyRain
-          next if w.id == :StrongWinds
-          weather.push(w.name)
-          weather_id.push(w.id)
-        end
-        choice = 0
-        loop do
-          Input.update
-          choice = pbShowCommands(nil, weather, -1, choice)
-          pbPlayDecisionSE if choice == -1
-          if choice > -1
-            rules[:weather] = weather_id[choice]
-            pbMessage(_INTL("Weather is set to {1}.", weather[choice]))
-          end
-          break
-        end
-      #-------------------------------------------------------------------------
-      # Set Terrain
-      #-------------------------------------------------------------------------
-      elsif cmd == 7
-        terrain    = []
-        terrain_id = []
-        GameData::BattleTerrain.each do |t|
-          name = t.name
-          full_name = (t.id == :None) ? name : name += " Terrain"
-          terrain.push(full_name)
-          terrain_id.push(t.id)
-        end
-        choice = 0
-        loop do
-          Input.update
-          choice = pbShowCommands(nil, terrain, -1, choice)
-          pbPlayDecisionSE if choice == -1
-          if choice > -1
-            rules[:terrain] = terrain_id[choice]
-            pbMessage(_INTL("Terrain is set to {1}.", terrain[choice]))
-          end
-          break
-        end
-      #-------------------------------------------------------------------------
-      # Set Environment
-      #-------------------------------------------------------------------------
-      elsif cmd == 8
-        environ    = []
-        environ_id = []
-        GameData::Environment.each do |e|
-          environ.push(e.name)
-          environ_id.push(e.id)
-        end
-        choice = 0
-        loop do
-          Input.update
-          choice = pbShowCommands(nil, environ, -1, choice)
-          pbPlayDecisionSE if choice == -1
-          if choice > -1
-            rules[:environ] = environ_id[choice]
-            pbMessage(_INTL("Environment is set to {1}.", environ[choice]))
-          end
-          break
-        end
-      end
-      #-------------------------------------------------------------------------
-      # Sets newly selected criteria
-      #-------------------------------------------------------------------------
-      criteria.clear
-      raidmsg  = (rules[:rank] == 6) ? "Legendary" : rules[:rank]
-      hardmsg  = (rules[:hard]) ? "Hard" : "Normal"
-      maxtype  = (eternamax) ? "Eternamax" : "Gigantamax"
-      gmaxmsg  = (pokemon[:gmaxfactor]) ? "Yes" : "No"
-      criteria = [
-        _INTL("Start Battle"),
-        _INTL("Set Party"),
-        _INTL("Raid Level [{1}]", raidmsg),
-        _INTL("Raid Size [{1}]", sizemsg[rules[:size] - 1]),
-        _INTL("Difficulty [{1}]", hardmsg),
-        _INTL("{1} [{2}]", maxtype, gmaxmsg),
-        _INTL("Weather [{1}]", GameData::BattleWeather.get(rules[:weather]).name),
-        _INTL("Terrain [{1}]", GameData::BattleTerrain.get(rules[:terrain]).name),
-        _INTL("Environment [{1}]", GameData::Environment.get(rules[:environ]).name),
-        _INTL("Back")
-      ]
-    end
   end
 end
 

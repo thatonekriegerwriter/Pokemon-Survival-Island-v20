@@ -25,27 +25,9 @@ class Battle::Scene
     @focusbitmap = AnimatedBitmap.new(_INTL("Graphics/Plugins/Focus Meter/panel_bar"))
   end
   
-  def pbUpdateFocusIcons
-    total = 0
-    @battle.battlers.each_with_index do |b, i|
-      total += 1
-      next if !b
-      if !b.fainted?
-        poke = (b.opposes?) ? b.displayPokemon : b.pokemon
-        @sprites["battler_icon#{b.index}"].pokemon = poke
-        @sprites["battler_icon#{b.index}"].visible = @focusToggle
-        @sprites["battler_icon#{b.index}"].setOffset(PictureOrigin::CENTER)
-        @sprites["battler_icon#{b.index}"].x = Graphics.width - 100
-        @sprites["battler_icon#{b.index}"].y = 34 + (i * 32)
-        @sprites["battler_icon#{b.index}"].zoom_x = 0.5
-        @sprites["battler_icon#{b.index}"].zoom_y = 0.5
-      else
-        @sprites["battler_icon#{b.index}"].visible = false
-      end
-    end
-    @sprites["panel"].src_rect.set(0, 0, @sprites["panel"].bitmap.width, 19 + (total * 32))
-  end
-  
+  #-----------------------------------------------------------------------------
+  # Updates Focus Panel.
+  #-----------------------------------------------------------------------------
   def pbUpdateFocusPanel
     textPos = []
     xpos    = Graphics.width - 10
@@ -81,6 +63,27 @@ class Battle::Scene
     pbDrawTextPositions(@focusOverlay, textPos)
   end
   
+  def pbUpdateFocusIcons
+    total = 0
+    @battle.battlers.each_with_index do |b, i|
+      total += 1
+      next if !b
+      if !b.fainted?
+        poke = (b.opposes?) ? b.displayPokemon : b.pokemon
+        @sprites["battler_icon#{b.index}"].pokemon = poke
+        @sprites["battler_icon#{b.index}"].visible = @focusToggle
+        @sprites["battler_icon#{b.index}"].setOffset(PictureOrigin::CENTER)
+        @sprites["battler_icon#{b.index}"].x = Graphics.width - 100
+        @sprites["battler_icon#{b.index}"].y = 34 + (i * 32)
+        @sprites["battler_icon#{b.index}"].zoom_x = 0.5
+        @sprites["battler_icon#{b.index}"].zoom_y = 0.5
+      else
+        @sprites["battler_icon#{b.index}"].visible = false
+      end
+    end
+    @sprites["panel"].src_rect.set(0, 0, @sprites["panel"].bitmap.width, 19 + (total * 32))
+  end
+  
   def pbToggleFocusPanel
     return if Settings::FOCUS_PANEL_DISPLAY == 0
     return if $game_switches[Settings::NO_FOCUS_MECHANIC]
@@ -93,6 +96,9 @@ class Battle::Scene
     pbUpdateFocusPanel
   end
 
+  #-----------------------------------------------------------------------------
+  # Updates Focus Meter.
+  #-----------------------------------------------------------------------------
   def pbFillFocusMeter(battler, startMeter, endMeter, rangeMeter)
     return if !battler || endMeter == startMeter
     dataBox = @sprites["dataBox_#{battler.index}"]
@@ -107,6 +113,29 @@ class Battle::Scene
     dataBox = @sprites["dataBox_#{battler.index}"]
     dataBox.showMeter = false
     pbUpdate
+  end
+  
+  #-----------------------------------------------------------------------------
+  # Toggles the use of Focus and the display of the Focus Panel in the Fight Menu.
+  #-----------------------------------------------------------------------------
+  def pbFightMenu_FocusMeter(cw)
+    ret = nil
+    if Input.triggerex?(Settings::FOCUS_TRIGGER_KEY)
+      case cw.focusMode
+      when 1
+        cw.focusMode = 2
+        pbPlayDecisionSE
+      when 2
+        cw.focusMode = 1
+        pbPlayCancelSE
+      end
+      ret = Settings::MENU_TRIGGER_FOCUS_METER
+    elsif Input.triggerex?(Settings::FOCUS_PANEL_KEY)
+      pbHideMoveInfo
+      pbHideBattleInfo
+      pbToggleFocusPanel
+    end
+    return ret
   end
 end
 

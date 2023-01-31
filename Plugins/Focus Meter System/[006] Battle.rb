@@ -36,6 +36,7 @@ class Battle
   
   alias focus_pbEOREndSideEffects pbEOREndSideEffects
   def pbEOREndSideEffects(side, priority)
+    focus_pbEOREndSideEffects(side, priority)
     pbEORCountDownSideEffect(side, PBEffects::FocusedGuard,
                              _INTL("{1}'s Focused Guard wore off!", @battlers[side].pbTeam))
   end
@@ -157,7 +158,7 @@ class Battle
       battler.focus_trigger = true
       pbAnimation(:SWAGGER, battler, battler)
       pbFocusedGuardEffects(idxBattler) if battler.pbOwnSide.effects[PBEffects::FocusedGuard] == 0
-      @scene.dx_midbattle(idxBattler, nil, "focused_rage")
+      @scene.dx_midbattle(idxBattler, nil, "focusBoss")
     else
       pbDisplay(_INTL("But nothing happened..."))
       return

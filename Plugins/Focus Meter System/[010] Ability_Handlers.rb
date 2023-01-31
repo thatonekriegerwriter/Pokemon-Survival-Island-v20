@@ -33,7 +33,7 @@ Battle::AbilityEffects::AccuracyCalcFromAlly.add(:VICTORYSTAR,
 
 Battle::AbilityEffects::AccuracyCalcFromTarget.add(:TANGLEDFEET,
   proc { |ability, mods, user, target, move, type|
-    if user.opposes?(target) && mods[:base_accuracy] > 50
+    if user.opposes?(target) && mods[:base_accuracy] > 50 && target.effects[PBEffects::Confusion] > 0
       mods[:base_accuracy] = 50
     end
   }

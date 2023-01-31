@@ -132,6 +132,7 @@ class Battle
     style = battler.style_trigger
     battler.battle_style = style
     battler.style_counter = Settings::STYLE_TURNS
+    trigger = (battler.pbOwnedByPlayer?) ? "battleStyle" : (battler.opposes?) ? "battleStyle_foe" : "battleStyle_ally"
     case style
     when 1
       trigger = (battler.pbOwnedByPlayer?) ? "strongStyle" : (battler.opposes?) ? "strongStyle_foe" : "strongStyle_ally"
@@ -282,9 +283,11 @@ end
 class Battle::AI
   def pbEnemyShouldUseStyle?(idxBattler)
     return false if $game_switches[Settings::NO_STYLE_MOVES]
+    return false if @battle.pbScriptedMechanic?(idxBattler, :style)
     battler = @battle.battlers[idxBattler]
     move = @battle.choices[idxBattler][2]
-    return false if !move || move.powerMove? || !move.mastered?
+    return false if !move || !move.mastered?
+    return false if PluginManager.installed?("ZUD Mechanics") && move.powerMove?
     if @battle.pbCanUseStyle?(idxBattler)
       str_score = agi_score = 0
       #-------------------------------------------------------------------------

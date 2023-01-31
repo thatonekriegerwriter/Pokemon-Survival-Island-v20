@@ -88,6 +88,7 @@ class Battle::Battler
     strikes.times do |i|
       break if @battle.pbAllFainted?
       break if @battle.decision > 0
+      break if i + 1 >= @battle.pbAbleCount
       @battle.battleAI.pbChooseMoves(self.index)
       choice = @battle.choices[self.index]
       PBDebug.log("[Move usage] #{pbThis} started using #{choice[2].name}")

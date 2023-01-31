@@ -3,18 +3,6 @@
 #===============================================================================
 module Settings
   ##############################################################################
-  # Switch settings
-  ##############################################################################
-  # The switch number for disabling the entire focus mechanic. When this switch
-  # is enabled, focus meters will be hidden and disabled, focus may no longer be
-  # triggered in battle, Pokemon's Focus Style displays in the Summary will be 
-  # hidden, and Pokemon will no longer be able to have their Focus Styles 
-  # altered both in and out of battle. Also disables the Focus Panel.
-  #-----------------------------------------------------------------------------
-  NO_FOCUS_MECHANIC = 39
-  
-
-  ##############################################################################
   # Focus Meter visual settings
   ##############################################################################
   # Sets the visual style in which the focus meter is displayed in battle.

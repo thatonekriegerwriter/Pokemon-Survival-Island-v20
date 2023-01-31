@@ -1,0 +1,4 @@
+﻿Name       = Wild Foreign Pokémon
+Essentials = 20.1
+Website    = https://reliccastle.com/resources/543/
+Credits    = TechSkylander1518

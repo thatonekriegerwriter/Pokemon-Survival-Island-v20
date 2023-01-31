@@ -91,10 +91,13 @@ class ItemCraft_Scene
           pbPlayCursorSE
 		    end
           volume = 1	  
-		  if item == :MASTERBALLC && !$bag.has?(:MASTERBALLPL)
+		  puts item
+		  if !@stock[index+1].nil?
+		  if GameData::Item.get(@stock[index+1][0]) == :MASTERBALLC && !$bag.has?(:MASTERBALLPL)
 		    if index+1 == @stock.length-1
 			 
-			else
+			elsif index+2 != @stock.length
+			else 
           hideIcons(index)
           index += 2
           @switching = true
@@ -106,6 +109,7 @@ class ItemCraft_Scene
           @switching = true
           pbRedrawItem(index,volume)
 		  end
+          end
         end
       if Input.trigger?(Input::LEFT)
         if index > 0

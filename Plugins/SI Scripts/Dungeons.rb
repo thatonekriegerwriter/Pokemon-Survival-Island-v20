@@ -84,8 +84,6 @@ EventHandlers.add(:on_wild_battle_end, :dungeonbattle,
 	  end
       pbDetransform
 	  PokemonSelection.restore
-	  $game_variables[391] = $bag
-	  $bag = $game_variables[392]
 	  $game_switches[485]=false
 	  if $scene.is_a?(Scene_Map) &&  $game_map.name == "Temperate Caves"
       pbFadeOutIn(99999){

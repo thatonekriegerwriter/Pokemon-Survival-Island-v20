@@ -79,21 +79,6 @@ PokegearHGSS.list("Map", {
 						})
 })
 
-# Test with custom feature, use mining game to test
-PokegearHGSS.list("Mininggame", {
-	:order => 3,
-	:graphic => {
-		:dir   => "Map", # Dir
-		:scene => "Map_", # Filename
-		:mini   => "Map_"  # Filename
-	},
-	:start => PokegearHGSS::CustomFeature2.new("mininggame", {
-							:dir => "Map",
-							:bg => "Map",
-							:detail => "Play minigame"
-						})
-})
-
 # Third feature, you can find with keyword 'class ThirdFeature'
 # This method shows list with page use in 'class StorePage'
 PokegearHGSS.list("Radio", {

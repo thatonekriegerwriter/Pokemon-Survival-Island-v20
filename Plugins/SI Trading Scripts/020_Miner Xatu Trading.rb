@@ -178,6 +178,9 @@ RECIPE4=[
 [:ROSEINCENSE,1,[:STARPIECE,2],nil, true],
 [:ODDINCENSE,1,[:STARPIECE,2],nil, true],
 [:ROCKINCENSE,1,[:STARPIECE,2],nil, true],
+[:EVERSTONE,1,[:STARPIECE,2],nil, true],
+[:DESTINYKNOT,1,[:STARPIECE,20],nil, true],
+[:ABILITYCAPSULE,1,[:STARPIECE,4],nil, true],
 [:WATERBOTTLE,1,[:STARPIECE,1],nil, true],
 [:POKEDOLL,1,[:STARPIECE,1],nil, true],
 [:SNOWMAIL,1,[:STARPIECE,1],nil, true]

@@ -32,7 +32,7 @@
     // FPS display toggled via F2
     // (default: disabled)
     //
- "printFPS": true,
+ "printFPS": false,
 
 
     // Game window is resizable

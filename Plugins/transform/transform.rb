@@ -23,8 +23,8 @@ end
 
 #Returns the normal walksprite for the player character
 def pbGetNormalChar
-  meta = GameData::Metadata.get_player($player.character_ID)
-  graphic = pbGetPlayerCharset(meta,1,nil,true)
+  meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
+  graphic = pbGetPlayerCharset(meta,1,true)
   return graphic
 end
 

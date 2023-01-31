@@ -1,7 +1,7 @@
     # Changing
 class Pokemon
 
-  def changeHappiness(method,wari)
+  def changeHappiness(method,wari=self)
     pkmn = wari
     gain = 0
 	base = 0

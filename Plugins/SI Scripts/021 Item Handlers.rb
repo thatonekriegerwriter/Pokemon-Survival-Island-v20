@@ -153,7 +153,7 @@ ItemHandlers::UseOnPokemon.add(:APPLE,proc { |item,pkmn,scene|
 })
 
 ItemHandlers::UseInBattle.add(:POISONDART,proc { |item,battler,battle|
-   if battler && battler.status == :NONE || battler.type1 != STEEL || battler.type2 != STEEL
+   if battler && battler.status == :NONE || !battler.pbHasType?(:STEEL)
      battler.pbPoison(user) if target.pbCanPoison?(user,false,self)
      battle.pbDisplay(_INTL("You shoot a dart at the Pokemon, poisoning it."))
      next true
@@ -181,7 +181,7 @@ ItemHandlers::UseInBattle.add(:SLEEPDART,proc { |item,battler,battle|
 ItemHandlers::UseInBattle.add(:PARALYZDART,proc { |item,battler,battle|
  itemname = GameData::Item.get(item).name
  type=:GROUND
-  if battler.status != :NONE || battler.type1==type || battler.type2==type
+  if battler.status != :NONE || battler.pbHasType?(:GROUND)
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else
@@ -195,7 +195,7 @@ ItemHandlers::UseInBattle.add(:PARALYZDART,proc { |item,battler,battle|
 ItemHandlers::UseInBattle.add(:ICEDART,proc { |item,battler,battle|
  itemname = GameData::Item.get(item).name
  type=:ICE
-  if battler.status != :NONE || battler.type1==type
+  if battler.status != :NONE  || battler.pbHasType?(:ICE)
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else
@@ -209,7 +209,7 @@ ItemHandlers::UseInBattle.add(:ICEDART,proc { |item,battler,battle|
 ItemHandlers::UseInBattle.add(:FIREDART,proc { |item,battler,battle|
  itemname = GameData::Item.get(item).name
  type=:FIRE
-  if battler.status != :NONE || battler.type1==type
+  if battler.status != :NONE || battler.pbHasType?(:FIRE)
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else

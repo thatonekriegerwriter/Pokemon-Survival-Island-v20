@@ -3,9 +3,11 @@
 #===============================================================================
 if PluginManager.installed?("BW Party Screen")
   class PokemonPartyPanel < Sprite
-    def initialize(pokemon, index, viewport = nil)
+    def initialize(pokemon, index, viewport = nil, evoreqs = nil)
       super(viewport)
       @pokemon = pokemon
+      @evoreqs = evoreqs
+      refresh_evoreqs
       @active = (index == 0)
       @refreshing = true
       self.x = (index % 2) * Graphics.width / 2
@@ -64,6 +66,8 @@ if PluginManager.installed?("BW Party Screen")
       @ballsprite.z = self.z + 1
       @ballsprite.addBitmap("desel", "Graphics/Pictures/Party/icon_ball")
       @ballsprite.addBitmap("sel", "Graphics/Pictures/Party/icon_ball_sel")
+      @ballsprite.addBitmap("desel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball")
+      @ballsprite.addBitmap("sel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball_sel")
       @ballsprite.visible = PluginManager.installed?("Enhanced UI") && Settings::SHOW_PARTY_BALL
       @pkmnsprite = PokemonIconSprite.new(pokemon, viewport)
       @pkmnsprite.setOffset(PictureOrigin::CENTER)

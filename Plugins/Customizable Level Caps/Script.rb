@@ -126,11 +126,11 @@ end
 
 class PokemonPauseMenu
   def pbShowLevelCap
-    @scene.pbShowLevelCap
+    @scene.pbShowLevelCap if !VOLTSEON_PAUSE_MENU_USED
   end
 
   def pbHideLevelCap
-    @scene.pbHideLevelCap
+    @scene.pbHideLevelCap if !VOLTSEON_PAUSE_MENU_USED
   end
   alias pbStartPokemonMenuCap pbStartPokemonMenu
   def pbStartPokemonMenu

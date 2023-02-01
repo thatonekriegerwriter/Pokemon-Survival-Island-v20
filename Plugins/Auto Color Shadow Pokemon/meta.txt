@@ -1,0 +1,5 @@
+Name         = Auto Color Shadow Pokemon  
+Version      = 1.0
+Essentials   = 20.1
+Credits      = Pokemetel
+Requires     = Essentials Deluxe

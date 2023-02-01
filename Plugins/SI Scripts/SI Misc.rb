@@ -22,6 +22,14 @@ def pbHasType?(type)
   return false
 end
 
+def pbHasMove?(move)
+  for pokemon in $player.party
+    next if pokemon.egg?
+    return true if pokemon.hasMove?(move)
+  end
+  return false
+end
+
 def pbCheckMoveType(type,va,wa)
   $player.pokemon_party.each do |pkmn|
     pkmn.moves.each do |m|

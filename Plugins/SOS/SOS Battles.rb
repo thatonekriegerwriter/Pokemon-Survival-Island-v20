@@ -288,7 +288,7 @@
       for i in 0..blacklistedmons.length
 	  return false if blacklistedmons[i] == cspecies
       end
-	  return true if $DEBUG && Input.press?(Input::CTRL)
+#	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       # not a species that calls
       return false if rate==0
@@ -317,7 +317,7 @@
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
       cspecies=GameData::Species.get(self.species).species
-	  return true if $DEBUG && Input.press?(Input::CTRL)
+#	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=5
       # not a species that calls
       return false if rate==0

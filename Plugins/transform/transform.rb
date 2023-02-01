@@ -23,18 +23,24 @@ end
 
 #Returns the normal walksprite for the player character
 def pbGetNormalChar
-  meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
-  graphic = pbGetPlayerCharset(meta,1,true)
+  meta = GameData::PlayerMetadata.get($player.character_ID)
+  graphic = pbGetPlayerCharset(meta.walk_charset,$player,true)
+  if graphic.nil?
+  raise "error"
+  else
   return graphic
+  end
 end
+
 
 #Sets an event to the given charset
 def pbSetCharSet(event,charset)
   if event == "player" || event == "Player"
-    $game_player.character_name = charset
+    puts charset
+    $game_player.character_name = charset if charset
   else
     event = @event_id if event == "self" || event == "Self"
-    $game_map.events[event].character_name = charset
+    $game_map.events[event].character_name = charset if charset
   end
 end
 
@@ -81,8 +87,7 @@ end
 #Running shoes will undo the transformation, so turns them off, unless
 #the player is turning back to their original graphic
 def pbSwapGraphic(event,poof=true)
-  pbSetRunningShoes(false)
-  event = @event_id if event == "self" || event == "Self"
+  event = @event_id if (event == "self" || event == "Self") && (event != "player" || event != "Player")
   eventchar =  pbGetCharSet(event)
   playerchar = pbGetCharSet("player")
   if poof==true
@@ -92,9 +97,6 @@ def pbSwapGraphic(event,poof=true)
   end
   pbSetCharSet(event,playerchar)
   pbSetCharSet("player",eventchar)
-  if eventchar == pbGetNormalChar
-    pbSetRunningShoes(true)
-  end
 end
 
 
@@ -128,13 +130,13 @@ end
 #Running shoes will undo the transformation, so turns them off.
 def pbTransform(event,graphic,stopanime = false,poof=true)
   if event == "player" || event == "Player"
-    pbSetRunningShoes(false)
+  elsif event == "self" || event == "Self"
+  event = @event_id
   end
   if poof==true
     pbPoof(event)
     pbWait(10)
   end
-  event = @event_id if event == "self" || event == "Self"
   pbSetCharSet(event,graphic)
 end
 

@@ -47,7 +47,7 @@ def cinFadeOut
   $game_temp.cin_viewport = Viewport.new(0,0,Graphics.width,Graphics.height)
   $game_temp.cin_viewport.z = 99998
   meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
-  filename = pbGetPlayerCharset(meta,1,true)
+  filename = pbGetPlayerCharset(meta,$player,true)
   $game_temp.cin_player = TrainerWalkingCharSprite.new(filename,$game_temp.cin_viewport)
   $game_temp.cin_player.animspeed = $game_player.move_speed * 3
   charwidth = $game_temp.cin_player.bitmap.width
@@ -111,7 +111,7 @@ def cinFadeIn
   $game_player.transparent = true
   pbWait(1)
   meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
-  filename = pbGetPlayerCharset(meta,1,true)
+  filename = pbGetPlayerCharset(meta,$player,true)
   $game_temp.cin_player = TrainerWalkingCharSprite.new(filename,$game_temp.cin_viewport)
   $game_temp.cin_player.animspeed = $game_player.move_speed * 3
   charwidth = $game_temp.cin_player.bitmap.width

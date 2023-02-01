@@ -12,7 +12,7 @@ EventHandlers.add(:on_wild_battle_end, :dungeonbattle,
     elsif level > firstPkmn.level+20
 	  chances = 1
 	else 
-	  chances = 25
+	  chances = 15
     end 	
   if firstPkmn
     case firstPkmn.ability_id

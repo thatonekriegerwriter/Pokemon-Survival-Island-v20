@@ -51,6 +51,7 @@ class MenuEntryPokedex < MenuEntry
   end
 
   def selectable?
+    return false if $game_switches[485]==true
     return ($player.has_pokedex && $player.pokedex.accessible_dexes.length > 0)
   end
 end
@@ -96,7 +97,7 @@ class MenuEntryCraft < MenuEntry
 	  }
 	end
 
-	def selectable?; return true; end
+	def selectable?; return true if $game_switches[485]==false; end
 end
 #-------------------------------------------------------------------------------
 # Entry for Mystery Gift Screen
@@ -132,7 +133,7 @@ class MenuEntryVentures < MenuEntry
 	  }
 	end
 
-	def selectable?; return true; end
+	def selectable?; return true if $game_switches[485]==false; end
 end
 #-------------------------------------------------------------------------------
 # Entry for CAchievements Screen

@@ -334,6 +334,7 @@ class PokemonLoadScreen
       when cmd_psia
 		  $PokemonSystem.playermode = 1
 		  $PokemonSystem.difficulty = 1
+          Level_Cap.initialize
 		  $PokemonSystem.nuzlockemode = 1
 		  $PokemonSystem.survivalmode = 1
 		  @scene.pbEndScene
@@ -347,6 +348,7 @@ class PokemonLoadScreen
 		  $PokemonSystem.playermode = 0
 		  $PokemonSystem.difficulty = 1
 		  $PokemonSystem.nuzlockemode = 1
+          Level_Cap.initialize
 		  $PokemonSystem.survivalmode = 1
 	      $PokemonSystem.level_caps = 0
 		          @scene.pbEndScene

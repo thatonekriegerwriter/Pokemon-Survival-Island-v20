@@ -155,6 +155,9 @@ class Battle::Scene
           when :usespecial            then midbattle_TriggerBattleMechanic(battler, value)
           when :lockspecial           then midbattle_ToggleBattleMechanic(battler, value)
           #---------------------------------------------------------------------
+          # Toggles the charge state of the player's Tera Orb.
+          when :teracharge            then $player.tera_charge = value
+          #---------------------------------------------------------------------
           # Renames a battler.	
           when :rename
             battler.pokemon.name = value
@@ -203,9 +206,12 @@ class Battle::Scene
     if @battle.opponent.nil?
       trainer = @battle.player[idxTrainer]
       foe_trainer = false
-    elsif speaker && speaker != :Blank || @battle.decision == 2 || @battle.pbAllFainted? 
+    elsif speaker && speaker != :Blank && (@battle.decision == 2 || @battle.pbAllFainted?)
       trainer = @battle.opponent[idxTrainer]
       foe_trainer = true
+	elsif battler.index.odd?
+	  trainer = @battle.opponent[idxTrainer]
+	  foe_trainer = true
     else
       trainer = @battle.player[idxTrainer]
       foe_trainer = false
@@ -384,7 +390,7 @@ class Battle::Scene
         end
         if newPkmn >= 0
           lowercase = (msg && msg[0] == "{" && msg[1] == "1") ? false : true
-          trainerName = @battle.pbGetOwnerName(battler.index)
+          trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
           @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName)) if msg
           if switch == :Forced
             @battle.pbDisplay(_INTL("{1} went back to {2}!", battler.pbThis, trainerName))
@@ -582,7 +588,7 @@ class Battle::Scene
       special, msg = value, nil
     end
     lowercase = (msg && msg[0] == "{" && msg[1] == "1") ? false : true
-    trainerName = @battle.pbGetOwnerName(battler.index)
+    trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
     case special
     #---------------------------------------------------------------------------
     # Mega Evolution
@@ -645,6 +651,14 @@ class Battle::Scene
       battler.toggle_style_moves(battler.style_trigger)
       @battle.pbBattleStyle(battler.index)
     #---------------------------------------------------------------------------
+    # Terastallization
+    when :Terastallize, :Tera
+      return if !PluginManager.installed?("Terastal Phenomenon")
+      $player.tera_charged = true if battler.pbOwnedByPlayer?
+      return if !@battle.pbCanTerastallize?(battler.index)
+      @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName)) if msg
+      @battle.pbTerastallize(battler.index)
+    #---------------------------------------------------------------------------
     # Zodiac Powers
     when :ZodiacPower, :Zodiacpower, :Zodiac
       return if !PluginManager.installed?("Pokémon Birthsigns")
@@ -664,13 +678,6 @@ class Battle::Scene
       return if !@battle.pbCanUseFocus?(battler.index)
       @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName)) if msg
       @battle.pbUseFocus(battler.index)
-    #---------------------------------------------------------------------------
-    # Terastallization
-    when :Terastallize, :Tera
-      return if !PluginManager.installed?("ScarletVioletGimmick_TDW")
-      return if !@battle.pbCanTerastallize?(battler.index)
-      @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName)) if msg
-      @battle.pbTerastallize(battler.index)
     #---------------------------------------------------------------------------
     # Custom Mechanic
     when :Custom
@@ -711,6 +718,11 @@ class Battle::Scene
       return if !PluginManager.installed?("PLA Battle Styles")
       $game_switches[Settings::NO_STYLE_MOVES] = !$game_switches[Settings::NO_STYLE_MOVES]
     #---------------------------------------------------------------------------
+    # Terastallization
+    when :Terastallize, :Tera
+      return if !PluginManager.installed?("Terastal Phenomenon")
+      $game_switches[Settings::NO_TERASTALLIZE] = !$game_switches[Settings::NO_TERASTALLIZE]
+    #---------------------------------------------------------------------------
     # Zodiac Powers
     when :ZodiacPower, :ZodiacPowers, :Zodiacpower, :Zodiacpowers, :Zodiac
       return if !PluginManager.installed?("Pokémon Birthsigns")
@@ -720,11 +732,6 @@ class Battle::Scene
     when :Focus, :FocusFull, :FocusEmpty
       return if !PluginManager.installed?("Focus Meter System")
       $game_switches[Settings::NO_FOCUS_MECHANIC] = !$game_switches[Settings::NO_FOCUS_MECHANIC]
-    #---------------------------------------------------------------------------
-    # Terastallization
-    when :Terastallize, :Tera
-      return if !PluginManager.installed?("ScarletVioletGimmick_TDW")
-      $game_switches[TDWSettings::TERA_ITEM_ENABLED_SWITCH] = !$game_switches[TDWSettings::TERA_ITEM_ENABLED_SWITCH]
     end
   end
   
@@ -740,7 +747,7 @@ class Battle::Scene
       amt, msg = value, nil
     end
     lowercase = (msg && msg[0] == "{" && msg[1] == "1") ? false : true
-    trainerName = @battle.pbGetOwnerName(battler.index)
+    trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
     #---------------------------------------------------------------------------
     # Recovers HP
     if amt > 0
@@ -818,7 +825,7 @@ class Battle::Scene
     end
     if msg.is_a?(String)
       lowercase = (msg[0] == "{" && msg[1] == "1") ? false : true
-      trainerName = @battle.pbGetOwnerName(battler.index)
+      trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
       msg = _INTL("#{msg}", battler.pbThis(lowercase), trainerName)
     end
     case form
@@ -866,7 +873,7 @@ class Battle::Scene
         @battle.pbReplaceAbilitySplash(battler)
         if msg.is_a?(String)
           lowercase = (msg[0] == "{" && msg[1] == "1") ? false : true
-          trainerName = @battle.pbGetOwnerName(battler.index)
+          trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
           @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName))
         else
           @battle.pbDisplay(_INTL("{1} acquired {2}!", battler.pbThis, battler.abilityName))
@@ -901,7 +908,7 @@ class Battle::Scene
       if msg
         if msg.is_a?(String)
           lowercase = (msg[0] == "{" && msg[1] == "1") ? false : true
-          trainerName = @battle.pbGetOwnerName(battler.index)
+          trainerName = (battler.wild?) ? "" : @battle.pbGetOwnerName(battler.index)
           @battle.pbDisplay(_INTL("#{msg}", battler.pbThis(lowercase), trainerName))
         else
           if battler.item

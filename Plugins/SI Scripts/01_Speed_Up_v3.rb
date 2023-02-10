@@ -16,14 +16,7 @@
 # System and Temp Variables
 #===============================================================================
 
-class Game_Temp
-  attr_accessor :disable_speed_up
 
-  def disable_speed_up
-    @disable_speed_up = false if !@disable_speed_up
-    return @disable_speed_up
-  end
-end
 
 class PokemonSystem
   attr_accessor :gamespeed
@@ -63,6 +56,7 @@ module Graphics
     $frame_number = 0
 
     def _skip_frame_for_speed?
+	  return false if $game_temp.nil?
       return false if $game_temp.disable_speed_up
       return $frame_number % $PokemonSystem.speed_scale[$PokemonSystem.gamespeed] != 0
     end

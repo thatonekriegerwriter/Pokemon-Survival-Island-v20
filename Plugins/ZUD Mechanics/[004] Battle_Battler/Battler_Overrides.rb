@@ -7,8 +7,7 @@ class Battle::Battler
   #-----------------------------------------------------------------------------
   alias zud_pbInitEffects pbInitEffects  
   def pbInitEffects(batonPass)
-    @power_index                       = -1             
-    @power_trigger                     = false          
+    @power_index                       = -1                       
     @ignore_dynamax                    = false 
     @selectedMoveIsZMove               = false
     @lastMoveUsedIsZMove               = false
@@ -182,7 +181,6 @@ class Battle::Battler
       end
     end
     display_base_moves if dynamax?
-    @effects[PBEffects::TransformPokemon] = target.pokemon
     @battle.scene.pbRefreshOne(@index)
   end
   

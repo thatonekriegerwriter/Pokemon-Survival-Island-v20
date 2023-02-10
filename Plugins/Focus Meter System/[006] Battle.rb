@@ -67,11 +67,11 @@ class Battle
     move = @choices[idxBattler][2]
     return if battler.moveHasExceptionCode?(move)
     style = GameData::Focus.get(battler.effects[PBEffects::FocusStyle])
-    trigger = (battler.pbOwnedByPlayer?) ? "focus" : (battler.opposes?) ? "focus_foe" : "focus_ally"
+    triggers = ["focus", "focus" + battler.species.to_s, "focus" + style.id.to_s.upcase]
     # The focus styles below may always be triggered.
     if style.id == :Enraged
-      trigger = "focus_boss" if battler.opposes?
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      triggers.push("focusBoss") if battler.opposes?
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} unleashes its {2}!", battler.pbThis, style.focus))
       pbFocusedRageEffects(idxBattler)
       return
@@ -80,14 +80,14 @@ class Battle
     return if [:SLEEP, :FROZEN].include?(battler.status)
     case style.id
     when :Evasion
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:TAILWHIP, battler, battler.pbDirectOpposing)
       pbDisplay(_INTL("{1} may evade incoming attacks!", battler.pbThis))
       battler.focus_trigger = true
       return
     when :Passive
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbFocusedGuardEffects(idxBattler)
       return
@@ -101,21 +101,21 @@ class Battle
     case style.id
     when :Accuracy
       return if move.accuracy == 0 || !target_foe
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:LOCKON, battler, battler.pbDirectOpposing)
       pbDisplay(_INTL("{1}'s aim may bypass {2}'s evasiveness!", battler.pbThis, battler.pbOpposingTeam(true)))
       battler.focus_trigger = true
     when :Critical
       return if move.statusMove? || !target_foe
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:LEER, battler, battler)
       pbDisplay(_INTL("{1} may pierce through {2}'s defenses!", battler.pbThis, battler.pbOpposingTeam(true)))
       battler.focus_trigger = true
     when :Potency
       return if !battler.hasAddedEffect?(move)
-      @scene.dx_midbattle(idxBattler, nil, trigger)
+      @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:TAILGLOW, battler, battler)
       pbDisplay(_INTL("{1}'s attacks may have additional effects!", battler.pbThis))
@@ -158,7 +158,6 @@ class Battle
       battler.focus_trigger = true
       pbAnimation(:SWAGGER, battler, battler)
       pbFocusedGuardEffects(idxBattler) if battler.pbOwnSide.effects[PBEffects::FocusedGuard] == 0
-      @scene.dx_midbattle(idxBattler, nil, "focusBoss")
     else
       pbDisplay(_INTL("But nothing happened..."))
       return

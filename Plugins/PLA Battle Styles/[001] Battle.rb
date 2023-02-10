@@ -94,7 +94,7 @@ class Battle
             name = (owner == 0) ? _INTL("You") : @player[owner].full_name
             trigger = (owner == 0) ? "styleEnd" : "styleEnd_ally"
           when 1
-            next if @opponent[owner].all_fainted?
+            next if @opponent && @opponent[owner].all_fainted?
             name = (@opponent.nil?) ? _INTL("The opposing Pokémon") : @opponent[owner].full_name
             trigger = "styleEnd_foe"
           end
@@ -132,18 +132,18 @@ class Battle
     style = battler.style_trigger
     battler.battle_style = style
     battler.style_counter = Settings::STYLE_TURNS
-    trigger = (battler.pbOwnedByPlayer?) ? "battleStyle" : (battler.opposes?) ? "battleStyle_foe" : "battleStyle_ally"
+    triggers = ["battleStyle", "battleStyle" + battler.species.to_s]
     case style
     when 1
-      trigger = (battler.pbOwnedByPlayer?) ? "strongStyle" : (battler.opposes?) ? "strongStyle_foe" : "strongStyle_ally"
+	  triggers += ["strongStyle", "strongStyle" + battler.species.to_s]
       msg1 = _INTL("{1} entered Strong Style!", battler.pbThis)
       msg2 = _INTL("{1} may act slower due to its Strong Style!", battler.pbThis)
     when 2
-      trigger = (battler.pbOwnedByPlayer?) ? "agileStyle" : (battler.opposes?) ? "agileStyle_foe" : "agileStyle_ally"
+      triggers += ["agileStyle", "agileStyle" + battler.species.to_s]
       msg1 = _INTL("{1} entered Agile Style!", battler.pbThis)
       msg2 = _INTL("{1} may act sooner due to its Agile Style!", battler.pbThis)
     end
-    @scene.dx_midbattle(idxBattler, nil, trigger)
+    @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
     pbDisplay(msg1)
     @scene.pbShowBattleStyle(@battlers, battler)
     pbDisplay(msg2)
@@ -221,18 +221,28 @@ class Battle::Battler
     @style_flinch  = false
   end
   
+  def inStyle?;      return @battle_style > 0;  end
   def strong_style?; return @battle_style == 1; end
   def agile_style?;  return @battle_style == 2; end
-    
+  
+  #-----------------------------------------------------------------------------
+  # Battle Styles
+  #-----------------------------------------------------------------------------
+  # Higher priority than:
+  #   -Terastallization
+  #
+  # Lower priority than:
+  #   -Primal Reversion
+  #   -Zodiac Powers
+  #   -Ultra Burst
+  #   -Z-Moves
+  #   -Mega Evolution
+  #   -Dynamax
+  #-----------------------------------------------------------------------------
   def hasStyles?
     return false if shadowPokemon?
-    return false if mega?   || hasMega?
-    return false if primal? || hasPrimal?
-    return false if hasZMove?
-    return false if ultra?   || hasUltra?
-    return false if dynamax?
-    return false if PluginManager.installed?("ZUD Mechanics") && @battle.pbCanDynamax?(@index)
-    return false if celestial? || hasZodiacPower?
+    return false if mega? || primal? || ultra? || dynamax? || inStyle? || tera? || celestial?
+    return false if hasMega? || hasPrimal? || hasZMove? || hasUltra? || hasDynamaxAvail? || hasZodiacPower?
     @moves.each { |move| return true if move.mastered? }
     return false
   end

@@ -238,24 +238,6 @@ end
 
 
 #===============================================================================
-# Transform
-#===============================================================================
-# Move fails if the user is Dynamaxed and attempts to Transform into a species
-# that is unable to have a Dynamax form.
-#-------------------------------------------------------------------------------
-class Battle::Move::TransformUserIntoTarget < Battle::Move
-  alias zud_pbFailsAgainstTarget? pbFailsAgainstTarget?
-  def pbFailsAgainstTarget?(user, target, show_message)
-    if user.dynamax? && !target.dynamax_able?
-      @battle.pbDisplay(_INTL("But it failed!"))
-      return true
-    end
-    return zud_pbFailsAgainstTarget?(user, target, show_message)
-  end
-end
-
-
-#===============================================================================
 # Copycat
 #===============================================================================
 # Move fails when the last used move was a Z-Move.

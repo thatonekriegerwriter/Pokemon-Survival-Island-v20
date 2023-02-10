@@ -6,6 +6,10 @@
 # Z-Crystal and Ultra Item properties
 #-------------------------------------------------------------------------------
 module GameData
+  class << Item
+    alias zud_held_icon_filename held_icon_filename
+  end
+	
   class Item
     def is_z_crystal?; return has_flag?("ZCrystal"); end
     def is_ultra_item?; return has_flag?("UltraItem"); end
@@ -24,24 +28,19 @@ module GameData
     def self.held_icon_filename(item)
       item_data = self.try_get(item)
       return nil if !item_data
-      name_base = "item"
-      name_base = "mail"     if item_data.is_mail?
-      name_base = "mega"     if item_data.is_mega_stone?
       name_base = "zcrystal" if item_data.is_z_crystal?
-      paths = ["Graphics/Plugins/ZUD/UI/icon_",
-               "Graphics/Pictures/Party/icon_"]
-      paths.each do |p|
+      ["Graphics/Plugins/ZUD/UI/icon_",
+       "Graphics/Pictures/Party/icon_"].each do |p|
         ret = sprintf(p + "%s_%s", name_base, item_data.id)
         return ret if pbResolveBitmap(ret)
-      end
-      paths.each do |p|
         ret = sprintf(p + "%s", name_base)
         return ret if pbResolveBitmap(ret)
       end
+      return self.zud_held_icon_filename(item)
     end
 	
-	# Used for getting TR's based on the inputted types.
-	def self.get_TR_from_type(types)
+    # Used for getting TR's based on the inputted types.
+    def self.get_TR_from_type(types)
       trList = []
       self.each do |i|
         next if !i.is_TR?

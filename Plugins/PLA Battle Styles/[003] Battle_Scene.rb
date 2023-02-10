@@ -170,7 +170,7 @@ class Battle::Scene
         break
       end
     end
-    return Settings::MENU_TRIGGER_BATTLE_STYLE, true
+    return DXTriggers::MENU_TRIGGER_BATTLE_STYLE, true
   end
 end
 

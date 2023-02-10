@@ -39,10 +39,14 @@ class Pokemon
   end
     
   def dynamax=(value)
-    @gmax_factor = value if species_data.id == :ETERNATUS
-    @dynamax  = (dynamax_able?) ? value  : false
-    @reverted = (dynamax_able?) ? !value : false
-    $player&.pokedex&.register(self)
+    if tera?
+      self.unmax
+    else
+      @gmax_factor = value if species_data.id == :ETERNATUS
+      @dynamax  = (dynamax_able?) ? value  : false
+      @reverted = (dynamax_able?) ? !value : false
+      $player&.pokedex&.register(self)
+    end
   end
   
   def reverted?
@@ -63,7 +67,7 @@ class Pokemon
   end
   
   def dynamax_able?
-    return false if egg? || shadowPokemon? || celestial?
+    return false if egg? || shadowPokemon? || tera? || celestial?
     return (!@dynamax_able.nil?) ? @dynamax_able : !species_data.no_dynamax
   end
   

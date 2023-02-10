@@ -129,7 +129,7 @@ class Battle::Scene
         cw.focusMode = 1
         pbPlayCancelSE
       end
-      ret = Settings::MENU_TRIGGER_FOCUS_METER
+      ret = DXTriggers::MENU_TRIGGER_FOCUS_METER
     elsif Input.triggerex?(Settings::FOCUS_PANEL_KEY)
       pbHideMoveInfo
       pbHideBattleInfo

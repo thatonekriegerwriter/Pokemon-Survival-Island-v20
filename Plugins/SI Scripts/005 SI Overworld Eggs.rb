@@ -377,7 +377,9 @@ end
 end
 
 
-
+def pbDayCareDeposited
+  return DayCare.count
+end
 
 def pbeggcheckhatch(vari)
  if vari==0

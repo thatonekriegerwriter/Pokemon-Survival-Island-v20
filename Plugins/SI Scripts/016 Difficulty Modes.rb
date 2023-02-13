@@ -74,9 +74,6 @@ class PokemonEncounters
     if level > 100
      level = 100 
     end
-    if old_level > level
-     level = old_level
-    end
 	if $game_map.name == "Temperate Coast" || $game_map.name == "Temperate Inland"
      if level > (20+highrate)
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
@@ -259,7 +256,7 @@ class PokemonEncounters
 	   level = reroll_level
 	 end 
 	 end
-     elsif bosses = 1 #TEMPERATE
+     elsif bosses == 1 #TEMPERATE
 	  if level > 20 
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (10+rand(11)) 
@@ -267,7 +264,7 @@ class PokemonEncounters
 	   level = reroll_level
 	 end 
 	 end
-	 elsif bosses = 2 #MOUNTAIN
+	 elsif bosses == 2 #MOUNTAIN
      if level > 35
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (15+rand(16)) 
@@ -282,7 +279,7 @@ class PokemonEncounters
 	   level = reroll_level
 	  end 
 	 end
-	 elsif bosses = 3 #ICE
+	 elsif bosses == 3 #ICE
 	 if level > 40
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (25+rand(16)) 
@@ -297,7 +294,7 @@ class PokemonEncounters
 	   level = reroll_level
 	  end 
 	 end 
-	 elsif bosses = 4 #WATER
+	 elsif bosses == 4 #WATER
      if level > 45
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (25+rand(16)) 
@@ -312,7 +309,7 @@ class PokemonEncounters
 	   level = reroll_level
 	  end 
 	 end 
-	 elsif bosses = 5 #SPOOKY
+	 elsif bosses == 5 #SPOOKY
 	   if level > 50
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (25+rand(16)) 
@@ -328,10 +325,10 @@ class PokemonEncounters
 	  end 
 	 end 
 
-	 elsif bosses = 6
-	 elsif bosses = 7
-	 elsif bosses = 8
-	 elsif bosses = 9
+	 elsif bosses == 6
+	 elsif bosses == 7
+	 elsif bosses == 8
+	 elsif bosses == 9
 	 else
 	 end
     elsif $game_map.name == "Deep Caves"

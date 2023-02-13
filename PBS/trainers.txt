@@ -31,8 +31,6 @@ Pokemon = RATICATE,21
     Shadow = yes
 Pokemon = ABSOL,21
     Shadow = yes
-Pokemon = GRAVELER,21
-Pokemon = HAWLUCHA,21
 #-------------------------------
 [TEAMROCKET_M,Rocket Grunt,2]
 NumPkmn = 2

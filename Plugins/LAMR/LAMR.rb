@@ -22,8 +22,8 @@ class MoveRelearnerScreen
         tmoves.push(i) if !pkmn.hasMove?(i) && !moves.include?(i)
       end
     end
-    species = pkmn.species
-    species_data = GameData::Species.get(species)
+    species_data = pkmn.species_data
+    species_data.tutor_moves.each { |m| moves.push(m) }
     if EGGMOVES == true
       babyspecies = species_data.get_baby_species
       GameData::Species.get(babyspecies).egg_moves.each { |m| moves.push(m) }

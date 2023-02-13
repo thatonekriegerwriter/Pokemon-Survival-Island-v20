@@ -303,6 +303,9 @@ def giveAdventureItemList(itemlist)
 	item = :ORANBERRY
 	end
 #    pbMessage(_INTL("{1} ",item))
+    if item.is_a?(Array)
+	 item = item.sample
+	end
     itemdata = GameData::Item.get(item)
     name = (count>1) ? itemdata.name_plural : itemdata.name
     string += count.to_s+" "+name+", "

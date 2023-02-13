@@ -1405,12 +1405,13 @@ class MoveRelearnerScreen
       end
     end
     species_data = pkmn.species_data
-      species_data.tutor_moves.each { |m| moves.push(m) }
+    species_data.tutor_moves.each { |m| moves.push(m) }
     moves = tmoves + moves
     return moves | []   # remove duplicates
   end
 
   def pbStartScreen(pkmn)
+    puts pkmn
     moves = MoveRelearnerScreen.pbGetRelearnableMoves(pkmn)    #by Kota
     @scene.pbStartScene(pkmn, moves)
     loop do
@@ -1418,6 +1419,7 @@ class MoveRelearnerScreen
       if move
         if @scene.pbConfirm(_INTL("Teach {1}?", GameData::Move.get(move).name))
           if pbLearnMove(pkmn, move)
+            $stats.moves_taught_by_reminder += 1
             @scene.pbEndScene
             return true
           end
@@ -1673,8 +1675,7 @@ MenuHandlers.add(:party_menu_tend, :feed, {
   "order"     => 20,
   "effect"    => proc { |screen, party, party_idx|
     pkmn = party[party_idx]
-    item = screen.scene.pbChooseItem($bag) {
-      pbEatingPkmn(item,pkmn)}
+    pbEatingPkmn(pkmn)
   }
 })
 

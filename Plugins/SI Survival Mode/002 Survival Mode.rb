@@ -196,13 +196,15 @@ def pbSleepRestore(wari)
  
  
  
- def pbEatingPkmn(pkmn)
+ def pbEatingPkmn(pkmn,item=nil)
+ if item.nil?
  item = 0
 pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
 item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
 }
+ end
 if item
 pbMessage(_INTL("You offered {1} a {2}.",pkmn.name,GameData::Item.get(item).name))
 $PokemonBag.pbDeleteItem(item)

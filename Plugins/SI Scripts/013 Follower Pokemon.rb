@@ -1,7 +1,7 @@
 OUTBREAK_TIME    = 24                   #
 
 def pbPetCheck
-  if pbGetTimeNow-$PokemonGlobal.groomTime>=OUTBREAK_TIME*60*60
+  if pbGetTimeNow.to_i-$PokemonGlobal.petTime>=OUTBREAK_TIME*60*60
    return true
   else 
    return false
@@ -9,7 +9,7 @@ def pbPetCheck
 end
 
 def pbGroomCheck
-  if pbGetTimeNow-$PokemonGlobal.groomTime>=OUTBREAK_TIME*60*60
+  if pbGetTimeNow.to_i-$PokemonGlobal.groomTime>=OUTBREAK_TIME*60*60
    return true
   else 
    return false
@@ -37,7 +37,7 @@ command = 0
 	  pkmn = FollowingPkmn.get_pokemon
       pbEatingPkmn(pkmn)
     when 2   # Use Statue
-	  $PokemonGlobal.petTime= pbGetTimeNow
+	  $PokemonGlobal.petTime= pbGetTimeNow.to_i
 	  if pbPetCheck == true
 	  pkmn = FollowingPkmn.get_pokemon
       pkmn.changeHappiness("groom",pkmn)
@@ -63,7 +63,7 @@ command = 0
     when 3   # Use Statue
 	  pkmn = FollowingPkmn.get_pokemon
 	  if pbGroomCheck == true
-	  $PokemonGlobal.groomTime= pbGetTimeNow
+	  $PokemonGlobal.groomTime= pbGetTimeNow.to_i
       pkmn.changeLoyalty("groom",pkmn)
       pbMessage(_INTL("You brush {1}!",pkmn.name))
       pkmn.beauty += 5

@@ -2,7 +2,12 @@
 # Revamps base Essentials code related to NPC Trainers to allow for plugin 
 # compatibility.
 #===============================================================================
-
+NoSoftReset = true
+#Set FirstGuaranteed to true if you want the first Pokemon in the list to be
+#the guaranteed one 2 and more is gonna be downwards from there on.
+#Set it to false if you want the last pokemon listed to be the guarantee 2
+#and more is gonna be upwards from there on.
+FirstGuaranteed = false
 
 #-------------------------------------------------------------------------------
 # Rewrites Trainer data to consider plugin properties.
@@ -28,7 +33,35 @@ module GameData
       trainer.id        = $player.make_foreign_ID
       trainer.items     = @items.clone
       trainer.lose_text = self.lose_text
-      @pokemon.each do |pkmn_data|
+	      if @numpkmn > 0      #byKota        
+            if FirstGuaranteed == true
+              pokemon_team2 = @pokemon.shift(@guara)
+            else 
+              pokemon_team2 = @pokemon.pop(@guara)
+            end  
+            pokemon_team3 = pokemon_team2.rotate(0)        
+            if NoSoftReset == true
+              ttype2 = @trainer_type.to_s
+              ttype = ttype2.codepoints
+              tname = @real_name.codepoints
+              playerID = $Trainer.id
+              hash = ttype, tname, @version, playerID
+              hash.flatten!
+              hash = hash.sum
+              srand(hash)
+            end
+            pokemon_team = @pokemon.sample(@numpkmn)
+            pokemon_team += pokemon_team2
+            if FirstGuaranteed == true
+              @pokemon = pokemon_team3.shift(@guara) + @pokemon
+            else
+              @pokemon = @pokemon + pokemon_team3.pop(@guara)
+            end  
+          else
+            pokemon_team = @pokemon
+          end	
+
+      pokemon_team.each do |pkmn_data|
         species = GameData::Species.get(pkmn_data[:species]).species
         pkmn = Pokemon.new(species, pkmn_data[:level], trainer, false)
         trainer.party.push(pkmn)
@@ -68,6 +101,7 @@ module GameData
           end
         end
         pkmn.happiness = pkmn_data[:happiness] if pkmn_data[:happiness]
+        pkmn.loyalty = pkmn_data[:loyalty] if pkmn_data[:loyalty]
         pkmn.name = pkmn_data[:name] if pkmn_data[:name] && !pkmn_data[:name].empty?
         #-----------------------------------------------------------------------
         # Sets the default values for plugin properties on trainer's Pokemon.

@@ -234,25 +234,28 @@
 	  if $player.playerhealth < 25
       rate*=4.0 
 	  end
+
       rate=rate.round # rounding it off.
-      if pbRandom(100)<rate
-	  if caller.shadowPokemon? && !@battle.trainerBattle? 
+  
+
+  if pbRandom(100)<rate
+	  if caller.shadowPokemon? && !trainerBattle? 
         injury = rand(40)+2
-        @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
         $player.playerhealth -= injury 
-      elsif user.shadowPokemon? && @battle.trainerBattle? 
+      elsif caller.shadowPokemon? && trainerBattle? 
          chance = rand(2)
          if chance == 1
            injury = rand(40)+2
-           @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+           pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
            $player.playerhealth -= injury
           else
            injury = rand(40)+2
-           @battle.pbDisplayBrief(_INTL("The incoming {2} hits the opposing Trainer for {1} Damage!", injury, pbPlayer.name))
+           pbDisplay(_INTL("The incoming {2} hits the opposing Trainer for {1} Damage!", injury, pbPlayer.name))
          end
-      elsif @battle.wildBattle?
+      elsif wildBattle?
         injury = rand(20)+2
-        @battle.pbDisplayBrief(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
         $player.playerhealth -= injury 
 	  else 
 	   return
@@ -300,7 +303,6 @@
 	
 	def pbCanAttackPlayer?(caller)
       return false if $PokemonSystem.survivalmode == 1 
-      return true if self.shadowPokemon?
       return false if @battle.trainerBattle? 
 	  return false if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       # only wild mons
@@ -321,6 +323,7 @@
       rate=5
       # not a species that calls
       return false if rate==0
+      rate+=2 if self.shadowPokemon?
       rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
       rate*=5 if self.hp<=(self.totalhp/4)
       rate*=3 if $player.playerhealth < 50 && $player.playerhealth > 25

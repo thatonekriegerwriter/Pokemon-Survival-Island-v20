@@ -1,8 +1,8 @@
 def pbRandomEvent
    if rand(100) == 1
      Kernel.pbMessage(_INTL("There was a sound outside."))   #Comet
-     $game_switches[450]==true 
-     $game_switches[451]==true 
+     $game_switches[450]=true 
+     $game_switches[451]=true 
 =begin
    elsif rand(1000) == 2
      

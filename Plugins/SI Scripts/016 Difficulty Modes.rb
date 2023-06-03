@@ -74,7 +74,7 @@ class PokemonEncounters
     if level > 100
      level = 100 
     end
-	if $game_map.name == "Temperate Coast" || $game_map.name == "Temperate Inland"
+	if $game_map.name == "Temperate Coast" || $game_map.name == "Temperate Inland" || $game_map.name == "Temperate Shore" || $game_map.name == "Temperate Plains"
      if level > (20+highrate)
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (10+rand(11)) 

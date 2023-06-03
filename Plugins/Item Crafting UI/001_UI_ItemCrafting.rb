@@ -164,12 +164,12 @@ class ItemCraft_Scene
         if pbConfirmMessage(_INTL("Would you like to craft {1} {2}?",volume,itemname))
           if canCraft?(index,volume)
             if $bag.can_add?(item,volume) 
-              $bag.add(item,volume)
+              $bag.add(item,volume.to_i)
               pbSEPlay("Pkmn move learnt")
-              removeIngredients(index,volume)
+              removeIngredients(index,volume.to_i)
               pbMessage(_INTL("You put the {1} away\\nin the <icon=bagPocket{2}>\\c[1]{3} Pocket\\c[0].",
                 itemname,pocket,PokemonBag.pocket_names()[pocket - 1]))
-              refreshNumbers(index,volume)
+              refreshNumbers(index,volume.to_i)
             else
               pbPlayBuzzerSE
               pbMessage(_INTL("Too bad...\nThe Bag is full..."))

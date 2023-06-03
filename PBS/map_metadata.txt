@@ -185,7 +185,7 @@ BattleBack = Indoor
 #-------------------------------
 [026]   # Temperate Marsh
 Name = Test Map
-Outdoor = false
+Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
@@ -1567,7 +1567,7 @@ BattleBack = Sky
 #-------------------------------
 [267]   # Swamp Base
 Name = Forested Base
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 #-------------------------------
 [268]   # 4

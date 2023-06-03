@@ -25,6 +25,8 @@ class PokemonBagScreen
             commands[cmdUse = commands.length]    = _INTL("Use")
           end
         end
+        commands[cmdEat = commands.length]        = _INTL("Eat") if itm.is_foodwater? || itm.is_berry?
+        commands[cmdMedicate = commands.length]   = _INTL("Medicate") if itm.is_medicine?
         commands[cmdGive = commands.length]       = _INTL("Give") if $player.pokemon_party.length > 0 && itm.can_hold?
         commands[cmdToss = commands.length]       = _INTL("Toss") if !itm.is_important? || $DEBUG
         if @bag.registered?(item)
@@ -40,6 +42,17 @@ class PokemonBagScreen
           pbFadeOutIn {
             pbDisplayMail(Mail.new(item, "", ""))
           }
+      elsif !cmdEat.nil? && (cmdEat >= 0 && command == cmdEat)   # Eat
+        ret = pbEating(@bag,item)
+        break if ret==2   # End screen
+        @scene.pbRefresh
+        next
+      elsif !cmdMedicate.nil? && (cmdMedicate >= 0 && command == cmdMedicate)   # Medicate
+        ret = pbMedicine(@bag,item)
+        # ret: 0=Item wasn't used; 1=Item used; 2=Close Bag to use in field
+        break if ret==2   # End screen
+        @scene.pbRefresh
+        next
         elsif cmdUse >= 0 && command == cmdUse
           ret = pbUseItem(@bag, item, @scene)
           break if ret == 2

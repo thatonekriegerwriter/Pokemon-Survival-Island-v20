@@ -9,18 +9,18 @@ module PokeventureConfig
   CollectItemsFromBattles = true # Collect Items from defeated Pokemon
   # Form of this list is [ItemID,chance]
   Items = [
-    [:ORANBERRY,30], [:SITRUSBERRY,30], [:ACORN,30], [:STONE,30], [:HEARTSCALE,16],
-    [:IRONORE,20], [:POTATO,20], [:COPPERORE,20], [:GOLDORE,20], [:TEALEAF,20],
-    [:SLOWPOKETAIL,10], [:SILVERORE,10], [:BAIT,10], [:MEAT,10], [:COAL,10], [:WATER,10],
-	[:FIRESTONE,7],[:LEAFSTONE,7],
-	[:COCOABEAN,5], [:EXPCANDYS,5],[:REVIVALHERB,5], [:ENERGYROOT,5], [:MOOMOOMILK,5], [:LEMON,5], [:SUPERREPEL,5],
-	[:POISONDART,3],[:SLEEPDART,3],[:PARALYZDART,3],[:ICEDART,3],[:FIREDART,3],
+    [:ORANBERRY,30], [:SITRUSBERRY,20], [:ACORN,10], [:STONE,10], [:HEARTSCALE,5],
+    [:IRONORE,10], [:POTATO,3], [:COPPERORE,8], [:GOLDORE,7], [:TEALEAF,7],
+    [:SLOWPOKETAIL,5], [:SILVERORE,2], [:BAIT,4], [:MEAT,4], [:COAL,4], [:WATER,5],
+	[:FIRESTONE,2],[:LEAFSTONE,2],
+	[:COCOABEAN,5], [:EXPCANDYS,5],[:REVIVALHERB,1], [:ENERGYROOT,5], [:MOOMOOMILK,3], [:LEMON,3],
+	[:POISONDART,1],[:SLEEPDART,1],[:PARALYZDART,1],[:ICEDART,1],[:FIREDART,1],
     [:WATERBOTTLE,1], [:PEARL,1], [:EXPCANDYM,1]
   ]
-  ChanceToGetEnemyItem = 10 # as a 1 in x chance
+  ChanceToGetEnemyItem = 100 # as a 1 in x chance
   # Friends
   FindFriends = true # If there is Space should there be a chance for wild pokèmon to join you.
-  ChanceToFindFriend = 50 # as a 1 in x chance
+  ChanceToFindFriend = 200 # as a 1 in x chance
   AreFoundFriendsBrilliant = true #have higher ivs and a higher shiny chance
   ChanceToFindEggs = true
   # Exp

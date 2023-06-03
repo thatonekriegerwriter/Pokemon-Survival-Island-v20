@@ -438,98 +438,115 @@ end
 
  
  def pbEating(bag,item)
- 
-pbMessage(_INTL("You ate/drank {1}.",item))
 $PokemonBag.pbDeleteItem(item)
 if item == :ORANBERRY
+puts item
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=4
 $player.playersaturation+=3
 $player.playerwater+=1
 $player.playerhealth += 1
 return 1
 elsif item == :LEPPABERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :CHERIBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :CHESTOBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :PECHABERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :RAWSTBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :ASPEARBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :PERSIMBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :LUMBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :FIGYBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :WIKIBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :MAGOBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :AGUAVBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :IAPAPABERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :IAPAPABERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=2
 $player.playerwater+=2
 return 1
 elsif item == :SITRUSBERRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=5
 $player.playersaturation+=7
 $player.playerwater+=1
 $player.playerhealth += 4
 return 1
 elsif item == :BERRYJUICE
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playerfood+=2
 $player.playersaturation+=2
 $player.playerwater+=10
 $player.playerhealth += 2
 return 1
 elsif item == :FRESHWATER
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playerwater+=20
 $player.playersaturation+=10#207 is Saturation
 $PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
@@ -537,56 +554,67 @@ Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 #You can add more if you want
 elsif item == :ATKCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :SATKCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :SPEEDCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :SPDEFCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :ACCCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=12
 $player.playerwater-=7
 return 1
 elsif item == :DEFCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :CRITCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return 1
 elsif item == :GSCURRY
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=8#205 is Hunger
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater-=7#206 is Thirst
 return 1
 elsif item == :RAGECANDYBAR #chocolate
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=10
 $player.playersaturation+=3
 $player.playersleep+=7
 return 1
 elsif item == :SWEETHEART #chocolate
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerfood+=10#205 is Hunger
 $player.playersaturation+=5#207 is Saturation
 $player.playersleep+=6#208 is Sleep
 return 1
 elsif item == :SODAPOP
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playerwater-=11#206 is Thirst
 $player.playersaturation+=11#207 is Saturation
 $player.playersleep+=10#208 is Sleep
@@ -595,6 +623,7 @@ $PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :LEMONADE
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=11#207 is Saturation
 $player.playerwater+=10#206 is Thirst
 $player.playersleep+=7#208 is Sleep
@@ -603,101 +632,122 @@ $PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :HONEY
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=20#207 is Saturation
 $player.playerwater+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return 1
 elsif item == :MOOMOOMILK
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=10
 $player.playerwater+=15
 $PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :CSLOWPOKETAIL
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=10#207 is Saturation
 $player.playerfood+=10#205 is Hunger
 return 1
 elsif item == :BAKEDPOTATO
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=4#206 is Thirst
 $player.playerfood+=7#205 is Hunger
 return 1
 elsif item == :APPLE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=3#206 is Thirst
 $player.playerfood+=3#205 is Hunger
 return 1
 elsif item == :CHOCOLATE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=7#205 is Hunger
 return 1
 elsif item == :LEMON
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=3#207 is Saturation
 $player.playerwater+=3#206 is Thirst
 $player.playerfood+=4#205 is Hunger
 return 1
 elsif item == :OLDGATEAU
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return 1
 elsif item == :LAVACOOKIE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater-=3#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return 1
 elsif item == :CASTELIACONE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=7#205 is Hunger
 return 1
 elsif item == :LUMIOSEGALETTE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=6#205 is Hunger
 return 1
 elsif item == :SHALOURSABLE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
 return 1
 elsif item == :BIGMALASADA
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
 return 1
 elsif item == :ONION
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater+=3#206 is Thirst
 $player.playerfood+=3#205 is Hunger
 return 1
 elsif item == :COOKEDORAN
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=6#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return 1
 elsif item == :CARROT
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=3#206 is Thirst
 $player.playerfood+=3#205 is Hunger
 return 1
 elsif item == :BREAD
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=11#205 is Hunger
 return 1
 elsif item == :TEA
+pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=8#206 is Thirst
 $player.playerfood+=2#205 is Hunger
 return 1
 elsif item == :CARROTCAKE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=15#206 is Thirst
 $player.playerfood+=10#205 is Hunger
 return 1
 elsif item == :COOKEDMEAT
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=40#207 is Saturation
 $player.playerwater+=0#206 is Thirst
 $player.playerfood+=20#205 is Hunger
 return 1
 elsif item == :SITRUSJUICE
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=20#207 is Saturation
 $player.playerwater+=25#206 is Thirst
 $player.playerfood+=0#205 is Hunger
@@ -705,11 +755,13 @@ $PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return 1
 elsif item == :BERRYMASH
+pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater+=5#206 is Thirst
 $player.playerfood+=5#205 is Hunger
 return 1
 elsif item == :LARGEMEAL
+pbMessage(_INTL("You feasted on the {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=50#207 is Saturation
 $player.playerwater+=50#206 is Thirst
 $player.playerfood+=50#205 is Hunger
@@ -774,7 +826,7 @@ end
 
  def pbMedicine(bag,item)
  return if $player.playerhealth == 100
-pbMessage(_INTL("You used {1} to heal yourself.",item))
+pbMessage(_INTL("You used {1} to heal yourself.",GameData::Item.get(item).name))
 $PokemonBag.pbDeleteItem(item)
 #205 is Hunger, 207 is Saturation, 206 is Thirst, 208 is Sleep
 if item == :POTION

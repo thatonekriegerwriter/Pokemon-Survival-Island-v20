@@ -28,7 +28,7 @@ command = 0
                     _INTL("Feed"),
                     _INTL("Pet"),
                     _INTL("Groom"),
-                    _INTL("Exit")],4)
+                    _INTL("Exit")],-1)
     pbDisposeMessageWindow(msgwindow)
     case command
     when 0   # Use Statue

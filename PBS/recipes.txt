@@ -1,0 +1,11 @@
+[Bedroll]
+Item=BEDROLL
+Yield=1
+Ingredients=WOODENPLANKS,3,WOOL,3
+Flags=Station,StationUpgraded,StationElectric
+
+[CraftingBench]
+Item=CRAFTINGBENCH
+Yield=1
+Ingredients=WOODENPLANKS,5
+Flags=Station,StationUpgraded,StationElectric

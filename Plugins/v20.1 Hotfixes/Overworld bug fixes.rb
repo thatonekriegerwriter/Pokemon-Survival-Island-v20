@@ -124,13 +124,15 @@ class Game_Player < Game_Character
       end
       new_charset = pbGetPlayerCharset(meta.cycle_charset)
     when :running
-      self.move_speed = 4 if !@move_route_forcing
+      self.move_speed = 3.75 if !@move_route_forcing && $player.playershoes == :MAKESHIFTRUNNINGSHOES
+      self.move_speed = 4.25 if !@move_route_forcing && $player.playershoes == :RUNNINGSHOES
       new_charset = pbGetPlayerCharset(meta.run_charset)
     when :ice_sliding
       self.move_speed = 4 if !@move_route_forcing
       new_charset = pbGetPlayerCharset(meta.walk_charset)
     else   # :walking, :jumping, :walking_stopped
-      self.move_speed = 3 if !@move_route_forcing
+      self.move_speed = 3 if !@move_route_forcing && $game_switches[485]==false
+      self.move_speed = 2.5	if !@move_route_forcing && $game_switches[485]==true
       new_charset = pbGetPlayerCharset(meta.walk_charset)
     end
     @character_name = new_charset if new_charset

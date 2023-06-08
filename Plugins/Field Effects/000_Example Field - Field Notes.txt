@@ -1,0 +1,246 @@
+[ ]------------------------------------------------[ ]
+ |    Field Effects     +    Terrains	   	    |
+[ ]------------------------------------------------[ ]
+[ ]------------------------------------------------[ ]
+   CTRL+F [Brackets] to jump to the specific field:
+[ ]------------------------------------------------[ ]
+ 
+
+[ FIELDS ]
+	1. Example Field 			[EF]
+
+[ TERRAINS ]
+	1. Grassy Terrain 			[GT]
+	2. Misty Terrain 			[MT]
+	3. Electric Terrain			[ET]
+	4. Psychic Terrain			[PT]
+
+[  ]----------------------------------------------------------[ 11 ]
+ 			   Example Field 
+[  ]----------------------------------------------------------[FF]
+
+		 "Example text for the example field!"
+
+[ GENERAL		
+*	All weather in annulled								
+
+*	Bug-Type Pokemon have their SPEED increased by x1.2				
+
+*	Pokemon can't be FROZEN								
+
+*	Non-Water types Speed is halved, except for Swift Swimmers,			
+	 Surge Surfers & Steel Workers
+
+[ ABILITIES
+*	Effect Spores activation chance is doubled to 60%				
+
+*	Long Reach Pokemon suffer a x0.9 accuracy loss					
+
+*	Solid Rock now applies to all damage						
+
+*	Keen Eye Pokémon gain +1 Evasion on entry					
+
+*	Water Compaction is activated each turn						
+
+*	Pokémon with Water Absorb gradually restore HP					
+
+*	These abilities are activated:							
+		Overgrow
+
+[ GENERAL POWER BOOSTS
+*	Normal-Type moves gain a x1.5 Power Boost					
+
+*	Special Bug-Type moves gain a x1.5 Power Boost					
+
+*	Physical Psychic-Type moves gain a x1.5 Power Boost				
+
+*	Contact Moves gain a x1.2 Power Boost						
+
+*	Non-Contact Moves gain a x1.2 Power Boost					
+
+*	Sound-Based Moves gain a x1.1 Power Boost					
+
+*	Ground-Type moves can hit airborne Pokemon
+
+*	Rock-Type moves become dual typed Rock/Water					
+
+*	Fire-Type moves AGAINST grounded Pokemon decrease in x0.5 Base Power		
+
+*	Grass-Type moves FROM grounded Pokemon decrease in x0.5 Base Power		
+
+[ MOVE SPECIFIC POWER BOOSTS
+
+*	Stealth Rock damage is doubled							
+
+*	These moves gain a x2 Power Boost:						
+		Hurricane
+
+*	These moves gain a x1.5 Power Boost:						
+		Psycho Cut	Attack Order	Fury Cutter	Cut	
+		Grav Apple
+	
+*	These moves have extra effects:							
+		* Wood Hammer:
+			BURNS the Target
+
+*	These moves decrease in x0.5 Base Power:					
+		Surf		Muddy Water	Rock Throw
+
+*	These moves end of turn damage is amplified:					
+		Infestation (1/6th MAX HP)
+
+*	These moves heal more:
+		Heal Order (66% MAX HP)							
+		Ingrain (1/8th HP, doesn't stack with sun)
+
+*	These moves stat changing effects are amplified:				
+		Defend Order
+
+*	These moves also leech seed the target:						
+		Forest's Curse
+
+*	These moves will destroy the field and gain a Power Boost when			
+	Not Raining, Water Sport isn't activated isn't active:
+			* Forest Fire Field (x1.3 Power Boost):
+				Fire Pledge	Fire Blast	Flame Burst
+
+*	Nature Power turns into Wood Hammer						
+	
+*	These will cause the user to become Bug-Type (if no Terrain is active)
+		Mimicry									
+		Camouflage								
+
+*	These moves may induce sleep:							
+		Secret Power
+
+*	No seeds cause I'm lazy. Not sorry.						NOT DONE
+
+[ ]----------------------------------------------------------[ ]
+ |							      |
+ |			    TERRAINS			      |
+ |							      |
+[ ]----------------------------------------------------------[ ]
+
+[ ]----------------------------------------------------------[1]
+ 			   Grassy Terrain 
+[ ]---------------------------------------------------------[GT]
+
+     "The terrain is in full bloom!" / "The terrain bloomed!"
+
+*	Grass Pelt is activated							
+
+*	Grounded Pokemon restore 1/16th MAX HP at the end of the turn		
+
+*	Grass-Type Moves FROM grounded Pokemon gain a x1.3 Power Boost		
+
+*	Grassy Glide becomes a priority move (+1)				
+
+*	These moves decrease in power by x0.5 when used AGAINST grounded Pokémon: 
+		Bulldoze	Earthquake	Magnitude
+
+*	Nature Power turns into Energy Ball (if no Field is active)		
+
+*	Secret power may cause Sleep						
+
+*	These moves become Grass-Type moves and double in power:		
+		Terrain Pulse	
+
+*	These will cause the user to become Grass-Type:				
+		Mimicry		Camouflage
+
+*	Created By:
+		Grassy Terrain 	(5-8 Turns)					
+		Grassy Surge 	(5-8 Turns)					
+
+*	The terrain is destroyed by these moves:				
+		Defog
+			
+[  ]----------------------------------------------------------[ 2 ]
+ 			   Misty Terrain 
+[  ]----------------------------------------------------------[MT]
+
+   "Mist is surrounding the terrain. / The terrain became misty!"
+
+*	All Pokemon are immune to status conditions				
+
+*	Dragon-Type Moves AGAINST grounded Pokémon decrease in x0.5 Base Power	
+
+*	Misty Explosion increases in base power by x1.5				
+
+*	Nature Power turns into Mist Ball (if no Field is active)		
+
+*	Secret power may lower Special Attack								
+
+*	These moves become Fairy-Type moves and double in power:		
+		Terrain Pulse		
+
+*	These will cause the user to become Fairy-Type:				
+		Mimicry		Camouflage	
+
+*	Created By:								
+		Misty Terrain 	(5-8 Turns)
+		Misty Surge 	(5-8 Turns)
+
+*	The terrain is destroyed by these moves:				
+		Defog
+
+[  ]----------------------------------------------------------[ 3 ]
+ 			   Electric Terrain 
+[  ]----------------------------------------------------------[ET]
+
+ "The terrain is hyper-charged!" / "The terrain became electrified!"
+
+*	Grounded Pokémon can't fall asleep					
+
+*	These abilities are activated (MAX 5):					
+		Surge Surfer	
+
+*	Electric-Type Moves FROM grounded Pokemon gain a x1.3 Power Boost	
+
+*	Rising Voltages power is doubled					
+
+*	Nature Power turns into Thunderbolt (if no Field is active)		
+
+*	Secret Power may cause Paralysis					
+
+*	These moves become Electric-Type moves and double in power:		
+		Terrain Pulse
+
+*	These will cause the user to become Electric-Type:			
+		Mimicry		Camouflage
+
+*	Created By:								
+		Electric Terrain 	(5-8 Turns)
+		Electric Surge 		(5-8 Turns)
+
+*	The terrain is destroyed by these moves:				
+		Defog
+
+[  ]----------------------------------------------------------[ 4 ]
+ 			   Psychic Terrain 
+[  ]----------------------------------------------------------[PT]
+
+      "The terrain feels confusing."/"The terrain got weird!"
+
+*	Single-Target Priority attacks fail AGAINST grounded Pokemon		
+
+*	Psychic-Type Moves FROM grounded Pokemon gain a x1.3 Power Boost	
+
+*	Expanding Forces power is boosted by x1.5, if a double battle, hits both opposing Pokémon	
+
+*	Nature Power turns into Psychic (if no Field is active)			
+
+*	Secret Power may lower Speed						
+	
+*	These moves become Psychic-Type moves and double in power:		
+		Terrain Pulse
+
+*	These will cause the user to become Psychic-Type:			
+		Mimicry		Camouflage
+
+*	Created By:								
+		Psychic Terrain 	(5-8 Turns)
+		Psychic Surge 		(5-8 Turns)
+
+*	The terrain is destroyed by these moves:				
+		Defog

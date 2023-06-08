@@ -10,14 +10,18 @@ class PokemonBagScreen
         item = @scene.pbChooseItem
         break if !item
         itm = GameData::Item.get(item)
-        cmdRead     = -1
-        cmdUse      = -1
-        cmdRegister = -1
-        cmdGive     = -1
-        cmdToss     = -1
-        cmdDebug    = -1
+      cmdRead     = -1
+      cmdEat     = -1
+      cmdMedicate = -1
+      cmdUse      = -1
+      cmdRegister = -1
+      cmdGive     = -1
+      cmdToss     = -1
+      cmdDebug    = -1
         commands = []
         commands[cmdRead = commands.length] = _INTL("Read") if itm.is_mail?
+        commands[cmdEat = commands.length]       = _INTL("Feed") if itm.is_foodwater? || itm.is_berry?
+        commands[cmdMedicate = commands.length]       = _INTL("Heal") if itm.is_medicine?
         if ItemHandlers.hasOutHandler(item) || (itm.is_machine? && $player.party.length > 0)
           if ItemHandlers.hasUseText(item)
             commands[cmdUse = commands.length]    = ItemHandlers.getUseText(item)
@@ -25,8 +29,6 @@ class PokemonBagScreen
             commands[cmdUse = commands.length]    = _INTL("Use")
           end
         end
-        commands[cmdEat = commands.length]        = _INTL("Eat") if itm.is_foodwater? || itm.is_berry?
-        commands[cmdMedicate = commands.length]   = _INTL("Medicate") if itm.is_medicine?
         commands[cmdGive = commands.length]       = _INTL("Give") if $player.pokemon_party.length > 0 && itm.can_hold?
         commands[cmdToss = commands.length]       = _INTL("Toss") if !itm.is_important? || $DEBUG
         if @bag.registered?(item)
@@ -42,12 +44,12 @@ class PokemonBagScreen
           pbFadeOutIn {
             pbDisplayMail(Mail.new(item, "", ""))
           }
-      elsif !cmdEat.nil? && (cmdEat >= 0 && command == cmdEat)   # Eat
+      elsif cmdEat >=0 && command==cmdEat   # Eat
         ret = pbEating(@bag,item)
         break if ret==2   # End screen
         @scene.pbRefresh
         next
-      elsif !cmdMedicate.nil? && (cmdMedicate >= 0 && command == cmdMedicate)   # Medicate
+      elsif cmdMedicate>=0 && command==cmdMedicate   # Medicate
         ret = pbMedicine(@bag,item)
         # ret: 0=Item wasn't used; 1=Item used; 2=Close Bag to use in field
         break if ret==2   # End screen
@@ -81,7 +83,11 @@ class PokemonBagScreen
             itemname = (qty > 1) ? itm.portion_name_plural : itm.portion_name
             if pbConfirm(_INTL("Is it OK to throw away {1} {2}?", qty, itemname))
               pbDisplay(_INTL("Threw away {1} {2}.", qty, itemname))
+			  if qty.is_a? Float
+			  @bag.remove(item)
+			  else
               qty.times { @bag.remove(item) }
+			  end
               @scene.pbRefresh
             end
           end

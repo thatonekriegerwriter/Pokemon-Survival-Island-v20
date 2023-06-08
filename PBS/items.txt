@@ -5682,7 +5682,7 @@ NamePlural = Machetes
 Pocket = 11
 Price = 0
 Flags = Tool
-Description = A machete that can be used to cut away thick brush or bushes, it can also be used in combat to attack.
+Description = A blade typically used for cutting and carving. If be trees or POKeMON, it will be useful.
 #-------------------------------
 [STONEAXE]
 Name = Stone Axe
@@ -5789,6 +5789,15 @@ Description =
 [GLASSBOTTLE]
 Name = Glass Bottle
 NamePlural = Glass Bottle
+Pocket = 11
+Price = 5
+FieldUse = Direct
+Flags = Tool
+Description = 
+#-------------------------------
+[GLASS]
+Name = Glass
+NamePlural = Glass
 Pocket = 11
 Price = 5
 FieldUse = Direct
@@ -9021,6 +9030,14 @@ Price = 1000
 Flags = Fling_20
 Description = A genetically modified sample of Mew's DNA. Holding this may cause egg mutations.
 #-------------------------------
+[RAFT]
+Name = Raft
+NamePlural = Rafts
+Pocket = 11
+Price = 0
+Flags = Fling_10
+Description = A Raft that can be used for traversing water.
+#-------------------------------
 [DIVINEPLATE]
 Name = Divine Plate
 NamePlural = Divine Plates
@@ -9262,3 +9279,209 @@ Price = 4000
 BattleUse = Direct
 Flags = Fling_50,UsesAllBattleActions
 Description = A jewel glistening with Tera energy. It can fully recharge your Tera Orb in battle.
+#-------------------------------
+[HARDYMINT]
+Name = Hardy Mint
+NamePlural = Hardy Mints
+PortionName = sprig of Hardy Mint
+PortionNamePlural = sprigs of Hardy Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[DOCILEMINT]
+Name = Docile Mint
+NamePlural = Docile Mints
+PortionName = sprig of Docile Mint
+PortionNamePlural = sprigs of Docile Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[BASHFULMINT]
+Name = Bashful Mint
+NamePlural = Bashful Mints
+PortionName = sprig of Bashful Mint
+PortionNamePlural = sprigs of Bashful Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[QUIRKYMINT]
+Name = Quirky Mint
+NamePlural = Quirku Mints
+PortionName = sprig of Quirky Mint
+PortionNamePlural = sprigs of Quirky Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[DULLMINT]
+Name = Dull Mint
+NamePlural = Dull Mints
+PortionName = sprig of Dull Mint
+PortionNamePlural = sprigs of Dull Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[POISEDMINT]
+Name = Poised Mint
+NamePlural = Poised Mints
+PortionName = sprig of Poised Mint
+PortionNamePlural = sprigs of Poised Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, it's Attack will grow at a slightly faster rate.
+#-------------------------------
+[TENSEMINT]
+Name = Tense Mint
+NamePlural = Tense Mints
+PortionName = sprig of Tense Mint
+PortionNamePlural = sprigs of Tense Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, it's Defense will grow at a slightly faster rate.
+#-------------------------------
+[ALERTMINT]
+Name = Alert Mint
+NamePlural = Alert Mints
+PortionName = sprig of Alert Mint
+PortionNamePlural = sprigs of Alert Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, it's Speed will grow at a slightly faster rate.
+#-------------------------------
+[NUTTYMINT]
+Name = Nutty Mint
+NamePlural = Nutty Mints
+PortionName = sprig of Nutty Mint
+PortionNamePlural = sprigs of Nutty Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, it's Special Attack will grow at a slightly faster rate.
+#-------------------------------
+[WEARYMINT]
+Name = Weary Mint
+NamePlural = Weary Mints
+PortionName = sprig of Weary Mint
+PortionNamePlural = sprigs of Weary Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = When a Pokémon smells this mint, it's Special Defense will grow at a slightly faster rate.
+#-------------------------------
+[BLUNTMINT]
+Name = Blunt Mint
+NamePlural = Blunt Mints
+PortionName = sprig of Blunt Mint
+PortionNamePlural = sprigs of Blunt Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A mint that make's Attack and Special Attack grow slightly faster, while Defense and Special Defense grow slightly slower.
+#-------------------------------
+[CAUTIOUSMINT]
+Name = Cautious Mint
+NamePlural = Cautious Mints
+PortionName = sprig of Cautious Mint
+PortionNamePlural = sprigs of Cautious Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A mint that make's Defense and Special Defense grow slightly faster, while Attack and Special Attack grow slightly slower.
+#-------------------------------
+[WISEMINT]
+Name = Wise Mint
+NamePlural = Wise Mints
+PortionName = sprig of Wise Mint
+PortionNamePlural = sprigs of Wise Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A mint that make's Special Attack and Special Defense grow slightly faster, while Attack and Defense grow slightly slower.
+#-------------------------------
+[DETERMINEDMINT]
+Name = Determined Mint
+NamePlural = Determined Mints
+PortionName = sprig of Determined Mint
+PortionNamePlural = sprigs of Determined Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A mint that make's Attack and Defense grow slightly faster, while Special Attack and Special Defense grow slightly slower.
+#-------------------------------
+[GOLDENMINT]
+Name = Golden Mint
+NamePlural = Golden Mints
+PortionName = sprig of Golden Mint
+PortionNamePlural = sprigs of Golden Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A special mint that slightly increases all stats with no downside.
+#-------------------------------
+[RADIANTMINT]
+Name = Radiant Mint
+NamePlural = Radiant Mints
+PortionName = sprig of Radiant Mint
+PortionNamePlural = sprigs of Radiant Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A special mint that increases all stats with no downside.
+#-------------------------------
+[WIMPYMINT]
+Name = Wimpy Mint
+NamePlural = Wimpy Mints
+PortionName = sprig of Wimpy Mint
+PortionNamePlural = sprigs of Wimpy Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A special mint that slightly decreases all stats with no upside.
+#-------------------------------
+[PATHETICMINT]
+Name = Pathetic Mint
+NamePlural = Pathetic Mints
+PortionName = sprig of Pathetic Mint
+PortionNamePlural = sprigs of Pathetic Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint
+Description = A special mint that decreases all stats with no upside.
+#-------------------------------
+[MARKCHARM]
+Name = Mark Charm
+NamePlural = Mark Charms
+Pocket = 8
+Price = 0
+Flags = KeyItem
+Description = Having one of these mysterious charms makes it more likely you’ll encounter a Pokémon with a mark.

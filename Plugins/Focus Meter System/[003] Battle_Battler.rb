@@ -20,6 +20,13 @@ class Battle::ActiveSide
   end
 end
 
+module Battle::DebugVariables
+  BATTLER_EFFECTS[PBEffects::FocusLock]    = { name: "Focus Lock number of turns remaining",    default: 0 }
+  BATTLER_EFFECTS[PBEffects::DampenFocus]  = { name: "Dampened Focus halves focus gains",       default: false }
+  BATTLER_EFFECTS[PBEffects::FullyFocused] = { name: "Fully Focused full focus meter duration", default: 0 }
+  SIDE_EFFECTS[PBEffects::FocusedGuard]    = { name: "Focused Guard duration",                  default: 0 }
+end
+
 $DELUXE_BATTLE_EFFECTS[:battler_default_false] += [PBEffects::DampenFocus]
 $DELUXE_BATTLE_EFFECTS[:battler_default_zero]  += [PBEffects::FocusLock, PBEffects::FullyFocused]
 $DELUXE_BATTLE_EFFECTS[:team_default_zero]     += [PBEffects::FocusedGuard]

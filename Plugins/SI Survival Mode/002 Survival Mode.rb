@@ -104,15 +104,15 @@ class Player < Trainer
     @playerhealth = value.clamp(0, 100)
   end
   def playerstamina=(value)
-    validate value => Integer
+    validate value => Float
     @playerstamina = value.clamp(0, 1000)
   end
   def playermaxstamina=(value)
-    validate value => Integer
+    validate value => Float
     @playermaxstamina = value.clamp(0, 9999)
   end
   def playerstaminamod=(value)
-    validate value => Integer
+    validate value => Float
     @playerstaminamod = value.clamp(0, 50)
   end
 end
@@ -154,21 +154,35 @@ def pbAmbientTemperature
 
 end
 
-def pbSleepRestore(wari)
+def pbSleepRestore(wari,vari=nil)
 ##########PLAYER###################
 #       Stamina   #
   $player.playerstamina = $player.playermaxstamina
 #       Sleep     #
+  if vari.nil?
   $player.playersleep = $player.playersleep.to_i+(wari*9)
+  else
+  $player.playersleep = $player.playersleep.to_i-(wari*9)
+  end
   if $player.playersleep > 200
   $player.playersleep = 200  
+  end
+  if $player.playersleep < 0
+  $player.playersleep = 0  
   end
 #       FoodWater     #
  if $player.playersaturation==0
    $player.playerfood=$player.playerfood-(wari*2)
    $player.playerwater=$player.playerwater-(wari*2)
   else
-   $player.playersaturation=$player.playersaturation-(wari*2)
+   if $player.playersaturation-(wari*7) < 0
+    potato = $player.playersaturation-(wari*7)
+	$player.playersaturation=0
+   $player.playerfood=$player.playerfood+(potato*2)
+   $player.playerwater=$player.playerwater+(potato*2)
+   else
+   $player.playersaturation=$player.playersaturation-(wari*7)
+   end
  end
 
 ##########POKEMON###################
@@ -207,221 +221,209 @@ item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodw
  end
 if item
 pbMessage(_INTL("You offered {1} a {2}.",pkmn.name,GameData::Item.get(item).name))
-$PokemonBag.pbDeleteItem(item)
+$bag.remove(item)
 pbMessage(_INTL("{1} takes it happily!",pkmn.name,GameData::Item.get(item).name))
 case item
 when :ORANBERRY
-pkmn.food+=2
-pkmn.water+=2
+pkmn.food+=25
+pkmn.water+=25
 return true
 when :LEPPABERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :CHERIBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :CHESTOBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :PECHABERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :RAWSTBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :ASPEARBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :PERSIMBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :LUMBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :FIGYBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :WIKIBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :MAGOBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :AGUAVBERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :IAPAPABERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :IAPAPABERRY
-pkmn.food+=5
-pkmn.water+=2
+pkmn.food+=50
+pkmn.water+=25
 return true
 when :SITRUSBERRY
-pkmn.food+=5
-pkmn.water+=1
-return true
-when :BERRYJUICE
-pkmn.food+=2
+pkmn.food+=50
 pkmn.water+=10
 return true
+when :BERRYJUICE
+pkmn.food+=25
+pkmn.water+=100
+return true
 when :FRESHWATER
-pkmn.water+=20
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+pkmn.water+=100
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
 when :ATKCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :SATKCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :SPEEDCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :SPDEFCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :ACCCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :DEFCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :CRITCURRY
-pkmn.food+=8
-pkmn.water-=7
+pkmn.food+=80
 return true
 when :GSCURRY
-pkmn.food+=8#205 is Hunger
-pkmn.water-=7#206 is Thirst
+pkmn.food+=80
 return true
 when :RAGECANDYBAR #chocolate
-pkmn.food+=10
+pkmn.food+=100
 return true
 when :SWEETHEART #chocolate
-pkmn.food+=10#205 is Hunger
+pkmn.food+=100
 return true
 when :SODAPOP
-pkmn.water-=11#206 is Thirst
+pkmn.water-=100
 return true
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
 when :LEMONADE
-pkmn.water+=10#206 is Thirst
+pkmn.water+=100
 return true
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
 when :HONEY
-pkmn.water+=2#206 is Thirst
-pkmn.food+=6#205 is Hunger
+pkmn.water+=20
+pkmn.food+=60
 return true
 when :MOOMOOMILK
-pkmn.water+=15
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+pkmn.water+=100
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
 when :CSLOWPOKETAIL
-pkmn.food+=10#205 is Hunger
+pkmn.food+=100
 return true
 when :BAKEDPOTATO
-pkmn.water+=4#206 is Thirst
-pkmn.food+=7#205 is Hunger
+pkmn.water+=40
+pkmn.food+=70
 return true
 when :APPLE
-pkmn.water+=3#206 is Thirst
-pkmn.food+=3#205 is Hunger
+pkmn.water+=30
+pkmn.food+=30
 return true
 when :CHOCOLATE
-pkmn.food+=7#205 is Hunger
+pkmn.food+=70
 return true
 when :LEMON
-pkmn.water+=3#206 is Thirst
-pkmn.food+=4#205 is Hunger
+pkmn.water+=30
+pkmn.food+=40
 return true
 when :OLDGATEAU
-pkmn.water+=2#206 is Thirst
-pkmn.food+=6#205 is Hunger
+pkmn.water+=20
+pkmn.food+=60
 return true
 when :LAVACOOKIE
-pkmn.water-=3#206 is Thirst
-pkmn.food+=6#205 is Hunger
+pkmn.food+=60
 return true
 when :CASTELIACONE
-pkmn.water+=7#206 is Thirst
-pkmn.food+=7#205 is Hunger
+pkmn.water+=70
+pkmn.food+=70
 return true
 when :LUMIOSEGALETTE
-pkmn.food+=6#205 is Hunger
+pkmn.food+=60
 return true
 when :SHALOURSABLE
-pkmn.food+=8#205 is Hunger
+pkmn.food+=80
 return true
 when :BIGMALASADA
-pkmn.food+=8#205 is Hunger
+pkmn.food+=80
 return true
 when :ONION
-pkmn.water+=3#206 is Thirst
-pkmn.food+=3#205 is Hunger
+pkmn.water+=30
+pkmn.food+=30
 return true
 when :COOKEDORAN
-pkmn.water+=1#206 is Thirst
-pkmn.food+=6#205 is Hunger
+pkmn.water+=10
+pkmn.food+=60
 return true
 when :CARROT
-pkmn.water+=3#206 is Thirst
-pkmn.food+=3#205 is Hunger
+pkmn.water+=30
+pkmn.food+=30
 return true
 when :BREAD
-pkmn.water+=7#206 is Thirst
-pkmn.food+=11#205 is Hunger
+pkmn.water+=70
 return true
 when :TEA
-pkmn.water+=8#206 is Thirst
-pkmn.food+=2#205 is Hunger
+pkmn.water+=80
+pkmn.food+=20
 return true
 when :CARROTCAKE
-pkmn.water+=15#206 is Thirst
-pkmn.food+=10#205 is Hunger
+pkmn.water+=100
+pkmn.food+=100
 return true
 when :COOKEDMEAT
-pkmn.water+=0#206 is Thirst
-pkmn.food+=20#205 is Hunger
+pkmn.food+=100
 return true
 when :SITRUSJUICE
-pkmn.water+=25#206 is Thirst
-pkmn.food+=0#205 is Hunger
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+pkmn.water+=100
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
 when :BERRYMASH
-pkmn.water+=5#206 is Thirst
-pkmn.food+=5#205 is Hunger
+pkmn.water+=50
+pkmn.food+=50
 return true
 when :LARGEMEAL
-pkmn.water+=50#206 is Thirst
-pkmn.food+=50#205 is Hunger
+pkmn.water+=500#206 is Thirst
+pkmn.food+=500#205 is Hunger
 party = $player.party
  for i in 0...party.length
    pkmn = party[i]
@@ -430,336 +432,300 @@ party = $player.party
  end
 return true
 else
-$PokemonBag.pbStoreItem(item,1)
+$bag.add(item,1)
 return false
 end
 end
 end
 
  
- def pbEating(bag,item)
-$PokemonBag.pbDeleteItem(item)
+ def pbEating(bag=nil,item=nil)
+ if item.nil?
+ item = 0
+pbFadeOutIn(99999){
+scene = PokemonBag_Scene.new
+screen = PokemonBagScreen.new(scene,$PokemonBag)
+item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
+}
+ end
+if $bag.remove(item,1)
 if item == :ORANBERRY
-puts item
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=4
-$player.playersaturation+=3
-$player.playerwater+=1
+$player.playerfood+=1
 $player.playerhealth += 1
-return 1
+return true
 elsif item == :LEPPABERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+$player.playerfood+=1
+return true
 elsif item == :CHERIBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :CHESTOBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :PECHABERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :RAWSTBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :ASPEARBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :PERSIMBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :LUMBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :FIGYBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :WIKIBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :MAGOBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :AGUAVBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :IAPAPABERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :IAPAPABERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=2
-$player.playerwater+=2
-return 1
+
+$player.playerfood+=1
+return true
 elsif item == :SITRUSBERRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playerfood+=5
-$player.playersaturation+=7
-$player.playerwater+=1
-$player.playerhealth += 4
-return 1
+
+$player.playerfood+=1
+$player.playerhealth += ($player.playerhealth/4)
+return true
 elsif item == :BERRYJUICE
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
-$player.playerfood+=2
-$player.playersaturation+=2
+
 $player.playerwater+=10
-$player.playerhealth += 2
-return 1
+$player.playerhealth += 5
+return true
 elsif item == :FRESHWATER
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playerwater+=20
-$player.playersaturation+=10#207 is Saturation
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return 1
+return true
 #You can add more if you want
 elsif item == :ATKCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :SATKCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :SPEEDCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :SPDEFCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :ACCCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=12
 $player.playerwater-=7
-return 1
+return true
 elsif item == :DEFCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :CRITCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
-return 1
+return true
 elsif item == :GSCURRY
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=8#205 is Hunger
-$player.playersaturation+=5#207 is Saturation
+$player.playersaturation+=15#207 is Saturation
 $player.playerwater-=7#206 is Thirst
-return 1
+return true
 elsif item == :RAGECANDYBAR #chocolate
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=10
 $player.playersaturation+=3
 $player.playersleep+=7
-return 1
+return true
 elsif item == :SWEETHEART #chocolate
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerfood+=10#205 is Hunger
 $player.playersaturation+=5#207 is Saturation
 $player.playersleep+=6#208 is Sleep
-return 1
+return true
 elsif item == :SODAPOP
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playerwater-=11#206 is Thirst
-$player.playersaturation+=11#207 is Saturation
-$player.playersleep+=10#208 is Sleep
-return 1
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$player.playersaturation+=30#207 is Saturation
+$player.playersleep+=25#208 is Sleep
+return true
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return 1
+return true
 elsif item == :LEMONADE
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=11#207 is Saturation
 $player.playerwater+=10#206 is Thirst
 $player.playersleep+=7#208 is Sleep
-return 1
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+return true
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return 1
+return true
 elsif item == :HONEY
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=20#207 is Saturation
-$player.playerwater+=2#206 is Thirst
-$player.playerfood+=6#205 is Hunger
-return 1
+return true
 elsif item == :MOOMOOMILK
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=10
 $player.playerwater+=15
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return 1
+return true
 elsif item == :CSLOWPOKETAIL
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=10#207 is Saturation
-$player.playerfood+=10#205 is Hunger
-return 1
+
+$player.playersaturation+=20#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
 elsif item == :BAKEDPOTATO
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=4#206 is Thirst
 $player.playerfood+=7#205 is Hunger
-return 1
+return true
 elsif item == :APPLE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=3#206 is Thirst
-$player.playerfood+=3#205 is Hunger
-return 1
+
+$player.playerwater+=1#206 is Thirst
+$player.playerfood+=1#205 is Hunger
+return true
 elsif item == :CHOCOLATE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=7#205 is Hunger
-return 1
+return true
 elsif item == :LEMON
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=3#207 is Saturation
-$player.playerwater+=3#206 is Thirst
-$player.playerfood+=4#205 is Hunger
-return 1
+
+$player.playerfood+=1#205 is Hunger
+return true
 elsif item == :OLDGATEAU
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
-return 1
+return true
 elsif item == :LAVACOOKIE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater-=3#206 is Thirst
 $player.playerfood+=6#205 is Hunger
-return 1
+return true
 elsif item == :CASTELIACONE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=7#205 is Hunger
-return 1
+return true
 elsif item == :LUMIOSEGALETTE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=6#205 is Hunger
-return 1
+return true
 elsif item == :SHALOURSABLE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
-return 1
+return true
 elsif item == :BIGMALASADA
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
-return 1
+return true
 elsif item == :ONION
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=5#207 is Saturation
-$player.playerwater+=3#206 is Thirst
-$player.playerfood+=3#205 is Hunger
-return 1
+
+$player.playerwater+=1#206 is Thirst
+$player.playerfood+=1#205 is Hunger
+return true
 elsif item == :COOKEDORAN
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=6#207 is Saturation
-$player.playerwater+=6#206 is Thirst
+
+$player.playersaturation+=2#207 is Saturation
+$player.playerhealth+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
-return 1
+return true
 elsif item == :CARROT
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=6#207 is Saturation
-$player.playerwater+=3#206 is Thirst
-$player.playerfood+=3#205 is Hunger
-return 1
+$player.playerwater+=1#206 is Thirst
+$player.playerfood+=1#205 is Hunger
+return true
 elsif item == :BREAD
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=11#205 is Hunger
-return 1
+return true
 elsif item == :TEA
-pbMessage(_INTL("You drank {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=8#206 is Thirst
 $player.playerfood+=2#205 is Hunger
-return 1
+return true
 elsif item == :CARROTCAKE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=15#206 is Thirst
 $player.playerfood+=10#205 is Hunger
-return 1
+return true
 elsif item == :COOKEDMEAT
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=40#207 is Saturation
-$player.playerwater+=0#206 is Thirst
-$player.playerfood+=20#205 is Hunger
-return 1
+$player.playerfood+=10#205 is Hunger
+return true
 elsif item == :SITRUSJUICE
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=20#207 is Saturation
-$player.playerwater+=25#206 is Thirst
+$player.playerwater+=6#206 is Thirst
 $player.playerfood+=0#205 is Hunger
-$PokemonBag.pbStoreItem(:GLASSBOTTLE,1)
+$player.playerhealth+= 25#205 is Hunger
+$bag.add(:GLASSBOTTLE,1)
 Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return 1
+return true
 elsif item == :BERRYMASH
-pbMessage(_INTL("You ate {1}.",GameData::Item.get(item).name))
+
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater+=5#206 is Thirst
 $player.playerfood+=5#205 is Hunger
-return 1
+return true
 elsif item == :LARGEMEAL
 pbMessage(_INTL("You feasted on the {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=50#207 is Saturation
@@ -815,57 +781,43 @@ $player.playerstaminamod+=15#205 is Hunger
   @party[0].ev[:DEFENSE] += 1
   @party[0].ev[:HP] += 1
  end
-return 1
+return true
 else
-$PokemonBag.pbStoreItem(item,1)
-return 0
+$bag.add(item,1)
+return false
+end
+else
+pbMessage(_INTL("What the fuck.",GameData::Item.get(item).name))
 end
 end
 
 
 
- def pbMedicine(bag,item)
- return if $player.playerhealth == 100
+ def pbMedicine(bag=nil,item=nil)
+return if $player.playerhealth == 100
 pbMessage(_INTL("You used {1} to heal yourself.",GameData::Item.get(item).name))
-$PokemonBag.pbDeleteItem(item)
+$bag.remove(item)
 #205 is Hunger, 207 is Saturation, 206 is Thirst, 208 is Sleep
 if item == :POTION
 $player.playerhealth += 20
-return 1
+return true
 elsif item == :SUPERPOTION
 $player.playerhealth += 40
-return 1
+return true
 elsif item == :HYPERPOTION
 $player.playerhealth += 60
-return 1
+return true
 elsif item == :FULLRESTORE
 $player.playerhealth += 100
-return 1
+return true
 else
-$PokemonBag.pbStoreItem(item,1)
+$bag.add(item,1)
 return 0
 #full belly
 end
 end
 
-def pbEndGame
- if $PokemonSystem.survivalmode = 0 && $player.playerhealth <= 0
-  if $scene.is_a?(Scene_Map)
-      pbFadeOutIn(99999){
-         $game_temp.player_transferring = true
-         $game_temp.player_new_map_id=292  
-         $game_temp.player_new_x=002
-         $game_temp.player_new_y=007
-         $game_temp.player_new_direction=$PokemonGlobal.pokecenterDirection
-         $scene.transfer_player
-         $game_map.refresh
-		 $scene = nil
-		 exit!
-    	 menu.pbShowMenu
-      }
-    end
-  end
-end
+
 
 def checkSeconds(seconds)
   timeNow= pbGetTimeNow

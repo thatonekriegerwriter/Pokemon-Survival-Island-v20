@@ -153,23 +153,23 @@ class Battle::Scene::FightMenu < Battle::Scene::MenuBase
       return
     end
     @battleButton.bitmap = @battleButtonBitmap[@chosen_button].bitmap
-    @battleButton.x = self.x + 120
     case @chosen_button
     when :style
       @battleButton.y = self.y - @battleButtonBitmap[@chosen_button].height / 6
       @battleButton.src_rect.height = @battleButtonBitmap[@chosen_button].height / 6
       @battleButton.src_rect.y = @battleStyle * @battleButtonBitmap[@chosen_button].height / 6
     when :tera
-      @battleButton.y = self.y - @battleButtonBitmap[@chosen_button].height / 20
-      @battleButton.src_rect.height = @battleButtonBitmap[@chosen_button].height / 20
-      @battleButton.src_rect.y = @teraType * @battleButtonBitmap[@chosen_button].height / 20
+      count = GameData::Type.count + 1
+      @battleButton.y = self.y - @battleButtonBitmap[@chosen_button].height / count
+      @battleButton.src_rect.height = @battleButtonBitmap[@chosen_button].height / count
+      @battleButton.src_rect.y = @teraType * @battleButtonBitmap[@chosen_button].height / count
     else
       @battleButton.y = self.y - @battleButtonBitmap[@chosen_button].height / 2
       @battleButton.src_rect.height = @battleButtonBitmap[@chosen_button].height / 2
       @battleButton.src_rect.y = (@mode - 1) * @battleButtonBitmap[@chosen_button].height / 2
     end
-    mode = @shiftMode + @focusMode
-    @battleButton.x = self.x + ((mode > 0) ? 204 : 120)
+    totalMode = @shiftMode + @focusMode
+    @battleButton.x = self.x + ((@shiftMode > 0) ? 204 : 120)
     @battleButton.z = self.z - 1
     @visibility["battleButton"] = (@mode > 0)
   end
@@ -326,7 +326,6 @@ class Battle::Scene
     data = mechanic_params(*params)
     battler = @battle.battlers[idxBattler]
     cw = @sprites["fightWindow"]
-    cw.battler = battler
     moveIndex  = 0
     if battler.moves[@lastMove[idxBattler]]&.id
       moveIndex = @lastMove[idxBattler]
@@ -341,6 +340,7 @@ class Battle::Scene
     if PluginManager.installed?("Terastal Phenomenon")
       cw.teraType = 0 if @battle.pbCanTerastallize?(idxBattler)
     end
+    cw.battler = battler
     mechanic = pbFightMenu_BattleMechanic(data, cw)
     cw.setIndexAndMode(moveIndex, (mechanic) ? 1 : 0)
     needFullRefresh = true
@@ -539,7 +539,7 @@ class Battle::Scene
   # Toggles the use of Mega Evolution.
   #-----------------------------------------------------------------------------
   def pbFightMenu_MegaEvolution(battler, cw)
-	battler.power_trigger = !battler.power_trigger
+    battler.power_trigger = !battler.power_trigger
     if battler.power_trigger
       pbPlayBattleButton
     else
@@ -573,7 +573,7 @@ class Battle::Scene
     pbHideBattleInfo
     pbHideFocusPanel
     return if pbInSafari?
-    @battle.allBattlers.each { |b| @sprites["battler_icon#{b.index}"].visible = false }
+    @battle.allBattlers.each { |b| @sprites["battler_icon#{b.index}"].visible = false if b }
   end
   
   def pbHideMoveInfo

@@ -1,5 +1,6 @@
 Name       = Item Crafting UI
-Version    = 1.2.2
+Version    = 2.0.1
 Essentials = 20.1
-Website    = https://reliccastle.com/resources/632/
-Credits    = ThatWelshOne_
+Conflicts  = Item Crafting UI
+Website    = https://reliccastle.com/resources/1265/
+Credits    = ThatWelshOne_, Vendily

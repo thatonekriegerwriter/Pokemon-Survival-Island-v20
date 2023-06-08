@@ -1,67 +1,68 @@
-def pbCookMeat
+def pbCookMeat(home=false,poke=nil)
      Kernel.pbMessage(_INTL("You decide to use this POKeMON for food."))
-	   if pbGetPokemon(1)== :MAGIKARP
-        $player.remove_pokemon_at_index(pbGet(1))
+	   if home==true
+       $player.remove_pokemon_at_index(pbGet(1))
+	   pkmn = pbGetPokemon(1)
+	   poke = pkmn
+	   end
+	   if !poke.nil?
+	   pkmn = poke
+	   end
+	   puts pkmn.poke_ball
+	   $bag.add(GameData::Item.get(pkmn.poke_ball).id,1)
+	   if pkmn== :MAGIKARP
+	    if home==true
 	    Kernel.pbMessage(_INTL("Wow, there is no meat on the Magikarp."))
-	   elsif pbGetPokemon(1) == :SNORLAX
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+4))
-	   elsif pbGetPokemon(1).type1 == :FLYING
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:BIRDMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :NORMAL
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :FIGHTING
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :POISON
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:POISONOUSMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :GROUND
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:ROCKYMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :ROCK
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:ROCKYMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :BUG
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:BUGMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :GHOST
+		else
+        pbDisplayPaused(_INTL("Wow, there is no meat on the Magikarp."))
+		end
+	   elsif pkmn == :SLOWPOKE
+		$bag.add(:MEAT,(rand(3)+4))
+		$bag.add(:SLOWPOKETAIL,(rand(3)+4))
+	   elsif pkmn == :SNORLAX
+		$bag.add(:MEAT,(rand(3)+4))
+	   elsif pkmn.type1 == :FLYING
+		$bag.add(:BIRDMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :NORMAL
+		$bag.add(:MEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :FIGHTING
+		$bag.add(:MEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :POISON
+		$bag.add(:POISONOUSMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :GROUND
+		$bag.add(:ROCKYMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :ROCK
+		$bag.add(:ROCKYMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :BUG
+		$bag.add(:BUGMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :GHOST
+	    if home==true
         Kernel.pbMessage(_INTL("You can't kill a ghost."))
-	   elsif pbGetPokemon(1).type1 == :STEEL
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:STEELYMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :WATER
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:SUSHI,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :GRASS
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:LEAFYMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :ELECTRIC
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :PSYCHIC
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :ICE
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:ICEYROCKS,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :DRAGON
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:DRAGONMEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :DARK
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :CRYSTAL
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:EDIABLESCRYSTAL,(rand(3)+1))
-	   elsif pbGetPokemon(1).type1 == :WIND
-        $player.remove_pokemon_at_index(pbGet(1))
-		Kernel.pbReceiveItem(:MEAT,(rand(3)+1))
+		else
+        pbDisplayPaused(_INTL("Wow, there is no meat on the Magikarp."))
+		end
+	   elsif pkmn.type1 == :STEEL
+		$bag.add(:STEELYMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :WATER
+		$bag.add(:SUSHI,(rand(3)+1))
+	   elsif pkmn.type1 == :GRASS
+		$bag.add(:LEAFYMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :ELECTRIC
+		$bag.add(:MEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :PSYCHIC
+		$bag.add(:MEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :ICE
+		$bag.add(:ICEYROCKS,(rand(3)+1))
+	   elsif pkmn.type1 == :DRAGON
+		$bag.add(:DRAGONMEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :DARK
+		$bag.add(:MEAT,(rand(3)+1))
+	   elsif pkmn.type1 == :CRYSTAL
+		$bag.add(:EDIABLESCRYSTAL,(rand(3)+1))
+	   elsif pkmn.type1 == :WIND
+		$bag.add(:MEAT,(rand(3)+1))
 	   else
-        $player.remove_pokemon_at_index(pbGet(1))
-	    Kernel.pbReceiveItem(:MEAT,(rand(6)))
+	    $bag.add(:MEAT,(rand(6)))
 	   end
 	  end
 

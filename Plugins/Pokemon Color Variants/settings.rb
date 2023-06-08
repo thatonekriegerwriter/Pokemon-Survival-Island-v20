@@ -7,7 +7,7 @@ module PokemonColorVariants
   HUE_POKEMON_CHANCE = 256   # default: 256 (256/65536 = 1/256)
   
   # Apply rules
-  APPLY_TO_EGG     = true # Apply the hue shift to the eggs
+  APPLY_TO_EGG     = false # Apply the hue shift to the eggs
   APPLY_TO_ICON    = true  # Apply the hue shift to the icons
   SHINY_ONLY       = false # Apply hue shift only on shiny pokemons
   SUPER_SHINY_ONLY = false # Apply hue shift only on super shiny pokemons

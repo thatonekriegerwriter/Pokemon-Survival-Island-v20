@@ -8,11 +8,8 @@
 # Displays a held item icon for Mega Stones in the Party menu.
 #-------------------------------------------------------------------------------
 module GameData
-  class << Item
-    alias dx_held_icon_filename held_icon_filename
-  end
-  
   class Item
+    Item.singleton_class.alias_method :dx_held_icon_filename, :held_icon_filename
     def self.held_icon_filename(item)
       item_data = self.try_get(item)
       return nil if !item_data
@@ -36,7 +33,7 @@ end
 class Battle::Scene::PokemonDataBox < Sprite
   def draw_special_form_icon
     filename = nil
-    specialX = (@battler.opposes?) ? 208 : -28
+    specialX = (@battler.opposes?(0)) ? 208 : -28
     ypos = 4
     if @battler.mega?
       filename = "Graphics/Plugins/Essentials Deluxe/icon_mega"
@@ -142,7 +139,7 @@ class Battle
     return if !battler || !battler.pokemon
     return if !battler.hasMega? || battler.mega?
     triggers = ["mega", "mega" + battler.species.to_s]
-	battler.pokemon.types.each { |t| triggers.push("mega" + t.to_s) }
+    battler.pokemon.types.each { |t| triggers.push("mega" + t.to_s) }
     @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
     $stats.mega_evolution_count += 1 if battler.pbOwnedByPlayer?
     old_ability = battler.ability_id
@@ -206,8 +203,9 @@ class Battle
     battler = @battlers[idxBattler]
     return if !battler || !battler.pokemon || battler.fainted?
     return if !battler.hasPrimal? || battler.primal?
-	triggers = ["primal", "primal" + battler.species.to_s]
-	battler.pokemon.types.each { |t| triggers.push("primal" + t.to_s) }
+    $stats.primal_reversion_count += 1 if battler.pbOwnedByPlayer?
+    triggers = ["primal", "primal" + battler.species.to_s]
+    battler.pokemon.types.each { |t| triggers.push("primal" + t.to_s) }
     @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
     if @scene.pbCommonAnimationExists?("PrimalKyogre") ||
        @scene.pbCommonAnimationExists?("PrimalGroudon")

@@ -66,12 +66,62 @@ module Battle::CatchAndStoreMixin
         pkmn.name = nickname
       end
     end
+	pkmn.ace = false
+	pkmn.lifespan = 50
+	pkmn.food = (rand(100)+1)
+    pkmn.water = (rand(100)+1)
+    pkmn.age = (rand(40)+1)
+  if pkmn.age <= 10
+    pkmn.ev[:DEFENSE] = rand(40)
+    pkmn.ev[:SPECIAL_DEFENSE] = rand(40)
+    pkmn.ev[:ATTACK] = rand(40)
+    pkmn.ev[:SPECIAL_ATTACK] = rand(40)
+    pkmn.ev[:SPEED] = rand(40)
+    pkmn.ev[:HP] = rand(40)
+  elsif pkmn.age <= 20 && pkmn.age > 10
+    pkmn.ev[:DEFENSE] = rand(80)
+    pkmn.ev[:SPECIAL_DEFENSE] = rand(80)
+    pkmn.ev[:ATTACK] = rand(80)
+    pkmn.ev[:SPECIAL_ATTACK] = rand(80)
+    pkmn.ev[:SPEED] = rand(80)
+    pkmn.ev[:HP] = rand(80)
+  elsif pkmn.age <= 30 && pkmn.age > 20
+    pkmn.ev[:DEFENSE] = rand(120)
+    pkmn.ev[:SPECIAL_DEFENSE] = rand(120)
+    pkmn.ev[:ATTACK] = rand(120)
+    pkmn.ev[:SPECIAL_ATTACK] = rand(120)
+    pkmn.ev[:SPEED] = rand(120)
+    pkmn.ev[:HP] = rand(120)
+  elsif pkmn.age <= 40 && pkmn.age > 30
+    pkmn.ev[:DEFENSE] = rand(150)
+    pkmn.ev[:SPECIAL_DEFENSE] = rand(150)
+    pkmn.ev[:ATTACK] = rand(150)
+    pkmn.ev[:SPECIAL_ATTACK] = rand(150)
+    pkmn.ev[:SPEED] = rand(150)
+    pkmn.ev[:HP] = rand(150)
+  elsif pkmn.age <= 51 && pkmn.age > 40
+    pkmn.ev[:DEFENSE] = rand(200)
+    pkmn.ev[:SPECIAL_DEFENSE] = rand(200)
+    pkmn.ev[:ATTACK] = rand(200)
+    pkmn.ev[:SPECIAL_ATTACK] = rand(200)
+    pkmn.ev[:SPEED] = rand(200)
+    pkmn.ev[:HP] = rand(200)
+  end
     # Store the Pokémon
-    if pbPlayer.party_full? && (@sendToBoxes == 0 || @sendToBoxes == 2)   # Ask/must add to party
+    if (@sendToBoxes == 0 || @sendToBoxes == 2)   # Ask/must add to party
+#    if pbPlayer.party_full? && (@sendToBoxes == 0 || @sendToBoxes == 2)   # Ask/must add to party
+     if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
+      cmds = [_INTL("Add to your party"),
+              _INTL("Send to a Box"),
+              _INTL("See {1}'s summary", pkmn.name),
+              _INTL("Gut {1} for Meat.", pkmn.name),
+              _INTL("Check party")]
+     else
       cmds = [_INTL("Add to your party"),
               _INTL("Send to a Box"),
               _INTL("See {1}'s summary", pkmn.name),
               _INTL("Check party")]
+     end
       cmds.delete_at(1) if @sendToBoxes == 2
       loop do
         cmd = pbShowCommands(_INTL("Where do you want to send {1} to?", pkmn.name), cmds, 99)
@@ -126,6 +176,13 @@ module Battle::CatchAndStoreMixin
             summary_screen.pbStartScreen([pkmn], 0)
           }
         when 3   # Check party
+         if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
+          pbCookMeat(home=false,pkmn)
+          break
+          else
+          @scene.pbPartyScreen(0, true, 2)
+          end
+        when 4   # Check party
           @scene.pbPartyScreen(0, true, 2)
         end
       end

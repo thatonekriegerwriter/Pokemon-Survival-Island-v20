@@ -19,12 +19,17 @@ class Sprite
       end
       path = "Graphics/Plugins/ZUD/"
       path += (calyrex) ? "calyrex_pattern" : "dynamax_pattern"
+      self.pattern = Bitmap.new(path)
+      self.pattern_opacity = 150
     end
   end
   
   def unDynamax
     self.zoom_x = 1 if self.zoom_x > 1
     self.zoom_y = 1 if self.zoom_y > 1
+	if defined?(self.pattern)
+    self.pattern = nil
+	end
   end
   
   def applyDynamaxIcon
@@ -39,6 +44,8 @@ class Sprite
         calyrex = self.pokemon.isSpecies?(:CALYREX)
         path = "Graphics/Plugins/ZUD/"
         path += (calyrex) ? "calyrex_pattern" : "dynamax_pattern"
+        self.pattern = Bitmap.new(path)
+        self.pattern_opacity = 150
       end
     else
       self.unDynamax

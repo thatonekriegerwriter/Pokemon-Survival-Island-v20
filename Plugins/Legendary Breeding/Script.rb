@@ -24,6 +24,7 @@ module Settings
     :MAGNETON   => :SANDYSHOCKS,
     :MISDREAVUS => :FLUTTERMANE,
     :DONPHAN    => :GREATTUSK,
+    :SUICUNE    => :WALKINGWAKE,
     :SALAMENCE  => :ROARINGMOON,
     :AMOONGUS   => :BRUTEBONNET,
     :VOLCARONA  => :SLITHERWING,
@@ -42,6 +43,7 @@ module Settings
     :GALLADE    => :IRONVALIANT,
     :HYDREIGON  => :IRONJUGULIS,
     :VOLCARONA  => :IRONMOTH,
+    :VIRIZION   => :IRONLEAVES,
     :CYCLIZAR   => :MIRAIDON
   }
 end
@@ -157,6 +159,16 @@ class DayCare
     ret += 1 if pkmn1.owner.id != pkmn2.owner.id
     return ret
   end
+end
+
+
+#===============================================================================
+# Counts legendary eggs hatched.
+#===============================================================================
+alias egg_pbHatch pbHatch
+def pbHatch(pokemon)
+  $stats.legendary_eggs_hatched += 1 if legendary_egg_group?(pokemon.species_data.egg_groups)
+  egg_pbHatch(pokemon)
 end
 
 
@@ -289,6 +301,7 @@ def pbParadoxEngineer(paradox_type = 0, gender = -1, item = nil)
       pbMessage(_INTL("#{g}Ah, you're back! Where were you?\nThe Pokémon I engineered for you is complete!"))
       if pbConfirmMessage(_INTL("#{g}Go on, take it!\nYou do want it, don't you?"))
         if pbAddPokemon(paradox_pkmn)
+          $stats.paradox_pokemon_engineered += 1
           pbMessage(_INTL("#{g}Whew, that was a lot of work.\nPlease take good care of it!"))
           interp.setVariable(nil)
         end

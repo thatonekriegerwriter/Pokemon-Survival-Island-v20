@@ -2,20 +2,19 @@
 # Adventure: code for sending pokemon adventuring
 #-------------------------------------------------------------------------------
 module PokeventureConfig
-  Updatesteps = 25 # How many steps should be taken before the Adventure progresses
+  Updatesteps = 100 # How many steps should be taken before the Adventure progresses
   CustomMusic = "Mystery Dungeon Guild" # Custom music to play in the menue. Must be in the BGM folder
   #Item Collection
   CollectRandomItem = true #Collect Items from the Table below
   CollectItemsFromBattles = true # Collect Items from defeated Pokemon
   # Form of this list is [ItemID,chance]
   Items = [
-    [:ORANBERRY,30], [:SITRUSBERRY,20], [:ACORN,10], [:STONE,10], [:HEARTSCALE,5],
-    [:IRONORE,10], [:POTATO,3], [:COPPERORE,8], [:GOLDORE,7], [:TEALEAF,7],
-    [:SLOWPOKETAIL,5], [:SILVERORE,2], [:BAIT,4], [:MEAT,4], [:COAL,4], [:WATER,5],
-	[:FIRESTONE,2],[:LEAFSTONE,2],
-	[:COCOABEAN,5], [:EXPCANDYS,5],[:REVIVALHERB,1], [:ENERGYROOT,5], [:MOOMOOMILK,3], [:LEMON,3],
-	[:POISONDART,1],[:SLEEPDART,1],[:PARALYZDART,1],[:ICEDART,1],[:FIREDART,1],
-    [:WATERBOTTLE,1], [:PEARL,1], [:EXPCANDYM,1]
+    [:ORANBERRY,15], [:SITRUSBERRY,10], [:ACORN,5], [:STONE,5], [:HEARTSCALE,1],
+    [:IRONORE,3], [:POTATO,2], [:COPPERORE,3], [:GOLDORE,3], [:TEALEAF,3],
+    [:SILVERORE,2], [:COAL,5], [:WATER,5],
+	[:FIRESTONE,5],[:LEAFSTONE,5],[:THUNDERSTONE,5],
+	[:COCOABEAN,3], [:EXPCANDYS,1],[:REVIVALHERB,1], [:ENERGYROOT,3], [:MOOMOOMILK,1], [:LEMON,5],
+    [:GLASSBOTTLE,1], [:PEARL,1]
   ]
   ChanceToGetEnemyItem = 100 # as a 1 in x chance
   # Friends

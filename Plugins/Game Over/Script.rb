@@ -13,10 +13,8 @@ GAMEOVERSWITCH = 80
 
 alias :_old_FL_pbStartOver :pbStartOver
 def pbStartOver(gameover=false)
-  if $player.playerhealth < 1 || $PokemonSystem.survivalmode == 0
     pbLoadRpgxpScene(Scene_Gameover.new)
     return
-  end
   _old_FL_pbStartOver(gameover)
 end
 
@@ -45,9 +43,13 @@ end
 
 def go_to_title
   $need_save_reload = true
-  pbMapInterpreter.force_end if pbMapInterpreter
+ pbMapInterpreter.force_end if pbMapInterpreter
   $game_screen.start_tone_change(Tone.new(-255, -255, -255), 0)
   $game_temp.to_title = true
+        # Switch to title screen
+$scene = pbCallTitle
+
+  $game_screen.start_tone_change(Tone.new(0, 0, 0), 0)
 end
 $need_save_reload = false
 
@@ -96,7 +98,7 @@ class Scene_Gameover
       # Update game screen
       Graphics.update
       # Update input information
-      Input.update
+     Input.update
       # Frame update
       update
       # Abort loop if screen is changed
@@ -111,7 +113,7 @@ class Scene_Gameover
     @sprite.bitmap.dispose
     @sprite.dispose
     # Execute transition
-    Graphics.transition(1) # changed line (from 40 to 1)
+    Graphics.transition(20) # changed line (from 40 to 1)
     # Prepare for transition
     Graphics.freeze
     go_to_title # added line
@@ -126,8 +128,7 @@ class Scene_Gameover
   def update
     # If C button was pressed
     if Input.trigger?(Input::C)
-      # Switch to title screen
-#     $scene = Scene_Title.new # commented line
+ # commented line
       $scene = nil; # added line
     end
   end

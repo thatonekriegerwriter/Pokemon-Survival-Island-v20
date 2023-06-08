@@ -2,56 +2,60 @@ def pbCraftingBench(wari)
 
 if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH 
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
-                            _INTL("Stations"),
-                            _INTL("Wooden"),
-                            _INTL("Iron"),
-                            _INTL("Mulch"),
-                            _INTL("Growth"),
-                            _INTL("Darts"),
-                            _INTL("Healing"),
-                            _INTL("Other")])
-		  if cmd==0
+                            _INTL("Station Crafting"),
+                            _INTL("Basic Crafting"),
+                            _INTL("Upgraded Crafting"),
+                            _INTL("Farming Crafting"),
+                            _INTL("Berry Crafting"),
+                            _INTL("Combat Items"),
+                            _INTL("Cancel")],-1)
+		  if cmd==0 #Station
 		  if $game_switches[409]!=true 
 		  if wari == :UPGRADEDCRAFTINGBENCH
 		  pbItemCrafter([
-         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
          [:CRAFTINGBENCH,[:WOODENPLANKS,5]],
          [:APRICORNCRAFTING,[:WOODENPLANKS,6,:STONE,2]],
          [:FURNACE,[:STONE,6]],
-         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
-         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
          [:CAULDRON,[:IRON2,6]],
-         [:UPGRADEDCRAFTINGBENCH,[:CRAFTINGBENCH,1,:SILVER2,4]],
          [:GRINDER,[:STONE,5,:IRON2,3]],
          [:MEDICINEPOT,[:CLAY2,6,:CHARCOAL,3]],
-         [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]]
+         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
+         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
+         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
+         [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]],
+         [:UPGRADEDCRAFTINGBENCH,[:WOODENPLANKS,5,:SILVER2,4]],
+         [:MACHINEBOX,[:THUNDERSTONE,1,:IRON2,5]]
          ])
+		 if $bag.has?(:MACHINEBOX)
+		  $game_switches[409]=true
+		 end
 		   else
 		  pbItemCrafter([
-         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
          [:CRAFTINGBENCH,[:WOODENPLANKS,5]],
          [:APRICORNCRAFTING,[:WOODENPLANKS,6,:STONE,2]],
          [:FURNACE,[:STONE,6]],
-         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
-         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
          [:CAULDRON,[:IRON2,6]],
-         [:UPGRADEDCRAFTINGBENCH,[:CRAFTINGBENCH,1,:SILVER2,4]],
-         [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]]
+         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
+         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
+         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
+         [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]],
+         [:UPGRADEDCRAFTINGBENCH,[:WOODENPLANKS,5,:SILVER2,4]]
          ])
 		   end
-		 elsif $game_switches[409]==true && $game_switches[169]==true
+		 elsif $game_switches[409]==true
+		 if $game_switches[169]==true
 		  pbItemCrafter([
-         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
          [:CRAFTINGBENCH,[:WOODENPLANKS,5]],
          [:APRICORNCRAFTING,[:WOODENPLANKS,6,:STONE,2]],
          [:FURNACE,[:STONE,6]],
-         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
-         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
          [:CAULDRON,[:IRON2,6]],
-         [:UPGRADEDCRAFTINGBENCH,[:CRAFTINGBENCH,1,:SILVER2,4]],
          [:GRINDER,[:STONE,5,:IRON2,3]],
          [:MEDICINEPOT,[:CLAY2,6,:CHARCOAL,3]],
+         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
+         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
+         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
          [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]],
+         [:UPGRADEDCRAFTINGBENCH,[:WOODENPLANKS,5,:SILVER2,4]],
          [:MACHINEBOX,[:THUNDERSTONE,1,:IRON2,5]],
          [:SPRINKLER,[:STONE,5,:MACHINEBOX,1]],
          [:ELECTRICGRINDER,[:CLAY2,6,:CHARCOAL,3,:GRINDER,1,:MACHINEBOX,1]],
@@ -68,17 +72,17 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
          ])
 		 else
 		  pbItemCrafter([
-         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
          [:CRAFTINGBENCH,[:WOODENPLANKS,5]],
          [:APRICORNCRAFTING,[:WOODENPLANKS,6,:STONE,2]],
          [:FURNACE,[:STONE,6]],
-         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
-         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
          [:CAULDRON,[:IRON2,6]],
-         [:UPGRADEDCRAFTINGBENCH,[:CRAFTINGBENCH,1,:SILVER2,4]],
          [:GRINDER,[:STONE,5,:IRON2,3]],
          [:MEDICINEPOT,[:CLAY2,6,:CHARCOAL,3]],
+         [:BEDROLL,[:WOODENPLANKS,3,:WOOL,3]],
+         [:ITEMCRATE,[:WOODENPLANKS,5,:LIGHTCLAY,2]],
+         [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3,:POKEBALLC,5]],
          [:PORTABLECAMP,[:WOOL,5,:WOODENPLANKS,5,:COPPER2,2]],
+         [:UPGRADEDCRAFTINGBENCH,[:WOODENPLANKS,5,:SILVER2,4]],
          [:MACHINEBOX,[:THUNDERSTONE,1,:IRON2,5]],
          [:SPRINKLER,[:STONE,5,:MACHINEBOX,1]],
          [:ELECTRICGRINDER,[:CLAY2,6,:CHARCOAL,3,:GRINDER,1,:MACHINEBOX,1]],
@@ -89,32 +93,59 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
          [:CUTTER,[:COPPER2,4,:IRON2,7,:WOODENLOGS,5,:STONE,5,:MACHINEBOX,1]],
          [:COALGENERATOR,[:COPPER2,8,:IRON2,30,:FURNACE,4,:STONE,10,:MACHINEBOX,1]]
          ])
+		 end
 		  end
-		  elsif cmd==1
+		  elsif cmd==1 #Basic
+		  if wari == :UPGRADEDCRAFTINGBENCH
 		  pbItemCrafter([
          [:WOODENPLANKS,[:WOODENLOG,0.5]],
          [:OLDROD,[:WOODENPLANKS,2]],
          [:BOWL,[:WOODENPLANKS,3]],
+         [:GLASSBOTTLE,[:GLASS,1]],
          [:STONEAXE,[:WOODENPLANKS,3,:STONE,3]],
          [:STONEHAMMER,[:WOODENPLANKS,3,:STONE,5]],
-         [:STONEPICKAXE,[:WOODENPLANKS,3,:STONE,5]],
-         [:CROPSTICKS,[:WOODENPLANKS,4]]
+         [:STONEPICKAXE,[:WOODENPLANKS,3,:STONE,5]]
          ])
-		  elsif cmd==2
+		 else
 		  pbItemCrafter([
+         [:WOODENPLANKS,[:WOODENLOG,0.5]],
+         [:OLDROD,[:WOODENPLANKS,2]],
+         [:BOWL,[:WOODENPLANKS,3]],
+         [:GLASSBOTTLE,[:GLASS,1]],
+         [:STONEAXE,[:WOODENPLANKS,3,:STONE,3]],
+         [:STONEHAMMER,[:WOODENPLANKS,3,:STONE,5]],
+         [:STONEPICKAXE,[:WOODENPLANKS,3,:STONE,5]]
+         ])
+		 end
+		  elsif cmd==2 #Upgraded
+		  if wari == :UPGRADEDCRAFTINGBENCH
+		  pbItemCrafter([
+		[:MAKESHIFTRUNNINGSHOES,[:NORMALSHOES,1,:SWIFTFEATHER,2]],
         [:MACHETE,[:IRON2,2,:WOODENPLANKS,1]],
         [:GOODROD,[:OLDROD,1,:IRON2,2]],
         [:PICKAXE,[:WOODENPLANKS,2,:IRON2,3]],
         [:SHOVEL,[:WOODENPLANKS,3,:IRON2,3]],
         [:IRONHAMMER,[:WOODENPLANKS,3,:IRON2,5]],
         [:IRONPICKAXE,[:WOODENPLANKS,3,:IRON2,5]],
-        [:WATERBOTTLE,[:IRON2,1]],
-        [:PORTABLEPC,[:WOODENPLANKS,5,:IRON2,3]],
+        [:RAFT,[:WOODENPLANKS,50,:IRON2,3,:IRONHAMMER,1,:WOOL,5,:SILVER2,2]],
+        [:CLOCK,[:GOLD2,4,:SILVER2,1]],
         [:EXPALL,[:EXPSHARE,5,:IRON2,10]]
         ])
-		  elsif cmd==3
+		else
+		  pbItemCrafter([
+		[:MAKESHIFTRUNNINGSHOES,[:NORMALSHOES,1,:SWIFTFEATHER,2]],
+        [:MACHETE,[:IRON2,2,:WOODENPLANKS,1]],
+        [:GOODROD,[:OLDROD,1,:IRON2,2]],
+        [:PICKAXE,[:WOODENPLANKS,2,:IRON2,3]],
+        [:SHOVEL,[:WOODENPLANKS,3,:IRON2,3]],
+        [:IRONHAMMER,[:WOODENPLANKS,3,:IRON2,5]],
+        [:IRONPICKAXE,[:WOODENPLANKS,3,:IRON2,5]]
+        ])
+		end
+		  elsif cmd==3 #Farming
 		  if wari == :UPGRADEDCRAFTINGBENCH
 		  pbItemCrafter([
+[:CROPSTICKS,[:WOODENPLANKS,4]],
 [:GROWTHMULCH,[:BALMMUSHROOM,3,:MOOMOOMILK,1]],
 [:DAMPMULCH,[:REDAPRICORN,2,:FRESHWATER,3]],
 [:STABLEMULCH,[:MIRACLESEED,2,:FRESHWATER,1]],
@@ -124,6 +155,7 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
 ])
           else
 		  pbItemCrafter([
+[:CROPSTICKS,[:WOODENPLANKS,4]],
 [:GROWTHMULCH,[:BALMMUSHROOM,3,:MOOMOOMILK,1]],
 [:DAMPMULCH,[:REDAPRICORN,2,:FRESHWATER,3]],
 [:STABLEMULCH,[:MIRACLESEED,2,:FRESHWATER,1]],
@@ -139,8 +171,12 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
 [:FERTILIZERMIX,[:BONEDUST,1,:FRESHWATER,1]]
 ])
 		  end
-         elsif cmd==4
+         elsif cmd==4 #Berry
+		 if wari == :UPGRADEDCRAFTINGBENCH
 		 pbItemCrafter([
+[:HEALPOWDER,[:CHERIBERRY,0.50]],
+[:ENERGYPOWDER,[:SITRUSBERRY,0.50]],
+[:BERRYJUICE,[:ORANBERRY,1]],
 [:RARECANDY,[:CORNNBERRY,30,:MAGOSTBERRY,30]],
 [:HPUP,[:CORNNBERRY,10]],
 [:PPUP,[:MAGOSTBERRY,10]],
@@ -149,49 +185,33 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
 [:ZINC,[:APICOTBERRY,10]],
 [:CARBOS,[:SALACBERRY,1]]
 ])
-         elsif cmd==5
-		  if wari == :UPGRADEDCRAFTINGBENCH
+else
+		 pbItemCrafter([
+[:HEALPOWDER,[:CHERIBERRY,0.50]],
+[:ENERGYPOWDER,[:SITRUSBERRY,0.50]],
+[:BERRYJUICE,[:ORANBERRY,1]]
+])
+end
+         elsif cmd==5 #Combat Items
+		 if wari == :UPGRADEDCRAFTINGBENCH
 pbItemCrafter([
+[:REPEL,[:IRON2,1,:LEAFSTONE,0.5]],
+[:SUPERREPEL,[:REPEL,1,:MOONSTONE,0.5]],
+[:MAXREPEL,[:SUPERREPEL,1,:THUNDERSTONE,0.5]],
+[:SNATCHER,[:IRON2,20,:SILVER2,5,:COPPER2,2]],
+[:MEGARING,[:MEGASTONE,1,:SILVER2,3]]
+])
+else
+pbItemCrafter([
+[:REPEL,[:IRON2,1,:LEAFSTONE,0.5]],
+[:SUPERREPEL,[:REPEL,1,:MOONSTONE,0.5]],
+[:MAXREPEL,[:SUPERREPEL,1,:THUNDERSTONE,0.5]],
 [:DARTCASING,[:IRON2,1,:SILVER2,2]],
 [:POISONDART,[:DARTCASING,1,:LEAFSTONE,0.5]],
 [:SLEEPDART,[:DARTCASING,1,:MOONSTONE,0.5]],
 [:PARALYZDART,[:DARTCASING,1,:THUNDERSTONE,0.5]],
 [:ICEDART,[:DARTCASING,1,:ICESTONE,0.5]],
 [:FIREDART,[:DARTCASING,1,:FIRESTONE,0.5]]
-])
-else
-end
-         elsif cmd==6
-		 pbItemCrafter([
-[:HEALPOWDER,[:CHERIBERRY,0.50]],
-[:ENERGYPOWDER,[:SITRUSBERRY,0.50]],
-[:BERRYJUICE,[:ORANBERRY,1]]
-])
-         elsif cmd==7
-if $game_switches[411]==false 
-		 pbItemCrafter([
-[:STONE,[:HARDSTONE,1]],
-[:REPEL,[:IRON2,1,:LEAFSTONE,0.5]],
-[:SUPERREPEL,[:REPEL,1,:MOONSTONE,0.5]],
-[:MAXREPEL,[:SUPERREPEL,1,:THUNDERSTONE,0.5]],
-[:SNATCHER,[:IRON2,20,:SILVER2,5,:COPPER2,2]],
-[:CLOCK,[:GOLD2,4,:SILVER2,1]],
-[:MEGARING,[:MEGASTONE,1,:SILVER2,3]],
-[:MAKESHIFTRUNNINGSHOES,[:NORMALSHOES,1,:SWIFTFEATHER,2]]
-])
-else
-		 pbItemCrafter([
-[:STONE,[:HARDSTONE,1]],
-[:REPEL,[:IRON2,1,:LEAFSTONE,0.5]],
-[:SUPERREPEL,[:REPEL,1,:MOONSTONE,0.5]],
-[:MAXREPEL,[:SUPERREPEL,1,:THUNDERSTONE,0.5]],
-[:SNATCHER,[:IRON2,20,:SILVER2,5,:COPPER2,2]],
-[:CLOCK,[:GOLD2,4,:SILVER2,1]],
-[:MEGARING,[:MEGASTONE,1,:SILVER2,3]],
-[:MAKESHIFTRUNNINGSHOES,[:NORMALSHOES,1,:SWIFTFEATHER,2]],
-[:POWERWEIGHT,[:IRONPLATE,1, WOOL,2]],
-[:POWERBRACER,[:IRON2,2,:WOOL,2]],
-[:POWERLENS,[:GLASS,2,:IRON2,0.5]]
 ])
 end
 end
@@ -204,7 +224,8 @@ elsif wari == :APRICORNCRAFTING || wari == :APRICORNMACHINE
                             _INTL("Type Based"),
                             _INTL("Status Based"),
                             _INTL("New Balls"),
-                            _INTL("Other")])
+                            _INTL("Other"),
+                            _INTL("Cancel")],-1)
 		if wari == :APRICORNCRAFTING
 		  if cmd==0
 pbItemCrafter([
@@ -331,12 +352,13 @@ end
 end
 elsif wari == :MEDICINEPOT
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
-                            _INTL("Medicine")])
+                            _INTL("Medicine"),
+                            _INTL("Cancel")],-1)
 		  if cmd==0
 		  pbItemCrafter([
 [:REVIVE,[:ARGOSTBERRY,5,:QUALOTBERRY,3,:IRON2,2]],
 [:MAXREVIVE,[:REVIVE,1,:ARGOSTBERRY,3,:REVIVALHERB,2,:IRON2,2]],
-[:POTION,[:ORANBERRY,1,:IRON2,1]],
+[:POTION,[:ORANBERRY,1,:GLASSBOTTLE,1]],
 [:SUPERPOTION,[:POTION,1,:SITRUSBERRY,2,:QUALOTBERRY,1]],
 [:HYPERPOTION,[:SUPERPOTION,1,:SITRUSBERRY,3,:QUALOTBERRY,3]],
 [:FULLRESTORE,[:HYPERPOTION,1,:SITRUSBERRY,3,:QUALOTBERRY,5,:HONDEWBERRY,3]]
@@ -349,15 +371,15 @@ pbItemCrafter([
 [:HEALPOWDER,[:CHERIBERRY,0.25]],
 [:ENERGYPOWDER,[:SITRUSBERRY,0.25]],
 [:BERRYJUICE,[:ORANBERRY,1]],
-[:WATERBOTTLE,[:IRON2,1]],
-[:TMCASE,[:WOODENPLANKS,3]],
+[:GLASSBOTTLE,[:GLASS,1]],
 [:STONE,[:HARDSTONE,1]]
 ])
 elsif  wari == :GRINDER ||  wari == :ELECTRICGRINDER
   if wari == :GRINDER
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
                             _INTL("Ore"),
-                            _INTL("Item")])
+                            _INTL("Item"),
+                            _INTL("Cancel")],-1)
 		  if cmd==0
 		  pbItemCrafter([
 [:IRONDUST,[:IRONORE,0.50]],
@@ -389,7 +411,8 @@ elsif wari == :ELECTRICGRINDER
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
                             _INTL("Ore"),
                             _INTL("Item"),
-                            _INTL("Plate")])
+                            _INTL("Plate"),
+                            _INTL("Cancel")],-1)
 		  if cmd==0
 		  pbItemCrafter([
 [:IRONDUST,[:IRONORE,0.25]],
@@ -442,7 +465,8 @@ elsif wari == :FURNACE || wari == :ELECTRICFURNACE
                             _INTL("Coal"),
                             _INTL("Ore"),
                             _INTL("Food"),
-                            _INTL("Glass")])
+                            _INTL("Glass"),
+                            _INTL("Cancel")],-1)
 		if wari == :ELECTRICFURNACE
           $game_switches[554]=true
 		  if cmd==0
@@ -537,7 +561,8 @@ end
 elsif wari == :ELECTRICPRESS
           $game_switches[554]=true
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
-                            _INTL("Pressing")])
+                            _INTL("Pressing"),
+                            _INTL("Cancel")],-1)
 		  if cmd==0
 		    pbItemCrafter([
 [:FLAMEPLATE,[:REDSHARD,4]],
@@ -563,7 +588,8 @@ elsif wari == :SEWINGMACHINE
 	      cmd = pbMessage(_INTL("What do you intend to Craft?"),[
                             _INTL("Pokemon"),
                             _INTL("Player"),
-                            _INTL("Dolls")])
+                            _INTL("Dolls"),
+                            _INTL("Cancel")],-1)
 		  if cmd==0
 		  pbItemCrafter([
 [:CHOICESCARF,[:WOOL,4]],

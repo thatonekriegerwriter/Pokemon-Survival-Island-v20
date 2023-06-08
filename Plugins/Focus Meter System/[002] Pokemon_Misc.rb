@@ -97,6 +97,7 @@ def pbFocusTrainer(gender = -1)
           pbMessage(_INTL("#{g}Perhaps you are the one who requires focus training!"))
           break
         else
+          $stats.total_focus_styles_changed += 1
           poke.focus_style = ids[cmd]
           pbMessage(_INTL("#{g}...\\wt[16] ...\\wt[16] ...\\wt[16] Done!"))
           pbMessage(_INTL("\\se[Pkmn move learnt]#{g}{1} shifted its focus to the {2} style!", poke.name, styles[cmd]))

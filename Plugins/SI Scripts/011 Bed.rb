@@ -67,7 +67,7 @@ pbSetPokemonCenter
 				if pbPokerus?
 			    pbMessage(_INTL("Your Pokemon seems a little off tonight."))
 				end 
-				$game_variables[29] = (3600*hours)
+				$game_variables[29] += (3600*hours)
 				pbSleepRestore(hours)
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100
@@ -88,7 +88,7 @@ pbSetPokemonCenter
 			    pbMessage(_INTL("You lay down to take a nap."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 			    hours = 1
-				$game_variables[29] = ((3600*hours)/2).round
+				$game_variables[29] += ((3600*hours)/2).round
 	            pbMEPlay("Pokemon Healing")
 				pbWait(40)
 				pbRandomEvent

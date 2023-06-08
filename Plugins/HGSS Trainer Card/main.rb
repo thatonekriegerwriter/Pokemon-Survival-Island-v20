@@ -346,18 +346,26 @@ class PokemonTrainerCard_Scene
        [_INTL("{1}%",$player.playersleep.to_s_formatted),190,246,1,sleepColor,shadowColor]
     ]
     pbDrawTextPositions(overlay, textPositions)
-=begin
     x = 72
-    region = pbGetCurrentRegion(0) # Get the current region
-    imagePositions = []
-    8.times do |i|
-      if $player.badges[i + (region * 8)]
-        imagePositions.push(["Graphics/Pictures/Trainer Card/icon_badges", x, 310, i * 32, region * 32, 32, 32])
-      end
-      x += 48
-    end
-    pbDrawImagePositions(overlay, imagePositions)
-=end
+    imagepos=[]
+    # Draw Region 0 badges
+	 if $game_switches[1176]==true
+      imagepos.push(["Graphics/Pictures/Trainer Card/badges4",x,300,0*48,0*48,48,48])
+      x += 48+8
+	 end
+	 if $game_switches[1177]==true
+      imagepos.push(["Graphics/Pictures/Trainer Card/badges4",x,300,1*48,0*48,48,48])
+      x += 48+8
+	 end
+	 if $game_switches[1178]==true
+      imagepos.push(["Graphics/Pictures/Trainer Card/badges4",x,300,2*48,0*48,48,48])
+      x += 48+8
+	 end
+	 if $game_switches[1179]==true
+      imagepos.push(["Graphics/Pictures/Trainer Card/badges4",x,300,3*48,0*48,48,48])
+	 end
+    pbDrawImagePositions(overlay, imagepos)
+
   end
 
   def pbDrawTrainerCardFront2

@@ -757,3 +757,5 @@ MenuHandlers.add(:options_menu, :fastberries, {
   "get_proc"    => proc { next $PokemonSystem.survivalmode },
   "set_proc"    => proc { |value, _scene| $PokemonSystem.fastberries = value }
 })
+
+

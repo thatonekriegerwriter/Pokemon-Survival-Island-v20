@@ -30,13 +30,13 @@ module Settings
   #-----------------------------------------------------------------------------
   # Switch numbers used for a variety of supported plugins.
   #-----------------------------------------------------------------------------
-  NO_Z_MOVE         = 35
-  NO_ULTRA_BURST    = 36
-  NO_DYNAMAX        = 37
-  NO_STYLE_MOVES    = 38
-  NO_TERASTALLIZE   = 39
-  NO_ZODIAC_POWER   = 40
-  NO_FOCUS_MECHANIC = 41
-  DYNAMAX_ANY_MAP   = 42
-  CAN_DYNAMAX_WILD  = 43
+  NO_Z_MOVE         = -1
+  NO_ULTRA_BURST    = -1
+  NO_DYNAMAX        = -1
+  NO_STYLE_MOVES    = -1
+  NO_TERASTALLIZE   = -1
+  NO_ZODIAC_POWER   = -1
+  NO_FOCUS_MECHANIC = -1
+  DYNAMAX_ANY_MAP   = -1
+  CAN_DYNAMAX_WILD  = -1
 end

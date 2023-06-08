@@ -124,13 +124,13 @@
         @sprites["background"].oy-= -1
       end
     if SHOW_FAMILY_EGG && @pokemon.egg?
-      if Input.trigger?(Input::LEFT) && @page==6
+      if Input.trigger?(Input::LEFT) && @page==7
         @page=1
         pbPlayCursorSE()
         dorefresh=true
       end
       if Input.trigger?(Input::RIGHT) && @page==1
-        @page=6
+        @page=7
         pbPlayCursorSE()
         dorefresh=true
       end
@@ -138,7 +138,7 @@
     if dorefresh
       case @page
         when 1; drawPageOneEgg
-        when 6; drawPageSix
+        when 7; drawPageSeven
       end
     end
     end
@@ -484,13 +484,8 @@ end
       base   = Color.new(90, 82, 82)
       shadow = Color.new(165, 165, 173)
       # Set background image
-      if SUMMARY_B2W2_STYLE
-        @sprites["bg_overlay"].setBitmap("Graphics/Pictures/Summary/background_B2W2")
-        @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_#{page}_B2W2")
-      else
         @sprites["bg_overlay"].setBitmap("Graphics/Pictures/Summary/background")
         @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_#{page}")
-      end
       imagepos = []
       # Show the Poké Ball containing the Pokémon
       ballimage = sprintf("Graphics/Pictures/Summary/icon_ball_%s", @pokemon.poke_ball)
@@ -532,6 +527,7 @@ end
                   _INTL("SKILLS"),
                   _INTL("MOVES"),
                   _INTL("HAPPINESS"),
+                  _INTL("RIBBON"),
                   _INTL("FAMILY TREE")][page - 1]
 
       #============================================================================
@@ -581,6 +577,7 @@ end
       when 4 then drawPageFour
       when 5 then drawPageFive
       when 6 then drawPageSix
+      when 7 then drawPageSeven
       end
     end
 
@@ -1225,6 +1222,15 @@ end
 	if @pokemon.loyalty.nil?
 	 @pokemon.loyalty = 75
 	end
+	if @pokemon.age.nil?
+	 @pokemon.age = rand(50)+1
+	end
+	if @pokemon.food.nil?
+	 @pokemon.food = 100
+	end
+	if @pokemon.water.nil?
+	 @pokemon.water = 100
+	end
     # Write various bits of text
     if @pokemon.happiness==0 
       verdict=_INTL("It simply hates your very essence.")
@@ -1346,7 +1352,7 @@ end
 	
   end
 
-  def drawPageSix
+  def drawPageSeven
     overlay=@sprites["overlay"].bitmap
     base=Color.new(248,248,248)
     shadow=Color.new(104,104,104)
@@ -1354,7 +1360,7 @@ end
     if @pokemon.egg?
       overlay.clear
       pbSetSystemFont(overlay)
-      @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
+      @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_7")
       ballimage = sprintf(
         "Graphics/Pictures/Summary/icon_ball_%s", @pokemon.poke_ball
       )
@@ -1421,14 +1427,13 @@ end
       end
     end
     pbDrawTextPositions(overlay,textpos)
-    @sprites["menuoverlay"].setBitmap("Graphics/Pictures/Summary/bg_6")
   end
 
 
 
     def drawSelectedRibbon(ribbonid)
       # Draw all of page five
-      drawPage(5)
+      drawPage(6)
       # Set various values
       overlay = @sprites["overlay"].bitmap
       # Changes the color of the text, to the one used in BW
@@ -1474,7 +1479,7 @@ end
       while newindex < @party.length - 1
         newindex += 1
         if @party[newindex] && (@page == 1 || !@party[newindex].egg? || (
-        @page==6 && SHOW_FAMILY_EGG
+        @page==7 && SHOW_FAMILY_EGG
       ))
           @partyindex = newindex
           break
@@ -1488,9 +1493,9 @@ end
       @sprites["itemicon"].item = @pokemon.item_id
       pbSEStop
       @pokemon.play_cry
-    if SHOW_FAMILY_EGG && @pokemon.egg? && @page==6
+    if SHOW_FAMILY_EGG && @pokemon.egg? && @page==7
       @ignore_refresh=true
-      drawPageSix
+      drawPageSeven
     end
     end
 
@@ -1851,7 +1856,7 @@ end
             pbPlayDecisionSE
             pbMoveSelection
             dorefresh = true
-          elsif @page == 5
+          elsif @page == 6
             pbPlayDecisionSE
             pbRibbonSelection
             dorefresh = true
@@ -1879,7 +1884,7 @@ end
           oldpage = @page
           @page -= 1
           @page = 1 if @page < 1
-          @page = 6 if @page > 6
+          @page = 7 if @page > 7
           if @page != oldpage   # Move to next page
             pbSEPlay("GUI summary change page")
             @ribbonOffset = 0
@@ -1889,7 +1894,7 @@ end
           oldpage = @page
           @page += 1
           @page = 1 if @page < 1
-          @page = 6 if @page > 6
+          @page = 7 if @page > 7
           if @page != oldpage   # Move to next page
             pbSEPlay("GUI summary change page")
             @ribbonOffset = 0

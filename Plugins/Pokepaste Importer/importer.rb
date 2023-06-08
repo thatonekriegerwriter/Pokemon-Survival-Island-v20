@@ -11,12 +11,21 @@ def cutfile(file,pknum) 	#cut the file into a list for every pkmn
 	end
 	k=0
 	for list in prov
-		if list!=[]
+		if list!=[] && team[k]!=nil
 			team[k].push(list)
 		else
 			k+=1
 		end
 	end
+	c=0
+	for i in 0...pknum	
+		if team[i]==[]
+			c+=1
+		end		
+	end
+	for i in 0...c
+		team.pop()
+	end	
 	return(team)	
 end
 
@@ -206,6 +215,14 @@ def nametomove(pkmn,name)
 	end
 end
 
+def nametotype(pkmn,name)
+	GameData::Type.each do |type|
+		if type.real_name==name
+			return type.id
+		end
+	end
+end
+	
 def nickname(name)
 	if name.length>1
 		nick=""
@@ -301,6 +318,7 @@ def caracpkmn(pktext)
 	if i<pktext.length
 		if pktext[i][0]=="Level:"
 			pkmn.level=(pktext[i][1]).to_i
+			pkmn.obtain_level = (pktext[i][1]).to_i
 			i+=1
 		end
 	end
@@ -313,6 +331,15 @@ def caracpkmn(pktext)
 	if i<pktext.length
 		if pktext[i][0]=="Happiness:"
 			pkmn.happiness=(pktext[i][1]).to_i
+			i+=1
+		end
+	end
+	if i<pktext.length		
+		if pktext[i][0]=="Tera"	
+			if pkmn.respond_to?(:tera_type)
+				tera= pktext[i][2]	#optional tera check
+				pkmn.tera_type=nametotype(pkmn,tera)
+			end
 			i+=1
 		end
 	end
@@ -330,6 +357,12 @@ def caracpkmn(pktext)
 			i+=1
 		end
 	end
+	pkmn.iv[:SPECIAL_DEFENSE]=31	#perfect ivs by default
+	pkmn.iv[:DEFENSE]=31
+	pkmn.iv[:ATTACK]=31
+	pkmn.iv[:SPECIAL_ATTACK]=31
+	pkmn.iv[:HP]=31
+	pkmn.iv[:SPEED]=31
 	if i<pktext.length	
 		if pktext[i][0]=="IVs:"
 			for j in 0...pktext[i].length/3
@@ -352,9 +385,11 @@ end
 
 def genteam(file,inf,sup)	#main script
 	cut=cutfile(file,sup)
+	if sup>cut.length
+		sup=cut.length
+	end
 	for i in inf...sup
-		$game_switches[(i+4501)] = (caracpkmn(cut[i]))
-        pbMessage(_INTL("{1}.",$game_switches[(i+4501)].name))
+		pbAddPokemon(caracpkmn(cut[i]))
 	end
 end
 

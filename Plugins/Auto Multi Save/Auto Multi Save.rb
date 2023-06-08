@@ -133,11 +133,14 @@ module SaveData
   # This seems to be only used in a hidden function (ctrl+down+cancel on title screen)
   # Deletes ALL the save files (and possible .bak backup files if they exist)
   # @raise [Error::ENOENT]
-  def self.delete_file
-    self.each_slot do |slot|
-      full_path = self.get_full_path(slot)
-      File.delete(full_path) if File.file?(full_path)
-      File.delete(full_path + '.bak') if File.file?(full_path + '.bak')
+  def self.delete_file(file_path=nil)
+    if file_path
+      File.delete(file_path) if File.file?(file_path)
+    else
+      self.each_slot do |slot|
+        full_path = self.get_full_path(slot)
+        File.delete(full_path) if File.file?(full_path)
+      end
     end
   end
 
@@ -165,14 +168,15 @@ module SaveData
     conversions_to_run = self.get_conversions(save_data)
     return false if conversions_to_run.none?
     File.open(SaveData.get_backup_file_path, 'wb') { |f| Marshal.dump(save_data, f) }
-    echoln "Backed up save to #{SaveData.get_backup_file_path}"
-    echoln "Running #{conversions_to_run.length} conversions..."
+    Console.echo_h1 "Backed up save to #{SaveData.get_backup_file_path}"
+    Console.echo_h1 "Running #{conversions_to_run.length} conversions..."
     conversions_to_run.each do |conversion|
-      echo "#{conversion.title}..."
+      Console.echo_li "#{conversion.title}..."
       conversion.run(save_data)
-      echoln ' done.'
+      Console.echo_done ' done.'
     end
     echoln '' if conversions_to_run.length > 0
+    Console.echo_h2("All save file conversions applied successfully", text: :green)
     save_data[:essentials_version] = Essentials::VERSION
     save_data[:game_version] = Settings::GAME_VERSION
     return true
@@ -263,6 +267,7 @@ class PokemonLoadScreen
   def pbStartLoadScreen
     save_file_list = SaveData::AUTO_SLOTS + SaveData::MANUAL_SLOTS
     first_time = true
+	pbBGMPlay("anthemmix")
     loop do # Outer loop is used for switching save files
       if @selected_file
         @save_data = load_save_file(SaveData.get_full_path(@selected_file))
@@ -444,17 +449,17 @@ class PokemonSaveScreen
   end
 
   # Return true if pause menu should close after this is done (if the game was saved successfully)
-  def pbSaveScreen
+  def pbSaveScreen(exiting=false)
     ret = false
     @scene.pbStartScreen
     if !$player.save_slot
       # New Game - must select slot
-      ret = slotSelect
+      ret = slotSelect(exiting)
     else
       choices = [
         _INTL("Save to #{$player.save_slot}"),
         _INTL("Save to another file"),
-        _INTL("Cancel")
+        exiting ? _INTL("Quit without saving") : _INTL("Cancel")
       ]
       opt = pbMessage(_INTL('Would you like to save the game?'),choices,3)
       if opt == 0
@@ -462,7 +467,7 @@ class PokemonSaveScreen
         ret = doSave($player.save_slot)
       elsif opt == 1
         pbPlayDecisionSE
-        ret = slotSelect
+        ret = slotSelect(exiting)
       else
         pbPlayCancelSE
       end
@@ -473,19 +478,24 @@ class PokemonSaveScreen
 
   # Call this to open the slot select screen
   # Returns true if the game was saved, otherwise false
-  def slotSelect
+  def slotSelect(exiting=false)
     ret = false
     choices = SaveData::MANUAL_SLOTS
     choice_info = SaveData::MANUAL_SLOTS.map { |s| getSaveInfoBoxContents(s) }
-    index = slotSelectCommands(choices, choice_info)
-    if index >= 0
-      slot = SaveData::MANUAL_SLOTS[index]
-      # Confirm if slot not empty
-      if !File.file?(SaveData.get_full_path(slot)) ||
-          pbConfirmMessageSerious(_INTL("Are you sure you want to overwrite the save in #{slot}?")) # If the slot names were changed this grammar might need adjustment.
-        pbSEPlay('GUI save choice')
-        ret = doSave(slot)
+    loop do
+      index = slotSelectCommands(choices, choice_info)
+      if index >= 0
+        slot = SaveData::MANUAL_SLOTS[index]
+        # Confirm if slot not empty
+        if !File.file?(SaveData.get_full_path(slot)) ||
+            pbConfirmMessageSerious(_INTL("Are you sure you want to overwrite the save in #{slot}?")) # If the slot names were changed this grammar might need adjustment.
+          pbSEPlay('GUI save choice')
+          ret = doSave(slot)
+        end
+      elsif exiting # Pressed cancel
+        next unless pbConfirmMessageSerious(_INTL("Are you sure you want to quit without saving?"))
       end
+      break
     end
     pbPlayCloseMenuSE if !ret
     return ret

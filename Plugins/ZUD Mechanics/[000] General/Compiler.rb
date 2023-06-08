@@ -46,7 +46,7 @@ module Compiler
         species = $1.to_sym
         value = $2
         include = false
-        if banlist.include?(species)
+        if banlist.include?(species) && species != :DARMANITAN_2
           raise _INTL("{1} is a banned raid species. Remove any raid rank entries for this species.\r\n", species, FileLineData.linereport)
         end
         line = pbGetCsvRecord(value, line_no, [0, "*u"])

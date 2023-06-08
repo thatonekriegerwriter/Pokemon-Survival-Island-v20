@@ -23,6 +23,7 @@ ItemHandlers::UseOnPokemon.add(:SEEDOFMASTERY, proc { |item, qty, pkmn, scene|
       end
       next false if level_up_move
     end
+    $stats.total_moves_mastered += 1
     pkmn.master_move(move)
     pbSEPlay("Pkmn move learnt")
     scene.pbDisplay(_INTL("{1} mastered {2}!", pkmn.name, sel_move.name))
@@ -55,6 +56,7 @@ def pbMasterMoves(pkmn, battler, scene)
       next if move.mastered? || !move.canMaster?
       min_lvl = (m[0] >= 35) ? 11 : (m[0] >= 25) ? 10 : 9
       if pkmn.level >= [m[0] + min_lvl, Settings::MAXIMUM_LEVEL].min
+        $stats.total_moves_mastered += 1
         pkmn.master_move(move.id)
         scene.pbDisplay(_INTL("{1} mastered {2}!", pkmn.name, move.name)) { pbSEPlay("Pkmn move learnt") }
         break
@@ -74,11 +76,20 @@ end
 #-------------------------------------------------------------------------------
 alias styles_pbChangeLevel pbChangeLevel
 def pbChangeLevel(pkmn, new_level, scene)
-  styles_pbChangeLevel(pkmn, new_level, scene)
   new_level = new_level.clamp(1, GameData::GrowthRate.max_level)
-  if pkmn.level > new_level || pkmn.level == Settings::MAXIMUM_LEVEL
-    pbMasterMoves(pkmn, nil, scene)
-  end
+  master_moves = pkmn.level < new_level || pkmn.level == Settings::MAXIMUM_LEVEL
+  styles_pbChangeLevel(pkmn, new_level, scene)
+  pbMasterMoves(pkmn, nil, scene) if master_moves
+end
+
+#-------------------------------------------------------------------------------
+# Used for Exp. Candy level-up.
+#-------------------------------------------------------------------------------
+alias styles_pbChangeExp pbChangeExp
+def pbChangeExp(pkmn, new_exp, scene)
+  old_lvl = pkmn.level
+  styles_pbChangeExp(pkmn, new_exp, scene)
+  pbMasterMoves(pkmn, nil, scene) if pkmn.level > old_lvl
 end
 
 #-------------------------------------------------------------------------------

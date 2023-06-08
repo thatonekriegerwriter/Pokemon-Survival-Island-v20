@@ -13,7 +13,7 @@ class Player < Trainer
     @tera_charged = value
   end
   
-  def has_pokemon_of_tera_type?(type)
+  def has_pokemon_tera_type?(type)
     return false if !GameData::Type.exists?(type)
     type = GameData::Type.get(type).id
     return pokemon_party.any? { |p| p&.tera_type == type }
@@ -69,18 +69,29 @@ class Sprite
   def applyTera
     self.unDynamax
     return if !Settings::SHOW_TERA_OVERLAY
+    self.pattern = Bitmap.new("Graphics/Plugins/Terastal Phenomenon/tera_pattern")
+    self.pattern_opacity = 150
     rand1 = rand(5) - 2
     rand2 = rand(5) - 2
+    self.pattern_scroll_x += rand1 * 5
+    self.pattern_scroll_y += rand2 * 5
   end
   
   def unTera
+	if defined?(self.pattern)
+    self.pattern = nil
+	end
   end
   
   def applyTeraIcon
     self.unDynamax
     if Settings::SHOW_TERA_OVERLAY && self.pokemon&.tera?
+      self.pattern = Bitmap.new("Graphics/Plugins/Terastal Phenomenon/tera_pattern")
+      self.pattern_opacity = 150
       rand1 = rand(5) - 2
       rand2 = rand(5) - 2
+      self.pattern_scroll_x += rand1 * 5
+      self.pattern_scroll_y += rand2 * 5
     else
       self.unTera
     end

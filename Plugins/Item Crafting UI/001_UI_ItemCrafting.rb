@@ -192,6 +192,10 @@ class ItemCraft_Scene
       item = @stock[index][1][2*i]
       cost = @stock[index][1][2*i+1]
       $bag.remove(item,volume*cost)
+	  if $bag.quantity(item)<cost && $bag.quantity(item)<0
+        $bag.remove(item,$bag.quantity(item))
+        pbMessage(_INTL("As what is left over of your ingredients is useless, you throw them away."))
+	  end
     end
   end
   

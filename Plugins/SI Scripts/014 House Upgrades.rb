@@ -46,7 +46,7 @@ command = 0
 	  break
 	  end
     when 2   # Use Statue
-	  if $bag.quantity(:PICKAXE)>=5  || ($DEBUG && Input.press?(Input::CTRL))
+	  if $bag.quantity(:IRONPICKAXE)>=5  || ($DEBUG && Input.press?(Input::CTRL))
       if $bag.quantity(:WOODENPLANKS)>=50 || ($DEBUG && Input.press?(Input::CTRL))
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[498]=true
@@ -60,7 +60,7 @@ command = 0
 	  break
 	  end
 	   else
-	   amount = 5 - $bag.quantity(:PICKAXE)
+	   amount = 5 - $bag.quantity(:IRONPICKAXE)
 	   pbMessage(_INTL("You need {1} more Pickaxe to build this.",amount))
 	  break
 	  end

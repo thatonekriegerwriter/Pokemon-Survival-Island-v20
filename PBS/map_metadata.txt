@@ -145,11 +145,12 @@ BicycleAlways = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[021]   # 1
+[021]   # Memory
 Name = 1
 Outdoor = false
 ShowArea = false
 MapPosition = 0,0,0
+SnapEdges = true
 BattleBack = Indoor
 #-------------------------------
 [022]   # Cave
@@ -162,7 +163,7 @@ DarkMap = true
 SnapEdges = false
 BattleBack = Cave
 #-------------------------------
-[023]   # S.S Glittering
+[023]   # Memory
 Name = S.S Glittering Wreck
 Outdoor = false
 ShowArea = false
@@ -221,6 +222,10 @@ Name = Mountain Interior
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
+#-------------------------------
+[032]   # Magma Temple
+Name = Magma Temple
+BattleBack = ruins
 #-------------------------------
 [033]   # Temperate Marsh
 Name = Temperate Marsh
@@ -302,7 +307,7 @@ Name = Temperate Inland
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
-BattleBack = Snow
+BattleBack = snow
 #-------------------------------
 [045]   # Temperate Plains
 Name = Temperate Coast
@@ -343,16 +348,18 @@ MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = Indoor
 #-------------------------------
-[051]   # 5
+[051]   # Memory
 Name = 5
 Outdoor = false
 MapPosition = 0,0,0
+SnapEdges = true
 BattleBack = Indoor
 #-------------------------------
 [052]   # South
 Name = South
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
 [053]   # Southern Beach
 Name = Temperate Coast
@@ -363,6 +370,7 @@ MapPosition = 0,0,0
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
+BattleBack = field
 #-------------------------------
 [055]   # Player Cabin
 Name = Player Cabin
@@ -456,19 +464,20 @@ BattleBack = Cave
 Name = Temperate Inland
 Outdoor = true
 MapPosition = 0,0,0
+BattleBack = snow
 #-------------------------------
-[070]   # William's Cabin
+[070]   # Memory
 Name = William's Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
 [071]   # Ice Cave
 Name = Ice Cave
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[072]   # Winter Zone
+[072]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 ShowArea = true
@@ -476,14 +485,14 @@ Weather = Blizzard,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[073]   # Winter Zone
+[073]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 Weather = Snow,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[074]   # Winter Zone
+[074]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 Weather = Blizzard,20
@@ -502,13 +511,13 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[077]   # Winter Zone
+[077]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[078]   # Winter Zone
+[078]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
@@ -520,7 +529,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[080]   # Winter Zone
+[080]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
@@ -531,7 +540,7 @@ Name = MAP081
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[082]   # Winter Zone
+[082]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
@@ -549,7 +558,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[085]   # Winter Zone
+[085]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
@@ -702,7 +711,7 @@ Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[111]   # Humid Zone
+[111]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -805,31 +814,31 @@ Name = Captain's Quarters
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[130]   # Humid Zone
+[130]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[131]   # Humid Zone
+[131]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[132]   # Humid Zone
+[132]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[133]   # Humid Zone
+[133]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[134]   # Humid Zone
+[134]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -853,7 +862,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[138]   # Humid Zone
+[138]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -877,7 +886,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[142]   # Humid Zone
+[142]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -969,25 +978,25 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[158]   # Humid Zone
+[158]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[159]   # Humid Zone
+[159]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[160]   # Humid Zone
+[160]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[161]   # Humid Zone
+[161]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
@@ -1002,6 +1011,7 @@ MapPosition = 0,0,0
 Name = Deep Caves
 Outdoor = false
 MapPosition = 0,0,0
+SnapEdges = true
 BattleBack = Deep
 #-------------------------------
 [164]   # Island 1
@@ -1270,7 +1280,7 @@ MapPosition = 0,0,0
 #-------------------------------
 [213]   # Ice Cave
 Name = Ice Cave
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
@@ -1326,45 +1336,45 @@ Name = Office 2012
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[224]   # Abandoned Cabin
+[224]   # Memory
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[225]   # Abandoned Cabin
+[225]   # Memory
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[226]   # S.S Glittering Wreck
+[226]   # Memory
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[227]   # S.S Glittering Wreck
+[227]   # Memory
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[228]   # S.S Glittering Wreck
+[228]   # Memory
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[229]   # Kitchen
+[229]   # Memory
 Name = Kitchen
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[230]   # Captain's Quarters
+[230]   # Memory
 Name = Captain's Quarters
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[231]   # S.S. Glittering
+[231]   # Memory
 Name = S.S. Glittering
 Outdoor = true
 MapPosition = 0,0,0
@@ -1410,20 +1420,23 @@ MapPosition = 0,0,0
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[240]   # Office 2012
+[240]   # Memory
 Name = Office 2012
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
-[241]   # 2
+[241]   # Memory
 Name = 2
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
-[242]   # 3
+[242]   # Memory
 Name = 3
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
 [243]   # Temperate Ocean
 Name = Temperate Coast
@@ -1570,20 +1583,23 @@ Name = Forested Base
 Outdoor = false
 MapPosition = 0,0,0
 #-------------------------------
-[268]   # 4
+[268]   # Memory
 Name = 4
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
-[269]   # MAP269
+[269]   # Memory
 Name = MAP269
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
-[270]   # 6
+[270]   # Memory
 Name = 6
 Outdoor = true
 MapPosition = 0,0,0
+SnapEdges = true
 #-------------------------------
 [271]   # Shore Skies
 Name = Shore Skies
@@ -1648,8 +1664,11 @@ BattleBack = Sky
 [282]   # Passage
 Name = Passage
 Outdoor = false
+ShowArea = false
+Bicycle = false
 MapPosition = 0,0,0
-BattleBack = Indoor
+SnapEdges = true
+BattleBack = Cave
 #-------------------------------
 [283]   # Mountain Skies
 Name = Mountain Skies
@@ -1911,12 +1930,14 @@ MapPosition = 0,0,0
 Name = Home Interior
 Outdoor = false
 MapPosition = 0,0,0
+SnapEdges = true
 BattleBack = Indoor
 #-------------------------------
 [352]   # Home Interior
 Name = Home Interior
 Outdoor = false
 MapPosition = 0,0,0
+SnapEdges = true
 BattleBack = Indoor
 #-------------------------------
 [369]   # Temperate Zone

@@ -135,10 +135,12 @@ class Battle
     triggers = ["battleStyle", "battleStyle" + battler.species.to_s]
     case style
     when 1
-	  triggers += ["strongStyle", "strongStyle" + battler.species.to_s]
+      $stats.strong_style_count += 1 if battler.pbOwnedByPlayer?
+      triggers += ["strongStyle", "strongStyle" + battler.species.to_s]
       msg1 = _INTL("{1} entered Strong Style!", battler.pbThis)
       msg2 = _INTL("{1} may act slower due to its Strong Style!", battler.pbThis)
     when 2
+      $stats.agile_style_count += 1 if battler.pbOwnedByPlayer?
       triggers += ["agileStyle", "agileStyle" + battler.species.to_s]
       msg1 = _INTL("{1} entered Agile Style!", battler.pbThis)
       msg2 = _INTL("{1} may act sooner due to its Agile Style!", battler.pbThis)

@@ -1,18 +1,22 @@
 def pbRandomEvent
-   if rand(100) == 1
-     Kernel.pbMessage(_INTL("There was a sound outside."))   #Comet
+   if rand(256) >= 1 && rand(256) <= 5
+    if $game_switches[132]==true && $game_switches[226]==true
+     Kernel.pbMessage(_INTL("It sounds like something crashed."))   #Comet
      $game_switches[450]=true 
      $game_switches[451]=true 
+	else
+     Kernel.pbMessage(_INTL("The Sky looks beautiful tonight."))   #Comet
+	end
 =begin
-   elsif rand(1000) == 2
+   elsif rand(100) == 6
      
-   elsif rand(1000) == 3
+   elsif rand(100) == 7
      
-   elsif rand(1000) == 4
+   elsif rand(100) == 8
      
-   elsif rand(1000) == 5
+   elsif rand(100) == 9
      
-   elsif rand(1000) == 6
+   elsif rand(100) == 10
 =end
 end
 end
@@ -164,7 +168,7 @@ end
 
 
 def pbCheckName
-name = pbEntryName(_INTL("What do you put?"), 0, Settings::MAX_PLAYER_NAME_SIZE)
+name = pbEnterPlayerName(_INTL("What do you put?"), 0, Settings::MAX_PLAYER_NAME_SIZE)
 if name.nil? || name.empty?
   return false
 else

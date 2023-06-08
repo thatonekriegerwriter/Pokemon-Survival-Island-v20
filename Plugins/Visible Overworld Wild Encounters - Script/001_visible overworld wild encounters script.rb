@@ -217,7 +217,7 @@ module VisibleEncounterSettings
   # false - means that all encounter types can pop up
   #        close to the player (as long as there is a suitable tile)
   
-  NO_SPAWN_ON_BORDER = true # default false
+  NO_SPAWN_ON_BORDER = false # default false
   # true  - means that pokemon on water won't spawn in the border
   # false - means that pokemon will also spawn on the border of water   
 
@@ -239,7 +239,7 @@ module VisibleEncounterSettings
   #       following pokemon
   
   #------------------- MOVEMENT OF SPAWNED POKEMON -----------------------
-  DEFAULT_MOVEMENT = [3, 3, 1] # default [3, 3, 1]
+  DEFAULT_MOVEMENT = [3, 4, 1] # default [3, 3, 1]
   # This parameter stores an array [move_speed, move_frequency, move_type] of three integers where
   # move_speed/ move_frequency/ move_type is the default movement speed/ frequency/ type of spawned PokeEvents.
   # See RPGMakerXP for more details (compare to autonomous movement of events).
@@ -269,7 +269,7 @@ module VisibleEncounterSettings
   #true - means you can battle from the ground a pokemon from the water
 
   #--------------- VANISHING OF SPAWNED POKEMON AFTER STEPS -------------------
-  DEFAULT_STEPS_BEFORE_VANISH = 15 # default 10
+  DEFAULT_STEPS_BEFORE_VANISH = 20 # default 10
   # This is the number of steps a wild encounter goes by default before vanishing on the map.
 
   Add_Steps_Before_Vanish = [ # default
@@ -338,11 +338,11 @@ def pbOnStepTaken(eventTriggered)
   EventHandlers.trigger(:on_player_step_taken_can_transfer, handled)
   return if handled[0]
   if !eventTriggered && !$game_temp.in_menu
-    if pbBattleOrSpawnOnStepTaken(repel_active)
+#    if pbBattleOrSpawnOnStepTaken(repel_active)
       pbBattleOnStepTaken(repel_active) # STANDARD WILD BATTLE
-    else
+#    else
       pbSpawnOnStepTaken(repel_active)  # OVERWORLD ENCOUNTERS
-    end
+#    end
   end
   $game_temp.encounter_triggered = false   # This info isn't needed here
 end
@@ -352,7 +352,7 @@ end
 # an instant encounter and false with the probability of an overworld encounter
 #===============================================================================
 def pbBattleOrSpawnOnStepTaken(repel_active)
-  if (rand(100) < VisibleEncounterSettings::INSTANT_WILD_BATTLE_PROPABILITY) || pbPokeRadarOnShakingGrass
+  if (rand(100) <= VisibleEncounterSettings::INSTANT_WILD_BATTLE_PROPABILITY) || pbPokeRadarOnShakingGrass
     return true
   else
     return false
@@ -569,6 +569,73 @@ end
 #===============================================================================
 # new Method spawnPokeEvent in Class Game_Map in Script Game_Map
 #===============================================================================
+
+def pbAttackCheck(event)
+ 
+ if $game_player.direction == event.direction
+      rate=10
+      rate*=1.5 if $player.playerstamina <= 75 && $player.playerstamina > 50
+      rate*=3 if $player.playerstamina <= 50 && $player.playerstamina > 25
+      rate*=4 if $player.playerstamina <= 25
+      rate*=1.5 if $player.playerhealth <= 75 && $player.playerhealth > 50
+      rate*=3 if $player.playerhealth <= 50 && $player.playerhealth > 25
+      rate*=4 if $player.playerhealth <= 25
+	   if rand(100)<rate
+        injury = rand(25)+16
+        $player.playerhealth -= injury 
+		pbExclaim($game_player)
+		pbWait(6)
+        if $player.playerhealth >= 80
+		pbExclaim($game_player,17)
+        else
+        if $player.playerhealth >= 50 && $player.playerhealth < 80
+		pbExclaim($game_player,16)
+        else
+        if $player.playerhealth >= 25 && $player.playerhealth < 50
+		pbExclaim($game_player,15)
+        else
+        if $player.playerhealth <= 24
+		pbExclaim($game_player,14)
+        end
+        end
+     end
+    end
+        pbTurnTowardEvent($game_player,event)
+        end
+ elsif ($game_player.direction == 4 || $game_player.direction == 6) && (event.direction == 2 || event.direction == 8)
+       rate=5
+      rate*=1.5 if $player.playerstamina <= 75 && $player.playerstamina > 50
+      rate*=3 if $player.playerstamina <= 50 && $player.playerstamina > 25
+      rate*=4 if $player.playerstamina <= 25
+      rate*=1.5 if $player.playerhealth <= 75 && $player.playerhealth > 50
+      rate*=3 if $player.playerhealth <= 50 && $player.playerhealth > 25
+      rate*=4 if $player.playerhealth <= 25
+	    if rand(100)<rate
+        injury = rand(15)+6
+        $player.playerhealth -= injury 
+		pbExclaim($game_player)
+		pbWait(6)
+        if $player.playerhealth >= 80
+		pbExclaim($game_player,17)
+        else
+        if $player.playerhealth >= 50 && $player.playerhealth < 80
+		pbExclaim($game_player,16)
+        else
+        if $player.playerhealth >= 25 && $player.playerhealth < 50
+		pbExclaim($game_player,15)
+        else
+        if $player.playerhealth <= 24
+		pbExclaim($game_player,14)
+        end
+        end
+     end
+    end
+        pbTurnTowardEvent($game_player,event)
+		end
+ else
+ end
+end
+
 class Game_Map
   def spawnPokeEvent(x,y,pokemon)
     #--- generating a new event ---------------------------------------
@@ -609,6 +676,8 @@ class Game_Map
     #--- event commands of the event -------------------------------------
     #  - add a method that stores temp data when PokeEvent is triggered, must include
     #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
+    mapId = $game_map.map_id
+    Compiler::push_script(event.pages[0].list,sprintf(" pbAttackCheck($map_factory.getMap("+mapId.to_s+").events[#{key_id}])"))
     Compiler::push_script(event.pages[0].list,sprintf(" pbStoreTempForBattle()"))
     #  - set data for roamer and encounterType, that is
     #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
@@ -965,6 +1034,7 @@ EventHandlers.add(:on_wild_pokemon_created_for_spawning_end, :roamer_spawned, pr
 
 
 EventHandlers.add(:on_wild_pokemon_created_for_spawning, :evolve_high_leveled_spawning_pokemon, proc { |pkmn| 
+if rand(100) > 60
   loop do
     next if !pkmn || pkmn.egg?
     new_species = pkmn.check_evolution_on_level_up
@@ -994,4 +1064,6 @@ EventHandlers.add(:on_wild_pokemon_created_for_spawning, :evolve_high_leveled_sp
       pkmn.moves[forgetMove] = Pokemon::Move.new(move)   # Replaces current/total PP
     end
   end
+end
+
 })

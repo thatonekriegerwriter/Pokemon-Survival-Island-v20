@@ -117,20 +117,28 @@ ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
 
 ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
    if pbConfirmMessage(_INTL("Are you sure you want to use the Camp?"))
-     pbFadeOutAndHide(@sprites)
-     pbMessage(_INTL("You laid down in the portable camp, heading to sleep."))
-     $Trainer.heal_party
+    
+  pbFadeOutIn {
+     pbMessage(_INTL("You laid down in the Portable Camp, heading to sleep."))
      $game_variables[29] += 67200
-     scene = PokemonSave_Scene.new
-     screen = PokemonSaveScreen.new(scene)
-     screen.pbSaveScreen
-     $game_variables[247] = 2
-     pbSleepRestore
+     pbSleepRestore(10)}
+				if $player.playersleep >= 100
+			        pbMessage(_INTL("You feel well rested!"))
+				elsif $player.playersleep >= 75
+			        pbMessage(_INTL("You feel a little groggy, but are raring to go!"))
+				elsif $player.playersleep >= 50
+			        pbMessage(_INTL("Your brain feels fuzzy."))
+				elsif $player.playersleep >= 25
+			        pbMessage(_INTL("You want to go back to bed."))
+				else
+			        pbMessage(_INTL("You really need to sleep."))
+				end 
+   next true
    else
-     $PokemonBag.pbStoreItem(PORTABLECAMP,1)
      pbMessage(_INTL("You decide against sleeping."))
+	 next false
    end
-     next 2
+     next false
 })
 
 ItemHandlers::UseInField.add(:BERRYBLENDER,proc{|item|
@@ -154,8 +162,8 @@ ItemHandlers::UseOnPokemon.add(:APPLE,proc { |item,pkmn,scene|
 
 ItemHandlers::UseInBattle.add(:POISONDART,proc { |item,battler,battle|
    if battler && battler.status == :NONE || !battler.pbHasType?(:STEEL)
-     battler.pbPoison(user) if target.pbCanPoison?(user,false,self)
      battle.pbDisplay(_INTL("You shoot a dart at the Pokemon, poisoning it."))
+     battler.pbPoison(user) if target.pbCanPoison?(user,false,self)
      next true
    else
     battle.pbDisplay(_INTL("It won't have any effect."))
@@ -171,8 +179,8 @@ ItemHandlers::UseInBattle.add(:SLEEPDART,proc { |item,battler,battle|
   if battler.status != :NONE || battler.ability==ability1 || battler.ability==ability2
      next false
   else
-     battler.pbSleep
      battle.pbDisplay(_INTL("Enemy {1} was put to sleep by the {2}!",battler.name,itemname))
+     battler.pbSleep
      next true
   end
   next true
@@ -185,8 +193,8 @@ ItemHandlers::UseInBattle.add(:PARALYZDART,proc { |item,battler,battle|
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else
-     battler.pbParalyze(battler)
      battle.pbDisplay(_INTL("Enemy {1} was paralyzed by the {2}!",battler.name,itemname))
+     battler.pbParalyze(battler)
      next true
   end
   next true
@@ -199,8 +207,8 @@ ItemHandlers::UseInBattle.add(:ICEDART,proc { |item,battler,battle|
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else
-     battler.pbFreeze(battler)
      battle.pbDisplay(_INTL("Enemy {1} was frozen solid by the {2}!",battler.name,itemname))
+     battler.pbFreeze(battler)
      next true
   end
   next true
@@ -213,8 +221,8 @@ ItemHandlers::UseInBattle.add(:FIREDART,proc { |item,battler,battle|
      battle.pbDisplay(_INTL("It won't have any effect."))
      next false
   else
-     battler.pbBurn(battler)
      scene.pbDisplay(_INTL("Enemy {1} was burned by the {2}!",battler.name,itemname))
+     battler.pbBurn(battler)
      next true
   end
   next true
@@ -222,16 +230,14 @@ ItemHandlers::UseInBattle.add(:FIREDART,proc { |item,battler,battle|
 
 ItemHandlers::UseInBattle.add(:MACHETE,proc { |item,battler,battle|
  itemname = GameData::Item.get(item).name
- type=:FIRE
   if battler
-     battle.pbReduceHP(battler.totalhp/7)
+       battle.pbReduceHP($player.playerstamina)
 	   scene.pbDisplay(_INTL("You slashed at Enemy {1} with the {2}!",battler.name,itemname))
-     next false
+	   next false
   else
      battle.pbDisplay(_INTL("It won't have any effect."))
-     next true
+     next false
   end
-  next true
 })
 
 ItemHandlers::UseInBattle.add(:RUSTEDPICKAXE,proc { |item,battler,battle|
@@ -246,7 +252,6 @@ ItemHandlers::UseInBattle.add(:RUSTEDPICKAXE,proc { |item,battler,battle|
      battle.pbDisplay(_INTL("It won't have any effect."))
      next true
   end
-  next true
 })
 
 ItemHandlers::UseInBattle.add(:PICKAXE,proc { |item,battler,battle|
@@ -261,7 +266,6 @@ ItemHandlers::UseInBattle.add(:PICKAXE,proc { |item,battler,battle|
      battle.pbDisplay(_INTL("It won't have any effect."))
      next true
   end
-  next true
 })
 
 

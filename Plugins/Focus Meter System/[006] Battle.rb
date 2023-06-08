@@ -68,8 +68,10 @@ class Battle
     return if battler.moveHasExceptionCode?(move)
     style = GameData::Focus.get(battler.effects[PBEffects::FocusStyle])
     triggers = ["focus", "focus" + battler.species.to_s, "focus" + style.id.to_s.upcase]
+    battler.pokemon.types.each { |t| triggers.push("focus" + t.to_s) }
     # The focus styles below may always be triggered.
     if style.id == :Enraged
+      $stats.enraged_focus_count += 1 if !battler.pbOwnedByPlayer?
       triggers.push("focusBoss") if battler.opposes?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} unleashes its {2}!", battler.pbThis, style.focus))
@@ -80,6 +82,7 @@ class Battle
     return if [:SLEEP, :FROZEN].include?(battler.status)
     case style.id
     when :Evasion
+      $stats.evasion_focus_count += 1 if battler.pbOwnedByPlayer?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:TAILWHIP, battler, battler.pbDirectOpposing)
@@ -87,6 +90,7 @@ class Battle
       battler.focus_trigger = true
       return
     when :Passive
+      $stats.passive_focus_count += 1 if battler.pbOwnedByPlayer?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbFocusedGuardEffects(idxBattler)
@@ -101,6 +105,7 @@ class Battle
     case style.id
     when :Accuracy
       return if move.accuracy == 0 || !target_foe
+      $stats.accuracy_focus_count += 1 if battler.pbOwnedByPlayer?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:LOCKON, battler, battler.pbDirectOpposing)
@@ -108,6 +113,7 @@ class Battle
       battler.focus_trigger = true
     when :Critical
       return if move.statusMove? || !target_foe
+      $stats.critical_focus_count += 1 if battler.pbOwnedByPlayer?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:LEER, battler, battler)
@@ -115,6 +121,7 @@ class Battle
       battler.focus_trigger = true
     when :Potency
       return if !battler.hasAddedEffect?(move)
+      $stats.potency_focus_count += 1 if battler.pbOwnedByPlayer?
       @scene.pbDeluxeTriggers(idxBattler, nil, triggers)
       pbDisplay(_INTL("{1} readies a {2}!", battler.pbThis, style.focus))
       pbAnimation(:TAILGLOW, battler, battler)

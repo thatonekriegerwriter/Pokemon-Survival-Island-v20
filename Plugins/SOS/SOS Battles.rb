@@ -102,6 +102,12 @@
       if !@lastturnanswered
         rate*=3.0
       end
+      if caller.hp<=caller.totalhp/2 && caller.hp>=caller.totalhp/4
+        rate*=1.5
+      end
+      if caller.hp<=caller.totalhp/4
+        rate*=3.0
+      end
       rate=rate.round # rounding it off.
       pbDisplayPaused(_INTL("... ... ..."))
       idxOther = -1
@@ -136,7 +142,7 @@
         @party2order.push(@party2order.length)
       else
         @lastturnanswered=false
-        pbDisplay(_INTL("Its help didn't appear!"))
+        pbDisplay(_INTL("It's help didn't appear!"))
       end
       @lastturncalled=@turnCount
     end
@@ -210,7 +216,7 @@
       return if rate==0 # should never trigger anyways but you never know.
 	  return if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       pbDisplay(_INTL("{1} lunged at {2} for an attack!", caller.pbThis,pbPlayer.name))
-      rate*=4 # base rate
+      rate*=2 # base rate
       rate=rate.to_f # don't want to lose decimal points
       intimidate=false
       caller.eachOpposing{ |b|
@@ -228,40 +234,36 @@
       if !@lastturnanswered
         rate*=3.0
       end
-	  if $player.playerhealth < 50 && $player.playerhealth > 25
-      rate*=3.0
-	  end
-	  if $player.playerhealth < 25
-      rate*=4.0 
-	  end
+      rate*=3 if $player.playerstamina < 50 && $player.playerstamina > 25
+      rate*=4 if $player.playerstamina < 25
 
       rate=rate.round # rounding it off.
   
 
-  if pbRandom(100)<rate
+  if pbRandom(256)<rate
 	  if caller.shadowPokemon? && !trainerBattle? 
-        injury = rand(40)+2
-        pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        injury = rand(50)+1
+        pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
         $player.playerhealth -= injury 
       elsif caller.shadowPokemon? && trainerBattle? 
          chance = rand(2)
          if chance == 1
-           injury = rand(40)+2
-           pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+           injury = rand(50)+1
+           pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
            $player.playerhealth -= injury
           else
-           injury = rand(40)+2
-           pbDisplay(_INTL("The incoming {2} hits the opposing Trainer for {1} Damage!", injury, pbPlayer.name))
+           injury = rand(50)+1
+           pbDisplay(_INTL("The incoming attack hits the opposing Trainer for {1} Damage!", injury, pbPlayer.name))
          end
       elsif wildBattle?
-        injury = rand(20)+2
-        pbDisplay(_INTL("The incoming {2} hits you for {1} Damage!", injury, pbPlayer.name))
+        injury = rand(40)+1
+        pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
         $player.playerhealth -= injury 
 	  else 
 	   return
 	  end
-      else
-        pbDisplay(_INTL("Thankfully, it missed!!"))
+  else
+     pbDisplay(_INTL("Thankfully, it missed!!"))
       end
     end
   end
@@ -286,12 +288,12 @@
       return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
+#	  return true if $DEBUG && Input.press?(Input::CTRL)
       cspecies=self.species
 	  blacklistedmons = SOS_BLACKLIST
       for i in 0..blacklistedmons.length
 	  return false if blacklistedmons[i] == cspecies
       end
-#	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=SOS_WHITELIST_RATES[cspecies] || SOS_RATE || 0
       # not a species that calls
       return false if rate==0
@@ -300,34 +302,108 @@
       rate*=2 if @battle.adrenalineorb
       return @battle.pbRandom(100)<rate
     end
+
+
+def pbLegendaryStarter2?(starter)
+  return true if
+    starter=="ARTICUNO" ||
+    starter=="ZAPDOS" ||
+    starter=="MOLTRES" ||
+    starter=="MEWTWO" ||
+    starter=="MEW" ||
+    starter=="RAIKOU" ||
+    starter=="ENTEI" ||
+    starter=="SUICUNE" ||
+    starter=="LUGIA" ||
+    starter=="HOOH" ||
+    starter=="CELEBI" ||
+    starter=="REGIROCK" ||
+    starter=="REGICE" ||
+    starter=="REGISTEEL" ||
+    starter=="LATIAS" ||
+    starter=="LATIOS" ||
+    starter=="KYOGRE" ||
+    starter=="GROUDON" ||
+    starter=="RAYQUAZA" ||
+    starter=="JIRACHI" ||
+    starter=="DEOXYS" ||
+    starter=="UXIE" ||
+    starter=="MESPRIT" ||
+    starter=="AZELF" ||
+    starter=="DIALGA" ||
+    starter=="PALKIA" ||
+    starter=="HEATRAN" ||
+    starter=="REGIGIGAS" ||
+    starter=="GIRATINA" ||
+    starter=="CRESSELIA" ||
+    starter=="MANAPHY" ||
+    starter=="DARKRAI" ||
+    starter=="SHAYMIN" ||
+    starter=="ARCEUS" ||
+    starter=="VICTINI" ||
+    starter=="COBALION" ||
+    starter=="TERRAKION" ||
+    starter=="VIRIZION" ||
+    starter=="TORNADUS" ||
+    starter=="THUNDURUS" ||
+    starter=="RESHIRAM" ||
+    starter=="ZEKROM" ||
+    starter=="LANDORUS" ||
+    starter=="KYUREM" ||
+    starter=="KELDEO" ||
+    starter=="MELOETTA" ||
+    starter=="GENESECT"||
+    starter=="XERNEAS"||
+    starter=="YVELTAL"||
+    starter=="ZYGARDE"||
+    starter=="TYPENULL"||
+    starter=="SILVALLY"||
+    starter=="TAPUBULU"||
+    starter=="TAPUFINI"||
+    starter=="TAPULELE"||
+    starter=="TAPUKOKO"||
+    starter=="COSMOG"||
+    starter=="COSMOEM"||
+    starter=="SOLGALEO"||
+    starter=="LUNALA"||
+    starter=="NECROZMA"||
+    starter=="NIHILEGO"||
+    starter=="ZACIAN"||
+    starter=="ZAMAZENTA"||
+    starter=="ETERNATUS"||
+    starter=="KUBFU"||
+    starter=="URSHIFU"||
+    starter=="REGIELEKI"||
+    starter=="REGIDRAGO"||
+    starter=="GLASTRIER"||
+    starter=="SPECTRIER"||
+    starter=="CALYREX"
+  return false
+end
+
+
 	
 	def pbCanAttackPlayer?(caller)
       return false if $PokemonSystem.survivalmode == 1 
-      return false if @battle.trainerBattle? 
+      return false if (@battle.trainerBattle?  && !self.shadowPokemon?)
 	  return false if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       # only wild mons
       return false if !opposes?
-      # can't call in triple+ battles (don't want to figure out where the battler needs to be)
-      return false if @battle.pbSideSize(@index)>=3
-      # can't call if partner already in
-      allies=@battle.battlers.select {|b| b && !b.fainted? && !b.opposes?(@index) && b.index!=@index}
-      return false if allies.length>0
+	  return false if pbLegendaryStarter2?(self.name.upcase)
       # just to be safe
       return false if self.fainted?
-      # no call if status
-      return false if self.pbHasAnyStatus?
       # no call if multiturn attack
       return false if usingMultiTurnAttack?
       cspecies=GameData::Species.get(self.species).species
-#	  return true if $DEBUG && Input.press?(Input::CTRL)
       rate=5
-      # not a species that calls
       return false if rate==0
       rate+=2 if self.shadowPokemon?
       rate*=3 if self.hp>(self.totalhp/4) && self.hp<=(self.totalhp/2)
       rate*=5 if self.hp<=(self.totalhp/4)
-      rate*=3 if $player.playerhealth < 50 && $player.playerhealth > 25
-      rate*=4 if $player.playerhealth < 25
+      rate+=5 if $player.playerstamina < 50 && $player.playerstamina > 25
+      rate+=10 if $player.playerstamina < 25
+      rate+=5 if $player.playerhealth < 50 && $player.playerhealth > 25
+      rate+=25 if $player.playerhealth < 25
       return @battle.pbRandom(100)<rate
     end
     

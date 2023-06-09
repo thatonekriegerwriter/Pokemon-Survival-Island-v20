@@ -76,6 +76,8 @@ end
 			pbGenerateAdEgg(encounter[0])
 		elsif chances<=45 && chances2<=250 && PokeventureConfig::ChanceToFindEggs   #FIND EGG
 		encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		encounter = [nil, nil] if encounter.nil?
+		if !encounter.nil? && !encounter[0].nil?
 		poke = Pokemon.new(encounter[0],encounter[1])
 		if pkmn.male?
 		poke.makeFemale
@@ -88,6 +90,7 @@ end
 		end
 		egg = EggGenerator.generate(mother, father)
 		party[party.length] = egg
+		end
 		elsif chances<=1 #TEAM ROCKET GRUNT
 		elsif chances<=1 #TRADING
 		elsif chances<=1 #GAINEV

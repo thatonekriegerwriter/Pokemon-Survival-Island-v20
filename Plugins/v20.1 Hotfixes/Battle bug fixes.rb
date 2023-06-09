@@ -114,7 +114,7 @@ module Battle::CatchAndStoreMixin
       cmds = [_INTL("Add to your party"),
               _INTL("Send to a Box"),
               _INTL("See {1}'s summary", pkmn.name),
-              _INTL("Gut {1} for Meat.", pkmn.name),
+              _INTL("Gut {1} for Meat", pkmn.name),
               _INTL("Check party")]
      else
       cmds = [_INTL("Add to your party"),

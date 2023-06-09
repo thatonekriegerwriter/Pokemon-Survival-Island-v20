@@ -117,8 +117,8 @@ ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
 
 ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
    if pbConfirmMessage(_INTL("Are you sure you want to use the Camp?"))
-    
-  pbFadeOutIn {
+  pbFadeOutIn {  
+    next 2
      pbMessage(_INTL("You laid down in the Portable Camp, heading to sleep."))
      $game_variables[29] += 67200
      pbSleepRestore(10)}

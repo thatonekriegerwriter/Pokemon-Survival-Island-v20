@@ -640,19 +640,21 @@ BattleBack = Cave
 Name = Ice Temple
 Outdoor = false
 MapPosition = 0,0,0
-BattleBack = Indoor
+SnapEdges = true
+BattleBack = ruins
 #-------------------------------
 [099]   # Ice Temple
 Name = Ice Temple
 Outdoor = false
 MapPosition = 0,0,0
-BattleBack = Indoor
+SnapEdges = true
+BattleBack = ruins
 #-------------------------------
 [100]   # Ice Temple
 Name = Ice Temple
 Outdoor = false
 MapPosition = 0,0,0
-BattleBack = Indoor
+BattleBack = ruins
 #-------------------------------
 [101]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck

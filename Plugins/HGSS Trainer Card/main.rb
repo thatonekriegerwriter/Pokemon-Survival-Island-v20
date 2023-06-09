@@ -329,7 +329,7 @@ class PokemonTrainerCard_Scene
       [_INTL("Name"), 34, 70, 0, baseColor, shadowColor],
       [$player.name, 302, 70, 1, baseColor, shadowColor],
       [_INTL("{1}",$player.playerclass), 332, 70, 0, baseColor, shadowColor],
-      [_INTL("Lv{1}",$player.playerclasslevel), 468, 70, 1, baseColor, shadowColor],
+      [_INTL("Lv{1}",$game_system.level_cap), 468, 70, 1, baseColor, shadowColor],
        [_INTL("Health"),40,103,0,baseColor,shadowColor],
        [_INTL(trainerhealth),302,103,1,healthColor,shadowColor],
        [_INTL("{1}%",$player.playerhealth.to_s_formatted),190,103,1,healthColor,shadowColor],

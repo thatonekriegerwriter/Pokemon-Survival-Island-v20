@@ -4417,32 +4417,6 @@ Adventure,1
     1,MAMOSWINE,7,12
 #-------------------------------
 [098] # Ice Temple
-Cave,5
-    20,NOIBAT,3,5
-    20,SWINUB,4
-    10,NOIVERN,2
-    10,PILOSWINE,2,5
-    10,SANDYGAST,5
-    10,VANILLITE,2
-    5,JYNX,5
-    5,SWINUB,3
-    4,GLACEON,6
-    4,GLALIE,3
-    1,SMOOCHUM,10
-    1,SNORUNT,3,5
-OverworldCave,5
-    20,NOIBAT,3,5
-    20,SWINUB,4
-    10,NOIVERN,2
-    10,PILOSWINE,2,5
-    10,SANDYGAST,5
-    10,VANILLITE,2
-    5,JYNX,5
-    5,SWINUB,3
-    4,GLACEON,6
-    4,GLALIE,3
-    1,SMOOCHUM,10
-    1,SNORUNT,3,5
 Adventure,1
     20,DARUMAKA_1,5,10
     20,FROSLASS,5,15
@@ -4458,32 +4432,6 @@ Adventure,1
     1,MAMOSWINE,7,12
 #-------------------------------
 [099] # Ice Temple
-Cave,5
-    20,NOIBAT,3,5
-    20,SWINUB,4
-    10,NOIVERN,2
-    10,PILOSWINE,2,5
-    10,SANDYGAST,5
-    10,VANILLITE,2
-    5,JYNX,5
-    5,SWINUB,3
-    4,GLACEON,6
-    4,GLALIE,3
-    1,SMOOCHUM,10
-    1,SNORUNT,3,5
-OverworldCave,5
-    20,NOIBAT,3,5
-    20,SWINUB,4
-    10,NOIVERN,2
-    10,PILOSWINE,2,5
-    10,SANDYGAST,5
-    10,VANILLITE,2
-    5,JYNX,5
-    5,SWINUB,3
-    4,GLACEON,6
-    4,GLALIE,3
-    1,SMOOCHUM,10
-    1,SNORUNT,3,5
 Adventure,1
     20,DARUMAKA_1,5,10
     20,FROSLASS,5,15

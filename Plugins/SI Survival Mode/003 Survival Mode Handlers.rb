@@ -58,6 +58,15 @@
   }
 )
 
+
+  EventHandlers.add(:on_frame_update, :levelcap,
+  proc {
+    $game_system.level_cap = $game_variables[234]
+end
+  }
+)
+
+
   EventHandlers.add(:on_frame_update, :agestepspkmn,
   proc {
   if $PokemonSystem.survivalmode==0

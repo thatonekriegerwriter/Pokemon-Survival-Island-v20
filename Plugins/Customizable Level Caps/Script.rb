@@ -29,7 +29,7 @@ class Game_System
 end
 
 #Define all your levels caps in this array. Every time you run Level_Cap.update, it will move to the next level cap in the array.
-LEVEL_CAP = [22,33,40,47,59]
+LEVEL_CAP = [13,24,35,46,57,68]
 #LEVEL_CAP = [Temperate,Mountain,Ice,Water]
 
 

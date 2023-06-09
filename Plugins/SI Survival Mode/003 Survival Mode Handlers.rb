@@ -125,7 +125,7 @@ end
 	if $player.playerstamina > $player.playermaxstamina
 	   $player.playerstamina = $player.playermaxstamina
 	end
-	if ($player.playershoes == :RUNNINGSHOES || $player.playershoes == :MAKESHIFTRUNNINGSHOES) && $game_player.moving? && Input.press?(Input::BACK) && !$game_temp.in_menu
+	if ($player.playershoes == :RUNNINGSHOES || $player.playershoes == :MAKESHIFTRUNNINGSHOES) && $game_player.moving? && Input.press?(Input::BACK) && !$game_temp.in_menu && !$PokemonGlobal.partner
 	   $player.playerstamina-=4 if rand(30) == 1
 	else
 	  if !$game_player.moving? && (!Input.press?(Input::BACK) && (!Input.press?(Input::LEFT) || !Input.press?(Input::UP) || !Input.press?(Input::RIGHT) || !Input.press?(Input::DOWN))) && (oldsta == $player.playerstamina)

@@ -5798,10 +5798,9 @@ Description =
 [GLASS]
 Name = Glass
 NamePlural = Glass
-Pocket = 11
+Pocket = 1
 Price = 5
-FieldUse = Direct
-Flags = Tool
+Flags = 
 Description = 
 #-------------------------------
 [MASTERBALLPL]
@@ -7050,7 +7049,7 @@ Name = Meat
 NamePlural = Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [BIRDMEAT]
@@ -7058,7 +7057,7 @@ Name = Bird Meat
 NamePlural = Bird Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [POISONOUSMEAT]
@@ -7066,7 +7065,7 @@ Name = Poisonous Meat
 NamePlural = Poisonous Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [ROCKYMEAT]
@@ -7074,7 +7073,7 @@ Name = Rocky Meat
 NamePlural = Rocky Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [BUGMEAT]
@@ -7082,7 +7081,7 @@ Name = Bug Meat
 NamePlural = Bug Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [STEELYMEAT]
@@ -7090,7 +7089,7 @@ Name = Steely Meat
 NamePlural = Steely Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [SUSHI]
@@ -7098,7 +7097,7 @@ Name = Sushi
 NamePlural = Sushi
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [LEAFYMEAT]
@@ -7106,7 +7105,7 @@ Name = Leafy Meat
 NamePlural = Leafy Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [FROZENMEAT]
@@ -7114,7 +7113,7 @@ Name = Icey Rocks
 NamePlural = Icey Rocks
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [DRAGONMEAT]
@@ -7122,7 +7121,7 @@ Name = Dragon Meat
 NamePlural = Dragon Meat
 Pocket = 9
 Price = 5
-Flags = 
+Flags = FoodWater
 Description = 
 #-------------------------------
 [EDIABLESCRYSTAL]

@@ -160,14 +160,15 @@ class SurvivalHud < Component
     text2 =_INTL("H20")
     text3 =_INTL("SLP")
 	if $DEBUG
-    text4 =_INTL("#{sta}/#{maxsta}")
+    text4 =_INTL("#{ElectricityPower.globalPower}")
 	end
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
 	if $DEBUG
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,34,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,56,1,@sleepColor,@shadowColor],[text4,Graphics.width/2 - 8,78,1,@sleepColor,@shadowColor]])
-	else
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,34,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,56,1,@sleepColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 5,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,27,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,49,1,@sleepColor,@shadowColor],[text4,(Graphics.width/2)-70 - 8,49,1,@sleepColor,@shadowColor]])
+    else
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 5,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,27,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,49,1,@sleepColor,@shadowColor]])
+
 	end
   end
 end

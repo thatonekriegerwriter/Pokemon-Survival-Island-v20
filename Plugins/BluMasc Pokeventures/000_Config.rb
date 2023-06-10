@@ -10,11 +10,8 @@ module PokeventureConfig
   # Form of this list is [ItemID,chance]
   Items = [
     [:ORANBERRY,15], [:SITRUSBERRY,10], [:ACORN,5], [:STONE,5], [:HEARTSCALE,1],
-    [:IRONORE,3], [:POTATO,2], [:COPPERORE,3], [:GOLDORE,3], [:TEALEAF,3],
-    [:SILVERORE,2], [:COAL,5], [:WATER,5],
-	[:FIRESTONE,5],[:LEAFSTONE,5],[:THUNDERSTONE,5],
-	[:COCOABEAN,3], [:EXPCANDYS,1],[:REVIVALHERB,1], [:ENERGYROOT,3], [:MOOMOOMILK,1], [:LEMON,5],
-    [:GLASSBOTTLE,1], [:PEARL,1]
+    [:POTATO,2], [:TEALEAF,3],[:SILVERORE,1], [:COAL,5], [:WATER,5],[:FIRESTONE,5],[:LEAFSTONE,5],[:THUNDERSTONE,5],
+	[:COCOABEAN,3], [:EXPCANDYS,1],[:REVIVALHERB,1], [:ENERGYROOT,3], [:MOOMOOMILK,1], [:LEMON,5], [:PEARL,1]
   ]
   ChanceToGetEnemyItem = 100 # as a 1 in x chance
   # Friends

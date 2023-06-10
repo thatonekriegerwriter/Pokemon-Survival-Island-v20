@@ -3,6 +3,9 @@ class Pokemon
 
   def changeHappiness(method,wari=self)
     pkmn = wari
+	if pkmn.starter.nil?
+	 pkmn.starter = false
+	end
     return if pkmn.starter == true
     gain = 0
 	base = 0
@@ -1325,6 +1328,9 @@ else
     gain = 0
     bonus = 0
     pkmn = wari
+	if pkmn.starter.nil?
+	 pkmn.starter = false
+	end
     return if pkmn.starter == true
 	if @loyalty.nil?
 	@loyalty = 0

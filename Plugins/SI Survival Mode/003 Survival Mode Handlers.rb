@@ -5,7 +5,7 @@
   $PokemonGlobal.playerfoodSteps = 0 if !$PokemonGlobal.playerfoodSteps
   $PokemonGlobal.playerfoodSteps += 1
   if $PokemonGlobal.playerfoodSteps>=100
-    $player.playerfood -= 4 if rand(100) <= 50 && $player.playersaturation == 0
+    $player.playerfood -= 1 if rand(90) == 1 && $player.playersaturation == 0
     $PokemonGlobal.playerfoodSteps = 0
   end
   end
@@ -30,7 +30,7 @@
   $PokemonGlobal.playerwaterSteps = 0 if !$PokemonGlobal.playerwaterSteps
   $PokemonGlobal.playerwaterSteps += 1
   if $PokemonGlobal.playerwaterSteps>=100
-    $player.playerwater -= 4 if rand(256) <= 50 && $player.playersaturation == 0
+    $player.playerwater -= 1 if rand(90) == 1 && $player.playersaturation == 0
     $PokemonGlobal.playerwaterSteps = 0
   end
   end
@@ -51,7 +51,6 @@
    end
    if $player.playerhealth == 0
     pbStartOver
-	$player.playerhealth=999
    end 
 
   end
@@ -61,7 +60,29 @@
 
   EventHandlers.add(:on_frame_update, :levelcap,
   proc {
+  case $game_variables[234]
+   when 0
     $game_system.level_cap = $game_variables[234]
+   when 1
+    $game_system.level_cap = $game_variables[234]
+   when 2
+    $game_system.level_cap = $game_variables[234]
+   when 3
+    $game_system.level_cap = $game_variables[234]
+   when 4
+    $game_system.level_cap = $game_variables[234]-1
+   when 5
+    $game_system.level_cap = $game_variables[234]-1
+   when 6
+    $game_system.level_cap = $game_variables[234]-1
+   when 7
+    $game_system.level_cap = $game_variables[234]-1
+   when 8
+    $game_system.level_cap = $game_variables[234]-1
+   when 9
+    $game_system.level_cap = $game_variables[234]-1
+   when 10
+    $game_system.level_cap = $game_variables[234]-1
 end
   }
 )
@@ -124,7 +145,6 @@ end
 	if $player.playerstaminamod.nil?
 	$player.playerstaminamod = 0.0
 	end
-	$player.playermaxstamina += $player.playerstaminamod
 	if $player.playerstamina < 0 && Input.press?(Input::BACK) && $game_player.moving? && Input.press?(Input::BACK) && !$game_temp.in_menu
 	  $player.playerhealth-=1 if rand(30) == 1
 	end

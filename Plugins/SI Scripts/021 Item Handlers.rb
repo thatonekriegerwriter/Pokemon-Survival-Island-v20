@@ -117,8 +117,7 @@ ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
 
 ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
    if pbConfirmMessage(_INTL("Are you sure you want to use the Camp?"))
-  pbFadeOutIn {  
-    next 2
+  pbFadeOutIn {
      pbMessage(_INTL("You laid down in the Portable Camp, heading to sleep."))
      $game_variables[29] += 67200
      pbSleepRestore(10)}
@@ -133,6 +132,7 @@ ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
 				else
 			        pbMessage(_INTL("You really need to sleep."))
 				end 
+    next 2
    next true
    else
      pbMessage(_INTL("You decide against sleeping."))
@@ -230,9 +230,10 @@ ItemHandlers::UseInBattle.add(:FIREDART,proc { |item,battler,battle|
 
 ItemHandlers::UseInBattle.add(:MACHETE,proc { |item,battler,battle|
  itemname = GameData::Item.get(item).name
-  if battler
-       battle.pbReduceHP($player.playerstamina)
+  if battler.hp==1
+       battle.pbReduceHP(1)
 	   scene.pbDisplay(_INTL("You slashed at Enemy {1} with the {2}!",battler.name,itemname))
+	   pbCookMeat(false,battler)
 	   next false
   else
      battle.pbDisplay(_INTL("It won't have any effect."))
@@ -544,9 +545,14 @@ ItemHandlers::UseFromBag.add(:WATERBOTTLE,proc { |item|
 if $game_player.pbFacingTerrainTag.can_surf
      message=(_INTL("Want to pick up water?"))
     if pbConfirmMessage(message)
+      message=(_INTL("Do you want to use all your bottles?"))
+    if pbConfirmMessage(message)
+       $PokemonBag.pbStoreItem(:WATER,$bag.quantity(:WATERBOTTLE))
+	   $bag.remove(:WATERBOTTLE,($bag.quantity(:WATERBOTTLE)-1))
+	else
        $PokemonBag.pbStoreItem(:WATER,1)
 	end
-	$bag.remove(:WATERBOTTLE,1)
+	end
 	next 4
    else
     Kernel.pbMessage(_INTL("That is not water."))
@@ -558,9 +564,15 @@ ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
 if $game_player.pbFacingTerrainTag.can_surf
      message=(_INTL("Want to pick up water?"))
     if pbConfirmMessage(message)
+      message=(_INTL("Do you want to use all your bottles?"))
+    if pbConfirmMessage(message)
+       $PokemonBag.pbStoreItem(:WATER,$bag.quantity(:GLASSBOTTLE))
+	   $bag.remove(:GLASSBOTTLE,($bag.quantity(:GLASSBOTTLE)-1))
+	else
        $PokemonBag.pbStoreItem(:WATER,1)
 	end
-	$bag.remove(:GLASSBOTTLE,1)
+
+	end
 	next 4
    else
     Kernel.pbMessage(_INTL("That is not water."))

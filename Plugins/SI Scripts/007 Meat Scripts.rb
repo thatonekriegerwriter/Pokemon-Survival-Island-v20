@@ -8,8 +8,9 @@ def pbCookMeat(home=false,poke=nil)
 	   if !poke.nil?
 	   pkmn = poke
 	   end
+	   if $bag.add(GameData::Item.get(pkmn.poke_ball).id,1)
 	   puts pkmn.poke_ball
-	   $bag.add(GameData::Item.get(pkmn.poke_ball).id,1)
+	   end
 	   if pkmn== :MAGIKARP
 	    if home==true
 	    Kernel.pbMessage(_INTL("Wow, there is no meat on the Magikarp."))
@@ -52,7 +53,7 @@ def pbCookMeat(home=false,poke=nil)
 	   elsif pkmn.type1 == :PSYCHIC
 		$bag.add(:MEAT,(rand(3)+1))
 	   elsif pkmn.type1 == :ICE
-		$bag.add(:ICEYROCKS,(rand(3)+1))
+		$bag.add(:FROZENMEAT,(rand(3)+1))
 	   elsif pkmn.type1 == :DRAGON
 		$bag.add(:DRAGONMEAT,(rand(3)+1))
 	   elsif pkmn.type1 == :DARK
@@ -62,7 +63,7 @@ def pbCookMeat(home=false,poke=nil)
 	   elsif pkmn.type1 == :WIND
 		$bag.add(:MEAT,(rand(3)+1))
 	   else
-	    $bag.add(:MEAT,(rand(6)))
+	    $bag.add(:MEAT,(rand(6)+1))
 	   end
 	  end
 

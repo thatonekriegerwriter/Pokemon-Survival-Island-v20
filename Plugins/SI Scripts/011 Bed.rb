@@ -1,16 +1,15 @@
 def heal_BED(wari,pkmn)
-    chance = rand(8)
+    chance = rand(11)
   return if pkmn.egg?
   if wari >= 8
     pkmn.heal_HP
     pkmn.heal_status
-    pkmn.heal_PP
+    pkmn.heal_PP if chance <= 1
   else 
     newHP = pkmn.hp + ((pkmn.totalhp * wari)/8) 
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     pkmn.hp = newHP
     pkmn.heal_status if chance <= (wari-1)
-    pkmn.heal_PP if chance <= (wari-1)
   end
   @ready_to_evolve = false
 end

@@ -20,7 +20,7 @@
 if defined?(PluginManager) && !PluginManager.installed?("Upgradeable Maps")
   PluginManager.register({                                                 
     :name    => "Upgradeable Maps",                                        
-    :version => "1.1",                                                     
+    :version => "1.2",                                                     
     :link    => "https://www.pokecommunity.com/showthread.php?t=496862",             
     :credits => "FL"
   })
@@ -33,9 +33,13 @@ module UpgradeableMaps
       # Entry.new(map id, increment version map id, switch, x range, y range),
       # The below code line means Oak Lab will be copied into Daisy's House when 
       # switch 80 was ON.
-      Chunk.new(DAISY_HOUSE, OAK_LAB, 80, 0..1, 0..2),
-      # The below line means same thing, but using other coordinates
-      Chunk.new(DAISY_HOUSE, OAK_LAB, 80, 11..12, 0..2),
+ #     Chunk.new(DAISY_HOUSE, OAK_LAB, 80, 0..1, 0..2),
+      # The below code line means same thing, but using other coordinates
+#      Chunk.new(DAISY_HOUSE, OAK_LAB, 80, 11..12, 0..2),
+      # The below code line means same thing, but using different coordinates 
+      # for copy/paste maps (first is destiny, then source). I suggest this only 
+      # for more advanced users.
+ #     Chunk.new(DAISY_HOUSE, OAK_LAB, 80, 12...13, 7...9, 12...13, 11...13),
     ]
   end
 
@@ -49,22 +53,91 @@ module UpgradeableMaps
     attr_reader :to_copy_map_id
     attr_reader :switch_number
 
-    def initialize(to_paste_map_id,to_copy_map_id,switch_number,x_range,y_range)
+    # created for performance reasons
+    def to_paste_map_x_array
+      @to_paste_map_x_array ||= @to_paste_map_x_range.to_a
+      return @to_paste_map_x_array
+    end
+
+    def to_paste_map_y_array
+      @to_paste_map_y_array ||= @to_paste_map_y_range.to_a
+      return @to_paste_map_y_array
+    end
+
+    def to_copy_map_x_array
+      @to_copy_map_x_array ||= @to_copy_map_x_range.to_a
+      return @to_copy_map_x_array
+    end
+
+    def to_copy_map_y_array
+      @to_copy_map_y_array ||= @to_copy_map_y_range.to_a
+      return @to_copy_map_y_array
+    end
+
+    def initialize(
+      to_paste_map_id, to_copy_map_id, switch_number, 
+      to_paste_map_x_range, to_paste_map_y_range, 
+      to_copy_map_x_range=nil, to_copy_map_y_range=nil
+    )
       @to_paste_map_id = to_paste_map_id
       @to_copy_map_id = to_copy_map_id
       @switch_number = switch_number
-      @x_range = x_range
-      @y_range = y_range
+      @to_paste_map_x_range = to_paste_map_x_range
+      @to_paste_map_y_range = to_paste_map_y_range
+      @to_copy_map_x_range = to_copy_map_x_range || to_paste_map_x_range
+      @to_copy_map_y_range = to_copy_map_y_range || to_paste_map_y_range
+      validate_range
+    end
+
+    def validate_range
+      if (
+        @to_paste_map_x_range.size == @to_copy_map_x_range.size &&
+        @to_paste_map_y_range.size == @to_copy_map_y_range.size
+      )
+        return
+      end
+      raise ArgumentError.new(sprintf(
+        "Chunk for maps %d-%d should have %s ranges with same sizes.",
+        @to_paste_map_id, @to_copy_map_id, 
+        @to_paste_map_x_range.size == @to_copy_map_x_range.size ? "y" : "x"
+      ))
     end
 
     def add_tiles(to_paste_map, to_copy_map)
-      for x in @x_range
-        for y in @y_range
+      validate_maps(to_paste_map, to_copy_map)
+      for x_index in 0...to_paste_map_x_array.size
+        for y_index in 0...to_paste_map_y_array.size
           for l in [2, 1, 0]
-            to_paste_map.data[x,y,l] = to_copy_map.data[x,y,l] 
+            to_paste_x = to_paste_map_x_array[x_index]
+            to_paste_y = to_paste_map_y_array[y_index]
+            to_copy_x = to_copy_map_x_array[x_index]
+            to_copy_y = to_copy_map_y_array[y_index]
+            to_paste_map.data[to_paste_x, to_paste_y, l] = (
+              to_copy_map.data[to_copy_x, to_copy_y, l]
+            )
           end
         end
       end
+    end
+
+    def validate_maps(to_paste_map, to_copy_map)
+      validate_map_size(
+        to_paste_map,to_paste_map_id,to_paste_map_x_array,to_paste_map_y_array
+      ) 
+      validate_map_size(
+        to_copy_map,to_copy_map_id,to_copy_map_x_array,to_copy_map_y_array
+      ) 
+    end
+
+    def validate_map_size(map, map_id, x_array, y_array)
+      raise ArgumentError.new(sprintf(
+        "Map %d has width %d, but chunk range is out of bounds (%d).",
+        map_id, map.width, x_array[-1]
+      )) if map.width <= x_array[-1]
+      raise ArgumentError.new(sprintf(
+        "Map %d has height %d, but chunk range is out of bounds (%d).",
+        map_id, map.height, y_array[-1]
+      )) if map.height <= y_array[-1]
     end
   end
 

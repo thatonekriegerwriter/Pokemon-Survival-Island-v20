@@ -88,6 +88,12 @@ class BerryPlantData
     end
   end
 
+  def penaltymod(amt)
+  @yield_penalty -= amt
+  if @yield_penalty<0
+    @yield_penalty=0
+  end
+  end
   def berry_yield
     data = GameData::BerryPlant.get(@berry_id)
     if @new_mechanics
@@ -107,8 +113,6 @@ class BerryPlantData
   # Old mechanics only update a plant when its map is loaded. New mechanics
   # update it every frame while its map is loaded.
   def update
-    maps = [148,149,155,150,151,152,147,153,154]
-	switches = [466,467,468,469,470,471,472.473,474]
     return if !planted?
     time_now = pbGetTimeNow
     time_delta = time_now.to_i - @time_last_updated
@@ -221,7 +225,7 @@ end
       old_growth_stage = 0 if done_replant
       new_growth_stage = [@growth_stage, stages_growing + 1].min
       @watered_this_stage = false if new_growth_stage > old_growth_stage
-	   water(100) if ($game_screen && GameData::Weather.get($game_screen.weather_type).category == :Rain) || ($game_map.map_id == maps[0] && $game_switches[switches[0]] == true) || ($game_map.map_id == maps[1] && $game_switches[switches[1]] == true) || ($game_map.map_id == maps[2] && $game_switches[switches[2]] == true) || ($game_map.map_id == maps[3] && $game_switches[switches[3]] == true) || ($game_map.map_id == maps[4] && $game_switches[switches[4]] == true) || ($game_map.map_id == maps[5] && $game_switches[switches[5]] == true) || ($game_map.map_id == maps[6] && $game_switches[switches[6]] == true) || ($game_map.map_id == maps[7] && $game_switches[switches[7]] == true) || ($game_map.map_id == maps[8] && $game_switches[switches[8]] == true)
+	   water(100) if ($game_screen && GameData::Weather.get($game_screen.weather_type).category == :Rain)
     end
   end
 end

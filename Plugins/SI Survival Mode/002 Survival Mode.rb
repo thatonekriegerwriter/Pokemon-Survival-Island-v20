@@ -159,10 +159,13 @@ def pbSleepRestore(wari,vari=nil)
 #       Stamina   #
   $player.playerstamina = $player.playermaxstamina
 #       Sleep     #
-  if vari.nil?
-  $player.playersleep = $player.playersleep.to_i+(wari*9)
-  else
+puts vari
+  if !vari.nil?
   $player.playersleep = $player.playersleep.to_i-(wari*9)
+  puts "fuck shit oh bother"
+  else
+  $player.playersleep = $player.playersleep.to_i+(wari*9)
+  puts "fuck shit"
   end
   if $player.playersleep > 200
   $player.playersleep = 200  
@@ -295,7 +298,7 @@ return true
 when :FRESHWATER
 pkmn.water+=100
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 when :ATKCURRY
 pkmn.food+=80
@@ -331,13 +334,13 @@ when :SODAPOP
 pkmn.water-=100
 return true
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 when :LEMONADE
 pkmn.water+=100
 return true
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 when :HONEY
 pkmn.water+=20
@@ -346,7 +349,7 @@ return true
 when :MOOMOOMILK
 pkmn.water+=100
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 when :CSLOWPOKETAIL
 pkmn.food+=100
@@ -415,7 +418,7 @@ return true
 when :SITRUSJUICE
 pkmn.water+=100
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 when :BERRYMASH
 pkmn.water+=50
@@ -449,284 +452,283 @@ item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodw
 }
  end
 if $bag.remove(item,1)
-if item == :ORANBERRY
+case item
+when :WATER
+$player.playerwater+=10
+$player.playerhealth -= 7
+$bag.add(:GLASSBOTTLE,1)
+return true
+when :MEAT
+$player.playerfood+=15
+$player.playerhealth -= 7
+return true
+when :BIRDMEAT
+$player.playerfood+=10
+$player.playerhealth -= 7
+return true
+when :POISONOUSMEAT
+$player.playerfood+=10
+$player.playerhealth -= 25
+return true
+when :ROCKYMEAT
+$player.playerfood+=10
+$player.playerhealth -= 10
+return true
+when :BUGMEAT
+$player.playerfood+=2
+$player.playerhealth -= 2
+return true
+when :STEELYMEAT
+$player.playerfood+=3
+$player.playerhealth -= 10
+return true
+when :SUSHI
+$player.playerfood+=15
+$player.playerhealth -= 6
+return true
+when :LEAFYMEAT
+$player.playerfood+=10
+$player.playerhealth -= 6
+return true
+when :FROZENMEAT
+$player.playerfood+=6
+$player.playerhealth -= 15
+return true
+when :DRAGONMEAT
+$player.playerfood+=20
+$player.playerhealth -= 15
+return true
+when :EDIABLESCRYSTAL
+$player.playerfood+=6
+$player.playerhealth -= 15
+return true
+when :ORANBERRY
 $player.playerfood+=1
 $player.playerhealth += 1
 return true
-elsif item == :LEPPABERRY
+when :LEPPABERRY
 $player.playerfood+=1
 return true
-elsif item == :CHERIBERRY
-
+when :CHERIBERRY
 $player.playerfood+=1
 return true
-elsif item == :CHESTOBERRY
-
+when :CHESTOBERRY
 $player.playerfood+=1
 return true
-elsif item == :PECHABERRY
-
+when :PECHABERRY
 $player.playerfood+=1
 return true
-elsif item == :RAWSTBERRY
-
+when :RAWSTBERRY
 $player.playerfood+=1
 return true
-elsif item == :ASPEARBERRY
-
+when :ASPEARBERRY
 $player.playerfood+=1
 return true
-elsif item == :PERSIMBERRY
-
+when :PERSIMBERRY
 $player.playerfood+=1
 return true
-elsif item == :LUMBERRY
-
+when :LUMBERRY
 $player.playerfood+=1
 return true
-elsif item == :FIGYBERRY
-
+when :FIGYBERRY
 $player.playerfood+=1
 return true
-elsif item == :WIKIBERRY
-
+when :WIKIBERRY
 $player.playerfood+=1
 return true
-elsif item == :MAGOBERRY
-
+when :MAGOBERRY
 $player.playerfood+=1
 return true
-elsif item == :AGUAVBERRY
-
+when :AGUAVBERRY
 $player.playerfood+=1
 return true
-elsif item == :IAPAPABERRY
-
+when :IAPAPABERRY
 $player.playerfood+=1
 return true
-elsif item == :IAPAPABERRY
-
+when :IAPAPABERRY
 $player.playerfood+=1
 return true
-elsif item == :SITRUSBERRY
-
+when :SITRUSBERRY
 $player.playerfood+=1
-$player.playerhealth += ($player.playerhealth/4)
+$player.playerhealth +=1
 return true
-elsif item == :BERRYJUICE
-
-$player.playerwater+=10
-$player.playerhealth += 5
+when :BERRYJUICE
+$player.playerwater+=4
+$player.playerhealth += 2
+$bag.add(:BOWL,1)
 return true
-elsif item == :FRESHWATER
-
+when :FRESHWATER
 $player.playerwater+=20
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
+
 return true
 #You can add more if you want
-elsif item == :ATKCURRY
-
+when :ATKCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :SATKCURRY
-
+when :SATKCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :SPEEDCURRY
-
+when :SPEEDCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :SPDEFCURRY
-
+when :SPDEFCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :ACCCURRY
-
+when :ACCCURRY
 $player.playerfood+=8
 $player.playersaturation+=12
 $player.playerwater-=7
 return true
-elsif item == :DEFCURRY
-
+when :DEFCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :CRITCURRY
-
+when :CRITCURRY
 $player.playerfood+=8
 $player.playersaturation+=15
 $player.playerwater-=7
 return true
-elsif item == :GSCURRY
-
+when :GSCURRY
 $player.playerfood+=8#205 is Hunger
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater-=7#206 is Thirst
 return true
-elsif item == :RAGECANDYBAR #chocolate
-
+when :RAGECANDYBAR #chocolate
 $player.playerfood+=10
 $player.playersaturation+=3
 $player.playersleep+=7
 return true
-elsif item == :SWEETHEART #chocolate
-
+when :SWEETHEART #chocolate
 $player.playerfood+=10#205 is Hunger
 $player.playersaturation+=5#207 is Saturation
 $player.playersleep+=6#208 is Sleep
 return true
-elsif item == :SODAPOP
-
+when :SODAPOP
 $player.playerwater-=11#206 is Thirst
 $player.playersaturation+=30#207 is Saturation
 $player.playersleep+=25#208 is Sleep
 return true
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
-elsif item == :LEMONADE
-
+when :LEMONADE
 $player.playersaturation+=11#207 is Saturation
 $player.playerwater+=10#206 is Thirst
 $player.playersleep+=7#208 is Sleep
 return true
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return true
-elsif item == :HONEY
 
+return true
+when :HONEY
 $player.playersaturation+=20#207 is Saturation
 return true
-elsif item == :MOOMOOMILK
-
+when :MOOMOOMILK
 $player.playersaturation+=10
 $player.playerwater+=15
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
 return true
-elsif item == :CSLOWPOKETAIL
-
+when :CSLOWPOKETAIL
 $player.playersaturation+=20#207 is Saturation
 $player.playerfood+=20#205 is Hunger
 return true
-elsif item == :BAKEDPOTATO
-
+when :BAKEDPOTATO
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=4#206 is Thirst
 $player.playerfood+=7#205 is Hunger
 return true
-elsif item == :APPLE
-
+when :APPLE
 $player.playerwater+=1#206 is Thirst
 $player.playerfood+=1#205 is Hunger
 return true
-elsif item == :CHOCOLATE
-
+when :CHOCOLATE
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=7#205 is Hunger
 return true
-elsif item == :LEMON
-
+when :LEMON
 $player.playerfood+=1#205 is Hunger
 return true
-elsif item == :OLDGATEAU
-
+when :OLDGATEAU
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return true
-elsif item == :LAVACOOKIE
-
+when :LAVACOOKIE
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater-=3#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return true
-elsif item == :CASTELIACONE
-
+when :CASTELIACONE
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=7#205 is Hunger
 return true
-elsif item == :LUMIOSEGALETTE
-
+when :LUMIOSEGALETTE
 $player.playersaturation+=5#207 is Saturation
 $player.playerfood+=6#205 is Hunger
 return true
-elsif item == :SHALOURSABLE
-
+when :SHALOURSABLE
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
 return true
-elsif item == :BIGMALASADA
-
+when :BIGMALASADA
 $player.playersaturation+=8#207 is Saturation
 $player.playerfood+=8#205 is Hunger
 return true
-elsif item == :ONION
-
+when :ONION
 $player.playerwater+=1#206 is Thirst
 $player.playerfood+=1#205 is Hunger
 return true
-elsif item == :COOKEDORAN
-
+when :COOKEDORAN
 $player.playersaturation+=2#207 is Saturation
 $player.playerhealth+=2#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return true
-elsif item == :CARROT
-
+when :CARROT
 $player.playersaturation+=6#207 is Saturation
 $player.playerwater+=1#206 is Thirst
 $player.playerfood+=1#205 is Hunger
 return true
-elsif item == :BREAD
-
+when :BREAD
 $player.playersaturation+=10#207 is Saturation
 $player.playerwater+=7#206 is Thirst
 $player.playerfood+=11#205 is Hunger
 return true
-elsif item == :TEA
-
+when :TEA
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=8#206 is Thirst
 $player.playerfood+=2#205 is Hunger
 return true
-elsif item == :CARROTCAKE
-
+when :CARROTCAKE
 $player.playersaturation+=15#207 is Saturation
 $player.playerwater+=15#206 is Thirst
 $player.playerfood+=10#205 is Hunger
 return true
-elsif item == :COOKEDMEAT
-
+when :COOKEDMEAT
 $player.playersaturation+=40#207 is Saturation
 $player.playerfood+=10#205 is Hunger
 return true
-elsif item == :SITRUSJUICE
-
+when :SITRUSJUICE
 $player.playersaturation+=20#207 is Saturation
 $player.playerwater+=6#206 is Thirst
 $player.playerfood+=0#205 is Hunger
 $player.playerhealth+= 25#205 is Hunger
 $bag.add(:GLASSBOTTLE,1)
-Kernel.pbMessage(_INTL("You put the bottle in your Bag."))
-return true
-elsif item == :BERRYMASH
 
+return true
+when :BERRYMASH
 $player.playersaturation+=5#207 is Saturation
 $player.playerwater+=5#206 is Thirst
 $player.playerfood+=5#205 is Hunger
 return true
-elsif item == :LARGEMEAL
+when :LARGEMEAL
 pbMessage(_INTL("You feasted on the {1}.",GameData::Item.get(item).name))
 $player.playersaturation+=50#207 is Saturation
 $player.playerwater+=50#206 is Thirst

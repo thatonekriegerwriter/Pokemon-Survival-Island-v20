@@ -177,8 +177,8 @@ module Battle::CatchAndStoreMixin
           }
         when 3   # Check party
          if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
-          pbCookMeat(home=false,pkmn)
-          break
+          pbCookMeat(false,pkmn)
+          return
           else
           @scene.pbPartyScreen(0, true, 2)
           end

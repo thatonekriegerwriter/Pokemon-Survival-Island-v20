@@ -88,8 +88,10 @@ end
 		father = poke
 		mother = pkmn
 		end
-		egg = EggGenerator.generate(mother, father)
+		egg = generate(mother, father)
+		if !party_full?
 		party[party.length] = egg
+		end
 		end
 		elsif chances<=1 #TEAM ROCKET GRUNT
 		elsif chances<=1 #TRADING
@@ -107,7 +109,6 @@ end
              $player.party[$player.party.length] = pkmn
 			 remove_pokemon_at_index(index)
 		elsif chances2<=76 && GameData::MapMetadata.get($game_map.map_id).outdoor_map  #YOU ENCOUNTERED YOUR POKEMON
-			pbMessage(_INTL("Oh! You encountered {1}! Hello {1}!", pkmn.name))
 			pkmn.loyalty+=10
 			pkmn.happiness+=45
 		elsif chances2<=10  #UHH
@@ -449,6 +450,250 @@ end
 		party[party.length] = pkmn
 		return true
 	end
+	
+	
+	
+	
+    def generate(mother, father)
+      # Determine which Pokémon is the mother and which is the father
+      # Ensure mother is female, if the pair contains a female
+      # Ensure father is male, if the pair contains a male
+      # Ensure father is genderless, if the pair is a genderless with Ditto
+      if mother.male? || father.female? || mother.genderless?
+        mother, father = father, mother
+      end
+      mother_data = [mother, mother.species_data.egg_groups.include?(:Ditto)]
+      father_data = [father, father.species_data.egg_groups.include?(:Ditto)]
+      # Determine which parent the egg's species is based from
+      species_parent = (mother_data[1]) ? father : mother
+      # Determine the egg's species
+      baby_species = determine_egg_species(species_parent.species, mother, father)
+      mother_data.push(mother.species_data.breeding_can_produce?(baby_species))
+      father_data.push(father.species_data.breeding_can_produce?(baby_species))
+      # Generate egg
+      egg = generate_basic_egg(baby_species)
+      # Inherit properties from parent(s)
+      egg.family = PokemonFamily.new(egg, father, mother)
+      inherit_form(egg, species_parent, mother_data, father_data)
+      inherit_nature(egg, mother, father)
+      inherit_ability(egg, mother_data, father_data)
+      inherit_moves(egg, mother_data, father_data)
+      inherit_IVs(egg, mother, father)
+      inherit_poke_ball(egg, mother_data, father_data)
+      egg.age = 1
+      egg.lifespan = 50
+      egg.water = 100
+      egg.food = 100
+      # Calculate other properties of the egg
+      set_shininess(egg, mother, father)   # Masuda method and Shiny Charm
+      set_pokerus(egg)
+      # Recalculate egg's stats
+      egg.calc_stats
+      return egg
+    end
+
+    def determine_egg_species(parent_species, mother, father)
+      ret = GameData::Species.get(parent_species).get_baby_species(true, mother.item_id, father.item_id)
+      # Check for alternate offspring (i.e. Nidoran M/F, Volbeat/Illumise, Manaphy/Phione)
+      offspring = GameData::Species.get(ret).offspring
+      ret = offspring.sample if offspring.length > 0
+      return ret
+    end
+
+    def generate_basic_egg(species)
+      egg = Pokemon.new(species, Settings::EGG_LEVEL)
+      egg.name           = _INTL("Egg")
+      egg.steps_to_hatch = egg.species_data.hatch_steps
+      egg.obtain_text    = _INTL("Day-Care Couple")
+      egg.happiness      = 120
+      egg.form           = 0 if species == :SINISTEA
+      # Set regional form
+      new_form = MultipleForms.call("getFormOnEggCreation", egg)
+      egg.form = new_form if new_form
+      return egg
+    end
+
+    def inherit_form(egg, species_parent, mother, father)
+      # mother = [mother, mother_ditto, mother_in_family]
+      # father = [father, father_ditto, father_in_family]
+      # Inherit form from the parent that determined the egg's species
+      if species_parent.species_data.has_flag?("InheritFormFromMother")
+        egg.form = species_parent.form
+      end
+      # Inherit form from a parent holding an Ever Stone
+      [mother, father].each do |parent|
+        next if !parent[2]   # Parent isn't a related species to the egg
+        next if !parent[0].species_data.has_flag?("InheritFormWithEverStone")
+        next if !parent[0].hasItem?(:EVERSTONE)
+        egg.form = parent[0].form
+        break
+      end
+    end
+
+    def get_moves_to_inherit(egg, mother, father)
+      # mother = [mother, mother_ditto, mother_in_family]
+      # father = [father, father_ditto, father_in_family]
+      move_father = (father[1]) ? mother[0] : father[0]
+      move_mother = (father[1]) ? father[0] : mother[0]
+      moves = []
+      # Get level-up moves known by both parents
+      egg.getMoveList.each do |move|
+        next if move[0] <= egg.level   # Could already know this move by default
+        next if !mother[0].hasMove?(move[1]) || !father[0].hasMove?(move[1])
+        moves.push(move[1])
+      end
+      # Inherit Machine moves from father (or non-Ditto genderless parent)
+      if Settings::BREEDING_CAN_INHERIT_MACHINE_MOVES && !move_father.female?
+        GameData::Item.each do |i|
+          move = i.move
+          next if !move
+          next if !move_father.hasMove?(move) || !egg.compatible_with_move?(move)
+          moves.push(move)
+        end
+      end
+      # Inherit egg moves from each parent
+      if !move_father.female?
+        egg.species_data.egg_moves.each do |move|
+          moves.push(move) if move_father.hasMove?(move)
+        end
+      end
+      if Settings::BREEDING_CAN_INHERIT_EGG_MOVES_FROM_MOTHER && move_mother.female?
+        egg.species_data.egg_moves.each do |move|
+          moves.push(move) if move_mother.hasMove?(move)
+        end
+      end
+      # Learn Volt Tackle if a parent has a Light Ball and is in the Pichu family
+      if egg.species == :PICHU && GameData::Move.exists?(:VOLTTACKLE) &&
+         ((father[2] && father[0].hasItem?(:LIGHTBALL)) ||
+          (mother[2] && mother[0].hasItem?(:LIGHTBALL)))
+        moves.push(:VOLTTACKLE)
+      end
+      return moves
+    end
+
+    def inherit_moves(egg, mother, father)
+      moves = get_moves_to_inherit(egg, mother, father)
+      # Remove duplicates (keeping the latest ones)
+      moves = moves.reverse
+      moves |= []   # remove duplicates
+      moves = moves.reverse
+      # Learn moves
+      first_move_index = moves.length - Pokemon::MAX_MOVES
+      first_move_index = 0 if first_move_index < 0
+      (first_move_index...moves.length).each { |i| egg.learn_move(moves[i]) }
+    end
+
+    def inherit_nature(egg, mother, father)
+      new_natures = []
+      new_natures.push(mother.nature) if mother.hasItem?(:EVERSTONE)
+      new_natures.push(father.nature) if father.hasItem?(:EVERSTONE)
+      return if new_natures.empty?
+      egg.nature = new_natures.sample
+    end
+
+    # If a Pokémon is bred with a Ditto, that Pokémon can pass down its Hidden
+    # Ability (60% chance). If neither Pokémon are Ditto, then the mother can
+    # pass down its ability (60% chance if Hidden, 80% chance if not).
+    # NOTE: This is how ability inheritance works in Gen 6+. Gen 5 is more
+    #       restrictive, and even works differently between BW and B2W2, and I
+    #       don't think that is worth adding in. Gen 4 and lower don't have
+    #       ability inheritance at all, and again, I'm not bothering to add that
+    #       in.
+    def inherit_ability(egg, mother, father)
+      # mother = [mother, mother_ditto, mother_in_family]
+      # father = [father, father_ditto, father_in_family]
+      parent = (mother[1]) ? father[0] : mother[0]   # The female or non-Ditto parent
+      if parent.hasHiddenAbility?
+        egg.ability_index = parent.ability_index if rand(100) < 60
+      elsif !mother[1] && !father[1]   # If neither parent is a Ditto
+        if rand(100) < 80
+          egg.ability_index = mother[0].ability_index
+        else
+          egg.ability_index = (mother[0].ability_index + 1) % 2
+        end
+      end
+    end
+
+    def inherit_IVs(egg, mother, father)
+      # Get all stats
+      stats = []
+      GameData::Stat.each_main { |s| stats.push(s) }
+      # Get the number of stats to inherit
+      inherit_count = 3
+      if Settings::MECHANICS_GENERATION >= 6
+        inherit_count = 5 if mother.hasItem?(:DESTINYKNOT) || father.hasItem?(:DESTINYKNOT)
+      end
+      # Inherit IV because of Power items (if both parents have a Power item,
+      # then only a random one of them is inherited)
+      power_items = [
+        [:POWERWEIGHT, :HP],
+        [:POWERBRACER, :ATTACK],
+        [:POWERBELT,   :DEFENSE],
+        [:POWERLENS,   :SPECIAL_ATTACK],
+        [:POWERBAND,   :SPECIAL_DEFENSE],
+        [:POWERANKLET, :SPEED]
+      ]
+      power_stats = []
+      [mother, father].each do |parent|
+        power_items.each do |item|
+          next if !parent.hasItem?(item[0])
+          power_stats.push(item[1], parent.iv[item[1]])
+          break
+        end
+      end
+      if power_stats.length > 0
+        power_stat = power_stats.sample
+        egg.iv[power_stat[0]] = power_stat[1]
+        stats.delete(power_stat[0])   # Don't try to inherit this stat's IV again
+        inherit_count -= 1
+      end
+      # Inherit the rest of the IVs
+      chosen_stats = stats.sample(inherit_count)
+      chosen_stats.each { |stat| egg.iv[stat] = [mother, father].sample.iv[stat] }
+    end
+
+    # Poké Balls can only be inherited from parents that are related to the
+    # egg's species.
+    # NOTE: This is how Poké Ball inheritance works in Gen 7+. Gens 5 and lower
+    #       don't have Poké Ball inheritance at all. In Gen 6, only a female
+    #       parent can pass down its Poké Ball. I don't think it's worth adding
+    #       in these variations on the mechanic.
+    # NOTE: The official games treat Nidoran M/F and Volbeat/Illumise as
+    #       unrelated for the purpose of this mechanic. Essentials treats them
+    #       as related and allows them to pass down their Poké Balls.
+    def inherit_poke_ball(egg, mother, father)
+      # mother = [mother, mother_ditto, mother_in_family]
+      # father = [father, father_ditto, father_in_family]
+      balls = []
+      [mother, father].each do |parent|
+        balls.push(parent[0].poke_ball) if parent[2]
+      end
+      balls.delete(:MASTERBALL)    # Can't inherit this Ball
+      balls.delete(:CHERISHBALL)   # Can't inherit this Ball
+      egg.poke_ball = balls.sample if !balls.empty?
+    end
+
+    # NOTE: There is a bug in Gen 8 that skips the original generation of an
+    #       egg's personal ID if the Masuda Method/Shiny Charm can cause any
+    #       rerolls. Essentials doesn't have this bug, meaning eggs are slightly
+    #       more likely to be shiny (in Gen 8+ mechanics) than in Gen 8 itself.
+    def set_shininess(egg, mother, father)
+      shiny_retries = 0
+      if father.owner.language != mother.owner.language
+        shiny_retries += (Settings::MECHANICS_GENERATION >= 8) ? 6 : 5
+      end
+      shiny_retries += 2 if $bag.has?(:SHINYCHARM)
+      return if shiny_retries == 0
+      shiny_retries.times do
+        break if egg.shiny?
+        egg.shiny = nil   # Make it recalculate shininess
+        egg.personalID = rand(2**16) | (rand(2**16) << 16)
+      end
+    end
+
+    def set_pokerus(egg)
+      egg.givePokerus if rand(65_536) < Settings::POKERUS_CHANCE
+    end
 end
 
 def giveAdventureItemList(itemlist)
@@ -485,3 +730,4 @@ def giveAdventureItemList(itemlist)
     list.delete(item)
   end
 end
+

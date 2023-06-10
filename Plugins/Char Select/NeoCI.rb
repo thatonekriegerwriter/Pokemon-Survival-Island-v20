@@ -258,24 +258,24 @@ def getPlayerCharacterforPartner
    when 0
      case $player.trainer_type 
          when "POKEMONTRAINER_Red" 
-		     $game_variables[VARIABLE8] == 1
+		     $game_variables[VARIABLE8] = 1
          when "POKEMONTRAINER_Brendan" 
-		     $game_variables[VARIABLE8] == 3 #May
+		     $game_variables[VARIABLE8] = 3 #May
          when "POKEMONTRAINER_Hiro" 
-		     $game_variables[VARIABLE8] == 5 #Kris
+		     $game_variables[VARIABLE8] = 5 #Kris
          when "POKEMONTRAINER_Lucas" 
-		     $game_variables[VARIABLE8] == 7 #Dawn
+		     $game_variables[VARIABLE8] = 7 #Dawn
 	 end 
    when 1
      case $player.trainer_type 
          when "POKEMONTRAINER_Leaf" 
-		     $game_variables[VARIABLE8] == 2 #Red
+		     $game_variables[VARIABLE8] = 2 #Red
          when "POKEMONTRAINER_May" 
-		     $game_variables[VARIABLE8] == 4 #Brenden
+		     $game_variables[VARIABLE8] = 4 #Brenden
          when "POKEMONTRAINER_Kris" 
-		     $game_variables[VARIABLE8] == 6 #Hiro
+		     $game_variables[VARIABLE8] = 6 #Hiro
          when "POKEMONTRAINER_Dawn" 
-		     $game_variables[VARIABLE8] == 8 #Lucas
+		     $game_variables[VARIABLE8] = 8 #Lucas
 	 end 
 end   
 

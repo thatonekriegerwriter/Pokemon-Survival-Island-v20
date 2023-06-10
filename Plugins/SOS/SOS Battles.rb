@@ -212,11 +212,10 @@
 	
 	def pbAttackPlayer(caller)
       cspecies=caller.species
-      rate=5
+      rate=10
       return if rate==0 # should never trigger anyways but you never know.
 	  return if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       pbDisplay(_INTL("{1} lunged at {2} for an attack!", caller.pbThis,pbPlayer.name))
-      rate*=2 # base rate
       rate=rate.to_f # don't want to lose decimal points
       intimidate=false
       caller.eachOpposing{ |b|
@@ -234,8 +233,8 @@
       if !@lastturnanswered
         rate*=3.0
       end
-      rate*=3 if $player.playerstamina < 50 && $player.playerstamina > 25
-      rate*=4 if $player.playerstamina < 25
+      rate*=3.0 if $player.playerstamina < 50 && $player.playerstamina > 25
+      rate*=4.0 if $player.playerstamina < 25
 
       rate=rate.round # rounding it off.
   

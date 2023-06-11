@@ -1,6 +1,9 @@
+
+			  #puts @text[0][0]   Book 1 Title
+			  #puts @text[1][0][0] Book 1 Chapter 1 title
+
 module AdventureGuide
 	class Show
-
 		def show
 			# Store value
 			store_text
@@ -21,6 +24,8 @@ module AdventureGuide
 
 		def store_text
 			description = []
+			@description = []
+			@text = []
 			3.times {
 				@text << []
 				@description << []
@@ -30,16 +35,21 @@ module AdventureGuide
 			}
 			i = 0
 			@list.each { |list|
+			   if list[:enabled] == true
 				@text[0] << list[:name]
+				description[0] << list[:description]
 				description[0] << list[:description]
 				@text[1] << []
 				description[2] << []
 				@description[2] << []
 				list[:sub].each { |sublist|
+			       if sublist[:enabled] == true
 					@text[1][i] << sublist[:name]
 					description[2][i] << sublist[:description]
+					end
 				}
 				i += 1
+			   end
 			}
 			@text[0] << "Exit"
 			@text[1].each { |i| i << "Return" } 
@@ -150,6 +160,7 @@ module AdventureGuide
 		end
 		
 		def update_text
+			store_text
 			draw_title
 			draw_text
 			draw_description
@@ -308,6 +319,14 @@ module AdventureGuide
 			# Input
 			if checkInput(Input::BACK)
 				@page == 0 ? (@exit = true) : (@page -= 1)
+				puts @potato
+				if @potato==true
+				puts @potato
+				unlockBookChapter
+				update_text
+				@potato=false
+				end
+				update_text
 				reset_position
 			elsif checkInput(Input::USE)
 				case @page
@@ -328,16 +347,34 @@ module AdventureGuide
 					limit = @description[@page][@position[@page-2]][@position[@page-1]].size
 					if limit < limit_text_3
 						@position[@page] = 0
+			         	@potato=true
 					else
 						limit -= limit_text_3
 						@position[@page] = limit if @position[@page] > limit
+						if @position[@page] >= limit
+			         	@potato=true
+						end
 					end
 					return
 				end
 				@position[@page]  = 0 if @position[@page] >= size
 			end
 		end
-
+        def unlockBookChapter
+		  if AdventureGuide.r_list[@position[0]][:sub][@position[1]] == AdventureGuide.r_list[0][:sub][1]
+		  AdventureGuide.r_list[1][:enabled]=true
+		  AdventureGuide.r_list[1][:sub][0][:enabled]=true
+		  elsif AdventureGuide.r_list[@position[0]][:sub][@position[1]] == AdventureGuide.r_list[0][:sub][5]
+		  AdventureGuide.r_list[2][:enabled]=true
+		  AdventureGuide.r_list[2][:sub][0][:enabled]=true
+		  elsif AdventureGuide.r_list[@position[0]][:sub][@position[1]] == AdventureGuide.r_list[0][:sub][0]
+		  AdventureGuide.r_list[3][:enabled]=true
+		  AdventureGuide.r_list[3][:sub][0][:enabled]=true
+		  end
+          if !AdventureGuide.r_list[@position[0]][:sub][(@position[1])+1].nil?
+		  AdventureGuide.r_list[@position[0]][:sub][(@position[1])+1][:enabled]=true
+		  end
+		end
 		def reset_position
 			case @page
 			when 0

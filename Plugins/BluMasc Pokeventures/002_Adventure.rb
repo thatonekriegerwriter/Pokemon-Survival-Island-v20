@@ -1,17 +1,59 @@
+class Pokemon
+  attr_accessor :onAdventure #Pokemons Current Map ID
+  attr_accessor :location #Pokemons Current Map ID
+  attr_accessor :collectedItems #The Items the Pokemon has picked up.
+  attr_accessor :encounterLog #An array that logs what the POKeMON has done while adventuring.
+  attr_accessor :adventuringTypes #A list of learned types and focuses for how a POKeMON adventures.
+  attr_accessor :chosenAdvType #The chosen type in adventuringTypes
+  attr_accessor :travelswithEgg #has an egg with it.
+  attr_accessor :travelswithOther #has another with it.
+  attr_accessor :inDungeon #has another with it.
+  attr_accessor :advSteps #has another with it.
+
+  alias :initold :initialize
+  def initialize(*args)
+    initold(*args)
+    @onAdventure  = nil
+    @location      = nil
+    @collectedItems      = []
+    @encounterLog      = []
+    @adventuringTypes      = ["None"]
+    @chosenAdvType      = nil
+    @travelswithEgg      = nil
+    @travelswithOther      = nil
+    @inDungeon      = false
+    @advSteps      = 0
+  end
+end
 class Adventure 
 	attr_accessor :party
+	attr_accessor :adventurerTypes
 	attr_accessor :items
-	
+	  
 	def initialize
 		@items		= []
 		@party      = []
+		@iq      = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider","Exp. Elite","Coin Watcher","Sleeper","Parental Instinct","Unfortunate","Shadow Striker"] 
 		@steps		= 0
 	end
 	def newStep
-		if @steps.nil?
-			@steps = 0
+		pkmn,index = choosePokemonforEvent
+		if !pkmn.nil?
+		if pkmn.collectedItems.nil?
+		  pkmn.collectedItems = []
 		end
-		@steps = @steps+1
+		if pkmn.adventuringTypes.nil?
+		 pkmn.adventuringTypes = ["None"]
+		elsif pkmn.adventuringTypes.length==0
+		 pkmn.adventuringTypes = ["None"]
+		end
+		if pkmn.advSteps.nil?
+			pkmn.advSteps = 0
+		end
+		pkmn.advSteps += 1
+		if pkmn.onAdventure.nil?
+		pkmn.onAdventure=true
+		end
 		for egg in @party
 			next if egg.steps_to_hatch <= 0
 			egg.steps_to_hatch -= 1
@@ -37,45 +79,212 @@ class Adventure
 				egg.record_first_moves
 			end
 		end
-		if @steps >= PokeventureConfig::Updatesteps
-			if able_pokemon_count>0
-				pbAdventuringEvent
-			end
-			@steps=0
+		if $PokemonSystem.survivalmode==0
+		@party.each do |pkmn|
+		if $game_switches[167]==false && pbIsWeekday(6) 
+		$game_switches[167] == true
+		if pkmn.lifespan == 0 
+		pkmn.permadeath=true
+		pkmn.hp = 0
 		end
+		pkmn.changeAge
+		pkmn.changeLifespan("age",pkmn)
+		elsif !pbIsWeekday(6)
+		$game_switches[167] = false
+		end
+		end
+end
+		if pkmn.advSteps >= PokeventureConfig::Updatesteps
+			if pkmn && rand(2)==1
+			if pkmn.location.nil?
+			pbWalkingDowntheRoad(pkmn)
+			else
+			pbExplorersoftheI(pkmn,index)
+			end
+			else
+			pbWalkingDowntheRoad(pkmn)
+			end
+		end
+		if pkmn.location == $game_map.map_id
+		  @items << pkmn.collectedItems
+		  pkmn.collectedItems = []
+		end
+        end
 	end
-	def pbAdventuringEvent
+
+    def pbWalkingDowntheRoad(pkmn)
+	 amt=0
+	   loop do
+	   id_map = rand(999)
+	   puts id_map
+	   id_map = id_map.to_i
+	   if pbRgssExists?(sprintf("Data/Map%03d.rxdata", id_map))
+	    if ApprovedAdvMaps(id_map,pkmn)
+		  pkmn.location = id_map
+	      pkmn.advSteps=0
+		  break 
+		end
+	   else
+		pkmn.advSteps=0
+	   end
+	 end
+	 end
+
+	def pbExplorersoftheI(pkmn,index)
+	if IQEffects(pkmn,"exploring")
+	  return false
+	end
+	   type = rand(5)
+	   if type == 5 && GameData::MapMetadata.get($game_map.map_id).outdoor_map && pkmn.happiness>90 && pkmn.loyalty<20 && !$player.party_full? && pkmn.location == $game_map.map_id
+			pbMessage(_INTL("{1} came back! They missed you. They were clearly too good at hide and seek.", pkmn.name))
+             $player.party[$player.party.length] = pkmn
+			 remove_pokemon_at_index(index)
+			 return false
+	  end
+	   case type
+		when 0
+		collectionEncounters(pkmn)
+		when 1
+		randomEncounters(pkmn)
+		when 2
+		battleEncounters(pkmn,index) if pkmn.hp!=0
+		when 3
+		collectionEncounters(pkmn)
+		when 4
+		battleEncounters(pkmn,index) if pkmn.hp!=0
+		when 5
+		battleEncounters(pkmn,index) if pkmn.hp!=0
+	  end 
+	  pkmn.advSteps=0
+end
+end
+def IQEffects(pkmn,curAction)
+     return false if pkmn.chosenAdvType.nil?
+      case pkmn.chosenAdvType
+	    when "Dedicated Traveler"
+		  if curAction == "exploring"
+		    if rand(2)==1
+			  pbWalkingDowntheRoad(pkmn)
+			  return true
+			end
+		  end
+		when "Collector"
+		  if curAction != "collecting"
+		    if rand(2)==1
+		      collectionEncounters(pkmn)
+			  return true
+			end
+		  end
+		when "Acute Sniffer"
+		  if curAction == "obtainingItems"
+		    return true
+		  end
+		when "Survivalist"
+		  if curAction != "resting"
+		    if rand(2)==1
+		      pkmn.food+=rand(20)+10
+		      pkmn.water+=rand(20)+10
+			end
+		  end
+		when "Aggressor"
+		  if curAction == "battling"
+		     pkmn.collectedItems.append(pbGetItem(pkmn))
+		  end
+		when "Wary Fighter"
+		  if curAction == "startingBattle" && pkmn.hp<30
+		    if rand(2)==1
+			  pbExplorersoftheI(pkmn)
+		      return true
+			end
+		  end
+		when "House Avoider"
+		  if curAction == "dungeon"
+		    if rand(2)==1
+			  pbExplorersoftheI(pkmn)
+		      return true
+			end
+		  end
+		when "Exp. Elite"
+		  if curAction == "exp"
+		      return true
+		  end
+		when "Coin Watcher"
+		  if curAction == "obtainingItems"
+		    return true
+		  end
+		when "Sleeper"
+		  if curAction != "fucking" 
+		    collectionEncounters(pkmn,likelihood=nil)
+		    return true
+		  end
+		when "Parental Instinct"
+		  if curAction != "wildEgg" 
+		    collectionEncounters(pkmn,likelihood=nil)
+		    return true
+		  end
+		when "Unfortunate"
+		when "Shadow Striker"
+		  if curAction = "Shadow Striker" 
+		    return true
+		  end
+	  end
+	  return false
+end
+	
+	def choosePokemonforEvent
+	    amt = 0
+		pkmn = 0
+		loop do
 		index = rand(@party.length)
 		pkmn = @party[index]
-		  if $PokemonSystem.survivalmode==0
-  @party.each do |pkmn|
-  if $game_switches[167]==false && pbIsWeekday(6) 
-    $game_switches[167] == true
-    if pkmn.lifespan == 0 
-      pkmn.permadeath=true
-      pkmn.hp = 0
-	  return
-    end
-	pkmn.changeAge
-	pkmn.changeLifespan("age",pkmn)
-  elsif !pbIsWeekday(6)
-    $game_switches[167] = false
-  end
-  end
-end
+		if !pkmn.able? || pkmn.egg?
+		break
+		end
+		return pkmn,index
+		end
+	end
 
-		chances = rand(500)
-		chances2 = rand(500)
-		chances3 = rand(500)
-		if pkmn.egg?
-		elsif chances >375 && PokeventureConfig::CollectRandomItem   #FIND ITEM
-			@items.append(pbGetItem)
-		elsif chances<=17 && PokeventureConfig::ChanceToFindEggs   #FIND EGG
-			encounter = $PokemonEncounters.choose_wild_pokemon(:AdventureEggs)
-			encounter = [nil, nil] if encounter.nil?
-			pbGenerateAdEgg(encounter[0])
-		elsif chances<=45 && chances2<=250 && PokeventureConfig::ChanceToFindEggs   #FIND EGG
-		encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+	  #Dedicated Traveler: The Pokémon will focus on traveling. It will do other things less often. 
+	  #Collector: The Pokémon will focus on collecting more types of items. It will do other things less often. 
+	  #Acute Sniffer: The Pokémon will focus on collecting rare items. It will do other things less often. 
+	  #Survivalist: The Pokémon's food and water will be prioritized while traveling.
+	  #Aggressor: The Pokémon will focus on combat. It will do other things less often, but it will bring back meat. 
+	  #Wary Fighter: If the Pokémon's HP is low, it will not get into combat, but it will collect less items. 
+	  #House Avoider: This Pokémon will not go to Monster Houses.
+	  #Exp Elite: This Pokémon will gain more exp when it gets into combat.
+	  #Coin Watcher: This Pokémon will focus on primarily collecting Star Pieces.
+	  #Sleeper: This Pokémon will sleep more while collecting. It will do other things less often. 
+	  #Parental Instinct: This Pokémon will focus on locating Eggs. It will do other things less often. 
+	  #Unfortunate: This Pokémon gets lost often. 
+	  #Shadow Striker: This Pokémon will strike subtly, often winning combat without the enemy noticing. 	
+	
+	def collectionEncounters(pkmn,likelihood=nil)
+	  if IQEffects(pkmn,"collection")
+	  end
+	  if likelihood.nil?
+	  likelihood = rand(21)
+	  end
+	  case likelihood
+	   when 0
+	    if IQEffects(pkmn,"collection")
+	    end
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end  #chances >375 && PokeventureConfig::CollectRandomItem   #FIND ITEM
+	   when 1
+	    if IQEffects(pkmn,"wildEgg")
+	    end
+     	encounter = $PokemonEncounters.choose_wild_pokemon(:AdventureEggs)
+		encounter = [nil, nil] if encounter.nil?
+		pbGenerateAdEgg(encounter[0])
+	   when 2
+	    if IQEffects(pkmn,"fucking")
+	    end
+	    encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
 		encounter = [nil, nil] if encounter.nil?
 		if !encounter.nil? && !encounter[0].nil?
 		poke = Pokemon.new(encounter[0],encounter[1])
@@ -93,59 +302,263 @@ end
 		party[party.length] = egg
 		end
 		end
-		elsif chances<=1 #TEAM ROCKET GRUNT
-		elsif chances<=1 #TRADING
-		elsif chances<=1 #GAINEV
-		elsif chances<=1 #GAINIV
-		elsif chances2<=25 #HEAL
-			pkmn.heal	 
-		elsif chances3<=25 #HARD FIGHT
-			if pkmn.hp==0
-			else
-			battle(pkmn,index,true)
-			end
-		elsif chances2<=23 && GameData::MapMetadata.get($game_map.map_id).outdoor_map && pkmn.happiness>90 && pkmn.loyalty<20 && !$player.party_full?
-			pbMessage(_INTL("{1} came back! They missed you. They were clearly too good at hide and seek.", pkmn.name))
-             $player.party[$player.party.length] = pkmn
-			 remove_pokemon_at_index(index)
-		elsif chances2<=76 && GameData::MapMetadata.get($game_map.map_id).outdoor_map  #YOU ENCOUNTERED YOUR POKEMON
+	   when 3
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end  #chances >375 && PokeventureConfig::CollectRandomItem   #FIND ITEM
+	   when 4
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end  #chances >375 && PokeventureConfig::CollectRandomItem   #FIND ITEM
+	   when 5
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end  #chances >375 && PokeventureConfig::CollectRandomItem   #FIND ITEM
+	   else
+	  end
+	end
+	
+	def battleEncounters(pkmn,index)
+	  if IQEffects(pkmn,"startingBattle")
+	   return false
+	  end
+	  likelihood = rand(21)
+	  case likelihood
+	   when 0     #Normal Battle
+	  if IQEffects(pkmn,"battling")
+	  end
+	    battle(pkmn,index,type="normal")
+	   when 1     #Normal Battle
+	  if IQEffects(pkmn,"battling")
+	  end
+	    battle(pkmn,index,type="normal")
+	   when 2     #Normal Battle
+	  if IQEffects(pkmn,"battling")
+	  end
+	    battle(pkmn,index,type="normal")
+	   when 3     #Normal Battle
+	  if IQEffects(pkmn,"battling")
+	  end
+	    battle(pkmn,index,type="normal")
+	   when 4    #Harder Battle
+	  if IQEffects(pkmn,"hardbattling")
+	  end
+	    battle(pkmn,index,type="hard")
+	   when 5    #Harder Battle
+	  if IQEffects(pkmn,"hardbattling")
+	  end
+	    battle(pkmn,index,type="hard")
+	   when 6    #Raid Battle
+	  if IQEffects(pkmn,"raidbattling")
+	  end
+	    battle(pkmn,index,type="raid")
+	   when 7    #Team Battle!
+	  if IQEffects(pkmn,"teambattling")
+	  end
+	    battle(pkmn,index,type="team")
+	   when 8    #Dungeon
+	  if IQEffects(pkmn,"dungeon")
+	    return false
+	  end
+	    dungeon(pkmn,index)
+	   when 9    #Heal
+		  pkmn.heal	 
+	   when 10    #freelevelup
+        endexp = pkmn.growth_rate.minimum_exp_for_level(pkmn.level + 1)
+        neededexp = endexp-pkmn.exp
+		pkmn.exp += neededexp
+	   else
+	  end
+	end
+	
+	def randomEncounters(pkmn)
+	  if IQEffects(pkmn,"random")
+	  end
+	  rarer = rand(999)
+	  likelihood = rand(21)
+	   case likelihood
+	   when 0
+	   if GameData::MapMetadata.get(pkmn.location.to_i).outdoor_map && pkmn.location == $game_map.map_id
+	        pbMessage(_INTL("Oh! You encountered {1}! Hello {1}.", pkmn.name))
 			pkmn.loyalty+=10
 			pkmn.happiness+=45
-		elsif chances2<=10  #UHH
-		    if pokemon.hue==0
-            pokemon.hue = rand(360)
-            pokemon.memento = :LOSTMARK
+	   end
+	   when 1 
+	   if GameData::MapMetadata.get(pkmn.location.to_i).outdoor_map && rarer <= 10
+		    if pkmn.hue==0
+            pkmn.hue = rand(360)
+            pkmn.memento = :LOSTMARK
 			end
-		elsif chances3>250  #FIND/DIE TO FRIEND
-			if pkmn.hp==0
-			else
-			battle(pkmn,index)
-			end
-		end	
-		
+	   end
+	   when 2 #ADD TRADING
+	   when 3 #FOOD AND WATER
+	  if IQEffects(pkmn,"resting")
+	  end
+		pkmn.food+=rand(20)+10
+		pkmn.water+=rand(20)+10
+	   when 4 #SHADOW POKEMON?!?!
+	   if GameData::MapMetadata.get(pkmn.location.to_i).outdoor_map && rarer == 0
+	    pkmn.makeShadow
+	   end
+	   when 5 
+	    if rand(256)==1
+	    iqs = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider","Exp. Elite","Coin Watcher","Sleeper","Parental Instinct"]
+        choice = rand(iqs.length)
+        pkmn.adventuringTypes.append(iqs[choice])
+	    end
+	     
+	   else
+	   end
 	end
-	def battle(battler,index,hard=false)
+	
+	
+	def dungeon(pkmn,index)
+	  if IQEffects(pkmn,"dungeon")
+	  end
+	 amt=0
+	 loop do
+	 battle(pkmn,index,type="normal")
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end
+	 break if pkmn.hp==0
+	 amt+1
+	 break if amt==3
+	 end
+	 battle(pkmn,index,type="raid")
+	 if pkmn.chosenAdvType=="Collector"
+	 item = pbGetItem(pkmn)
+	 pkmn.collectedItems.append(item)
+	 pkmn.collectedItems.append(item)
+	 else
+	 pkmn.collectedItems.append(pbGetItem(pkmn))
+	 end
+	 if rand(2)==1
+	 iqs = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider","Exp. Elite","Coin Watcher","Sleeper","Parental Instinct"]
+     choice = rand(iqs.length)
+     pkmn.adventuringTypes.append(iqs[choice])
+	 end
+	end
+	def battle(battler,index,type="normal")
 	    pkmn = battler
+		amt = 0
+		encounter = 0
+		loop do
+		enctype = rand(10)
+		encounter = nil
+		case enctype
+		 when 0
 		encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		 when 1
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Land)
+		 when 2
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Cave)
+		 when 3
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Water)
+		 when 4
+		encounter = $PokemonEncounters.choose_wild_pokemon(:LandMorning)
+		 when 5
+		encounter = $PokemonEncounters.choose_wild_pokemon(:LandDay)
+		 when 6
+		encounter = $PokemonEncounters.choose_wild_pokemon(:LandNight)
+		 when 7
+		encounter = $PokemonEncounters.choose_wild_pokemon(:CaveDeep)
+		 when 8
+		encounter = $PokemonEncounters.choose_wild_pokemon(:RockSmash)
+		 when 9
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Bait)
+		else
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		end
+		amt+=1
+		if amt == 3
+		encounter = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		end
 		encounter = [nil, nil] if encounter.nil?
+		break if !encounter.nil? && !encounter[0].nil?
+		end
 		if !encounter.nil? && !encounter[0].nil?
 			partylevel = pkmn.level
 			win = false
-			if hard==true
-			level = encounter[1]+rand(10)+5
-			else 
+			if type=="normal"
 			level =  encounter[1]
+			elsif type=="hard"
+			level =  encounter[1]+rand(5)+1
+			elsif type=="raid"
+			level =  encounter[1]+rand(10)+1
+			elsif type=="team"
+			level =  encounter[1]+rand(5)+1
+		amt = 0
+		encounter2 = 0
+		loop do
+		enctype = rand(10)
+		case enctype
+		 when 0
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		 when 1
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Land)
+		 when 2
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Cave)
+		 when 3
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Water)
+		 when 4
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:LandMorning)
+		 when 5
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:LandDay)
+		 when 6
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:LandNight)
+		 when 7
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:CaveDeep)
+		 when 8
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:RockSmash)
+		 when 9
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Bait)
+		else 
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		end
+		amt+=1
+		if amt == 3
+		encounter2 = $PokemonEncounters.choose_wild_pokemon(:Adventure)
+		end
+		encounter2 = [nil, nil] if encounter2.nil?
+		break if !encounter2.nil? && !encounter2[0].nil?
+		end
+
+			end
+			if type=="team"
+			    partylevel+=encounter2[1]
 			end
 			chance = encounter[1] - partylevel
-			if partylevel > level && rand(5)==4
+			if partylevel > level && (rand(5)==4 || chance < 0) || IQEffects(pkmn,"Shadow Striker")
 				win = true
+				pkmn.hp -= rand(pkmn.totalhp/9)+1
+				if pkmn.hp==0
+				 if pkmn.item==:REVIVALHERB || pkmn.item==:MAXHONEY
+			       pkmn.hp=pkmn.totalhp
+				   pkmn.item = nil
+				 else
+				  win = false
+				 end
+				end
 			elsif 1 == rand(chance)
 				win = true 
-			    if hard==true
-				pkmn.hp -= rand(pkmn.totalhp/4)+1
-				else
 				pkmn.hp -= rand(pkmn.totalhp/6)+1
-			   end
 				if pkmn.hp==0
 				 if pkmn.item==:REVIVALHERB || pkmn.item==:MAXHONEY
 			       pkmn.hp=pkmn.totalhp
@@ -160,6 +573,63 @@ end
 			if win==true
 			    pkmn.food+=rand(20)+10
 				pkmn.water+=rand(20)+10
+				if !encounter2.nil? && type=="team"
+				poke = Pokemon.new(encounter2[0],encounter2[1])
+				if PokeventureConfig::FindFriends && 0 == rand(PokeventureConfig::ChanceToFindFriend-1) && !party_full? 
+					poke.generateBrilliant if (PokeventureConfig::AreFoundFriendsBrilliant && defined?(poke.generateBrilliant))
+					poke.name= nil
+					poke.owner= Pokemon::Owner.new_from_trainer($player)
+					if poke.loyalty.nil?
+					    poke.loyalty = 70
+					end
+					poke.age = (rand(50)+1)
+					poke.water = (rand(100)+1)
+					poke.food = (rand(100)+1)
+					poke.lifespan = 50
+					if poke.age <= 10
+					    poke.ev[:DEFENSE] = rand(40)+10
+					    poke.ev[:SPECIAL_DEFENSE] = rand(40)+10
+ 					   poke.ev[:ATTACK] = rand(40)+10
+ 					   poke.ev[:SPECIAL_ATTACK] = rand(40)+10
+					    poke.ev[:SPEED] = rand(40)+10
+					    poke.ev[:HP] = rand(40)+10
+					elsif poke.age <= 20 && poke.age > 10
+					    poke.ev[:DEFENSE] = rand(80)+10
+					    poke.ev[:SPECIAL_DEFENSE] = rand(80)+10
+					    poke.ev[:ATTACK] = rand(80)+10
+					    poke.ev[:SPECIAL_ATTACK] = rand(80)+10
+					    poke.ev[:SPEED] = rand(80)+10
+					    poke.ev[:HP] = rand(80)+10
+					elsif poke.age <= 30 && poke.age > 20
+					    poke.ev[:DEFENSE] = rand(120)+10
+					    poke.ev[:SPECIAL_DEFENSE] = rand(120)+10
+					    poke.ev[:ATTACK] = rand(120)+10
+ 					   poke.ev[:SPECIAL_ATTACK] = rand(120)+10
+ 					   poke.ev[:SPEED] = rand(120)+10
+					    poke.ev[:HP] = rand(120)+10
+					elsif poke.age <= 40 && poke.age > 30
+ 					   poke.ev[:DEFENSE] = rand(150)+10
+  					  poke.ev[:SPECIAL_DEFENSE] = rand(150)+10
+  					  poke.ev[:ATTACK] = rand(150)+10
+  					  poke.ev[:SPECIAL_ATTACK] = rand(150)+10
+  					  poke.ev[:SPEED] = rand(150)+10
+  					  poke.ev[:HP] = rand(150)+10
+					elsif poke.age > 40
+  					  poke.ev[:DEFENSE] = rand(200)+10
+  					  poke.ev[:SPECIAL_DEFENSE] = rand(200)+10
+  					  poke.ev[:ATTACK] = rand(200)+10
+  					  poke.ev[:SPECIAL_ATTACK] = rand(200)+10
+  					  poke.ev[:SPEED] = rand(200)+10
+  					  poke.ev[:HP] = rand(200)+10
+					end
+					poke.obtain_method= 0  
+					poke.obtain_text= "Encountered on an adventure!"
+					poke.timeReceived= pbGetTimeNow
+					$player.pokedex.register(poke)
+					$player.pokedex.set_owned(poke.species)
+					@party.append(poke)
+				end
+				end
 				poke = Pokemon.new(encounter[0],encounter[1])
 				if PokeventureConfig::FindFriends && 0 == rand(PokeventureConfig::ChanceToFindFriend-1) && !party_full? 
 					poke.generateBrilliant if (PokeventureConfig::AreFoundFriendsBrilliant && defined?(poke.generateBrilliant))
@@ -218,15 +688,20 @@ end
 				if PokeventureConfig::CollectItemsFromBattles && 0 ==rand(PokeventureConfig::ChanceToGetEnemyItem)
 					drops = poke.wildHoldItems
 					if !drops.compact.empty?
-						@items.append(drops.compact.sample)
+						pkmn.collectedItems.append(drops.compact.sample)
 					end
 				end
                 if pkmn.able? && PokeventureConfig::GainExp
-				  if hard==true
-					pbGainAventureExp(pkmn,poke,1,true)
-				  else
-					pbGainAventureExp(pkmn,poke,1)
-				  end
+			        if type=="normal"
+			           pbGainAventureExp(pkmn,poke,1)
+			        elsif type=="hard"
+			           pbGainAventureExp(pkmn,poke,2)
+			        elsif type=="raid"
+			           pbGainAventureExp(pkmn,poke,3)
+			        elsif type=="team"
+			           pbGainAventureExp(pkmn,poke,0.5)
+			        end
+					
 				end
 			else
 			   pkmn.changeHappiness("faint",pkmn)
@@ -246,9 +721,8 @@ end
 				 end
 			   end
 			   if chances>=200
-			   @items.delete_at(rand(@items.length))
+			   pkmn.collectedItems.delete_at(rand(pkmn.collectedItems.length))
 			   end
-
 			end
 		end
 		@party.each do |pkmn|
@@ -257,81 +731,110 @@ end
 	end
 
 
-
-
-
-
-
-
-
-
-
-	def remove_pokemon_at_index(index)
-		return false if index < 0 || index >= @party.length
-		@party.delete_at(index)
-		return true
+	def ApprovedAdvMaps(map,pkmn)
+#	   GameData::MapMetadata.try_get(map)
+	   map = pbGetMapNameFromId(map)
+	   case map.to_s
+	    when "Temperate Shore"
+		  return true
+		when "Temperate Ocean"
+		  return true
+		when "Temperate Plains"
+		  return true
+		when "Temperate Highlands"
+		  return true
+		when "Mountain Interior"
+		  return true
+		when "Temperate Marsh"
+		  return true
+		when "Chilled Plains"
+		  return true
+		when "Frigid Highlands"
+		  return true
+		when "Deep Caves"
+		  return true
+		when "Tropical Coast"
+		  return true
+		when "Forest Zone"
+		  return true
+		when "Northern Area"
+		  return true
+		when "Jungle"
+		  return true
+		when "Southern Beach"
+		  return true
+		when "Southern Ocean"
+		  return true
+		when "West Shore"
+		  return true
+		when "Ravine"
+		  return true
+		when "Western Temperate"
+		  return true
+		when "Southern Ocean U"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "S.S Glittering Wreck"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Red and Blue's Cabin"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Your Cabin"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "William's Cabin"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Abandoned Cabin"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Kitchen"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Captain's Quarters"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "S.S Glittering"
+		 if pkmn.types.include?(:WATER)
+		  return true
+		 end
+		  return false
+		when "Temperate Skies"
+		 if pkmn.types.include?(:FLYING)
+		  return true
+		 end
+		  return false
+		when "Shore Skies"
+		 if pkmn.types.include?(:FLYING)
+		  return true
+		 end
+		  return false
+		when "Mountain Skies"
+		 if pkmn.types.include?(:FLYING)
+		  return true
+		 end
+		  return false
+	   end
+	   return false
 	end
-	def all_fainted?
-		return able_pokemon_count == 0
-	end
-	def party_full?
-		return @party.length >= Settings::MAX_PARTY_SIZE
-	end
-	def able_pokemon_count
-		ret = 0
-		@party.each { |p| ret += 1 if p && !p.egg? && !p.fainted? }
-		return ret
-	end
-
-
-
-	def add_pokemon(pkmn)
-		@party.append(pkmn)
-		itemcollect
-	end
-	def itemcollect
-		@party.each do |pkmn|
-			if pkmn.hasItem?
-				item = GameData::Item.get(pkmn.item)
-				@items.append(item)
-				pkmn.item = nil
-			end
-		end
-	end
-	def harvestItems
-		@items.each { |x| Kernel.pbReceiveItem(x) if !x.nil?}
-		@items = []
-	end
-	def harvestItemsSilent
-		giveAdventureItemList(@items)
-		@items = []
-	end
-	def sendEveryoneToBox
-		success = true
-		while success && !(@party.empty?)
-			success = pbMovetoPC(0)
-		end
-		if success
-			pbMessage(_INTL("All adventurers were send to the PC!"))
-		end
-	end
-	def pbMovetoPC(pos)
-		if pbBoxesFull?
-			pbMessage(_INTL("The Boxes on your PC are full!"))
-			return false
-		else
-			$PokemonStorage.pbStoreCaught(@party[pos].dup)
-			remove_pokemon_at_index(pos)
-			return true
-		end
-	end
-	def heal_party
-		@party.each { |pkmn| pkmn.heal }
-	end
-	def pbPlayer
-		return $player 
-	end
-	def pbGainAventureExp(pkmn,defeatedBattler,numPartic,double=false)
+	def pbGainAventureExp(pkmn,defeatedBattler,multiplier)
 		growth_rate = pkmn.growth_rate
 		if pkmn.exp>=growth_rate.maximum_exp
 			pkmn.calc_stats   # To ensure new EVs still have an effect
@@ -343,12 +846,13 @@ end
     exp = 0
     a = level*defeatedBattler.base_exp
     if isPartic   # Participated in battle, no Exp Shares held by anyone
-      exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? numPartic : 1)
+      exp = a / 1
     end
     return if exp<=0
     # Scale the gained Exp based on the gainer's level (or not)
-	if double == true
-	 exp*=2
+	exp*=multiplier
+	if IQEffects(pkmn,"exp")
+	 exp*=1.5
 	end
     if Settings::SCALED_EXP_FORMULA
       exp /= 5
@@ -384,8 +888,26 @@ end
 		end
     end
 	end
-	def pbGetItem
+	def pbGetItem(pkmn)
 		items = PokeventureConfig::Items
+		if IQEffects(pkmn,"obtainingItems")
+		 if pkmn.chosenAdvType=="Acute Sniffer"
+		  items2 = [[:FIRESTONE,7], [:LEAFSTONE,7], [:MOOMOOMILK,5], [:EXPCANDYM,1], [:IRONORE,10], [:COPPERORE,10], [:GOLDORE,10], [:LEFTOVERS,20], [:SILVERORE,10], [:NUGGET,10], [:BIGNUGGET,1], [:IRONBALL,1], [:THUNDERSTONE,7]]
+		  items2.each do |i|
+		  items.append(i)
+		  end
+	   elsif pkmn.chosenAdvType=="Collector"
+		  items2 = [[:ORANBERRY,15], [:SITRUSBERRY,10], [:POTATO,2], [:TEALEAF,3], [:WATER,5], [:MOOMOOMILK,1], [:LEMON,5], [:MEAT,1], [:MEAT,1]]
+		  items2.each do |i|
+		  items.append(i)
+		  end
+	   elsif pkmn.chosenAdvType=="Coin Watcher"
+		  items2 = [[:STARPIECE,1], [:STARPIECE,1], [:STARPIECE,1], [:STARPIECE,1], [:STARPIECE,1]]
+		  items2.each do |i|
+		  items.append(i)
+		  end
+	   end
+	    end
 		items.sort! { |a, b| b[1] <=> a[1] }
 		chance_total = 0
 		items.each { |a| chance_total += a[1] }
@@ -450,10 +972,76 @@ end
 		party[party.length] = pkmn
 		return true
 	end
+
 	
-	
-	
-	
+
+
+
+
+
+
+
+
+	def remove_pokemon_at_index(index)
+		return false if index < 0 || index >= @party.length
+		@party.delete_at(index)
+		return true
+	end
+	def all_fainted?
+		return able_pokemon_count == 0
+	end
+	def party_full?
+		return @party.length >= Settings::MAX_PARTY_SIZE
+	end
+	def able_pokemon_count
+		ret = 0
+		@party.each { |p| ret += 1 if p && !p.egg? && !p.fainted? }
+		return ret
+	end
+	def add_pokemon(pkmn)
+		@party.append(pkmn)
+	end
+	def harvestItems
+	    @party.each do |pkmn|
+		 @items.append(pkmn.collectedItems)
+		end
+		@items.each { |x| Kernel.pbReceiveItem(x) if !x.nil?}
+		@items = []
+	end
+	def harvestItemsSilent
+	    @party.each do |pkmn|
+		 @items.append(pkmn.collectedItems)
+		end
+		giveAdventureItemList(@items)
+		@items = []
+	end
+	def sendEveryoneToBox
+		success = true
+		while success && !(@party.empty?)
+			success = pbMovetoPC(0)
+		end
+		if success
+			pbMessage(_INTL("All adventurers were send to the PC!"))
+		end
+	end
+	def pbMovetoPC(pos)
+		if pbBoxesFull?
+			pbMessage(_INTL("The Boxes on your PC are full!"))
+			return false
+		else
+			@party[pos].location = nil
+			@party[pos].inDungeon = false
+			$PokemonStorage.pbStoreCaught(@party[pos].dup)
+			remove_pokemon_at_index(pos)
+			return true
+		end
+	end
+	def heal_party
+		@party.each { |pkmn| pkmn.heal }
+	end
+	def pbPlayer
+		return $player 
+	end
     def generate(mother, father)
       # Determine which Pokémon is the mother and which is the father
       # Ensure mother is female, if the pair contains a female
@@ -488,10 +1076,10 @@ end
       set_shininess(egg, mother, father)   # Masuda method and Shiny Charm
       set_pokerus(egg)
       # Recalculate egg's stats
+      egg.obtain_text = "Adventuring Accident!"
       egg.calc_stats
       return egg
     end
-
     def determine_egg_species(parent_species, mother, father)
       ret = GameData::Species.get(parent_species).get_baby_species(true, mother.item_id, father.item_id)
       # Check for alternate offspring (i.e. Nidoran M/F, Volbeat/Illumise, Manaphy/Phione)
@@ -499,7 +1087,6 @@ end
       ret = offspring.sample if offspring.length > 0
       return ret
     end
-
     def generate_basic_egg(species)
       egg = Pokemon.new(species, Settings::EGG_LEVEL)
       egg.name           = _INTL("Egg")
@@ -512,7 +1099,6 @@ end
       egg.form = new_form if new_form
       return egg
     end
-
     def inherit_form(egg, species_parent, mother, father)
       # mother = [mother, mother_ditto, mother_in_family]
       # father = [father, father_ditto, father_in_family]
@@ -529,7 +1115,6 @@ end
         break
       end
     end
-
     def get_moves_to_inherit(egg, mother, father)
       # mother = [mother, mother_ditto, mother_in_family]
       # father = [father, father_ditto, father_in_family]
@@ -570,7 +1155,6 @@ end
       end
       return moves
     end
-
     def inherit_moves(egg, mother, father)
       moves = get_moves_to_inherit(egg, mother, father)
       # Remove duplicates (keeping the latest ones)
@@ -582,7 +1166,6 @@ end
       first_move_index = 0 if first_move_index < 0
       (first_move_index...moves.length).each { |i| egg.learn_move(moves[i]) }
     end
-
     def inherit_nature(egg, mother, father)
       new_natures = []
       new_natures.push(mother.nature) if mother.hasItem?(:EVERSTONE)
@@ -590,15 +1173,6 @@ end
       return if new_natures.empty?
       egg.nature = new_natures.sample
     end
-
-    # If a Pokémon is bred with a Ditto, that Pokémon can pass down its Hidden
-    # Ability (60% chance). If neither Pokémon are Ditto, then the mother can
-    # pass down its ability (60% chance if Hidden, 80% chance if not).
-    # NOTE: This is how ability inheritance works in Gen 6+. Gen 5 is more
-    #       restrictive, and even works differently between BW and B2W2, and I
-    #       don't think that is worth adding in. Gen 4 and lower don't have
-    #       ability inheritance at all, and again, I'm not bothering to add that
-    #       in.
     def inherit_ability(egg, mother, father)
       # mother = [mother, mother_ditto, mother_in_family]
       # father = [father, father_ditto, father_in_family]
@@ -613,7 +1187,6 @@ end
         end
       end
     end
-
     def inherit_IVs(egg, mother, father)
       # Get all stats
       stats = []
@@ -651,16 +1224,6 @@ end
       chosen_stats = stats.sample(inherit_count)
       chosen_stats.each { |stat| egg.iv[stat] = [mother, father].sample.iv[stat] }
     end
-
-    # Poké Balls can only be inherited from parents that are related to the
-    # egg's species.
-    # NOTE: This is how Poké Ball inheritance works in Gen 7+. Gens 5 and lower
-    #       don't have Poké Ball inheritance at all. In Gen 6, only a female
-    #       parent can pass down its Poké Ball. I don't think it's worth adding
-    #       in these variations on the mechanic.
-    # NOTE: The official games treat Nidoran M/F and Volbeat/Illumise as
-    #       unrelated for the purpose of this mechanic. Essentials treats them
-    #       as related and allows them to pass down their Poké Balls.
     def inherit_poke_ball(egg, mother, father)
       # mother = [mother, mother_ditto, mother_in_family]
       # father = [father, father_ditto, father_in_family]
@@ -672,11 +1235,6 @@ end
       balls.delete(:CHERISHBALL)   # Can't inherit this Ball
       egg.poke_ball = balls.sample if !balls.empty?
     end
-
-    # NOTE: There is a bug in Gen 8 that skips the original generation of an
-    #       egg's personal ID if the Masuda Method/Shiny Charm can cause any
-    #       rerolls. Essentials doesn't have this bug, meaning eggs are slightly
-    #       more likely to be shiny (in Gen 8+ mechanics) than in Gen 8 itself.
     def set_shininess(egg, mother, father)
       shiny_retries = 0
       if father.owner.language != mother.owner.language
@@ -690,11 +1248,10 @@ end
         egg.personalID = rand(2**16) | (rand(2**16) << 16)
       end
     end
-
     def set_pokerus(egg)
       egg.givePokerus if rand(65_536) < Settings::POKERUS_CHANCE
     end
-end
+
 
 def giveAdventureItemList(itemlist)
   list = itemlist.dup.compact()

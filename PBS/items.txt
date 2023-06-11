@@ -7148,6 +7148,166 @@ Price = 5
 Flags = FoodWater
 Description = 
 #-------------------------------
+[FISHSOUP]
+Name = Soup (Fish)
+NamePlural = Soup (Fish)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SOUPBROTH]
+Name = Soup Broth
+NamePlural = Soup Broth
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDBIRDMEAT]
+Name = Bird Meat (Cooked)
+NamePlural = Bird Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDROCKYMEAT]
+Name = Rocky Meat (Cooked)
+NamePlural = Rocky Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDBUGMEAT]
+Name = Bug Meat (Cooked)
+NamePlural = Bug Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDSTEELYMEAT]
+Name = Steely Meat (Cooked)
+NamePlural = Steely Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDSUSHI]
+Name = Sushi (Cooked)
+NamePlural = Sushi (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDLEAFYMEAT]
+Name = Leafy Meat (Cooked)
+NamePlural = Leafy Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDDRAGONMEAT]
+Name = Dragon Meat (Cooked)
+NamePlural = Dragon Meat (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDEDIABLESCRYSTAL]
+Name = Ediable Crystal (Cooked)
+NamePlural = Ediable Crystal (Cooked)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICH]
+Name = Meat Sandwich (Normal)
+NamePlural = Meat Sandwich (Normal)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHMJ]
+Name = Meat Sandwich (Meat Jesus)
+NamePlural = Meat Sandwich (Meat Jesus)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSUS]
+Name = Meat Sandwich (Sus)
+NamePlural = Meat Sandwich (Sus)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHLEAFY]
+Name = Meat Sandwich (Leafy)
+NamePlural = Meat Sandwich (Leafy)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHCRYSTAL]
+Name = Meat Sandwich (Crystal)
+NamePlural = Meat Sandwich (Crystal)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHROCKY]
+Name = Meat Sandwich (Crunchy)
+NamePlural = Meat Sandwich (Crunchy)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHBUG]
+Name = Meat Sandwich (Ew)
+NamePlural = Meat Sandwich (Ew)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSTEELY]
+Name = Meat Sandwich (Dental Visit)
+NamePlural = Meat Sandwich (Dental Visit)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHBIRD]
+Name = Meat Sandwich (Chicken?)
+NamePlural = Meat Sandwich (Chicken?)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSLOWPOKETAIL]
+Name = Meat Sandwich (Slowpoke Tail)
+NamePlural = Meat Sandwich (Slowpoke Tail)
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
 [SITRUSJUICE]
 Name = Sitrus Juice
 NamePlural = Sitrus Juice
@@ -7247,6 +7407,14 @@ Description =
 [EGGEDIBLE]
 Name = Egg
 NamePlural = Eggs
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[POTATOSTEW]
+Name = Stew (Potato)
+NamePlural = Stew (Potato)
 Pocket = 9
 Price = 5
 Flags = FoodWater
@@ -7415,6 +7583,14 @@ Description =
 [SNOWCONE]
 Name = Snow Cone
 NamePlural = Snow Cone
+Pocket = 9
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATKABOB]
+Name = Kabob (Meat)
+NamePlural = Kabob (Meat)
 Pocket = 9
 Price = 5
 Flags = FoodWater
@@ -8136,7 +8312,7 @@ NamePlural = Sprinkler
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Sprinkler System for your Greenhouse.
+Description = A Powered Station that is designed to water a la r ge area.
 #-------------------------------
 [ELECTRICGRINDER]
 Name = Electric Grinder
@@ -8144,7 +8320,7 @@ NamePlural = Electric Grinder
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Grinder powered by Electricity.
+Description = A Powered Station designed to macerate down materials.
 #-------------------------------
 [ELECTRICFURNACE]
 Name = Electric Furnace
@@ -8152,7 +8328,7 @@ NamePlural = Electric Furnace
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Furnace powered by Electricity.
+Description = A Powered Station designed to heat both metals and foods.
 #-------------------------------
 [PC]
 Name = PC
@@ -8168,15 +8344,15 @@ NamePlural = Apricorn Machines
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Machine for creating Pokeballs.
+Description = A Powered Stationed designed to more effectively create Pokeballs.
 #-------------------------------
 [ELECTRICPRESS]
-Name = Press
-NamePlural = Presses
+Name = Electric Press
+NamePlural = Electric Presses
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Machine for compressing things.
+Description = A Powered Station designed to compress Shards into Plates.
 #-------------------------------
 [SEWINGMACHINE]
 Name = Sewing Machine
@@ -8184,7 +8360,7 @@ NamePlural = Sewing Machine
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Machine for sewing.
+Description = A Powered Station designed for Sewing Fabrics into new items. 
 #-------------------------------
 [ITEMCRATE]
 Name = Item Crate
@@ -8192,7 +8368,7 @@ NamePlural = Item Crates
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = A Crate that is used to manipulate Items.
+Description = A Crate that contains your Items and Mail, it is crafted from Light Clay and Wooden Planks.
 #-------------------------------
 [CUTTER]
 Name = Wood Cutter
@@ -8200,7 +8376,7 @@ NamePlural = Wood Cutter
 Pocket = 11
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A Powered Station designed to more efficiently cut down Wooden Logs into Wooden Planks.
 #-------------------------------
 [POKEBLOCK]
 Name = Pokeblock

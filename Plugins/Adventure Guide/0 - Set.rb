@@ -8,10 +8,6 @@ module AdventureGuide
 
 	# Set list
 	def self.list(hash=nil)
-		if !hash.is_a?(Hash)
-			self.error("Use Hash with this method! Please, read or see examples!")
-			return
-		end
 		@@list << hash
 	end
 

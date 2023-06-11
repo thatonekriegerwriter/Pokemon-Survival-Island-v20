@@ -148,6 +148,18 @@
     end
     
     def pbGenerateSOSPokemon(species,level)
+	  if rand(100)> 60
+       new_species = species.check_evolution_on_level_up
+       if !new_species.nil?
+	    species = new_species
+	   end
+	  end
+	  if rand(100)> 95
+       new_species = species.check_evolution_on_level_up
+       if !new_species.nil?
+	    species = new_species
+	   end
+	  end
       genwildpoke = Pokemon.new(species,level,$Trainer)
       items = genwildpoke.wildHoldItems
       firstpoke = @battlers[0]

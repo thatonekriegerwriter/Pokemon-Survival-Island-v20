@@ -66,8 +66,6 @@ if PluginManager.installed?("BW Party Screen")
       @ballsprite.z = self.z + 1
       @ballsprite.addBitmap("desel", "Graphics/Pictures/Party/icon_ball")
       @ballsprite.addBitmap("sel", "Graphics/Pictures/Party/icon_ball_sel")
-      @ballsprite.addBitmap("desel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball")
-      @ballsprite.addBitmap("sel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball_sel")
       @ballsprite.visible = PluginManager.installed?("Enhanced UI") && Settings::SHOW_PARTY_BALL
       @pkmnsprite = PokemonIconSprite.new(pokemon, viewport)
       @pkmnsprite.setOffset(PictureOrigin::CENTER)

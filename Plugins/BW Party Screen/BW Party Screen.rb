@@ -229,8 +229,6 @@ class PokemonPartyPanel < Sprite
     @hpbgsprite.z = self.z + 1
 	@ballsprite = ChangelingSprite.new(0, 0, viewport)
     @ballsprite.z = self.z + 5
-	@ballsprite.addBitmap("desel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball")
-    @ballsprite.addBitmap("sel_canevo", "Plugins/LAEVO/Graphics/evo_icon_ball_sel")
 	
     if PARTY_B2W2_STYLE
       @hpbgsprite.addBitmap("able", "Graphics/Pictures/Party/overlay_hp_back_B2W2")

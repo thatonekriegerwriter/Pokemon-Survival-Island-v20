@@ -239,7 +239,7 @@ module VisibleEncounterSettings
   #       following pokemon
   
   #------------------- MOVEMENT OF SPAWNED POKEMON -----------------------
-  DEFAULT_MOVEMENT = [3, 4, 1] # default [3, 3, 1]
+  DEFAULT_MOVEMENT = [5, 5, 1] # default [3, 3, 1]
   # This parameter stores an array [move_speed, move_frequency, move_type] of three integers where
   # move_speed/ move_frequency/ move_type is the default movement speed/ frequency/ type of spawned PokeEvents.
   # See RPGMakerXP for more details (compare to autonomous movement of events).
@@ -249,7 +249,7 @@ module VisibleEncounterSettings
   # ...
 
   Enc_Movements = [                  # default
-    [:shiny?, true, 3, 4, nil],    # [:shiny?, true, 3, 4, 3] means that shiny encounters will be faster
+    [:shiny?, true, 6, 6, nil],    # [:shiny?, true, 3, 4, 3] means that shiny encounters will be faster
     [:species, :SLOWPOKE, 1, 1, nil], # [:species, :SLOWPOKE, 1, 1, nil] means that slowpoke is very slow. It might still want to run random or to the player.
     [:nature, :NAUGHTY, nil, 4, 3] # [:nature, :NAUGHTY, nil, 4, 3] means pokemon with a naughty nature will run to the player and be faster
   ]

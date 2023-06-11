@@ -124,7 +124,7 @@ localMeter = interp.getVariable
 if !localMeter
 localMeter=0
 end
-localMeter+=amtpsec
+localMeter=amtpsec
 interp.setVariable(localMeter)
 end
 
@@ -135,7 +135,7 @@ localMeter = interp.getVariable
 if !localMeter
 localMeter=0
 end
-localMeter+=amtpsec
+localMeter=amtpsec
 interp.setVariable(localMeter)
 end
 
@@ -199,10 +199,8 @@ end
 def pbPowerProducer
     coalPower = $PokemonGlobal.eventvars[[41,43]]
 	if $PokemonGlobal.eventvars[[41,43]]!=0
-    puts $PokemonGlobal.eventvars[[41,43]]
 	end
 	if coalPower!=0
-    puts coalPower
 	end
     if coalPower
 	 exists = ElectricityPower.producers.any? { |sub_array| sub_array.first == 4143 }
@@ -292,6 +290,7 @@ return false if pbPowerOut?
 	 end
     end
     furnaceUse = $PokemonGlobal.eventvars[[41,45]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4145 }
     if furnaceUse
 	 if furnaceUse>0 && !exists
 	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4145 }
@@ -299,6 +298,7 @@ return false if pbPowerOut?
 	 elsif exists && furnaceUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == furnaceUse }
 	  if !matches 
+	   puts "sub_array[1] == furnaceUse"
 	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4145 }
        ElectricityPower.users.append([4145,furnaceUse])
 	  end 
@@ -307,6 +307,7 @@ return false if pbPowerOut?
 	 end
     end
     apricornUse = $PokemonGlobal.eventvars[[41,46]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4144 }
     if apricornUse
 	 if apricornUse>0 && !exists
 	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
@@ -322,6 +323,7 @@ return false if pbPowerOut?
 	 end
     end
     pressUse = $PokemonGlobal.eventvars[[41,48]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4148 }
     if pressUse
 	 if pressUse>0 && !exists
        ElectricityPower.users.append([4148,pressUse])
@@ -336,6 +338,7 @@ return false if pbPowerOut?
 	 end
     end
     sewingUse = $PokemonGlobal.eventvars[[41,49]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4149 }
     if sewingUse
 	 if sewingUse>0 && !exists
        ElectricityPower.users.append([4149,sewingUse])
@@ -350,6 +353,7 @@ return false if pbPowerOut?
 	 end
     end
     cutterUse = $PokemonGlobal.eventvars[[41,53]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4153 }
     if cutterUse
 	 if cutterUse>0 && !exists
        ElectricityPower.users.append([4153,cutterUse])
@@ -364,6 +368,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler1Use = $PokemonGlobal.eventvars[[148,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14839 }
     if sprinkler1Use
 	 if sprinkler1Use>0 && !exists
        ElectricityPower.users.append([14839,sprinkler1Use])
@@ -378,6 +383,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler2Use = $PokemonGlobal.eventvars[[149,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14939 }
     if sprinkler2Use
 	 if sprinkler2Use>0
        ElectricityPower.users.append([14939,sprinkler2Use])
@@ -392,6 +398,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler3Use = $PokemonGlobal.eventvars[[155,38]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15538 }
     if sprinkler3Use
 	 if sprinkler3Use>0
        ElectricityPower.users.append([15538,sprinkler3Use])
@@ -406,6 +413,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler4Use = $PokemonGlobal.eventvars[[150,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15039 }
     if sprinkler4Use
 	 if sprinkler4Use>0
        ElectricityPower.users.append([15039,sprinkler4Use])
@@ -420,6 +428,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler5Use = $PokemonGlobal.eventvars[[151,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15139 }
     if sprinkler5Use
 	 if sprinkler5Use>0
        ElectricityPower.users.append([15139,sprinkler5Use])
@@ -434,6 +443,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler6Use = $PokemonGlobal.eventvars[[155,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15539 }
     if sprinkler6Use
 	 if sprinkler6Use>0
        ElectricityPower.users.append([15539,sprinkler6Use])
@@ -448,6 +458,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler7Use = $PokemonGlobal.eventvars[[147,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14739 }
     if sprinkler7Use
 	 if sprinkler7Use>0
        ElectricityPower.users.append([14739,sprinkler7Use])
@@ -462,6 +473,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler8Use = $PokemonGlobal.eventvars[[153,38]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15338 }
     if sprinkler8Use
 	 if sprinkler8Use>0
        ElectricityPower.users.append([15338,sprinkler8Use])
@@ -476,6 +488,7 @@ return false if pbPowerOut?
 	 end
     end
     sprinkler9Use = $PokemonGlobal.eventvars[[154,39]]
+	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15439 }
     if sprinkler9Use
 	 if sprinkler9Use>0
        ElectricityPower.users.append([15439,sprinkler9Use])
@@ -571,8 +584,11 @@ end
 
 
 
+
+
 EventHandlers.add(:on_player_step_taken_can_transfer, :gegegegegegegeeg2,
   proc {
+
 
 })
 EventHandlers.add(:on_frame_update, :gegegegegegegeeg,

@@ -162,10 +162,8 @@ def pbSleepRestore(wari,vari=nil)
 puts vari
   if !vari.nil?
   $player.playersleep = $player.playersleep.to_i-(wari*9)
-  puts "fuck shit oh bother"
   else
   $player.playersleep = $player.playersleep.to_i+(wari*9)
-  puts "fuck shit"
   end
   if $player.playersleep > 200
   $player.playersleep = 200  
@@ -402,7 +400,7 @@ pkmn.water+=30
 pkmn.food+=30
 return true
 when :BREAD
-pkmn.water+=70
+pkmn.food+=70
 return true
 when :TEA
 pkmn.water+=80
@@ -560,7 +558,6 @@ return true
 when :FRESHWATER
 $player.playerwater+=20
 $bag.add(:GLASSBOTTLE,1)
-
 return true
 #You can add more if you want
 when :ATKCURRY
@@ -617,16 +614,13 @@ when :SODAPOP
 $player.playerwater-=11#206 is Thirst
 $player.playersaturation+=30#207 is Saturation
 $player.playersleep+=25#208 is Sleep
-return true
 $bag.add(:GLASSBOTTLE,1)
 return true
 when :LEMONADE
 $player.playersaturation+=11#207 is Saturation
 $player.playerwater+=10#206 is Thirst
 $player.playersleep+=7#208 is Sleep
-return true
 $bag.add(:GLASSBOTTLE,1)
-
 return true
 when :HONEY
 $player.playersaturation+=20#207 is Saturation
@@ -721,7 +715,6 @@ $player.playerwater+=6#206 is Thirst
 $player.playerfood+=0#205 is Hunger
 $player.playerhealth+= 25#205 is Hunger
 $bag.add(:GLASSBOTTLE,1)
-
 return true
 when :BERRYMASH
 $player.playersaturation+=5#207 is Saturation
@@ -784,6 +777,147 @@ $player.playerstaminamod+=15#205 is Hunger
   @party[0].ev[:HP] += 1
  end
 return true
+when :COOKEDBIRDMEAT
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=12#205 is Hunger
+return true
+when :COOKEDROCKYMEAT
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=15#205 is Hunger
+$player.playerhealth -= 2
+return true
+when :COOKEDBUGMEAT
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=6#205 is Hunger
+return true
+when :COOKEDSTEELYMEAT
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=30#205 is Hunger
+$player.playerhealth -= 20
+return true
+when :COOKEDSUSHI
+$player.playersaturation+=10#207 is Saturation
+$player.playerfood+=5#205 is Hunger
+$player.playerwater+=5#205 is Hunger
+return true
+when :COOKEDLEAFYMEAT
+$player.playersaturation+=5#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
+when :COOKEDDRAGONMEAT
+$player.playersaturation+=100#207 is Saturation
+return true
+when :COOKEDEDIABLESCRYSTAL
+$player.playersaturation+=0#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
+when :MEATSANDWICHBIRD
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=12#205 is Hunger
+return true
+when :MEATSANDWICHSLOWPOKETAIL
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=30#207 is Saturation
+$player.playerfood+=30#205 is Hunger
+return true
+when :MEATSANDWICHROCKY
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=15#205 is Hunger
+$player.playerhealth -= 2
+return true
+when :MEATSANDWICHBUG
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=6#205 is Hunger
+return true
+when :MEATSANDWICHSTEELY
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=10#206 is Thirst
+$player.playerfood+=10#205 is Hunger
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=30#205 is Hunger
+$player.playerhealth -= 20
+return true
+when :MEATSANDWICHSUS
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=10#206 is Thirst
+$player.playerfood+=15#205 is Hunger
+$player.playersaturation+=10#207 is Saturation
+$player.playerfood+=5#205 is Hunger
+$player.playerwater+=5#205 is Hunger
+return true
+when :MEATSANDWICHLEAFY
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=15#205 is Hunger
+$player.playersaturation+=5#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
+when :MEATSANDWICHMJ
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=25#205 is Hunger
+$player.playersaturation+=100#207 is Saturation
+return true
+when :MEATSANDWICHCRYSTAL
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=0#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
+when :MEATSANDWICH
+$player.playersaturation+=10#207 is Saturation
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=40#207 is Saturation
+$player.playerfood+=20#205 is Hunger
+return true
+when :EGGEDIBLE
+$player.playersaturation+=20#207 is Saturation
+$player.playerfood+=1#205 is Hunger
+return true
+when :CHERUBIBALL
+$player.playerwater+=7#206 is Thirst
+$player.playerfood+=7#205 is Hunger
+return true
+when :POTATOSTEW
+$player.playerfood+=19
+$player.playerwater+=17
+return true
+when :MEATKABOB
+$player.playerfood+=24
+$player.playerwater+=7
+return true
+when :FISHSOUP
+$player.playerfood+=34
+$player.playerwater+=37
+return true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 else
 $bag.add(item,1)
 return false

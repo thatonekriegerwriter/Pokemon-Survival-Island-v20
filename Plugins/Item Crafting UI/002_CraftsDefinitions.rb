@@ -64,7 +64,7 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
          [:ELECTRICPRESS,[:COPPER2,2,:IRON2,20,:STONE,5,:MACHINEBOX,1]],
          [:APRICORNMACHINE,[:COPPER2,8,:SILVER2,2,:APRICORNCRAFTING,2,:STONE,20,:MACHINEBOX,1]],
          [:SEWINGMACHINE,[:COPPER2,4,:IRON2,5,:CRAFTINGBENCH,2,:STONE,5,:MACHINEBOX,1]],
-#         [:CUTTER,[:COPPER2,4,:IRON2,7,:WOODENLOGS,5,:STONE,5,:MACHINEBOX,1]],
+         [:CUTTER,[:COPPER2,4,:IRON2,7,:WOODENLOG,5,:STONE,5,:MACHINEBOX,1]],
          [:COALGENERATOR,[:COPPER2,8,:IRON2,30,:FURNACE,4,:STONE,10,:MACHINEBOX,1]],
          [:SOLARGENERATOR,[:COPPER2,8,:IRON2,30,:GLASS,20,:STONE,10,:MACHINEBOX,1]],
          [:WINDGENERATOR,[:COPPER2,8,:IRON2,60,:MACHINEBOX,1]],
@@ -92,7 +92,7 @@ if wari == :UPGRADEDCRAFTINGBENCH || wari == :CRAFTINGBENCH
          [:ELECTRICPRESS,[:COPPER2,2,:IRON2,20,:STONE,5,:MACHINEBOX,1]],
          [:APRICORNMACHINE,[:COPPER2,8,:SILVER2,2,:APRICORNCRAFTING,2,:STONE,20,:MACHINEBOX,1]],
          [:SEWINGMACHINE,[:COPPER2,4,:IRON2,5,:CRAFTINGBENCH,2,:STONE,5,:MACHINEBOX,1]],
- #        [:CUTTER,[:COPPER2,4,:IRON2,7,:WOODENLOGS,5,:STONE,5,:MACHINEBOX,1]],
+         [:CUTTER,[:COPPER2,4,:IRON2,7,:WOODENLOG,5,:STONE,5,:MACHINEBOX,1]],
          [:COALGENERATOR,[:COPPER2,8,:IRON2,30,:FURNACE,4,:STONE,10,:MACHINEBOX,1]]
          ])
 		 end
@@ -637,4 +637,32 @@ end
 elsif wari== :CUTTER
 end
 $game_switches[554]=false
+end
+
+def pbCutterWorking
+amt = $bag.quantity(:WOODENLOG)
+if $bag.has?(:WOODENLOG)
+    params = ChooseNumberParams.new
+    params.setMaxDigits(99)
+    params.setRange(0,amt)
+    msgwindow = pbCreateMessageWindow(nil,nil)
+    pbMessageDisplay(msgwindow,_INTL("How many Logs are you cutting down?\nYou have {1} {2}s.",$bag.quantity(:WOODENLOG),GameData::Item.get(:WOODENLOG).name))
+	amt2 = pbChooseNumber(msgwindow,params)
+    pbDisposeMessageWindow(msgwindow)
+	amt2*=3.5
+	amt2 = amt2.round
+	if amt2 > 0 && $bag.can_add?(:WOODENPLANKS,amt2)
+	 $bag.add(:WOODENPLANKS,amt2)
+	 $bag.remove(:WOODENLOG,amt2)
+      pbMessage(_INTL("You got {1} {2}s.",amt2,GameData::Item.get(:WOODENPLANKS).name))
+	 return true
+	elsif amt==0
+	 return false
+	else
+    pbMessage(_INTL("You don't have enough room in your bag."))
+	 return false
+    end
+else
+    pbMessage(_INTL("You don't have any Logs.")) 
+end
 end

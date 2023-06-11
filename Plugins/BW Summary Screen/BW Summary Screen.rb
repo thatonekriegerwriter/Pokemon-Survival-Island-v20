@@ -843,40 +843,54 @@ end
         month = pbGetMonthName(@pokemon.timeReceived.mon)
         year  = @pokemon.timeReceived.year
         # Changed the color of the text, to the one used in BW
-        memo += _INTL("<c3=404040,B0B0B0>{1} {2}, {3}\n", date, month, year)
+		
+	  if pbGetMapNameFromId(@pokemon.obtain_map) == "INTRO"
+	    @pokemon.obtain_text = "Hoenn"
+	  end
+      mapname = _INTL("met at {1}",pbGetMapNameFromId(@pokemon.obtain_map))
+      mapname = _INTL("from {1}",@pokemon.obtain_text)  if @pokemon.obtain_text && !@pokemon.obtain_text.empty?
+      mapname = _INTL("met at Faraway place") if !mapname || mapname==""
+        memo += _INTL("<c3=404040,B0B0B0>{1} {2}, {3} {4}.\n", date, month, year, mapname)
       end
       # Write map name Pokémon was received on
-      mapname = pbGetMapNameFromId(@pokemon.obtain_map)
-      mapname = @pokemon.obtain_text if @pokemon.obtain_text && !@pokemon.obtain_text.empty?
-      mapname = _INTL("Faraway place") if !mapname || mapname==""
+	  if @pokemon.onAdventure == true && !@pokemon.location.nil?
+      memo += _INTL("Currently in <c3=0000d6,7394ff>{1}\n", pbGetMapNameFromId(@pokemon.location))
+	  end
       # Changed the color of the text, to the one used in BW
-      memo += sprintf("<c3=0000d6,7394ff>%s\n", mapname)
       # Write how Pokémon was obtained
-      mettext = [_INTL("Met at Lv. {1}.", @pokemon.obtain_level),
-                 _INTL("Egg received."),
-                 _INTL("Traded at Lv. {1}.", @pokemon.obtain_level),
+	  if @pokemon.starter == true
+      mettext = _INTL("Friends since Lv. 1")
+	  else
+      mettext = [_INTL("Caught at Lv. {1}", @pokemon.obtain_level),
+                 _INTL("Egg hatched"),
+                 _INTL("Traded at Lv. {1}", @pokemon.obtain_level),
                  "",
-                 _INTL("Had a fateful encounter at Lv. {1}.", @pokemon.obtain_level)
+                 _INTL("Had a fateful encounter at Lv. {1}", @pokemon.obtain_level)
                 ][@pokemon.obtain_method]
                 # Changed the color of the text, to the one used in BW
-      memo += sprintf("<c3=404040,B0B0B0>%s\n", mettext) if mettext && mettext!=""
-      # If Pokémon was hatched, write when and where it hatched
+	 end
       if @pokemon.obtain_method == 1
         if @pokemon.timeEggHatched
           date  = @pokemon.timeEggHatched.day
           month = pbGetMonthName(@pokemon.timeEggHatched.mon)
           year  = @pokemon.timeEggHatched.year
           # Changed the color of the text, to the one used in BW
-          memo += _INTL("<c3=404040,B0B0B0>{1} {2}, {3}\n", date, month, year)
-        end
         mapname = pbGetMapNameFromId(@pokemon.hatched_map)
-        mapname = _INTL("Faraway place") if nil_or_empty?(mapname)
-          # Changed the colors of the text, to the one used in BW
-        memo += sprintf("<c3=C60000,FF7373>%s\n", mapname)
-        memo += _INTL("<c3=404040,B0B0B0>Egg hatched.\n")
+        mapname = _INTL("a Faraway place") if nil_or_empty?(mapname)
+		  if mettext && mettext!=""
+          memo += _INTL("<c3=404040,B0B0B0>{1} {2} {3}, {4} in {5}.\n",mettext, date, month, year,mapname)
+		  else
+          memo += _INTL("<c3=404040,B0B0B0>{1} {2}, {3} in {4}.\n", date, month, year,mapname)
+		  end
+        end
       else
-        memo += "\n"   # Empty line
+	  if @pokemon.starter == true
+      memo += sprintf("<c3=404040,B0B0B0>%s!\n", mettext) if mettext && mettext!=""
+	  else
+      memo += sprintf("<c3=404040,B0B0B0>%s.\n", mettext) if mettext && mettext!=""
+	  end
       end
+      # If Pokémon was hatched, write when and where it hatched
       # Write characteristic
       if showNature
         best_stat = nil

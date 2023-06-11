@@ -29,13 +29,30 @@ class Adventure_Scene
 			pbMessage(_INTL("There is nothing here!"))
 		else
 			pos = getIndexFromCursor
-			answer=pbMessage("What do you want to do?", ["Move to party", "Move to PC","Summary", "Cancel"],4,nil,0)
+			answer=pbMessage("What do you want to do?", ["Move to party", "Move to PC","Summary","IQ", "Cancel"],4,nil,0)
 			if answer == 0
 				pbMoveToParty(pos)
 			elsif answer == 1
 				@adventure.pbMovetoPC(pos)
 			elsif answer == 2
 				pbSummary(@adventureparty,pos)
+			elsif answer == 3
+			answer2 = []
+			pkmn = @party[pos]
+			if !pkmn.adventuringTypes.nil?
+			pkmn.adventuringTypes.each do |i|
+			answer2[answer2.length] = i.to_s
+			end
+			answer2[answer2.length] = "Cancel"
+			commands=pbShowCommands(_INTL(" "), answer2)
+			if commands != -1
+			pkmn.chosenAdvType = pkmn.adventuringTypes[commands]
+			if pkmn.chosenAdvType == "None"
+			pkmn.chosenAdvType = nil
+			end
+			elsif commands == answer2.length || commands == -1
+			end
+            end
 			end
 		end
 	end
@@ -44,7 +61,7 @@ class Adventure_Scene
 			pbMessage(_INTL("There is nothing here!"))
 		else
 			pos = getIndexFromCursor
-			answer=pbMessage("What do you want to do?", ["Send adventuring", "Move to PC", "Summary", "Cancel"],4,nil,0)
+			answer=pbMessage("What do you want to do?", ["Send adventuring", "Move to PC", "Summary","IQ","Cancel"],4,nil,0)
 			if answer == 0
 				pbMoveToAdventure(pos)
 			elsif answer == 1
@@ -58,6 +75,20 @@ class Adventure_Scene
 				end
 			elsif answer == 2
 				pbSummary(@party,pos)
+			elsif answer == 3
+			answer2 = []
+			pkmn = @party[pos]
+			if !pkmn.adventuringTypes.nil?
+			pkmn.adventuringTypes.each do |i|
+			answer2[answer2.length] = i.to_s
+			end
+			answer2[answer2.length] = "Cancel"
+			commands=pbShowCommands(_INTL(" "), answer2)
+			if commands != -1
+			pkmn.chosenAdvType = pkmn.adventuringTypes[commands]
+			elsif commands == answer2.length || commands == -1
+			end
+            end
 			end
 		end
 	end
@@ -65,6 +96,8 @@ class Adventure_Scene
 		if $player.has_other_able_pokemon?(pos) 
 			if !@adventure.party_full?
 				@party[pos].play_cry
+			    @party[pos].location = $game_map.map_id
+				@party[pos].inDungeon = true
 				@adventure.add_pokemon(@party[pos].dup)
 				$player.remove_pokemon_at_index(pos)
 			else
@@ -76,6 +109,8 @@ class Adventure_Scene
 	end
 	def pbMoveToParty(pos) 
 		if !$player.party_full?
+			@adventureparty[pos].location = nil
+			@adventureparty[pos].inDungeon = false
 			@party.append(@adventureparty[pos].dup)
 			@adventure.remove_pokemon_at_index(pos)
 		else

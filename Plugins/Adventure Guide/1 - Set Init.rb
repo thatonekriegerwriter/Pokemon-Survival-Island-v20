@@ -10,6 +10,7 @@ ItemHandlers::UseFromBag.add(:ADVENTURERULES, proc{ |item|
 
 module AdventureGuide
 	class Show
+	attr_reader :unlocked
 
 		def initialize
 			@sprites = {}
@@ -26,6 +27,8 @@ module AdventureGuide
 			@text = []
 			@description = []
 			@lines = []
+			@unlocked = []
+			@potato = false
 			# Frames, reset frames
 			@frames = 0
 			@pos_des_per_frames = 0

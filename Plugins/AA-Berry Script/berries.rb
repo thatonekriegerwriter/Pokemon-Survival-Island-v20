@@ -198,8 +198,8 @@ end
 	    @checkedcropsticks = false
         (new_growth_hour - old_growth_hour).times do
 		
-		  if ($game_screen && GameData::Weather.get($game_screen.weather_type).category == :Rain) || ($game_map.map_id == maps[0] && $game_switches[switches[0]] == true) || ($game_map.map_id == maps[1] && $game_switches[switches[1]] == true) || ($game_map.map_id == maps[2] && $game_switches[switches[2]] == true) || ($game_map.map_id == maps[3] && $game_switches[switches[3]] == true) || ($game_map.map_id == maps[4] && $game_switches[switches[4]] == true) || ($game_map.map_id == maps[5] && $game_switches[switches[5]] == true) || ($game_map.map_id == maps[6] && $game_switches[switches[6]] == true) || ($game_map.map_id == maps[7] && $game_switches[switches[7]] == true) || ($game_map.map_id == maps[8] && $game_switches[switches[8]] == true)
-           water(100)
+		  if ($game_screen && GameData::Weather.get($game_screen.weather_type).category == :Rain)
+		  water(100)
           elsif @moisture_level > 0
 		    if pbGetSeason == berry_climate
 			 if drying_per_hour-2 < 1
@@ -729,7 +729,7 @@ def pbPickBerry(berry, qty = 1)
   this_event = pbMapInterpreter.get_self
   
   
-  if pbConfirmMessage(_INTL("Do you want to replant {1}?", berry_name))
+  if pbConfirmMessage(_INTL("Do you want to replant {1}?", berry.name))
   if $bag.remove(berry)
   $stats.berries_planted += 1
   interp = pbMapInterpreter

@@ -1,9 +1,9 @@
 def pbCookMeat(home=false,poke=nil)
      Kernel.pbMessage(_INTL("You decide to use this POKeMON for food."))
 	   if home==true
-       $player.remove_pokemon_at_index(pbGet(1))
 	   pkmn = pbGetPokemon(1)
 	   poke = pkmn
+	   puts pbGetPokemon(1)
 	   end
 	   if !poke.nil?
 	   pkmn = poke
@@ -64,6 +64,9 @@ def pbCookMeat(home=false,poke=nil)
 		$bag.add(:MEAT,(rand(3)+1))
 	   else
 	    $bag.add(:MEAT,(rand(6)+1))
+	   end
+	   if home==true
+       $player.remove_pokemon_at_index(pbGet(1))
 	   end
 	  end
 

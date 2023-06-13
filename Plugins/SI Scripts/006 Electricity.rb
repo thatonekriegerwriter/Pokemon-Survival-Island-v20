@@ -529,39 +529,48 @@ end
 
 def pbBerryWatering?(sprinkler)
 	exists1 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14839 }
-    if sprinkler == 1 && exists1
+	existsa1 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 1 && exists1 && existsa1
 	  return true
 	end
 	exists2 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14939 }
-    if sprinkler == 2 && exists2
+	existsa2 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 2 && exists2 && existsa2
 	  return true
 	end
 	exists3 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15538 }
-    if sprinkler == 3 && exists3
+	existsa3 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 3 && exists3 && existsa3
 	  return true
 	end
 	exists4 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15039 }
-    if sprinkler == 4 && exists4
+	existsa4 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 4 && exists4 && existsa4
 	  return true
 	end
 	exists5 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15139 }
-    if sprinkler == 5 && exists5
+	existsa5 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 5 && exists5 && existsa5
 	  return true
 	end
 	exists6 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15539 }
-    if sprinkler == 6 && exists6
+	existsa6 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 6 && exists6 && existsa6
 	  return true
 	end
 	exists7 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14739 }
-    if sprinkler == 7 && exists7
+	existsa7 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 7 && exists7 && existsa7
 	  return true
 	end
 	exists8 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15338 }
-    if sprinkler == 8 && exists8
+	existsa8 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 8 && exists8 && existsa8
 	  return true
 	end
 	exists9 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15439 }
-    if sprinkler == 9 && exists9
+	existsa9 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+    if sprinkler == 9 && exists9 && existsa9
 	  return true
 	end
 	return false
@@ -573,11 +582,8 @@ def pbMassBerryWater(num1,num2,map=nil)
   for i in num1..num2
     berryData = $PokemonGlobal.eventvars[[map,i]]
     if berryData
-      berryToReceive=berryData[1]
-      if berryData[1] && berryData[4]<100
         berryData.water(100)
         berryData.penaltymod(100)
-      end
     end
 end
 end

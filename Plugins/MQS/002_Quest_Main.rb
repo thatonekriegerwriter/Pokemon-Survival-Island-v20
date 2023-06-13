@@ -133,7 +133,7 @@ class Player_Quests
         @completed_quests.push(temp_quest)
         @active_quests.delete_at(i)
         found = true
-  pbSEPlay(QUEST_JINGLE)
+        pbSEPlay(QUEST_JINGLE)
         break
       end
     end
@@ -152,9 +152,9 @@ class Player_Quests
       if @active_quests[i].id == quest
         @active_quests[i].stage = stageNum
         @active_quests[i].color = color if color != nil
-        @active_quests[i].new = true # Setting this back to true makes the "!" icon appear when the quest updates
+#        @active_quests[i].new = true # Setting this back to true makes the "!" icon appear when the quest updates
         found = true
-  pbSEPlay(QUEST_JINGLE)
+#  pbSEPlay(QUEST_JINGLE)
       end
       return if found
     end
@@ -239,6 +239,23 @@ def getCompletedQuests
     completed.push(s.id)
   end
   return completed
+end
+
+def isCompletedQuest?(quest)
+  $PokemonGlobal.quests.completed_quests.each do |s|
+    if s.id == quest
+	    return true
+	end
+  end
+  return false
+end
+def isFailedQuest?(quest)
+  $PokemonGlobal.quests.failed_quests.each do |s|
+    if s.id == quest
+	    return true
+	end
+  end
+  return false
 end
 
 # Get symbolic names of failed quests
@@ -336,9 +353,34 @@ end
 
 def getCurrentStage(quest)
   $PokemonGlobal.quests.active_quests.each do |s|
+    puts s.stage
     return s.stage if s.id == quest
   end
   return nil
+end
+
+def resetQuest(quest)
+    for i in 0...$PokemonGlobal.quests.completed_quests.length
+      if $PokemonGlobal.quests.completed_quests[i].id == quest
+        temp_quest = $PokemonGlobal.quests.completed_quests[i]
+        $PokemonGlobal.quests.completed_quests.delete_at(i)
+        break
+      end
+    end
+    for i in 0...$PokemonGlobal.quests.failed_quests.length
+      if $PokemonGlobal.quests.failed_quests[i].id == quest
+        temp_quest = $PokemonGlobal.quests.failed_quests[i]
+        $PokemonGlobal.quests.failed_quests.delete_at(i)
+        break
+      end
+    end
+    for i in 0...$PokemonGlobal.quests.active_quests.length
+      if $PokemonGlobal.quests.active_quests[i].id == quest
+        temp_quest = $PokemonGlobal.quests.active_quests[i]
+        $PokemonGlobal.quests.active_quests.delete_at(i)
+        break
+      end
+    end
 end
 
 def taskCompleteJingle

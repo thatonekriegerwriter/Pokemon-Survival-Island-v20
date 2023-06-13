@@ -90,8 +90,11 @@ end
 
   EventHandlers.add(:on_frame_update, :agestepspkmn,
   proc {
-  if $PokemonSystem.survivalmode==0
+  if $PokemonSystem.survivalmode==0 && Nuzlocke.on?
   $player.pokemon_party.each do |pkmn|
+  if pkmn.hp<1
+    pkmn.permaFaint = true
+  end
   if $game_switches[168]==false && pbIsWeekday(6) 
     $game_switches[168] == true
     if pkmn.lifespan == 0 
@@ -114,7 +117,7 @@ end
 
   EventHandlers.add(:on_frame_update, :saturationstepsplayer,
   proc {
-  if  $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false
+  if  $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false && $PokemonSystem.nuzlockemode==0
   $PokemonGlobal.playersaturationSteps = 0 if !$PokemonGlobal.playersaturationSteps
   $PokemonGlobal.playersaturationSteps += 1
   if $PokemonGlobal.playersaturationSteps>=100
@@ -180,7 +183,7 @@ end
 
   EventHandlers.add(:on_frame_update, :foodstepspkmn,
   proc {
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false
+  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false && $PokemonSystem.nuzlockemode==0
   $PokemonGlobal.pkmnfoodSteps = 0 if !$PokemonGlobal.pkmnfoodSteps
   $PokemonGlobal.pkmnfoodSteps += 1
   if $PokemonGlobal.pkmnfoodSteps>=100
@@ -197,7 +200,7 @@ end
 
   EventHandlers.add(:on_frame_update, :waterstepspkmn,
   proc {
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false
+  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false && $PokemonSystem.nuzlockemode==0
   $PokemonGlobal.pkmnthirstSteps = 0 if !$PokemonGlobal.pkmnthirstSteps
   $PokemonGlobal.pkmnthirstSteps += 1
   if $PokemonGlobal.pkmnthirstSteps>=100
@@ -214,7 +217,7 @@ end
 
   EventHandlers.add(:on_frame_update, :sleepstepspkmn,
   proc {
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false
+  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false && $PokemonSystem.nuzlockemode==0
   $PokemonGlobal.pkmnsleepSteps = 0 if !$PokemonGlobal.pkmnsleepSteps
   $PokemonGlobal.pkmnsleepSteps += 1
   if $PokemonGlobal.pkmnsleepSteps>=100
@@ -232,12 +235,18 @@ end
 
   EventHandlers.add(:on_frame_update, :starvingpokemon,
   proc {
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false
+  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $game_switches[485]==false && $PokemonSystem.nuzlockemode==0
 				party = $player.party
                  for i in 0...party.length
                  pkmn = party[i]
 				 if pkmn.lifespan.nil?
 				  pkmn.lifespan = 50
+				 end
+				 if pkmn.food.nil?
+				  pkmn.food = 100
+				 end
+				 if pkmn.water.nil?
+				  pkmn.water = 100
 				 end
 				 if pkmn.food > 0 && pkmn.food < 25
 				   pkmn.changeLifespan("starving",pkmn)

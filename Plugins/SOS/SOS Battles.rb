@@ -149,15 +149,16 @@
     
     def pbGenerateSOSPokemon(species,level)
 	  if rand(100)> 60
-       new_species = species.check_evolution_on_level_up
+        bla = Pokemon.new(species,level,$Trainer)
+       new_species = bla.check_evolution_on_level_up
        if !new_species.nil?
 	    species = new_species
+	    if rand(100)> 95
+        new_species2 = bla.check_evolution_on_level_up
+        if !new_species2.nil?
+	    species = new_species2
 	   end
 	  end
-	  if rand(100)> 95
-       new_species = species.check_evolution_on_level_up
-       if !new_species.nil?
-	    species = new_species
 	   end
 	  end
       genwildpoke = Pokemon.new(species,level,$Trainer)

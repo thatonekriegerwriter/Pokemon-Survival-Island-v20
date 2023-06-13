@@ -60,9 +60,9 @@ module QuestModule
     :QuestGiver => "nil",
     :Stage1 => "Hear them out.",
     :Stage2 => "Locate the Missing Pokemon.",
-    :Stage3 => "Locate the Missing Pokemon.",
+    :Stage3 => "Return the Missing Pokemon.",
     :Location1 => "Temperate Swamp",
-    :QuestDescription => "Locate the Missing Pokemon.",
+    :QuestDescription => "Someone has had their POKeMON stolen! Quick! Find them!",
     :RewardString => "nil"
   }
   # Here's an example of not defining the quest giver and reward text

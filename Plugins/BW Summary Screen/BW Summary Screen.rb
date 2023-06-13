@@ -492,14 +492,18 @@ end
       imagepos.push([ballimage, 320, 44])
       # Show status/fainted/Pokérus infected icon
       status = -1
-      if @pokemon.fainted?
-        status = GameData::Status.count - 1
-      elsif @pokemon.status != :NONE
+      if @pokemon.status != :NONE
         status = GameData::Status.get(@pokemon.status).icon_position
       elsif @pokemon.pokerusStage == 1
         status = GameData::Status.count
       end
       status -= 1
+      if @pokemon.fainted?
+        status = GameData::Status.count - 1
+	  end
+      if @pokemon.permaFaint
+        status = GameData::Status.count + 1
+	  end
       if status >= 0
         imagepos.push(["Graphics/Pictures/statuses", 410, 88, 0, 16 * status, 44, 16])
       end

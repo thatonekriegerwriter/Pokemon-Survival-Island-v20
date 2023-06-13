@@ -94,6 +94,7 @@ Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
+BattleBack = Forest
 #-------------------------------
 [014]   # Stone Temple Cave
 Name = Stone Temple Cave
@@ -1418,7 +1419,8 @@ Name = Northern Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[239]
+[239]   # Frigid Highlands
+Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------

@@ -763,6 +763,8 @@ LandMorning,21
     20,HOPPIP,5
     20,SUNKERN,5
     10,PONYTA,3
+    10,MILTANK,2
+    10,MILTANK,2
     10,ROSELIA,2
     10,SENTRET,4
     10,VENONAT,2
@@ -776,6 +778,8 @@ LandDay,21
     20,RATTATA,5
     20,TAILLOW,3
     10,HOPPIP,3
+    10,MILTANK,2
+    10,MILTANK,2
     10,NATU,5
     10,SENTRET,4
     10,ZIGZAGOON,2
@@ -801,6 +805,8 @@ LandNight,21
 OverworldLandMorning,21
     20,HOPPIP,5
     20,SUNKERN,5
+    10,MILTANK,2
+    10,MILTANK,2
     10,PONYTA,3
     10,ROSELIA,2
     10,SENTRET,4
@@ -814,6 +820,8 @@ OverworldLandMorning,21
 OverworldLandDay,21
     20,RATTATA,5
     20,TAILLOW,3
+    10,MILTANK,2
+    10,MILTANK,2
     10,HOPPIP,3
     10,NATU,5
     10,SENTRET,4
@@ -859,10 +867,12 @@ Adventure,1
     10,PIKACHU,5
     5,RALTS,5
     5,TORCHIC,5
+    4,SMEARGLE,5
     4,FALINKS,5
     4,YAMPER,5
     1,OBSTAGOON,5
     1,RAICHU,5
+    1,UNOWN,5
 #-------------------------------
 [016] # Temperate Highlands
 RockSmash,50

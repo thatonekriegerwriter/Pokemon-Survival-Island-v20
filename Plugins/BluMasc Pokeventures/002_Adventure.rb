@@ -51,6 +51,12 @@ class Adventure
 			pkmn.advSteps = 0
 		end
 		pkmn.advSteps += 1
+		if pkmn.food<100
+		 pkmn.food=100
+		end
+		if pkmn.water>100
+		 pkmn.water=100
+		end
 		if pkmn.onAdventure.nil?
 		pkmn.onAdventure=true
 		end

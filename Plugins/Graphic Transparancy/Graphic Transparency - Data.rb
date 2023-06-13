@@ -18,9 +18,7 @@
 #Please follow the guide on the recource page if you are unsure how to edit this.
 #make sure this is never empty or it'll throw an error saying it is empty. (The script can't run in any possible way if this is empty anyways)
 @eventIDs = [
-#    [map ID,
-#        [event ID, event ID]
-#    ]
+#    [338,[4, 5]]
 ]
 #@eventPositionsToIgnore = [
 #    [23,

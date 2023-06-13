@@ -333,14 +333,14 @@ class DateAndTimeHud < Component
   end
 
   def refresh
-    text = _INTL("{1} {2} {3}",Time.now.day.to_i,pbGetAbbrevMonthName(Time.now.month.to_i),Time.now.year.to_i) if $PokemonBag.pbHasItem?(:CALENDAR)
-    text = _INTL("",Time.now.day.to_i,pbGetAbbrevMonthName(Time.now.month.to_i),Time.now.year.to_i) if !$PokemonBag.pbHasItem?(:CALENDAR)
-    text2 = _INTL("{1}",pbGetTimeNow.strftime("%I:%M %p")) if $PokemonBag.pbHasItem?(:CLOCK)
-    text2 = _INTL("",pbGetTimeNow.strftime("%I:%M %p")) if !$PokemonBag.pbHasItem?(:CLOCK)
+    text = _INTL("{1} {2} {3}",pbGetTimeNow.day.to_i,pbGetAbbrevMonthName(pbGetTimeNow.month.to_i),pbGetTimeNow.year.to_i) if $bag.has?(:CALENDAR)
+    text = _INTL("",pbGetTimeNow.day.to_i,pbGetAbbrevMonthName(pbGetTimeNow.month.to_i),pbGetTimeNow.year.to_i) if !$bag.has?(:CALENDAR)
+    text2 = _INTL("{1}",pbGetTimeNow.strftime("%I:%M %p")) if $bag.has?(:CLOCK)
+    text2 = _INTL("",pbGetTimeNow.strftime("%I:%M %p")) if !$bag.has?(:CLOCK)
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,
-      @baseColor,@shadowColor],[text2,Graphics.width/2 - 8,44,1,@baseColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 47,5,1,
+      @baseColor,@shadowColor],[text2,Graphics.width/2 - 50,27,1,@baseColor,@shadowColor]])
     @last_time = pbGetTimeNow.strftime("%I:%M %p")
   end
 end

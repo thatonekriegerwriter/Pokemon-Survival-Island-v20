@@ -37,6 +37,7 @@ class Adventure
 		@steps		= 0
 	end
 	def newStep
+	    return if @party.length == 0
 		pkmn,index = choosePokemonforEvent
 		if !pkmn.nil?
 		if pkmn.collectedItems.nil?
@@ -241,6 +242,7 @@ end
 	    amt = 0
 		pkmn = 0
 		loop do
+		return false if @party.length==0
 		index = rand(@party.length)
 		pkmn = @party[index]
 		if !pkmn.able? || pkmn.egg?

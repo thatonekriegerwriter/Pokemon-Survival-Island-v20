@@ -239,7 +239,7 @@ module VisibleEncounterSettings
   #       following pokemon
   
   #------------------- MOVEMENT OF SPAWNED POKEMON -----------------------
-  DEFAULT_MOVEMENT = [5, 5, 1] # default [3, 3, 1]
+  DEFAULT_MOVEMENT = [3, 3, 1] # default [3, 3, 1]
   # This parameter stores an array [move_speed, move_frequency, move_type] of three integers where
   # move_speed/ move_frequency/ move_type is the default movement speed/ frequency/ type of spawned PokeEvents.
   # See RPGMakerXP for more details (compare to autonomous movement of events).

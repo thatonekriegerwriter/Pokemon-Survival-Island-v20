@@ -192,7 +192,11 @@ class Battle
     hasExpShare = expShare.include?(idxParty)
     level = defeatedBattler.level
     level_cap = $PokemonSystem.level_caps == 0 ? LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL
+	if !growth_rate.exp_values[level_cap]
     level_cap_gap = growth_rate.exp_values[level_cap] - pkmn.exp
+	else
+    level_cap_gap = growth_rate.exp_values[4] - pkmn.exp
+	end
     # Main Exp calculation
     exp = 0
     a = level * defeatedBattler.pokemon.base_exp

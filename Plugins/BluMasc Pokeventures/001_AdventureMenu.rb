@@ -38,7 +38,7 @@ class Adventure_Scene
 				pbSummary(@adventureparty,pos)
 			elsif answer == 3
 			answer2 = []
-			pkmn = @party[pos]
+			pkmn = $player.party[pos]
 			if !pkmn.adventuringTypes.nil?
 			pkmn.adventuringTypes.each do |i|
 			answer2[answer2.length] = i.to_s

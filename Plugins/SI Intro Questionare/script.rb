@@ -494,6 +494,7 @@ def pbIntroQuestionare
 	 end
       pbMessage(_INTL("Of course, you don't have to be what your answers give, you can choose what you want to be!"))
   command = 0
+  loop do
     command = pbShowCommands(nil,
        [_INTL("I want what I got."),
        _INTL("Catcher!"),
@@ -507,6 +508,7 @@ def pbIntroQuestionare
        _INTL("Warrior!"),
        _INTL("Healer!"),
        _INTL("Mechanist!")],-1,command)
+	   if pbConfirmMessage(_INTL("Are you sure you want to pick this?"))
     case command
     when 0   # Withdraw Item
     when 1   # Deposit Item
@@ -906,5 +908,9 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
     end
+    break
+  else
   end
+   end
+   end
 

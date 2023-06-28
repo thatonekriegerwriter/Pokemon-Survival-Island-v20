@@ -1,7 +1,7 @@
 OUTBREAK_TIME    = 24                   #
 
-def pbPetCheck
-  if pbGetTimeNow.to_i-$PokemonGlobal.petTime>=OUTBREAK_TIME*60*60
+def pbPetCheckx
+  if pbGetTimeNow.to_i-$PokemonGlobal.petTime>=24*60*60
    return true
   else 
    return false
@@ -9,7 +9,7 @@ def pbPetCheck
 end
 
 def pbGroomCheck
-  if pbGetTimeNow.to_i-$PokemonGlobal.groomTime>=OUTBREAK_TIME*60*60
+  if pbGetTimeNow.to_i-$PokemonGlobal.groomTime>=24*60*60
    return true
   else 
    return false
@@ -58,6 +58,7 @@ command = 0
       pkmn.changeHappiness("groom",pkmn)
 	  end
 	  else
+	  pkmn = FollowingPkmn.get_pokemon
       pbMessage(_INTL("It's best not to pamper {1} too much!",pkmn.name))
 	  end
     when 3   # Use Statue
@@ -82,6 +83,7 @@ command = 0
       pkmn.changeLoyalty("groom",pkmn)
 	  end
 	  else 
+	  pkmn = FollowingPkmn.get_pokemon
       pbMessage(_INTL("It's best not to pamper {1} too much!",pkmn.name))
 	  end
     when 4   # Use Statue

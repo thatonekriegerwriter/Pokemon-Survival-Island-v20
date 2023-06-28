@@ -54,6 +54,7 @@ class BerryPlantData
     @watering_count     = 0
     @moisture_level     = 100
     @yield_penalty      = 0
+    @time_last_updated = pbGetTimeNow.to_i
   end
 
   def planted?
@@ -138,7 +139,7 @@ end
     drying_per_hour = plant_data.drying_per_hour
     berry_climate = plant_data.climate
     max_replants = GameData::BerryPlant::NUMBER_OF_REPLANTS
-    stages_growing = GameData::BerryPlant::NUMBER_OF_GROWTH_STAGES
+    stages_growing = 4
     stages_fully_grown = GameData::BerryPlant::NUMBER_OF_FULLY_GROWN_STAGES
     case @mulch_id
     when :GROWTHMULCH
@@ -337,12 +338,12 @@ class BerryPlantSprite
         end
       end
 #	  if berry_plant.moisture_level >= 100 && @old_stage != berry_plant.growth_stage &&
- #        @old_stage > 0 && berry_plant.growth_stage <= GameData::BerryPlant::NUMBER_OF_GROWTH_STAGES + 1
+ #        @old_stage > 0 && berry_plant.growth_stage <= 4 + 1
 #	    spriteset = $scene.spriteset(@map.map_id)
 #        spriteset&.addUserAnimation(Settings::PLANT_SPARKLE_ANIMATION_ID,@event.x, @event.y, false, 1)
 #	  end
       if berry_plant.new_mechanics && @old_stage != berry_plant.growth_stage &&
-         @old_stage > 0 && berry_plant.growth_stage <= GameData::BerryPlant::NUMBER_OF_GROWTH_STAGES + 1
+         @old_stage > 0 && berry_plant.growth_stage <= 4 + 1
         spriteset = $scene.spriteset(@map.map_id)
         spriteset&.addUserAnimation(Settings::PLANT_SPARKLE_ANIMATION_ID,
                                     @event.x, @event.y, false, 1)
@@ -392,7 +393,7 @@ def pbBerryPlant
   # Interact with the event based on its growth
   if berry_plant.grown?
     this_event.turn_up   # Stop the event turning towards the player
-    berry_plant.reset if pbPickBerry(berry, berry_plant.berry_yield)
+    berry_plant.reset if pbPickBerry(berry, berry_plant.berry_yield, true)
     return
   elsif berry_plant.growing?
     berry_name = GameData::Item.get(berry).name
@@ -665,7 +666,7 @@ end
 #===============================================================================
 #
 #===============================================================================
-def pbPickBerry(berry, qty = 1)
+def pbPickBerry(berry, qty = 1, replant=false)
   berry = GameData::Item.get(berry)
   berry_name = (qty > 1) ? berry.name_plural : berry.name
   if berry == :ACORN
@@ -728,7 +729,7 @@ def pbPickBerry(berry, qty = 1)
   end
   this_event = pbMapInterpreter.get_self
   
-  
+  if replant == true
   if pbConfirmMessage(_INTL("Do you want to replant {1}?", berry.name))
   if $bag.remove(berry)
   $stats.berries_planted += 1
@@ -749,6 +750,7 @@ def pbPickBerry(berry, qty = 1)
   else
   pbSetSelfSwitch(this_event.id, "A", true)  
   return true
+  end
   end
 end
 

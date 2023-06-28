@@ -32,7 +32,7 @@
     // FPS display toggled via F2
     // (default: disabled)
     //
- "printFPS": false,
+ "printFPS": true,
 
 
     // Game window is resizable
@@ -65,7 +65,7 @@
     // Sync screen redraws to the monitor refresh rate
     // (default: disabled)
     //
- "vsync": true,
+    // "vsync": false,
 
 
     // Specify the window width on startup. If set to 0,

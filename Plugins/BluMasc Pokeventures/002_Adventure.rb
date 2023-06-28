@@ -52,10 +52,10 @@ class Adventure
 			pkmn.advSteps = 0
 		end
 		pkmn.advSteps += 1
-		if pkmn.food<100
+		if pkmn.food<100 && Nuzlocke.on?
 		 pkmn.food=100
 		end
-		if pkmn.water>100
+		if pkmn.water>100 && Nuzlocke.on?
 		 pkmn.water=100
 		end
 		if pkmn.onAdventure.nil?
@@ -721,7 +721,7 @@ end
 			   if pkmn.loyalty < 10 && chances<=270
 				 remove_pokemon_at_index(index)
 			   end
-			   if pkmn.hp==0 && defined?(Nuzlocke.definedrules?)
+			   if pkmn.hp==0 && defined?(Nuzlocke.definedrules?) && Nuzlocke.on?
 			     if chances<=170
 				 pkmn.permaFaint = true
 				 else

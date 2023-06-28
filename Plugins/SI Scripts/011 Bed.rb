@@ -1,5 +1,14 @@
 def heal_BED(wari,pkmn)
-    chance = rand(11)
+  case $PokemonSystem.difficulty
+    when 0
+	 chance = rand(5)
+    when 1
+	 chance = rand(7)
+    when 2
+	 chance = rand(9)
+    when 3
+	 chance = rand(11)
+  end
   return if pkmn.egg?
   if wari >= 8
     pkmn.heal_HP

@@ -14,7 +14,7 @@ command = 0
                     _INTL("Exit")],-1)
         pbDisposeMessageWindow(msgwindow)
     case command
-    when 0   # Use Statue
+    when 0   # Breeding
 	  if $bag.quantity(:WOODENPLANKS)>=200
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[496]=true
@@ -26,7 +26,7 @@ command = 0
 	   pbMessage(_INTL("You need {1} more Wooden Planks to build this.",amount))
 	  break
 	  end
-    when 1   # Use Statue
+    when 1   # Upstairs
 	  if $bag.quantity(:WOODENPLANKS)>=500
       if $bag.quantity(:STONE)>=50
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
@@ -45,7 +45,7 @@ command = 0
 	   pbMessage(_INTL("You need {1} more stone to build this.",amount))
 	  break
 	  end
-    when 2   # Use Statue
+    when 2   # Cave
 	  if $bag.quantity(:IRONPICKAXE)>=5
       if $bag.quantity(:WOODENPLANKS)>=50
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
@@ -64,7 +64,7 @@ command = 0
 	   pbMessage(_INTL("You need {1} more Pickaxe to build this.",amount))
 	  break
 	  end
-    when 3   # Use Statue
+    when 3   # Well
 	  if $bag.quantity(:STONE)>=50
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[494]=true
@@ -76,7 +76,7 @@ command = 0
 	   pbMessage(_INTL("You need {1} more Stone to build this.",amount))
 	  break
 	  end
-    when 4   # Use Statue
+    when 4   # Statue
 	 if $bag.quantity(:HARDSTONE)>=50
       if $bag.quantity(:MINDPLATE)>=5
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
@@ -95,7 +95,7 @@ command = 0
 	   pbMessage(_INTL("You need {1} more Hard Stone to build this.",amount))
 	  break
 	  end
-    when 5   # Use Statue
+    when 5   # Yard Farm
 	  if $bag.quantity(:BONEDUST)>=50
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   $game_switches[478]=true

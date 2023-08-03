@@ -1,5 +1,4 @@
-def pbCookMeat(home=false,poke=nil)
-     Kernel.pbMessage(_INTL("You decide to use this POKeMON for food."))
+def pbCookMeat(home=false,poke=nil,combat=false)
 	   if home==true
 	   pkmn = pbGetPokemon(1)
 	   poke = pkmn
@@ -8,8 +7,10 @@ def pbCookMeat(home=false,poke=nil)
 	   if !poke.nil?
 	   pkmn = poke
 	   end
+	   if combat==false
 	   if $bag.add(GameData::Item.get(pkmn.poke_ball).id,1)
 	   puts pkmn.poke_ball
+	   end
 	   end
 	   if pkmn== :MAGIKARP
 	    if home==true
@@ -40,7 +41,7 @@ def pbCookMeat(home=false,poke=nil)
 	    if home==true
         Kernel.pbMessage(_INTL("You can't kill a ghost."))
 		else
-        pbDisplayPaused(_INTL("Wow, there is no meat on the Magikarp."))
+        pbDisplayPaused(_INTL("You can't kill a ghost."))
 		end
 	   elsif pkmn.type1 == :STEEL
 		$bag.add(:STEELYMEAT,(rand(3)+1))

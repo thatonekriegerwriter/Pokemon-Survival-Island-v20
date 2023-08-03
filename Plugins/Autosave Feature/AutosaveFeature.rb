@@ -66,7 +66,7 @@ end
 def pbAutosave(scene = nil)
   scene = $scene if !scene
   return if $PokemonSystem.autosave!=0
-  if !pbInSafari? && !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
+  if !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
     scene.spriteset.addUserSprite(Autosave.new)
 	Game.auto_save
   end
@@ -77,8 +77,7 @@ EventHandlers.add(:on_enter_map, :autosave,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
     old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
-    if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && 
-      map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
+    if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
       $game_temp.changeUnConnectedMap = true 
     end
   }

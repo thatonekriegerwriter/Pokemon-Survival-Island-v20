@@ -14,7 +14,36 @@
 #Thanks Maurili and Vendily for the Original Hunger Script  
 
 class Pokemon
+  attr_accessor :happiness
+  attr_accessor :loyalty
+  attr_accessor :starter
+  attr_accessor :water
+  attr_accessor :food
+  attr_accessor :sleep
+  attr_accessor :age
+  attr_accessor :maxage
+  attr_accessor :lifespan
+  attr_reader :hue
+  
+  
+alias _SI_Pokemon_species= species=
+def species=(species_id)
+  _SI_Pokemon_species=(species_id)
+end
+alias _SI_Pokemon_init initialize
+def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
+ _SI_Pokemon_init(species, level, owner = $player, withMoves = true, recheck_form = true)
+    @hue = nil
+    @happiness        = species_data.happiness || 100
+    @loyalty          = species_data.loyalty || 100
+    @starter          = false
+    @food             = species_data.food || 100
+    @water            = species_data.water || 100
+    @sleep            = species_data.sleep || 100
+    @maxage          = species_data.maxage || 100
+    @lifespan          = species_data.lifespan || 100
 
+end
 
   def changeFood
     if @food.nil?
@@ -82,30 +111,162 @@ class Pokemon
 end
 
 class Player < Trainer
-
-  def playerwater=(value)
-    validate value => Integer
-    @playerwater = value.clamp(0, 100)
-  end
-  def playerfood=(value)
-    validate value => Integer
-    @playerfood = value.clamp(0, 100)
-  end
+  attr_reader :playerwater  #206
+  attr_reader :playerfood   #205
+  attr_reader :playersleep   #208
+  attr_reader :playerbasewater  #206
+  attr_reader :playerbasefood   #205
+  attr_reader :playerbasesleep   #208
+  attr_reader :playerwatermod  #206
+  attr_reader :playermaxwater
+  attr_reader :playerfoodmod  #205
+  attr_reader :playermaxfood
+  attr_reader :playersleepmod   #208
+  attr_reader :playermaxsleep
+  attr_reader :playersaturation #207
+  attr_reader :playerhealth #225
+  attr_reader :playerbasehealth #225
+  attr_reader :playerhealthmod #225
+  attr_reader :playermaxhealth
+  attr_reader :playerstamina
+  attr_reader :playertemperature
+  attr_reader :playerbasestamina
+  attr_reader :playermaxstamina
+  attr_reader :playerstaminamod
+  attr_accessor :rocket_unlocked
+  attr_accessor :chapter2_unlocked
+  attr_reader :playershirt 
+  attr_reader :playerpants
+  attr_reader :playershoes  
+  attr_reader :rocketplaythrough
+  attr_reader :rocketbadges
+  attr_reader :rocketstealing
+  attr_reader :rocketstealcount
+  attr_reader :playerwrath
+  attr_reader :playerharmony
+  attr_reader :playermoral
+  attr_reader :playerclass
+  attr_reader :playerclasslevel
+  attr_reader :partner1 #207
+  attr_reader :partner2 #207
+  attr_reader :partner3 #207
+  attr_reader :partner4 #207
+  attr_reader :partner5 #207
+  attr_reader :partner6 #207
+  attr_reader :partner7 #207
+  attr_reader :partner8 #207
+  attr_reader :partner1affinity #207
+  attr_reader :partner2affinity #207
+  attr_reader :partner3affinity #207
+  attr_reader :partner4affinity #207
+  attr_reader :partner5affinity #207
+  attr_reader :partner6affinity #207
+  attr_reader :partner7affinity #207
+  attr_reader :partner8affinity #207
+  attr_reader :blueaffinity #207
+  attr_reader :redaffinity #207
+  attr_reader :runpartner1 #207
+  attr_reader :runpartner2 #207
+  attr_reader :runpartner3 #207
+  attr_reader :runpartner4 #207
+  attr_reader :runpartner5 #207
+  attr_reader :runpartner6 #207
+  attr_reader :runpartner7 #207
+  attr_reader :demotimer #207
+  attr_reader :playermode #207
+  
+  
+  
   def playersaturation=(value)
     validate value => Integer
     @playersaturation = value.clamp(0, 100)
   end
   def playersleep=(value)
     validate value => Integer
-    @playersleep = value.clamp(0, 200)
+    @playersleep = value.clamp(0, 9999)
+  end
+  def playerwater=(value)
+    validate value => Integer
+    @playerwater = value.clamp(0, 9999)
+  end
+  def playerfood=(value)
+    validate value => Integer
+    @playerfood = value.clamp(0, 9999)
+  end
+
+  def playertemperature=(value)
+    validate value => Integer
+    @playertemperature = value.clamp(0, 9999)
+  end
+
+
+  def playerbasesleep=(value)
+    validate value => Integer
+    @playerbasesleep = value.clamp(0, 200)
+  end
+  def playerbasewater=(value)
+    validate value => Integer
+    @playerbasewater = value.clamp(0, 100)
+  end
+  def playerbasefood=(value)
+    validate value => Integer
+    @playerbasefood = value.clamp(0, 100)
+  end
+
+
+
+  def playermaxwater=(value)
+    validate value => Integer
+    @playermaxwater = value.clamp(0, 9999)
+  end
+  def playermaxsleep=(value)
+    validate value => Integer
+    @playermaxsleep = value.clamp(0, 9999)
+  end
+  def playermaxfood=(value)
+    validate value => Integer
+    @playermaxfood = value.clamp(0, 9999)
+  end
+
+
+  def playersleepmod=(value)
+    validate value => Integer
+    @playersleepmod = value.clamp(0, 9999)
+  end 
+  def playerwatermod=(value)
+    validate value => Integer
+    @playerwatermod = value.clamp(0, 9999)
+  end  
+  def playerfoodmod=(value)
+    validate value => Integer
+    @playerfoodmod = value.clamp(0, 9999)
+  end
+
+  def playerhealthmod=(value)
+    validate value => Integer
+    @playerhealthmod = value.clamp(0, 9999)
   end
   def playerhealth=(value)
     validate value => Integer
-    @playerhealth = value.clamp(0, 100)
+    @playerhealth = value.clamp(0, 9999)
   end
+  def playerbasehealth=(value)
+    validate value => Integer
+    @playerbasehealth = value.clamp(0, 100)
+  end
+  def playermaxhealth=(value)
+    validate value => Integer
+    @playermaxhealth = value.clamp(0, 9999)
+  end
+
+
   def playerstamina=(value)
     validate value => Float
-    @playerstamina = value.clamp(0, 1000)
+    @playerstamina = value.clamp(0, 9999)
+  end
+  def playerbasestamina=(value)
+    validate value => Float
+    @playerstamina = value.clamp(0, 9999)
   end
   def playermaxstamina=(value)
     validate value => Float
@@ -115,6 +276,225 @@ class Player < Trainer
     validate value => Float
     @playerstaminamod = value.clamp(0, 50)
   end
+  
+  def playermoral=(value)
+    validate value => Integer
+    @playermoral = value.clamp(0, 9999)
+  end
+  def playerharmony=(value)
+    validate value => Integer
+    @playerharmony = value.clamp(0, 9999)
+  end
+  def playerwrath=(value)
+    validate value => Integer
+    @playerwrath = value.clamp(0, 9999)
+  end
+  def rocketplaythrough=(value)
+    validate value => Integer
+    @rocketplaythrough = value.clamp(0, 1)
+  end
+  def rocketbadges=(value)
+    validate value => Integer
+    @rocketbadges = 0
+  end
+  def rocketstealing=(value)
+    validate value => Integer
+    @rocketstealing = 0
+  end
+  def rocketstealcount=(value)
+    validate value => Integer
+    @rocketstealcount = value.clamp(0, 9999)
+  end
+  def playerclass=(value)
+    @playerclass = value
+  end
+  def playerclasslevel=(value)
+    validate value => Integer
+    @playerclasslevel = value.clamp(0, 100)
+  end
+  
+  def partner1=(value)
+    @partner1 = value
+  end
+  def partner2=(value)
+    @partner2 = value
+  end
+  def partner3=(value)
+    @partner3 = value
+  end
+  def partner4=(value)
+    @partner4 = value
+  end
+  def partner5=(value)
+    @partner5 = value
+  end
+  def partner6=(value)
+    @partner6 = value
+  end
+  def partner7=(value)
+    @partner7 = value
+  end
+  def partner8=(value)
+    @partner8 = value
+  end
+  def partner1affinity=(value)
+    validate value => Integer
+    @partner1affinity = value.clamp(0, 100)
+  end
+  def partner2affinity=(value)
+    validate value => Integer
+    @partner2affinity = value.clamp(0, 100)
+  end
+  def partner3affinity=(value)
+    validate value => Integer
+    @partner3affinity = value.clamp(0, 100)
+  end
+  def partner4affinity=(value)
+    validate value => Integer
+    @partner4affinity = value.clamp(0, 100)
+  end
+  def partner5affinity=(value)
+    validate value => Integer
+    @partner5affinity = value.clamp(0, 100)
+  end
+  def partner6affinity=(value)
+    validate value => Integer
+    @partner6affinity = value.clamp(0, 100)
+  end
+  def partner7affinity=(value)
+    validate value => Integer
+    @partner7affinity = value.clamp(0, 100)
+  end
+  def partner8affinity=(value)
+    validate value => Integer
+    @partner7affinity = value.clamp(0, 100)
+  end
+  def blueaffinity=(value)
+    validate value => Integer
+    @blueaffinity = value.clamp(0, 100)
+  end
+  def redaffinity=(value)
+    validate value => Integer
+    @redaffinity = value.clamp(0, 100)
+  end
+  def runpartner1=(value)
+    @runpartner1 = value
+  end
+  def runpartner2=(value)
+    @runpartner2 = value  
+  end
+  def runpartner3=(value)
+    @runpartner2 = value  
+  end
+  def runpartner4=(value)
+    @runpartner4 = value
+  end
+  def runpartner5=(value)
+    @runpartner5 = value
+  end
+  def runpartner6=(value)
+    @runpartner6 = value
+  end
+  def runpartner7=(value)
+    @runpartner7 = value
+  end
+  
+  
+  
+  def demotimer=(value)
+    validate value => Integer
+    @demotimer = value.clamp(0, 691200)
+  end
+  
+  
+  
+  
+  
+  def playershirt=(value)
+    @playershirt = value
+  end
+  def playerpants=(value)
+    @playerpants = value
+  end
+  def playershoes=(value)
+    @playershoes = value
+  end
+
+  
+  def playermode=(value)
+    @playermode = value
+  end
+
+   alias _SI_Player_Init initialize
+  def initialize(name, trainer_type)
+    _SI_Player_Init(name, trainer_type)
+    @playerpants           = :NORMALPANTS
+    @playershirt           = :NORMALSHIRT
+    @playershoes           = :NORMALSHOES
+    @rocket_unlocked = false
+    @chapter2_unlocked = false
+    @playerwater   = 100   # Text speed 
+    @playerfood = 100     # Battle effects (animations) (0=on, 1=off)
+    @playerhealth  = 100     # Default window frame (see also Settings::MENU_WINDOWSKINS)
+    @playersaturation = 200     # Battle style (0=switch, 1=set)
+    @playersleep = 100     # Battle style (0=switch, 1=set)
+    @playerstamina  = 50.0     # Speech frame
+    @playerbasestamina  = 100.0     # Speech frame
+    @playermaxstamina  = 100.0     # Speech frame
+    @playermaxsleep  = 100     # Speech frame
+    @playermaxhealth  = 100     # Speech frame
+    @playertemperature  = 50     # Speech frame
+    @playermaxfood  = 100     # Speech frame
+    @playermaxwater  = 100     # Speech frame
+    @playerstaminamod  = 0     # Speech frame
+    @playerfoodmod  = 0     # Speech frame
+    @playerwatermod  = 0     # Speech frame
+    @playersleepmod  = 0     # Speech frame
+    @playerhealthmod  = 0     # Speech frame
+    @playerbasesleep = 100     # Battle style (0=switch, 1=set)
+    @playerbasewater   = 100   # Text speed 
+    @playerbasefood = 100     # Battle effects (animations) (0=on, 1=off)
+    @playerbasehealth  = 100     # Default window frame (see also Settings::MENU_WINDOWSKINS)
+    @rocketplaythrough                  = 0
+    @rocketbadges                  = 0
+    @rocketstealing                 = 0
+    @rocketstealcount                 = 0
+    @playerwrath                 = 0
+    @playerharmony                 = 0
+    @playermoral                 = 0
+    @playerclass           = "None"
+    @playerclasslevel                 = 1
+    @partner1          = 1
+    @partner2          = 2
+    @partner3          = 3
+    @partner4          = 4
+    @partner5          = 5
+    @partner6          = 6
+    @partner7          = 7
+    @partner8          = 8
+    @partner1affinity          = 50
+    @partner2affinity          = 50
+    @partner3affinity          = 50
+    @partner4affinity          = 50
+    @partner5affinity          = 50
+    @partner6affinity          = 50
+    @partner7affinity          = 50
+    @partner8affinity          = 50
+    @blueaffinity          = 50
+    @redaffinity          = 50
+    @runpartner1          = 0
+    @runpartner2          = 0
+    @runpartner3          = 0
+    @runpartner4          = 0
+    @runpartner5          = 0
+    @runpartner6          = 0
+    @runpartner7          = 0 
+    @runpartner6          = 0
+    @runpartner7          = 0 
+    @demotimer            = 691200 
+    @playermode     = 1     # Text input mode (0=PSID, 1=PSIA)
+  end
+  
 end
 
 def pbSetTemperature

@@ -2023,6 +2023,7 @@ Habitat = Grassland
 Category = Fire Horse
 Pokedex = It can't run properly when it's newly born. As it races around with others of its kind, its legs grow stronger.
 FormName = Kantonian Form
+WildItemCommon = LEATHER
 Generation = 1
 Evolutions = RAPIDASH,Level,40
 #-------------------------------
@@ -2050,6 +2051,7 @@ Habitat = Grassland
 Category = Fire Horse
 Pokedex = This Pokémon can be seen galloping through fields at speeds of up to 150 mph, its fiery mane fluttering in the wind.
 FormName = Kantonian Form
+WildItemCommon = LEATHER
 Generation = 1
 #-------------------------------
 [SLOWPOKE]
@@ -3023,6 +3025,7 @@ Shape = BipedalTail
 Habitat = Grassland
 Category = Parent
 Pokedex = Although it's carrying its baby in a pouch on its belly, Kangaskhan is swift on its feet. It intimidates its opponents with quick jabs.
+WildItemCommon = LEATHER
 Generation = 1
 #-------------------------------
 [HORSEA]
@@ -4149,6 +4152,7 @@ Habitat = WatersEdge
 Category = Big Jaw
 Pokedex = Its powerful, well-developed jaws are capable of crushing anything. Even its Trainer must be careful.
 Generation = 2
+WildItemCommon = LEATHER
 Evolutions = CROCONAW,Level,18
 #-------------------------------
 [CROCONAW]
@@ -4175,6 +4179,7 @@ Habitat = WatersEdge
 Category = Big Jaw
 Pokedex = Once it bites down, it won't let go until it loses its fangs. New fangs quickly grow into place.
 Generation = 2
+WildItemCommon = LEATHER
 Evolutions = FERALIGATR,Level,30
 #-------------------------------
 [FERALIGATR]
@@ -4199,6 +4204,7 @@ Color = Blue
 Shape = BipedalTail
 Habitat = WatersEdge
 Category = Big Jaw
+WildItemCommon = LEATHER
 Pokedex = When it bites with its massive and powerful jaws, it shakes its head and savagely tears its victim up.
 Generation = 2
 #-------------------------------
@@ -4690,6 +4696,7 @@ Habitat = Grassland
 Category = Wool
 Pokedex = It stores lots of air in its soft fur, allowing it to stay cool in summer and warm in winter.
 Generation = 2
+WildItemCommon = WOOL
 Evolutions = FLAAFFY,Level,15
 #-------------------------------
 [FLAAFFY]
@@ -4714,6 +4721,7 @@ Color = Pink
 Shape = BipedalTail
 Habitat = Grassland
 Category = Wool
+WildItemCommon = WOOL
 Pokedex = If its coat becomes fully charged with electricity, its tail lights up. It fires hair that zaps on impact.
 Generation = 2
 Evolutions = AMPHAROS,Level,30
@@ -4740,6 +4748,7 @@ Color = Yellow
 Shape = BipedalTail
 Habitat = Grassland
 Category = Light
+WildItemCommon = LEATHER
 Pokedex = The tail's tip shines brightly and can be seen from far away. It acts as a beacon for lost people.
 Generation = 2
 #-------------------------------
@@ -5303,6 +5312,7 @@ Color = Yellow
 Shape = Quadruped
 Habitat = Grassland
 Category = Long Neck
+WildItemCommon = LEATHER
 Pokedex = Its tail has a small brain of its own. Beware! If you get close, it may react to your scent by biting.
 Generation = 2
 #-------------------------------
@@ -6028,6 +6038,7 @@ Habitat = RoughTerrain
 Category = Long Nose
 Pokedex = It is strong despite its compact size. It can easily pick up and carry an adult human on its back.
 Generation = 2
+WildItemCommon = LEATHER
 Evolutions = DONPHAN,Level,25
 #-------------------------------
 [DONPHAN]
@@ -6052,6 +6063,7 @@ Color = Gray
 Shape = Quadruped
 Habitat = RoughTerrain
 Category = Armor
+WildItemCommon = LEATHER
 Pokedex = The longer and bigger its tusks, the higher its rank in its herd. The tusks take long to grow.
 Generation = 2
 #-------------------------------
@@ -6105,6 +6117,7 @@ Habitat = Forest
 Category = Big Horn
 Pokedex = The curved antlers subtly change the flow of air to create a strange space where reality is distorted.
 Generation = 2
+WildItemCommon = LEATHER
 Evolutions = WYRDEER,HasMove,PSYSHIELDBASH
 #-------------------------------
 [SMEARGLE]
@@ -8483,6 +8496,7 @@ Habitat = Mountain
 Category = Bounce
 Pokedex = It bounces around on its tail to keep its heart pumping. It carries a pearl from Clamperl on its head.
 Generation = 3
+WildItemCommon = LEATHER
 Evolutions = GRUMPIG,Level,32
 #-------------------------------
 [GRUMPIG]
@@ -8507,6 +8521,7 @@ Color = Purple
 Shape = BipedalTail
 Habitat = Mountain
 Category = Manipulate
+WildItemCommon = LEATHER
 Pokedex = It uses black pearls to amplify its psychic power. It does an odd dance to gain control over foes.
 Generation = 3
 #-------------------------------
@@ -13570,6 +13585,7 @@ Habitat = Grassland
 Category = Electrified
 Pokedex = Its mane shines when it discharges electricity. They use the frequency and rhythm of these flashes to communicate.
 Generation = 5
+WildItemCommon = LEATHER
 Evolutions = ZEBSTRIKA,Level,27
 #-------------------------------
 [ZEBSTRIKA]
@@ -13594,6 +13610,7 @@ Color = Black
 Shape = Quadruped
 Habitat = Grassland
 Category = Thunderbolt
+WildItemCommon = LEATHER
 Pokedex = They have lightning-like movements. When Zebstrika run at full speed, the sound of thunder reverberates.
 Generation = 5
 #-------------------------------
@@ -14333,6 +14350,7 @@ Habitat = RoughTerrain
 Category = Desert Croc
 Pokedex = Sandile is small, but its legs and lower body are powerful. Pushing sand aside as it goes, Sandile moves through the desert as if it's swimming.
 Generation = 5
+WildItemCommon = LEATHER
 WildItemUncommon = BLACKGLASSES
 Evolutions = KROKOROK,Level,29
 #-------------------------------
@@ -14360,6 +14378,7 @@ Habitat = RoughTerrain
 Category = Desert Croc
 Pokedex = Although this Pokémon has specialized eyes that allow it to see in the dark, Krokorok won't move much at night, the desert gets cold after sunset.
 Generation = 5
+WildItemCommon = LEATHER
 WildItemUncommon = BLACKGLASSES
 Evolutions = KROOKODILE,Level,40
 #-------------------------------
@@ -14387,6 +14406,7 @@ Habitat = RoughTerrain
 Category = Intimidation
 Pokedex = This Pokémon is known as the Bully of the Sands. Krookodile's mighty jaws can bite through heavy plates of iron with almost no effort at all.
 Generation = 5
+WildItemCommon = LEATHER
 WildItemCommon = BLACKGLASSES
 #-------------------------------
 [DARUMAKA]
@@ -15213,6 +15233,7 @@ Category = Season
 Pokedex = The turning of the seasons changes the color and scent of this Pokémon's fur. People use it to mark the seasons.
 FormName = Spring Form
 Generation = 5
+WildItemCommon = LEATHER
 Evolutions = SAWSBUCK,Level,34
 #-------------------------------
 [SAWSBUCK]
@@ -15238,6 +15259,7 @@ Shape = Quadruped
 Habitat = Forest
 Category = Season
 Pokedex = They migrate according to the seasons, so some people call Sawsbuck the harbingers of spring.
+WildItemCommon = LEATHER
 FormName = Spring Form
 Generation = 5
 #-------------------------------
@@ -16265,6 +16287,7 @@ Habitat = Grassland
 Category = Bash Buffalo
 Pokedex = These Pokémon live in herds of about 20 individuals. Bouffalant that betray the herd will lose the hair on their heads for some reason.
 Generation = 5
+WildItemCommon = LEATHER
 #-------------------------------
 [RUFFLET]
 Name = Rufflet
@@ -19425,6 +19448,7 @@ Habitat = RoughTerrain
 Category = Donkey
 Pokedex = It eats dirt to create mud and smears this mud all over its feet, giving them the grip needed to walk on rough terrain without slipping.
 Generation = 7
+WildItemCommon = LEATHER
 WildItemUncommon = LIGHTCLAY
 Evolutions = MUDSDALE,Level,30
 #-------------------------------
@@ -19452,6 +19476,7 @@ Habitat = RoughTerrain
 Category = Draft Horse
 Pokedex = Mud that hardens around a Mudsdale's legs sets harder than stone. It's so hard that it allows this Pokémon to scrap a truck with a single kick.
 Generation = 7
+WildItemCommon = LEATHER
 WildItemUncommon = LIGHTCLAY
 #-------------------------------
 [DEWPIDER]
@@ -23670,6 +23695,7 @@ Color = Gray
 Shape = Head
 Habitat = Cave
 Category = Twins
+WildItemCommon = LEATHER
 Pokedex = The two entities are attached from the birth. One head looks for danger, while the other finds food for both. Even if apparently related to Girafarig or Wobbuffet, it has nothing to do with them.
 Evolutions = GIRAFARIG,Level,29
 #-------------------------------
@@ -24303,6 +24329,7 @@ Color = Gray
 Shape = Quadruped
 Habitat = Forest
 Category = Big Horn
+WildItemCommon = LEATHER
 Pokedex = The black orbs shine with an uncanny light when the Pokémon is erecting invisible barriers. The fur shed from its beard retains heat well and is a highly useful material for winter clothing
 Generation = 8
 #-------------------------------

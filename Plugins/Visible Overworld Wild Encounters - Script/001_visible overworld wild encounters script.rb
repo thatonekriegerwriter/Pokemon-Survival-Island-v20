@@ -304,11 +304,8 @@ EventHandlers.add(:on_player_change_direction, :trigger_encounter,
   proc {
     next if $game_temp.in_menu
     repel_active = ($PokemonGlobal.repel > 0)
-    if pbBattleOrSpawnOnStepTaken(repel_active) 
       pbBattleOnStepTaken(repel_active) # STANDARD WILD BATTLE
-    else
       pbSpawnOnStepTaken(repel_active)  # OVERWORLD ENCOUNTERS
-    end
   }
 )
 
@@ -363,7 +360,7 @@ end
 # new method pbSpawnOnStepTaken working almost like pbBattleOnStepTaken
 #===============================================================================
 def pbSpawnOnStepTaken(repel_active)
-  return if $player.able_pokemon_count == 0 #check if trainer has pokemon
+#  return if $player.able_pokemon_count == 0 #check if trainer has pokemon
   #First we choose a tile near the player
   pos = pbChooseTileOnStepTaken
   return if !pos
@@ -693,8 +690,6 @@ class Game_Map
     Compiler::push_script(event.pages[0].list,sprintf(parameter))
     parameter = ($game_temp.roamer_index_for_encounter!=nil) ? " $game_temp.roamer_index_for_encounter = "+$game_temp.roamer_index_for_encounter.to_s : " $game_temp.roamer_index_for_encounter = nil "
     Compiler::push_script(event.pages[0].list,sprintf(parameter))
-    parameter = ($PokemonGlobal.nextBattleBGM!=nil) ? " $PokemonGlobal.nextBattleBGM = '"+$PokemonGlobal.nextBattleBGM.to_s+"'" : " $PokemonGlobal.nextBattleBGM = nil "
-    Compiler::push_script(event.pages[0].list,sprintf(parameter))
     parameter = ($game_temp.force_single_battle!=nil) ? " $game_temp.force_single_battle = "+$game_temp.force_single_battle.to_s : " $game_temp.force_single_battle = nil "
     Compiler::push_script(event.pages[0].list,sprintf(parameter))
     parameter = ($game_temp.encounter_type!=nil) ? " $game_temp.encounter_type = :"+$game_temp.encounter_type.to_s : " $game_temp.encounter_type = nil "
@@ -807,6 +802,9 @@ end
 # adding new Method pbSingleOrDoubleWildBattle to reduce the code in spawnPokeEvent
 #===============================================================================
 def pbSingleOrDoubleWildBattle(map_id,x,y,pokemon)
+  if pbInSafari?
+    pbSafariBattle(nil,nil,pokemon)
+  else
   if $PokemonEncounters.have_double_wild_battle_on_tile?(x,y,map_id)
       encounter2 = $PokemonEncounters.choose_wild_pokemon($game_temp.encounter_type)
       EventHandlers.trigger(:on_wild_species_chosen, encounter2)
@@ -814,6 +812,7 @@ def pbSingleOrDoubleWildBattle(map_id,x,y,pokemon)
       WildBattle.start(pokemon, encounter2, can_override: true)
   else
     WildBattle.start(pokemon, can_override: true)
+  end
   end
   $game_temp.encounter_type = nil
   $game_temp.encounter_triggered = true

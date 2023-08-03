@@ -292,5 +292,6 @@ def setNewTime(hour,min=0,sec=0) # Hour is 0..23
   secWished = hour*60*60+min*60+sec
   secondsAdded = secWished-secNow
   secondsAdded +=secInDay if secondsAdded<0
-  $game_variables[29]+=secondsAdded
+  $game_variables[EXTRA_SECONDS]+=secondsAdded
 end
+

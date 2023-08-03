@@ -55,13 +55,17 @@ class VoltseonsPauseMenu < Component
       shiftCursor(1)
     elsif Input.trigger?(Input::USE)
       pbPlayDecisionSE
+	  puts @currentSelection
       exit = @entries[@currentSelection].selected(@menu) # trigger selected entry.
+	  if @currentSelection == 13 && exit == false
+	  else
       calculateMenuEntries
       calculateDisplayIndex
       redrawMenuIcons
       calculateXPositions(true)
       @shouldRefresh = true
       $game_temp.last_menu_selection = @currentSelection
+	  end
     end
     if @shouldRefresh && !@menu.shouldExit
       refreshMenu

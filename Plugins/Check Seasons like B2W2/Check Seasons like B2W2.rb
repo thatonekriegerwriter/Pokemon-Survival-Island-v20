@@ -11,8 +11,7 @@ module ShowSeasonBW2
     return Bitmap.new("Graphics/Pictures/Seasons/#{name}")
   end
   def pbSeason_Screen
-		val = GameData::MapMetadata.get($game_map.map_id).outdoor_map if GameData::MapMetadata.exists?($game_map.map_id)
-    if val && !pbMapInterpreterRunning?
+    if !pbMapInterpreterRunning?
       checked = 0
       loop do
         Graphics.update
@@ -55,11 +54,18 @@ module ShowSeasonBW2
     end
   end
 end
-class Scene_Map
-  alias season_map_update update
-  def update
+module Game
+
+  def self.load(save_data)
+    validate save_data => Hash
+    SaveData.load_all_values(save_data)
+    $stats.play_sessions += 1
+    self.load_map
+    pbAutoplayOnSave
+    $game_map.update
+    $PokemonMap.updateMap
+    $scene = Scene_Map.new
     ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
-    season_map_update
 	pbToneChangeAll(Tone.new(0,0,0,0),20)
   end
 end

@@ -1,24 +1,26 @@
 def heal_BED(wari,pkmn)
   case $PokemonSystem.difficulty
     when 0
-	 chance = rand(5)
+	 chance = rand(5)+1
     when 1
-	 chance = rand(7)
+	 chance = rand(9)+1
     when 2
-	 chance = rand(9)
+	 chance = rand(17)+1
     when 3
-	 chance = rand(11)
+	 chance = rand(19)+1
+  end
+  if Nuzlocke.on?
+	 chance += rand(2)+1
+  end
+  if $PokemonSystem.survivalmode == 0
+	 chance += rand(2)+1
   end
   return if pkmn.egg?
-  if wari >= 8
-    pkmn.heal_HP
-    pkmn.heal_status if chance <= 1
-    pkmn.heal_PP if chance <= 1
-  else 
     newHP = pkmn.hp + ((pkmn.totalhp * wari)/8) 
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     pkmn.hp = newHP
-  end
+    pkmn.heal_status if chance <= wari
+    pkmn.heal_PP if chance <= wari
   @ready_to_evolve = false
 end
 
@@ -113,11 +115,6 @@ pbSetPokemonCenter
 			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up not feeling any different."))
 				 else
-			     $player.pokemon_party.each do |pkmn|
-			        pkmn.changeSleep
-			        pkmn.changeSleep
-			        pkmn.changeSleep
-			     end
 				   $player.playersleep -= 24
 				 pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up feeling worse than before."))

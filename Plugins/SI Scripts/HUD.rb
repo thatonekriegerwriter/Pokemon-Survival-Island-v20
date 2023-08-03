@@ -24,7 +24,8 @@ class HUD
   # If you wish to use a background picture, put the image path below, like
   # BG_PATH="Graphics/Pictures/battleMessage". I recommend a 512x64 picture.
   # If there is no image, a blue background will be draw.
-  BG_PATH=""
+  BG_PATH="Graphics/Pictures/Hud/Bolt"
+  BG_PATH2="Graphics/Pictures/Hud/Heart"
 
   # Make as 'false' to don't show the blue bar
   USE_BAR=false
@@ -47,7 +48,7 @@ class HUD
   
 
   HP_BAR_GREEN    = [Color.new(24,192,32),Color.new(0,144,0)]
-  HP_BAR_YELLOW   = [Color.new(248,184,0),Color.new(184,112,0)]
+  HP_BAR_YELLOW   = [Color.new(250,250,51),Color.new(184,112,0)]
   HP_BAR_RED      = [Color.new(240,80,32),Color.new(168,48,56)]
   STA_BAR_GREEN    = [Color.new(255,182,66),Color.new(0,144,0)]
   STA_BAR_YELLOW   = [Color.new(248,184,0),Color.new(184,112,0)]
@@ -115,6 +116,11 @@ class HUD
     @sprites["hpbarborder#{i}"] = BitmapSprite.new(width,height,@viewport1)
     @sprites["hpbarborder#{i}"].x = x-width/2
     @sprites["hpbarborder#{i}"].y = y-height/2
+	
+    @sprites["bar"]=IconSprite.new((@sprites["hpbarborder#{i}"].x+65),(@sprites["hpbarborder#{i}"].y-8),@viewport1)
+    @sprites["bar"].setBitmap(BG_PATH)
+    @sprites["bar"].visible = false
+    @sprites["bar"].z = 9
     @sprites["hpbarborder#{i}"].bitmap.fill_rect(
       Rect.new(0,0,width,height), Color.new(32,32,32)
     )
@@ -134,6 +140,10 @@ class HUD
     @sprites["hpbarborder#{i}"] = BitmapSprite.new(width,height,@viewport1)
     @sprites["hpbarborder#{i}"].x = x-width/2
     @sprites["hpbarborder#{i}"].y = y-height/2
+    @sprites["bar2"]=IconSprite.new((@sprites["hpbarborder#{i}"].x-5),(@sprites["hpbarborder#{i}"].y-7),@viewport1)
+    @sprites["bar2"].setBitmap(BG_PATH2)
+    @sprites["bar2"].visible = false
+    @sprites["bar2"].z = 9
     @sprites["hpbarborder#{i}"].bitmap.fill_rect(
       Rect.new(0,0,width,height), Color.new(32,32,32)
     )
@@ -163,6 +173,7 @@ class HUD
     fillWidth = width-4
     fillHeight = height-4
     @sprites["hpbarborder#{i}"].visible = $player.playerstamina!=nil
+    @sprites["bar"].visible = @sprites["hpbarborder#{i}"].visible
     @sprites["hpbarfill#{i}"].visible = @sprites["hpbarborder#{i}"].visible
     @sprites["hpbarfill#{i}"].bitmap.clear
     fillAmount = ($player.playerstamina==0 || $player.playermaxstamina==0) ? 0 : (
@@ -188,6 +199,7 @@ class HUD
     fillWidth = width-4
     fillHeight = height-4
     @sprites["hpbarborder#{i}"].visible = $player.playerhealth!=nil
+    @sprites["bar2"].visible = @sprites["hpbarborder#{i}"].visible
     @sprites["hpbarfill#{i}"].visible = @sprites["hpbarborder#{i}"].visible
     @sprites["hpbarfill#{i}"].bitmap.clear
     fillAmount = ($player.playerhealth==0 || 100==0) ? 0 : (
@@ -217,6 +229,9 @@ class HUD
     end
     return HP_BAR_GREEN
   end
+
+
+
 
   def refreshOverlay
     newText = textsDefined

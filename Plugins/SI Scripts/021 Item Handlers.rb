@@ -34,6 +34,122 @@ ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item,pkmn,scene|
   next true
 })
 
+ItemHandlers::UseOnPokemon.add(:GRITGRAVEL,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+ItemHandlers::UseOnPokemon.add(:GRITPEBBLE,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:GRITROCK,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+
+
+ItemHandlers::UseOnPokemon.add(:SPEEDCOMET,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPEED,40)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Speed increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:DEFENDCOMET,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_DEFENSE,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:DEFENSE,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Defenses increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:BALANCEDCOMET,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:ATTACK,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_DEFENSE,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:DEFENSE,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPEED,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:HP,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:ATKCOMET,proc { |item,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:ATTACK,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
 
 
 ItemHandlers::UseInField.add(:LCLOAK,proc{|item|

@@ -271,19 +271,6 @@ end
 #-------------------------------------------------------------------------------
 # Correctly records seen special Pokemon forms.
 #-------------------------------------------------------------------------------
-class Battle
-  def pbSetSeen(battler)
-    return if !battler || !@internalBattle
-    if battler.is_a?(Battler)
-      shiny = (battler.super_shiny?) ? 2 : (battler.shiny?) ? 1 : 0
-      special = (battler.shadowPokemon?) ? 1 : (battler.gmax?) ? 2 : (battler.celestial?) ? 3 : 0
-      pbPlayer.pokedex.register(battler.displaySpecies, battler.displayGender,
-                                battler.displayForm, shiny, true, special)
-    else
-      pbPlayer.pokedex.register(battler)
-    end
-  end
-end
 
 
 #-------------------------------------------------------------------------------

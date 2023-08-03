@@ -169,7 +169,7 @@ def pbPowerManagement
 	  ElectricityPower.producers.each do |sub_array|
 	  if sub_array[0]==4143
 	   amt+=sub_array[1]
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 4143 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 4143 }
 	  else
 	   amt+=sub_array[1] if rand(1700) < 1 && !$game_temp.in_menu
 	  end
@@ -203,7 +203,7 @@ def pbPowerProducer
 	if coalPower!=0
 	end
     if coalPower
-	 exists = ElectricityPower.producers.any? { |sub_array| sub_array.first == 4143 }
+	 exists = ElectricityPower.producers.any? { |sub_array| sub_array[0] == 4143 }
 	 if coalPower>0 && !exists
        ElectricityPower.producers.append([4143,coalPower])
 	   coalPower = 0
@@ -211,59 +211,59 @@ def pbPowerProducer
 	 elsif exists && coalPower!=0
 	    matches = ElectricityPower.producers.any? { |sub_array| sub_array[1] == pokePower }
 	  if !matches 
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 4150 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 4150 }
        ElectricityPower.producers.append([4150,pokePower])
 	  end 
 	 else
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 4143 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 4143 }
 	 end
     end
     return false if pbPowerOut?
     if $game_variables[422]==true
     pokePower = $PokemonGlobal.eventvars[[41,50]]
-	exists = ElectricityPower.producers.any? { |sub_array| sub_array.first == 4150 }
+	exists = ElectricityPower.producers.any? { |sub_array| sub_array[0] == 4150 }
     if pokePower
        ElectricityPower.producers.append([4150,pokePower])
 	 elsif exists && pokePower!=0
 	    matches = ElectricityPower.producers.any? { |sub_array| sub_array[1] == pokePower }
 	  if !matches 
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 4150 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 4150 }
        ElectricityPower.producers.append([4150,pokePower])
 	  end 
 	 else
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 4150 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 4150 }
     end
     end
     if $game_variables[420]==true
 	windPower = $PokemonGlobal.eventvars[[54,2]]
-	exists = ElectricityPower.producers.any? { |sub_array| sub_array.first == 5443 }
+	exists = ElectricityPower.producers.any? { |sub_array| sub_array[0] == 5443 }
     if windPower
        ElectricityPower.producers.append([5443,windPower])
 	 elsif exists && windPower!=0
 	    matches = ElectricityPower.producers.any? { |sub_array| sub_array[1] == windPower }
 	  if !matches 
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 5443 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 5443 }
        ElectricityPower.producers.append([5443,windPower])
 	  end 
 	 else
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 5443 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 5443 }
     end
     end
     if $game_variables[418]==true
     solarPower = $PokemonGlobal.eventvars[[54,22]]
-	exists = ElectricityPower.producers.any? { |sub_array| sub_array.first == 5422 }
+	exists = ElectricityPower.producers.any? { |sub_array| sub_array[0] == 5422 }
     if solarPower
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 5422 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 5422 }
        ElectricityPower.producers.append([5422,solarPower])
 	 elsif exists && solarPower!=0
 	    matches = ElectricityPower.producers.any? { |sub_array| sub_array[1] == solarPower }
 	  if !matches 
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 5422 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 5422 }
        ElectricityPower.producers.append([5422,solarPower])
 	  end 
 	
 	 else
-	   ElectricityPower.producers.delete_if { |sub_array| sub_array.first == 5422 }
+	   ElectricityPower.producers.delete_if { |sub_array| sub_array[0] == 5422 }
     end
     end
 end
@@ -274,232 +274,231 @@ end
 def pbPowerUser
 return false if pbPowerOut?
     grinderUse = $PokemonGlobal.eventvars[[41,44]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 5422 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 5422 }
     if grinderUse
 	 if grinderUse>0 && !exists
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4144 }
        ElectricityPower.users.append([4144,grinderUse])
 	 elsif exists && grinderUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == grinderUse }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4144 }
        ElectricityPower.users.append([4144,solarPower])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4144 }
 	 end
     end
     furnaceUse = $PokemonGlobal.eventvars[[41,45]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4145 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 4145 }
     if furnaceUse
 	 if furnaceUse>0 && !exists
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4145 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4145 }
        ElectricityPower.users.append([4145,furnaceUse])
 	 elsif exists && furnaceUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == furnaceUse }
 	  if !matches 
-	   puts "sub_array[1] == furnaceUse"
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4145 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4145 }
        ElectricityPower.users.append([4145,furnaceUse])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4145 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4145 }
 	 end
     end
     apricornUse = $PokemonGlobal.eventvars[[41,46]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4144 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 4144 }
     if apricornUse
 	 if apricornUse>0 && !exists
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4144 }
        ElectricityPower.users.append([4146,apricornUse])
 	 elsif exists && apricornUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == apricornUse }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4146 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4146 }
        ElectricityPower.users.append([4146,apricornUse])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4144 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4144 }
 	 end
     end
     pressUse = $PokemonGlobal.eventvars[[41,48]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4148 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 4148 }
     if pressUse
 	 if pressUse>0 && !exists
        ElectricityPower.users.append([4148,pressUse])
 	 elsif exists && pressUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == pressUse }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4148 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4148 }
        ElectricityPower.users.append([4148,pressUse])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4148 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4148 }
 	 end
     end
     sewingUse = $PokemonGlobal.eventvars[[41,49]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4149 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 4149 }
     if sewingUse
 	 if sewingUse>0 && !exists
        ElectricityPower.users.append([4149,sewingUse])
 	 elsif exists && sewingUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sewingUse }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4149 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4149 }
        ElectricityPower.users.append([4149,sewingUse])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4149 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4149 }
 	 end
     end
     cutterUse = $PokemonGlobal.eventvars[[41,53]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 4153 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 4153 }
     if cutterUse
 	 if cutterUse>0 && !exists
        ElectricityPower.users.append([4153,cutterUse])
 	 elsif exists && cutterUse!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == cutterUse }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4153 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4153 }
        ElectricityPower.users.append([4153,cutterUse])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 4153 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 4153 }
 	 end
     end
     sprinkler1Use = $PokemonGlobal.eventvars[[148,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14839 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14839 }
     if sprinkler1Use
 	 if sprinkler1Use>0 && !exists
        ElectricityPower.users.append([14839,sprinkler1Use])
 	 elsif exists && sprinkler1Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler1Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14839 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14839 }
        ElectricityPower.users.append([14839,sprinkler1Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14839 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14839 }
 	 end
     end
     sprinkler2Use = $PokemonGlobal.eventvars[[149,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14939 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14939 }
     if sprinkler2Use
 	 if sprinkler2Use>0
        ElectricityPower.users.append([14939,sprinkler2Use])
 	 elsif exists && sprinkler2Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler2Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14939 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14939 }
        ElectricityPower.users.append([14939,sprinkler2Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14939 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14939 }
 	 end
     end
     sprinkler3Use = $PokemonGlobal.eventvars[[155,38]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15538 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15538 }
     if sprinkler3Use
 	 if sprinkler3Use>0
        ElectricityPower.users.append([15538,sprinkler3Use])
 	 elsif exists && sprinkler3Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler3Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15538 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15538 }
        ElectricityPower.users.append([15538,sprinkler3Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15538 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15538 }
 	 end
     end
     sprinkler4Use = $PokemonGlobal.eventvars[[150,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15039 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15039 }
     if sprinkler4Use
 	 if sprinkler4Use>0
        ElectricityPower.users.append([15039,sprinkler4Use])
 	 elsif exists && sprinkler4Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler4Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15039 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15039 }
        ElectricityPower.users.append([15039,sprinkler4Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15039 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15039 }
 	 end
     end
     sprinkler5Use = $PokemonGlobal.eventvars[[151,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15139 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15139 }
     if sprinkler5Use
 	 if sprinkler5Use>0
        ElectricityPower.users.append([15139,sprinkler5Use])
 	 elsif exists && sprinkler5Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler5Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15139 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15139 }
        ElectricityPower.users.append([15139,sprinkler5Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15139 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15139 }
 	 end
     end
     sprinkler6Use = $PokemonGlobal.eventvars[[155,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15539 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15539 }
     if sprinkler6Use
 	 if sprinkler6Use>0
        ElectricityPower.users.append([15539,sprinkler6Use])
 	 elsif exists && sprinkler6Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler6Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15539 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15539 }
        ElectricityPower.users.append([15539,sprinkler6Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15539 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15539 }
 	 end
     end
     sprinkler7Use = $PokemonGlobal.eventvars[[147,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 14739 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14739 }
     if sprinkler7Use
 	 if sprinkler7Use>0
        ElectricityPower.users.append([14739,sprinkler7Use])
 	 elsif exists && sprinkler7Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler7Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14739 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14739 }
        ElectricityPower.users.append([14739,sprinkler7Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 14739 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 14739 }
 	 end
     end
     sprinkler8Use = $PokemonGlobal.eventvars[[153,38]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15338 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15338 }
     if sprinkler8Use
 	 if sprinkler8Use>0
        ElectricityPower.users.append([15338,sprinkler8Use])
 	 elsif exists && sprinkler8Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler8Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15338 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15338 }
        ElectricityPower.users.append([15338,sprinkler8Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15338 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15338 }
 	 end
     end
     sprinkler9Use = $PokemonGlobal.eventvars[[154,39]]
-	exists = ElectricityPower.users.any? { |sub_array| sub_array.first == 15439 }
+	exists = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15439 }
     if sprinkler9Use
 	 if sprinkler9Use>0
        ElectricityPower.users.append([15439,sprinkler9Use])
 	 elsif exists && sprinkler9Use!=0
 	    matches = ElectricityPower.users.any? { |sub_array| sub_array[1] == sprinkler9Use }
 	  if !matches 
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15439 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15439 }
        ElectricityPower.users.append([15439,sprinkler9Use])
 	  end 
 	 else
-	   ElectricityPower.users.delete_if { |sub_array| sub_array.first == 15439 }
+	   ElectricityPower.users.delete_if { |sub_array| sub_array[0] == 15439 }
 	 end
     end
 return true
@@ -528,48 +527,48 @@ def pbCurrentPowerBiggerThan?(wari)
 end
 
 def pbBerryWatering?(sprinkler)
-	exists1 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14839 }
-	existsa1 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists1 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14839 }
+	existsa1 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 1 && exists1 && existsa1
 	  return true
 	end
-	exists2 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14939 }
-	existsa2 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists2 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14939 }
+	existsa2 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 2 && exists2 && existsa2
 	  return true
 	end
-	exists3 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15538 }
-	existsa3 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists3 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15538 }
+	existsa3 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 3 && exists3 && existsa3
 	  return true
 	end
-	exists4 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15039 }
-	existsa4 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists4 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15039 }
+	existsa4 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 4 && exists4 && existsa4
 	  return true
 	end
-	exists5 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15139 }
-	existsa5 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists5 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15139 }
+	existsa5 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 5 && exists5 && existsa5
 	  return true
 	end
-	exists6 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15539 }
-	existsa6 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists6 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15539 }
+	existsa6 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 6 && exists6 && existsa6
 	  return true
 	end
-	exists7 = ElectricityPower.users.any? { |sub_array| sub_array.first == 14739 }
-	existsa7 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists7 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 14739 }
+	existsa7 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 7 && exists7 && existsa7
 	  return true
 	end
-	exists8 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15338 }
-	existsa8 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists8 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15338 }
+	existsa8 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 8 && exists8 && existsa8
 	  return true
 	end
-	exists9 = ElectricityPower.users.any? { |sub_array| sub_array.first == 15439 }
-	existsa9 = ElectricityPower.users.any? { |sub_array| sub_array.second != 0 }
+	exists9 = ElectricityPower.users.any? { |sub_array| sub_array[0] == 15439 }
+	existsa9 = ElectricityPower.users.any? { |sub_array| sub_array[1] != 0 }
     if sprinkler == 9 && exists9 && existsa9
 	  return true
 	end
@@ -595,11 +594,7 @@ end
 EventHandlers.add(:on_player_step_taken_can_transfer, :gegegegegegegeeg2,
   proc {
 
-
-})
-EventHandlers.add(:on_frame_update, :gegegegegegegeeg,
-  proc {
-
+	puts ElectricityPower.globalPower
 if $game_switches[418]==true
 pbLocalPowerGeneration(4)
 end
@@ -613,41 +608,37 @@ end
 if $game_switches[409]==true
 pbPowerManagement
 end
+})
+EventHandlers.add(:on_frame_update, :gegegegegegegeeg,
+  proc {
+
+
 
 if pbBerryWatering?(1)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,155)
 end
 if pbBerryWatering?(2)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,147)
 end
 if pbBerryWatering?(3)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,148)
 end
 if pbBerryWatering?(4)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,149)
 end
 if pbBerryWatering?(5)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,150)
 end
 if pbBerryWatering?(6)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,151)
 end
 if pbBerryWatering?(7)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,152)
 end
 if pbBerryWatering?(8)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,153)
 end
 if pbBerryWatering?(9)
-  pbLocalPowerConsumption(2)
   pbMassBerryWater(2,36,154)
 end
 

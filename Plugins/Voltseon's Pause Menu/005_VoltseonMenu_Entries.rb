@@ -246,7 +246,7 @@ class MenuEntrySave < MenuEntry
 
   def selectable?
      maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154]
-    return (!pbInBugContest? && $game_system && !$game_system.save_disabled && !pbInSafari? && (maps.include?($game_map.map_id) || $PokemonSystem.playermode == 0)) 
+    return (!pbInBugContest? && $game_system && !$game_system.save_disabled && (maps.include?($game_map.map_id) || $PokemonSystem.playermode == 0)) 
   end
 end
 #-------------------------------------------------------------------------------
@@ -393,12 +393,13 @@ class MenuEntryQuit < MenuEntry
     if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
       menu.pbEndScene
       $scene = nil
-      exit!
+      Graphics.transition(20) # changed line (from 40 to 1)
+      go_to_title # added line
     end
     menu.pbShowMenu
   end
 
-  def selectable?; return (!pbInBugContest? && !pbInSafari?); end
+  def selectable?; return !pbInBugContest?; end
 end
 #-------------------------------------------------------------------------------
 # Entry for Encounter List screen by ThatWelshOne

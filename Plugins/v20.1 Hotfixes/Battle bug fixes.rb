@@ -108,8 +108,6 @@ module Battle::CatchAndStoreMixin
     pkmn.ev[:HP] = rand(200)
   end
     # Store the Pokémon
-    if (@sendToBoxes == 0 || @sendToBoxes == 2)   # Ask/must add to party
-#    if pbPlayer.party_full? && (@sendToBoxes == 0 || @sendToBoxes == 2)   # Ask/must add to party
      if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
       cmds = [_INTL("Add to your party"),
               _INTL("Send to a Box"),
@@ -124,7 +122,7 @@ module Battle::CatchAndStoreMixin
      end
       cmds.delete_at(1) if @sendToBoxes == 2
       loop do
-        cmd = pbShowCommands(_INTL("Where do you want to send {1} to?", pkmn.name), cmds, 99)
+        cmd = @scene.pbShowCommands(_INTL("Where do you want to send {1} to?", pkmn.name), cmds, 99)
         break if cmd == 99   # Cancelling = send to a Box
         cmd += 1 if cmd >= 1 && @sendToBoxes == 2
         case cmd
@@ -137,22 +135,11 @@ module Battle::CatchAndStoreMixin
           }
           next if party_index < 0   # Cancelled
           party_size = pbPlayer.party.length
-          # Send chosen Pokémon to storage
-          # NOTE: This doesn't work properly if you catch multiple Pokémon in
-          #       the same battle, because the code below doesn't alter the
-          #       contents of pbParty(0), only pbPlayer.party. This means that
-          #       viewing the party in battle after replacing a party Pokémon
-          #       with a caught one (which is possible if you've caught a second
-          #       Pokémon) will not show the first caught Pokémon in the party
-          #       but will still show the boxed Pokémon in the party. Correcting
-          #       this would take a surprising amount of code, and it's very
-          #       unlikely to be needed anyway, so I'm ignoring it for now.
           send_pkmn = pbPlayer.party[party_index]
           stored_box = @peer.pbStorePokemon(pbPlayer, send_pkmn)
           pbPlayer.party.delete_at(party_index)
           box_name = @peer.pbBoxName(stored_box)
           pbDisplayPaused(_INTL("{1} has been sent to Box \"{2}\".", send_pkmn.name, box_name))
-          # Rearrange all remembered properties of party Pokémon
           (party_index...party_size).each do |idx|
             if idx < party_size - 1
               @initialItems[0][idx] = @initialItems[0][idx + 1]
@@ -186,7 +173,7 @@ module Battle::CatchAndStoreMixin
           @scene.pbPartyScreen(0, true, 2)
         end
       end
-    end
+
     # Store as normal (add to party if there's space, or send to a Box if not)
     stored_box = @peer.pbStorePokemon(pbPlayer, pkmn)
     if stored_box < 0

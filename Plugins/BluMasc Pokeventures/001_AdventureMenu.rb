@@ -38,10 +38,12 @@ class Adventure_Scene
 				pbSummary(@adventureparty,pos)
 			elsif answer == 3
 			answer2 = []
+			if $player.party.length > 0
 			pkmn = $player.party[pos]
 			if !pkmn.adventuringTypes.nil?
 			pkmn.adventuringTypes.each do |i|
 			answer2[answer2.length] = i.to_s
+			end
 			end
 			answer2[answer2.length] = "Cancel"
 			commands=pbShowCommands(_INTL(" "), answer2)

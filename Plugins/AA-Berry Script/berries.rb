@@ -110,7 +110,10555 @@ class BerryPlantData
     end
     return data.minimum_yield
   end
+  def crossbreeding(berry)
+    interp = pbMapInterpreter
+    this_event = interp.get_self
+	berryData = GameData::BerryPlant.get(berry)
+	case $PokemonSystem.difficulty
+    when 0
+	 chance = rand(250)
+    when 1
+	 chance = rand(500)
+    when 2
+	 chance = rand(750)
+    when 3
+	 chance = rand(1000)
+    end
+	if @cropsticks == true && chance < 1 && $game_map&.events && @checkedcropsticks == false
+#    @checkedcropsticks = true 
+	 map = $game_map.map_id if map == nil
+	 mapBerries=[]
+	 mapBerryIDs=[]
+     $game_map.events_value.each do |event|
+       berryData2 = $PokemonGlobal.eventvars[[map,event.id]]
+       if berryData2 && event.id != this_event.id
+         mapBerries.push=berryData2[1]
+         mapBerryIDs.push=event.id
+       end
+     end
+	 berryChoice = rand(mapBerries.length)
+     crossbreedBerry = mapBerries[berryChoice]
+	 crossbreedBerryEvent = mapBerryIDs[berryChoice]
+     if $PokemonSystem.survivalmode == 0 
+	 newBerry = determineBreedComplex(berry,crossbreedBerry,crossbreedBerryEvent)
+	 else
+	 newBerry = determineBreedBasic(berry,mapBerries,mapBerryIDs)
+	 end
+	 if berry == newBerry
+	  return berryData
+	 end
+	
+	
+	
+	end
 
+	end
+	
+  def determineBreedBasic(curBerry,activeBerries,activeBerryIDs)
+	 items=[]
+	 GameData::Item.each do |item|
+     next unless item.is_berry?
+     items.push(item.id)
+	 if activeBerries.each_with_index do |berry, i2|
+	    if items.include?(berry.id)
+          items.push(berry.id)
+		end
+	 end
+     end
+  end
+  end
+  
+  
+  def determineBreedComplex(berry,crossbreedBerry,crossbreedBerryEvent)
+      case berry
+	  when :ACORN #rank -1
+	     case crossbreedBerry
+		   when :ACORN
+		    return :APPLE
+		 end
+	  
+	  when :APPLE #rank 0
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  when :RAZZBERRY #rank 0
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :BLUKBERRY #rank 0
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :NANABBERRY #rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  when :WEPEARBERRY #rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :PINAPBERRY #rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :CORNNBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :MAGOSTBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :RABUTABERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :NOMELBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :SPELONBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :PAMTREBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :WATMELBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :DURINBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :BELUEBERRY#rank 0
+
+	     case crossbreedBerry
+	  when :RAZZBERRY
+          return :RAZZBERRY
+	  when :BLUKBERRY
+          return :BLUKBERRY
+	  when :NANABBERRY
+          return :NANABBERRY
+	  when :WEPEARBERRY
+          return :WEPEARBERRY
+	  when :PINAPBERRY
+          return :PINAPBERRY
+	  when :CORNNBERRY
+          return :CORNNBERRY
+	  when :MAGOSTBERRY
+          return :MAGOSTBERRY
+	  when :RABUTABERRY
+          return :RABUTABERRY
+	  when :NOMELBERRY
+          return :RABUTABERRY
+	  when :SPELONBERRY
+          return :SPELONBERRY
+	  when :PAMTREBERRY
+          return :PAMTREBERRY
+	  when :WATMELBERRY
+          return :WATMELBERRY
+	  when :DURINBERRY
+          return :DURINBERRY
+	  when :BELUEBERRY
+          return :BELUEBERRY
+	  when :APPLE
+          return :APPLE
+		  
+		 end
+	
+
+
+
+
+
+
+
+	  when :ORANBERRY #rank 1
+
+	     case crossbreedBerry
+		  
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :CHERIBERRY #rank 1
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :CHESTOBERRY #rank 1
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :PECHABERRY #rank 1
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :RAWSTBERRY #rank 1
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :ASPEARBERRY #rank 1
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+	  when :PERSIMBERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  
+	  when :FIGYBERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :WIKIBERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :MAGOBERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :AGUAVBERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :IAPAPABERRY #rank 1
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+
+	  when :SITRUSBERRY #rank 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+  
+	  when :LEPPABERRY #rank 2
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	    
+  
+           # Restore PP
+	  
+	  when :LUMBERRY #rank 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  when :POMEGBERRY  #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :KELPSYBERRY #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :QUALOTBERRY #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :HONDEWBERRY #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :GREPABERRY #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :TAMATOBERRY #RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+
+	  
+	  
+	  when :MICLEBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+  
+	  when :CUSTAPBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  #TYPE SPECIALIZATION
+	  
+	  when :OCCABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :PASSHOBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :WACANBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :RINDOBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :YACHEBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :CHOPLEBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :KEBIABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :SHUCABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :COBABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :PAYAPABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :TANGABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :CHARTIBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :KASIBBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :HABANBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :ROSELIBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+	  
+	  when :COLBURBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :BABIRIBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :CHILANBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  #Stats in a Pinch
+	  
+	  
+	  when :LIECHIBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :GANLONBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :SALACBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :PETAYABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :APICOTBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :LANSATBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :STARFBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	    
+  
+  
+      #If hit with X Move
+  
+  
+	  when :JABOCABERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :ROWAPBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+  
+	  when :KEEBERRY#RANK 2
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+	  when :MARANGABERRY#RANK 2
+	  
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	  
+	   #AutoRevive
+
+	  when :ARGOSTBERRY #RANK 4
+
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	  
+
+
+
+
+
+
+
+
+
+
+
+           #Master Ball + Suspicious Potion
+
+	  when :ENIGMABERRY #RANK 5
+
+	     case crossbreedBerry
+	  when :CHERIBERRY
+
+	  when :CHESTOBERRY
+
+	  when :PECHABERRY
+
+	  when :RAWSTBERRY
+
+	  when :ASPEARBERRY
+
+	  when :LEPPABERRY
+
+	  when :ORANBERRY
+
+	  when :PERSIMBERRY
+
+	  when :LUMBERRY
+
+	  when :SITRUSBERRY
+
+	  when :FIGYBERRY
+
+	  when :WIKIBERRY
+
+	  when :MAGOBERRY
+
+	  when :AGUAVBERRY
+
+	  when :IAPAPABERRY
+
+	  when :RAZZBERRY
+
+	  when :BLUKBERRY
+
+	  when :NANABBERRY
+
+	  when :WEPEARBERRY
+
+	  when :PINAPBERRY
+
+	  when :POMEGBERRY
+
+	  when :KELPSYBERRY
+
+	  when :QUALOTBERRY
+
+	  when :HONDEWBERRY
+
+	  when :GREPABERRY
+
+	  when :TAMATOBERRY
+
+	  when :CORNNBERRY
+
+	  when :MAGOSTBERRY
+
+	  when :RABUTABERRY
+
+	  when :NOMELBERRY
+
+	  when :SPELONBERRY
+
+	  when :PAMTREBERRY
+
+	  when :WATMELBERRY
+
+	  when :DURINBERRY
+
+	  when :BELUEBERRY
+
+	  when :OCCABERRY
+
+	  when :PASSHOBERRY
+
+	  when :WACANBERRY
+
+	  when :RINDOBERRY
+
+	  when :YACHEBERRY
+
+	  when :CHOPLEBERRY
+
+	  when :KEBIABERRY
+
+	  when :SHUCABERRY
+
+	  when :COBABERRY
+
+	  when :PAYAPABERRY
+
+	  when :TANGABERRY
+
+	  when :CHARTIBERRY
+
+	  when :KASIBBERRY
+
+	  when :HABANBERRY
+
+	  when :COLBURBERRY
+
+	  when :BABIRIBERRY
+
+	  when :CHILANBERRY
+
+	  when :LIECHIBERRY
+
+	  when :GANLONBERRY
+
+	  when :SALACBERRY
+
+	  when :PETAYABERRY
+
+	  when :APICOTBERRY
+
+	  when :LANSATBERRY
+
+	  when :STARFBERRY
+
+	  when :ENIGMABERRY
+
+	  when :MICLEBERRY
+
+	  when :CUSTAPBERRY
+
+	  when :JABOCABERRY
+
+	  when :ROWAPBERRY
+
+	  when :ROSELIBERRY
+
+	  when :KEEBERRY
+
+	  when :MARANGABERRY
+	  
+	  when :ARGOSTBERRY
+		 end
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	  when :CARROT
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :SUGARCANE
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :WHEAT
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :TEALEAF
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :COCOABEAN
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :POTATO
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :LEMON
+	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :ONION
+  	  chance = rand(8)
+	     case chance
+	  when 0
+	  return :CARROT
+	  
+	  when 1
+	  return :SUGARCANE
+	  
+	  when 2
+	  return :WHEAT
+	  
+	  when 3
+	  return :TEALEAF
+	  
+	  when 4
+	  return :COCOABEAN
+	  
+	  when 5
+	  return :POTATO
+	  
+	  when 6
+	  return :LEMON
+	  
+	  when 7
+	  return :ONION
+		 end
+	  when :REDAPRICORN 
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :BLUEAPRICORN
+	  when :BLACKAPRICORN
+           return :BLUEAPRICORN
+	  when :YELLOWAPRICORN
+           return :BLUEAPRICORN
+	  when :GREENAPRICORN
+           return :BLUEAPRICORN
+	  when :WHITEAPRICORN
+           return :BLUEAPRICORN
+	  when :PINKAPRICORN
+           return :BLUEAPRICORN
+	  when :PURPLEAPRICORN
+           return :PINKAPRICORN
+		 end
+	  when :BLUEAPRICORN  
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :PINKAPRICORN
+	  when :BLACKAPRICORN
+           return :YELLOWAPRICORN
+	  when :YELLOWAPRICORN
+           return :GREENAPRICORN
+	  when :GREENAPRICORN
+           return :WHITEAPRICORN
+	  when :WHITEAPRICORN
+           return :PINKAPRICORN
+	  when :PINKAPRICORN
+           return :BLACKAPRICORN
+	  when :PURPLEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+		 end
+	  when :BLACKAPRICORN  
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :YELLOWAPRICORN
+		   
+	  when :BLACKAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+           return :GREENAPRICORN
+		   end
+	  when :YELLOWAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+           return :WHITEAPRICORN
+		   end
+	  when :GREENAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+           return :PINKAPRICORN
+		   end
+	  when :WHITEAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+           return :BLACKAPRICORN
+		   end
+	  when :PINKAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+           return :YELLOWAPRICORN
+		   end
+	  when :PURPLEAPRICORN
+	       if rand(1000) == 0
+           return :PURPLEAPRICORN
+		   else
+		   end
+		 end
+	  when :YELLOWAPRICORN	  
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :GREENAPRICORN
+	  when :BLACKAPRICORN
+
+	  when :YELLOWAPRICORN
+
+	  when :GREENAPRICORN
+
+	  when :WHITEAPRICORN
+
+	  when :PINKAPRICORN
+
+	  when :PURPLEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+		 end
+	  when :GREENAPRICORN
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :WHITEAPRICORN
+	  when :BLACKAPRICORN
+           return :YELLOWAPRICORN
+	  when :YELLOWAPRICORN
+           return :BLACKAPRICORN
+	  when :GREENAPRICORN
+           return :GREENAPRICORN
+	  when :WHITEAPRICORN
+           return :PINKAPRICORN
+	  when :PINKAPRICORN
+           return :WHITEAPRICORN
+	  when :PURPLEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+		 end
+	  when :WHITEAPRICORN 
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :PINKAPRICORN
+	  when :BLACKAPRICORN
+           return :GREENAPRICORN
+	  when :YELLOWAPRICORN
+           return :PINKAPRICORN
+	  when :GREENAPRICORN
+           return :YELLOWAPRICORN
+	  when :WHITEAPRICORN
+           return :WHITEAPRICORN
+	  when :PINKAPRICORN
+           return :BLACKAPRICORN
+
+	  when :PURPLEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+		 end
+	  when :PINKAPRICORN
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+           return :BLACKAPRICORN
+	  when :BLACKAPRICORN
+           return :GREENAPRICORN
+	  when :YELLOWAPRICORN
+           return :WHITEAPRICORN
+	  when :GREENAPRICORN
+           return :BLACKAPRICORN
+	  when :WHITEAPRICORN
+           return :YELLOWAPRICORN
+	  when :PINKAPRICORN
+           return :PINKAPRICORN
+	  when :PURPLEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+		 end
+	  when :PURPLEAPRICORN	  
+	     case crossbreedBerry
+	  when :REDAPRICORN
+           return :BLUEAPRICORN
+	  when :BLUEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :BLACKAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :YELLOWAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :GREENAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :WHITEAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :PINKAPRICORN
+	     case rand(5)
+		 when 0
+           return :YELLOWAPRICORN
+		 when 1
+           return :BLACKAPRICORN
+		 when 2
+           return :PINKAPRICORN
+		 when 3
+           return :WHITEAPRICORN
+		 when 4
+           return :GREENAPRICORN
+		 end
+
+	  when :PURPLEAPRICORN
+	     return :PURPLEAPRICORN
+		 end
+	  when :REVIVALHERB
+	     case crossbreedBerry
+	  when :REVIVALHERB
+
+	  when :MENTALHERB
+
+	  when :WHITEHERB
+
+	  when :POWERHERB
+		 end
+	  when :MENTALHERB
+	     case crossbreedBerry
+	  when :REVIVALHERB
+
+	  when :MENTALHERB
+
+	  when :WHITEHERB
+
+	  when :POWERHERB
+		 end
+	  when :WHITEHERB
+	     case crossbreedBerry
+	  when :REVIVALHERB
+
+	  when :MENTALHERB
+
+	  when :WHITEHERB
+
+	  when :POWERHERB
+		 end
+	  when :POWERHERB
+	     case crossbreedBerry
+	  when :REVIVALHERB
+
+	  when :MENTALHERB
+
+	  when :WHITEHERB
+
+	  when :POWERHERB
+		 end
+	  when :LUMINOUSMOSS
+	   return berry
+	  when :TINYMUSHROOM
+	  case crossbreedBerry
+	  when :TINYMUSHROOM
+          return :BIGMUSHROOM
+	  when :BIGMUSHROOM
+          return :BIGMUSHROOM
+	  when :BALMMUSHROOM
+          return :BIGMUSHROOM
+	  when :MAXMUSHROOMS
+          return :BIGMUSHROOM
+		 end
+	  when :BIGMUSHROOM
+	  case crossbreedBerry
+	  when :TINYMUSHROOM
+          return :BIGMUSHROOM
+	  when :BIGMUSHROOM
+          return :BIGMUSHROOM
+	  when :BALMMUSHROOM
+          return :BALMMUSHROOM
+	  when :MAXMUSHROOMS
+          return :BALMMUSHROOM
+		 end
+	  when :BALMMUSHROOM
+	  case crossbreedBerry
+	  when :TINYMUSHROOM
+          return :BIGMUSHROOM
+	  when :BIGMUSHROOM
+          return :BALMMUSHROOM
+	  when :BALMMUSHROOM
+          return :MAXMUSHROOMS
+	  when :MAXMUSHROOMS
+          return :MAXMUSHROOMS
+		 end
+	  when :MAXMUSHROOMS
+	  case crossbreedBerry
+	  when :TINYMUSHROOM
+          return :BIGMUSHROOM
+	  when :BIGMUSHROOM
+          return :BALMMUSHROOM
+	  when :BALMMUSHROOM
+          return :MAXMUSHROOMS
+	  when :MAXMUSHROOMS
+          return :MAXMUSHROOMS
+		 end
+	  when :SEEDOFMASTERY
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :SEEDOFMASTERY
+	  when :MIRACLESEED
+          return :SEEDOFMASTERY
+	  when :PURESEED
+          return :SEEDOFMASTERY
+	  when :ELECTRICSEED
+          return :PURESEED
+	  when :GRASSYSEED
+          return :PURESEED
+	  when :MISTYSEED
+          return :MIRACLESEED
+	  when :PSYCHICSEED
+          return :MIRACLESEED
+		 end
+	  when :MIRACLESEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :SEEDOFMASTERY
+	  when :MIRACLESEED
+          return :PURESEED
+	  when :PURESEED
+          return :SEEDOFMASTERY
+	  when :ELECTRICSEED
+          return :MIRACLESEED
+	  when :GRASSYSEED
+          return :MIRACLESEED
+	  when :MISTYSEED
+          return :MIRACLESEED
+	  when :PSYCHICSEED
+          return :MIRACLESEED
+		 end
+	  when :PURESEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :SEEDOFMASTERY
+	  when :MIRACLESEED
+          return :SEEDOFMASTERY
+	  when :PURESEED
+          return :MIRACLESEED
+	  when :ELECTRICSEED
+          return :PURESEED
+	  when :GRASSYSEED
+          return :PURESEED
+	  when :MISTYSEED
+          return :PURESEED
+	  when :PSYCHICSEED
+          return :PURESEED
+		 end		 
+	  when :ELECTRICSEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :PURESEED
+	  when :MIRACLESEED
+          return :MIRACLESEED
+	  when :PURESEED
+          return :PURESEED
+	  when :ELECTRICSEED
+          return :ELECTRICSEED
+	  when :GRASSYSEED
+          return :MISTYSEED
+	  when :MISTYSEED
+          return :PSYCHICSEED
+	  when :PSYCHICSEED
+          return :GRASSYSEED
+		 end 
+	  when :GRASSYSEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :PURESEED
+	  when :MIRACLESEED
+          return :MIRACLESEED
+	  when :PURESEED
+          return :PURESEED
+	  when :ELECTRICSEED
+          return :MISTYSEED
+	  when :GRASSYSEED
+          return :GRASSYSEED
+	  when :MISTYSEED
+          return :ELECTRICSEED
+	  when :PSYCHICSEED
+          return :PSYCHICSEED
+		 end
+	  when :MISTYSEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :PURESEED
+	  when :MIRACLESEED
+          return :MIRACLESEED
+	  when :PURESEED
+          return :PURESEED
+	  when :ELECTRICSEED
+          return :PSYCHICSEED
+	  when :GRASSYSEED
+          return :ELECTRICSEED
+	  when :MISTYSEED
+          return :MISTYSEED
+	  when :PSYCHICSEED
+          return :GRASSYSEED
+		 end
+	  when :PSYCHICSEED
+	  case crossbreedBerry
+	  when :SEEDOFMASTERY
+          return :PURESEED
+	  when :MIRACLESEED
+          return :MIRACLESEED
+	  when :PURESEED
+          return :PURESEED
+	  when :ELECTRICSEED
+          return :MISTYSEED
+	  when :GRASSYSEED
+          return :ELECTRICSEED
+	  when :MISTYSEED
+          return :GRASSYSEED
+	  when :PSYCHICSEED
+          return :PSYCHICSEED
+		 end
+	  when :ENERGYROOT
+	  case crossbreedBerry
+	  when :ENERGYROOT
+          return :ENERGYROOT
+	  when :BIGROOT
+          return :BIGROOT
+		 end
+	  when :BIGROOT
+	  case crossbreedBerry
+	  when :ENERGYROOT
+          return :BIGROOT
+
+	  when :BIGROOT
+          return :ENERGYROOT
+		 end
+	  else 
+	   return berry
+	  end
+  end
+  
+  
+  
+  
   # Old mechanics only update a plant when its map is loaded. New mechanics
   # update it every frame while its map is loaded.
   def update
@@ -118,19 +10666,11 @@ class BerryPlantData
     time_now = pbGetTimeNow
     time_delta = time_now.to_i - @time_last_updated
     return if time_delta <= 0
-	if @cropsticks == true && rand(100) < 5 && $game_map&.events && @checkedcropsticks == false
-    @checkedcropsticks = true 
-	 map = $game_map.map_id if map == nil
-     $game_map.events_value.each do |event|
-       berryData = $PokemonGlobal.eventvars[[map,event.id]]
-       if berryData
-      berryToReceive=berryData[1]
-    end
-end
-	end
-	
     new_time_alive = @time_alive + time_delta
     berrydata = GameData::BerryPlant.get(@berry_id)
+	if @cropsticks == true
+	berrydata = crossbreeding(@berry_id)
+	end
     max_yield = berrydata.maximum_yield
     min_yield = berrydata.minimum_yield
     # Get all growth data
@@ -201,7 +10741,7 @@ end
 		
 		  if ($game_screen && GameData::Weather.get($game_screen.weather_type).category == :Rain)
 		  water(100)
-          elsif @moisture_level > 0
+          elsif @moisture_level > 0 && GameData::MapMetadata.try_get($game_map.map_id)&.outdoor_map
 		    if pbGetSeason == berry_climate
 			 if drying_per_hour-2 < 1
             @moisture_level -= 1
@@ -217,8 +10757,14 @@ end
 			else
             @moisture_level -= drying_per_hour
 			end
+		  elsif @moisture_level > 0
+            @moisture_level -= drying_per_hour
           else
-            @yield_penalty += 1
+		  if drying_per_hour-2 < 1
+            @moisture_level -= 1
+			 else
+            @moisture_level -= (drying_per_hour-2)
+			 end
           end
         end
       end
@@ -327,23 +10873,26 @@ class BerryPlantSprite
         filename = sprintf("berrytree_%s", GameData::Item.get(berry_plant.berry_id).id.to_s)
         if pbResolveBitmap("Graphics/Characters/" + filename)
           @event.character_name = filename
+		  if filename == "berrytree_ACORN"
+		  puts "#{berry_plant.growth_stage} Event: #{@event.id}"
+		  end
           case berry_plant.growth_stage
           when 2 then @event.turn_down    # X sprouted
           when 3 then @event.turn_left    # X taller
           when 4 then @event.turn_right   # X flowering
           when 5 then @event.turn_up      # X berries
+		  else 
+		  @event.turn_up
           end
         else
           @event.character_name = "berrytree_ACORN"
         end
       end
-#	  if berry_plant.moisture_level >= 100 && @old_stage != berry_plant.growth_stage &&
- #        @old_stage > 0 && berry_plant.growth_stage <= 4 + 1
-#	    spriteset = $scene.spriteset(@map.map_id)
-#        spriteset&.addUserAnimation(Settings::PLANT_SPARKLE_ANIMATION_ID,@event.x, @event.y, false, 1)
-#	  end
-      if berry_plant.new_mechanics && @old_stage != berry_plant.growth_stage &&
-         @old_stage > 0 && berry_plant.growth_stage <= 4 + 1
+	  if berry_plant.moisture_level >= 100 && @old_stage != berry_plant.growth_stage && @old_stage > 0 && berry_plant.growth_stage >= 5
+	    spriteset = $scene.spriteset(@map.map_id)
+        spriteset&.addUserAnimation(Settings::PLANT_SPARKLE_ANIMATION_ID,@event.x, @event.y, false, 1)
+	  end
+      if berry_plant.new_mechanics && @old_stage != berry_plant.growth_stage && @old_stage > 0 && berry_plant.growth_stage <= 4 + 1
         spriteset = $scene.spriteset(@map.map_id)
         spriteset&.addUserAnimation(Settings::PLANT_SPARKLE_ANIMATION_ID,
                                     @event.x, @event.y, false, 1)
@@ -443,11 +10992,11 @@ def pbBerryPlant
     end
       this_event.turn_down   # Stop the event turning towards the player
       if berry_name.starts_with_vowel?
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
         pbMessage(_INTL("An {1} was planted here.", berry_name))
 		end
       else
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
         pbMessage(_INTL("A {1} was planted here.", berry_name))
 		end
       end
@@ -494,7 +11043,7 @@ def pbBerryPlant
       break
     end
       this_event.turn_down   # Stop the event turning towards the player
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
       pbMessage(_INTL("The {1} has sprouted.", berry_name))
 	  end
     when 3   # X taller
@@ -541,7 +11090,7 @@ def pbBerryPlant
       break
     end
  
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
       pbMessage(_INTL("The {1} is growing bigger.", berry_name))
 	  end
     else     # X flowering
@@ -588,7 +11137,7 @@ def pbBerryPlant
     end
  
       this_event.turn_right   # Stop the event turning towards the player
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
         case berry_plant.watering_count
         when 4
           pbMessage(_INTL("This {1} is wiggling!", berry_name))
@@ -613,9 +11162,10 @@ def pbBerryPlant
       pbMessage(_INTL("{1} has been laid down.\1", GameData::Item.get(berry_plant.mulch_id).name))
     else
       case pbMessage(_INTL("It's soft, loamy soil."),
-                     [_INTL("Plant Berry"), _INTL("Fertilize"), _INTL("Exit")], -1)
-      when 1   # Fertilize
+                     [_INTL("Plant Berry"), _INTL("Cropsticks"), _INTL("Fertilize"), _INTL("Exit")], -1)
+      when 2   # Fertilize
         mulch = nil
+		berryData.water(100)
         pbFadeOutIn {
           scene = PokemonBag_Scene.new
           screen = PokemonBagScreen.new(scene, $bag)
@@ -631,6 +11181,17 @@ def pbBerryPlant
           pbMessage(_INTL("That won't fertilize the soil!"))
           return
         end
+      when 1
+	    if pbConfirmMessage(_INTL("Would you like to use Cropsticks for this plant?"))
+		if $bag.has?(:CROPSTICKS)
+          $bag.remove(:CROPSTICKS)
+		  berry_plant.cropsticks = true
+		else
+          pbMessage(_INTL("You don't have any Cropsticks."))
+          return
+		end
+		else
+		end
       when 0   # Plant Berry
         ask_to_plant = false
       else   # Exit/cancel
@@ -685,56 +11246,57 @@ def pbPickBerry(berry, qty = 1, replant=false)
   if qty >= GameData::BerryPlant.get(berry.id).maximum_yield
     $stats.max_yield_berry_plants += 1
   end
+  berry2 = 0
   if berry == :ACORN
-    berry = GameData::Item.get(:WOODENLOG)
-    berry_name = (qty > 1) ? berry.name_plural : berry.name
+    berry2 = GameData::Item.get(:WOODENLOG)
+    berry_name2 = (qty > 1) ? berry2.name_plural : berry2.name
   end
   $bag.add(berry, qty)
   if qty > 1
-    if berry == :WOODENLOG
-	if $PokemonSystem.fastberries == 1
-    pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name))
+    if berry2 == :WOODENLOG
+	if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
+    pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name2))
 	end
     $bag.add(:ACORN, rand(4)+1)
     elsif berry == :APPLE
-	if $PokemonSystem.fastberries == 1
+	if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
     pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name))
 	end
     $bag.add(:WOODENLOG, rand(4)+1)
     $bag.add(:ACORN, rand(4)+1)
     else
 	
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
     pbMessage(_INTL("\\me[Berry get]You picked the {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name))
 	end
     end
     else
-    if berry == :WOODENLOG
-	  if $PokemonSystem.fastberries == 1
-    pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name))
+    if berry2 == :WOODENLOG
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
+    pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name2))
 	end
     $bag.add(:ACORN, rand(4)+1)
 	berry = :ACORN
     elsif berry == :APPLE
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
     pbMessage(_INTL("\\me[Berry get]You knocked down the Tree, and got {1} \\c[1]{2}\\c[0].\\wtnp[30]", qty, berry_name))
 	end
     $bag.add(:WOODENLOG, rand(4)+1)
     $bag.add(:ACORN, rand(4)+1)
     else
-	  if $PokemonSystem.fastberries == 1
+	  if $PokemonSystem.fastberries == 1 || Input.press?(Input::SHIFT)
     pbMessage(_INTL("\\me[Berry get]You picked the \\c[1]{1}\\c[0].\\wtnp[30]", berry_name))
 	end
     end
   end
-  this_event = pbMapInterpreter.get_self
+  interp = pbMapInterpreter
+  this_event = interp.get_self
+  berry_plant = interp.getVariable
   
-  if replant == true
+  if replant == true && berry_plant.cropsticks == false
   if pbConfirmMessage(_INTL("Do you want to replant {1}?", berry.name))
   if $bag.remove(berry)
   $stats.berries_planted += 1
-  interp = pbMapInterpreter
-  berry_plant = interp.getVariable
   berry_plant.growth_stage = 1
   berry_plant.time_alive         = 0
   berry_plant.time_last_updated  = pbGetTimeNow.to_i
@@ -759,9 +11321,37 @@ MenuHandlers.add(:options_menu, :fastberries, {
   "order"       => 41,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
   "description" => _INTL("Choose if you have info text for berries."),
-  "get_proc"    => proc { next $PokemonSystem.survivalmode },
+  "get_proc"    => proc { next $PokemonSystem.fastberries },
   "set_proc"    => proc { |value, _scene| $PokemonSystem.fastberries = value }
 })
+MenuHandlers.add(:options_menu, :crossbreeding, {
+  "name"        => _INTL("Crossbreeding"),
+  "order"       => 41,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Complex"), _INTL("Simple")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("Sets complexity of Crossbreeding Mechanics. If you are in Survival Mode, this is always Complex."),
+  "get_proc"    => proc { next $PokemonSystem.crossbreeding },
+  "set_proc"    => proc { |value, _scene|
+      if $PokemonSystem.survivalmode == 0
+      $PokemonSystem.crossbreeding = 0
+	  else
+      $PokemonSystem.crossbreeding = value
+	  end
+ 	  }
+})
 
+class PokemonSystem
+   attr_accessor :fastberries
+   attr_accessor :crossbreeding
+   
+   alias :_old_system_init :initialize
+   def initialize
+   _old_system_init
+    @fastberries     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @crossbreeding     = 1     # Text input mode (0=cursor, 1=keyboard)
+   end
+end
 

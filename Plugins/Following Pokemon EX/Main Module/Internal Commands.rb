@@ -19,7 +19,7 @@ module FollowingPkmn
   # Refresh Following Pokemon's visibility when Following the player
   #-----------------------------------------------------------------------------
   def self.refresh_internal
-    if !FollowingPkmn.can_check? || !FollowingPkmn.get || !$PokemonGlobal.follower_toggled
+    if !FollowingPkmn.can_check? || !FollowingPkmn.get || !$PokemonGlobal.follower_toggled || $player.party.length < 1
       @@can_refresh = false
       return
     end
@@ -37,6 +37,7 @@ module FollowingPkmn
   #-----------------------------------------------------------------------------
   def self.increase_time
     return if !FollowingPkmn.can_check?
+    return if $player.party.length < 1
     $PokemonGlobal.time_taken += 1
     friendship_time = FollowingPkmn::FRIENDSHIP_TIME_TAKEN * Graphics.frame_rate
     item_time = FollowingPkmn::ITEM_TIME_TAKEN * Graphics.frame_rate

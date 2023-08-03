@@ -369,7 +369,7 @@ Name = Tiny Mushroom
 NamePlural = Tiny Mushrooms
 Pocket = 1
 Price = 500
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A small and rare mushroom. It is sought after by collectors.
 #-------------------------------
 [BIGMUSHROOM]
@@ -377,7 +377,7 @@ Name = Big Mushroom
 NamePlural = Big Mushrooms
 Pocket = 1
 Price = 5000
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A large and rare mushroom. It is sought after by collectors.
 #-------------------------------
 [BALMMUSHROOM]
@@ -385,7 +385,7 @@ Name = Balm Mushroom
 NamePlural = Balm Mushrooms
 Pocket = 1
 Price = 15000
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A rare mushroom which gives off a nice fragrance. A maniac will buy it for a high price.
 #-------------------------------
 [PEARL]
@@ -938,7 +938,7 @@ Name = Big Root
 NamePlural = Big Roots
 Pocket = 1
 Price = 4000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = A Pokémon held item that boosts the power of HP-stealing moves to let the holder recover more HP.
 #-------------------------------
 [BLACKSLUDGE]
@@ -975,7 +975,7 @@ Name = Mental Herb
 NamePlural = Mental Herbs
 Pocket = 1
 Price = 4000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It snaps the holder out of infatuation. It can be used only once.
 #-------------------------------
 [WHITEHERB]
@@ -983,7 +983,7 @@ Name = White Herb
 NamePlural = White Herbs
 Pocket = 1
 Price = 4000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It restores any lowered stat in battle. It can be used only once.
 #-------------------------------
 [POWERHERB]
@@ -991,7 +991,7 @@ Name = Power Herb
 NamePlural = Power Herbs
 Pocket = 1
 Price = 4000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = A single-use item to be held by a Pokémon. It allows the immediate use of a move that charges up first.
 #-------------------------------
 [ABSORBBULB]
@@ -999,7 +999,7 @@ Name = Absorb Bulb
 NamePlural = Absorb Bulbs
 Pocket = 1
 Price = 4000
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A consumable bulb. If the holder is hit by a Water-type move, its Sp. Atk will rise.
 #-------------------------------
 [CELLBATTERY]
@@ -1017,7 +1017,7 @@ PortionName = clump of Luminous Moss
 PortionNamePlural = clumps of Luminous Moss
 Pocket = 1
 Price = 4000
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = An item to be held by a Pokémon. It boosts Sp. Def if hit by a Water-type attack. It can only be used once.
 #-------------------------------
 [SNOWBALL]
@@ -1078,7 +1078,7 @@ NamePlural = Electric Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It boosts Defense on Electric Terrain. It can only be used once.
 #-------------------------------
 [GRASSYSEED]
@@ -1087,7 +1087,7 @@ NamePlural = Grassy Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It boosts Defense on Grassy Terrain. It can only be used once.
 #-------------------------------
 [MISTYSEED]
@@ -1096,7 +1096,7 @@ NamePlural = Misty Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It boosts Sp. Def on Misty Terrain. It can only be used once.
 #-------------------------------
 [PSYCHICSEED]
@@ -1105,7 +1105,7 @@ NamePlural = Psychic Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10
+Flags = Fling_10,Berry
 Description = An item to be held by a Pokémon. It boosts Sp. Def on Psychic Terrain. It can only be used once.
 #-------------------------------
 [LIFEORB]
@@ -1457,7 +1457,7 @@ NamePlural = Miracle Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 500
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
 #-------------------------------
 [PURESEED]
@@ -1465,7 +1465,7 @@ Name = Pure Seed
 NamePlural = Pure Seeds
 Pocket = 1
 Price = 0
-Flags = Fling_30
+Flags = Fling_30,Seed
 Description = An item that can be used to immediately move to the next staircase of a dungeon.
 #-------------------------------
 [WONDERORB]
@@ -3055,7 +3055,7 @@ Pocket = 2
 Price = 1200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = An extremely bitter medicinal root. It can be used to restore 120 HP to a single Pokémon.
 #-------------------------------
 [HEALPOWDER]
@@ -3077,7 +3077,7 @@ Pocket = 2
 Price = 2800
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A very bitter medicinal herb. It revives a fainted Pokémon, fully restoring its HP.
 #-------------------------------
 [MAXHONEY]
@@ -4973,7 +4973,7 @@ PortionNamePlural = clusters of Max Mushrooms
 Pocket = 7
 Price = 8000
 BattleUse = OnBattler
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = Mushrooms that boost all stats of a Pokémon during battle.
 #-------------------------------
 [DIREHIT]
@@ -5681,7 +5681,7 @@ Name = Machete
 NamePlural = Machetes
 Pocket = 11
 Price = 0
-Flags = Tool
+Flags = Tool,Weapon
 Description = A blade typically used for cutting and carving. If be trees or POKeMON, it will be useful.
 #-------------------------------
 [STONEAXE]
@@ -5739,7 +5739,7 @@ NamePlural = Poison Darts
 Pocket = 11
 Price = 0
 BattleUse = OnFoe
-Flags = Tool
+Flags = Tool,Dart
 Description = A handcrafted dart gun that poisons a Pokémon in battle.
 #-------------------------------
 [SLEEPDART]
@@ -5748,7 +5748,7 @@ NamePlural = Sleep Darts
 Pocket = 11
 Price = 0
 BattleUse = OnFoe
-Flags = Tool
+Flags = Tool,Dart
 Description = A handcrafted dart gun that sedates a Pokémon in battle.
 #-------------------------------
 [PARALYZDART]
@@ -5757,7 +5757,7 @@ NamePlural = Paralysis Darts
 Pocket = 11
 Price = 0
 BattleUse = OnFoe
-Flags = Tool
+Flags = Tool,Dart
 Description = A handcrafted dart gun that stuns a Pokémon in battle.
 #-------------------------------
 [ICEDART]
@@ -5766,7 +5766,7 @@ NamePlural = Ice Darts
 Pocket = 11
 Price = 0
 BattleUse = OnFoe
-Flags = Tool
+Flags = Tool,Dart
 Description = A handcrafted dart gun that freezes a Pokémon in battle.
 #-------------------------------
 [FIREDART]
@@ -5775,7 +5775,7 @@ NamePlural = Fire Darts
 Pocket = 11
 Price = 0
 BattleUse = OnFoe
-Flags = Tool
+Flags = Tool,Dart
 Description = A handcrafted dart gun that burns a Pokémon in battle.
 #-------------------------------
 [WATERBOTTLE]
@@ -6024,7 +6024,7 @@ Name = Stone
 NamePlural = Stone
 Pocket = 1
 Price = 0
-Flags = Fling_10
+Flags = Fling_10,Weapon
 Description = 
 #-------------------------------
 [BOWL]
@@ -6078,6 +6078,7 @@ Description =
 [SPEEDCOMET]
 Name = Shining Comet Shard
 NamePlural = Shining Comet Shard
+FieldUse = OnPokemon
 Pocket = 1
 Price = 60000
 Flags = Fling_10
@@ -6086,6 +6087,7 @@ Description =
 [DEFENDCOMET]
 Name = Shining Comet Shard
 NamePlural = Shining Comet Shard
+FieldUse = OnPokemon
 Pocket = 1
 Price = 60000
 Flags = Fling_10
@@ -6094,6 +6096,7 @@ Description =
 [BALANCEDCOMET]
 Name = Shining Comet Shard
 NamePlural = Shining Comet Shard
+FieldUse = OnPokemon
 Pocket = 1
 Price = 60000
 Flags = Fling_10
@@ -6102,6 +6105,7 @@ Description =
 [ATKCOMET]
 Name = Shining Comet Shard
 NamePlural = Shining Comet Shard
+FieldUse = OnPokemon
 Pocket = 1
 Price = 60000
 Flags = Fling_10
@@ -6119,7 +6123,7 @@ Description =
 Name = Excite Scent
 NamePlural = Excite Scent
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6127,7 +6131,7 @@ Description =
 Name = Vivid Scent
 NamePlural = Vivid Scent
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6135,7 +6139,7 @@ Description =
 Name = Time Flute
 NamePlural = Time Flute
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6143,7 +6147,7 @@ Description =
 Name = Mamoswinite
 NamePlural = Mamoswinite
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6151,7 +6155,7 @@ Description =
 Name = Luckier Egg
 NamePlural = Luckier Egg
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6159,7 +6163,8 @@ Description =
 Name = Suspicious Drink
 NamePlural = Suspicious Drink
 Pocket = 1
-Price = 60000
+FieldUse = OnPokemon
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6167,7 +6172,7 @@ Description =
 Name = Gold Leaf
 NamePlural = Gold Leaf
 Pocket = 1
-Price = 60000
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6175,7 +6180,7 @@ Description =
 Name = Silver Leaf
 NamePlural = Silver Leaf
 Pocket = 1
-Price = 60000
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6183,7 +6188,7 @@ Description =
 Name = Shiny Leaf
 NamePlural = Shiny Leaf
 Pocket = 1
-Price = 60000
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6191,7 +6196,8 @@ Description =
 Name = Grit Dust
 NamePlural = Grit Dust
 Pocket = 1
-Price = 60000
+FieldUse = OnPokemon
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6199,6 +6205,7 @@ Description =
 Name = Grit Gravel
 NamePlural = Grit Gravel
 Pocket = 1
+FieldUse = OnPokemon
 Price = 60000
 Flags = Fling_10
 Description = 
@@ -6207,7 +6214,8 @@ Description =
 Name = Grit Pebble
 NamePlural = Grit Pebble
 Pocket = 1
-Price = 60000
+FieldUse = OnPokemon
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6215,7 +6223,8 @@ Description =
 Name = Grit Rock
 NamePlural = Grit Rock
 Pocket = 1
-Price = 60000
+FieldUse = OnPokemon
+Price = 5
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6223,7 +6232,7 @@ Description =
 Name = Smoochum Doll
 NamePlural = Smoochum Doll
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6231,7 +6240,7 @@ Description =
 Name = Torchic Doll
 NamePlural = Torchic Doll
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6239,7 +6248,7 @@ Description =
 Name = Meowth Doll
 NamePlural = Meowth Doll
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6247,7 +6256,7 @@ Description =
 Name = Treecko Doll
 NamePlural = Treecko Doll
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6255,7 +6264,7 @@ Description =
 Name = Chikorita Doll
 NamePlural = Chikorita Doll
 Pocket = 1
-Price = 60000
+Price = 0
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6263,7 +6272,7 @@ Description =
 Name = Produce Mulch (II)
 NamePlural = Produce Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6271,7 +6280,7 @@ Description =
 Name = Potential Mulch (II)
 NamePlural = Potential Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6279,7 +6288,7 @@ Description =
 Name = Growth Mulch (II)
 NamePlural = Growth Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6287,7 +6296,7 @@ Description =
 Name = Damp Mulch (II)
 NamePlural = Damp Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6295,7 +6304,7 @@ Description =
 Name = Stable Mulch (II)
 NamePlural = Stable Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6303,7 +6312,7 @@ Description =
 Name = Gooey Mulch (II)
 NamePlural = Gooey Mulch (II)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6311,7 +6320,7 @@ Description =
 Name = Fertilizer Mix
 NamePlural = Fertilizer Mix
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6319,7 +6328,7 @@ Description =
 Name = Potential Mulch (I)
 NamePlural = Potential Mulch (I)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -6327,7 +6336,7 @@ Description =
 Name = Produce Mulch (I)
 NamePlural = Produce Mulch (I)
 Pocket = 1
-Price = 60000
+Price = 10
 Flags = Fling_10
 Description = 
 #-------------------------------
@@ -9245,7 +9254,7 @@ NamePlural = Seeds of Mastery
 Pocket = 2
 Price = 3000
 FieldUse = OnPokemon
-Flags = Fling_30
+Flags = Fling_30,Berry
 Description = A rare seed that can be used to master a Pokémon move so it can be used in the agile or strong styles.
 #-------------------------------
 [BOOSTERPACK]

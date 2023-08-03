@@ -337,7 +337,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[049]   # Rocket
+[049]   # RQ
 Name = Rocket
 Outdoor = true
 MapPosition = 0,0,0
@@ -500,7 +500,7 @@ Weather = Blizzard,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[075]   # DM
+[075]   # DQ
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
@@ -1032,12 +1032,12 @@ Name = Red and Blue's Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[167]   # In the Middle
+[167]
 Name = In the Middle
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[168]   # Tiny Island
+[168]
 Name = Tiny Island
 Outdoor = true
 MapPosition = 0,0,0
@@ -1182,7 +1182,7 @@ Name = Department Store Rooftop
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[196]   # Other.
+[196]   # Other
 Name = Other.
 Outdoor = true
 MapPosition = 0,0,0
@@ -1239,6 +1239,7 @@ BattleBack = Forest
 Name = Temperate Shore
 Outdoor = true
 MapPosition = 0,0,0
+BattleBack = water
 #-------------------------------
 [206]   # Forest Zone
 Name = Temperate Forest
@@ -1458,7 +1459,7 @@ BattleBack = Forest
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[246]   # Post-Game
+[246]
 Name = Post-Game
 Outdoor = true
 MapPosition = 0,0,0
@@ -1728,7 +1729,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[292]   # END
+[292]
 Name = END
 Outdoor = true
 MapPosition = 0,0,0

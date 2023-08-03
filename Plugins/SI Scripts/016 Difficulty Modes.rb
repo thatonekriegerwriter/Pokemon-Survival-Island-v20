@@ -68,14 +68,14 @@ class PokemonEncounters
 	if level > $game_variables[4951]
 	$game_variables[4951]=level 
 	end
-    if level < 5
-     level = 5 
-    end
-    if level > 100
-     level = 100 
-    end
 	if $game_map.name == "Temperate Coast" || $game_map.name == "Temperate Inland" || $game_map.name == "Temperate Shore" || $game_map.name == "Temperate Plains"
      if level > (20+highrate)
+	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
+      level = (10+rand(11)) 
+	  if reroll_level > level && reroll_level < (30+highrate)
+	   level = reroll_level
+	  end 
+	 elsif level < 10
 	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
       level = (10+rand(11)) 
 	  if reroll_level > level && reroll_level < (30+highrate)
@@ -366,6 +366,12 @@ class PokemonEncounters
       elsif $PokemonMap.whiteFluteUsed
         level = [level - rand(1..4), 1].max
       end
+    end
+    if level < 5
+     level = 5 
+    end
+    if level > 100
+     level = 100 
     end
     # Return [species, level]
     return [encounter[1], level]

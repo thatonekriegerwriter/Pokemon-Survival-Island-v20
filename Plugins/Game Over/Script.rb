@@ -85,12 +85,37 @@ class Scene_Gameover
   def main
     # Make game over graphic
     @sprite = Sprite.new
-    @sprite.bitmap = RPG::Cache.gameover($data_system.gameover_name)
+	chance = rand(1000)
+	if chance!=0
+	@box2 = Window_AdvancedTextPokemon.new("<ac>You have perished.")
+	@box = Window_AdvancedTextPokemon.new("<ac>The darkness of the afterlife is all that awaits you now. May you find more peace in that world than you found in this one.")
+    @box.x = (Graphics.width/2)-255
+	@box.y = Graphics.height/2-50
+	@box.z = 999
+	@box.windowskin = nil
+	@box2.x = (Graphics.width/2)-95
+	@box2.y = Graphics.height/2-75
+	@box2.z = 999
+	@box2.windowskin = nil
+	end
+	@sprite.z = 950
     # Stop BGM and BGS
     $game_system.bgm_play(nil)
     $game_system.bgs_play(nil)
+	potato = false
     # Play game over ME
-    $game_system.me_play($data_system.gameover_me)
+	if chance==0
+     @sprite.bitmap = RPG::Cache.gameover($data_system.gameover_name)
+     $game_system.me_play($data_system.gameover_me)
+	 else 
+	  potato = true
+     @sprite.bitmap = RPG::Cache.gameover("GameOver.png")
+	 if rand(100)==0
+     pbMEPlay("Game Over Meme")
+	 else
+     pbMEPlay("Game Over")
+	 end
+	end
     # Execute transition
     Graphics.transition(120)
     # Main loop
@@ -112,6 +137,10 @@ class Scene_Gameover
     # Dispose of game over graphic
     @sprite.bitmap.dispose
     @sprite.dispose
+	if chance!=0
+    @box.dispose
+    @box2.dispose
+	end
     # Execute transition
     Graphics.transition(20) # changed line (from 40 to 1)
     # Prepare for transition

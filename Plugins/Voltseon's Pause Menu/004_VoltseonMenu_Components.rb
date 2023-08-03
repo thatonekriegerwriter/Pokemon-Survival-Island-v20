@@ -11,7 +11,7 @@ class SafariHud < Component
     @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
   end
 
-  def shouldDraw?; return pbInSafari?; end
+  def shouldDraw?; return false; end
 
   def refresh
     text = _INTL("Balls: {1}",pbSafariState.ballcount)
@@ -223,7 +223,10 @@ class PokemonPartyHud < Component
     @shinybmp  = Bitmap.new(MENU_FILE_PATH + "overlayShiny")
   end
 
-  def shouldDraw?; return $player.party_count > 0; end
+  def shouldDraw?
+   return false if pbInSafari?
+   return true if $player.party_count > 0
+  end
 
   def refresh
     # Iterate through all the player's Pokémon

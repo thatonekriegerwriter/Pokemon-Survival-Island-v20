@@ -32,7 +32,15 @@
 #   Maybe auto-save slots should act like a queue instead of cycling around.
 
 # Autosave every 30 steps
-
+EventHandlers.add(:on_player_step_taken, :auto_save, proc {
+  $player.autosave_steps = 0 if !$player.autosave_steps
+  next if $PokemonGlobal.sliding
+  $player.autosave_steps += 1
+  if $player.autosave_steps >= 200
+    pbAutosave
+    $player.autosave_steps = 0
+  end
+})
 #===============================================================================
 #
 #===============================================================================

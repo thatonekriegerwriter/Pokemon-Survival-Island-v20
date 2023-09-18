@@ -245,7 +245,7 @@ class MenuEntrySave < MenuEntry
   end
 
   def selectable?
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154]
+     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
     return (!pbInBugContest? && $game_system && !$game_system.save_disabled && (maps.include?($game_map.map_id) || $PokemonSystem.playermode == 0)) 
   end
 end
@@ -321,7 +321,7 @@ class MenuEntryExitSafari < MenuEntry
     menu.pbShowMenu
   end
 
-  def selectable?; return pbInSafari?; end
+  def selectable?; return false; end
 end
 #-------------------------------------------------------------------------------
 # Entry for quitting Bug Contest
@@ -354,26 +354,7 @@ class MenuEntryExitDemo < MenuEntry
 
   def selected(menu)
     menu.pbHideMenu
-    if pbConfirmMessage(_INTL("Would you like to end the Demo now?"))
-	  pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
-      $game_temp.in_menu = false
-	  pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
-	  pbMessage(_INTL("It sounds like an alarm."))
-    $game_temp.player_new_map_id    = 1
-    $game_temp.player_new_x         = 22
-    $game_temp.player_new_y         = 3
-    $game_temp.player_new_direction = 1
-    $scene.transfer_player(false)
-    $game_map.autoplay
-    $game_map.refresh
-	Game.save
-	$player.playermode = 1 
-	$scene = pbCallTitle
-    while $scene != nil
-      $scene.main
-    end
-    Graphics.transition(20)
-    end
+	pbDemoExit
     menu.pbShowMenu
   end
 
@@ -392,11 +373,12 @@ class MenuEntryQuit < MenuEntry
     menu.pbHideMenu
     if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
       menu.pbEndScene
-      $scene = nil
-      Graphics.transition(20) # changed line (from 40 to 1)
-      go_to_title # added line
+	$scene = pbCallTitle(false)
+    while $scene != nil
+      $scene.main
     end
-    menu.pbShowMenu
+    Graphics.transition(20)
+    end
   end
 
   def selectable?; return !pbInBugContest?; end

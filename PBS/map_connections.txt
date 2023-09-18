@@ -412,8 +412,6 @@
 236,West,0,35,East,148
 # Temperate Ocean (300) - Temperate Marsh (35)
 300,North,250,35,South,0
-# Temperate Marsh (36) - Temperate Marsh (84)
-36,South,0,84,North,0
 # Temperate Ocean (38) - Temperate Ocean (59)
 38,North,150,59,South,0
 # Temperate Ocean (38) - Temperate Ocean (39)
@@ -598,12 +596,72 @@
 68,East,300,102,West,0
 # S.S Glittering Wreck (101) - Chilled Plains (68)
 101,West,0,68,East,350
-# Temperate Marsh (84) - Temperate Marsh (86)
-84,South,0,86,North,0
-# Temperate Marsh (86) - Temperate Marsh (110)
-86,South,20,110,North,0
-# Temperate Marsh (86) - Temperate Marsh (140)
-86,South,94,140,North,0
+# Frigid Highlands (72) - Frigid Highlands (80)
+72,South,100,80,North,0
+# Frigid Highlands (73) - Frigid Highlands (72)
+73,West,0,72,East,0
+# Frigid Highlands (78) - Frigid Highlands (72)
+78,West,0,72,East,50
+# Frigid Highlands (77) - Frigid Highlands (72)
+77,North,0,72,South,0
+# Frigid Highlands (85) - Frigid Highlands (72)
+85,South,0,72,North,100
+# Frigid Highlands (239) - Frigid Highlands (72)
+239,South,0,72,North,150
+# Frigid Highlands (73) - Frigid Highlands (80)
+73,East,50,80,West,0
+# Frigid Highlands (82) - Frigid Highlands (73)
+82,West,100,73,East,0
+# Frigid Highlands (78) - Frigid Highlands (73)
+78,North,0,73,South,0
+# Frigid Highlands (74) - Frigid Highlands (73)
+74,West,0,73,East,0
+# Frigid Highlands (77) - Frigid Highlands (73)
+77,North,50,73,South,0
+# Frigid Highlands (85) - Frigid Highlands (73)
+85,West,50,73,East,0
+# Frigid Highlands (239) - Frigid Highlands (73)
+239,South,0,73,North,100
+# Frigid Highlands (74) - Frigid Highlands (80)
+74,South,0,80,North,0
+# Frigid Highlands (74) - Frigid Highlands (78)
+74,West,50,78,East,0
+# Frigid Highlands (77) - Frigid Highlands (74)
+77,North,100,74,South,0
+# Frigid Highlands (85) - Frigid Highlands (74)
+85,South,0,74,North,0
+# Winter Zone (83) - Frigid Highlands (74)
+83,West,0,74,East,0
+# Frigid Highlands (239) - Frigid Highlands (74)
+239,West,50,74,East,0
+# Frigid Highlands (77) - Frigid Highlands (78)
+77,East,0,78,West,0
+# Winter Zone (83) - Frigid Highlands (77)
+83,South,0,77,North,150
+# Frigid Highlands (78) - Frigid Highlands (80)
+78,East,0,80,West,0
+# Frigid Highlands (78) - Frigid Highlands (82)
+78,East,0,82,West,150
+# Frigid Highlands (85) - Frigid Highlands (78)
+85,West,100,78,East,0
+# Winter Zone (83) - Frigid Highlands (78)
+83,South,0,78,North,100
+# Winter Zone (83) - Frigid Highlands (80)
+83,West,50,80,East,0
+# Frigid Highlands (239) - Frigid Highlands (80)
+239,West,100,80,East,0
+# Frigid Highlands (85) - Frigid Highlands (82)
+85,North,0,82,South,0
+# Winter Zone (83) - Frigid Highlands (82)
+83,West,0,82,East,100
+# Frigid Highlands (239) - Frigid Highlands (82)
+239,West,0,82,East,50
+# Winter Zone (83) - Frigid Highlands (85)
+83,West,0,85,East,50
+# Frigid Highlands (239) - Winter Zone (83)
+239,South,0,83,North,0
+# Frigid Highlands (239) - Frigid Highlands (85)
+239,West,0,85,East,0
 # S.S Glittering Wreck (101) - S.S Glittering Wreck (102)
 101,North,0,102,South,0
 # Red and Blue's Cabin (103) - S.S Glittering Wreck (102)
@@ -614,108 +672,6 @@
 233,East,0,109,West,149
 # Temperate Ocean (236) - Temperate Marsh (109)
 236,East,0,109,West,198
-# Tropical Coast (132) - Temperate Marsh (110)
-132,North,0,110,South,52
-# Tropical Coast (133) - Temperate Marsh (110)
-133,North,0,110,South,102
-# Tropical Coast (131) - Temperate Marsh (110)
-131,North,0,110,South,2
-# Tropical Coast (134) - Temperate Marsh (110)
-134,North,0,110,South,152
-# Temperate Marsh (140) - Temperate Marsh (110)
-140,West,0,110,East,0
-# Tropical Coast (111) - Tropical Coast (132)
-111,East,0,132,West,100
-# Tropical Coast (161) - Tropical Coast (111)
-161,South,0,111,North,150
-# Tropical Coast (130) - Tropical Coast (111)
-130,South,0,111,North,0
-# Tropical Coast (138) - Tropical Coast (111)
-138,West,50,111,East,0
-# Tropical Coast (142) - Tropical Coast (111)
-142,South,0,111,North,100
-# Tropical Coast (158) - Tropical Coast (111)
-158,West,0,111,East,0
-# Tropical Coast (130) - Tropical Coast (132)
-130,North,50,132,South,0
-# Tropical Coast (130) - Tropical Coast (160)
-130,South,150,160,North,0
-# Tropical Coast (133) - Tropical Coast (130)
-133,South,0,130,North,100
-# Tropical Coast (138) - Tropical Coast (130)
-138,West,0,130,East,0
-# Tropical Coast (131) - Tropical Coast (130)
-131,South,0,130,North,0
-# Tropical Coast (134) - Tropical Coast (130)
-134,South,0,130,North,150
-# Tropical Coast (159) - Tropical Coast (130)
-159,North,0,130,South,100
-# Tropical Coast (158) - Tropical Coast (130)
-158,West,0,130,East,50
-# Tropical Coast (131) - Tropical Coast (132)
-131,East,0,132,West,0
-# Tropical Coast (131) - Tropical Coast (161)
-131,South,150,161,North,0
-# Tropical Coast (131) - Tropical Coast (138)
-131,East,50,138,West,0
-# Tropical Coast (142) - Tropical Coast (131)
-142,North,0,131,South,100
-# Tropical Coast (158) - Tropical Coast (131)
-158,West,0,131,East,100
-# Temperate Marsh (140) - Tropical Coast (131)
-140,South,0,131,North,72
-# Tropical Coast (161) - Tropical Coast (132)
-161,North,0,132,South,100
-# Tropical Coast (133) - Tropical Coast (132)
-133,West,0,132,East,0
-# Tropical Coast (138) - Tropical Coast (132)
-138,North,0,132,South,0
-# Tropical Coast (142) - Tropical Coast (132)
-142,West,0,132,East,50
-# Tropical Coast (159) - Tropical Coast (132)
-159,West,0,132,East,100
-# Temperate Marsh (140) - Tropical Coast (132)
-140,South,0,132,North,22
-# Tropical Coast (133) - Tropical Coast (161)
-133,East,50,161,West,0
-# Tropical Coast (133) - Tropical Coast (160)
-133,East,100,160,West,0
-# Tropical Coast (138) - Tropical Coast (133)
-138,North,50,133,South,0
-# Tropical Coast (142) - Tropical Coast (133)
-142,North,0,133,South,0
-# Tropical Coast (134) - Tropical Coast (133)
-134,West,0,133,East,0
-# Tropical Coast (158) - Tropical Coast (133)
-158,East,0,133,West,100
-# Temperate Marsh (140) - Tropical Coast (133)
-140,South,28,133,North,0
-# Tropical Coast (134) - Tropical Coast (161)
-134,South,0,161,North,0
-# Tropical Coast (134) - Tropical Coast (138)
-134,South,0,138,North,100
-# Tropical Coast (134) - Tropical Coast (142)
-134,West,50,142,East,0
-# Tropical Coast (159) - Tropical Coast (134)
-159,East,0,134,West,100
-# Temperate Marsh (140) - Tropical Coast (134)
-140,South,78,134,North,0
-# Tropical Coast (138) - Tropical Coast (160)
-138,South,100,160,North,0
-# Tropical Coast (142) - Tropical Coast (138)
-142,West,0,138,East,0
-# Tropical Coast (159) - Tropical Coast (138)
-159,West,0,138,East,50
-# Tropical Coast (158) - Tropical Coast (138)
-158,North,0,138,South,0
-# Tropical Coast (142) - Tropical Coast (161)
-142,East,0,161,West,0
-# Tropical Coast (142) - Tropical Coast (160)
-142,East,50,160,West,0
-# Tropical Coast (159) - Tropical Coast (142)
-159,North,0,142,South,0
-# Tropical Coast (158) - Tropical Coast (142)
-158,North,50,142,South,0
 # Northern Area (157) - Northern Area  (207)
 157,West,50,207,East,0
 # Northern Area (157) - Northern Area (208)
@@ -724,16 +680,6 @@
 237,South,0,157,North,0
 # Northern Area (313) - Northern Area (157)
 313,West,0,157,East,2
-# Tropical Coast (158) - Tropical Coast (161)
-158,North,100,161,South,0
-# Tropical Coast (158) - Tropical Coast (159)
-158,East,0,159,West,0
-# Tropical Coast (159) - Tropical Coast (161)
-159,North,50,161,South,0
-# Tropical Coast (159) - Tropical Coast (160)
-159,East,0,160,West,0
-# Tropical Coast (160) - Tropical Coast (161)
-160,North,0,161,South,0
 # Abandoned Cabin (169) - S.S Glittering (176)
 169,North,0,176,South,0
 # Abandoned Cabin (169) - Cedar City (178)
@@ -950,7 +896,7 @@
 251,East,0,254,West,0
 # Shore Skies (275) - Shore Skies (251)
 275,East,300,251,West,0
-# Shore Skies? (277) - Shore Skies (251)
+# Shore Skies (277) - Shore Skies (251)
 277,East,350,251,West,0
 # Shore Skies (263) - Shore Skies (251)
 263,West,250,251,East,0
@@ -1206,7 +1152,7 @@
 274,East,50,263,West,0
 # Shore Skies (275) - Shore Skies (264)
 275,East,100,264,West,0
-# Shore Skies? (277) - Shore Skies (264)
+# Shore Skies (277) - Shore Skies (264)
 277,East,150,264,West,0
 # Shore Skies (273) - Shore Skies (264)
 273,South,0,264,North,0
@@ -1214,7 +1160,7 @@
 265,North,100,279,South,0
 # Shore Skies (265) - Shore Skies (272)
 265,West,0,272,East,0
-# Shore Skies (265) - Shore Skies? (277)
+# Shore Skies (265) - Shore Skies (277)
 265,North,0,277,South,200
 # Shore Skies (265) - Mountain Skies (280)
 265,North,0,280,South,0
@@ -1228,7 +1174,7 @@
 266,North,50,279,South,0
 # Mountain Skies (266) - Shore Skies (294)
 266,West,250,294,East,0
-# Mountain Skies (266) - Shore Skies? (277)
+# Mountain Skies (266) - Shore Skies (277)
 266,North,0,277,South,250
 # Mountain Skies (266) - Mountain Skies (280)
 266,West,0,280,East,50
@@ -1244,7 +1190,7 @@
 272,North,150,279,South,0
 # Shore Skies (272) - Shore Skies (294)
 272,East,250,294,West,0
-# Shore Skies? (277) - Shore Skies (272)
+# Shore Skies (277) - Shore Skies (272)
 277,South,150,272,North,0
 # Mountain Skies (280) - Shore Skies (272)
 280,West,50,272,East,0
@@ -1254,7 +1200,7 @@
 273,North,100,272,South,0
 # Shore Skies (273) - Shore Skies (275)
 273,West,0,275,East,50
-# Shore Skies (273) - Shore Skies? (277)
+# Shore Skies (273) - Shore Skies (277)
 273,West,0,277,East,100
 # Shore Skies (273) - Mountain Skies (278)
 273,North,250,278,South,0
@@ -1264,21 +1210,21 @@
 274,North,250,279,South,0
 # Shore Skies (274) - Shore Skies (275)
 274,West,0,275,East,0
-# Shore Skies (274) - Shore Skies? (277)
+# Shore Skies (274) - Shore Skies (277)
 274,West,0,277,East,50
 # Shore Skies (274) - Mountain Skies (280)
 274,North,150,280,South,0
 # Shore Skies (275) - Mountain Skies (279)
 275,North,300,279,South,0
-# Shore Skies? (277) - Shore Skies (275)
+# Shore Skies (277) - Shore Skies (275)
 277,South,0,275,North,0
 # Mountain Skies (280) - Shore Skies (275)
 280,South,0,275,North,200
-# Mountain Skies (281) - Shore Skies? (277)
+# Mountain Skies (281) - Shore Skies (277)
 281,South,0,277,North,250
-# Mountain Skies (278) - Shore Skies? (277)
+# Mountain Skies (278) - Shore Skies (277)
 278,North,0,277,South,300
-# Mountain Skies (283) - Shore Skies? (277)
+# Mountain Skies (283) - Shore Skies (277)
 283,South,0,277,North,300
 # Mountain Skies (278) - Mountain Skies (279)
 278,North,0,279,South,0
@@ -1544,69 +1490,203 @@
 393,West,0,389,East,50
 # Swamp Zone (393) - Mountain Zone (390)
 393,North,0,390,South,150
-# Frigid Highlands (72) - Frigid Highlands (80)
-72,South,100,80,North,0
-# Frigid Highlands (73) - Frigid Highlands (80)
-73,East,50,80,West,0
-# Frigid Highlands (78) - Frigid Highlands (80)
-78,East,0,80,West,0
-# Frigid Highlands (74) - Frigid Highlands (80)
-74,South,0,80,North,0
-# Winter Zone (83) - Frigid Highlands (80)
-83,West,50,80,East,0
-# Frigid Highlands (239) - Frigid Highlands (80)
-239,West,100,80,East,0
-# Frigid Highlands (73) - Frigid Highlands (72)
-73,West,0,72,East,0
-# Frigid Highlands (78) - Frigid Highlands (72)
-78,West,0,72,East,50
-# Frigid Highlands (77) - Frigid Highlands (72)
-77,North,0,72,South,0
-# Frigid Highlands (85) - Frigid Highlands (72)
-85,South,0,72,North,100
-# Frigid Highlands (239) - Frigid Highlands (72)
-239,South,0,72,North,150
-# Frigid Highlands (82) - Frigid Highlands (73)
-82,West,100,73,East,0
-# Frigid Highlands (78) - Frigid Highlands (73)
-78,North,0,73,South,0
-# Frigid Highlands (74) - Frigid Highlands (73)
-74,West,0,73,East,0
-# Frigid Highlands (77) - Frigid Highlands (73)
-77,North,50,73,South,0
-# Frigid Highlands (85) - Frigid Highlands (73)
-85,West,50,73,East,0
-# Frigid Highlands (239) - Frigid Highlands (73)
-239,South,0,73,North,100
-# Frigid Highlands (78) - Frigid Highlands (82)
-78,East,0,82,West,150
-# Frigid Highlands (85) - Frigid Highlands (82)
-85,North,0,82,South,0
-# Winter Zone (83) - Frigid Highlands (82)
-83,West,0,82,East,100
-# Frigid Highlands (239) - Frigid Highlands (82)
-239,West,0,82,East,50
-# Frigid Highlands (74) - Frigid Highlands (78)
-74,West,50,78,East,0
-# Frigid Highlands (77) - Frigid Highlands (78)
-77,East,0,78,West,0
-# Frigid Highlands (85) - Frigid Highlands (78)
-85,West,100,78,East,0
-# Winter Zone (83) - Frigid Highlands (78)
-83,South,0,78,North,100
-# Frigid Highlands (77) - Frigid Highlands (74)
-77,North,100,74,South,0
-# Frigid Highlands (85) - Frigid Highlands (74)
-85,South,0,74,North,0
-# Winter Zone (83) - Frigid Highlands (74)
-83,West,0,74,East,0
-# Frigid Highlands (239) - Frigid Highlands (74)
-239,West,50,74,East,0
-# Winter Zone (83) - Frigid Highlands (77)
-83,South,0,77,North,150
-# Winter Zone (83) - Frigid Highlands (85)
-83,West,0,85,East,50
-# Frigid Highlands (239) - Frigid Highlands (85)
-239,West,0,85,East,0
-# Frigid Highlands (239) - Winter Zone (83)
-239,South,0,83,North,0
+# Temperate Marsh (110) - Temperate Ocean (East) (397)
+110,South,352,397,North,0
+# Oil Tanker (137) - Temperate Ocean (East) (397)
+137,East,0,397,West,150
+# Temperate Marsh (140) - Temperate Ocean (East) (397)
+140,South,278,397,North,0
+# Temperate Ocean (East) (385) - Temperate Ocean (East) (397)
+385,East,0,397,West,0
+# Temperate Ocean (East) (396) - Temperate Ocean (East) (397)
+396,East,0,397,West,200
+# Temperate Ocean (East) (43) - Temperate Marsh (110)
+43,North,0,110,South,202
+# Tropical Coast (131) - Temperate Marsh (110)
+131,North,0,110,South,2
+# Temperate Marsh (140) - Temperate Marsh (110)
+140,West,0,110,East,0
+# Temperate Marsh (86) - Temperate Marsh (110)
+86,South,20,110,North,0
+# Tropical Coast (132) - Temperate Marsh (110)
+132,North,0,110,South,52
+# Tropical Coast (133) - Temperate Marsh (110)
+133,North,0,110,South,102
+# Tropical Coast (134) - Temperate Marsh (110)
+134,North,0,110,South,152
+# Temperate Ocean (East) (385) - Temperate Marsh (110)
+385,North,0,110,South,302
+# Oil Tanker (137) - Temperate Ocean (East) (43)
+137,West,0,43,East,150
+# Tropical Coast (161) - Temperate Ocean (East) (43)
+161,East,0,43,West,50
+# Temperate Marsh (140) - Temperate Ocean (East) (43)
+140,South,128,43,North,0
+# Tropical Coast (134) - Temperate Ocean (East) (43)
+134,East,0,43,West,0
+# Tropical Coast (160) - Temperate Ocean (East) (43)
+160,East,0,43,West,100
+# Temperate Ocean (East) (392) - Temperate Ocean (East) (43)
+392,North,50,43,South,0
+# Temperate Ocean (East) (385) - Temperate Ocean (East) (43)
+385,West,0,43,East,0
+# Temperate Ocean (East) (387) - Temperate Ocean (East) (43)
+387,North,200,43,South,0
+# Temperate Ocean (East) (396) - Temperate Ocean (East) (43)
+396,West,0,43,East,200
+# Tropical Coast (111) - Oil Tanker (137)
+111,South,300,137,North,0
+# Tropical Coast (159) - Oil Tanker (137)
+159,South,200,137,North,0
+# Tropical Coast (160) - Oil Tanker (137)
+160,South,150,137,North,0
+# Tropical Coast (158) - Oil Tanker (137)
+158,South,250,137,North,0
+# Temperate Ocean (East) (392) - Oil Tanker (137)
+392,East,0,137,West,0
+# Temperate Ocean (East) (385) - Oil Tanker (137)
+385,South,0,137,North,0
+# Temperate Ocean (East) (396) - Oil Tanker (137)
+396,North,0,137,South,0
+# Tropical Coast (130) - Tropical Coast (111)
+130,South,0,111,North,0
+# Tropical Coast (161) - Tropical Coast (111)
+161,South,0,111,North,150
+# Tropical Coast (132) - Tropical Coast (111)
+132,West,100,111,East,0
+# Tropical Coast (138) - Tropical Coast (111)
+138,West,50,111,East,0
+# Tropical Coast (142) - Tropical Coast (111)
+142,South,0,111,North,100
+# Tropical Coast (158) - Tropical Coast (111)
+158,West,0,111,East,0
+# Temperate Ocean (East) (392) - Tropical Coast (111)
+392,North,0,111,South,150
+# Temperate Ocean (East) (387) - Tropical Coast (111)
+387,North,0,111,South,0
+# Tropical Coast (131) - Tropical Coast (130)
+131,South,0,130,North,0
+# Tropical Coast (132) - Tropical Coast (130)
+132,West,50,130,East,0
+# Tropical Coast (138) - Tropical Coast (130)
+138,West,0,130,East,0
+# Tropical Coast (133) - Tropical Coast (130)
+133,South,0,130,North,100
+# Tropical Coast (134) - Tropical Coast (130)
+134,South,0,130,North,150
+# Tropical Coast (159) - Tropical Coast (130)
+159,North,0,130,South,100
+# Tropical Coast (160) - Tropical Coast (130)
+160,North,0,130,South,150
+# Tropical Coast (158) - Tropical Coast (130)
+158,West,0,130,East,50
+# Tropical Coast (131) - Tropical Coast (161)
+131,South,150,161,North,0
+# Tropical Coast (132) - Tropical Coast (161)
+132,South,100,161,North,0
+# Tropical Coast (133) - Tropical Coast (161)
+133,East,50,161,West,0
+# Tropical Coast (134) - Tropical Coast (161)
+134,South,0,161,North,0
+# Tropical Coast (159) - Tropical Coast (161)
+159,North,50,161,South,0
+# Tropical Coast (142) - Tropical Coast (161)
+142,East,0,161,West,0
+# Tropical Coast (160) - Tropical Coast (161)
+160,North,0,161,South,0
+# Tropical Coast (158) - Tropical Coast (161)
+158,North,100,161,South,0
+# Temperate Ocean (East) (387) - Tropical Coast (161)
+387,East,0,161,West,100
+# Temperate Marsh (140) - Tropical Coast (131)
+140,South,0,131,North,72
+# Tropical Coast (132) - Tropical Coast (131)
+132,West,0,131,East,0
+# Tropical Coast (138) - Tropical Coast (131)
+138,West,0,131,East,50
+# Tropical Coast (142) - Tropical Coast (131)
+142,North,0,131,South,100
+# Tropical Coast (158) - Tropical Coast (131)
+158,West,0,131,East,100
+# Temperate Marsh (86) - Temperate Marsh (140)
+86,South,94,140,North,0
+# Tropical Coast (132) - Temperate Marsh (140)
+132,North,22,140,South,0
+# Tropical Coast (133) - Temperate Marsh (140)
+133,North,0,140,South,28
+# Tropical Coast (134) - Temperate Marsh (140)
+134,North,0,140,South,78
+# Temperate Ocean (East) (385) - Temperate Marsh (140)
+385,North,0,140,South,228
+# Temperate Marsh (84) - Temperate Marsh (86)
+84,South,0,86,North,0
+# Temperate Marsh (36) - Temperate Marsh (84)
+36,South,0,84,North,0
+# Tropical Coast (138) - Tropical Coast (132)
+138,North,0,132,South,0
+# Tropical Coast (133) - Tropical Coast (132)
+133,West,0,132,East,0
+# Tropical Coast (159) - Tropical Coast (132)
+159,West,0,132,East,100
+# Tropical Coast (142) - Tropical Coast (132)
+142,West,0,132,East,50
+# Tropical Coast (133) - Tropical Coast (138)
+133,West,50,138,East,0
+# Tropical Coast (134) - Tropical Coast (138)
+134,South,0,138,North,100
+# Tropical Coast (159) - Tropical Coast (138)
+159,West,0,138,East,50
+# Tropical Coast (142) - Tropical Coast (138)
+142,West,0,138,East,0
+# Tropical Coast (160) - Tropical Coast (138)
+160,North,0,138,South,100
+# Tropical Coast (158) - Tropical Coast (138)
+158,North,0,138,South,0
+# Tropical Coast (134) - Tropical Coast (133)
+134,West,0,133,East,0
+# Tropical Coast (142) - Tropical Coast (133)
+142,North,0,133,South,0
+# Tropical Coast (160) - Tropical Coast (133)
+160,West,0,133,East,100
+# Tropical Coast (158) - Tropical Coast (133)
+158,East,0,133,West,100
+# Temperate Ocean (East) (392) - Tropical Coast (133)
+392,West,0,133,East,150
+# Tropical Coast (159) - Tropical Coast (134)
+159,East,0,134,West,100
+# Tropical Coast (142) - Tropical Coast (134)
+142,North,50,134,South,0
+# Temperate Ocean (East) (387) - Tropical Coast (134)
+387,East,0,134,West,150
+# Tropical Coast (142) - Tropical Coast (159)
+142,South,0,159,North,0
+# Tropical Coast (160) - Tropical Coast (159)
+160,West,0,159,East,0
+# Tropical Coast (158) - Tropical Coast (159)
+158,East,0,159,West,0
+# Temperate Ocean (East) (392) - Tropical Coast (159)
+392,West,0,159,East,50
+# Temperate Ocean (East) (387) - Tropical Coast (159)
+387,North,100,159,South,0
+# Tropical Coast (160) - Tropical Coast (142)
+160,West,0,142,East,50
+# Tropical Coast (158) - Tropical Coast (142)
+158,North,50,142,South,0
+# Temperate Ocean (East) (392) - Tropical Coast (142)
+392,West,0,142,East,100
+# Temperate Ocean (East) (392) - Tropical Coast (160)
+392,North,0,160,South,0
+# Temperate Ocean (East) (387) - Tropical Coast (160)
+387,North,150,160,South,0
+# Temperate Ocean (East) (392) - Tropical Coast (158)
+392,North,0,158,South,100
+# Temperate Ocean (East) (387) - Tropical Coast (158)
+387,North,50,158,South,0
+# Temperate Ocean (East) (385) - Temperate Ocean (East) (392)
+385,West,150,392,East,0
+# Temperate Ocean (East) (387) - Temperate Ocean (East) (392)
+387,East,0,392,West,0
+# Temperate Ocean (East) (396) - Temperate Ocean (East) (392)
+396,West,0,392,East,50
+# Temperate Ocean (East) (387) - Temperate Ocean (East) (385)
+387,North,300,385,South,0

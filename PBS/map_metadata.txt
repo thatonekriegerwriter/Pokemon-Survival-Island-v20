@@ -295,14 +295,6 @@ MapPosition = 0,0,0
 DiveMap = 114
 BattleBack = Water
 #-------------------------------
-[043]   # Route 1
-Name = Route 1
-Outdoor = false
-MapPosition = 0,0,0
-DarkMap = false
-SnapEdges = true
-BattleBack = Forest
-#-------------------------------
 [044]   # Chilled Plains
 Name = Temperate Inland
 Outdoor = true
@@ -897,7 +889,7 @@ BattleBack = Water
 #-------------------------------
 [143]   # Oil Tanker
 Name = Tropical Coast
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
@@ -1007,7 +999,7 @@ BattleBack = Water
 #-------------------------------
 [162]   # Red's Cabin
 Name = Red's Cabin
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 #-------------------------------
 [163]   # Deep Caves
@@ -1032,12 +1024,12 @@ Name = Red and Blue's Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[167]
+[167]   # MAP167
 Name = In the Middle
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[168]
+[168]   # MAP168
 Name = Tiny Island
 Outdoor = true
 MapPosition = 0,0,0
@@ -1455,11 +1447,12 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[245]
+[245]   # MAP245
+Name = MAP245
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[246]
+[246]   # MAP246
 Name = Post-Game
 Outdoor = true
 MapPosition = 0,0,0
@@ -1681,37 +1674,37 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[284]
+[284]   # MAP284
 Name = Monkey Cave
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[285]
+[285]   # MAP285
 Name = The Monkey Kings Lair
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[286]
+[286]   # MAP286
 Name = Xatu Home
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[287]
+[287]   # MAP287
 Name = Xatu Home
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[288]
+[288]   # MAP288
 Name = Xatu Home
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[289]
+[289]   # MAP289
 Name = Xatu Home
 Outdoor = true
 MapPosition = 0,0,0
@@ -1729,7 +1722,7 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[292]
+[292]   # MAP292
 Name = END
 Outdoor = true
 MapPosition = 0,0,0
@@ -1768,7 +1761,8 @@ Name = Bee Forest
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[299]
+[299]   # MAP299
+Name = MAP299
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
@@ -1784,15 +1778,18 @@ Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[303]
+[303]   # MAP303
+Name = MAP303
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[304]
+[304]   # MAP304
+Name = MAP304
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[305]
+[305]   # MAP305
+Name = MAP305
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
@@ -1882,7 +1879,8 @@ Name = Western Temperate
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[321]
+[321]   # MAP321
+Name = MAP321
 Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Indoor
@@ -1894,21 +1892,21 @@ MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[333]
+[333]   # MAP333
 Name = Temperate Caves
 Outdoor = false
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[334]
+[334]   # MAP334
 Name = Temperate Caves
 Outdoor = false
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[335]
+[335]   # MAP335
 Name = Temperate Caves
 Outdoor = false
 MapPosition = 0,0,0

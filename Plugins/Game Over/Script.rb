@@ -47,7 +47,7 @@ def go_to_title
   $game_screen.start_tone_change(Tone.new(-255, -255, -255), 0)
   $game_temp.to_title = true
         # Switch to title screen
-$scene = pbCallTitle
+$scene = pbCallTitle(false)
 
   $game_screen.start_tone_change(Tone.new(0, 0, 0), 0)
 end

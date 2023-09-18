@@ -44,6 +44,9 @@ EventHandlers.add(:on_player_step_taken, :auto_save, proc {
 #===============================================================================
 #
 #===============================================================================
+
+
+			 
 module SaveData
   # You can rename these slots or change the amount of them
   # They change the actual save file names though, so it would take some extra work to use the translation system on them.
@@ -68,7 +71,7 @@ module SaveData
   OLD_SAVE_SLOT = 'Game'
 
   SAVE_DIR = if File.directory?(System.data_directory)
-               System.data_directory
+               System.data_directory + "Saves"
              else
               '.'
              end
@@ -141,7 +144,11 @@ module SaveData
   # This seems to be only used in a hidden function (ctrl+down+cancel on title screen)
   # Deletes ALL the save files (and possible .bak backup files if they exist)
   # @raise [Error::ENOENT]
-  def self.delete_file(file_path=nil)
+  def self.delete_file
+	  pbSIDataStorage(:DELETE)
+  end
+  
+  def self.delete_this_save(file_path=nil)
     if file_path
       File.delete(file_path) if File.file?(file_path)
     else
@@ -194,39 +201,306 @@ end
 #===============================================================================
 #
 #===============================================================================
+class PokemonLoadPanel < Sprite
+  attr_reader :selected
+
+  TEXTCOLOR             = Color.new(232, 232, 232)
+  TEXTSHADOWCOLOR       = Color.new(136, 136, 136)
+  MALETEXTCOLOR         = Color.new(56, 160, 248)
+  MALETEXTSHADOWCOLOR   = Color.new(56, 104, 168)
+  FEMALETEXTCOLOR       = Color.new(240, 72, 88)
+  FEMALETEXTSHADOWCOLOR = Color.new(160, 64, 64)
+
+  def initialize(index, title, isContinue, savefile, trainer, framecount, stats, mapid, viewport = nil)
+    super(viewport)
+    @index = index
+    @title = title
+    @isContinue = isContinue
+    @savefile = savefile
+    @trainer = trainer
+    @totalsec = (stats) ? stats.play_time.to_i : ((framecount || 0) / Graphics.frame_rate)
+    @mapid = mapid
+    @selected = (index == 0)
+    @bgbitmap = AnimatedBitmap.new("Graphics/Pictures/loadPanels")
+    @refreshBitmap = true
+    @refreshing = false
+    refresh
+  end
+
+  def dispose
+    @bgbitmap.dispose
+    self.bitmap.dispose
+    super
+  end
+
+  def selected=(value)
+    return if @selected == value
+    @selected = value
+    @refreshBitmap = true
+    refresh
+  end
+
+  def pbRefresh
+    @refreshBitmap = true
+    refresh
+  end
+
+  def refresh
+    return if @refreshing
+    return if disposed?
+    @refreshing = true
+    if !self.bitmap || self.bitmap.disposed?
+      self.bitmap = BitmapWrapper.new(@bgbitmap.width, 222)
+      pbSetSystemFont(self.bitmap)
+    end
+    if @refreshBitmap
+      @refreshBitmap = false
+      self.bitmap&.clear
+      if @isContinue
+        self.bitmap.blt(0, 0, @bgbitmap.bitmap, Rect.new(0, (@selected) ? 222 : 0, @bgbitmap.width, 222))
+      else
+        self.bitmap.blt(0, 0, @bgbitmap.bitmap, Rect.new(0, 444 + ((@selected) ? 46 : 0), @bgbitmap.width, 46))
+      end
+      textpos = []
+      if @isContinue
+        textpos.push([@title, 32, 16, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+        textpos.push([_INTL("Class:"), 32, 118, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+        textpos.push([@trainer.playerclass.to_s, 206, 118, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        textpos.push([_INTL("Health:"), 32, 150, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+        textpos.push([_INTL("{1}/100", @trainer.playerhealth.to_s), 206, 150, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        textpos.push([_INTL("Time:"), 32, 182, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+        hour = @totalsec / 60 / 60
+        min  = @totalsec / 60 % 60
+        if hour > 0
+          textpos.push([_INTL("{1}h {2}m", hour, min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        else
+          textpos.push([_INTL("{1}m", min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        end
+        if @trainer.male?
+          textpos.push([@trainer.name, 112, 70, 0, MALETEXTCOLOR, MALETEXTSHADOWCOLOR])
+        elsif @trainer.female?
+          textpos.push([@trainer.name, 112, 70, 0, FEMALETEXTCOLOR, FEMALETEXTSHADOWCOLOR])
+        else
+          textpos.push([@trainer.name, 112, 70, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+        end
+        textpos.push([@savefile, 216, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        mapname = pbGetMapNameFromId(@mapid)
+        mapname.gsub!(/\\PN/, @trainer.name)
+        textpos.push(["#{mapname} ->", 386, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+      else
+        textpos.push([@title, 32, 14, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+      end
+      pbDrawTextPositions(self.bitmap, textpos)
+    end
+    @refreshing = false
+  end
+end
+
+
+
 class PokemonLoad_Scene
+  def pbStartScene(commands, show_continue, savefile, trainer, frame_count, stats, map_id)
+    @commands = commands
+    @sprites = {}
+    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport.z = 99998
+    addBackgroundOrColoredPlane(@sprites, "background", "loadbg2", Color.new(248, 248, 248), @viewport)
+    y = 32
+    commands.length.times do |i|
+      @sprites["panel#{i}"] = PokemonLoadPanel.new(
+        i, commands[i], (show_continue) ? (i == 0) : false, savefile, trainer,
+        frame_count, stats, map_id, @viewport
+      )
+      @sprites["panel#{i}"].x = 48
+      @sprites["panel#{i}"].y = y
+      @sprites["panel#{i}"].pbRefresh
+      y += (show_continue && i == 0) ? 224 : 48
+    end
+    @sprites["cmdwindow"] = Window_CommandPokemon.new([])
+    @sprites["cmdwindow"].viewport = @viewport
+    @sprites["cmdwindow"].visible  = false
+	@star1 = IconSprite.new(5, 35, @viewport)
+	@star2 = IconSprite.new(5, 47, @viewport)
+	@star3 = IconSprite.new(5, 59, @viewport)
+	@star4 = IconSprite.new(5, 71, @viewport)
+	@star5 = IconSprite.new(5, 83, @viewport)
+	@star1.visible = false
+	@star2.visible = false
+	@star3.visible = false
+	@star4.visible = false
+	@star5.visible = false
+#	@star1.z = 20
+#	@star2.z = 20
+#	@star3.z = 20
+#	@star4.z = 20
+#	@star5.z = 20
+	@star1.setBitmap("Graphics/Pictures/stars1.png")
+	@star2.setBitmap("Graphics/Pictures/stars1.png")
+	@star3.setBitmap("Graphics/Pictures/stars1.png")
+	@star4.setBitmap("Graphics/Pictures/stars1.png")
+	@star5.setBitmap("Graphics/Pictures/stars1.png")
+	@star1.visible = true if pbSIDataStorage(:LOAD,"stars") >= 1
+	@star2.visible = true if pbSIDataStorage(:LOAD,"stars") >= 2
+	@star3.visible = true if pbSIDataStorage(:LOAD,"stars") >= 3
+	@star4.visible = true if pbSIDataStorage(:LOAD,"stars") >= 4
+	@star5.visible = true if pbSIDataStorage(:LOAD,"stars") >= 5
+    @sprites["craftResult"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@sprites["craftResult"])
+    @sprites["craftResult"].x=30
+    @sprites["craftResult"].y=294
+    @sprites["craftResult"].width=Graphics.width-48
+    @sprites["craftResult"].height=Graphics.height
+    @sprites["craftResult"].baseColor=Color.new(232, 232, 232)
+    @sprites["craftResult"].shadowColor=Color.new(136, 136, 136)
+    @sprites["craftResult"].viewport=@viewport
+    @sprites["craftResult"].visible=false
+  end
+
+  def pbStartScene2
+    pbFadeInAndShow(@sprites) { pbUpdate }
+  end
+  def pbPrepareWindow(window)
+    window.letterbyletter=false
+  end
+  def pbStartDeleteScene
+    @sprites = {}
+    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport.z = 99998
+    addBackgroundOrColoredPlane(@sprites, "background", "loadbg", Color.new(248, 248, 248), @viewport)
+  end
+
+  def pbUpdate
+    oldi = @sprites["cmdwindow"].index rescue 0
+    pbUpdateSpriteHash(@sprites)
+    newi = @sprites["cmdwindow"].index rescue 0
+    if oldi != newi
+      @sprites["panel#{oldi}"].selected = false
+      @sprites["panel#{oldi}"].pbRefresh
+      @sprites["panel#{newi}"].selected = true
+      @sprites["panel#{newi}"].pbRefresh
+      while @sprites["panel#{newi}"].y > Graphics.height - 80
+        @commands.length.times do |i|
+          @sprites["panel#{i}"].y -= 48
+        end
+        6.times do |i|
+          break if !@sprites["party#{i}"]
+          @sprites["party#{i}"].y -= 48
+        end
+        @sprites["player"].y -= 48 if @sprites["player"]
+      end
+      while @sprites["panel#{newi}"].y < 32
+        @commands.length.times do |i|
+          @sprites["panel#{i}"].y += 48
+        end
+        6.times do |i|
+          break if !@sprites["party#{i}"]
+          @sprites["party#{i}"].y += 48
+        end
+        @sprites["player"].y += 48 if @sprites["player"]
+      end
+    end
+  end
+
+  def pbSetParty(trainer)
+    return if !trainer || !trainer.party
+    meta = GameData::PlayerMetadata.get(trainer.character_ID)
+    if meta
+      filename = pbGetPlayerCharset(meta.walk_charset, trainer, true)
+      @sprites["player"] = TrainerWalkingCharSprite.new(filename, @viewport)
+      charwidth  = @sprites["player"].bitmap.width
+      charheight = @sprites["player"].bitmap.height
+      @sprites["player"].x        = 112 - (charwidth / 8)
+      @sprites["player"].y        = 112 - (charheight / 8)
+      @sprites["player"].src_rect = Rect.new(0, 0, charwidth / 4, charheight / 4)
+    end
+    trainer.party.each_with_index do |pkmn, i|
+      @sprites["party#{i}"] = PokemonIconSprite.new(pkmn, @viewport)
+      @sprites["party#{i}"].setOffset(PictureOrigin::CENTER)
+      @sprites["party#{i}"].x = 334 + (66 * (i % 2))
+      @sprites["party#{i}"].y = 112 + (50 * (i / 2))
+      @sprites["party#{i}"].z = 99999
+    end
+  end
+
+  def close_title_screen_delete
+    sscene = PokemonLoad_Scene.new
+    sscreen = PokemonLoadScreen.new(sscene)
+    sscreen.pbStartDeleteScreen
+  end
+
   def pbChoose(commands, continue_idx)
     @sprites["cmdwindow"].commands = commands
     loop do
       Graphics.update
       Input.update
       pbUpdate
+	  if Input.press?(Input::DOWN) &&
+       Input.press?(Input::BACK) &&
+       Input.press?(Input::CTRL)
+      close_title_screen_delete
+      end
       if Input.trigger?(Input::USE)
+		@star1.visible = false
+	    @star2.visible = false
+	    @star3.visible = false
+    	@star4.visible = false
+    	@star5.visible = false
         return @sprites["cmdwindow"].index
-      elsif @sprites["cmdwindow"].index == continue_idx
+	  elsif @sprites["cmdwindow"].index == continue_idx
         if Input.trigger?(Input::LEFT)
           return -3
         elsif Input.trigger?(Input::RIGHT)
           return -2
+		elsif Input.triggerex?(:DELETE)
+          return -9
+
         end
       end
     end
   end
-  def pbChoose3(commands)
+  def pbChoose3(commands,adventure_idx,classic_idx,back_idx,tr_idx,speed_idx)
+    if !commands.nil?
     @sprites["cmdwindow"].commands = commands
     loop do
       Graphics.update
       Input.update
       pbUpdate
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Adventures is almost an entirely new game with a new story and areas.") if @sprites["cmdwindow"].index == 0
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Classic is the original game, but on a timer, any items or Pokemon carry over to the main game.") if @sprites["cmdwindow"].index == 1
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Team Rocket Edition is an alternate campaign, where you play as a member of Team Rocket.") if @sprites["cmdwindow"].index == 2
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Adventures is almost an entirely new game with a new story and areas.") if @sprites["cmdwindow"].index == adventure_idx
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Classic is the original game, but on a timer, any items or Pokemon carry over to the main game.") if @sprites["cmdwindow"].index == classic_idx
+      @sprites["craftResult"].text=_INTL("Pokemon SI: Team Rocket Edition is an alternate campaign, where you play as a member of Team Rocket.") if @sprites["cmdwindow"].index == tr_idx
+      @sprites["craftResult"].text=_INTL("Speedrun Pokemon Survival Island! Beat it as fast as possible and see who has the lowest time!") if @sprites["cmdwindow"].index == speed_idx
+      @sprites["craftResult"].text=_INTL("Return to Main Menu.") if @sprites["cmdwindow"].index == back_idx
       @sprites["craftResult"].visible=true
       if Input.trigger?(Input::USE)
+		@star1.visible = false
+	    @star2.visible = false
+	    @star3.visible = false
+    	@star4.visible = false
+    	@star5.visible = false
         return @sprites["cmdwindow"].index
 	  end
+      if Input.trigger?(Input::BACK)
+		@star1.visible = false
+	    @star2.visible = false
+	    @star3.visible = false
+    	@star4.visible = false
+    	@star5.visible = false
+        return -10
+	  end
+  end
   end
 end
+
+  def pbEndScene
+    pbFadeOutAndHide(@sprites) { pbUpdate }
+    pbDisposeSpriteHash(@sprites)
+    @viewport.dispose
+  end
+
+  def pbCloseScene
+    pbDisposeSpriteHash(@sprites)
+    @viewport.dispose
+  end
 end
 #===============================================================================
 #
@@ -235,6 +509,20 @@ class PokemonLoadScreen
   def initialize(scene)
     @scene = scene
     @selected_file = SaveData.get_newest_save_slot
+  end
+  def pbStartDeleteScreen
+    @scene.pbStartDeleteScene
+    @scene.pbStartScene2
+      if pbConfirmMessageSerious(_INTL("Delete Cross-save Data?"))
+        pbMessage(_INTL("Once data has been deleted, there is no way to recover it.\1"))
+        if pbConfirmMessageSerious(_INTL("Delete the data anyway?"))
+          pbMessage(_INTL("Deleting all data. Don't turn off the power.\\wtnp[0]"))
+          SaveData.delete_file
+          pbMessage(_INTL("The save data was deleted."))
+        end
+      end
+    @scene.pbEndScene
+    $scene = pbCallTitle
   end
   # @param file_path [String] file to load save data from
   # @return [Hash] save data
@@ -261,11 +549,17 @@ class PokemonLoadScreen
     )
     exit
   end
+  
+   def prompt_save_deletion_manual(file_path,save)
+    self.delete_save_data(file_path) if pbConfirmMessageSerious(
+      _INTL("Do you want to delete #{save}?")
+    )
+  end
 
   # nil deletes all, otherwise just the given file
   def delete_save_data(file_path=nil)
     begin
-      SaveData.delete_file(file_path)
+      SaveData.delete_this_save(file_path)
       pbMessage(_INTL("The save data was deleted."))
     rescue SystemCallError
       pbMessage(_INTL("The save data could not be deleted."))
@@ -275,7 +569,7 @@ class PokemonLoadScreen
   def pbStartLoadScreen
     save_file_list = SaveData::AUTO_SLOTS + SaveData::MANUAL_SLOTS
     first_time = true
-	pbBGMPlay("anthemmix")
+	pbSIDataStorage()
     loop do # Outer loop is used for switching save files
       if @selected_file
         @save_data = load_save_file(SaveData.get_full_path(@selected_file))
@@ -292,10 +586,10 @@ class PokemonLoadScreen
       cmd_quit         = -1
       show_continue = !@save_data.empty?
       if show_continue
-        commands[cmd_continue = commands.length] = " <- #{@selected_file} -> "
-        if @save_data[:player].mystery_gift_unlocked
-          commands[cmd_mystery_gift = commands.length] = _INTL('Mystery Gift') # Honestly I have no idea how to make Mystery Gift work well with this.
-        end
+        commands[cmd_continue = commands.length] = _INTL('<- Continue Game')
+#        if @save_data[:player].mystery_gift_unlocked
+#          commands[cmd_mystery_gift = commands.length] = _INTL('Mystery Gift') # Honestly I have no idea how to make Mystery Gift work well with this.
+#        end
       end
       commands[cmd_new_game = commands.length]  = _INTL('New Game')
       commands[cmd_options = commands.length]   = _INTL('Options')
@@ -304,9 +598,9 @@ class PokemonLoadScreen
       commands[cmd_quit = commands.length]      = _INTL('Quit Game')
       cmd_left = -3
       cmd_right = -2
-
+      cmd_delete = -9
       map_id = show_continue ? @save_data[:map_factory].map.map_id : 0
-    @scene.pbStartScene(commands, show_continue, @save_data[:player],
+    @scene.pbStartScene(commands, show_continue, @selected_file, @save_data[:player],
                         @save_data[:frame_count] || 0, @save_data[:stats], map_id)
     @scene.pbSetParty(@save_data[:player]) if show_continue
       if first_time
@@ -323,6 +617,7 @@ class PokemonLoadScreen
         case command
         when cmd_continue
           @scene.pbEndScene
+		  pbBGMFade(0.8)
           Game.load(@save_data)
           return
         when cmd_new_game
@@ -331,20 +626,25 @@ class PokemonLoadScreen
     cmd_psia     = -1
     cmd_demo     = -1
     cmd_rocket     = -1
+    cmd_speed     = -1
+    cmd_return2 = -1
+    cmd_return = -10
     commands[cmd_psia = commands.length] = _INTL('Play Pokemon SI: Adventures')
     commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
-	    if @save_data[:player].nil?
-		else
-        if @save_data[:player].rocket_unlocked
-            commands[cmd_rocket = commands.length]  = _INTL('Play Pokemon SI: Team Rocket Edition')
-        end
-		end
-		@scene.pbStartScene(commands, false, nil, 0, nil, 0)
+    if pbSIDataStorage(:LOAD,"rocket_mode") == true
+        commands[cmd_rocket = commands.length]  = _INTL('Play Pokemon SI: Team Rocket Edition')
+    end
+    if pbSIDataStorage(:LOAD,"speedrun_mode") == true
+        commands[cmd_speed = commands.length]  = _INTL('Play Pokemon SI: Speedrun')
+    end
+    commands[cmd_return2 = commands.length]  = _INTL('Back')
+		@scene.pbStartScene(commands, false, false, nil, 0, nil, 0)
     loop do
-      command = @scene.pbChoose3(commands)
+      command = @scene.pbChoose3(commands,cmd_psia,cmd_demo,cmd_return2,cmd_rocket,cmd_speed)
       pbPlayDecisionSE if command != cmd_quit
       case command
       when cmd_psia
+       if pbSIDataStorage(:LOAD,"kanto_unlocked") == true
 		  $PokemonSystem.playermode = 1
 		  $PokemonSystem.difficulty = 1
           Level_Cap.initialize
@@ -355,6 +655,29 @@ class PokemonLoadScreen
 					$PokemonSystem.language = pbChooseLanguage
 					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
 				end
+	   elsif pbSIDataStorage(:LOAD,"johto_unlocked") == true
+		  $PokemonSystem.playermode = 1
+		  $PokemonSystem.difficulty = 1
+          Level_Cap.initialize
+		  $PokemonSystem.nuzlockemode = 1
+		  $PokemonSystem.survivalmode = 1
+		  @scene.pbEndScene
+				if Settings::LANGUAGES.length >= 2 && show_continue
+					$PokemonSystem.language = pbChooseLanguage
+					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
+				end
+	   else
+		  $PokemonSystem.playermode = 1
+		  $PokemonSystem.difficulty = 1
+          Level_Cap.initialize
+		  $PokemonSystem.nuzlockemode = 1
+		  $PokemonSystem.survivalmode = 1
+		  @scene.pbEndScene
+				if Settings::LANGUAGES.length >= 2 && show_continue
+					$PokemonSystem.language = pbChooseLanguage
+					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
+				end
+		end
         Game.start_new
         return
       when cmd_demo
@@ -372,6 +695,13 @@ class PokemonLoadScreen
 		  $PokemonSystem.playermode = 0
         Game.start_new
         return
+      when cmd_return
+		 @scene.pbEndScene
+		 pbStartLoadScreen
+      when cmd_return2
+		 @scene.pbEndScene
+		 pbStartLoadScreen
+      when cmd_speed
 	  when cmd_rocket
 		  $PokemonSystem.playermode = 2
 		  $PokemonSystem.difficulty = 1
@@ -418,6 +748,12 @@ class PokemonLoadScreen
         when cmd_right
           @scene.pbCloseScene
           @selected_file = SaveData.get_next_slot(save_file_list, @selected_file)
+          break # to outer loop
+        when cmd_delete
+		  save_data = SaveData.get_full_path(@selected_file)
+		  self.prompt_save_deletion_manual(save_data,@selected_file)
+          @scene.pbCloseScene
+		  @selected_file = SaveData.get_newest_save_slot
           break # to outer loop
         else
           pbPlayBuzzerSE
@@ -688,6 +1024,60 @@ class Player
   attr_accessor :autosave_steps
 end
 
+def pbSIDataStorage(option=nil,object=nil,goal=nil)
+  save_dir2 = if File.directory?(System.data_directory)
+               System.data_directory
+             else
+              '.'
+             end
+ loaded_data = nil
+ file_name = "#{save_dir2}/SI_FUN.rxdata"
+  if !File.exist?(file_name)
+     default_values = {"demo_mode" => true,"adventure_mode" => true,"rocket_mode" => false,"speedrun_mode" => false,"kanto_unlocked" => false,
+	 "johto_unlocked" => false,"completed_demo" => false,"completed_rocket" => false,"completed_speedrun" => false,"demo_team" => nil,"stars" => 0,
+	 "played_before" => false,"original_player_name" => nil}
+	 puts "Generated FUN File"
+	 File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump(default_values))
+     end
+  else
+  File.open(file_name, "rb") do |file|
+    loaded_data = Marshal.load(file.read)
+  end
+  if loaded_data
+  puts "Loaded data: #{loaded_data}"
+else
+  puts "No data found or an error occurred while loading."
+end
+  if loaded_data && loaded_data[object] && option == :SAVE
+  if object == "original_player_name"
+  loaded_data[object] = $player.name 
+  else
+  loaded_data[object] = goal  
+  end
+  	 if File.exist?(file_name)
+	 File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump(loaded_data))
+     end
+	 end
+  return loaded_data[object]
+  elsif loaded_data && loaded_data[object] && option == :LOAD
+  return loaded_data[object]
+  elsif loaded_data && option == :UPDATE
+  loaded_data[object] = goal
+  	 if File.exist?(file_name)
+	 File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump(loaded_data))
+     end
+	 end
+  return loaded_data[object]
+  elsif loaded_data && option == :DELETE 
+   File.delete(file_name)
+  return true
+  end
+  end
+end
+
 def pbEmergencySave
   oldscene = $scene
   $scene = nil
@@ -703,4 +1093,55 @@ def pbEmergencySave
     pbMessage(_INTL("\\se[]Save failed.\\wtnp[30]"))
   end
   $scene = oldscene
+end
+
+
+def pbDemoExit
+    return if $player.playermode == 1
+    if pbConfirmMessage(_INTL("Would you like to end the Demo now?"))
+	  pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
+      $game_temp.in_menu = false
+	  pbSIDataStorage(:SAVE,"completed_demo",true)
+	  pbSIDataStorage(:SAVE,"demo_team",$player.party)
+	  stars = pbSIDataStorage(:LOAD,"stars")
+	  pbSIDataStorage(:SAVE,"stars",stars+1)
+	  pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
+	  pbMessage(_INTL("It sounds like an alarm."))
+    $game_temp.player_new_map_id    = 1
+    $game_temp.player_new_x         = 22
+    $game_temp.player_new_y         = 3
+    $game_temp.player_new_direction = 1
+    $scene.transfer_player(false)
+    $game_map.autoplay
+    $game_map.refresh
+	Game.save
+#	$player.playermode = 1 
+	$scene = pbCallTitle
+    while $scene != nil
+      $scene.main
+    end
+    Graphics.transition(20)
+    end
+end
+
+
+def pbStorePokemonPC2(pkmn)
+  if pbBoxesFull?
+    pbMessage(_INTL("There's no more room for Pokémon!\1"))
+    pbMessage(_INTL("The Pokémon Boxes are full and can't accept any more!"))
+    return
+  end
+  pkmn.record_first_moves
+    stored_box = $PokemonStorage.pbStoreCaught(pkmn)
+    box_name   = $PokemonStorage[stored_box].name
+end
+
+
+def pbCallTitle(bgmchange=nil)
+  if bgmchange == false
+    pbBGMPlay("anthemmix")
+  else
+	pbBGMPlay("title_SI")
+  end
+  return Scene_DebugIntro.new
 end

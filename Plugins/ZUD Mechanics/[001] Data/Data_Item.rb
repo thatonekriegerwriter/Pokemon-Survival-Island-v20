@@ -54,17 +54,7 @@ end
 #-------------------------------------------------------------------------------
 # Adds Z-Crystal pocket to the bag.
 #-------------------------------------------------------------------------------
-module Settings
-  Settings.singleton_class.alias_method :zud_bag_pocket_names, :bag_pocket_names
-  def self.bag_pocket_names
-    names = self.zud_bag_pocket_names
-    names.push(_INTL("Z-Crystals"))
-    return names
-  end
-   
-  BAG_MAX_POCKET_SIZE.push(-1)
-  BAG_POCKET_AUTO_SORT.push(true)
-end
+
 
 
 #-------------------------------------------------------------------------------

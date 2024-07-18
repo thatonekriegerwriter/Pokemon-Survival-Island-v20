@@ -45,7 +45,8 @@ end
 #===============================================================================
 MenuHandlers.add(:options_menu, :autosave, {
   "name"        => _INTL("Autosave"),
-  "order"       => 81,
+  "order"       => 30,
+  "parent"      => :main,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
   "description" => _INTL("Choose whether your game saved automatically or not."),
@@ -56,7 +57,7 @@ MenuHandlers.add(:options_menu, :autosave, {
 # Script
 #===============================================================================
 def pbCanAutosave?
-  return $PokemonSystem.autosave==0 && !$game_temp.disableAutosave
+  return $PokemonSystem.autosave==0 && !$game_temp.disableAutosave && !$game_system.save_disabled
 end
 
 def pbSetDisableAutosave=(value)
@@ -75,6 +76,7 @@ end
 # Check if the map are connected
 EventHandlers.add(:on_enter_map, :autosave,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
+    next if $game_map.map_id==3
     map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
     old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
     if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
@@ -87,7 +89,8 @@ EventHandlers.add(:on_enter_map, :autosave,
   EventHandlers.add(:on_map_or_spriteset_change, :autosave,
     proc { |scene, map_changed|
       next if !scene || !scene.spriteset
-      if pbCanAutosave? && map_changed && $game_temp.changeUnConnectedMap
+      next if $game_map.map_id==3
+      if pbCanAutosave? && map_changed && $game_temp.changeUnConnectedMap==true
         pbAutosave(scene)
       end
       $game_temp.changeUnConnectedMap = false

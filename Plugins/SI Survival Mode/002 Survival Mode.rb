@@ -23,56 +23,206 @@ class Pokemon
   attr_accessor :age
   attr_accessor :maxage
   attr_accessor :lifespan
-  attr_reader :hue
+  attr_accessor :bait_eaten
+  attr_accessor :status_turns
+  attr_reader   :hue
+  attr_accessor :inworld
+  attr_accessor :attacking
+  attr_accessor :inventory
+  attr_accessor :height
+  attr_accessor :weight
+  attr_accessor :moves2
+  attr_accessor :ovevent
+  attr_accessor :random_attacking
+  attr_accessor :attack_mode
+  attr_accessor :autobattle
+  attr_accessor :stages
   
   
-alias _SI_Pokemon_species= species=
-def species=(species_id)
-  _SI_Pokemon_species=(species_id)
-end
+  class Move
+  
+    def record_move_use(user, targets)
+    $player.pokedex.tasks[user.species.name].each do |task|
+      if task[:task] == "MOVE" && task[:move_item] == self.id.name
+        $player.pokedex.increment_task_progress(task)
+      end
+    end
+    end
+  
+  
+  end
+#alias _SI_Pokemon_species= species=
+#def species=(species_id)
+#  _SI_Pokemon_species=(species_id)
+#end
+
+
 alias _SI_Pokemon_init initialize
 def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
  _SI_Pokemon_init(species, level, owner = $player, withMoves = true, recheck_form = true)
     @hue = nil
     @happiness        = species_data.happiness || 100
-    @loyalty          = species_data.loyalty || 100
+    @loyalty          = species_data.loyalty || 70
     @starter          = false
     @food             = species_data.food || 100
     @water            = species_data.water || 100
     @sleep            = species_data.sleep || 100
     @maxage          = species_data.maxage || 100
     @lifespan          = species_data.lifespan || 100
+    @bait_eaten            = 0 
+    @status_turns            = 0 
+    @inworld     = false     # Text input mode (0=PSID, 1=PSIA)
+    @attacking     = false     # Text input mode (0=PSID, 1=PSIA)
+    @inventory     = []     # Text input mode (0=PSID, 1=PSIA)
+    @moves2     = []     # Text input mode (0=PSID, 1=PSIA)
+    @height = species_data.height + (rand(2).zero? ? -rand(40) : rand(40))
+    @weight = species_data.weight + (rand(2).zero? ? -rand(70) : rand(70))
+    @ovevent = nil
+    @storedmoveset = []
+    @random_attacking = nil
+    @attack_mode = nil
+    @autobattle = nil
+    @stages = {}
 
 end
+   def permadeath
+    return @permaFaint
+   end
+   def set_in_world(value,event=nil)
+        $ExtraEvents.ovpokemon = Game_FollowerFactory.new if !$ExtraEvents.ovpokemon
+	    @ovevent=event
+	    @inworld=value
+		$ExtraEvents.ovpokemon.add_follower(event) if value == true
+		$ExtraEvents.ovpokemon.remove_follower_by_event(event) if value == false
+   end
+   
+   def get_in_world
+	 return @inworld,getOverworldPokemonfromPokemon(self)
+   end
+   
+   def in_world
+    return @inworld
+   end
+   
+  # @return [Integer] the height of this Pokémon in decimetres (0.1 metres)
+  def height
+    @height = species_data.height + (rand(2).zero? ? -rand(40) : rand(40)) if @height.nil?
+    return @height
+  end
 
-  def changeFood
-    if @food.nil?
-	 @food = 100
+  # @return [Integer] the weight of this Pokémon in hectograms (0.1 kilograms)
+  def weight
+    @weight = species_data.weight + (rand(2).zero? ? -rand(70) : rand(70)) if @height.nil?
+    return @weight
+  end
+ 
+  def stamina
+   return 0
+  end
+ 
+  def happiness
+    @happiness = 100 if !@happiness
+    return @happiness
+  end
+  def loyalty
+    @loyalty = 70 if !@loyalty
+    return @loyalty
+  end
+  def starter
+    @starter = false if !@starter
+    return @starter
+  end
+  def food
+    @food = 100 if !@food
+    return @food
+  end
+  def water
+    @water = 100 if !@water
+    return @water
+  end
+  def sleep
+    @sleep = 100 if !@sleep
+    return @sleep
+  end
+  def maxage
+    @maxage = 100 if !@maxage
+    return @maxage
+  end
+  def lifespan
+    @lifespan = 100 if !@lifespan
+    return @lifespan
+  end
+  def inventory
+    @inventory = [[@item,1]] if !@inventory
+    if !@item.nil? && @inventory[0][0].nil?
+	 @inventory[0][0]=@item
 	end
-    gain = 0
-    food_range = @food / 100
-    gain = [-1, -2, -2][food_range]
-    @food = (@food + gain).clamp(0, 255)
+    return @inventory
+  end
+  
+  def inv_add(item,amt=1)
+    amt=1 if amt.nil?
+    if !@item.nil? && @inventory[0][0].nil?
+	 @inventory[0][0]=@item
+	end
+    if @inventory.length+1<=7
+     theitems = inv_has?(item)
+    if theitems==true
+	  @inventory[theitems][1]+=amt
+	 else
+    @inventory << [item,amt]
+	 end
+	return true
+    else
+	return false
+	end
+  end
+  
+  
+  def inv_remove(item,amt=1)
+    if !@item.nil? && @inventory[0][0].nil?
+	 @inventory[0][0]=@item
+	end
+     inventory = @inventory.reverse
+     theitems = inv_has?(item)
+    if theitems!=false
+	  @inventory[theitems][1]-=amt
+	  if @inventory[theitems][1]==0
+	   @inventory.delete_at(theitems)
+	  end
+	   return true
+	 end
+   return false
+  end
+  
+  
+  def inv_has?(item)
+    if !@item.nil? && @inventory[0][0].nil?
+	 @inventory[0][0]=@item
+	end
+     index2 = -1
+    @inventory.each_with_index do |invitem,index|
+	   next if invitem.nil?
+      index2 = index if invitem[0]==item
+	
+	end
+	 return true if index2!=-1
+	 return false if index2==-1
+	 return false
+  end
+  
+  
+  
+  def changeFood
+
   end
   
   def changeWater
-    if @water.nil?
-	 @water = 100
-	end
-    gain = 0
-    water_range = @water / 100
-    gain = [-1, -2, -2][water_range]
-    @water = (@water + gain).clamp(0, 255)
+
   end
   
   def changeSleep
-    if @sleep.nil?
-	 @sleep = 100
-	end
-    gain = 0
-    sleep_range = @sleep / 100
-    gain = [-1, -2, -2][sleep_range]
-    @sleep = (@sleep + gain).clamp(0, 255)
+
   end
   
   def changeLifespan(method,pkmn)
@@ -93,7 +243,7 @@ end
       when "starvingbadly"
         gain = [-9, -10, -9][lifespan_range]
 	  end
-    @lifespan = (@lifespan + gain).clamp(0, 255)
+    @lifespan = (@lifespan + gain).clamp(0, 100)
   end
   
   def changeAge
@@ -103,11 +253,33 @@ end
     gain = 0
     age_range = @age / 100
     gain = [1, 1, 1][age_range]
-    @age = (@age + gain).clamp(0, 255)
+    @age = (@age + gain).clamp(0, 100)
   end
   
-  
-  
+   def moves2
+    @moves2 = [] if @moves2.nil?
+    return @moves2
+   end
+  def learn_move2(move_id)
+    move_data = GameData::Move.try_get(move_id)
+    return if !move_data
+    @moves2 = [] if @moves2.nil?
+    # Check if self already knows the move; if so, move it to the end of the array
+    @moves2.each_with_index do |m, i|
+      next if m.id != move_data.id
+      @moves2.push(m)
+      @moves2.delete_at(i)
+      return
+    end
+    # Move is not already known; learn it
+    @moves2.push(Pokemon::Move.new(move_data.id))
+    # Delete the first known move if self now knows more moves than it should
+    @moves2.shift if numMoves2 > MAX_MOVES
+  end
+
+  def numMoves2
+    return @moves2.length
+  end
 end
 
 class Player < Trainer
@@ -145,8 +317,6 @@ class Player < Trainer
   attr_reader :playerwrath
   attr_reader :playerharmony
   attr_reader :playermoral
-  attr_reader :playerclass
-  attr_reader :playerclasslevel
   attr_reader :partner1 #207
   attr_reader :partner2 #207
   attr_reader :partner3 #207
@@ -174,88 +344,99 @@ class Player < Trainer
   attr_reader :runpartner7 #207
   attr_reader :demotimer #207
   attr_reader :playermode #207
+  attr_reader :exp
+  attr_reader :playerclass
+  attr_reader :playerclasslevel
+  attr_reader :playerstateffect
+  attr_accessor :punch_cooldown
+  attr_accessor :healthiness
+  attr_accessor :disease
   
   
   
   def playersaturation=(value)
-    validate value => Integer
+    validate value => Float
     @playersaturation = value.clamp(0, 100)
   end
   def playersleep=(value)
-    validate value => Integer
+    validate value => Float
     @playersleep = value.clamp(0, 9999)
   end
   def playerwater=(value)
-    validate value => Integer
+    validate value => Float
     @playerwater = value.clamp(0, 9999)
   end
   def playerfood=(value)
-    validate value => Integer
+    validate value => Float
     @playerfood = value.clamp(0, 9999)
   end
 
   def playertemperature=(value)
-    validate value => Integer
+    validate value => Float
     @playertemperature = value.clamp(0, 9999)
   end
 
 
   def playerbasesleep=(value)
-    validate value => Integer
+    validate value => Float
     @playerbasesleep = value.clamp(0, 200)
   end
   def playerbasewater=(value)
-    validate value => Integer
+    validate value => Float
     @playerbasewater = value.clamp(0, 100)
   end
-  def playerbasefood=(value)
+  def exp=(value)
     validate value => Integer
+    @exp = value.clamp(0, 100)
+  end
+  def playerbasefood=(value)
+    validate value => Float
     @playerbasefood = value.clamp(0, 100)
   end
 
 
 
   def playermaxwater=(value)
-    validate value => Integer
+    validate value => Float
     @playermaxwater = value.clamp(0, 9999)
   end
   def playermaxsleep=(value)
-    validate value => Integer
+    validate value => Float
     @playermaxsleep = value.clamp(0, 9999)
   end
   def playermaxfood=(value)
-    validate value => Integer
+    validate value => Float
     @playermaxfood = value.clamp(0, 9999)
   end
 
 
   def playersleepmod=(value)
-    validate value => Integer
+    validate value => Float
     @playersleepmod = value.clamp(0, 9999)
   end 
   def playerwatermod=(value)
-    validate value => Integer
+    validate value => Float
     @playerwatermod = value.clamp(0, 9999)
   end  
   def playerfoodmod=(value)
-    validate value => Integer
+    validate value => Float
     @playerfoodmod = value.clamp(0, 9999)
   end
 
   def playerhealthmod=(value)
-    validate value => Integer
+    validate value => Float
     @playerhealthmod = value.clamp(0, 9999)
   end
   def playerhealth=(value)
-    validate value => Integer
+    validate value => Float
     @playerhealth = value.clamp(0, 9999)
   end
   def playerbasehealth=(value)
-    validate value => Integer
+    validate value => Float
     @playerbasehealth = value.clamp(0, 100)
   end
   def playermaxhealth=(value)
-    validate value => Integer
+    validate value => Float
     @playermaxhealth = value.clamp(0, 9999)
   end
 
@@ -399,13 +580,65 @@ class Player < Trainer
     @runpartner7 = value
   end
   
+  def heal_self
+    @playerhealth = @playermaxhealth
   
+  end
   
   def demotimer=(value)
     validate value => Integer
     @demotimer = value.clamp(0, 691200)
   end
   
+  
+  def shoespeed
+    case @playershoes
+     when :MAKESHIFTRUNNINGSHOES
+	    return 40
+     when :RUNNINGSHOES
+	    return 60
+     when :SEASHOES
+	    return 80
+     when :DASHBOOTS
+	    return 100
+    else
+	    return 20
+	end
+  end 
+  
+  def equipmentatkbuff
+    case @playershoes
+     when :NORMALSHIRT
+	    return 0
+     when :SILKSHIRT
+	    return 10
+     when :WOOLENCLOAK
+	    return 20
+     when :LEATHERJACKET
+	    return 25
+     when :IRONARMOR
+	    return 50
+    else
+	    return 0
+	end
+  end 
+  
+  def equipmentdefbuff
+    case @playershoes
+     when :NORMALSHIRT
+	    return 0
+     when :SILKSHIRT
+	    return 0
+     when :WOOLENCLOAK
+	    return 0
+     when :LEATHERJACKET
+	    return 10
+     when :IRONARMOR
+	    return 20
+    else
+	    return 0
+	end
+  end 
   
   
   
@@ -419,12 +652,21 @@ class Player < Trainer
   def playershoes=(value)
     @playershoes = value
   end
+  def punch_cooldown=(value)
+    @punch_cooldown = value
+  end
 
+  
   
   def playermode=(value)
     @playermode = value
   end
-
+  def playerstateffect=(value)
+    @playerstateffect = value
+  end
+  def status
+   return @playerstateffect
+  end
    alias _SI_Player_Init initialize
   def initialize(name, trainer_type)
     _SI_Player_Init(name, trainer_type)
@@ -433,28 +675,28 @@ class Player < Trainer
     @playershoes           = :NORMALSHOES
     @rocket_unlocked = false
     @chapter2_unlocked = false
-    @playerwater   = 100   # Text speed 
-    @playerfood = 100     # Battle effects (animations) (0=on, 1=off)
-    @playerhealth  = 100     # Default window frame (see also Settings::MENU_WINDOWSKINS)
-    @playersaturation = 200     # Battle style (0=switch, 1=set)
-    @playersleep = 100     # Battle style (0=switch, 1=set)
+    @playerwater   = 100.0   # Text speed 
+    @playerfood = 100.0     # Battle effects (animations) (0=on, 1=off)
+    @playerhealth  = 100.0     # Default window frame (see also Settings::MENU_WINDOWSKINS)
+    @playersaturation = 200.0     # Battle style (0=switch, 1=set)
+    @playersleep = 100.0     # Battle style (0=switch, 1=set)
     @playerstamina  = 50.0     # Speech frame
     @playerbasestamina  = 100.0     # Speech frame
     @playermaxstamina  = 100.0     # Speech frame
-    @playermaxsleep  = 100     # Speech frame
-    @playermaxhealth  = 100     # Speech frame
-    @playertemperature  = 50     # Speech frame
-    @playermaxfood  = 100     # Speech frame
-    @playermaxwater  = 100     # Speech frame
-    @playerstaminamod  = 0     # Speech frame
-    @playerfoodmod  = 0     # Speech frame
-    @playerwatermod  = 0     # Speech frame
-    @playersleepmod  = 0     # Speech frame
-    @playerhealthmod  = 0     # Speech frame
-    @playerbasesleep = 100     # Battle style (0=switch, 1=set)
-    @playerbasewater   = 100   # Text speed 
-    @playerbasefood = 100     # Battle effects (animations) (0=on, 1=off)
-    @playerbasehealth  = 100     # Default window frame (see also Settings::MENU_WINDOWSKINS)
+    @playermaxsleep  = 100.0     # Speech frame
+    @playermaxhealth  = 100.0     # Speech frame
+    @playertemperature  = 37.0   # Speech frame
+    @playermaxfood  = 100.0   # Speech frame
+    @playermaxwater  = 100.0     # Speech frame
+    @playerstaminamod  = 0.0     # Speech frame
+    @playerfoodmod  = 0.0     # Speech frame
+    @playerwatermod  = 0.0     # Speech frame
+    @playersleepmod  = 0.0     # Speech frame
+    @playerhealthmod  = 0.0     # Speech frame
+    @playerbasesleep = 100.0     # Battle style (0=switch, 1=set)
+    @playerbasewater   = 100.0   # Text speed 
+    @playerbasefood = 100.0     # Battle effects (animations) (0=on, 1=off)
+    @playerbasehealth  = 100.0     # Default window frame (see also Settings::MENU_WINDOWSKINS)
     @rocketplaythrough                  = 0
     @rocketbadges                  = 0
     @rocketstealing                 = 0
@@ -464,6 +706,8 @@ class Player < Trainer
     @playermoral                 = 0
     @playerclass           = "None"
     @playerclasslevel                 = 1
+    @exp     = 0 
+    @playerstateffect     = "None"     
     @partner1          = 1
     @partner2          = 2
     @partner3          = 3
@@ -493,63 +737,78 @@ class Player < Trainer
     @runpartner7          = 0 
     @demotimer            = 691200 
     @playermode     = 1     # Text input mode (0=PSID, 1=PSIA)
+    @punch_cooldown     = 0     # Text input mode (0=PSID, 1=PSIA)
+    @healthiness     = 100
+    @disease     = :NONE
   end
   
 end
 
-def pbSetTemperature
-  $PokemonSystem.temperaturemeasurement = 18 if (pbGetTimeNow.mon==3 && pbGetTimeNow.day==22)
-  $PokemonSystem.temperaturemeasurement = 35 if (pbGetTimeNow.mon==6 && pbGetTimeNow.day==21)
-  $PokemonSystem.temperaturemeasurement = 12 if (pbGetTimeNow.mon==9 && pbGetTimeNow.day==21)
-  $PokemonSystem.temperaturemeasurement = 0 if (pbGetTimeNow.mon == 10 && pbGetTimeNow.day ==22)
+class Player < Trainer
+  def speed
+      bonus = 0
+   @party.each do |pkmn|
+     next if pkmn.egg?
+    bonus += pkmn.speed
+   end
+   if bonus!=0
+     bonus = (bonus/@party.length).to_i
+   end
+    return shoespeed + bonus
+  end
+  def hp
+   return @playerhealth
+  end
+  def stamina
+   return @playerstamina
+  end
+  def food
+   return @playerfood
+  end
+  def water
+   return @playerwater
+  end
+  def sleep
+   return @playersleep
+  end
+  def totalhp
+   return @playermaxhealth
+  end
+  def types
+   return [:NORMAL]
+  end
 end
 
-def pbAmbientTemperature
-   case pbGetTimeNow.mon
-   when 0 #Jan
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-7 #ambienttemperature
-   when 1 #Feb
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-5
-   when 2 #Mar
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-1
-   when 3 #April
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement-0
-   when 4 #may
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+1
-   when 5 #june
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+2
-   when 6 #july
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+5
-   when 7 #august
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+7
-   when 8 #september
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+1
-   when 9 #october
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+3
-   when 10 #november
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+4
-   when 11 #december
-    $PokemonSystem.temperaturemeasurement = $PokemonSystem.temperaturemeasurement+6
- end
 
-end
+
+
+
+
+
+
+
+
+
+
+
+
 
 def pbSleepRestore(wari,vari=nil)
+  wari = wari.to_f
 ##########PLAYER###################
 #       Stamina   #
   $player.playerstamina = $player.playermaxstamina
 #       Sleep     #
-puts vari
   if !vari.nil?
-  $player.playersleep = $player.playersleep.to_i-(wari*9)
+  $player.playersleep = $player.playersleep-(wari*9)
   else
-  $player.playersleep = $player.playersleep.to_i+(wari*9)
+  $player.playersleep = $player.playersleep+(wari*9)
   end
-  if $player.playersleep > 200
-  $player.playersleep = 200  
+  if $player.playersleep > 200.0
+  $player.playersleep = 200.0  
   end
-  if $player.playersleep < 0
-  $player.playersleep = 0  
+  if $player.playersleep < 0.0
+  $player.playersleep = 0.0  
   end
 #       FoodWater     #
  if $player.playersaturation==0
@@ -589,17 +848,18 @@ puts vari
   end
  end
  
- 
- 
+
  def pbEatingPkmn(pkmn,item=nil)
  if item.nil?
  item = 0
 pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
-screen = PokemonBagScreen.new(scene,$PokemonBag)
-item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
+screen = PokemonBagScreen.new(scene,$bag)
+item = screen.pbChooseItemScreen(proc { |item| (GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).is_berry?) && !GameData::Item.get(item).is_apricorn? && item!=:ACORN })
 }
  end
+
+
 if item
 pbMessage(_INTL("You offered {1} a {2}.",pkmn.name,GameData::Item.get(item).name))
 $bag.remove(item)
@@ -825,288 +1085,318 @@ end
  item = 0
 pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
-screen = PokemonBagScreen.new(scene,$PokemonBag)
+screen = PokemonBagScreen.new(scene,$bag)
 item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
 }
  end
+pbSEPlay("eat")
 if $bag.remove(item,1)
+
+
 case item
 when :WATER
-$player.playerwater+=10
-$player.playerhealth -= 7
+increaseFood(10)
+$player.playerhealth -= 7.0
+pbSEPlay("normaldamage")
 $bag.add(:GLASSBOTTLE,1)
+
+
 return true
+
+
 when :MEAT
-$player.playerfood+=15
-$player.playerhealth -= 7
+$player.playerfood+=15.0
+$player.playerhealth -= 7.0
+		pbSEPlay("normaldamage")
 return true
+
+
 when :BIRDMEAT
-$player.playerfood+=10
-$player.playerhealth -= 7
+$player.playerfood+=10.0
+$player.playerhealth -= 7.0
+		pbSEPlay("normaldamage")
 return true
 when :POISONOUSMEAT
-$player.playerfood+=10
-$player.playerhealth -= 25
+$player.playerfood+=10.0
+$player.playerhealth -= 25.0
+		pbSEPlay("normaldamage")
 return true
+
+
 when :ROCKYMEAT
-$player.playerfood+=10
-$player.playerhealth -= 10
+$player.playerfood+=10.0
+$player.playerhealth -= 10.0
+		pbSEPlay("normaldamage")
 return true
+
+
+
 when :BUGMEAT
-$player.playerfood+=2
-$player.playerhealth -= 2
+$player.playerfood+=2.0
+$player.playerhealth -= 2.0
+		pbSEPlay("normaldamage")
 return true
+
+
+
 when :STEELYMEAT
-$player.playerfood+=3
-$player.playerhealth -= 10
+$player.playerfood+=3.0
+$player.playerhealth -= 10.0
+		pbSEPlay("normaldamage")
 return true
+
+
+
 when :SUSHI
-$player.playerfood+=15
-$player.playerhealth -= 6
+$player.playerfood+=15.0
+$player.playerhealth -= 6.0
+		pbSEPlay("normaldamage")
 return true
 when :LEAFYMEAT
-$player.playerfood+=10
-$player.playerhealth -= 6
+$player.playerfood+=10.0
+$player.playerhealth -= 6.0
+		pbSEPlay("normaldamage")
 return true
 when :FROZENMEAT
-$player.playerfood+=6
-$player.playerhealth -= 15
+$player.playerfood+=6.0
+$player.playerhealth -= 15.0
+		pbSEPlay("normaldamage")
 return true
 when :DRAGONMEAT
-$player.playerfood+=20
-$player.playerhealth -= 15
+$player.playerfood+=20.0
+$player.playerhealth -= 15.0
+		pbSEPlay("normaldamage")
 return true
 when :EDIABLESCRYSTAL
-$player.playerfood+=6
-$player.playerhealth -= 15
+$player.playerfood+=6.0
+$player.playerhealth -= 15.0
+		pbSEPlay("normaldamage")
 return true
 when :ORANBERRY
-$player.playerfood+=1
-$player.playerhealth += 1
+$player.playerfood+=1.0
+$player.playerhealth += 1.0
 return true
 when :LEPPABERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :CHERIBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :CHESTOBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :PECHABERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :RAWSTBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :ASPEARBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :PERSIMBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :LUMBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :FIGYBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :WIKIBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :MAGOBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :AGUAVBERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :IAPAPABERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :IAPAPABERRY
-$player.playerfood+=1
+$player.playerfood+=1.0
 return true
 when :SITRUSBERRY
-$player.playerfood+=1
-$player.playerhealth +=1
+$player.playerfood+=1.0
+$player.playerhealth +=1.0
 return true
 when :BERRYJUICE
-$player.playerwater+=4
-$player.playerhealth += 2
+$player.playerwater+=4.0
+$player.playerhealth += 2.0
 $bag.add(:BOWL,1)
 return true
 when :FRESHWATER
-$player.playerwater+=20
+$player.playerwater+=20.0
 $bag.add(:GLASSBOTTLE,1)
 return true
 #You can add more if you want
 when :ATKCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :SATKCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :SPEEDCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :SPDEFCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :ACCCURRY
-$player.playerfood+=8
-$player.playersaturation+=12
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=12.0
+$player.playerwater-=7.0
 return true
 when :DEFCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :CRITCURRY
-$player.playerfood+=8
-$player.playersaturation+=15
-$player.playerwater-=7
+$player.playerfood+=8.0
+$player.playersaturation+=15.0
+$player.playerwater-=7.0
 return true
 when :GSCURRY
-$player.playerfood+=8#205 is Hunger
-$player.playersaturation+=15#207 is Saturation
-$player.playerwater-=7#206 is Thirst
+$player.playerfood+=8.0#205 is Hunger
+$player.playersaturation+=15.0#207 is Saturation
+$player.playerwater-=7.0#206 is Thirst
 return true
 when :RAGECANDYBAR #chocolate
-$player.playerfood+=10
-$player.playersaturation+=3
-$player.playersleep+=7
+$player.playerfood+=10.0
+$player.playersaturation+=3.0
+$player.playersleep+=7.0
 return true
 when :SWEETHEART #chocolate
-$player.playerfood+=10#205 is Hunger
-$player.playersaturation+=5#207 is Saturation
-$player.playersleep+=6#208 is Sleep
+$player.playerfood+=10.0#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playersleep+=6.0#208 is Sleep
 return true
 when :SODAPOP
-$player.playerwater-=11#206 is Thirst
-$player.playersaturation+=30#207 is Saturation
-$player.playersleep+=25#208 is Sleep
+$player.playerwater-=11.0#206 is Thirst
+$player.playersaturation+=30.0#207 is Saturation
+$player.playersleep+=25.0#208 is Sleep
 $bag.add(:GLASSBOTTLE,1)
 return true
 when :LEMONADE
-$player.playersaturation+=11#207 is Saturation
-$player.playerwater+=10#206 is Thirst
-$player.playersleep+=7#208 is Sleep
+$player.playersaturation+=11.0#207 is Saturation
+$player.playerwater+=10.0#206 is Thirst
+$player.playersleep+=7.0#208 is Sleep
 $bag.add(:GLASSBOTTLE,1)
 return true
 when :HONEY
-$player.playersaturation+=20#207 is Saturation
+$player.playersaturation+=20.0#207 is Saturation
 return true
 when :MOOMOOMILK
-$player.playersaturation+=10
-$player.playerwater+=15
+$player.playersaturation+=10.0
+$player.playerwater+=15.0
 $bag.add(:GLASSBOTTLE,1)
 return true
 when :CSLOWPOKETAIL
-$player.playersaturation+=20#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playersaturation+=20.0#207 is Saturation
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :BAKEDPOTATO
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=4#206 is Thirst
-$player.playerfood+=7#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=4.0#206 is Thirst
+$player.playerfood+=7.0#205 is Hunger
 return true
 when :APPLE
-$player.playerwater+=1#206 is Thirst
-$player.playerfood+=1#205 is Hunger
+$player.playerwater+=1.0#206 is Thirst
+$player.playerfood+=1.0#205 is Hunger
 return true
 when :CHOCOLATE
-$player.playersaturation+=5#207 is Saturation
-$player.playerfood+=7#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerfood+=7.0#205 is Hunger
 return true
 when :LEMON
-$player.playerfood+=1#205 is Hunger
+$player.playerfood+=1.0#205 is Hunger
 return true
 when :OLDGATEAU
-$player.playersaturation+=6#207 is Saturation
-$player.playerwater+=2#206 is Thirst
-$player.playerfood+=6#205 is Hunger
+$player.playersaturation+=6.0#207 is Saturation
+$player.playerwater+=2.0#206 is Thirst
+$player.playerfood+=6.0#205 is Hunger
 return true
 when :LAVACOOKIE
-$player.playersaturation+=5#207 is Saturation
-$player.playerwater-=3#206 is Thirst
-$player.playerfood+=6#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerwater-=3.0#206 is Thirst
+$player.playerfood+=6.0#205 is Hunger
 return true
 when :CASTELIACONE
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=7#205 is Hunger
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=7.0#205 is Hunger
 return true
 when :LUMIOSEGALETTE
-$player.playersaturation+=5#207 is Saturation
-$player.playerfood+=6#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerfood+=6.0#205 is Hunger
 return true
 when :SHALOURSABLE
-$player.playersaturation+=8#207 is Saturation
-$player.playerfood+=8#205 is Hunger
+$player.playersaturation+=8.0#207 is Saturation
+$player.playerfood+=8.0#205 is Hunger
 return true
 when :BIGMALASADA
-$player.playersaturation+=8#207 is Saturation
-$player.playerfood+=8#205 is Hunger
+$player.playersaturation+=8.0#207 is Saturation
+$player.playerfood+=8.0#205 is Hunger
 return true
 when :ONION
-$player.playerwater+=1#206 is Thirst
-$player.playerfood+=1#205 is Hunger
+$player.playerwater+=1.0#206 is Thirst
+$player.playerfood+=1.0#205 is Hunger
 return true
 when :COOKEDORAN
-$player.playersaturation+=2#207 is Saturation
-$player.playerhealth+=2#206 is Thirst
+$player.playersaturation+=2.0#207 is Saturation
+$player.playerhealth+=2.0#206 is Thirst
 $player.playerfood+=6#205 is Hunger
 return true
 when :CARROT
-$player.playersaturation+=6#207 is Saturation
-$player.playerwater+=1#206 is Thirst
-$player.playerfood+=1#205 is Hunger
+$player.playersaturation+=6.0#207 is Saturation
+$player.playerwater+=1.0#206 is Thirst
+$player.playerfood+=1.0#205 is Hunger
 return true
 when :BREAD
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
 return true
 when :TEA
-$player.playersaturation+=15#207 is Saturation
-$player.playerwater+=8#206 is Thirst
-$player.playerfood+=2#205 is Hunger
+$player.playersaturation+=15.0#207 is Saturation
+$player.playerwater+=8.0#206 is Thirst
+$player.playerfood+=2.0#205 is Hunger
 return true
 when :CARROTCAKE
-$player.playersaturation+=15#207 is Saturation
-$player.playerwater+=15#206 is Thirst
-$player.playerfood+=10#205 is Hunger
+$player.playersaturation+=15.0#207 is Saturation
+$player.playerwater+=15.0#206 is Thirst
+$player.playerfood+=10.0#205 is Hunger
 return true
 when :COOKEDMEAT
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=10#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=10.0#205 is Hunger
 return true
 when :SITRUSJUICE
-$player.playersaturation+=20#207 is Saturation
-$player.playerwater+=6#206 is Thirst
-$player.playerfood+=0#205 is Hunger
-$player.playerhealth+= 25#205 is Hunger
+$player.playersaturation+=20.0#207 is Saturation
+$player.playerwater+=6.0#206 is Thirst
+$player.playerhealth+= 25.0#205 is Hunger
 $bag.add(:GLASSBOTTLE,1)
 return true
 when :BERRYMASH
-$player.playersaturation+=5#207 is Saturation
-$player.playerwater+=5#206 is Thirst
-$player.playerfood+=5#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerwater+=5.0#206 is Thirst
+$player.playerfood+=5.0#205 is Hunger
 return true
 when :LARGEMEAL
 pbMessage(_INTL("You feasted on the {1}.",GameData::Item.get(item).name))
-$player.playersaturation+=50#207 is Saturation
-$player.playerwater+=50#206 is Thirst
-$player.playerfood+=50#205 is Hunger
-$player.playerstaminamod+=15#205 is Hunger
+$player.playersaturation+=50.0#207 is Saturation
+$player.playerwater+=50.0#206 is Thirst
+$player.playerfood+=50.0#205 is Hunger
  if @pokemon_count==6
   @party[0].ev[:DEFENSE] += 1
   @party[1].ev[:DEFENSE] += 1
@@ -1158,129 +1448,131 @@ $player.playerstaminamod+=15#205 is Hunger
  end
 return true
 when :COOKEDBIRDMEAT
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=12#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=12.0#205 is Hunger
 return true
 when :COOKEDROCKYMEAT
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=15#205 is Hunger
-$player.playerhealth -= 2
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=15.0#205 is Hunger
+$player.playerhealth -= 2.0
+		pbSEPlay("normaldamage")
 return true
 when :COOKEDBUGMEAT
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=6#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=6.0#205 is Hunger
 return true
 when :COOKEDSTEELYMEAT
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=30#205 is Hunger
-$player.playerhealth -= 20
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=30.0#205 is Hunger
+$player.playerhealth -= 20.0
+		pbSEPlay("normaldamage")
 return true
 when :COOKEDSUSHI
-$player.playersaturation+=10#207 is Saturation
-$player.playerfood+=5#205 is Hunger
-$player.playerwater+=5#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerfood+=5.0#205 is Hunger
+$player.playerwater+=5.0#205 is Hunger
 return true
 when :COOKEDLEAFYMEAT
-$player.playersaturation+=5#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :COOKEDDRAGONMEAT
-$player.playersaturation+=100#207 is Saturation
+$player.playersaturation+=100.0#207 is Saturation
 return true
 when :COOKEDEDIABLESCRYSTAL
-$player.playersaturation+=0#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :MEATSANDWICHBIRD
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=12#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=12.0#205 is Hunger
 return true
 when :MEATSANDWICHSLOWPOKETAIL
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=30#207 is Saturation
-$player.playerfood+=30#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playersaturation+=30.0#207 is Saturation
+$player.playerfood+=30.0#205 is Hunger
 return true
 when :MEATSANDWICHROCKY
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=15#205 is Hunger
-$player.playerhealth -= 2
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=15.0#205 is Hunger
+$player.playerhealth -= 2.0
+		pbSEPlay("normaldamage")
 return true
 when :MEATSANDWICHBUG
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=6#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=6.0#205 is Hunger
 return true
 when :MEATSANDWICHSTEELY
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=10#206 is Thirst
-$player.playerfood+=10#205 is Hunger
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=30#205 is Hunger
-$player.playerhealth -= 20
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=10.0#206 is Thirst
+$player.playerfood+=10.0#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=30.0#205 is Hunger
+$player.playerhealth -= 20.0
+		pbSEPlay("normaldamage")
 return true
 when :MEATSANDWICHSUS
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=10#206 is Thirst
-$player.playerfood+=15#205 is Hunger
-$player.playersaturation+=10#207 is Saturation
-$player.playerfood+=5#205 is Hunger
-$player.playerwater+=5#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=10.0#206 is Thirst
+$player.playerfood+=15.0#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerfood+=5.0#205 is Hunger
+$player.playerwater+=5.0#205 is Hunger
 return true
 when :MEATSANDWICHLEAFY
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=15#205 is Hunger
-$player.playersaturation+=5#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=15.0#205 is Hunger
+$player.playersaturation+=5.0#207 is Saturation
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :MEATSANDWICHMJ
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=25#205 is Hunger
-$player.playersaturation+=100#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=25.0#205 is Hunger
+$player.playersaturation+=100.0#207 is Saturation
 return true
 when :MEATSANDWICHCRYSTAL
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=0#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :MEATSANDWICH
-$player.playersaturation+=10#207 is Saturation
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=11#205 is Hunger
-$player.playersaturation+=40#207 is Saturation
-$player.playerfood+=20#205 is Hunger
+$player.playersaturation+=10.0#207 is Saturation
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=11.0#205 is Hunger
+$player.playersaturation+=40.0#207 is Saturation
+$player.playerfood+=20.0#205 is Hunger
 return true
 when :EGGEDIBLE
-$player.playersaturation+=20#207 is Saturation
-$player.playerfood+=1#205 is Hunger
+$player.playersaturation+=20.0#207 is Saturation
+$player.playerfood+=1.0#205 is Hunger
 return true
 when :CHERUBIBALL
-$player.playerwater+=7#206 is Thirst
-$player.playerfood+=7#205 is Hunger
+$player.playerwater+=7.0#206 is Thirst
+$player.playerfood+=7.0#205 is Hunger
 return true
 when :POTATOSTEW
-$player.playerfood+=19
-$player.playerwater+=17
+$player.playerfood+=19.0
+$player.playerwater+=17.0
 return true
 when :MEATKABOB
-$player.playerfood+=24
-$player.playerwater+=7
+$player.playerfood+=24.0
+$player.playerwater+=7.0
 return true
 when :FISHSOUP
-$player.playerfood+=34
-$player.playerwater+=37
+$player.playerfood+=34.0
+$player.playerwater+=37.0
 return true
 
 
@@ -1355,48 +1647,174 @@ def checkHours(hour) # Hour is 0..23
   return true if timeNow == timeHour 
 end
 
-class PokemonSystem
-  attr_accessor :survivalmode
-  attr_accessor :temperature
+def increaseFood(amount)
+if $player.playerfood.is_a? Integer
+    $player.playerfood = $player.playerfood.to_f
+end
+ $player.playerfood+=amount.to_f
+ if $player.playerfood > $player.playermaxfood
+   $player.playerfood=$player.playermaxfood
+ end
+end
 
-  def initialize
-    @textspeed     = 1     # Text speed (0=slow, 1=normal, 2=fast)
-    @battlescene   = 0     # Battle effects (animations) (0=on, 1=off)
-    @battlestyle   = 0     # Battle style (0=switch, 1=set)
-    @sendtoboxes   = 0     # Send to Boxes (0=manual, 1=automatic)
-    @givenicknames = 0     # Give nicknames (0=give, 1=don't give)
-    @frame         = 0     # Default window frame (see also Settings::MENU_WINDOWSKINS)
-    @textskin      = 0     # Speech frame
-    @screensize    = (Settings::SCREEN_SCALE * 2).floor - 1   # 0=half size, 1=full size, 2=full-and-a-half size, 3=double size
-    @language      = 0     # Language (see also Settings::LANGUAGES in script PokemonSystem)
-    @runstyle      = 0     # Default movement speed (0=walk, 1=run)
-    @bgmvolume     = 100   # Volume of background music and ME
-    @sevolume      = 100   # Volume of sound effects
-    @textinput     = 0     # Text input mode (0=cursor, 1=keyboard)
-    @temperature = 1     # Default Temperature Mode (0=on, 1=off)	 
-    @nuzlockemode = 1     # Default Nuzlocke Mode (0=on, 1=off)
-  end
+def increaseWater(amount)
+if $player.playerwater.is_a? Integer
+    $player.playerwater = $player.playerwater.to_f
+end
+ $player.playerwater+=amount.to_f
+ if $player.playerwater > $player.playermaxwater
+   $player.playerwater=$player.playermaxwater
+ end
+end
+
+def decreaseSaturation(amount)
+if $player.playersaturation.is_a? Integer
+    $player.playersaturation = $player.playersaturation.to_f
+end
+   $player.playersaturation-=amount.to_f
+
+end
+
+def decreaseWater(amount)
+if $player.playerwater.is_a? Integer
+    $player.playerwater = $player.playerwater.to_f
+end
+   $player.playerwater-=amount.to_f
+
+end
+def decreaseFood(amount)
+if $player.playerfood.is_a? Integer
+    $player.playerfood = $player.playerfood.to_f
+end
+   $player.playerfood-=amount.to_f
+
+end
+
+def decreaseSleep(amount)
+if $player.playersleep.is_a? Integer
+    $player.playersleep = $player.playersleep.to_f
+end
+   $player.playersleep-=amount.to_f
+
 end
 
 
 
+def decreaseStamina(amount)
+if $player.playerstamina.is_a? Integer
+    $player.playerstamina = $player.playerstamina.to_f
+end
+
+
+if $player.playerstamina-amount<0
+damagePlayer(amount)
+pbSEPlay("normaldamage")
+lowhealthbgs = "Low HP Beep"
+if $player.hp<=$player.totalhp/4 && lowhealthbgs
+	  pbBGSPlay(lowhealthbgs)
+	  puts "potato"
+end
+#pbExclaim($game_player,21)
+$player.playerstamina=0.0
+return false
+else
+$player.playerstamina-=amount.to_f
+end
+
+
+
+return true
+end
+
+
+def increaseHealth(amount)
+if $player.playerhealth.is_a? Integer
+    $player.playerhealth = $player.playerhealth.to_f
+end
+ $player.playerhealth+=amount.to_f
+ if $player.playerhealth > $player.playermaxhealth
+   $player.playerhealth=$player.playermaxhealth
+ end
+end
+
+
+def damagePlayer(amount)
+ puts "$player.playerhealth: #{$player.playerhealth}"
+ puts "Damage Amount: #{amount}"
+if $player.playerhealth.is_a? Integer
+    $player.playerhealth = $player.playerhealth.to_f
+end
+  $player.playerhealth -= amount.to_f
+ puts "$player.playerhealth: #{$player.playerhealth}"
+lowhealthbgs = "Low HP Beep"
+if $player.hp<=$player.totalhp/4 && lowhealthbgs
+	  pbBGSPlay(lowhealthbgs)
+	  puts "potato"
+end
+end
+
 
 MenuHandlers.add(:options_menu, :survivalmode, {
   "name"        => _INTL("Survival Mode"),
+  "parent"      => :gameplay_menu2,
   "order"       => 37,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
   "description" => _INTL("Choose whether or not you play in Survival Mode."),
   "get_proc"    => proc { next $PokemonSystem.survivalmode },
-  "set_proc"    => proc { |value, _scene| $PokemonSystem.survivalmode = value }
+  "set_proc"    => proc { |value, scene| $PokemonSystem.survivalmode = value }
 })
 
 MenuHandlers.add(:options_menu, :temperature, {
   "name"        => _INTL("Ambient Temperature"),
+  "parent"      => :gameplay_menu2,
   "order"       => 39,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
   "description" => _INTL("Choose whether or not Survival Mode has Temperature Mechanics."),
+  "condition"   => proc { next $PokemonSystem.survivalmode == 0 && $player},
   "get_proc"    => proc { next $PokemonSystem.temperature },
-  "set_proc"    => proc { |value, _scene| $PokemonSystem.temperature = value }
+  "set_proc"    => proc { |value, scene| $PokemonSystem.temperature = value }
 })
+
+MenuHandlers.add(:options_menu, :nuzlockemode, {
+  "name"        => _INTL("Nuzlocke Mode"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 40,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("Choose whether or not you play in Nuzlocke Mode."),
+  "get_proc"    => proc { next $PokemonSystem.nuzlockemode },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.nuzlockemode = value 
+  if $PokemonSystem.nuzlockemode == 0
+    if Nuzlocke.definedrules? == true
+      if Nuzlocke.on? == false
+    scene.sprites["textbox"].text = ("Nuzlocke has been turned on.")
+      Nuzlocke.toggle(true)
+      end
+    else 
+    scene.sprites["textbox"].text = ("Nuzlocke has been started.")
+      Nuzlocke.start
+    end
+  else
+    if Nuzlocke.on? 
+      Nuzlocke.toggle(false)
+    scene.sprites["textbox"].text = ("Nuzlocke has been turned off.")
+    end
+  end}
+})
+
+
+def togglescaling
+  $game_switches[140]=false if $game_switches[140]==true
+  $game_switches[140]=true if $game_switches[140]==false
+end
+
+def turn_scaling_on
+  $game_switches[140]=true
+end
+def turn_scaling_off
+  $game_switches[140]=false
+end

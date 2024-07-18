@@ -32,9 +32,22 @@
 #   Maybe auto-save slots should act like a queue instead of cycling around.
 
 # Autosave every 30 steps
+module UILoad
+	# If true, player name will be blue if male, red if female
+	SHOW_GENDER_COLOR = true
+	# If true, it'll use a custom font from Fonts folder
+	USE_CUSTOM_FONT = false
+	# Define a custom font name here (it must exist in Fonts folder)
+	CUSTOM_FONT_NAME = "FOT-Rodin Pro" 
+	# Define a custom font size here
+	CUSTOM_FONT_SIZE = 24
+end
+
 EventHandlers.add(:on_player_step_taken, :auto_save, proc {
   $player.autosave_steps = 0 if !$player.autosave_steps
   next if $PokemonGlobal.sliding
+  next if !pbCanAutosave?
+  next if $game_map.map_id==3
   $player.autosave_steps += 1
   if $player.autosave_steps >= 200
     pbAutosave
@@ -70,14 +83,25 @@ module SaveData
   # For compatibility with games saved without this plugin
   OLD_SAVE_SLOT = 'Game'
 
-  SAVE_DIR = if File.directory?(System.data_directory)
-               System.data_directory + "Saves"
-             else
-              '.'
-             end
+  SAVE_DIR = "Saves"#if File.directory?(System.data_directory)
+              # System.data_directory + "Saves"
+            # else
+            #  '.'
+            # end #
 
+  def self.getSlots
+   if File.file?(self.get_full_path(MANUAL_SLOTS[0]))
+   save_data = self.read_from_file(self.get_full_path(MANUAL_SLOTS[0]))
+   else
+   save_data = nil
+   end
+   if !save_data.nil?
+   return [MANUAL_SLOTS[0]] if save_data[:global_metadata].hardcore == true
+   end
+   return (AUTO_SLOTS + MANUAL_SLOTS)
+  end
   def self.each_slot
-    (AUTO_SLOTS + MANUAL_SLOTS).each { |f| yield f }
+    self.getSlots.each { |f| yield f }
   end
 
   def self.get_full_path(file)
@@ -140,6 +164,13 @@ module SaveData
     end
     return false
   end
+
+  def self.exists2(slot)
+    full_path = SaveData.get_full_path(slot)
+    return true if File.file?(full_path)
+    return false
+  end
+
 
   # This seems to be only used in a hidden function (ctrl+down+cancel on title screen)
   # Deletes ALL the save files (and possible .bak backup files if they exist)
@@ -221,7 +252,7 @@ class PokemonLoadPanel < Sprite
     @totalsec = (stats) ? stats.play_time.to_i : ((framecount || 0) / Graphics.frame_rate)
     @mapid = mapid
     @selected = (index == 0)
-    @bgbitmap = AnimatedBitmap.new("Graphics/Pictures/loadPanels")
+    @bgbitmap = AnimatedBitmap.new("Graphics/UI/Load/loadPanels")
     @refreshBitmap = true
     @refreshing = false
     refresh
@@ -267,15 +298,15 @@ class PokemonLoadPanel < Sprite
         textpos.push([_INTL("Class:"), 32, 118, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
         textpos.push([@trainer.playerclass.to_s, 206, 118, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
         textpos.push([_INTL("Health:"), 32, 150, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
-        textpos.push([_INTL("{1}/100", @trainer.playerhealth.to_s), 206, 150, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
-        textpos.push([_INTL("Time:"), 32, 182, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
-        hour = @totalsec / 60 / 60
-        min  = @totalsec / 60 % 60
-        if hour > 0
-          textpos.push([_INTL("{1}h {2}m", hour, min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
-        else
-          textpos.push([_INTL("{1}m", min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
-        end
+        textpos.push([_INTL("{1}/{2}", @trainer.playerhealth.to_s,@trainer.playermaxhealth), 206, 150, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+        #textpos.push([_INTL("Time:"), 32, 182, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
+       # hour = @totalsec / 60 / 60
+        #min  = @totalsec / 60 % 60
+        #if hour > 0
+       #   textpos.push([_INTL("{1}h {2}m", hour, min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+       # else
+       #   textpos.push([_INTL("{1}m", min), 206, 182, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+       # end
         if @trainer.male?
           textpos.push([@trainer.name, 112, 70, 0, MALETEXTCOLOR, MALETEXTSHADOWCOLOR])
         elsif @trainer.female?
@@ -283,13 +314,32 @@ class PokemonLoadPanel < Sprite
         else
           textpos.push([@trainer.name, 112, 70, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
         end
+		
+        save_data = SaveData.read_from_file((SaveData.get_full_path(@savefile)))
+		if save_data[:global_metadata].hardcore == true && save_data[:pokemon_system].playermode == 0
+        textpos.push([_INTL("{1} (DH)", @savefile.to_s), 229, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+		elsif save_data[:pokemon_system].playermode == 0
+        textpos.push([_INTL("{1} (D)", @savefile.to_s), 229, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+		elsif save_data[:global_metadata].hardcore == true
+        textpos.push([_INTL("{1} (H)", @savefile.to_s), 229, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+		else
         textpos.push([@savefile, 216, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+		end
         mapname = pbGetMapNameFromId(@mapid)
         mapname.gsub!(/\\PN/, @trainer.name)
-        textpos.push(["#{mapname} ->", 386, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
+		text = "#{mapname} ->"
+		
+		if !save_data.nil?
+         if save_data[:global_metadata].hardcore == true
+		   text = "#{mapname}"
+		 end
+		end
+        textpos.push([text, 386, 16, 1, TEXTCOLOR, TEXTSHADOWCOLOR])
       else
         textpos.push([@title, 32, 14, 0, TEXTCOLOR, TEXTSHADOWCOLOR])
       end
+	  self.bitmap.font.name = UILoad::CUSTOM_FONT_NAME if UILoad::USE_CUSTOM_FONT
+	  self.bitmap.font.size = UILoad::CUSTOM_FONT_SIZE if UILoad::USE_CUSTOM_FONT
       pbDrawTextPositions(self.bitmap, textpos)
     end
     @refreshing = false
@@ -304,7 +354,7 @@ class PokemonLoad_Scene
     @sprites = {}
     @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
     @viewport.z = 99998
-    addBackgroundOrColoredPlane(@sprites, "background", "loadbg2", Color.new(248, 248, 248), @viewport)
+    addBackgroundOrColoredPlaneNew(@sprites, "background", "Load/loadslotsbg", Color.new(248, 248, 248), @viewport)
     y = 32
     commands.length.times do |i|
       @sprites["panel#{i}"] = PokemonLoadPanel.new(
@@ -339,11 +389,6 @@ class PokemonLoad_Scene
 	@star3.setBitmap("Graphics/Pictures/stars1.png")
 	@star4.setBitmap("Graphics/Pictures/stars1.png")
 	@star5.setBitmap("Graphics/Pictures/stars1.png")
-	@star1.visible = true if pbSIDataStorage(:LOAD,"stars") >= 1
-	@star2.visible = true if pbSIDataStorage(:LOAD,"stars") >= 2
-	@star3.visible = true if pbSIDataStorage(:LOAD,"stars") >= 3
-	@star4.visible = true if pbSIDataStorage(:LOAD,"stars") >= 4
-	@star5.visible = true if pbSIDataStorage(:LOAD,"stars") >= 5
     @sprites["craftResult"]=Window_UnformattedTextPokemon.new("")
     pbPrepareWindow(@sprites["craftResult"])
     @sprites["craftResult"].x=30
@@ -366,7 +411,7 @@ class PokemonLoad_Scene
     @sprites = {}
     @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
     @viewport.z = 99998
-    addBackgroundOrColoredPlane(@sprites, "background", "loadbg", Color.new(248, 248, 248), @viewport)
+    addBackgroundOrColoredPlaneNew(@sprites, "background", "Load/loadslotsbg", Color.new(248, 248, 248), @viewport)
   end
 
   def pbUpdate
@@ -439,17 +484,20 @@ class PokemonLoad_Scene
        Input.press?(Input::CTRL)
       close_title_screen_delete
       end
-      if Input.trigger?(Input::USE)
+      if Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSELEFT)
 		@star1.visible = false
 	    @star2.visible = false
 	    @star3.visible = false
     	@star4.visible = false
     	@star5.visible = false
         return @sprites["cmdwindow"].index
+		
+		        
+
 	  elsif @sprites["cmdwindow"].index == continue_idx
-        if Input.trigger?(Input::LEFT)
+        if Input.trigger?(Input::LEFT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::MANUAL_SLOTS[0])))[:global_metadata].hardcore == false
           return -3
-        elsif Input.trigger?(Input::RIGHT)
+        elsif Input.trigger?(Input::RIGHT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::MANUAL_SLOTS[0])))[:global_metadata].hardcore == false
           return -2
 		elsif Input.triggerex?(:DELETE)
           return -9
@@ -458,20 +506,20 @@ class PokemonLoad_Scene
       end
     end
   end
-  def pbChoose3(commands,adventure_idx,classic_idx,back_idx,tr_idx,speed_idx)
-    if !commands.nil?
+  def pbChoose3(commands,adventure_idx,classic_idx,back_idx,tr_idx,speed_idx,weedidx)
     @sprites["cmdwindow"].commands = commands
     loop do
       Graphics.update
       Input.update
       pbUpdate
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Adventures is almost an entirely new game with a new story and areas.") if @sprites["cmdwindow"].index == adventure_idx
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Classic is the original game, but on a timer, any items or Pokemon carry over to the main game.") if @sprites["cmdwindow"].index == classic_idx
-      @sprites["craftResult"].text=_INTL("Pokemon SI: Team Rocket Edition is an alternate campaign, where you play as a member of Team Rocket.") if @sprites["cmdwindow"].index == tr_idx
-      @sprites["craftResult"].text=_INTL("Speedrun Pokemon Survival Island! Beat it as fast as possible and see who has the lowest time!") if @sprites["cmdwindow"].index == speed_idx
+      @sprites["craftResult"].text=_INTL("Very Easy is an extremely relaxed version of the game, perfect if you dislike Survival Elements.") if @sprites["cmdwindow"].index == adventure_idx
+      @sprites["craftResult"].text=_INTL("Easy is for people who aren't the best at battling, but still want some challenge.") if @sprites["cmdwindow"].index == classic_idx
+      @sprites["craftResult"].text=_INTL("Normal is a option for those starting for Pokemon Survival Island.") if @sprites["cmdwindow"].index == tr_idx
+      @sprites["craftResult"].text=_INTL("Hard is great for those who like a little challenge!") if @sprites["cmdwindow"].index == speed_idx
+      @sprites["craftResult"].text=_INTL("Very Hard is the default difficulty.") if @sprites["cmdwindow"].index == weedidx
       @sprites["craftResult"].text=_INTL("Return to Main Menu.") if @sprites["cmdwindow"].index == back_idx
       @sprites["craftResult"].visible=true
-      if Input.trigger?(Input::USE)
+      if Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSELEFT)
 		@star1.visible = false
 	    @star2.visible = false
 	    @star3.visible = false
@@ -489,7 +537,7 @@ class PokemonLoad_Scene
 	  end
   end
   end
-end
+
 
   def pbEndScene
     pbFadeOutAndHide(@sprites) { pbUpdate }
@@ -537,6 +585,7 @@ class PokemonLoadScreen
         return {}
       end
     end
+	
     return save_data
   end
 
@@ -567,7 +616,7 @@ class PokemonLoadScreen
   end
 
   def pbStartLoadScreen
-    save_file_list = SaveData::AUTO_SLOTS + SaveData::MANUAL_SLOTS
+    save_file_list = SaveData.getSlots
     first_time = true
 	pbSIDataStorage()
     loop do # Outer loop is used for switching save files
@@ -579,20 +628,20 @@ class PokemonLoadScreen
       commands = []
       cmd_continue     = -1
       cmd_new_game     = -1
-      cmd_options      = -1
       cmd_language     = -1
       cmd_mystery_gift = -1
       cmd_debug        = -1
       cmd_quit         = -1
       show_continue = !@save_data.empty?
       if show_continue
-        commands[cmd_continue = commands.length] = _INTL('<- Continue Game')
+	     item = _INTL('<- Continue Game')
+	     item = _INTL('Continue Game') if @save_data[:global_metadata].hardcore == true
+        commands[cmd_continue = commands.length] = item
 #        if @save_data[:player].mystery_gift_unlocked
 #          commands[cmd_mystery_gift = commands.length] = _INTL('Mystery Gift') # Honestly I have no idea how to make Mystery Gift work well with this.
 #        end
       end
       commands[cmd_new_game = commands.length]  = _INTL('New Game')
-      commands[cmd_options = commands.length]   = _INTL('Options')
       commands[cmd_language = commands.length]  = _INTL('Language') if Settings::LANGUAGES.length >= 2
       commands[cmd_debug = commands.length]     = _INTL('Debug') if $DEBUG
       commands[cmd_quit = commands.length]      = _INTL('Quit Game')
@@ -619,111 +668,86 @@ class PokemonLoadScreen
           @scene.pbEndScene
 		  pbBGMFade(0.8)
           Game.load(@save_data)
+		   @save_data[:player].autosave_steps=0
           return
         when cmd_new_game
 		          @scene.pbEndScene
 	commands = []
+    cmd_cmd_psiave     = -1
     cmd_psia     = -1
     cmd_demo     = -1
     cmd_rocket     = -1
     cmd_speed     = -1
     cmd_return2 = -1
     cmd_return = -10
-    commands[cmd_psia = commands.length] = _INTL('Play Pokemon SI: Adventures')
-    commands[cmd_demo = commands.length]  = _INTL('Play Pokemon SI: Classic')
-    if pbSIDataStorage(:LOAD,"rocket_mode") == true
-        commands[cmd_rocket = commands.length]  = _INTL('Play Pokemon SI: Team Rocket Edition')
-    end
-    if pbSIDataStorage(:LOAD,"speedrun_mode") == true
-        commands[cmd_speed = commands.length]  = _INTL('Play Pokemon SI: Speedrun')
-    end
+    commands[cmd_psiave = commands.length] = _INTL('Play Pokemon SI: Very Easy')
+    commands[cmd_psiae = commands.length] = _INTL('Play Pokemon SI: Easy')
+    commands[cmd_psian = commands.length]  = _INTL('Play Pokemon SI: Normal')
+    commands[cmd_psiah = commands.length]  = _INTL('Play Pokemon SI: Hard')
+    commands[cmd_psiavh = commands.length]  = _INTL('Play Pokemon SI: Very Hard')
+
+
+
     commands[cmd_return2 = commands.length]  = _INTL('Back')
 		@scene.pbStartScene(commands, false, false, nil, 0, nil, 0)
     loop do
-      command = @scene.pbChoose3(commands,cmd_psia,cmd_demo,cmd_return2,cmd_rocket,cmd_speed)
+      command = @scene.pbChoose3(commands,cmd_psiave,cmd_psiae,cmd_return2,cmd_psian,cmd_psiah,cmd_psiavh)
       pbPlayDecisionSE if command != cmd_quit
       case command
-      when cmd_psia
-       if pbSIDataStorage(:LOAD,"kanto_unlocked") == true
-		  $PokemonSystem.playermode = 1
-		  $PokemonSystem.difficulty = 1
-          Level_Cap.initialize
-		  $PokemonSystem.nuzlockemode = 1
-		  $PokemonSystem.survivalmode = 1
-		  @scene.pbEndScene
-				if Settings::LANGUAGES.length >= 2 && show_continue
-					$PokemonSystem.language = pbChooseLanguage
-					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
-				end
-	   elsif pbSIDataStorage(:LOAD,"johto_unlocked") == true
-		  $PokemonSystem.playermode = 1
-		  $PokemonSystem.difficulty = 1
-          Level_Cap.initialize
-		  $PokemonSystem.nuzlockemode = 1
-		  $PokemonSystem.survivalmode = 1
-		  @scene.pbEndScene
-				if Settings::LANGUAGES.length >= 2 && show_continue
-					$PokemonSystem.language = pbChooseLanguage
-					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
-				end
-	   else
-		  $PokemonSystem.playermode = 1
-		  $PokemonSystem.difficulty = 1
-          Level_Cap.initialize
-		  $PokemonSystem.nuzlockemode = 1
-		  $PokemonSystem.survivalmode = 1
-		  @scene.pbEndScene
-				if Settings::LANGUAGES.length >= 2 && show_continue
-					$PokemonSystem.language = pbChooseLanguage
-					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
-				end
-		end
-        Game.start_new
-        return
-      when cmd_demo
-		  $PokemonSystem.playermode = 0
-		  $PokemonSystem.difficulty = 1
-		  $PokemonSystem.nuzlockemode = 1
-          Level_Cap.initialize
-		  $PokemonSystem.survivalmode = 1
-	      $PokemonSystem.level_caps = 0
-		          @scene.pbEndScene
-				if Settings::LANGUAGES.length >= 2 && show_continue
-					$PokemonSystem.language = pbChooseLanguage
-					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
-				end
-		  $PokemonSystem.playermode = 0
-        Game.start_new
-        return
       when cmd_return
 		 @scene.pbEndScene
 		 pbStartLoadScreen
       when cmd_return2
 		 @scene.pbEndScene
 		 pbStartLoadScreen
-      when cmd_speed
-	  when cmd_rocket
-		  $PokemonSystem.playermode = 2
-		  $PokemonSystem.difficulty = 1
+	  else
+      case command
+      when cmd_psiave
+		  $PokemonSystem.difficulty = 0
 		  $PokemonSystem.nuzlockemode = 1
 		  $PokemonSystem.survivalmode = 1
-		          @scene.pbEndScene
+      when cmd_psiae
+		  $PokemonSystem.difficulty = 0
+		  $PokemonSystem.nuzlockemode = 0
+		  $PokemonSystem.survivalmode = 0
+      when cmd_psian
+		  $PokemonSystem.difficulty = 1
+		  $PokemonSystem.nuzlockemode = 0
+		  $PokemonSystem.survivalmode = 0
+      when cmd_psiah
+		  $PokemonSystem.difficulty = 2
+		  $PokemonSystem.nuzlockemode = 0
+		  $PokemonSystem.survivalmode = 0
+	  when cmd_psiavh
+		  $PokemonSystem.difficulty = 3
+		  $PokemonSystem.nuzlockemode = 0
+		  $PokemonSystem.survivalmode = 0
+      end
+
+		  $PokemonSystem.playermode = 1
+          Level_Cap.initialize
+		  @scene.pbEndScene
 				if Settings::LANGUAGES.length >= 2 && show_continue
 					$PokemonSystem.language = pbChooseLanguage
 					pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
 				end
         Game.start_new
         return
-      end
+
+
+
+
+
+	  end
     end
+	
+	
+	
+	
+	
+	
         when cmd_mystery_gift
           pbFadeOutIn { pbDownloadMysteryGift(@save_data[:player]) }
-        when cmd_options
-          pbFadeOutIn do
-            scene = PokemonOption_Scene.new
-            screen = PokemonOptionScreen.new(scene)
-            screen.pbStartScreen(true)
-          end
         when cmd_language
           @scene.pbEndScene
           $PokemonSystem.language = pbChooseLanguage
@@ -767,6 +791,33 @@ end
 #
 #===============================================================================
 class PokemonSave_Scene
+  def pbStartScreen
+    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport.z = 99999
+    @sprites = {}
+    totalsec = $stats.play_time.to_i
+    hour = totalsec / 60 / 60
+    min = totalsec / 60 % 60
+    mapname = $game_map.name
+    textColor = ["0070F8,78B8E8", "E82010,F8A8B8", "0070F8,78B8E8"][$player.gender]
+    locationColor = "209808,90F090"   # green
+    loctext = _INTL("<ac><c3={1}>{2}</c3></ac>", locationColor, mapname)
+    loctext += _INTL("Player<r><c3={1}>{2}</c3><br>", textColor, $player.name)
+    loctext += _INTL("Class<r><c3={1}>{2} Lv{3}</c3><br>", textColor, $player.playerclass, $player.playerclasslevel.to_i)
+    @sprites["nubg"] = IconSprite.new(0,0,@viewport)
+    @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
+    @sprites["locwindow"] = Window_AdvancedTextPokemon.new(loctext)
+    @sprites["locwindow"].viewport = @viewport
+    @sprites["locwindow"].x = 0
+    @sprites["locwindow"].y = 0
+    @sprites["locwindow"].width = 228 if @sprites["locwindow"].width < 228
+    @sprites["locwindow"].visible = true
+  end
+
+
+
+
+
   def pbUpdateSlotInfo(slottext)
     pbDisposeSprite(@sprites, "slotinfo")
     @sprites["slotinfo"]=Window_AdvancedTextPokemon.new(slottext)
@@ -799,6 +850,14 @@ class PokemonSaveScreen
     if !$player.save_slot
       # New Game - must select slot
       ret = slotSelect(exiting)
+	 elsif $PokemonGlobal.hardcore == true
+        pbSEPlay('GUI save choice')
+        slot = SaveData::MANUAL_SLOTS[0]
+        if !File.file?(SaveData.get_full_path(slot)) ||
+            pbConfirmMessageSerious(_INTL("Are you sure you want to save?")) # If the slot names were changed this grammar might need adjustment.
+          pbSEPlay('GUI save choice')
+          ret = doSave(slot)
+        end
     else
       choices = [
         _INTL("Save to #{$player.save_slot}"),
@@ -836,6 +895,7 @@ class PokemonSaveScreen
           pbSEPlay('GUI save choice')
           ret = doSave(slot)
         end
+
       elsif exiting # Pressed cancel
         next unless pbConfirmMessageSerious(_INTL("Are you sure you want to quit without saving?"))
       end
@@ -874,7 +934,7 @@ class PokemonSaveScreen
         command = -1
         break
       end
-      if Input.trigger?(Input::USE)
+      if Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSELEFT)
         command = cmdwindow.index
         break
       end
@@ -960,8 +1020,12 @@ module Game
   # @return [Boolean] whether the operation was successful
   # @raise [SaveData::InvalidValueError] if an invalid value is being saved
   def self.save(slot=nil, auto=false, safe: false)
+  
     slot = $player.save_slot if slot.nil?
     return false if slot.nil?
+	if $PokemonGlobal.hardcore == true
+	slot = SaveData::MANUAL_SLOTS[0]
+	end
     
     file_path = SaveData.get_full_path(slot)
     $PokemonGlobal.safesave = safe
@@ -983,6 +1047,17 @@ module Game
   def self.auto_save
     oldest_time = nil
     oldest_slot = nil
+	if $PokemonGlobal.hardcore == true
+	  slot = SaveData::MANUAL_SLOTS[0]
+	  full_path = SaveData.get_full_path(slot)
+      temp_save_data = SaveData.read_from_file(full_path)
+      save_time = temp_save_data[:player].last_time_saved || Time.at(1)
+      if oldest_time.nil? || save_time < oldest_time
+        oldest_time = save_time
+        oldest_slot = slot
+      end
+      self.save(oldest_slot, true)
+	else
     SaveData::AUTO_SLOTS.each do |slot|
       full_path = SaveData.get_full_path(slot)
       if !File.file?(full_path)
@@ -997,7 +1072,11 @@ module Game
       end
     end
     self.save(oldest_slot, true)
+	end
   end
+
+
+
 end
 
 #===============================================================================
@@ -1024,6 +1103,47 @@ class Player
   attr_accessor :autosave_steps
 end
 
+def pbEmergencySave
+  oldscene = $scene
+  $scene = nil
+  pbMessage(_INTL("The script is taking too long. The game will restart."))
+  return if !$player
+  return if !$player.save_slot
+  current_file = SaveData.get_full_path($player.save_slot)
+  backup_file = SaveData.get_backup_file_path
+  file_copy(current_file, backup_file)
+  if Game.save
+    pbMessage(_INTL("\\se[]The game was saved.\\me[GUI save game] The previous save file has been backed up.\\wtnp[30]"))
+  else
+    pbMessage(_INTL("\\se[]Save failed.\\wtnp[30]"))
+  end
+  $scene = oldscene
+end
+
+
+def pbStorePokemonPC2(pkmn)
+  if pbBoxesFull?
+    pbMessage(_INTL("There's no more room for Pokémon!\1"))
+    pbMessage(_INTL("The Pokémon Boxes are full and can't accept any more!"))
+    return
+  end
+  pkmn.record_first_moves
+    stored_box = $PokemonStorage.pbStoreCaught(pkmn)
+    box_name   = $PokemonStorage[stored_box].name
+end
+
+
+def pbCallTitle(bgmchange=nil)
+  if bgmchange == false
+    pbBGMPlay("anthemmix")
+  else
+	pbBGMPlay("Title")
+  end
+  return Scene_Intro.new
+end
+
+
+
 def pbSIDataStorage(option=nil,object=nil,goal=nil)
   save_dir2 = if File.directory?(System.data_directory)
                System.data_directory
@@ -1036,7 +1156,6 @@ def pbSIDataStorage(option=nil,object=nil,goal=nil)
      default_values = {"demo_mode" => true,"adventure_mode" => true,"rocket_mode" => false,"speedrun_mode" => false,"kanto_unlocked" => false,
 	 "johto_unlocked" => false,"completed_demo" => false,"completed_rocket" => false,"completed_speedrun" => false,"demo_team" => nil,"stars" => 0,
 	 "played_before" => false,"original_player_name" => nil}
-	 puts "Generated FUN File"
 	 File.open(file_name, "wb") do |file|
       file.write(Marshal.dump(default_values))
      end
@@ -1045,13 +1164,15 @@ def pbSIDataStorage(option=nil,object=nil,goal=nil)
     loaded_data = Marshal.load(file.read)
   end
   if loaded_data
-  puts "Loaded data: #{loaded_data}"
+  if $DEBUG
+  end
 else
-  puts "No data found or an error occurred while loading."
 end
   if loaded_data && loaded_data[object] && option == :SAVE
-  if object == "original_player_name"
+  if object == "original_player_name" && option == :SAVE
   loaded_data[object] = $player.name 
+  elsif object == "demo_team" && option == :SAVE
+  loaded_data[object] = $player.party 
   else
   loaded_data[object] = goal  
   end
@@ -1078,31 +1199,13 @@ end
   end
 end
 
-def pbEmergencySave
-  oldscene = $scene
-  $scene = nil
-  pbMessage(_INTL("The script is taking too long. The game will restart."))
-  return if !$player
-  return if !$player.save_slot
-  current_file = SaveData.get_full_path($player.save_slot)
-  backup_file = SaveData.get_backup_file_path
-  file_copy(current_file, backup_file)
-  if Game.save
-    pbMessage(_INTL("\\se[]The game was saved.\\me[GUI save game] The previous save file has been backed up.\\wtnp[30]"))
-  else
-    pbMessage(_INTL("\\se[]Save failed.\\wtnp[30]"))
-  end
-  $scene = oldscene
-end
-
 
 def pbDemoExit
-    return if $player.playermode == 1
     if pbConfirmMessage(_INTL("Would you like to end the Demo now?"))
 	  pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
       $game_temp.in_menu = false
 	  pbSIDataStorage(:SAVE,"completed_demo",true)
-	  pbSIDataStorage(:SAVE,"demo_team",$player.party)
+	  pbSIDataStorage(:SAVE,"demo_team")
 	  stars = pbSIDataStorage(:LOAD,"stars")
 	  pbSIDataStorage(:SAVE,"stars",stars+1)
 	  pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
@@ -1124,24 +1227,3 @@ def pbDemoExit
     end
 end
 
-
-def pbStorePokemonPC2(pkmn)
-  if pbBoxesFull?
-    pbMessage(_INTL("There's no more room for Pokémon!\1"))
-    pbMessage(_INTL("The Pokémon Boxes are full and can't accept any more!"))
-    return
-  end
-  pkmn.record_first_moves
-    stored_box = $PokemonStorage.pbStoreCaught(pkmn)
-    box_name   = $PokemonStorage[stored_box].name
-end
-
-
-def pbCallTitle(bgmchange=nil)
-  if bgmchange == false
-    pbBGMPlay("anthemmix")
-  else
-	pbBGMPlay("title_SI")
-  end
-  return Scene_DebugIntro.new
-end

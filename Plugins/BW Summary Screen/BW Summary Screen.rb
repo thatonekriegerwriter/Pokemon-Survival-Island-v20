@@ -1239,131 +1239,32 @@ end
     ivColumn=455
 	if @pokemon.loyalty.nil?
 	 @pokemon.loyalty = 75
-	end
-	if @pokemon.age.nil?
-	 @pokemon.age = rand(50)+1
-	end
-	if @pokemon.food.nil?
-	 @pokemon.food = 100
-	end
-	if @pokemon.water.nil?
-	 @pokemon.water = 100
+	endn.water = 100
 	end
     # Write various bits of text
-    if @pokemon.happiness==0 
-      verdict=_INTL("It simply hates your very essence.")
-	elsif @pokemon.happiness==0 && @pokemon.loyalty>=149
-      verdict=_INTL("It hates you passionately, but it may listen.")
-	elsif @pokemon.happiness==0 && @pokemon.loyalty>=199
-      verdict=_INTL("It dislikes you in unexplainable ways, but it respects you")
-	elsif @pokemon.happiness==0 && @pokemon.loyalty>=249
-      verdict=_INTL("It simply hates your very essence, yet you know it will listen.")
-	elsif @pokemon.happiness==0 && @pokemon.loyalty>=250
-      verdict=_INTL("It works with you in combat, but do not confuse that as being safe.")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It doesn't seem particularly interested in you")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It sometimes listens.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It will listen on occasion.")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It seems to be uninvested in you, but it listens when you call.")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It listens to your every word in combat, but outside, ignores you.")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It really likes playing when you aren't busy fighting!")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It seems to be growing fonder of you.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It tries to spend more time with you, but only in combat.")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It enjoys fighting together.")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It will leap into combat at a dime, but is to itself outside of combat.")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It likes you as a person.")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It follows you around 24/7, yet checks out in combat.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It is an excellent partner both in the wild, and in combat.")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It seems to enjoy your time together.")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It hangs on your words, and leaps into battle without fail.")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("It loves to play, and run around, but not much else.")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("It zooms around, playing with you, yet has trouble fighting.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("You are bonding around both life and combat.")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("It looks really happy! It will listen to what you say!")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("You almost have perfect synergy.")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("It loves you to death, but ignores fighting.")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("It enjoys spending time with you, and is gaining confidence in combat.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("It loves you, and is trying to improve for you!")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("It spends all its time with you!")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("Your synergy is increasing!")
-    elsif @pokemon.loyalty>=0&&@pokemon.loyalty<=49 && @pokemon.happiness>=250
-      verdict=_INTL("It's basically your pet, not really ready for combat.")
-    elsif @pokemon.loyalty>=50&&@pokemon.loyalty<=74 && @pokemon.happiness>=250
-      verdict=_INTL("It struggles with anything beyond bellyrubs.")
-    elsif @pokemon.loyalty>=75&&@pokemon.loyalty<=149 && @pokemon.happiness>=250
-      verdict=_INTL("It wants to help in combat, but gets distracted sometimes.")
-    elsif @pokemon.loyalty>=150&&@pokemon.loyalty<=199 && @pokemon.happiness>=250
-      verdict=_INTL("It's already a good friend, now its becoming a good partner.")
-    elsif @pokemon.loyalty>=200&&@pokemon.loyalty<=249 && @pokemon.happiness>=250
-      verdict=_INTL("You feel like your auras match sometimes.")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=0&&@pokemon.happiness<=49
-      verdict=_INTL("It follows your commands promptly.")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=50&&@pokemon.happiness<=74
-      verdict=_INTL("It seems to want a little more than combat.")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=75&&@pokemon.happiness<=149
-      verdict=_INTL("It seems to enjoy being around you.")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=150&&@pokemon.happiness<=199
-      verdict=_INTL("It wants to be together all the time.")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=200&&@pokemon.happiness<=249
-      verdict=_INTL("It thinks about you a lot!")
-    elsif @pokemon.loyalty>=250 && @pokemon.happiness>=250
-      verdict=_INTL("You two are in sync!!!!!")
-    end
-    if $DEBUG
-    textpos = [
-       [_INTL("Happiness:"),10,62,0,base,shadow],
-       [_INTL("{1}/255",@pokemon.happiness{1}),126,62,0,base,shadow],
-       [_INTL("Loyalty"),10,92,0,base,shadow],
-       [_INTL("{1}/255",@pokemon.loyalty{1}),126,92,0,base,shadow],
-       [_INTL("Food:"),10,222,0,base,shadow],
-       [_INTL("{1}/100",@pokemon.food{1}),126,222,0,base,shadow],
-       [_INTL("Water"),10,242,0,base,shadow],
-       [_INTL("{1}/100",@pokemon.water{1}),126,242,0,base,shadow],
-       [_INTL("Age"),10,262,0,base,shadow],
-       [_INTL("{1}",@pokemon.age{1}),126,262,0,base,shadow],
-    ]
-	else
-	    textpos = [
-       [_INTL("Food:"),10,222,0,base,shadow],
-       [_INTL("{1}/100",@pokemon.food{1}),126,222,0,base,shadow],
-       [_INTL("Water"),10,242,0,base,shadow],
-       [_INTL("{1}/100",@pokemon.water{1}),126,242,0,base,shadow],
-       [_INTL("Age"),10,262,0,base,shadow],
-       [_INTL("{1}",@pokemon.age{1}),126,262,0,base,shadow],
-    ]
+	verdict = ""
+	@pokemon.inventory.each_with_index do |item,index|
+	 next if item[0].nil?
+	 if index==0
+	   verdict+="#{GameData::Item.get(item[0]).name}"
+	  elsif index == @pokemon.inventory.length
+	   else
+	   verdict+=", #{GameData::Item.get(item[0]).name}"
+	  end
+	
 	end
+    textpos = []
+    textpos << [_INTL("Happiness:"),10,62,0,base,shadow]
+    textpos << [_INTL("{1}/255",@pokemon.happiness{1}),126,62,0,base,shadow]
+    textpos << [_INTL("Loyalty:"),10,92,0,base,shadow]
+    textpos << [_INTL("{1}/255",@pokemon.loyalty{1}),126,92,0,base,shadow]
+    textpos << [_INTL("Age:"),10,122,0,base,shadow]
+    textpos << [_INTL("{1}",@pokemon.age{1}),126,122,0,base,shadow]
+    textpos << [_INTL("Inventory"),10,222,0,base,shadow] if verdict!=""
     # Draw all text
     pbDrawTextPositions(overlay,textpos)
-    # Show all ribbons  
-	if $DEBUG
-	drawTextEx(overlay,10,130,282,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
-	else
-	drawTextEx(overlay,10,70,282,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
-	end
+    # Show all ri
+	drawTextEx(overlay,126,222,0,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
     imagepos = []
     coord = 0
     pbDrawImagePositions(overlay,imagepos)

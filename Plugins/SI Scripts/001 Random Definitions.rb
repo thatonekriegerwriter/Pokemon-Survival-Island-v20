@@ -127,45 +127,6 @@ pbChooseNonEggPokemon(1,3)
 end
 
 
-def pbDayChecker(month,day,vari)
-  m = Time.new.month
-  d = Time.new.day
- if m == month && d == day #Checks if it is October 31th
-    $game_switches[vari] = true
-  else
-    $game_switches[vari] = false
-  end
- end
-
-def pbIndigoPlateauDays(month1,day1,day2,day3,day4,day5,vari)
-  m = Time.new.month
-  d = Time.new.day
- if m == month1 && d == day1 || m == month1 && d == day2 || m == month1 && d == day3 || m == month1 && d == day4 || m == month1 && d == day5  #Checks if it is October 31th
-    $game_switches[vari] = true
-  else
-    $game_switches[vari] = false
-  end
-end
-
-def pbIndigoPlateauDays2(month1,day1,month2,day2,month3,day3,vari)
-  m = Time.new.month
-  d = Time.new.day
- if m == month1 && d == day1 || m == month2 && d == day2 || m == month3 && d == day3  #Checks if it is October 31th
-    $game_switches[vari] = true
-  else
-    $game_switches[vari] = false
-  end
-end
-
-
-
-
-	
-def pbNextChampionShip
-    $game_variables[421]=rand(40)
-end
-
-
 
 def pbCheckName
 name = pbEnterPlayerName(_INTL("What do you put?"), 0, Settings::MAX_PLAYER_NAME_SIZE)

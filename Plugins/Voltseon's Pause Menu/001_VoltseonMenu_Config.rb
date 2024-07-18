@@ -24,21 +24,21 @@ MENU_FILE_PATH = "Graphics/Pictures/Voltseon's Pause Menu/"
 MENU_ENTRIES = [
 	"MenuEntryPokemon", "MenuEntryPokedex", "MenuEntryBag",
 	"MenuEntryTrainer", "MenuEntryCraft", "MenuEntryVentures", "MenuEntrySave","MenuEntryPokegear" , "MenuEntryExitBugContest",
-	"MenuEntryDebug", "MenuEntryOptions","MenuEntryControls","MenuEntryExitDemo", "MenuEntryBadge",
-	"MenuEntryQuests", "MenuEntryAchievements","MenuEntryMystery", "MenuEntryQuit"
+	"MenuEntryDebug", "MenuEntryOptions","MenuEntryControls","MenuEntryTips", "MenuEntryBadge",
+	"MenuEntryAchievements","MenuEntryMystery", "MenuEntryQuit"
 ]
 
 # An array of aLL the Menu Component Classes from 004_VoltseonMenu_Components
 # that need to be loaded
 MENU_COMPONENTS = [
- "BugContestHud", "PokemonPartyHud", "NewQuestHud", "DateAndTimeHud", "SurvivalHud", "DemoHud"
+ "BugContestHud", "PokemonPartyHud", "DateAndTimeHud", "SurvivalHud", "DemoHud"
 ]
 
 # The default theme for the menu screen
 DEFAULT_MENU_THEME = 1
 
 # Change Theme in the Options Menu
-CHANGE_THEME_IN_OPTIONS = true
+CHANGE_THEME_IN_OPTIONS = false
 
 #-------------------------------------------------------------------------------
 # Look and Feel

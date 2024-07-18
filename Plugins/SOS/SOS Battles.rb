@@ -396,8 +396,7 @@ end
 
 	
 	def pbCanAttackPlayer?(caller)
-      return false if $PokemonSystem.survivalmode == 1 
-      return false if (@battle.trainerBattle?  && !self.shadowPokemon?)
+      return false if @battle.trainerBattle?
 	  return false if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
       # only wild mons
       return false if !opposes?

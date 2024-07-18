@@ -21,6 +21,7 @@ end
 
 MenuHandlers.add(:options_menu, :text_input_style, {
   "name"        => _INTL("Battle Size"),
+  "parent"      => :gameplay_menu,
   "order"       => 55,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Single"), _INTL("Double"), _INTL("Triple")],

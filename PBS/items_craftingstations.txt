@@ -1,0 +1,262 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+
+[BERRYBLENDER]
+Name = Berry Blender
+NamePlural = Berry Blender
+Pocket = 7
+Price = 0
+Flags = Fling_10,Overworld,PlacingItem
+Description = A item for mixing berries.
+#-------------------------------
+[APRICORNCRAFTING]
+Name = Pokeball Carver
+NamePlural = Pokeball Carver
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Table that can be used to carve Apricorns.
+#-------------------------------
+[CRAFTINGBENCH]
+Name = Workbench
+NamePlural = Workbench
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Crafting Bench you fashioned out of wood.
+#-------------------------------
+[CAULDRON]
+Name = Cauldron
+NamePlural = Cauldron
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Cauldron used for Cooking.
+#-------------------------------
+[FURNACE]
+Name = Furnace
+NamePlural = Furnace
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Furnace used for cooking items.
+#-------------------------------
+[MEDICINEPOT]
+Name = Medicine Pot
+NamePlural = Medicine Pot
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Pot used for making potions.
+#-------------------------------
+[UPGRADEDCRAFTINGBENCH]
+Name = Upgraded Workbench
+NamePlural = Upgraded Workbench
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Crafting Bench you fashioned out of wood and upgraded with Silver.
+#-------------------------------
+[GRINDER]
+Name = Grinder
+NamePlural = Grinder
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Grinder used to grind things into dust.
+#-------------------------------
+[BEDROLL]
+Name = Bed
+NamePlural = Bed
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Bedroll, used for Sleeping.
+#-------------------------------
+[PKMNCRATE]
+Name = Pokemon Crate
+NamePlural = Pokemon Crates
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Crate that is used to Store Pokemon.
+#-------------------------------
+[PORTABLECAMP]
+Name = Portable Campsite
+NamePlural = Portable Campsites
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Camp that can be set up anywhere, it's one use.
+#-------------------------------
+[COALGENERATOR]
+Name = Power Generator (Coal)
+NamePlural = Power Generators (Coal)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Station that uses Coal to to create energy.
+#-------------------------------
+[SOLARGENERATOR]
+Name = Power Generator (Solar)
+NamePlural = Power Generators (Solar)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Station that uses the Sun to to create energy.
+#-------------------------------
+[HYDROGENERATOR]
+Name = Power Generator (Water)
+NamePlural = Power Generators (Water)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Station that uses the Water to to create energy.
+#-------------------------------
+[WINDGENERATOR]
+Name = Power Generator (Wind)
+NamePlural = Power Generators (Wind)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Station that uses the Wind to to create energy.
+#-------------------------------
+[POKEGENERATOR]
+Name = Power Generator (Pokemon)
+NamePlural = Power Generators (Pokemon)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Station that uses electric type Pokemon to to create energy.
+#-------------------------------
+#-------------------------------
+[SPRINKLER]
+Name = Sprinkler
+NamePlural = Sprinkler
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station that is designed to water a large area.
+#-------------------------------
+[ELECTRICGRINDER]
+Name = Electric Grinder
+NamePlural = Electric Grinder
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station designed to macerate down materials.
+#-------------------------------
+[ELECTRICFURNACE]
+Name = Electric Furnace
+NamePlural = Electric Furnace
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station designed to heat both metals and foods.
+#-------------------------------
+[PC]
+Name = PC
+NamePlural = PC
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Small Laptop that can be used to connect to a Regions PC System.
+#-------------------------------
+[APRICORNMACHINE]
+Name = Apricorn Machine
+NamePlural = Apricorn Machines
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Stationed designed to more effectively create Pokeballs.
+#-------------------------------
+[ELECTRICPRESS]
+Name = Electric Press
+NamePlural = Electric Presses
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station designed to compress Shards into Plates.
+#-------------------------------
+[SEWINGMACHINE]
+Name = Sewing Machine
+NamePlural = Sewing Machine
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station designed for Sewing Fabrics into new items. 
+#-------------------------------
+[ITEMCRATE]
+Name = Item Crate
+NamePlural = Item Crates
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Crate that contains your Items and Mail, it is crafted from Light Clay and Wooden Planks.
+#-------------------------------
+[ICEBOX]
+Name = Icebox
+NamePlural = Iceboxes
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Storage Unit for items that can spoil.
+#-------------------------------
+[ELECTRICICEBOX]
+Name = Electric Icebox
+NamePlural = Electric Iceboxes
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Storage Unit for items that can spoil.
+#-------------------------------
+[CUTTER]
+Name = Wood Cutter
+NamePlural = Wood Cutter
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Powered Station designed to more efficiently cut down Wooden Logs into Wooden Planks.
+#-------------------------------
+[MACHINEBOX]
+Name = Machine Box
+NamePlural = Machine Box
+Pocket = 1
+Price = 0
+Flags = Fling_10,PlacingItem,Overworld
+Description = An Electric Device for the Storage and Transmission of Power.
+#-------------------------------
+[SOOTSACK]
+Name = Soot Sack
+NamePlural = Soot Sacks
+Pocket = 1
+Price = 0
+Flags = KeyItem
+Description = A sack used to gather and hold volcanic ash.
+#-------------------------------

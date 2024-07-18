@@ -1,53 +1,55 @@
 ﻿# See the documentation on the wiki to learn how to edit this file.
 #-------------------------------
-# Temperate Shore (4) - Temperate Shore (7)
-4,East,0,7,West,0
-# Temperate Shore (5) - Temperate Shore (4)
-5,North,0,4,South,0
+# Temperate Shore (4) - Temperate Shore (5)
+4,South,0,5,North,0
+# Temperate Shore (64) - Temperate Shore (4)
+64,West,0,4,East,50
+# Temperate Shore (7) - Temperate Shore (4)
+7,West,0,4,East,0
 # Temperate Plains (8) - Temperate Shore (4)
 8,West,50,4,East,0
 # Temperate Plains (9) - Temperate Shore (4)
 9,South,0,4,North,100
 # Temperate Marsh (34) - Temperate Shore (4)
 34,South,0,4,North,250
-# Temperate Ocean (59) - Temperate Shore (4)
-59,North,0,4,South,100
 # Temperate Marsh (35) - Temperate Shore (4)
 35,South,0,4,North,200
+# Temperate Ocean (59) - Temperate Shore (4)
+59,North,0,4,South,100
 # Temperate Ocean (38) - Temperate Shore (4)
 38,East,0,4,West,100
-# Temperate Ocean (243) - Temperate Shore (4)
-243,North,50,4,South,0
 # Southern Ocean (42) - Temperate Shore (4)
 42,West,0,4,East,150
 # Temperate Ocean (57) - Temperate Shore (4)
 57,West,0,4,East,100
+# Temperate Ocean (243) - Temperate Shore (4)
+243,North,50,4,South,0
 # Chilled Plains (68) - Temperate Shore (4)
 68,West,150,4,East,0
 # Temperate Ocean (62) - Temperate Shore (4)
 62,East,0,4,West,150
 # Temperate Ocean (300) - Temperate Shore (4)
 300,East,0,4,West,0
-# Temperate Zone (64) - Temperate Shore (4)
-64,West,0,4,East,72
-# Red and Blue's Cabin (103) - Temperate Shore (4)
+# Abandoned Cabin (103) - Temperate Shore (4)
 103,West,0,4,East,200
-# Temperate Shore (5) - Temperate Shore (7)
-5,North,50,7,South,0
+# Temperate Shore (5) - Temperate Ocean (48)
+5,South,0,48,North,0
+# Temperate Shore (64) - Temperate Shore (5)
+64,West,0,5,East,0
+# Temperate Shore (7) - Temperate Shore (5)
+7,West,50,5,East,0
 # Temperate Shore (13) - Temperate Shore (5)
 13,South,0,5,North,100
 # Temperate Plains (8) - Temperate Shore (5)
 8,West,100,5,East,0
 # Temperate Ocean (38) - Temperate Shore (5)
 38,North,50,5,South,0
-# Temperate Ocean (243) - Temperate Shore (5)
-243,East,0,5,West,0
-# Temperate Ocean (48) - Temperate Shore (5)
-48,North,0,5,South,0
 # Southern Ocean (42) - Temperate Shore (5)
 42,West,0,5,East,100
 # Temperate Ocean (57) - Temperate Shore (5)
 57,West,0,5,East,50
+# Temperate Ocean (243) - Temperate Shore (5)
+243,East,0,5,West,0
 # Temperate Ocean (58) - Temperate Shore (5)
 58,North,0,5,South,100
 # Chilled Plains (68) - Temperate Shore (5)
@@ -56,42 +58,48 @@
 62,East,0,5,West,100
 # Temperate Ocean (300) - Temperate Shore (5)
 300,East,50,5,West,0
-# Temperate Zone (64) - Temperate Shore (5)
-64,West,0,5,East,22
-# Red and Blue's Cabin (103) - Temperate Shore (5)
+# Abandoned Cabin (103) - Temperate Shore (5)
 103,West,0,5,East,150
-# Temperate Shore (7) - Temperate Highlands (16)
-7,East,0,16,West,100
+# Temperate Plains (6) - Temperate Plains (349)
+6,North,0,349,South,0
+# Temperate Plains (6) - Temperate Plains (350)
+6,East,0,350,West,43
+# Temperate Shore (7) - Temperate Ocean (48)
+7,West,100,48,East,0
+# Temperate Shore (7) - Temperate Shore (64)
+7,South,0,64,North,0
 # Temperate Shore (13) - Temperate Shore (7)
 13,West,0,7,East,0
 # Temperate Plains (8) - Temperate Shore (7)
 8,South,0,7,North,0
+# Temperate Highlands (16) - Temperate Shore (7)
+16,West,100,7,East,0
 # Temperate Plains (9) - Temperate Shore (7)
 9,West,50,7,East,0
 # Temperate Marsh (34) - Temperate Shore (7)
 34,South,0,7,North,200
-# Temperate Ocean (59) - Temperate Shore (7)
-59,West,0,7,East,50
-# Temperate Highlands (30) - Temperate Shore (7)
-30,West,150,7,East,0
 # Temperate Marsh (35) - Temperate Shore (7)
 35,South,0,7,North,150
+# Temperate Highlands (30) - Temperate Shore (7)
+30,West,150,7,East,0
+# Temperate Ocean (59) - Temperate Shore (7)
+59,West,0,7,East,50
 # Temperate Ocean (39) - Temperate Shore (7)
 39,East,0,7,West,150
 # Temperate Ocean (243) - Temperate Shore (7)
 243,North,100,7,South,0
-# Temperate Ocean (48) - Temperate Shore (7)
-48,East,0,7,West,100
 # S.S Glittering Wreck (102) - Temperate Shore (7)
 102,West,0,7,East,150
 # Temperate Ocean (58) - Temperate Shore (7)
 58,West,0,7,East,100
 # S.S Glittering Wreck (101) - Temperate Shore (7)
 101,West,0,7,East,200
-# Temperate Plains (8) - Temperate Highlands (16)
-8,North,50,16,South,0
+# Temperate Plains (8) - Temperate Ocean (48)
+8,West,150,48,East,0
 # Temperate Plains (8) - Temperate Shore (13)
 8,East,50,13,West,0
+# Temperate Highlands (16) - Temperate Plains (8)
+16,West,50,8,East,0
 # Temperate Plains (9) - Temperate Plains (8)
 9,West,0,8,East,0
 # Temperate Highlands (17) - Temperate Plains (8)
@@ -100,32 +108,32 @@
 26,North,0,8,South,150
 # Temperate Highlands (28) - Temperate Plains (8)
 28,South,0,8,North,150
-# Temperate Ocean (59) - Temperate Plains (8)
-59,West,0,8,East,100
-# Temperate Highlands (30) - Temperate Plains (8)
-30,West,100,8,East,0
 # Temperate Marsh (218) - Temperate Plains (8)
 218,North,0,8,South,200
 # Temperate Marsh (33) - Temperate Plains (8)
 33,South,0,8,North,200
-# Chilled Plains (44) - Temperate Plains (8)
-44,South,20,8,North,0
+# Temperate Highlands (30) - Temperate Plains (8)
+30,West,100,8,East,0
+# Temperate Ocean (59) - Temperate Plains (8)
+59,West,0,8,East,100
 # Temperate Ocean (39) - Temperate Plains (8)
 39,East,0,8,West,200
-# Temperate Ocean (48) - Temperate Plains (8)
-48,East,0,8,West,150
 # S.S Glittering Wreck (102) - Temperate Plains (8)
 102,West,0,8,East,200
+# Chilled Plains (44) - Temperate Plains (8)
+44,South,20,8,North,0
 # Temperate Ocean (58) - Temperate Plains (8)
 58,West,0,8,East,150
 # S.S Glittering Wreck (101) - Temperate Plains (8)
 101,West,0,8,East,250
 # Temperate Ocean (300) - Temperate Plains (8)
 300,North,100,8,South,0
-# Temperate Plains (9) - Temperate Highlands (16)
-9,North,0,16,South,0
+# Temperate Plains (9) - Temperate Shore (64)
+9,West,100,64,East,0
 # Temperate Plains (9) - Temperate Shore (13)
 9,South,0,13,North,0
+# Temperate Plains (9) - Temperate Highlands (16)
+9,North,0,16,South,0
 # Temperate Highlands (17) - Temperate Plains (9)
 17,South,0,9,North,50
 # Temperate Marsh (26) - Temperate Plains (9)
@@ -136,102 +144,98 @@
 218,North,0,9,South,150
 # Temperate Marsh (33) - Temperate Plains (9)
 33,South,0,9,North,150
-# Chilled Plains (44) - Temperate Plains (9)
-44,East,50,9,West,0
 # Southern Ocean (42) - Temperate Plains (9)
 42,East,0,9,West,200
 # Temperate Ocean (57) - Temperate Plains (9)
 57,East,0,9,West,150
+# Chilled Plains (44) - Temperate Plains (9)
+44,East,50,9,West,0
 # Chilled Plains (68) - Temperate Plains (9)
 68,East,100,9,West,0
 # Temperate Ocean (300) - Temperate Plains (9)
 300,North,150,9,South,0
-# Temperate Zone (64) - Temperate Plains (9)
-64,East,0,9,West,122
+# Temperate Shore (13) - Temperate Shore (64)
+13,West,50,64,East,0
 # Temperate Highlands (17) - Temperate Shore (13)
 17,West,100,13,East,0
 # Temperate Highlands (19) - Temperate Shore (13)
 19,West,150,13,East,0
-# Temperate Marsh (34) - Temperate Shore (13)
-34,South,0,13,North,150
 # Temperate Highlands (24) - Temperate Shore (13)
 24,West,200,13,East,0
-# Temperate Ocean (59) - Temperate Shore (13)
-59,North,0,13,South,0
-# Southern Beach (53) - Temperate Shore (13)
-53,West,1,13,East,0
-# Chilled Plains (44) - Temperate Shore (13)
-44,East,100,13,West,0
+# Temperate Marsh (34) - Temperate Shore (13)
+34,South,0,13,North,150
 # Temperate Marsh (35) - Temperate Shore (13)
 35,South,0,13,North,100
+# Southern Beach (53) - Temperate Shore (13)
+53,West,1,13,East,0
+# Temperate Ocean (59) - Temperate Shore (13)
+59,North,0,13,South,0
 # Temperate Ocean (61) - Temperate Shore (13)
 61,West,0,13,East,99
-# Temperate Ocean (243) - Temperate Shore (13)
-243,North,150,13,South,0
 # Southern Ocean (42) - Temperate Shore (13)
 42,East,0,13,West,150
 # Temperate Ocean (57) - Temperate Shore (13)
 57,East,0,13,West,100
+# Temperate Ocean (243) - Temperate Shore (13)
+243,North,150,13,South,0
+# Chilled Plains (44) - Temperate Shore (13)
+44,East,100,13,West,0
 # Temperate Ocean (60) - Temperate Shore (13)
 60,West,0,13,East,49
 # Chilled Plains (68) - Temperate Shore (13)
 68,East,150,13,West,0
-# Temperate Zone (64) - Temperate Shore (13)
-64,East,0,13,West,72
-# Temperate Plains (349) - Temperate Zone (15)
-349,1,39,15,0,0
+# Temperate Highlands (16) - Temperate Shore (64)
+16,West,150,64,East,0
 # Temperate Highlands (17) - Temperate Highlands (16)
 17,West,0,16,East,0
 # Temperate Highlands (19) - Temperate Highlands (16)
 19,West,50,16,East,0
-# Temperate Marsh (34) - Temperate Highlands (16)
-34,North,0,16,South,150
 # Temperate Highlands (24) - Temperate Highlands (16)
 24,West,100,16,East,0
-# Temperate Highlands (30) - Temperate Highlands (16)
-30,South,0,16,North,0
+# Temperate Marsh (34) - Temperate Highlands (16)
+34,North,0,16,South,150
 # Temperate Highlands (29) - Temperate Highlands (16)
 29,South,0,16,North,100
-# Southern Beach (53) - Temperate Highlands (16)
-53,West,0,16,East,99
-# Chilled Plains (44) - Temperate Highlands (16)
-44,East,0,16,West,0
 # Temperate Marsh (35) - Temperate Highlands (16)
 35,North,0,16,South,100
+# Temperate Highlands (30) - Temperate Highlands (16)
+30,South,0,16,North,0
+# Southern Beach (53) - Temperate Highlands (16)
+53,West,0,16,East,99
 # Temperate Ocean (61) - Temperate Highlands (16)
 61,West,0,16,East,199
 # Southern Ocean (42) - Temperate Highlands (16)
 42,East,0,16,West,250
 # Temperate Ocean (57) - Temperate Highlands (16)
 57,East,0,16,West,200
+# Chilled Plains (44) - Temperate Highlands (16)
+44,East,0,16,West,0
 # Temperate Ocean (60) - Temperate Highlands (16)
 60,West,0,16,East,149
 # Chilled Plains (68) - Temperate Highlands (16)
 68,East,50,16,West,0
-# Temperate Zone (64) - Temperate Highlands (16)
-64,East,0,16,West,172
 # Temperate Highlands (19) - Temperate Highlands (17)
 19,South,0,17,North,0
-# Temperate Marsh (34) - Temperate Highlands (17)
-34,North,0,17,South,100
 # Temperate Marsh (26) - Temperate Highlands (17)
 26,West,0,17,East,100
 # Temperate Highlands (28) - Temperate Highlands (17)
 28,West,0,17,East,0
-# Temperate Ocean (59) - Temperate Highlands (17)
-59,East,0,17,West,150
-# Temperate Highlands (30) - Temperate Highlands (17)
-30,East,50,17,West,0
+# Temperate Marsh (34) - Temperate Highlands (17)
+34,North,0,17,South,100
 # Temperate Highlands (29) - Temperate Highlands (17)
 29,West,50,17,East,0
 # Temperate Marsh (35) - Temperate Highlands (17)
 35,West,0,17,East,50
+# Temperate Highlands (30) - Temperate Highlands (17)
+30,East,50,17,West,0
+# Southern Beach (234) - Temperate Highlands (17)
+234,West,0,17,East,149
+# Temperate Ocean (59) - Temperate Highlands (17)
+59,East,0,17,West,150
 # S.S Glittering Wreck (102) - Temperate Highlands (17)
 102,East,0,17,West,250
 # Temperate Ocean (58) - Temperate Highlands (17)
 58,East,0,17,West,200
-# Southern Beach (234) - Temperate Highlands (17)
-234,West,0,17,East,149
 # Temperate Ocean (235) - Temperate Highlands (17)
 235,West,0,17,East,198
 # Chilled Plains (68) - Temperate Highlands (17)
@@ -242,84 +246,84 @@
 24,South,0,19,North,0
 # Temperate Highlands (28) - Temperate Highlands (19)
 28,West,0,19,East,50
-# Temperate Ocean (59) - Temperate Highlands (19)
-59,East,0,19,West,200
-# Temperate Highlands (30) - Temperate Highlands (19)
-30,East,0,19,West,0
-# Temperate Marsh (109) - Temperate Highlands (19)
-109,North,0,19,South,150
 # Temperate Highlands (29) - Temperate Highlands (19)
 29,West,0,19,East,0
-# Temperate Marsh (33) - Temperate Highlands (19)
-33,North,0,19,South,100
-# Chilled Plains (44) - Temperate Highlands (19)
-44,North,120,19,South,0
+# Temperate Marsh (109) - Temperate Highlands (19)
+109,North,0,19,South,150
 # Temperate Marsh (35) - Temperate Highlands (19)
 35,West,0,19,East,100
-# S.S Glittering Wreck (102) - Temperate Highlands (19)
-102,East,0,19,West,300
-# Temperate Ocean (58) - Temperate Highlands (19)
-58,East,0,19,West,250
+# Temperate Marsh (33) - Temperate Highlands (19)
+33,North,0,19,South,100
+# Temperate Highlands (30) - Temperate Highlands (19)
+30,East,0,19,West,0
 # Southern Beach (234) - Temperate Highlands (19)
 234,West,0,19,East,199
+# Temperate Ocean (59) - Temperate Highlands (19)
+59,East,0,19,West,200
+# S.S Glittering Wreck (102) - Temperate Highlands (19)
+102,East,0,19,West,300
+# Chilled Plains (44) - Temperate Highlands (19)
+44,North,120,19,South,0
+# Temperate Ocean (58) - Temperate Highlands (19)
+58,East,0,19,West,250
 # Temperate Ocean (235) - Temperate Highlands (19)
 235,West,0,19,East,248
 # Temperate Highlands (24) - Temperate Marsh (26)
 24,East,200,26,West,0
 # Temperate Highlands (28) - Temperate Highlands (24)
 28,West,0,24,East,100
-# Temperate Ocean (59) - Temperate Highlands (24)
-59,East,0,24,West,250
-# Temperate Highlands (30) - Temperate Highlands (24)
-30,North,50,24,South,0
 # Temperate Highlands (29) - Temperate Highlands (24)
 29,West,0,24,East,50
 # Temperate Marsh (35) - Temperate Highlands (24)
 35,West,0,24,East,150
+# Temperate Highlands (30) - Temperate Highlands (24)
+30,North,50,24,South,0
+# Southern Beach (234) - Temperate Highlands (24)
+234,West,0,24,East,249
+# Temperate Ocean (59) - Temperate Highlands (24)
+59,East,0,24,West,250
 # S.S Glittering Wreck (102) - Temperate Highlands (24)
 102,East,0,24,West,350
 # Temperate Ocean (58) - Temperate Highlands (24)
 58,East,0,24,West,300
-# Southern Beach (234) - Temperate Highlands (24)
-234,West,0,24,East,249
 # Temperate Ocean (235) - Temperate Highlands (24)
 235,West,0,24,East,298
 # Chilled Plains (68) - Temperate Highlands (24)
 68,North,100,24,South,0
-# Temperate Marsh (26) - Temperate Marsh (34)
-26,North,50,34,South,0
+# Temperate Marsh (34) - Temperate Marsh (26)
+34,West,50,26,East,0
 # Temperate Marsh (218) - Temperate Marsh (26)
 218,West,0,26,East,0
-# Southern Beach (53) - Temperate Marsh (26)
-53,East,1,26,West,0
-# Temperate Marsh (33) - Temperate Marsh (26)
-33,West,100,26,East,0
 # Temperate Marsh (35) - Temperate Marsh (26)
 35,South,0,26,North,0
+# Temperate Marsh (33) - Temperate Marsh (26)
+33,West,100,26,East,0
+# Southern Beach (234) - Temperate Marsh (26)
+234,North,0,26,South,0
+# Southern Beach (53) - Temperate Marsh (26)
+53,East,1,26,West,0
 # Temperate Ocean (61) - Temperate Marsh (26)
 61,East,0,26,West,99
 # Temperate Ocean (60) - Temperate Marsh (26)
 60,North,50,26,South,0
-# Southern Beach (234) - Temperate Marsh (26)
-234,North,0,26,South,0
 # Temperate Marsh (233) - Temperate Marsh (26)
 233,West,0,26,East,49
 # Temperate Ocean (236) - Temperate Marsh (26)
 236,West,0,26,East,98
-# Temperate Highlands (28) - Temperate Marsh (34)
-28,East,50,34,West,0
-# Temperate Highlands (30) - Temperate Highlands (28)
-30,South,100,28,North,0
+# Temperate Marsh (34) - Temperate Highlands (28)
+34,West,0,28,East,50
 # Temperate Highlands (29) - Temperate Highlands (28)
 29,South,0,28,North,0
 # Temperate Marsh (218) - Temperate Highlands (28)
 218,West,0,28,East,100
-# Southern Beach (53) - Temperate Highlands (28)
-53,East,0,28,West,99
-# Temperate Marsh (33) - Temperate Highlands (28)
-33,West,0,28,East,0
 # Temperate Marsh (35) - Temperate Highlands (28)
 35,North,0,28,South,0
+# Temperate Marsh (33) - Temperate Highlands (28)
+33,West,0,28,East,0
+# Temperate Highlands (30) - Temperate Highlands (28)
+30,South,100,28,North,0
+# Southern Beach (53) - Temperate Highlands (28)
+53,East,0,28,West,99
 # Temperate Ocean (61) - Temperate Highlands (28)
 61,East,0,28,West,199
 # Temperate Ocean (60) - Temperate Highlands (28)
@@ -332,50 +336,50 @@
 68,South,150,28,North,0
 # Temperate Highlands (29) - Temperate Marsh (34)
 29,East,100,34,West,0
-# Temperate Highlands (29) - Temperate Marsh (109)
-29,South,100,109,North,0
+# Temperate Marsh (109) - Temperate Highlands (29)
+109,North,0,29,South,100
 # Temperate Marsh (218) - Temperate Highlands (29)
 218,West,0,29,East,150
-# Southern Beach (53) - Temperate Highlands (29)
-53,East,0,29,West,149
 # Temperate Marsh (33) - Temperate Highlands (29)
 33,West,0,29,East,50
-# Chilled Plains (44) - Temperate Highlands (29)
-44,North,170,29,South,0
+# Southern Beach (53) - Temperate Highlands (29)
+53,East,0,29,West,149
 # Temperate Ocean (61) - Temperate Highlands (29)
 61,East,0,29,West,249
+# Chilled Plains (44) - Temperate Highlands (29)
+44,North,170,29,South,0
 # Temperate Ocean (60) - Temperate Highlands (29)
 60,East,0,29,West,199
 # Temperate Marsh (233) - Temperate Highlands (29)
 233,West,0,29,East,199
 # Temperate Ocean (236) - Temperate Highlands (29)
 236,West,0,29,East,248
-# Temperate Marsh (109) - Temperate Highlands (30)
-109,North,0,30,South,200
+# Temperate Highlands (30) - Temperate Shore (64)
+30,West,200,64,East,0
+# Temperate Highlands (30) - Temperate Marsh (109)
+30,South,200,109,North,0
+# Temperate Highlands (30) - Temperate Marsh (33)
+30,South,150,33,North,0
 # Southern Beach (53) - Temperate Highlands (30)
 53,West,0,30,East,149
-# Temperate Marsh (33) - Temperate Highlands (30)
-33,North,0,30,South,150
-# Chilled Plains (44) - Temperate Highlands (30)
-44,North,70,30,South,0
 # Temperate Ocean (61) - Temperate Highlands (30)
 61,West,0,30,East,249
 # Southern Ocean (42) - Temperate Highlands (30)
 42,East,0,30,West,300
 # Temperate Ocean (57) - Temperate Highlands (30)
 57,East,0,30,West,250
+# Chilled Plains (44) - Temperate Highlands (30)
+44,North,70,30,South,0
 # Temperate Ocean (60) - Temperate Highlands (30)
 60,West,0,30,East,199
 # Chilled Plains (68) - Temperate Highlands (30)
 68,East,0,30,West,0
-# Temperate Zone (64) - Temperate Highlands (30)
-64,East,0,30,West,222
 # Temperate Marsh (33) - Temperate Marsh (34)
 33,South,0,34,North,0
 # Temperate Marsh (33) - Temperate Marsh (109)
 33,East,0,109,West,0
-# Temperate Marsh (35) - Temperate Marsh (33)
-35,North,50,33,South,0
+# Temperate Marsh (33) - Temperate Marsh (35)
+33,West,50,35,East,0
 # Southern Beach (234) - Temperate Marsh (33)
 234,East,0,33,West,149
 # Temperate Ocean (235) - Temperate Marsh (33)
@@ -386,24 +390,24 @@
 109,West,50,34,East,0
 # Temperate Marsh (218) - Temperate Marsh (34)
 218,North,0,34,South,0
-# Chilled Plains (44) - Temperate Marsh (34)
-44,South,220,34,North,0
 # Temperate Marsh (35) - Temperate Marsh (34)
 35,East,0,34,West,0
 # Southern Beach (234) - Temperate Marsh (34)
 234,East,0,34,West,99
+# Chilled Plains (44) - Temperate Marsh (34)
+44,South,220,34,North,0
 # Temperate Ocean (235) - Temperate Marsh (34)
 235,East,0,34,West,148
 # Temperate Ocean (300) - Temperate Marsh (34)
 300,North,300,34,South,0
 # Temperate Marsh (35) - Temperate Marsh (218)
 35,East,50,218,West,0
-# Temperate Marsh (35) - Southern Beach (53)
-35,West,49,53,East,0
-# Temperate Marsh (35) - Chilled Plains (44)
-35,North,0,44,South,170
+# Southern Beach (53) - Temperate Marsh (35)
+53,East,0,35,West,49
 # Temperate Ocean (61) - Temperate Marsh (35)
 61,East,0,35,West,149
+# Chilled Plains (44) - Temperate Marsh (35)
+44,South,170,35,North,0
 # Temperate Ocean (60) - Temperate Marsh (35)
 60,East,0,35,West,99
 # Temperate Marsh (233) - Temperate Marsh (35)
@@ -412,34 +416,36 @@
 236,West,0,35,East,148
 # Temperate Ocean (300) - Temperate Marsh (35)
 300,North,250,35,South,0
+# Temperate Ocean (38) - Temperate Ocean (48)
+38,East,0,48,West,0
+# Temperate Ocean (38) - Temperate Shore (64)
+38,North,100,64,South,0
 # Temperate Ocean (38) - Temperate Ocean (59)
 38,North,150,59,South,0
-# Temperate Ocean (38) - Temperate Ocean (39)
-38,East,50,39,West,0
-# Temperate Ocean (243) - Temperate Ocean (38)
-243,South,0,38,North,0
-# Temperate Ocean (48) - Temperate Ocean (38)
-48,West,0,38,East,0
+# Temperate Ocean (39) - Temperate Ocean (38)
+39,West,0,38,East,50
 # Southern Ocean (42) - Temperate Ocean (38)
 42,North,0,38,South,100
+# Temperate Ocean (243) - Temperate Ocean (38)
+243,South,0,38,North,0
 # S.S Glittering Wreck (102) - Temperate Ocean (38)
 102,North,0,38,South,150
 # Temperate Ocean (62) - Temperate Ocean (38)
 62,North,0,38,South,0
-# West Shore (205) - Temperate Ocean (38)
+# Western Shores (205) - Temperate Ocean (38)
 205,East,97,38,West,0
-# Temperate Zone (64) - Temperate Ocean (38)
-64,South,0,38,North,100
-# Temperate Ocean (39) - Temperate Ocean (61)
-39,North,150,61,South,0
-# Temperate Ocean (243) - Temperate Ocean (39)
-243,East,100,39,West,0
-# Temperate Ocean (48) - Temperate Ocean (39)
-48,South,0,39,North,0
+# Temperate Ocean (39) - Temperate Ocean (48)
+39,North,0,48,South,0
+# Temperate Ocean (39) - Temperate Shore (64)
+39,East,0,64,West,100
+# Temperate Ocean (61) - Temperate Ocean (39)
+61,South,0,39,North,150
 # Southern Ocean (42) - Temperate Ocean (39)
 42,West,0,39,East,0
 # Temperate Ocean (57) - Temperate Ocean (39)
 57,West,50,39,East,0
+# Temperate Ocean (243) - Temperate Ocean (39)
+243,East,100,39,West,0
 # Temperate Ocean (58) - Temperate Ocean (39)
 58,South,0,39,North,100
 # Chilled Plains (68) - Temperate Ocean (39)
@@ -450,16 +456,14 @@
 62,East,0,39,West,0
 # Temperate Ocean (300) - Temperate Ocean (39)
 300,East,150,39,West,0
-# Temperate Zone (64) - Temperate Ocean (39)
-64,West,78,39,East,0
-# Red and Blue's Cabin (103) - Temperate Ocean (39)
+# Abandoned Cabin (103) - Temperate Ocean (39)
 103,West,0,39,East,50
+# Southern Ocean (42) - Temperate Ocean (48)
+42,West,0,48,East,50
 # Southern Ocean (42) - Temperate Ocean (59)
 42,East,0,59,West,100
 # Southern Ocean (42) - Temperate Ocean (61)
 42,North,100,61,South,0
-# Southern Ocean (42) - Temperate Ocean (48)
-42,West,0,48,East,50
 # Temperate Ocean (57) - Southern Ocean (42)
 57,South,0,42,North,0
 # S.S Glittering Wreck (102) - Southern Ocean (42)
@@ -468,12 +472,12 @@
 58,West,50,42,East,0
 # S.S Glittering Wreck (101) - Southern Ocean (42)
 101,West,0,42,East,50
-# Red and Blue's Cabin (103) - Southern Ocean (42)
+# Abandoned Cabin (103) - Southern Ocean (42)
 103,North,0,42,South,0
 # Chilled Plains (44) - Temperate Ocean (59)
 44,East,150,59,West,0
-# S.S Glittering Wreck (102) - Chilled Plains (44)
-102,West,0,44,East,250
+# Chilled Plains (44) - S.S Glittering Wreck (102)
+44,East,250,102,West,0
 # Temperate Ocean (58) - Chilled Plains (44)
 58,West,0,44,East,200
 # Chilled Plains (68) - Chilled Plains (44)
@@ -488,12 +492,14 @@
 46,South,0,54,North,0
 # Temperate Plains (47) - Temperate Plains (54)
 47,North,0,54,South,39
-# Temperate Ocean (48) - Temperate Ocean (59)
-48,North,100,59,South,0
-# Temperate Ocean (48) - Temperate Ocean (243)
-48,West,0,243,East,50
+# Temperate Shore (64) - Temperate Ocean (48)
+64,West,50,48,East,0
+# Temperate Ocean (59) - Temperate Ocean (48)
+59,South,0,48,North,100
 # Temperate Ocean (57) - Temperate Ocean (48)
 57,West,0,48,East,0
+# Temperate Ocean (243) - Temperate Ocean (48)
+243,East,50,48,West,0
 # S.S Glittering Wreck (102) - Temperate Ocean (48)
 102,North,0,48,South,100
 # Chilled Plains (68) - Temperate Ocean (48)
@@ -502,28 +508,28 @@
 62,North,50,48,South,0
 # Temperate Ocean (300) - Temperate Ocean (48)
 300,East,100,48,West,0
-# Temperate Zone (64) - Temperate Ocean (48)
-64,West,28,48,East,0
-# Red and Blue's Cabin (103) - Temperate Ocean (48)
+# Abandoned Cabin (103) - Temperate Ocean (48)
 103,West,0,48,East,100
-# Southern Beach (53) - Temperate Ocean (59)
-53,West,51,59,East,0
+# Southern Beach (53) - Southern Beach (234)
+53,East,50,234,West,0
+# Temperate Ocean (59) - Southern Beach (53)
+59,East,0,53,West,51
 # S.S Glittering Wreck (102) - Southern Beach (53)
 102,East,0,53,West,151
 # Temperate Ocean (58) - Southern Beach (53)
 58,East,0,53,West,101
 # Temperate Ocean (60) - Southern Beach (53)
 60,North,0,53,South,0
-# Southern Beach (234) - Southern Beach (53)
-234,West,0,53,East,50
 # Temperate Marsh (233) - Southern Beach (53)
 233,North,0,53,South,100
 # Temperate Ocean (235) - Southern Beach (53)
 235,West,0,53,East,99
+# Temperate Ocean (57) - Temperate Shore (64)
+57,North,0,64,South,0
 # Temperate Ocean (57) - Temperate Ocean (59)
 57,North,50,59,South,0
-# Temperate Ocean (57) - Temperate Ocean (243)
-57,North,0,243,South,100
+# Temperate Ocean (243) - Temperate Ocean (57)
+243,South,100,57,North,0
 # S.S Glittering Wreck (102) - Temperate Ocean (57)
 102,West,0,57,East,50
 # Temperate Ocean (58) - Temperate Ocean (57)
@@ -532,8 +538,8 @@
 101,West,0,57,East,100
 # Temperate Ocean (62) - Temperate Ocean (57)
 62,North,100,57,South,0
-# Temperate Zone (64) - Temperate Ocean (57)
-64,South,0,57,North,0
+# Temperate Ocean (58) - Temperate Shore (64)
+58,West,0,64,East,50
 # Temperate Ocean (58) - Temperate Ocean (59)
 58,North,0,59,South,0
 # Temperate Ocean (58) - Temperate Ocean (61)
@@ -548,8 +554,8 @@
 68,East,250,58,West,0
 # Temperate Ocean (62) - Temperate Ocean (58)
 62,North,150,58,South,0
-# Temperate Zone (64) - Temperate Ocean (58)
-64,East,28,58,West,0
+# Temperate Ocean (59) - Temperate Shore (64)
+59,West,0,64,East,0
 # Temperate Ocean (61) - Temperate Ocean (59)
 61,West,0,59,East,49
 # Temperate Ocean (60) - Temperate Ocean (59)
@@ -558,38 +564,36 @@
 68,East,200,59,West,0
 # Temperate Ocean (300) - Temperate Ocean (59)
 300,South,150,59,North,0
-# Temperate Zone (64) - Temperate Ocean (59)
-64,East,0,59,West,22
 # Temperate Ocean (60) - Temperate Marsh (218)
 60,North,100,218,South,0
+# Temperate Ocean (60) - Southern Beach (234)
+60,East,0,234,West,0
 # Temperate Ocean (60) - Temperate Ocean (61)
 60,South,0,61,North,0
 # Temperate Ocean (60) - S.S Glittering Wreck (102)
 60,West,101,102,East,0
-# Southern Beach (234) - Temperate Ocean (60)
-234,West,0,60,East,0
 # Temperate Ocean (235) - Temperate Ocean (60)
 235,West,0,60,East,49
+# Temperate Ocean (61) - Southern Beach (234)
+61,East,0,234,West,50
 # S.S Glittering Wreck (102) - Temperate Ocean (61)
 102,North,50,61,South,0
-# Southern Beach (234) - Temperate Ocean (61)
-234,West,50,61,East,0
 # Temperate Ocean (235) - Temperate Ocean (61)
 235,West,1,61,East,0
 # Temperate Ocean (62) - Temperate Ocean (61)
 62,North,200,61,South,0
 # Temperate Ocean (62) - S.S Glittering Wreck (101)
 62,South,150,101,North,0
-# West Shore (205) - Temperate Ocean (62)
+# Western Shores (205) - Temperate Ocean (62)
 205,East,147,62,West,0
-# Red and Blue's Cabin (103) - Temperate Ocean (62)
+# Abandoned Cabin (103) - Temperate Ocean (62)
 103,North,0,62,South,100
-# Temperate Zone (64) - S.S Glittering Wreck (102)
-64,East,78,102,West,0
-# Temperate Zone (64) - S.S Glittering Wreck (101)
-64,East,128,101,West,0
-# Temperate Zone (64) - Temperate Ocean (295)
-64,North,0,295,South,200
+# S.S Glittering Wreck (102) - Temperate Shore (64)
+102,West,0,64,East,100
+# S.S Glittering Wreck (101) - Temperate Shore (64)
+101,West,0,64,East,150
+# Temperate Ocean (300) - Temperate Shore (64)
+300,South,100,64,North,0
 # Chilled Plains (68) - Temperate Marsh (109)
 68,South,250,109,North,0
 # Chilled Plains (68) - S.S Glittering Wreck (102)
@@ -664,7 +668,7 @@
 239,West,0,85,East,0
 # S.S Glittering Wreck (101) - S.S Glittering Wreck (102)
 101,North,0,102,South,0
-# Red and Blue's Cabin (103) - S.S Glittering Wreck (102)
+# Abandoned Cabin (103) - S.S Glittering Wreck (102)
 103,North,50,102,South,0
 # Temperate Marsh (218) - Temperate Marsh (109)
 218,East,0,109,West,100
@@ -672,123 +676,57 @@
 233,East,0,109,West,149
 # Temperate Ocean (236) - Temperate Marsh (109)
 236,East,0,109,West,198
-# Northern Area (157) - Northern Area  (207)
+# Northern Highlands (157) - Northern Highlands (207)
 157,West,50,207,East,0
-# Northern Area (157) - Northern Area (208)
+# Northern Highlands (157) - Northern Highlands (208)
 157,South,0,208,North,0
-# Northern Area (237) - Northern Area (157)
+# Northern Highlands (237) - Northern Highlands (157)
 237,South,0,157,North,0
-# Northern Area (313) - Northern Area (157)
+# Northern Highlands (313) - Northern Highlands (157)
 313,West,0,157,East,2
-# Abandoned Cabin (169) - S.S Glittering (176)
-169,North,0,176,South,0
-# Abandoned Cabin (169) - Cedar City (178)
-169,North,50,178,South,0
-# Abandoned Cabin (169) - House 1 (184)
-169,North,100,184,South,0
-# Abandoned Cabin (169) - Rocket Hideout B1F (180)
-169,East,0,180,West,104
-# S.S Glittering (172) - Department Store 2F (193)
-172,North,0,193,South,0
-# Department Store Rooftop (195) - S.S Glittering (172)
-195,West,50,172,East,0
-# Kitchen (174) - S.S Glittering (173)
-174,South,0,173,North,0
-# Cedar City (178) - S.S Glittering (176)
-178,West,0,176,East,0
-# Lab (179) - S.S Glittering (176)
-179,South,0,176,North,0
-# Rocket Hideout B1F (180) - S.S Glittering (176)
-180,West,54,176,East,0
-# Cedar City (178) - S.S. Glittering (177)
-178,West,0,177,East,100
-# Lab (179) - S.S. Glittering (177)
-179,North,0,177,South,0
-# Rocket Hideout B1F (180) - S.S. Glittering (177)
-180,West,0,177,East,46
-# House 1 (184) - Cedar City (178)
-184,West,0,178,East,0
-# Lab (179) - Cedar City (178)
-179,East,50,178,West,0
-# Lab (179) - House 1 (184)
-179,South,100,184,North,0
-# Rocket Hideout B1F (180) - Lab (179)
-180,West,4,179,East,0
-# Rocket Hideout B1F (180) - House 1 (184)
-180,East,54,184,West,0
-# Studio City (182) - House 4 (187)
-182,North,50,187,South,0
-# Bike Shop (188) - Studio City (182)
-188,West,100,182,East,0
-# Safari Zone Warden's House (189) - Studio City (182)
-189,West,0,182,East,0
-# House 2 (185) - Studio City (182)
-185,East,0,182,West,0
-# House 3 (186) - Studio City (182)
-186,South,0,182,North,0
-# House 2 (185) - House 4 (187)
-185,North,100,187,South,0
-# House 3 (186) - House 2 (185)
-186,West,50,185,East,0
-# House 3 (186) - House 4 (187)
-186,East,0,187,West,0
-# House 3 (186) - Bike Shop (188)
-186,North,50,188,South,0
-# House 3 (186) - Safari Zone Warden's House (189)
-186,East,50,189,West,0
-# Bike Shop (188) - House 4 (187)
-188,South,0,187,North,0
-# Safari Zone Warden's House (189) - House 4 (187)
-189,North,0,187,South,0
-# Department Store 3F (194) - Department Store 2F (193)
-194,South,0,193,North,0
-# Department Store Rooftop (195) - Department Store 2F (193)
-195,West,0,193,East,0
-# Department Store Rooftop (195) - Department Store 3F (194)
-195,West,0,194,East,50
-# Forest Zone (200) - Forest Zone (203)
-200,East,50,203,West,0
-# Forest Zone (200) - Forest Zone (204)
-200,West,0,204,East,50
-# Forest Zone (200) - Forest Zone (244)
-200,West,50,244,East,0
-# Forest Zone (201) - Forest Zone (200)
-201,East,0,200,West,0
-# Forest Zone (202) - Forest Zone (200)
+# Deep Forest (200) - Deep Forest (201)
+200,West,0,201,East,0
+# Deep Forest (204) - Deep Forest (200)
+204,East,50,200,West,0
+# Deep Forest (202) - Deep Forest (200)
 202,North,0,200,South,0
-# Forest Zone (201) - Forest Zone (203)
-201,South,100,203,North,0
-# Forest Zone (201) - Forest Zone (204)
-201,North,0,204,South,0
-# Forest Zone (201) - Forest Zone (244)
-201,South,0,244,North,0
-# Forest Zone (202) - Forest Zone (201)
+# Deep Forest (203) - Deep Forest (200)
+203,West,0,200,East,50
+# Deep Forest (244) - Deep Forest (200)
+244,North,50,200,South,0
+# Deep Forest (204) - Deep Forest (201)
+204,South,0,201,North,0
+# Deep Forest (202) - Deep Forest (201)
 202,West,0,201,East,50
-# Forest Zone (202) - Forest Zone (203)
-202,East,0,203,West,0
-# Forest Zone (202) - Forest Zone (204)
+# Deep Forest (203) - Deep Forest (201)
+203,North,0,201,South,100
+# Deep Forest (244) - Deep Forest (201)
+244,North,0,201,South,0
+# Deep Forest (202) - Deep Forest (204)
 202,West,0,204,East,100
-# Forest Zone (202) - Forest Zone (244)
-202,West,0,244,East,0
-# West Shore (205) - Temperate Ocean (243)
+# Deep Forest (203) - Deep Forest (202)
+203,West,0,202,East,0
+# Deep Forest (244) - Deep Forest (202)
+244,East,0,202,West,0
+# Western Shores (205) - Temperate Ocean (243)
 205,East,47,243,West,0
-# Temperate Ocean (300) - West Shore (205)
+# Temperate Ocean (300) - Western Shores (205)
 300,West,3,205,East,0
-# Temperate Ocean (295) - West Shore (205)
+# Western Shores (295) - Western Shores (205)
 295,East,0,205,West,19
-# Temperate Ocean (296) - West Shore (205)
+# Western Shores (296) - Western Shores (205)
 296,East,31,205,West,0
-# Temperate Ocean (308) - West Shore (205)
+# Western Shores (308) - Western Shores (205)
 308,East,81,205,West,0
-# Northern Area (208) - Northern Area  (207)
+# Northern Highlands (208) - Northern Highlands (207)
 208,West,0,207,East,0
-# Northern Area (237) - Northern Area  (207)
+# Northern Highlands (237) - Northern Highlands (207)
 237,West,100,207,East,0
-# Northern Area (238) - Northern Area  (207)
+# Northern Highlands (238) - Northern Highlands (207)
 238,West,150,207,East,0
-# Northern Area (313) - Northern Area (208)
+# Northern Highlands (313) - Northern Highlands (208)
 313,West,48,208,East,0
-# Northern Area (209) - Northern Area (210)
+# Northern Highlands (209) - Northern Highlands (210)
 209,South,0,210,North,1
 # Southern Beach (234) - Temperate Marsh (218)
 234,North,50,218,South,0
@@ -808,11 +746,11 @@
 236,West,0,234,East,49
 # Temperate Ocean (236) - Temperate Ocean (235)
 236,West,0,235,East,0
-# Northern Area (238) - Northern Area (237)
+# Northern Highlands (238) - Northern Highlands (237)
 238,South,0,237,North,0
-# Northern Area (313) - Northern Area (237)
+# Northern Highlands (313) - Northern Highlands (237)
 313,West,0,237,East,52
-# Northern Area (313) - Northern Area (238)
+# Northern Highlands (313) - Northern Highlands (238)
 313,West,0,238,East,102
 # Temperate Ocean (300) - Temperate Ocean (243)
 300,South,0,243,North,0
@@ -852,8 +790,6 @@
 260,West,50,249,East,0
 # Shore Skies (272) - Temperate Skies (249)
 272,West,150,249,East,0
-# Shore Skies (261) - Temperate Skies (249)
-261,West,100,249,East,0
 # Shore Skies (251) - Temperate Skies (249)
 251,East,0,249,West,150
 # Temperate Skies (252) - Temperate Skies (249)
@@ -1248,41 +1184,41 @@
 283,West,0,281,East,0
 # Shore Skies (293) - Shore Skies (294)
 293,South,0,294,North,0
-# Temperate Ocean (296) - Temperate Ocean (295)
+# Western Shores (296) - Western Shores (295)
 296,South,0,295,North,0
-# Temperate Ocean (302) - Temperate Ocean (295)
+# Western Shores (302) - Western Shores (295)
 302,East,50,295,West,0
-# Temperate Ocean (307) - Temperate Ocean (295)
+# Western Shores (307) - Western Shores (295)
 307,South,100,295,North,0
-# Temperate Ocean (310) - Temperate Ocean (295)
+# Western Shores (310) - Western Shores (295)
 310,East,100,295,West,0
-# Temperate Ocean (302) - Temperate Ocean (296)
+# Western Shores (302) - Western Shores (296)
 302,East,0,296,West,0
-# Temperate Ocean (308) - Temperate Ocean (296)
+# Western Shores (308) - Western Shores (296)
 308,South,0,296,North,0
-# Temperate Ocean (310) - Temperate Ocean (296)
+# Western Shores (310) - Western Shores (296)
 310,East,50,296,West,0
-# Temperate Ocean (309) - Temperate Ocean (296)
+# Western Shores (309) - Western Shores (296)
 309,South,100,296,North,0
-# Temperate Ocean (308) - Temperate Ocean (302)
+# Western Shores (308) - Western Shores (302)
 308,West,50,302,East,0
-# Temperate Ocean (307) - Temperate Ocean (302)
+# Western Shores (307) - Western Shores (302)
 307,East,0,302,West,0
-# Temperate Ocean (310) - Temperate Ocean (302)
+# Western Shores (310) - Western Shores (302)
 310,South,0,302,North,0
-# Temperate Ocean (309) - Temperate Ocean (302)
+# Western Shores (309) - Western Shores (302)
 309,East,50,302,West,0
-# Temperate Ocean (307) - Temperate Ocean (308)
+# Western Shores (307) - Western Shores (308)
 307,North,100,308,South,0
-# Temperate Ocean (310) - Temperate Ocean (307)
+# Western Shores (310) - Western Shores (307)
 310,West,50,307,East,0
-# Temperate Ocean (309) - Temperate Ocean (307)
+# Western Shores (309) - Western Shores (307)
 309,South,0,307,North,0
-# Temperate Ocean (310) - Temperate Ocean (308)
+# Western Shores (310) - Western Shores (308)
 310,East,0,308,West,0
-# Temperate Ocean (309) - Temperate Ocean (310)
+# Western Shores (309) - Western Shores (310)
 309,East,0,310,West,0
-# Northern Area (315) - Northern Area (313)
+# Northern Highlands (315) - Northern Highlands (313)
 315,West,0,313,East,0
 # Western Temperate (319) - Western Temperate (318)
 319,East,0,318,West,0
@@ -1374,165 +1310,47 @@
 357,North,0,355,South,0
 # Jungle (357) - Jungle (356)
 357,West,0,356,East,0
-# Temperate Zone (370) - Temperate Zone (369)
-370,North,0,369,South,0
-# Temperate Zone (371) - Temperate Zone (369)
-371,West,0,369,East,50
-# Temperate Zone (372) - Temperate Zone (369)
-372,West,0,369,East,0
-# Temperate Zone (373) - Temperate Zone (369)
-373,West,50,369,East,0
-# Temperate Zone (374) - Temperate Zone (369)
-374,South,0,369,North,100
-# Temperate Zone (371) - Temperate Zone (370)
-371,West,0,370,East,0
-# Temperate Zone (372) - Temperate Zone (370)
-372,West,50,370,East,0
-# Temperate Zone (373) - Temperate Zone (370)
-373,West,100,370,East,0
-# Temperate Zone (377) - Temperate Zone (370)
-377,South,0,370,North,100
-# Temperate Zone (372) - Temperate Zone (371)
-372,South,0,371,North,0
-# Temperate Zone (374) - Temperate Zone (371)
-374,West,100,371,East,0
-# Temperate Zone (377) - Temperate Zone (371)
-377,West,50,371,East,0
-# Mountain Zone (380) - Temperate Zone (371)
-380,West,150,371,East,0
-# Mountain Zone (390) - Temperate Zone (371)
-390,West,200,371,East,0
-# Temperate Zone (373) - Temperate Zone (372)
-373,South,0,372,North,0
-# Temperate Zone (374) - Temperate Zone (372)
-374,West,50,372,East,0
-# Temperate Zone (377) - Temperate Zone (372)
-377,West,0,372,East,0
-# Mountain Zone (380) - Temperate Zone (372)
-380,West,100,372,East,0
-# Mountain Zone (390) - Temperate Zone (372)
-390,West,150,372,East,0
-# Temperate Zone (374) - Temperate Zone (373)
-374,West,0,373,East,0
-# Temperate Zone (377) - Temperate Zone (373)
-377,West,0,373,East,50
-# Mountain Zone (380) - Temperate Zone (373)
-380,West,50,373,East,0
-# Mountain Zone (381) - Temperate Zone (373)
-381,South,0,373,North,100
-# Mountain Zone (388) - Temperate Zone (373)
-388,South,0,373,North,150
-# Mountain Zone (390) - Temperate Zone (373)
-390,West,100,373,East,0
-# Swamp Zone (393) - Temperate Zone (373)
-393,South,0,373,North,200
-# Temperate Zone (377) - Temperate Zone (374)
-377,North,0,374,South,0
-# Mountain Zone (380) - Temperate Zone (374)
-380,South,0,374,North,0
-# Mountain Zone (381) - Temperate Zone (374)
-381,West,50,374,East,0
-# Mountain Zone (382) - Temperate Zone (374)
-382,West,100,374,East,0
-# Mountain Zone (386) - Temperate Zone (374)
-386,West,150,374,East,0
-# Mountain Zone (388) - Temperate Zone (374)
-388,South,0,374,North,100
-# Swamp Zone (393) - Temperate Zone (374)
-393,South,0,374,North,150
-# Mountain Zone (381) - Temperate Zone (377)
-381,West,100,377,East,0
-# Mountain Zone (382) - Temperate Zone (377)
-382,West,150,377,East,0
-# Mountain Zone (386) - Temperate Zone (377)
-386,West,200,377,East,0
-# Mountain Zone (381) - Mountain Zone (380)
-381,West,0,380,East,0
-# Mountain Zone (382) - Mountain Zone (380)
-382,West,50,380,East,0
-# Mountain Zone (386) - Mountain Zone (380)
-386,West,100,380,East,0
-# Mountain Zone (389) - Mountain Zone (380)
-389,South,0,380,North,100
-# Mountain Zone (390) - Mountain Zone (380)
-390,South,0,380,North,0
-# Mountain Zone (382) - Mountain Zone (381)
-382,South,0,381,North,0
-# Mountain Zone (388) - Mountain Zone (381)
-388,West,0,381,East,0
-# Mountain Zone (389) - Mountain Zone (381)
-389,West,50,381,East,0
-# Mountain Zone (390) - Mountain Zone (381)
-390,East,50,381,West,0
-# Mountain Zone (386) - Mountain Zone (382)
-386,South,0,382,North,0
-# Mountain Zone (388) - Mountain Zone (382)
-388,West,0,382,East,50
-# Mountain Zone (389) - Mountain Zone (382)
-389,West,0,382,East,0
-# Mountain Zone (390) - Mountain Zone (382)
-390,East,0,382,West,0
-# Swamp Zone (393) - Mountain Zone (382)
-393,North,0,382,South,100
-# Mountain Zone (388) - Mountain Zone (386)
-388,West,0,386,East,100
-# Mountain Zone (389) - Mountain Zone (386)
-389,West,0,386,East,50
-# Mountain Zone (390) - Mountain Zone (386)
-390,North,50,386,South,0
-# Mountain Zone (389) - Mountain Zone (388)
-389,South,0,388,North,0
-# Mountain Zone (390) - Mountain Zone (388)
-390,South,100,388,North,0
-# Swamp Zone (393) - Mountain Zone (388)
-393,West,0,388,East,0
-# Swamp Zone (393) - Mountain Zone (389)
-393,West,0,389,East,50
-# Swamp Zone (393) - Mountain Zone (390)
-393,North,0,390,South,150
-# Temperate Marsh (110) - Temperate Ocean (East) (397)
-110,South,352,397,North,0
-# Oil Tanker (137) - Temperate Ocean (East) (397)
-137,East,0,397,West,150
-# Temperate Marsh (140) - Temperate Ocean (East) (397)
-140,South,278,397,North,0
-# Temperate Ocean (East) (385) - Temperate Ocean (East) (397)
-385,East,0,397,West,0
-# Temperate Ocean (East) (396) - Temperate Ocean (East) (397)
-396,East,0,397,West,200
-# Temperate Ocean (East) (43) - Temperate Marsh (110)
+# Temperate Marsh (84) - Temperate Marsh (36)
+84,North,0,36,South,0
+# Temperate Marsh (86) - Temperate Marsh (84)
+86,North,0,84,South,0
+# Temperate Marsh (110) - Temperate Marsh (86)
+110,North,0,86,South,20
+# Temperate Marsh (140) - Temperate Marsh (86)
+140,North,0,86,South,94
+# Temperate Ocean (43) - Temperate Marsh (110)
 43,North,0,110,South,202
 # Tropical Coast (131) - Temperate Marsh (110)
 131,North,0,110,South,2
-# Temperate Marsh (140) - Temperate Marsh (110)
-140,West,0,110,East,0
-# Temperate Marsh (86) - Temperate Marsh (110)
-86,South,20,110,North,0
 # Tropical Coast (132) - Temperate Marsh (110)
 132,North,0,110,South,52
+# Temperate Marsh (140) - Temperate Marsh (110)
+140,West,0,110,East,0
 # Tropical Coast (133) - Temperate Marsh (110)
 133,North,0,110,South,102
 # Tropical Coast (134) - Temperate Marsh (110)
 134,North,0,110,South,152
-# Temperate Ocean (East) (385) - Temperate Marsh (110)
+# Temperate Ocean (385) - Temperate Marsh (110)
 385,North,0,110,South,302
-# Oil Tanker (137) - Temperate Ocean (East) (43)
+# Temperate Ocean (397) - Temperate Marsh (110)
+397,North,0,110,South,352
+# Oil Tanker (137) - Temperate Ocean (43)
 137,West,0,43,East,150
-# Tropical Coast (161) - Temperate Ocean (East) (43)
+# Tropical Coast (161) - Temperate Ocean (43)
 161,East,0,43,West,50
-# Temperate Marsh (140) - Temperate Ocean (East) (43)
+# Temperate Marsh (140) - Temperate Ocean (43)
 140,South,128,43,North,0
-# Tropical Coast (134) - Temperate Ocean (East) (43)
+# Tropical Coast (134) - Temperate Ocean (43)
 134,East,0,43,West,0
-# Tropical Coast (160) - Temperate Ocean (East) (43)
+# Tropical Coast (160) - Temperate Ocean (43)
 160,East,0,43,West,100
-# Temperate Ocean (East) (392) - Temperate Ocean (East) (43)
+# Temperate Ocean (392) - Temperate Ocean (43)
 392,North,50,43,South,0
-# Temperate Ocean (East) (385) - Temperate Ocean (East) (43)
-385,West,0,43,East,0
-# Temperate Ocean (East) (387) - Temperate Ocean (East) (43)
+# Temperate Ocean (387) - Temperate Ocean (43)
 387,North,200,43,South,0
-# Temperate Ocean (East) (396) - Temperate Ocean (East) (43)
+# Temperate Ocean (385) - Temperate Ocean (43)
+385,West,0,43,East,0
+# Temperate Ocean (396) - Temperate Ocean (43)
 396,West,0,43,East,200
 # Tropical Coast (111) - Oil Tanker (137)
 111,South,300,137,North,0
@@ -1540,13 +1358,15 @@
 159,South,200,137,North,0
 # Tropical Coast (160) - Oil Tanker (137)
 160,South,150,137,North,0
+# Temperate Ocean (392) - Oil Tanker (137)
+392,East,0,137,West,0
 # Tropical Coast (158) - Oil Tanker (137)
 158,South,250,137,North,0
-# Temperate Ocean (East) (392) - Oil Tanker (137)
-392,East,0,137,West,0
-# Temperate Ocean (East) (385) - Oil Tanker (137)
+# Temperate Ocean (385) - Oil Tanker (137)
 385,South,0,137,North,0
-# Temperate Ocean (East) (396) - Oil Tanker (137)
+# Temperate Ocean (397) - Oil Tanker (137)
+397,West,150,137,East,0
+# Temperate Ocean (396) - Oil Tanker (137)
 396,North,0,137,South,0
 # Tropical Coast (130) - Tropical Coast (111)
 130,South,0,111,North,0
@@ -1558,11 +1378,11 @@
 138,West,50,111,East,0
 # Tropical Coast (142) - Tropical Coast (111)
 142,South,0,111,North,100
+# Temperate Ocean (392) - Tropical Coast (111)
+392,North,0,111,South,150
 # Tropical Coast (158) - Tropical Coast (111)
 158,West,0,111,East,0
-# Temperate Ocean (East) (392) - Tropical Coast (111)
-392,North,0,111,South,150
-# Temperate Ocean (East) (387) - Tropical Coast (111)
+# Temperate Ocean (387) - Tropical Coast (111)
 387,North,0,111,South,0
 # Tropical Coast (131) - Tropical Coast (130)
 131,South,0,130,North,0
@@ -1580,8 +1400,18 @@
 160,North,0,130,South,150
 # Tropical Coast (158) - Tropical Coast (130)
 158,West,0,130,East,50
-# Tropical Coast (131) - Tropical Coast (161)
-131,South,150,161,North,0
+# Tropical Coast (161) - Tropical Coast (131)
+161,North,0,131,South,150
+# Tropical Coast (132) - Tropical Coast (131)
+132,West,0,131,East,0
+# Temperate Marsh (140) - Tropical Coast (131)
+140,South,0,131,North,72
+# Tropical Coast (138) - Tropical Coast (131)
+138,West,0,131,East,50
+# Tropical Coast (142) - Tropical Coast (131)
+142,North,0,131,South,100
+# Tropical Coast (158) - Tropical Coast (131)
+158,West,0,131,East,100
 # Tropical Coast (132) - Tropical Coast (161)
 132,South,100,161,North,0
 # Tropical Coast (133) - Tropical Coast (161)
@@ -1596,32 +1426,10 @@
 160,North,0,161,South,0
 # Tropical Coast (158) - Tropical Coast (161)
 158,North,100,161,South,0
-# Temperate Ocean (East) (387) - Tropical Coast (161)
+# Temperate Ocean (387) - Tropical Coast (161)
 387,East,0,161,West,100
-# Temperate Marsh (140) - Tropical Coast (131)
-140,South,0,131,North,72
-# Tropical Coast (132) - Tropical Coast (131)
-132,West,0,131,East,0
-# Tropical Coast (138) - Tropical Coast (131)
-138,West,0,131,East,50
-# Tropical Coast (142) - Tropical Coast (131)
-142,North,0,131,South,100
-# Tropical Coast (158) - Tropical Coast (131)
-158,West,0,131,East,100
-# Temperate Marsh (86) - Temperate Marsh (140)
-86,South,94,140,North,0
-# Tropical Coast (132) - Temperate Marsh (140)
-132,North,22,140,South,0
-# Tropical Coast (133) - Temperate Marsh (140)
-133,North,0,140,South,28
-# Tropical Coast (134) - Temperate Marsh (140)
-134,North,0,140,South,78
-# Temperate Ocean (East) (385) - Temperate Marsh (140)
-385,North,0,140,South,228
-# Temperate Marsh (84) - Temperate Marsh (86)
-84,South,0,86,North,0
-# Temperate Marsh (36) - Temperate Marsh (84)
-36,South,0,84,North,0
+# Temperate Marsh (140) - Tropical Coast (132)
+140,South,0,132,North,22
 # Tropical Coast (138) - Tropical Coast (132)
 138,North,0,132,South,0
 # Tropical Coast (133) - Tropical Coast (132)
@@ -1630,6 +1438,14 @@
 159,West,0,132,East,100
 # Tropical Coast (142) - Tropical Coast (132)
 142,West,0,132,East,50
+# Tropical Coast (133) - Temperate Marsh (140)
+133,North,0,140,South,28
+# Tropical Coast (134) - Temperate Marsh (140)
+134,North,0,140,South,78
+# Temperate Ocean (385) - Temperate Marsh (140)
+385,North,0,140,South,228
+# Temperate Ocean (397) - Temperate Marsh (140)
+397,North,0,140,South,278
 # Tropical Coast (133) - Tropical Coast (138)
 133,West,50,138,East,0
 # Tropical Coast (134) - Tropical Coast (138)
@@ -1648,45 +1464,49 @@
 142,North,0,133,South,0
 # Tropical Coast (160) - Tropical Coast (133)
 160,West,0,133,East,100
+# Temperate Ocean (392) - Tropical Coast (133)
+392,West,0,133,East,150
 # Tropical Coast (158) - Tropical Coast (133)
 158,East,0,133,West,100
-# Temperate Ocean (East) (392) - Tropical Coast (133)
-392,West,0,133,East,150
 # Tropical Coast (159) - Tropical Coast (134)
 159,East,0,134,West,100
 # Tropical Coast (142) - Tropical Coast (134)
 142,North,50,134,South,0
-# Temperate Ocean (East) (387) - Tropical Coast (134)
+# Temperate Ocean (387) - Tropical Coast (134)
 387,East,0,134,West,150
 # Tropical Coast (142) - Tropical Coast (159)
 142,South,0,159,North,0
 # Tropical Coast (160) - Tropical Coast (159)
 160,West,0,159,East,0
+# Temperate Ocean (392) - Tropical Coast (159)
+392,West,0,159,East,50
 # Tropical Coast (158) - Tropical Coast (159)
 158,East,0,159,West,0
-# Temperate Ocean (East) (392) - Tropical Coast (159)
-392,West,0,159,East,50
-# Temperate Ocean (East) (387) - Tropical Coast (159)
+# Temperate Ocean (387) - Tropical Coast (159)
 387,North,100,159,South,0
 # Tropical Coast (160) - Tropical Coast (142)
 160,West,0,142,East,50
+# Temperate Ocean (392) - Tropical Coast (142)
+392,West,0,142,East,100
 # Tropical Coast (158) - Tropical Coast (142)
 158,North,50,142,South,0
-# Temperate Ocean (East) (392) - Tropical Coast (142)
-392,West,0,142,East,100
-# Temperate Ocean (East) (392) - Tropical Coast (160)
+# Temperate Ocean (392) - Tropical Coast (160)
 392,North,0,160,South,0
-# Temperate Ocean (East) (387) - Tropical Coast (160)
+# Temperate Ocean (387) - Tropical Coast (160)
 387,North,150,160,South,0
-# Temperate Ocean (East) (392) - Tropical Coast (158)
-392,North,0,158,South,100
-# Temperate Ocean (East) (387) - Tropical Coast (158)
-387,North,50,158,South,0
-# Temperate Ocean (East) (385) - Temperate Ocean (East) (392)
-385,West,150,392,East,0
-# Temperate Ocean (East) (387) - Temperate Ocean (East) (392)
+# Tropical Coast (158) - Temperate Ocean (392)
+158,South,100,392,North,0
+# Temperate Ocean (387) - Temperate Ocean (392)
 387,East,0,392,West,0
-# Temperate Ocean (East) (396) - Temperate Ocean (East) (392)
+# Temperate Ocean (385) - Temperate Ocean (392)
+385,West,150,392,East,0
+# Temperate Ocean (396) - Temperate Ocean (392)
 396,West,0,392,East,50
-# Temperate Ocean (East) (387) - Temperate Ocean (East) (385)
-387,North,300,385,South,0
+# Temperate Ocean (387) - Tropical Coast (158)
+387,North,50,158,South,0
+# Temperate Ocean (385) - Temperate Ocean (387)
+385,South,0,387,North,300
+# Temperate Ocean (397) - Temperate Ocean (385)
+397,West,0,385,East,0
+# Temperate Ocean (396) - Temperate Ocean (397)
+396,East,0,397,West,200

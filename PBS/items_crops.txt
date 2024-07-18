@@ -1,0 +1,762 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[CHERIBERRY]
+Name = Cheri Berry
+NamePlural = Cheri Berries
+Pocket = 4
+Price = 12
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_FIRE_80
+Description = It may be used or held by a Pokémon to recover from paralysis.
+#-------------------------------
+[CHESTOBERRY]
+Name = Chesto Berry
+NamePlural = Chesto Berries
+Pocket = 4
+Price = 12
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_WATER_80
+Description = It may be used or held by a Pokémon to recover from sleep.
+#-------------------------------
+[PECHABERRY]
+Name = Pecha Berry
+NamePlural = Pecha Berries
+Pocket = 4
+Price = 12
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_ELECTRIC_80
+Description = It may be used or held by a Pokémon to recover from poison.
+#-------------------------------
+[RAWSTBERRY]
+Name = Rawst Berry
+NamePlural = Rawst Berries
+Pocket = 4
+Price = 12
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_GRASS_80
+Description = It may be used or held by a Pokémon to recover from a burn.
+#-------------------------------
+[ASPEARBERRY]
+Name = Aspear Berry
+NamePlural = Aspear Berries
+Pocket = 4
+Price = 12
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_ICE_80
+Description = It may be used or held by a Pokémon to defrost it.
+#-------------------------------
+[LEPPABERRY]
+Name = Leppa Berry
+NamePlural = Leppa Berries
+Pocket = 4
+Price = 20
+FieldUse = OnPokemon
+BattleUse = OnMove
+Flags = Berry,Fling_10,NaturalGift_FIGHTING_80
+Description = It may be used or held by a Pokémon to restore a move's PP by 10.
+#-------------------------------
+[ORANBERRY]
+Name = Oran Berry
+NamePlural = Oran Berries
+Pocket = 4
+Price = 20
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_POISON_80
+Description = It may be used or held by a Pokémon to heal the user by just 10 HP.
+#-------------------------------
+[PERSIMBERRY]
+Name = Persim Berry
+NamePlural = Persim Berries
+Pocket = 4
+Price = 20
+BattleUse = OnBattler
+Flags = Berry,Fling_10,NaturalGift_GROUND_80
+Description = It may be used or held by a Pokémon to recover from confusion.
+#-------------------------------
+[LUMBERRY]
+Name = Lum Berry
+NamePlural = Lum Berries
+Pocket = 4
+Price = 20
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_FLYING_80
+Description = It may be used or held by a Pokémon to recover from any status problem.
+#-------------------------------
+[SITRUSBERRY]
+Name = Sitrus Berry
+NamePlural = Sitrus Berries
+Pocket = 4
+Price = 20
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Berry,Fling_10,NaturalGift_PSYCHIC_80
+Description = It may be used or held by a Pokémon to heal the user's HP a little.
+#-------------------------------
+[OCCABERRY]
+Name = Occa Berry
+NamePlural = Occa Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_FIRE_80
+Description = Weakens a supereffective Fire-type attack against the holding Pokémon.
+#-------------------------------
+[PASSHOBERRY]
+Name = Passho Berry
+NamePlural = Passho Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_WATER_80
+Description = Weakens a supereffective Water-type attack against the holding Pokémon.
+#-------------------------------
+[WACANBERRY]
+Name = Wacan Berry
+NamePlural = Wacan Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_ELECTRIC_80
+Description = Weakens a supereffective Electric-type attack against the holding Pokémon.
+#-------------------------------
+[RINDOBERRY]
+Name = Rindo Berry
+NamePlural = Rindo Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_GRASS_80
+Description = Weakens a supereffective Grass-type attack against the holding Pokémon.
+#-------------------------------
+[YACHEBERRY]
+Name = Yache Berry
+NamePlural = Yache Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_ICE_80
+Description = Weakens a supereffective Ice-type attack against the holding Pokémon.
+#-------------------------------
+[CHOPLEBERRY]
+Name = Chople Berry
+NamePlural = Chople Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_FIGHTING_80
+Description = Weakens a supereffective Fighting-type attack against the holding Pokémon.
+#-------------------------------
+[KEBIABERRY]
+Name = Kebia Berry
+NamePlural = Kebia Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_POISON_80
+Description = Weakens a supereffective Poison-type attack against the holding Pokémon.
+#-------------------------------
+[SHUCABERRY]
+Name = Shuca Berry
+NamePlural = Shuca Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_GROUND_80
+Description = Weakens a supereffective Ground-type attack against the holding Pokémon.
+#-------------------------------
+[COBABERRY]
+Name = Coba Berry
+NamePlural = Coba Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_FLYING_80
+Description = Weakens a supereffective Flying-type attack against the holding Pokémon.
+#-------------------------------
+[PAYAPABERRY]
+Name = Payapa Berry
+NamePlural = Payapa Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_PSYCHIC_80
+Description = Weakens a supereffective Psychic-type attack against the holding Pokémon.
+#-------------------------------
+[TANGABERRY]
+Name = Tanga Berry
+NamePlural = Tanga Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_BUG_80
+Description = Weakens a supereffective Bug-type attack against the holding Pokémon.
+#-------------------------------
+[CHARTIBERRY]
+Name = Charti Berry
+NamePlural = Charti Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_ROCK_80
+Description = Weakens a supereffective Rock-type attack against the holding Pokémon.
+#-------------------------------
+[KASIBBERRY]
+Name = Kasib Berry
+NamePlural = Kasib Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_GHOST_80
+Description = Weakens a supereffective Ghost-type attack against the holding Pokémon.
+#-------------------------------
+[HABANBERRY]
+Name = Haban Berry
+NamePlural = Haban Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_DRAGON_80
+Description = Weakens a supereffective Dragon-type attack against the holding Pokémon.
+#-------------------------------
+[COLBURBERRY]
+Name = Colbur Berry
+NamePlural = Colbur Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_DARK_80
+Description = Weakens a supereffective Dark-type attack against the holding Pokémon.
+#-------------------------------
+[BABIRIBERRY]
+Name = Babiri Berry
+NamePlural = Babiri Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_STEEL_80
+Description = Weakens a supereffective Steel-type attack against the holding Pokémon.
+#-------------------------------
+[ROSELIBERRY]
+Name = Roseli Berry
+NamePlural = Roseli Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_FAIRY_80
+Description = If held by a Pokémon, this Berry will lessen the damage taken from one supereffective Fairy-type attack.
+#-------------------------------
+[CHILANBERRY]
+Name = Chilan Berry
+NamePlural = Chilan Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_NORMAL_80
+Description = Weakens a Normal-type attack against the Pokémon holding this berry.
+#-------------------------------
+[ENIGMABERRY]
+Name = Enigma Berry
+NamePlural = Enigma Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_BUG_100
+Description = If held by a Pokémon, it restores its HP if it is hit by any supereffective attack.
+#-------------------------------
+[MICLEBERRY]
+Name = Micle Berry
+NamePlural = Micle Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_ROCK_100
+Description = If held by a Pokémon, it fully charges the holder's focus meter just once in a pinch.
+#-------------------------------
+[CUSTAPBERRY]
+Name = Custap Berry
+NamePlural = Custap Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_GHOST_100
+Description = If held by a Pokémon, it gets to move first just once in a pinch.
+#-------------------------------
+[JABOCABERRY]
+Name = Jaboca Berry
+NamePlural = Jaboca Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_DRAGON_100
+Description = If held by a Pokémon and a physical attack lands, the attacker also takes damage.
+#-------------------------------
+[ROWAPBERRY]
+Name = Rowap Berry
+NamePlural = Rowap Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10,NaturalGift_DARK_100
+Description = If held by a Pokémon and a special attack lands, the attacker also takes damage.
+#-------------------------------
+[ARGOSTBERRY]
+Name = Argost Berry
+NamePlural = Argost Berries
+Pocket = 4
+Price = 20
+Flags = Berry,Fling_10
+Description = If held by a Pokémon, this Berry will recover the Pokémon at 1 HP.
+#-------------------------------
+[REDAPRICORN]
+Name = Red Apricorn
+NamePlural = Red Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A red Apricorn. It assails your nostrils.
+#-------------------------------
+[YELLOWAPRICORN]
+Name = Yellow Apricorn
+NamePlural = Yellow Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A yellow Apricorn. It has an invigorating scent.
+#-------------------------------
+[BLUEAPRICORN]
+Name = Blue Apricorn
+NamePlural = Blue Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A blue Apricorn. It smells a bit like grass.
+#-------------------------------
+[GREENAPRICORN]
+Name = Green Apricorn
+NamePlural = Green Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A green Apricorn. It has a mysterious, aromatic scent.
+#-------------------------------
+[PINKAPRICORN]
+Name = Pink Apricorn
+NamePlural = Pink Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A pink Apricorn. It has a nice, sweet scent.
+#-------------------------------
+[WHITEAPRICORN]
+Name = White Apricorn
+NamePlural = White Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A white Apricorn. It doesn't smell like anything.
+#-------------------------------
+[BLACKAPRICORN]
+Name = Black Apricorn
+NamePlural = Black Apricorns
+Pocket = 3
+Price = 200
+Flags = Apricorn,Berry
+Description = A black Apricorn. It has an indescribable scent.
+#-------------------------------
+[PURPLEAPRICORN]
+Name = Purple Apricorn
+NamePlural = Purple Apricorns
+Pocket = 3
+Price = 2000
+Flags = Apricorn,Berry
+Description = A purple Apricorn. It has a powerful scent.
+#-------------------------------
+[CARROT]
+Name = Carrot
+NamePlural = Carrots
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[SUGARCANE]
+Name = Sugar Cane
+NamePlural = Sugar Canes
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[WHEAT]
+Name = Wheat
+NamePlural = Wheats
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[TEALEAF]
+Name = Tea Leaf
+NamePlural = Tea Leaves
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[COCOABEAN]
+Name = Cocoa Bean
+NamePlural = Cocoa Beans
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[APPLE]
+Name = Apple
+NamePlural = Apples
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[POTATO]
+Name = Potato
+NamePlural = Potatoes
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[LEMON]
+Name = Lemon
+NamePlural = Lemons
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[ONION]
+Name = Onion
+NamePlural = Onions
+Pocket = 4
+Price = 5
+Flags = Berry
+Description = 
+#-------------------------------
+[ACORN]
+Name = Acorn
+NamePlural = Acorns
+Pocket = 4
+Price = 5
+Flags = Berry,Coal
+Description = 
+#-------------------------------
+[PURESEED]
+Name = Pure Seed
+NamePlural = Pure Seeds
+Pocket = 1
+Price = 0
+Flags = Fling_30,Berry
+Description = An item that can be used to immediately move to the next staircase of a dungeon.
+#-------------------------------
+[MAXMUSHROOMS]
+Name = Max Mushrooms
+NamePlural = clusters of Max Mushrooms
+PortionName = cluster of Max Mushrooms
+PortionNamePlural = clusters of Max Mushrooms
+Pocket = 5
+Price = 8000
+BattleUse = OnBattler
+Flags = Fling_30,Berry
+Description = Mushrooms that boost all stats of a Pokémon during battle.
+#-------------------------------
+[REVIVALHERB]
+Name = Revival Herb
+NamePlural = Revival Herbs
+Pocket = 2
+Price = 2800
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,Berry
+Description = A very bitter medicinal herb. It revives a fainted Pokémon, fully restoring its HP.
+#-------------------------------
+[ENERGYROOT]
+Name = Energy Root
+NamePlural = Energy Roots
+Pocket = 2
+Price = 1200
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,Berry
+Description = An extremely bitter medicinal root. It can be used to restore 120 HP to a single Pokémon.
+#-------------------------------
+[MIRACLESEED]
+Name = Miracle Seed
+NamePlural = Miracle Seeds
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_30,Berry
+Description = An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
+#-------------------------------
+[ELECTRICSEED]
+Name = Electric Seed
+NamePlural = Electric Seeds
+Pocket = 1
+Price = 3000
+SellPrice = 2000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It boosts Defense on Electric Terrain. It can only be used once.
+#-------------------------------
+[GRASSYSEED]
+Name = Grassy Seed
+NamePlural = Grassy Seeds
+Pocket = 1
+Price = 3000
+SellPrice = 2000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It boosts Defense on Grassy Terrain. It can only be used once.
+#-------------------------------
+[MISTYSEED]
+Name = Misty Seed
+NamePlural = Misty Seeds
+Pocket = 1
+Price = 3000
+SellPrice = 2000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It boosts Sp. Def on Misty Terrain. It can only be used once.
+#-------------------------------
+[PSYCHICSEED]
+Name = Psychic Seed
+NamePlural = Psychic Seeds
+Pocket = 1
+Price = 3000
+SellPrice = 2000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It boosts Sp. Def on Psychic Terrain. It can only be used once.
+#-------------------------------
+[LUMINOUSMOSS]
+Name = Luminous Moss
+NamePlural = Luminous Mosses
+PortionName = clump of Luminous Moss
+PortionNamePlural = clumps of Luminous Moss
+Pocket = 1
+Price = 4000
+Flags = Fling_30,Berry
+Description = An item to be held by a Pokémon. It boosts Sp. Def if hit by a Water-type attack. It can only be used once.
+#-------------------------------
+[MENTALHERB]
+Name = Mental Herb
+NamePlural = Mental Herbs
+Pocket = 1
+Price = 4000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It snaps the holder out of infatuation. It can be used only once.
+#-------------------------------
+[WHITEHERB]
+Name = White Herb
+NamePlural = White Herbs
+Pocket = 1
+Price = 4000
+Flags = Fling_10,Berry
+Description = An item to be held by a Pokémon. It restores any lowered stat in battle. It can be used only once.
+#-------------------------------
+[POWERHERB]
+Name = Power Herb
+NamePlural = Power Herbs
+Pocket = 1
+Price = 4000
+Flags = Fling_10,Berry
+Description = A single-use item to be held by a Pokémon. It allows the immediate use of a move that charges up first.
+#-------------------------------
+[ABSORBBULB]
+Name = Absorb Bulb
+NamePlural = Absorb Bulbs
+Pocket = 1
+Price = 4000
+Flags = Fling_30,Berry
+Description = A consumable bulb. If the holder is hit by a Water-type move, its Sp. Atk will rise.
+#-------------------------------
+[BIGROOT]
+Name = Big Root
+NamePlural = Big Roots
+Pocket = 1
+Price = 4000
+Flags = Fling_10,Berry
+Description = A Pokémon held item that boosts the power of HP-stealing moves to let the holder recover more HP.
+#-------------------------------
+[TINYMUSHROOM]
+Name = Tiny Mushroom
+NamePlural = Tiny Mushrooms
+Pocket = 1
+Price = 500
+Flags = Fling_30,Berry
+Description = A small and rare mushroom. It is sought after by collectors.
+#-------------------------------
+[BIGMUSHROOM]
+Name = Big Mushroom
+NamePlural = Big Mushrooms
+Pocket = 1
+Price = 5000
+Flags = Fling_30,Berry
+Description = A large and rare mushroom. It is sought after by collectors.
+#-------------------------------
+[BALMMUSHROOM]
+Name = Balm Mushroom
+NamePlural = Balm Mushrooms
+Pocket = 1
+Price = 15000
+Flags = Fling_30,Berry
+Description = A rare mushroom which gives off a nice fragrance. A maniac will buy it for a high price.
+#-------------------------------
+[SEEDOFMASTERY]
+Name = Seed of Mastery
+NamePlural = Seeds of Mastery
+Pocket = 2
+Price = 3000
+FieldUse = OnPokemon
+Flags = Fling_30,Berry
+Description = A rare seed that can be used to master a Pokémon move so it can be used in the agile or strong styles.
+#-------------------------------
+[CROPSTICKS]
+Name = Cropstick
+NamePlural = Cropsticks
+Pocket = 7
+Price = 1
+Description = A set of cropsticks used to more effectively farm.
+#-------------------------------
+[PRODUCEMULCH2]
+Name = Produce Mulch (II)
+NamePlural = Produce Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[POTENTIALMULCH2]
+Name = Potential Mulch (II)
+NamePlural = Potential Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[GROWTHMULCH2]
+Name = Growth Mulch (II)
+NamePlural = Growth Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[DAMPMULCH2]
+Name = Damp Mulch (II)
+NamePlural = Damp Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[STABLEMULCH2]
+Name = Stable Mulch (II)
+NamePlural = Stable Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[GOOEYMULCH2]
+Name = Gooey Mulch (II)
+NamePlural = Gooey Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[FERTILIZERMIX]
+Name = Fertilizer Mix
+NamePlural = Fertilizer Mix
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[POTENTIALMULCH]
+Name = Potential Mulch (I)
+NamePlural = Potential Mulch (I)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[PRODUCEMULCH]
+Name = Produce Mulch (I)
+NamePlural = Produce Mulch (I)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = 
+#-------------------------------
+[GROWTHMULCH]
+Name = Growth Mulch
+NamePlural = Growth Mulch
+PortionName = bag of Growth Mulch
+PortionNamePlural = bags of Growth Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+#-------------------------------
+[DAMPMULCH]
+Name = Damp Mulch
+NamePlural = Damp Mulch
+PortionName = bag of Damp Mulch
+PortionNamePlural = bags of Damp Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+#-------------------------------
+[STABLEMULCH]
+Name = Stable Mulch
+NamePlural = Stable Mulch
+PortionName = bag of Stable Mulch
+PortionNamePlural = bags of Stable Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+#-------------------------------
+[GOOEYMULCH]
+Name = Gooey Mulch
+NamePlural = Gooey Mulch
+PortionName = bag of Gooey Mulch
+PortionNamePlural = bags of Gooey Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+#-------------------------------
+[SURPRISEMULCH]
+Name = Surprise Mulch
+NamePlural = Surprise Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer for growing Berries. It causes strange, sudden mutations based on other Berries nearby.
+#-------------------------------
+[ALLUREMULCH]
+Name = Allure Mulch
+NamePlural = Allure Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer for growing Berries. Berries that fall from nearby plants can take root in this mulch.
+#-------------------------------
+[RICHMULCH]
+Name = Rich Mulch
+NamePlural = Rich Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer for growing Berries. It increases the harvest without the need for particularly diligent care.
+#-------------------------------
+[BOOSTMULCH]
+Name = Boost Mulch
+NamePlural = Boost Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer for growing Berries. It makes the soil dry out faster.
+#-------------------------------
+[AMAZEMULCH]
+Name = Amaze Mulch
+NamePlural = Amaze Mulch
+Pocket = 1
+Price = 200
+Flags = Mulch,Fling_30
+Description = A fertilizer for growing Berries. It increases the harvest, chance of mutations, and drying rate.

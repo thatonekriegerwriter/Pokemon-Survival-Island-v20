@@ -17,120 +17,38 @@
 # *Utility Methods used throughout this script
 #==================================================================================
  
-# Given a string and a bool, returns an array and a var representing the array number.
-# accessory: A string representing an item in the array that the user wants to access.
-# convertation: A Bool which determines whether or not the names specific to a
-# players gender are returned (true), or the entire array (false).
-def retArrayAndNumber(accessory,convertation=true)
-(bodypart=HAIR_ITEMS; var=1) if cnvrtStrArr(HAIR_ITEMS).include?(accessory)
-(bodypart=TOP_ITEMS; var=2) if cnvrtStrArr(TOP_ITEMS).include?(accessory)
-(bodypart=BOTTOM_ITEMS; var=3) if cnvrtStrArr(BOTTOM_ITEMS).include?(accessory)
-(bodypart=HEADGEAR_ITEMS; var=4) if cnvrtStrArr(HEADGEAR_ITEMS).include?(accessory)
-(bodypart=ACCESSORY_ITEMS; var=5) if cnvrtStrArr(ACCESSORY_ITEMS).include?(accessory)
-return [cnvrtStrArr(bodypart),var] if convertation
-return [bodypart,var]
-end
+
  
 # Returns a boolean indicating if the character can be customized given settings
 # set by the creator and the player's current state.
 def characterizationException
-return true if CHARACTER_CUSTOMIZATION==false
-return true if UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT==false &&
-$player.character_customization==false
+return true if !$player.character_customization
 return true if !$player
 return true if !$player.hair
 return false
 end
  
-# Creates a new array from the items specific to the player's gender.
-# array: An array representing the options for a specific component of the outfit
-# characterization of the character (ie. HAIR_ITEMS)
-def cnvrtStrArr(array)
-ret=[]
-for i in 0...array.length
-ret.push(array[i][0][$player&.character_ID])
-end
-return ret
-end
- 
-#cnvrtBoolArr: Creates a new array with only the booleans which define the items within the array.
-#array: An array representing the options for a specific component of the outfit characterization of the character (ie. HAIR_ITEMS)
-#output: A boolean array representing which items within the component array are locked and unlocked; represented by booleans.
-def cnvrtBoolArr(array)
-ret=[]
-for i in 0...array.length
-if ((array[i][1] == true) || (array[i][1] == false))
-ret.push(array[i][1])
-else
-ret[i]=[]
-for j in 0...array[i][1].length
-ret[i].push(array[i][1][j][1])
-end
-end
-end
-return ret
-end
- 
-#Creates a new array with only the unlocked elements of the given array.
-#clothes: One of the arrays defining the gendered items and properties for
-# a specific attribute (ie. cnvrtStrArr(HEADGEAR_ITEMS))
-def retUnlockedAccessoryArray(clothes)
-arr=retArrayAndNumber(clothes[0])
-var=arr[1]
-ret=[]
-for i in 0...clothes.length
-if ($player.clothesUnlocking[var-1][i]==false || $player.clothesUnlocking[var-1][i]==true)
-ret.push clothes[i] if $player.clothesUnlocking[var-1][i]==true
-else
-check=false
-for j in 0...$player.clothesUnlocking[var-1][i].length
-check=(check||$player.clothesUnlocking[var-1][i][j])
-endclothesUnlocking
-ret.push clothes[i] if check
-end
-end
-if ret[0].nil?
- ret[0] = "[NONE]"
-end
-return ret
-end
-end
-#Creates a new array with only the unlocked elements of the given array.
-#clothes: One of the arrays defining the gendered items and properties for
-# a specific attribute (ie. cnvrtStrArr(HEADGEAR_ITEMS))
-def retUnlockedAccessoryArray2(clothes,itemnum)
-arr=retArrayAndNumber(clothes[0],false)
-var=arr[1]
-ret=[]
-for i in 0...arr[0][itemnum][1].length
-if $player.clothesUnlocking[var-1][itemnum][i]
-ret.push arr[0][itemnum][1][i][0]
-end
-end
-if ret[0].nil?
- ret[0] = "[NONE]"
-end
-return ret
-end
+
+
  
 #Fetches the file names corresponding to a given array.
 #files: An array where all the file names will be stored. Should be the empty array initially
-#array: An array of clothing items (ie. HAIR_ITEMS)
+#array: An array of clothing items (ie. getList($player.hairList))
 #folder: The folder from which these file names will correspond to.
 def individualArrayFiles(files,array,folder)
 for i in 0...array.length
 if ((array[i][1] == true) || (array[i][1] == false))
-files.push(folder+"/#{i}"+($player&.character_ID+65).chr)
+files.push(folder+"/#{i}"+($player.gender+65).chr)
 else
 for j in 0...array[i][1].length
-files.push(folder+"/#{i}/#{j}"+($player&.character_ID+65).chr)
+files.push(folder+"/#{i}/#{j}"+($player.gender+65).chr)
 end
 end
 end
 end
  
 # checks whether or not an inputed array is multi-dimensional at a given index.
-# arr: An array of clothing items (ie. HAIR_ITEMS)
+# arr: An array of clothing items (ie. getList($player.hairList))
 # num: The index numberof a specific item in the array.
 # single(optional): if true, checks if index at given array is singular, otherwise
 # checks if not singular.
@@ -145,10 +63,10 @@ end
 # helperfunction for randomizing outfit.
 # bodypart: number corresponding to the specific bodypart array desired.
 def randomizeOutfitHelper(bodypart)
-arr=HAIR_ITEMS if bodypart==0
-arr=TOP_ITEMS if bodypart==1
-arr=BOTTOM_ITEMS if bodypart==2
-arr=HEADGEAR_ITEMS if bodypart==3
+arr=getList($player.hairList) if bodypart==0
+arr=getList($player.topList) if bodypart==1
+arr=getList($player.bottomList) if bodypart==2
+arr=getList($player.headgearList) if bodypart==3
 arr=ACCESSORY_ITEMS if bodypart==4
 fv=rand(arr.length)
 if checkAccessory(arr,fv)
@@ -199,45 +117,48 @@ return bitmap if CHARACTER_CUSTOMIZATION==false
 return bitmap if UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT==false &&
 trainerClass.character_customization==false
 oldfilepath = "Graphics/Characters/"+folder+"/"
+if trainerClass.base
+addAdditionalBitmap("Graphics/Characters/base graphics/"+folder+"/"+ trainerClass.base.to_s + ($player.gender+65).chr+".png",bmp)
+end
 # Adding Bottom Bitmap
 if trainerClass.bottom[1] == -1
 addAdditionalBitmap(oldfilepath+"bottoms/"+(trainerClass.bottom[0]).to_s+
-($player&.character_ID+65).chr+".png",bmp)
+($player.gender+65).chr+".png",bmp)
 else
 addAdditionalBitmap(oldfilepath+"bottoms/"+(trainerClass.bottom[0]).to_s+
-"/"+(trainerClass.bottom[1]).to_s+($player&.character_ID+65).chr+".png",bmp)
+"/"+(trainerClass.bottom[1]).to_s+($player.gender+65).chr+".png",bmp)
 end
 # Adding Top Bitmap
 if trainerClass.top[1] == -1
 addAdditionalBitmap(oldfilepath+"tops/"+(trainerClass.top[0]).to_s+
-($player&.character_ID+65).chr+".png",bmp)
+($player.gender+65).chr+".png",bmp)
 else
 addAdditionalBitmap(oldfilepath+"tops/"+(trainerClass.top[0]).to_s+
-"/"+(trainerClass.top[1]).to_s+($player&.character_ID+65).chr+".png",bmp)
+"/"+(trainerClass.top[1]).to_s+($player.gender+65).chr+".png",bmp)
 end
 # Adding Accessory Bitmap
 if trainerClass.accessory[1] == -1
 addAdditionalBitmap(oldfilepath+"accessories/"+(trainerClass.accessory[0]).to_s+
-($player&.character_ID+65).chr+".png",bmp)
+($player.gender+65).chr+".png",bmp)
 else
 addAdditionalBitmap(oldfilepath+"accessories/"+(trainerClass.accessory[0]).to_s+
-"/"+(trainerClass.accessory[1]).to_s+($player&.character_ID+65).chr+".png",bmp)
+"/"+(trainerClass.accessory[1]).to_s+($player.gender+65).chr+".png",bmp)
 end
 # Adding Hair Bitmap
 if trainerClass.hair[1] == -1
 addAdditionalBitmap(oldfilepath+"hair/"+(trainerClass.hair[0]).to_s+
-($player&.character_ID+65).chr+".png",bmp)
+($player.gender+65).chr+".png",bmp)
 else
 addAdditionalBitmap(oldfilepath+"hair/"+(trainerClass.hair[0]).to_s+
-"/"+(trainerClass.hair[1]).to_s+($player&.character_ID+65).chr+".png",bmp)
+"/"+(trainerClass.hair[1]).to_s+($player.gender+65).chr+".png",bmp)
 end
 # Adding Headgear Bitmap
 if trainerClass.headgear[1] == -1
 addAdditionalBitmap(oldfilepath+"headgear/"+(trainerClass.headgear[0]).to_s+
-($player&.character_ID+65).chr+".png",bmp)
+($player.gender+65).chr+".png",bmp)
 else
 addAdditionalBitmap(oldfilepath+"headgear/"+(trainerClass.headgear[0]).to_s+
-"/"+(trainerClass.headgear[1]).to_s+($player&.character_ID+65).chr+".png",bmp)
+"/"+(trainerClass.headgear[1]).to_s+($player.gender+65).chr+".png",bmp)
 end
 end
  
@@ -245,11 +166,7 @@ end
 def saveCustomizedBitmapToFolder(filepath,folder)
 return if !$player
 return if !filepath.is_a?(String) || !folder.is_a?(String)
-if !USE_BASE_GRAPHIC
 bmp=Bitmap.new(filepath)
-else
-bmp=Bitmap.new(filepath+"_base")
-end
 # Safety Copy
 if !File.exists?(filepath+"_safetyCopy"+".png") && $DEBUG
 safetyCopy=Bitmap.new(filepath)
@@ -373,57 +290,7 @@ return true
 end
  
  
-#==============================================================================================
-# Influences how the metadata is called so that an outfit is temporarily stored when changed.
-#==============================================================================================
- 
-def pbGetMetadata(mapid,metadataType)
-meta=pbLoadMetadata
-if (mapid == 0) && (metadataType >= MetadataPlayerA) && (metadataType < MetadataPlayerA+7) && ($game_temp.savedoutfit == false)
-ret=[]
-ret.push(meta[mapid][metadataType][0])
-for i in 1...meta[mapid][metadataType].length
-ret.push(meta[mapid][metadataType][i]+"_curr")
-end
-return ret
-else
-return meta[mapid][metadataType] if meta[mapid]
-return nil
-end
-end
- 
-def pbTrainerHeadFile(type)
-return nil if !type
-bitmapFileName = sprintf("Graphics/Pictures/mapPlayer%s",getConstantName(PBTrainers,type)) rescue nil
-if !pbResolveBitmap(bitmapFileName) && $game_temp.savedoutfit
-bitmapFileName = sprintf("Graphics/Pictures/mapPlayer%03d",type)
-elsif !pbResolveBitmap(bitmapFileName)
-sprintf("Graphics/Pictures/mapPlayer%03d_curr",type)
-end
-return bitmapFileName
-end
- 
-def pbTrainerSpriteFile(type)
-return nil if !type
-bitmapFileName = sprintf("Graphics/Characters/trainer%s",getConstantName(PBTrainers,type)) rescue nil
-if !pbResolveBitmap(bitmapFileName) && $game_temp.savedoutfit
-bitmapFileName = sprintf("Graphics/Characters/trainer%03d",type)
-elsif !pbResolveBitmap(bitmapFileName)
-bitmapFileName = sprintf("Graphics/Characters/trainer%03d_curr",type)
-end
-return bitmapFileName
-end
- 
-def pbTrainerSpriteBackFile(type)
-return nil if !type
-bitmapFileName = sprintf("Graphics/Trainers/trback%s",getConstantName(PBTrainers,type)) rescue nil
-if !pbResolveBitmap(bitmapFileName) && $game_temp.savedoutfit
-bitmapFileName = sprintf("Graphics/Trainers/trback%03d",type)
-elsif !pbResolveBitmap(bitmapFileName)
-bitmapFileName = sprintf("Graphics/Trainers/trback%03d_curr",type)
-end
-return bitmapFileName
-end
+
  
 #===============================================================================
 # * Edit to the pbSave function to make sure outfit is saved for future load.
@@ -439,33 +306,3 @@ saveold
 end
 end
 end
- 
-#===============================================================================
-# * Edit to the class Game_Player to erase the .png extension in the name.
-#===============================================================================
-=begin
-class Game_Player
-def character_name
-if !@defaultCharacterName
-@defaultCharacterName=""
-end
-if @defaultCharacterName!=""
-return @defaultCharacterName.gsub(/\0/,"v")#(/\.png/,"")
-end
-if !moving? && !@move_route_forcing && $PokemonGlobal
-meta=pbGetMetadata(0,MetadataPlayerA+$player&.character_ID)
-if $player&.character_ID>=0 && meta &&
-!$PokemonGlobal.bicycle && !$PokemonGlobal.diving && !$PokemonGlobal.surfing
-if meta[4] && meta[4]!="" && Input.dir4!=0 && passable?(@x,@y,Input.dir4) && pbCanRun?
-# Display running character sprite
-@character_name=pbGetPlayerCharset(meta,4)
-else
-# Display normal character sprite
-@character_name=pbGetPlayerCharset(meta,1)
-end
-end
-end
-return @character_name.gsub(/\.png/,"")
-end
-end
-=end 

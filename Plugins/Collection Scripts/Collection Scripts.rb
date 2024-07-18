@@ -52,33 +52,26 @@ def pbBerryGift
 end
 #==============================================================================#
 #==============================================================================#
-
-def pbDungeonMain
-  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,
-  :STONE,:STONE,:STONE,:HARDSTONE,:HARDSTONE,
-  :CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,
-  :SHOALSHELL,:SHOALSALT,:ORANMASH,:BIGPEARL,:KINGSROCK,
-  :DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:STARDUST,:STARDUST,
-  :STARPIECE,:REDAPRICORN,:SITRUSBERRY,:ORANBERRY,:WOOL,
-  :CHARCOAL,:CHARCOAL,:APPLE,:ACORN,:BAIT,:WONDERORB]
-  chanceCollect=rand(100)  #Encounters 2/10 of the time
-  if  chanceCollect > 5
-    vbItem = vbItems[rand(36)]
-    pbItemBall(vbItem)
-  else 
-    pbMessage("It was a Voltorb!.")
-    WildBattle.start(:VOLTORB, rand(2)+pbBalancedLevel($player.party))
-  end
-end
-	   
+  
 def pbCollectionMain
   vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:CLEVERFEATHER,:SWIFTFEATHER,:SWIFTFEATHER,:SWIFTFEATHER]
   chanceCollect=rand(6)  #Encounters 2/10 of the time
   if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
-    vbItem = vbItems[rand(25)]
+    vbItem = vbItems[rand(vbItems.length)]
     pbItemBall(vbItem)
   elsif  chanceCollect==1 ||  chanceCollect==4
     pbMessage("You didn't find anything.")
+  end
+end
+
+def pbCollectionMain2
+  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,
+  :HEALTHFEATHER,:MUSCLEFEATHER,:RESISTFEATHER,:GENIUSFEATHER,:SWIFTFEATHER]
+  chanceCollect=rand(26)  #Encounters 2/10 of the time
+  if  chanceCollect==0 ||  chanceCollect==2
+    vbItem = vbItems[rand(vbItems.length)]
+    pbItemBall(vbItem)
+  else
   end
 end
 #==============================================================================#

@@ -41,30 +41,221 @@ def open_set_controls_ui(menu_to_refresh=nil)
   }
 end
 
+
+
+module Input
+	SEARCH = 40
+	LOCKON = 41
+	TOGGLETYPE = 42
+	CYCLEFOLLOWER = 43
+	TOGGLEHUD = 44
+	RUNNING = 45
+	DEBUGMENU = 46
+	PKMNCONTROL = 47
+	NOTESMENU = 48
+	PUNCH = 49
+  class << self
+    if !method_defined?(:_old_fl_press?)
+      alias :_old_fl_press? :press?
+      def press?(button)
+        key = buttonToKey(button)
+        return key ? pressex_array?(key) : _old_fl_press?(button)
+      end
+
+      alias :_old_fl_trigger? :trigger?
+      def trigger?(button)
+        key = buttonToKey(button)
+        return key ? triggerex_array?(key) : _old_fl_trigger?(button)
+      end
+
+      alias :_old_fl_repeat? :repeat?
+      def repeat?(button)
+        key = buttonToKey(button)
+        return key ? repeatex_array?(key) : _old_fl_repeat?(button)
+      end
+
+      alias :_old_fl_release? :release?
+      def release?(button)
+        key = buttonToKey(button)
+        return key ? releaseex_array?(key) : _old_fl_release?(button)
+      end
+    end
+
+    def pressex_array?(array)
+      for item in array
+        return true if pressex?(item)
+      end
+      return false
+    end
+
+    def triggerex_array?(array)
+      for item in array
+        return true if triggerex?(item)
+      end
+      return false
+    end
+
+    def repeatex_array?(array)
+      for item in array
+        return true if repeatex?(item)
+        return true if triggerex?(item) # Fix for MKXP-Z issue
+      end
+      return false
+    end
+
+    def releaseex_array?(array)
+      for item in array
+        return true if releaseex?(item)
+      end
+      return false
+    end
+
+    def dir4
+      return 0 if press?(DOWN) && press?(UP)
+      return 0 if press?(LEFT) && press?(RIGHT)
+      for button in [DOWN,LEFT,RIGHT,UP]
+        return button if press?(button)
+      end
+      return 0
+    end
+
+    def dir8
+      buttons = []
+      for b in [DOWN,LEFT,RIGHT,UP]
+        buttons.push(b) if press?(b)
+      end
+      if buttons.length==0
+        return 0
+      elsif buttons.length==1
+        return buttons[0]
+      elsif buttons.length==2
+        return 0 if (buttons[0]==DOWN && buttons[1]==UP)
+        return 0 if (buttons[0]==LEFT && buttons[1]==RIGHT)
+      end
+      up_down    = 0
+      left_right = 0
+      for b in buttons
+        up_down    = b if up_down==0 && (b==UP || b==DOWN)
+        left_right = b if left_right==0 && (b==LEFT || b==RIGHT)
+      end
+      if up_down==DOWN
+        return 1 if left_right==LEFT
+        return 3 if left_right==RIGHT
+        return 2
+      elsif up_down==UP
+        return 7 if left_right==LEFT
+        return 9 if left_right==RIGHT
+        return 8
+      else
+        return 4 if left_right==LEFT
+        return 6 if left_right==RIGHT
+        return 0
+      end
+    end
+    
+
+	
+    def buttonToKey(button)
+      $PokemonSystem = PokemonSystem.new if !$PokemonSystem
+      case button
+        when Input::DOWN
+          return $PokemonSystem.game_control_code("Down")
+        when Input::LEFT
+          return $PokemonSystem.game_control_code("Left")
+        when Input::RIGHT
+          return $PokemonSystem.game_control_code("Right")
+        when Input::UP
+          return $PokemonSystem.game_control_code("Up")
+        when Input::ACTION # Z, W, Y, Shift
+          return $PokemonSystem.game_control_code("Menu")
+        when Input::BACK # X, ESC
+          return $PokemonSystem.game_control_code("Cancel")
+        when Input::USE # C, ENTER, Space
+          return $PokemonSystem.game_control_code("Action")
+        when Input::AUX1 # A, Q, Page Up
+          return $PokemonSystem.game_control_code("Aux 1")
+        when Input::AUX2 # S, Page Down
+          return $PokemonSystem.game_control_code("Aux 2")
+        when Input::SPECIAL # F, F5, Tab
+          return $PokemonSystem.game_control_code("Ready Menu")
+          # AUX1 and AUX2 unused
+        when Input::JUMPUP # A, Q, Page Up
+          return $PokemonSystem.game_control_code("Scroll Up")
+        when Input::JUMPDOWN # S, Page Down
+          return $PokemonSystem.game_control_code("Scroll Down")
+        when Input::SEARCH # F, F5, Tab
+          return $PokemonSystem.game_control_code("Direct Pokemon")
+        when Input::LOCKON # F, F5, Tab
+          return $PokemonSystem.game_control_code("Lock On")
+        when Input::TOGGLETYPE # F, F5, Tab
+          return $PokemonSystem.game_control_code("Toggle HUD Contents")
+        when Input::CYCLEFOLLOWER # F, F5, Tab
+          return $PokemonSystem.game_control_code("Cycle Follower")
+        when Input::TOGGLEHUD # F, F5, Tab
+          return $PokemonSystem.game_control_code("Show HUD")
+        when Input::RUNNING # F, F5, Tab
+          return $PokemonSystem.game_control_code("Running")
+        when Input::DEBUGMENU # F, F5, Tab
+          return $PokemonSystem.game_control_code("Debug Menu")
+        #when Input::PKMNCONTROL # F, F5, Tab
+        #  return $PokemonSystem.game_control_code("Control Pokemon")
+        when Input::NOTESMENU # F, F5, Tab
+          return $PokemonSystem.game_control_code("Notes Menu")
+        when Input::PUNCH # F, F5, Tab
+          return $PokemonSystem.game_control_code("Punch")
+        else
+          return nil
+      end
+    end
+  end
+end
+
+
 module Keys
   # Here you can change the number of keys for each action and the
   # default values
   def self.default_controls
     return [
-      ControlConfig.new("Down", "Down"),
-      ControlConfig.new("Left", "Left"),
-      ControlConfig.new("Right", "Right"),
-      ControlConfig.new("Up", "Up"),
-      ControlConfig.new("Action", "C"),
+      ControlConfig.new("Down", "S"),
+      ControlConfig.new("Left", "A"),
+      ControlConfig.new("Right", "D"),
+      ControlConfig.new("Up", "W"),
+      ControlConfig.new("Running", "Shift"),
       ControlConfig.new("Action", "Enter"),
       ControlConfig.new("Action", "Space"),
+      ControlConfig.new("Action", "MouseLeft"),
       ControlConfig.new("Cancel",  "X"),
       ControlConfig.new("Cancel", "Esc"),
+      ControlConfig.new("Cancel", "MouseRight"),
+      ControlConfig.new("Menu", "E"),
       ControlConfig.new("Menu", "Z"),
-      ControlConfig.new("Scroll Up", "A"),
-      ControlConfig.new("Scroll Down", "S"),
-      ControlConfig.new("Ready Menu", "D")
+      ControlConfig.new("Show HUD", "R"),
+      ControlConfig.new("Scroll Up", "Up"),
+      ControlConfig.new("Scroll Down", "Down"),
+      ControlConfig.new("Toggle HUD Contents", "MouseMiddle"),
+      ControlConfig.new("Ready Menu", "Tab"),
+      ControlConfig.new("Aux 1", "J"),
+      ControlConfig.new("Aux 2", "Y"),
+      ControlConfig.new("Cycle Follower", "P"),
+      ControlConfig.new("Lock On", "Q"),
+      ControlConfig.new("Direct Pokemon", "F"),
+      ControlConfig.new("Debug Menu", "/?"),
+      #ControlConfig.new("Control Pokemon", "B"),
+      ControlConfig.new("Notes Menu", "Alt"),
+      ControlConfig.new("Punch", "C")
     ]
   end 
 
   # Available keys
   CONTROLS_LIST = {
     # Mouse buttons
+    "MouseLeft"    => 0x01,
+    "MouseRight"          => 0x02,
+    "MouseMiddle"        => 0x04,
+    "Mouse4"        => 0x05,
+    "Mouse5"        => 0x06,
+    "Mouse6"        => 0xA6,
+    "Mouse7"        => 0xA7,
     "Backspace"    => 0x08,
     "Tab"          => 0x09,
     "Clear"        => 0x0C,
@@ -183,7 +374,7 @@ module Keys
     "\|"           => 0xDC,
     "}"            => 0xDD,
     "'\""          => 0xDE,
-    "AX"           => 0xE1 # Japan only
+    "AX"           => 0xE1 # Japan only,
   }
 
   def self.key_name(key_code)
@@ -208,6 +399,17 @@ module Keys
   end
 end 
 
+def get_keyname(action)
+  key = ""
+ $PokemonSystem.game_controls.each do |control|
+  if control.control_action==action
+  key = control.key_name 
+  end
+ end
+ 
+ return key
+end
+
 class ControlConfig
   attr_reader :control_action
   attr_accessor :key_code
@@ -219,137 +421,6 @@ class ControlConfig
 
   def key_name
     return Keys.key_name(@key_code)
-  end
-end
-
-module Input
-  class << self
-    if !method_defined?(:_old_fl_press?)
-      alias :_old_fl_press? :press?
-      def press?(button)
-        key = buttonToKey(button)
-        return key ? pressex_array?(key) : _old_fl_press?(button)
-      end
-
-      alias :_old_fl_trigger? :trigger?
-      def trigger?(button)
-        key = buttonToKey(button)
-        return key ? triggerex_array?(key) : _old_fl_trigger?(button)
-      end
-
-      alias :_old_fl_repeat? :repeat?
-      def repeat?(button)
-        key = buttonToKey(button)
-        return key ? repeatex_array?(key) : _old_fl_repeat?(button)
-      end
-
-      alias :_old_fl_release? :release?
-      def release?(button)
-        key = buttonToKey(button)
-        return key ? releaseex_array?(key) : _old_fl_release?(button)
-      end
-    end
-
-    def pressex_array?(array)
-      for item in array
-        return true if pressex?(item)
-      end
-      return false
-    end
-
-    def triggerex_array?(array)
-      for item in array
-        return true if triggerex?(item)
-      end
-      return false
-    end
-
-    def repeatex_array?(array)
-      for item in array
-        return true if repeatex?(item)
-        return true if triggerex?(item) # Fix for MKXP-Z issue
-      end
-      return false
-    end
-
-    def releaseex_array?(array)
-      for item in array
-        return true if releaseex?(item)
-      end
-      return false
-    end
-
-    def dir4
-      return 0 if press?(DOWN) && press?(UP)
-      return 0 if press?(LEFT) && press?(RIGHT)
-      for button in [DOWN,LEFT,RIGHT,UP]
-        return button if press?(button)
-      end
-      return 0
-    end
-
-    def dir8
-      buttons = []
-      for b in [DOWN,LEFT,RIGHT,UP]
-        buttons.push(b) if press?(b)
-      end
-      if buttons.length==0
-        return 0
-      elsif buttons.length==1
-        return buttons[0]
-      elsif buttons.length==2
-        return 0 if (buttons[0]==DOWN && buttons[1]==UP)
-        return 0 if (buttons[0]==LEFT && buttons[1]==RIGHT)
-      end
-      up_down    = 0
-      left_right = 0
-      for b in buttons
-        up_down    = b if up_down==0 && (b==UP || b==DOWN)
-        left_right = b if left_right==0 && (b==LEFT || b==RIGHT)
-      end
-      if up_down==DOWN
-        return 1 if left_right==LEFT
-        return 3 if left_right==RIGHT
-        return 2
-      elsif up_down==UP
-        return 7 if left_right==LEFT
-        return 9 if left_right==RIGHT
-        return 8
-      else
-        return 4 if left_right==LEFT
-        return 6 if left_right==RIGHT
-        return 0
-      end
-    end
-
-    def buttonToKey(button)
-      $PokemonSystem = PokemonSystem.new if !$PokemonSystem
-      case button
-        when Input::DOWN
-          return $PokemonSystem.game_control_code("Down")
-        when Input::LEFT
-          return $PokemonSystem.game_control_code("Left")
-        when Input::RIGHT
-          return $PokemonSystem.game_control_code("Right")
-        when Input::UP
-          return $PokemonSystem.game_control_code("Up")
-        when Input::ACTION # Z, W, Y, Shift
-          return $PokemonSystem.game_control_code("Menu")
-        when Input::BACK # X, ESC
-          return $PokemonSystem.game_control_code("Cancel")
-        when Input::USE # C, ENTER, Space
-          return $PokemonSystem.game_control_code("Action")
-        when Input::AUX1 # A, Q, Page Up
-          return $PokemonSystem.game_control_code("Scroll Up")
-        when Input::AUX2 # S, Page Down
-          return $PokemonSystem.game_control_code("Scroll Down")
-        when Input::SPECIAL # F, F5, Tab
-          return $PokemonSystem.game_control_code("Ready Menu")
-          # AUX1 and AUX2 unused
-        else
-          return nil
-      end
-    end
   end
 end
 
@@ -406,6 +477,8 @@ class Window_PokemonControls < Window_DrawableCommand
     end
     return ret
   end 
+  
+  
 
   def control_description(control_action)
     hash = {}
@@ -416,9 +489,19 @@ class Window_PokemonControls < Window_DrawableCommand
     hash["Action"      ] = _INTL("Confirm a choice, check things, talk to people, and move through text.")
     hash["Cancel"      ] = _INTL("Exit, cancel a choice or mode, and move at field in a different speed.")
     hash["Menu"        ] = _INTL("Open the menu. Also has various functions depending on context.")
-    hash["Scroll Up"   ] = _INTL("Advance quickly in menus.")
+    hash["Show HUD"   ] = _INTL("Disables and Enables the Overworld HUD.")
+    hash["Scroll Up"   ] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
     hash["Scroll Down" ] = hash[ "Scroll Up"]
+    hash["Toggle Box"   ] = _INTL("Changes the Contents of the Overworld HUD to Items or Pokemon.")
     hash["Ready Menu"  ] = _INTL("Open Ready Menu, with registered items and available field moves.")
+    hash["Trainer Card"  ] = _INTL("Open Trainer Card to see various stats about the Trainer.")
+    hash["Following Pokemon"  ] = _INTL("Toggle your Following Pokemon.")
+    hash["Lock On"  ] = _INTL("Lock on to an Overworld Pokemon.")
+    hash["Search"  ] = _INTL("Direct your Overworld Pokemon to Search.")
+    hash["Following Pokemon"  ] = _INTL("Toggle your Following Pokemon.")
+    hash["Cycle Follower"  ] = _INTL("Cycles your Following Pokemon.")
+    hash["Lock On"  ] = _INTL("Lock on to an Overworld Pokemon.")
+    hash["Search"  ] = _INTL("Direct your Overworld Pokemon to Search.")
     return hash.fetch(control_action, _INTL("Set the controls."))
   end
 
@@ -573,6 +656,189 @@ class PokemonSystem
     return ret
   end
 end
+
+
+
+
+
+#==============================================================================
+# * Scene_Controls
+#------------------------------------------------------------------------------
+# Shows a help screen listing the keyboard controls.
+# Display with:
+#      pbEventScreen(ButtonEventScene)
+#==============================================================================
+class ButtonEventScene < EventScene
+  def initialize(viewport = nil)
+    super
+    Graphics.freeze
+    @current_screen = 1
+    addImage(0, 0, "Graphics/Pictures/Controls help/help_bg")
+    @labels = []
+    @label_screens = []
+    @keys = []
+    @key_screens = []
+     if $game_variables[4973]==0
+    addImageForScreen(1, 44, 122, "Graphics/Pictures/Controls help/help_arrows")
+    addImageForScreen(1, 44, 252, "Graphics/Pictures/Controls help/help_run")
+    addLabelForScreen(1, 154, 84, 352, _INTL("Use these keys to move the main character.\r\n\r\nYou can also use the Arrow keys to select entries and navigate menus.(Defaults:  #{get_keyname("Up")},#{get_keyname("Down")},#{get_keyname("Left")},#{get_keyname("Right")}) "))
+    addLabelForScreen(1, 154, 244, 352, _INTL("Use this key to Run. (Default: #{get_keyname("Running")})."))
+
+
+    addImageForScreen(2, 16, 90, "Graphics/Pictures/Controls help/help_usekey")
+    addImageForScreen(2, 16, 236, "Graphics/Pictures/Controls help/help_backkey")
+    addLabelForScreen(2, 134, 68, 352, _INTL("Used to confirm a choice, interact with people and things, using Overworld Items, throwing out POKeMON in the Overworld, and moving through text. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(2, 134, 236, 352, _INTL("Used to exit, cancel a choice, and cancel a mode. (Default: #{get_keyname("Cancel")})"))
+
+    addImageForScreen(3, 16, 40, "Graphics/Pictures/Controls help/help_actionkey")
+    addImageForScreen(3, 16, 186, "Graphics/Pictures/Controls help/help_specialkey")
+    addImageForScreen(3, 16, 272, "Graphics/Pictures/Controls help/help_lock")
+    addLabelForScreen(3, 134, 18, 352, _INTL("Used to open the Pause Menu. Also has various functions depending on context. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(3, 134, 146, 352, _INTL("Press to open the Ready Menu, where registered items and available field moves can be used. (Default: #{get_keyname("Special")})"))
+    addLabelForScreen(3, 134, 272, 352, _INTL("Used to lock on to an Overworld Pokemon, which allows you to place focus on them. (Default: #{get_keyname("Lock On")})"))
+	
+    addImageForScreen(4, 44, 122, "Graphics/Pictures/Controls help/help_hud")
+    addLabelForScreen(4, 134, 84, 352, _INTL("There are two keys for controlling the Overworld Hud.\r\n\r\nOne key toggles it's presence. (Default: #{get_keyname("Show HUD")})\r\n\r\nThe other key toggles between what it can contain. (Default: #{get_keyname("Toggle HUD Contents")}"))
+	
+	
+    addImageForScreen(5, 16, 90, "Graphics/Pictures/Controls help/help_control")
+    addImageForScreen(5, 16, 236, "Graphics/Pictures/Controls help/help_search")
+    addLabelForScreen(5, 134, 68, 352, _INTL("Used to directly take control of one of your POKeMON on the Overworld. (Default: #{get_keyname("Control Pokemon")})"))
+    addLabelForScreen(5, 134, 196, 352, _INTL("Used to direct an Overworld POKeMON to search for items. (Default: #{get_keyname("Search")})"))
+	
+    addImageForScreen(6, 16, 90, "Graphics/Pictures/Controls help/help_hp")
+    addImageForScreen(6, 16, 236, "Graphics/Pictures/Controls help/help_stamina")
+    addLabelForScreen(6, 134, 68, 352, _INTL("This is your Health Bar. As you may guess, it displays your current Health. It changes different colors at different stages of damage."))
+    addLabelForScreen(6, 134, 196, 352, _INTL("This is your Stamina Bar. It is used up by performing actions, knocking down a Tree, Running with Running Shoes, Dodging, and more."))
+
+    addImageForScreen(7, 16, 40, "Graphics/Pictures/Controls help/help_fod")
+    addImageForScreen(7, 16, 186, "Graphics/Pictures/Controls help/help_h2o")
+    addImageForScreen(7, 16, 252, "Graphics/Pictures/Controls help/help_sleep")
+    addLabelForScreen(7, 134, 18, 352, _INTL("These are your status bars.\r\n\r\nFOD means Food, H2O means Water, and SLP means Sleep. You restore them by performing the associated action."))
+    addLabelForScreen(7, 134, 146, 352, _INTL("When FOD and H2O are blue, they will not go down, once they are no longer blue, they will go through the same color cycle as Health and Sleep."))
+    addLabelForScreen(7, 134, 212, 352, _INTL("If any of these are zero, you will begin to die."))
+	
+	
+	 elsif $game_variables[4973]==1
+    addImageForScreen(1, 44, 122, "Graphics/Pictures/Controls help/help_arrows")
+    addImageForScreen(1, 44, 252, "Graphics/Pictures/Controls help/help_run")
+    addLabelForScreen(1, 134, 84, 352, _INTL("Use these keys to move the main character.\r\n\r\nYou can also use the Arrow keys to select entries and navigate menus.(Defaults:  #{get_keyname("Up")},#{get_keyname("Down")},#{get_keyname("Left")},#{get_keyname("Right")}) "))
+    addLabelForScreen(1, 134, 244, 352, _INTL("Use this key to Run. (Default: #{get_keyname("Running")})."))
+	 elsif $game_variables[4973]==2
+    addImageForScreen(1, 16, 90, "Graphics/Pictures/Controls help/help_usekey")
+    addImageForScreen(1, 16, 236, "Graphics/Pictures/Controls help/help_backkey")
+    addLabelForScreen(1, 134, 68, 352, _INTL("Used to confirm a choice, interact with people and things, using Overworld Items, throwing out POKeMON in the Overworld, and moving through text. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(1, 134, 196, 352, _INTL("Used to exit, cancel a choice, and cancel a mode. (Default: #{get_keyname("Cancel")})"))
+	 elsif $game_variables[4973]==3
+    addImageForScreen(1, 16, 40, "Graphics/Pictures/Controls help/help_actionkey")
+    addImageForScreen(1, 16, 186, "Graphics/Pictures/Controls help/help_specialkey")
+    addImageForScreen(1, 16, 252, "Graphics/Pictures/Controls help/help_lock")
+    addLabelForScreen(1, 134, 18, 352, _INTL("Used to open the Pause Menu. Also has various functions depending on context. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(1, 134, 146, 352, _INTL("Press to open the Ready Menu, where registered items and available field moves can be used. (Default: #{get_keyname("Special")})"))
+    addLabelForScreen(1, 134, 212, 352, _INTL("Used to lock on to an Overworld Pokemon, which allows you to place focus on them. (Default: #{get_keyname("Lock On")})"))
+	 elsif $game_variables[4973]==4
+	     addImageForScreen(4, 44, 122, "Graphics/Pictures/Controls help/help_hud")
+    addLabelForScreen(1, 134, 84, 352, _INTL("There are two keys for controlling the Overworld Hud.\r\n\r\nOne key toggles it's presence. (Default: #{get_keyname("Show HUD")})\r\n\r\nThe other key toggles between what it can contain. (Default: #{get_keyname("Toggle HUD Contents")}"))
+	
+	 elsif $game_variables[4973]==5
+    addImageForScreen(1, 16, 90, "Graphics/Pictures/Controls help/help_control")
+    addImageForScreen(1, 16, 236, "Graphics/Pictures/Controls help/help_search")
+    addLabelForScreen(1, 134, 68, 352, _INTL("Used to directly take control of one of your POKeMON on the Overworld. (Default: #{get_keyname("Control Pokemon")})"))
+    addLabelForScreen(1, 134, 196, 352, _INTL("Used to direct an Overworld POKeMON to search for items. (Default: #{get_keyname("Search")})"))
+	 elsif $game_variables[4973]==6
+    addImageForScreen(1, 44, 122, "Graphics/Pictures/Controls help/help_arrows")
+    addImageForScreen(1, 44, 252, "Graphics/Pictures/Controls help/help_run")
+    addLabelForScreen(1, 154, 84, 352, _INTL("Use these keys to move the main character.\r\n\r\nYou can also use the Arrow keys to select entries and navigate menus.(Defaults:  #{get_keyname("Up")},#{get_keyname("Down")},#{get_keyname("Left")},#{get_keyname("Right")}) "))
+    addLabelForScreen(1, 154, 244, 352, _INTL("Use this key to Run. (Default: #{get_keyname("Running")})."))
+
+
+    addImageForScreen(2, 16, 90, "Graphics/Pictures/Controls help/help_usekey")
+    addImageForScreen(2, 16, 236, "Graphics/Pictures/Controls help/help_backkey")
+    addLabelForScreen(2, 134, 68, 352, _INTL("Used to confirm a choice, interact with people and things, using Overworld Items, throwing out POKeMON in the Overworld, and moving through text. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(2, 134, 236, 352, _INTL("Used to exit, cancel a choice, and cancel a mode. (Default: #{get_keyname("Cancel")})"))
+
+    addImageForScreen(3, 16, 40, "Graphics/Pictures/Controls help/help_actionkey")
+    addImageForScreen(3, 16, 186, "Graphics/Pictures/Controls help/help_specialkey")
+    addImageForScreen(3, 16, 272, "Graphics/Pictures/Controls help/help_lock")
+    addLabelForScreen(3, 134, 18, 352, _INTL("Used to open the Pause Menu. Also has various functions depending on context. (Default: #{get_keyname("Action")})"))
+    addLabelForScreen(3, 134, 146, 352, _INTL("Press to open the Ready Menu, where registered items and available field moves can be used. (Default: #{get_keyname("Special")})"))
+    addLabelForScreen(3, 134, 262, 352, _INTL("Used to lock on to an Overworld Pokemon, which allows you to place focus on them. (Default: #{get_keyname("Lock On")})"))
+	
+	elsif $game_variables[4973]==7
+    addImageForScreen(1, 39, 136, "Graphics/Pictures/Controls help/help_hud")
+    addLabelForScreen(1, 134, 84, 352, _INTL("There are two keys for controlling the Overworld Hud.\r\n\r\nOne key toggles it's presence. (Default: #{get_keyname("Show HUD")})\r\n\r\nThe other key toggles between what it can contain. (Default: #{get_keyname("Toggle HUD Contents")}"))
+	
+	
+    addImageForScreen(2, 16, 90, "Graphics/Pictures/Controls help/help_control")
+    addImageForScreen(2, 16, 236, "Graphics/Pictures/Controls help/help_search")
+    addLabelForScreen(2, 134, 68, 352, _INTL("Used to directly take control of one of your POKeMON on the Overworld. (Default: #{get_keyname("Control Pokemon")})"))
+    addLabelForScreen(2, 134, 196, 352, _INTL("Used to direct an Overworld POKeMON to search for items. (Default: #{get_keyname("Search")})"))
+	elsif $game_variables[4973]==8
+    addImageForScreen(2, 16, 90, "Graphics/Pictures/Controls help/help_hp")
+    addImageForScreen(2, 16, 236, "Graphics/Pictures/Controls help/help_stamina")
+    addLabelForScreen(2, 134, 68, 352, _INTL("This is your Health Bar. As you may guess, it displays your current Health. It changes different colors at different stages of damage."))
+    addLabelForScreen(2, 134, 196, 352, _INTL("This is your Stamina Bar. It is used up by performing actions, knocking down a Tree, Running with Running Shoes, Dodging, and more."))
+
+    addImageForScreen(3, 16, 40, "Graphics/Pictures/Controls help/help_fod")
+    addImageForScreen(3, 16, 186, "Graphics/Pictures/Controls help/help_h2o")
+    addImageForScreen(3, 16, 252, "Graphics/Pictures/Controls help/help_sleep")
+    addLabelForScreen(3, 134, 18, 352, _INTL("These are your status bars.\r\n\r\nFOD means Food, H2O means Water, and SLP means Sleep. You restore them by performing the associated action."))
+    addLabelForScreen(3, 134, 146, 352, _INTL("When FOD and H2O are blue, they will not go down, once they are no longer blue, they will go through the same color cycle as Health and Sleep."))
+    addLabelForScreen(3, 134, 212, 352, _INTL("If any of these are zero, you will begin to die."))
+	
+        end
+    set_up_screen(@current_screen)
+    Graphics.transition
+    # Go to next screen when user presses USE
+    onCTrigger.set(method(:pbOnScreenEnd))
+	$game_variables[4973]=0 if $game_variables[4973]!=0
+  end
+
+  def addLabelForScreen(number, x, y, width, text)
+    @labels.push(addLabel(x, y, width, text))
+    @label_screens.push(number)
+    @picturesprites[@picturesprites.length - 1].opacity = 0
+  end
+
+  def addImageForScreen(number, x, y, filename)
+    @keys.push(addImage(x, y, filename))
+    @key_screens.push(number)
+    @picturesprites[@picturesprites.length - 1].opacity = 0
+  end
+
+  def set_up_screen(number)
+    @label_screens.each_with_index do |screen, i|
+      @labels[i].moveOpacity((screen == number) ? 10 : 0, 10, (screen == number) ? 255 : 0)
+    end
+    @key_screens.each_with_index do |screen, i|
+      @keys[i].moveOpacity((screen == number) ? 10 : 0, 10, (screen == number) ? 255 : 0)
+    end
+    pictureWait   # Update event scene with the changes
+  end
+
+  def pbOnScreenEnd(scene, *args)
+    last_screen = [@label_screens.max, @key_screens.max].max
+    if @current_screen >= last_screen
+      # End scene
+      $game_temp.background_bitmap = Graphics.snap_to_bitmap
+      @viewport.color = Color.new(0, 0, 0, 255)   # Ensure screen is black
+      $game_temp.background_bitmap.dispose
+      scene.dispose
+    else
+      # Next screen
+      @current_screen += 1
+      onCTrigger.clear
+      set_up_screen(@current_screen)
+      onCTrigger.set(method(:pbOnScreenEnd))
+    end
+  end
+end
+
+
+ 
+
+
+
 
 MenuHandlers.add(:pause_menu, :controls, {
   "name"      => _INTL("Controls"),

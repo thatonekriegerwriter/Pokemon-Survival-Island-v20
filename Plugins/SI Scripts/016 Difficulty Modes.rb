@@ -1,5 +1,221 @@
+
+#
+# $PokemonSystem.difficulty=0 = Easy
+# $PokemonSystem.difficulty=1 = Normal
+# $PokemonSystem.difficulty=2 = Hard
+# $PokemonSystem.difficulty=3 = Very Hard
+#
+#
+#
+def new_set_enemy_level(encounter)
+  difficulty = $PokemonSystem.difficulty+1
+  bosses = $game_variables[234].to_i
+  level = calculate_level(encounter, difficulty, bosses)
+  rates = get_new_rate(bosses)
+  level = handle_game_map_levels(level, rates, bosses,encounter,difficulty)
+  $game_variables[4951] = level if level > $game_variables[4951]
+  return level
+end
+
+def calculate_level(encounter, difficulty, bosses)
+  return rand(encounter[2] * difficulty) - rand(encounter[3]) + pbBalancedLevel($player.party)
+end
+
+def calculate_reroll_level(encounter, difficulty)
+  return rand(encounter[2] * difficulty) - rand(encounter[3]) + pbBalancedLevel($player.party)
+end
+
+def adjust_level(level, reroll_level, min_level, max_level)
+  if level > max_level
+    level = max_level - rand(3)
+    level = reroll_level if reroll_level > level && reroll_level < max_level
+  elsif level < min_level
+    level = min_level + rand(11)
+    level = reroll_level if reroll_level > min_level && reroll_level < max_level
+  end
+  return level
+end
+
+def adjust_for_bosses(level, bosses, rates, encounter, difficulty)
+  case bosses
+  when 0
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 10, 10 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  when 1
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 10, 20 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  when 2
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 15, 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  when 3
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25, 40 + rates[1] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  when 4
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25, 45 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  when 5
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25, 50 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Ocean"].to_i)
+  # Add additional cases for bosses 6-9 if needed
+  end
+  return level
+end
+
+def get_new_rate(bosses)
+ return bosses*2,bosses*4,bosses*6
+end
+
+def handle_game_map_levels(level, rates, bosses,encounter, difficulty)
+	maps = [33,34,35,109,26,218,233]
+  $PokemonGlobal.bossesRefightAmt == {} if $PokemonGlobal.bossesRefightAmt.nil?
+  case $game_map.name
+  when "Temperate Coast", "Temperate Inland", "Temperate Shore", "Temperate Plains"
+            #adjust_level(level, reroll_level,                           min_level,     max_level)
+			
+    amt = 20 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[76]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 10+amt0,amt)
+	puts level
+	
+	
+	
+	
+	
+  when "Temperate Highlands"
+    amt = 30 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[83]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 15+amt0, amt)
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  when "Mountain Interior", "Temperate Forest"
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[76]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 30 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
+	
+	
+	
+	
+	
+	
+  when "Ice Cave", "Frigid Highlands"
+    amt = 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[79]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
+	
+	
+	
+	
+	
+  when "Ice Temple"
+    amt = 40 + rates[1] + $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[79]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 35+amt0, amt)
+	
+	
+	
+	
+	
+	
+  when "Temperate Marsh"
+    if  maps.include?($game_map.map_id)
+    amt = 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
+	else
+    amt = 40 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 35+amt0, amt)
+	end
+	
+	
+	
+	
+  when "Water Temple"
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 45 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 40+amt0, amt)
+	
+	
+	
+	
+  when "S.S Glittering Wreck", "Abandoned Cabin", "Kitchen", "Captain's Quarters"
+	amt0 = 0
+	amt0 = +rand(7)+4 if $game_switches[81]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 50 + rates[0] + $PokemonGlobal.bossesRefightAmt["S.S Glittering"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 45+amt0, amt)
+	
+	
+	
+  when "Tropical Coast"
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 60 + rates[0] + $PokemonGlobal.bossesRefightAmt["Tropical Coast"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 50+amt0, amt)
+	
+	
+	
+	
+  when "Tropical Highlands"
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 60 + rates[0] + $PokemonGlobal.bossesRefightAmt["Tropical Highlands"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 50+amt0, amt)
+	
+	
+	
+  when "Deep Caves"
+	amt0 = 0
+	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+    amt = 50 + rates[0] + $PokemonGlobal.bossesRefightAmt["Deep Caves"].to_i
+    level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 45+amt0, amt)
+	
+	
+	
+  when "Temperate Ocean"
+    level = adjust_for_bosses(level, bosses, rates, encounter, difficulty)
+  end
+  return level
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class PokemonEncounters
+
+
   def choose_wild_pokemon(enc_type, chance_rolls = 1)
+    puts "hi there"
     if !enc_type || !GameData::EncounterType.exists?(enc_type)
       raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
     end
@@ -55,303 +271,9 @@ class PokemonEncounters
       encounter = enc
       break
     end
-    # Get the chosen species and level
-  if $game_switches[140]==true
-    old_level = rand(encounter[2]..encounter[3])
-    difficulty=$PokemonSystem.difficulty+1
-	bosses = $game_variables[234].to_i
-	lowrate= bosses*2
-	middlerate= bosses*4
-	highrate= bosses*6
-    level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-	maps = [33,34,35,109,26,218,233]
-	if level > $game_variables[4951]
-	$game_variables[4951]=level 
-	end
-	if $game_map.name == "Temperate Coast" || $game_map.name == "Temperate Inland" || $game_map.name == "Temperate Shore" || $game_map.name == "Temperate Plains"
-     if level > (20+highrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (10+rand(11)) 
-	  if reroll_level > level && reroll_level < (30+highrate)
-	   level = reroll_level
-	  end 
-	 elsif level < 10
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (10+rand(11)) 
-	  if reroll_level > level && reroll_level < (30+highrate)
-	   level = reroll_level
-	  end 
-	 end
-    elsif $game_map.name == "Temperate Highlands"
-     if level > (30+highrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level > level && reroll_level < (30+highrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 15
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level < level && reroll_level > 15
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Mountain Interior" || $game_map.name == "Temperate Forest"
-     if level > (30+highrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level > level && reroll_level < (30+highrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 25
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level < level && reroll_level > 25
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Ice Cave" || $game_map.name == "Frigid Highlands"
-     if level > (35+middlerate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level > level && reroll_level < (35+middlerate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 25
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level < level && reroll_level > 25
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Ice Temple"
-     if level > (40+middlerate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < (40+middlerate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 35
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 35
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Temperate Marsh" && maps.include?($game_map.map_id)
-     if level > (35+middlerate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level > level && reroll_level < (35+middlerate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 25
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level < level && reroll_level > 25
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Temperate Marsh" && !maps.include?($game_map.map_id)
-     if level > (40+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < (40+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 35
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 35
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Water Temple"
-     if level > (45+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < (45+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 40
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 40
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "S.S Glittering Wreck" || $game_map.name == "Abandoned Cabin" || $game_map.name == "Kitchen" || $game_map.name == "Captain's Quarters"
-     if level > (50+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < (50+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 45
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 45
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Tropical Coast" #Humid Zone
-     if level > (45+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < (45+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 40
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 40
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Tropical Highlands" #Northern Area
-     if level > (60+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (45+rand(26)) 
-	  if reroll_level > level && reroll_level < (60+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 50
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (45+rand(26)) 
-	  if reroll_level < level && reroll_level > 50
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Temperate Skies" || $game_map.name == "Shore Skies"|| $game_map.name == "Ocean Skies"|| $game_map.name == "Mountain Skies"|| $game_map.name == "Mountain Skies"
-     if level > (60+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (45+rand(26)) 
-	  if reroll_level > level && reroll_level < (60+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 50
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (45+rand(26)) 
-	  if reroll_level < level && reroll_level > 50
-	   level = reroll_level
-	  end 
-	 end 
-    elsif $game_map.name == "Temperate Ocean" || $game_map.name == "Southern Ocean"
-     if bosses = 0 
-	  if level > 10
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (10+rand(11)) 
-	 if reroll_level > level && reroll_level < 10
-	   level = reroll_level
-	 end 
-	 end
-     elsif bosses == 1 #TEMPERATE
-	  if level > 20 
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (10+rand(11)) 
-	 if reroll_level > level && reroll_level < 20
-	   level = reroll_level
-	 end 
-	 end
-	 elsif bosses == 2 #MOUNTAIN
-     if level > 35
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level > level && reroll_level < 35
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 25
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (15+rand(16)) 
-	  if reroll_level < level && reroll_level > 25
-	   level = reroll_level
-	  end 
-	 end
-	 elsif bosses == 3 #ICE
-	 if level > 40
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < 20
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 35
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 15
-	   level = reroll_level
-	  end 
-	 end 
-	 elsif bosses == 4 #WATER
-     if level > 45
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < 20
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 40
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 15
-	   level = reroll_level
-	  end 
-	 end 
-	 elsif bosses == 5 #SPOOKY
-	   if level > 50
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level > level && reroll_level < 20
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 45
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (25+rand(16)) 
-	  if reroll_level < level && reroll_level > 15
-	   level = reroll_level
-	  end 
-	 end 
-
-	 elsif bosses == 6
-	 elsif bosses == 7
-	 elsif bosses == 8
-	 elsif bosses == 9
-	 else
-	 end
-    elsif $game_map.name == "Deep Caves"
-     if level > (50+lowrate)
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (35+rand(16)) 
-	  if reroll_level > level && reroll_level < (50+lowrate)
-	   level = reroll_level
-	  end 
-	 end
-	 if level < 45
-	  reroll_level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-      level = (35+rand(16)) 
-	  if reroll_level < level && reroll_level > 45
-	   level = reroll_level
-	  end 
-	 end 
-    else 
-    level= rand(encounter[2]*difficulty)-rand(encounter[3])+pbBalancedLevel($player.party)
-	end
-  else
-    level = rand(encounter[2]..encounter[3])
-  end
+   
+    level =  new_set_enemy_level(encounter)
+ 
     # Some abilities alter the level of the wild Pokémon
     if first_pkmn
       case first_pkmn.ability_id
@@ -367,11 +289,8 @@ class PokemonEncounters
         level = [level - rand(1..4), 1].max
       end
     end
-    if level < 5
-     level = 5 
-    end
-    if level > 100
-     level = 100 
+    if level < 1
+     level = 1 
     end
     # Return [species, level]
     return [encounter[1], level]
@@ -414,14 +333,13 @@ class Battle::AI
       maxScore = c[1] if maxScore < c[1]
     end
     # Log the available choices
-    if $INTERNAL
+    if $DEBUG
       logMsg = "[AI] Move choices for #{user.pbThis(true)} (#{user.index}): "
       choices.each_with_index do |c, i|
         logMsg += "#{user.moves[c[0]].name}=#{c[1]}"
         logMsg += " (target #{c[2]})" if c[2] >= 0
         logMsg += ", " if i < choices.length - 1
       end
-      PBDebug.log(logMsg)
     end
     # Find any preferred moves and just choose from them
     if skill >= PBTrainerAI.highSkill && maxScore > 100
@@ -495,3 +413,101 @@ class Battle::AI
 
 
 end
+
+class Battle::Peer
+  def pbStorePokemon(player, pkmn)
+    if !player.party_full?
+      player.party[player.party.length] = pkmn
+      return -1
+    end
+    if Settings::HEAL_STORED_POKEMON
+      old_ready_evo = pkmn.ready_to_evolve
+      pkmn.heal
+      pkmn.ready_to_evolve = old_ready_evo
+    end
+	pkmn.calc_stats
+    oldCurBox = pbCurrentBox
+    storedBox = $PokemonStorage.pbStoreCaught(pkmn)
+    if storedBox < 0
+      # NOTE: Poké Balls can't be used if storage is full, so you shouldn't ever
+      #       see this message.
+      pbDisplayPaused(_INTL("Can't catch any more..."))
+      return oldCurBox
+    end
+    return storedBox
+  end
+end
+
+
+EventHandlers.add(:on_wild_pokemon_created, :level_depends_on_party3,
+  proc { |genwildpoke|
+  genwildpoke.age = (rand(41)+3)
+  genwildpoke.lifespan = 100
+  genwildpoke.water = (rand(100)+50)
+  genwildpoke.food = (rand(100)+50)
+  genwildpoke.water = 100 if genwildpoke.water>100
+  genwildpoke.food = 100 if genwildpoke.food>100
+  genwildpoke.loyalty = 75
+  if genwildpoke.age <= 10
+    genwildpoke.ev[:DEFENSE] = rand(40)+10
+    genwildpoke.ev[:SPECIAL_DEFENSE] = rand(40)+10
+    genwildpoke.ev[:ATTACK] = rand(40)+10
+    genwildpoke.ev[:SPECIAL_ATTACK] = rand(40)+10
+    genwildpoke.ev[:SPEED] = rand(40)+10
+    genwildpoke.ev[:HP] = rand(40)+10
+  elsif genwildpoke.age <= 20 && genwildpoke.age > 10
+    genwildpoke.ev[:DEFENSE] = rand(80)+10
+    genwildpoke.ev[:SPECIAL_DEFENSE] = rand(80)+10
+    genwildpoke.ev[:ATTACK] = rand(80)+10
+    genwildpoke.ev[:SPECIAL_ATTACK] = rand(80)+10
+    genwildpoke.ev[:SPEED] = rand(80)+10
+    genwildpoke.ev[:HP] = rand(80)+10
+  elsif genwildpoke.age <= 30 && genwildpoke.age > 20
+    genwildpoke.ev[:DEFENSE] = rand(120)+10
+    genwildpoke.ev[:SPECIAL_DEFENSE] = rand(120)+10
+    genwildpoke.ev[:ATTACK] = rand(120)+10
+    genwildpoke.ev[:SPECIAL_ATTACK] = rand(120)+10
+    genwildpoke.ev[:SPEED] = rand(120)+10
+    genwildpoke.ev[:HP] = rand(120)+10
+  elsif genwildpoke.age <= 40 && genwildpoke.age > 30
+    genwildpoke.ev[:DEFENSE] = rand(150)+10
+    genwildpoke.ev[:SPECIAL_DEFENSE] = rand(150)+10
+    genwildpoke.ev[:ATTACK] = rand(150)+10
+    genwildpoke.ev[:SPECIAL_ATTACK] = rand(150)+10
+    genwildpoke.ev[:SPEED] = rand(150)+10
+    genwildpoke.ev[:HP] = rand(150)+10
+  elsif genwildpoke.age > 40
+    genwildpoke.ev[:DEFENSE] = rand(200)+10
+    genwildpoke.ev[:SPECIAL_DEFENSE] = rand(200)+10
+    genwildpoke.ev[:ATTACK] = rand(200)+10
+    genwildpoke.ev[:SPECIAL_ATTACK] = rand(200)+10
+    genwildpoke.ev[:SPEED] = rand(200)+10
+    genwildpoke.ev[:HP] = rand(200)+10
+  end
+#  case $PokemonSystem.difficulty
+ #  when 1
+ #   genwildpoke.totalhp*=1.25
+#	genwildpoke.hp=genwildpoke.totalhp
+ #  when 2
+ #   genwildpoke.totalhp*=1.50
+#	genwildpoke.hp=genwildpoke.totalhp
+ #  when 3
+#    genwildpoke.totalhp*=1.50
+#	genwildpoke.hp=genwildpoke.totalhp
+#  end
+  }
+)
+
+
+MenuHandlers.add(:options_menu, :difficulty, {
+  "name"        => _INTL("Difficulty"),
+  "parent"      => :gameplay_menu,
+  "order"       => 35,
+  "type"        => EnumOption,
+  "condition"   => proc { next $player },
+  "parameters"  => [_INTL("Easy"), _INTL("Normal"), _INTL("Hard"), _INTL("Very Hard")],
+  "description" => _INTL("Choose the Difficulty of the Game."),
+  "get_proc"    => proc { next $PokemonSystem.difficulty },
+  "set_proc"    => proc { |value, scene| 
+  $PokemonSystem.difficulty = value}
+})

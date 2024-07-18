@@ -398,9 +398,7 @@ def pbIntroQuestionare
 	 $player.playerharmony+=6 #Emotional
 	 $player.playermoral+=3 #Intelligence
 	     end
-      pbMessage(_INTL("That's all the questions!"))
-      pbMessage(_INTL("Here's your results."))
-      pbMessage(_INTL("\\l[5]Interpersonal Intelligence: {1}\\nLogical Intelligence: {2}\\nKinesthetic Intelligence: {3}",$player.playerharmony,$player.playermoral,$player.playerwrath))
+      pbMessage(_INTL("That's all!"))
 
     # Emotional   (-13) to 45
     # Intelligence   (-1) to 31
@@ -492,7 +490,7 @@ def pbIntroQuestionare
       pbMessage(_INTL("You have a chance to recover failed POKeBALL throws."))
 	 end
 	 end
-      pbMessage(_INTL("Of course, you don't have to be what your answers give, you can choose what you want to be!"))
+      pbMessage(_INTL("If you aren't pleased with this, you are welcome to choose."))
   command = 0
   loop do
     command = pbShowCommands(nil,

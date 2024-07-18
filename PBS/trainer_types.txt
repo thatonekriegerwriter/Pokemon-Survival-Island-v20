@@ -647,6 +647,14 @@ Name = Pokémon Trainer
 Gender = Female
 BaseMoney = 60
 #-------------------------------
+[CUSTOMFEMALE]
+Name = Pokémon Trainer
+Gender = Female
+#-------------------------------
+[CUSTOMMALE]
+Name = Pokémon Trainer
+Gender = Male
+#-------------------------------
 [PI]
 Name = Private Eye
 Gender = Male

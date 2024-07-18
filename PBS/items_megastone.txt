@@ -1,0 +1,2642 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[TM01]
+Name = TM01
+NamePlural = TM01s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_150
+Move = FOCUSPUNCH
+Description = The user focuses its mind before launching a punch. This move fails if the user is hit before it is used.
+#-------------------------------
+[TM02]
+Name = TM02
+NamePlural = TM02s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = DRAGONCLAW
+Description = The user slashes the target with huge sharp claws.
+#-------------------------------
+[TM03]
+Name = TM03
+NamePlural = TM03s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = WATERPULSE
+Description = The user attacks the target with a pulsing blast of water. This may also confuse the target.
+#-------------------------------
+[TM04]
+Name = TM04
+NamePlural = TM04s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = CALMMIND
+Description = The user quietly focuses its mind and calms its spirit to raise its Sp. Atk and Sp. Def stats.
+#-------------------------------
+[TM05]
+Name = TM05
+NamePlural = TM05s
+Pocket = 1
+Price = 1000
+FieldUse = TR
+Flags = Fling_10
+Move = ROAR
+Description = The target is scared off, and a different Pokémon is dragged out. In the wild, this ends the battle.
+#-------------------------------
+[TM06]
+Name = TM06
+NamePlural = TM06s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = TOXIC
+Description = A move that leaves the target badly poisoned. Its poison damage worsens every turn.
+#-------------------------------
+[TM07]
+Name = TM07
+NamePlural = TM07s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = HAIL
+Description = The user summons a hailstorm lasting five turns. It damages all Pokémon except Ice types.
+#-------------------------------
+[TM08]
+Name = TM08
+NamePlural = TM08s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = BULKUP
+Description = The user tenses its muscles to bulk up its body, raising both its Attack and Defense stats.
+#-------------------------------
+[TM09]
+Name = TM09
+NamePlural = TM09s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_25
+Move = BULLETSEED
+Description = The user forcefully shoots seeds at the target two to five times in a row.
+#-------------------------------
+[TM10]
+Name = TM10
+NamePlural = TM10s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = WORKUP
+Description = The user is roused, and its Attack and Sp. Atk stats increase.
+#-------------------------------
+[TM11]
+Name = TM11
+NamePlural = TM11s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = SUNNYDAY
+Description = The user intensifies the sun for five turns, powering up Fire-type moves and weakening Water-type moves.
+#-------------------------------
+[TM12]
+Name = TM12
+NamePlural = TM12s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = TAUNT
+Description = The target is taunted into a rage that allows it to use only attack moves for three turns.
+#-------------------------------
+[TM13]
+Name = TM13
+NamePlural = TM13s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = ICEBEAM
+Description = The target is struck with an icy-cold beam of energy. This may also leave the target frozen.
+#-------------------------------
+[TM14]
+Name = TM14
+NamePlural = TM14s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_110
+Move = BLIZZARD
+Description = A howling blizzard is summoned to strike opposing Pokémon. This may also leave them frozen.
+#-------------------------------
+[TM15]
+Name = TM15
+NamePlural = TM15s
+Pocket = 1
+Price = 7500
+FieldUse = TR
+Flags = Fling_150
+Move = HYPERBEAM
+Description = The target is attacked with a powerful beam. The user can't move on the next turn.
+#-------------------------------
+[TM16]
+Name = TM16
+NamePlural = TM16s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = LIGHTSCREEN
+Description = A wondrous wall of light is put up to reduce damage from special attacks for five turns.
+#-------------------------------
+[TM17]
+Name = TM17
+NamePlural = TM17s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = PROTECT
+Description = The user protects itself from all attacks. Its chance of failing rises if it is used in succession.
+#-------------------------------
+[TM18]
+Name = TM18
+NamePlural = TM18s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = RAINDANCE
+Description = The user summons a heavy rain for five turns, powering up Water-type moves and weakening Fire-type ones.
+#-------------------------------
+[TM19]
+Name = TM19
+NamePlural = TM19s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_75
+Move = GIGADRAIN
+Description = A nutrient-draining attack. The user's HP is restored by half the damage taken by the target.
+#-------------------------------
+[TM20]
+Name = TM20
+NamePlural = TM20s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = SAFEGUARD
+Description = The user creates a protective field that prevents status conditions for five turns.
+#-------------------------------
+[TM21]
+Name = TM21
+NamePlural = TM21s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = DAZZLINGGLEAM
+Description = The user damages opposing Pokémon by emitting a powerful flash.
+#-------------------------------
+[TM22]
+Name = TM22
+NamePlural = TM22s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_120
+Move = SOLARBEAM
+Description = In this two-turn attack, the user gathers light, then blasts a bundled beam on the next turn.
+#-------------------------------
+[TM23]
+Name = TM23
+NamePlural = TM23s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_100
+Move = IRONTAIL
+Description = The target is slammed with a steel-hard tail. This may also lower the target's Defense stat.
+#-------------------------------
+[TM24]
+Name = TM24
+NamePlural = TM24s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = THUNDERBOLT
+Description = A strong electric blast crashes down on the target. This may also leave the target with paralysis.
+#-------------------------------
+[TM25]
+Name = TM25
+NamePlural = TM25s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_110
+Move = THUNDER
+Description = A wicked thunderbolt is dropped on the target to inflict damage. This may also leave them with paralysis.
+#-------------------------------
+[TM26]
+Name = TM26
+NamePlural = TM26s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_100
+Move = EARTHQUAKE
+Description = The user sets off an earthquake that strikes every Pokémon around it.
+#-------------------------------
+[TM27]
+Name = TM27
+NamePlural = TM27s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_65
+Move = LOWSWEEP
+Description = The user makes a swift attack on the target's legs, which lowers the target's Speed stat.
+#-------------------------------
+[TM28]
+Name = TM28
+NamePlural = TM28s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_80
+Move = DIG
+Description = The user burrows into the ground, then attacks on the next turn. It can also be used to exit dungeons.
+#-------------------------------
+[TM29]
+Name = TM29
+NamePlural = TM29s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = PSYCHIC
+Description = The target is hit by a strong telekinetic force. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM30]
+Name = TM30
+NamePlural = TM30s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = SHADOWBALL
+Description = The user hurls a shadowy blob at the target. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM31]
+Name = TM31
+NamePlural = TM31s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_75
+Move = BRICKBREAK
+Description = The user attacks with a swift chop. It can also break barriers, such as Light Screen and Reflect.
+#-------------------------------
+[TM32]
+Name = TM32
+NamePlural = TM32s
+Pocket = 1
+Price = 1000
+FieldUse = TR
+Flags = Fling_10
+Move = DOUBLETEAM
+Description = By moving rapidly, the user makes illusory copies of itself to raise its evasiveness.
+#-------------------------------
+[TM33]
+Name = TM33
+NamePlural = TM33s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = REFLECT
+Description = A wondrous wall of light is put up to reduce damage from physical attacks for five turns.
+#-------------------------------
+[TM34]
+Name = TM34
+NamePlural = TM34s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = SHOCKWAVE
+Description = The user strikes the target with a quick jolt of electricity. This attack never misses.
+#-------------------------------
+[TM35]
+Name = TM35
+NamePlural = TM35s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = FLAMETHROWER
+Description = The target is scorched with an intense blast of fire. This may also leave the target with a burn.
+#-------------------------------
+[TM36]
+Name = TM36
+NamePlural = TM36s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = SLUDGEBOMB
+Description = Unsanitary sludge is hurled at the target. This may also poison the target.
+#-------------------------------
+[TM37]
+Name = TM37
+NamePlural = TM37s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = SANDSTORM
+Description = A five-turn sandstorm is summoned to hurt all combatants except Rock, Ground, and Steel types.
+#-------------------------------
+[TM38]
+Name = TM38
+NamePlural = TM38s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_110
+Move = FIREBLAST
+Description = The target is attacked with an intense blast of all-consuming fire. This may also leave them with a burn.
+#-------------------------------
+[TM39]
+Name = TM39
+NamePlural = TM39s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = ROCKTOMB
+Description = Boulders are hurled at the target. This also lowers the target's Speed stat by preventing its movement.
+#-------------------------------
+[TM40]
+Name = TM40
+NamePlural = TM40s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = AERIALACE
+Description = The user confounds the target with speed, then slashes. This attack never misses.
+#-------------------------------
+[TM41]
+Name = TM41
+NamePlural = TM41s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = TORMENT
+Description = The user torments and enrages the target, making it incapable of using the same move twice in a row.
+#-------------------------------
+[TM42]
+Name = TM42
+NamePlural = TM42s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_70
+Move = FACADE
+Description = This attack move doubles its power if the user is poisoned, burned, or paralyzed.
+#-------------------------------
+[TM43]
+Name = TM43
+NamePlural = TM43s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_70
+Move = VOLTSWITCH
+Description = After making its attack, the user rushes back to switch places with a party Pokémon in waiting.
+#-------------------------------
+[TM44]
+Name = TM44
+NamePlural = TM44s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = REST
+Description = The user goes to sleep for two turns. This fully restores the user's HP and heals any status conditions.
+#-------------------------------
+[TM45]
+Name = TM45
+NamePlural = TM45s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = ATTRACT
+Description = If it is the opposite gender of the user, the target becomes infatuated and less likely to attack.
+#-------------------------------
+[TM46]
+Name = TM46
+NamePlural = TM46s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_60
+Move = THIEF
+Description = The user attacks and steals the target's held item simultaneously.
+#-------------------------------
+[TM47]
+Name = TM47
+NamePlural = TM47s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_70
+Move = STEELWING
+Description = The target is hit with wings of steel. This may also raise the user's Defense stat.
+#-------------------------------
+[TM48]
+Name = TM48
+NamePlural = TM48s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = SKILLSWAP
+Description = The user employs its psychic power to exchange Abilities with the target.
+#-------------------------------
+[TM49]
+Name = TM49
+NamePlural = TM49s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = SCALD
+Description = The user shoots boiling hot water at its target. This may also leave the target with a burn.
+#-------------------------------
+[TM50]
+Name = TM50
+NamePlural = TM50s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_130
+Move = OVERHEAT
+Description = The user attacks the target at full power. The attack's recoil harshly lowers the user's Sp. Atk stat.
+#-------------------------------
+[TM51]
+Name = TM51
+NamePlural = TM51s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = ROOST
+Description = The user lands and rests its body. This move restores the user's HP by up to half of its max HP.
+#-------------------------------
+[TM52]
+Name = TM52
+NamePlural = TM52s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_120
+Move = FOCUSBLAST
+Description = The user heightens its mental focus and unleashes its power. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM53]
+Name = TM53
+NamePlural = TM53s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = ENERGYBALL
+Description = The user draws power from nature and fires it at the target. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM54]
+Name = TM54
+NamePlural = TM54s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_40
+Move = FALSESWIPE
+Description = A restrained attack that prevents the target from fainting. The target is left with at least 1 HP.
+#-------------------------------
+[TM55]
+Name = TM55
+NamePlural = TM55s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_65
+Move = BRINE
+Description = If the target's HP is half or less, this attack will hit with double the power.
+#-------------------------------
+[TM56]
+Name = TM56
+NamePlural = TM56s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = FLING
+Description = The user flings its held item at the target to attack. This move's power and effects depend on the item.
+#-------------------------------
+[TM57]
+Name = TM57
+NamePlural = TM57s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_50
+Move = CHARGEBEAM
+Description = The user attacks the target with an electric charge. The user may use any remaining charge to raise its Sp. Atk.
+#-------------------------------
+[TM58]
+Name = TM58
+NamePlural = TM58s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = ENDURE
+Description = The user endures any attack with at least 1 HP. Its chance of failing rises if it is used in succession.
+#-------------------------------
+[TM59]
+Name = TM59
+NamePlural = TM59s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_85
+Move = DRAGONPULSE
+Description = The target is attacked with a shock wave generated by the user's gaping mouth.
+#-------------------------------
+[TM60]
+Name = TM60
+NamePlural = TM60s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_75
+Move = DRAINPUNCH
+Description = An energy-draining punch. The user's HP is restored by half the damage taken by the target.
+#-------------------------------
+[TM61]
+Name = TM61
+NamePlural = TM61s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = WILLOWISP
+Description = The user shoots a sinister flame at the target to inflict a burn.
+#-------------------------------
+[TM62]
+Name = TM62
+NamePlural = TM62s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_90
+Move = BUGBUZZ
+Description = The user generates a damaging sound wave by vibration. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM63]
+Name = TM63
+NamePlural = TM63s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = NASTYPLOT
+Description = The user stimulates its brain by thinking bad thoughts. This sharply raises the user's Sp. Atk stat.
+#-------------------------------
+[TM64]
+Name = TM64
+NamePlural = TM64s
+Pocket = 1
+Price = 7500
+FieldUse = TR
+Flags = Fling_250
+Move = EXPLOSION
+Description = The user attacks everything around it by causing a tremendous explosion. The user faints upon using this move.
+#-------------------------------
+[TM65]
+Name = TM65
+NamePlural = TM65s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_70
+Move = SHADOWCLAW
+Description = The user slashes with a sharp claw made from shadows. Critical hits land more easily.
+#-------------------------------
+[TM66]
+Name = TM66
+NamePlural = TM66s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_50
+Move = PAYBACK
+Description = The user stores power, then attacks. If the user moves after the target, this attack's power will be doubled.
+#-------------------------------
+[TM67]
+Name = TM67
+NamePlural = TM67s
+Pocket = 1
+Price = 1000
+FieldUse = TR
+Flags = Fling_10
+Move = RECYCLE
+Description = The user recycles a held item that has been used in battle so it can be used again.
+#-------------------------------
+[TM68]
+Name = TM68
+NamePlural = TM68s
+Pocket = 1
+Price = 7500
+FieldUse = TR
+Flags = Fling_150
+Move = GIGAIMPACT
+Description = The user charges at the target using every bit of its power. The user can't move on the next turn.
+#-------------------------------
+[TM69]
+Name = TM69
+NamePlural = TM69s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = ROCKPOLISH
+Description = The user polishes its body to reduce drag. This sharply raises the Speed stat.
+#-------------------------------
+[TM70]
+Name = TM70
+NamePlural = TM70s
+Pocket = 1
+Price = 1000
+FieldUse = TR
+Flags = Fling_10
+Move = FLASH
+Description = The user flashes a light that lowers the target's accuracy. It can also be used to illuminate caves.
+#-------------------------------
+[TM71]
+Name = TM71
+NamePlural = TM71s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_100
+Move = STONEEDGE
+Description = The user stabs the target from below with sharpened stones. Critical hits land more easily.
+#-------------------------------
+[TM72]
+Name = TM72
+NamePlural = TM72s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = AVALANCHE
+Description = The power of this attack move is doubled if the user has been hurt by the target in the same turn.
+#-------------------------------
+[TM73]
+Name = TM73
+NamePlural = TM73s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = THUNDERWAVE
+Description = The user launches a weak jolt of electricity that paralyzes the target.
+#-------------------------------
+[TM74]
+Name = TM74
+NamePlural = TM74s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = GYROBALL
+Description = The user tackles with a high-speed spin. This move is stronger the slower the user is than the target.
+#-------------------------------
+[TM75]
+Name = TM75
+NamePlural = TM75s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = SWORDSDANCE
+Description = A frenetic dance to uplift the fighting spirit. This sharply raises the user's Attack stat.
+#-------------------------------
+[TM76]
+Name = TM76
+NamePlural = TM76s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = STEALTHROCK
+Description = The user lays a trap of levitating stones around the opposing team that hurt Pokémon that switch in.
+#-------------------------------
+[TM77]
+Name = TM77
+NamePlural = TM77s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = PSYCHUP
+Description = The user hypnotizes itself into copying any stat change made by the target.
+#-------------------------------
+[TM78]
+Name = TM78
+NamePlural = TM78s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_55
+Move = SNARL
+Description = The user yells as if it's ranting about something, which lowers the Sp. Atk stats of opposing Pokémon.
+#-------------------------------
+[TM79]
+Name = TM79
+NamePlural = TM79s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = DARKPULSE
+Description = The user releases a horrible aura imbued with dark thoughts. This may also make the target flinch.
+#-------------------------------
+[TM80]
+Name = TM80
+NamePlural = TM80s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_75
+Move = ROCKSLIDE
+Description = Large boulders are hurled at opposing Pokémon to inflict damage. This may also make them flinch.
+#-------------------------------
+[TM81]
+Name = TM81
+NamePlural = TM81s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = XSCISSOR
+Description = The user slashes at the target by crossing its scythes or claws as if they were a pair of scissors.
+#-------------------------------
+[TM82]
+Name = TM82
+NamePlural = TM82s
+Pocket = 1
+Price = 1000
+FieldUse = TR
+Flags = Fling_10
+Move = SLEEPTALK
+Description = While it is asleep, the user randomly uses one of the moves it knows.
+#-------------------------------
+[TM83]
+Name = TM83
+NamePlural = TM83s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = BULLDOZE
+Description = The user strikes everything around it by stomping down on the ground. This lowers the Speed of those hit.
+#-------------------------------
+[TM84]
+Name = TM84
+NamePlural = TM84s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = POISONJAB
+Description = The target is stabbed with a tentacle, arm, or the like steeped in poison. This may also poison them.
+#-------------------------------
+[TM85]
+Name = TM85
+NamePlural = TM85s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_100
+Move = DREAMEATER
+Description = The user eats the dreams of a sleeping target. The user's HP is restored by half the damage dealt.
+#-------------------------------
+[TM86]
+Name = TM86
+NamePlural = TM86s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_10
+Move = GRASSKNOT
+Description = The user snares the target with grass and trips it. The heavier the target, the strong the move is.
+#-------------------------------
+[TM87]
+Name = TM87
+NamePlural = TM87s
+Pocket = 1
+Price = 1500
+FieldUse = TR
+Flags = Fling_10
+Move = SWAGGER
+Description = The user enrages and confuses the target. However, this also sharply raises the target's Attack stat.
+#-------------------------------
+[TM88]
+Name = TM88
+NamePlural = TM88s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_60
+Move = PLUCK
+Description = The user pecks the target. If the target is holding a Berry, the user eats it and gains its effect.
+#-------------------------------
+[TM89]
+Name = TM89
+NamePlural = TM89s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_70
+Move = UTURN
+Description = After making its attack, the user rushes back to switch places with a party Pokémon in waiting.
+#-------------------------------
+[TM90]
+Name = TM90
+NamePlural = TM90s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = SUBSTITUTE
+Description = The user creates a substitute for itself using some of its HP. The substitute serves as a decoy.
+#-------------------------------
+[TM91]
+Name = TM91
+NamePlural = TM91s
+Pocket = 1
+Price = 3000
+FieldUse = TR
+Flags = Fling_80
+Move = FLASHCANNON
+Description = The user gathers all its light energy and releases it all at once. This may also lower the target's Sp. Def stat.
+#-------------------------------
+[TM92]
+Name = TM92
+NamePlural = TM92s
+Pocket = 1
+Price = 5500
+FieldUse = TR
+Flags = Fling_10
+Move = TRICKROOM
+Description = The user creates a bizarre area in which slower Pokémon get to move first for five turns.
+#-------------------------------
+[TM93]
+Name = TM93
+NamePlural = TM93s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_50
+Move = CUT
+Description = The target is cut with a scythe or claw.
+#-------------------------------
+[TM94]
+Name = TM94
+NamePlural = TM94s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_90
+Move = FLY
+Description = The user flies up into the sky and then strikes its target on the next turn.
+#-------------------------------
+[TM95]
+Name = TM95
+NamePlural = TM95s
+Pocket = 1
+Price = 2500
+FieldUse = TR
+Flags = Fling_90
+Move = SURF
+Description = The user attacks everything around it by swamping its surroundings with a giant wave.
+#-------------------------------
+[TM96]
+Name = TM96
+NamePlural = TM96s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_80
+Move = STRENGTH
+Description = The target is slugged with a punch thrown at maximum power.
+#-------------------------------
+[TM97]
+Name = TM97
+NamePlural = TM97s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_10
+Move = DEFOG
+Description = A strong wind blows away the target's barriers, such as Reflect, and lowers their evasiveness.
+#-------------------------------
+[TM98]
+Name = TM98
+NamePlural = TM98s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_40
+Move = ROCKSMASH
+Description = The user attacks with a punch that may lower the target's Defense stat.
+#-------------------------------
+[TM99]
+Name = TM99
+NamePlural = TM99s
+Pocket = 1
+Price = 2500
+FieldUse = TR
+Flags = Fling_80
+Move = WATERFALL
+Description = The user charges at the target and may make it flinch.
+#-------------------------------
+[TM100]
+Name = TM100
+NamePlural = TM100s
+Pocket = 1
+Price = 2000
+FieldUse = TR
+Flags = Fling_90
+Move = ROCKCLIMB
+Description = A charging attack that may also leave the foe confused.
+#-------------------------------
+[HM01]
+Name = HM01
+NamePlural = HM01s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = CUT
+Description = The target is cut with a scythe or claw. This can also be used to cut down thin trees.
+#-------------------------------
+[HM02]
+Name = HM02
+NamePlural = HM02s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = FLY
+Description = The user soars and then strikes on the next turn. This can also be used to fly to any familiar town.
+#-------------------------------
+[HM03]
+Name = HM03
+NamePlural = HM03s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = SURF
+Description = Attacks everything by swamping the surroundings with a giant wave. This can also be used to cross water.
+#-------------------------------
+[HM04]
+Name = HM04
+NamePlural = HM04s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = STRENGTH
+Description = The target is slugged with a punch thrown at maximum power. This can also be used to move heavy boulders.
+#-------------------------------
+[HM05]
+Name = HM05
+NamePlural = HM05s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = WATERFALL
+Description = The user charges at the target and may make it flinch. It can also be used to climb a waterfall.
+#-------------------------------
+[HM06]
+Name = HM06
+NamePlural = HM06s
+Pocket = 1
+Price = 0
+FieldUse = HM
+Move = DIVE
+Description = Diving on the first turn, the user floats up and attacks on the second. It can be used to dive underwater.
+#-------------------------------
+
+#-------------------------------
+[GRASSMAIL]
+Name = Grass Mail
+NamePlural = Grass Mail
+PortionName = piece of Grass Mail
+PortionNamePlural = pieces of Grass Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a refreshingly green field. Let a Pokémon hold it for delivery.
+#-------------------------------
+[FLAMEMAIL]
+Name = Flame Mail
+NamePlural = Flame Mail
+PortionName = piece of Flame Mail
+PortionNamePlural = pieces of Flame Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of flames in blazing red. Let a Pokémon hold it for delivery.
+#-------------------------------
+[BUBBLEMAIL]
+Name = Bubble Mail
+NamePlural = Bubble Mail
+PortionName = piece of Bubble Mail
+PortionNamePlural = pieces of Bubble Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a blue world underwater. Let a Pokémon hold it for delivery.
+#-------------------------------
+[BLOOMMAIL]
+Name = Bloom Mail
+NamePlural = Bloom Mail
+PortionName = piece of Bloom Mail
+PortionNamePlural = pieces of Bloom Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of pretty floral patterns. Let a Pokémon hold it for delivery.
+#-------------------------------
+[TUNNELMAIL]
+Name = Tunnel Mail
+NamePlural = Tunnel Mail
+PortionName = piece of Tunnel Mail
+PortionNamePlural = pieces of Tunnel Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a dimly lit coal mine. Let a Pokémon hold it for delivery.
+#-------------------------------
+[STEELMAIL]
+Name = Steel Mail
+NamePlural = Steel Mail
+PortionName = piece of Steel Mail
+PortionNamePlural = pieces of Steel Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of cool mechanical designs. Let a Pokémon hold it for delivery.
+#-------------------------------
+[HEARTMAIL]
+Name = Heart Mail
+NamePlural = Heart Mail
+PortionName = piece of Heart Mail
+PortionNamePlural = pieces of Heart Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of giant heart patterns. Let a Pokémon hold it for delivery.
+#-------------------------------
+[SNOWMAIL]
+Name = Snow Mail
+NamePlural = Snow Mail
+PortionName = piece of Snow Mail
+PortionNamePlural = pieces of Snow Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a chilly, snow-covered world. Let a Pokémon hold it for delivery.
+#-------------------------------
+[SPACEMAIL]
+Name = Space Mail
+NamePlural = Space Mail
+PortionName = piece of Space Mail
+PortionNamePlural = pieces of Space Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print depicting the huge expanse of space. Let a Pokémon hold it for delivery.
+#-------------------------------
+[AIRMAIL]
+Name = Air Mail
+NamePlural = Air Mail
+PortionName = piece of Air Mail
+PortionNamePlural = pieces of Air Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of colorful letter sets. Let a Pokémon hold it for delivery.
+#-------------------------------
+[MOSAICMAIL]
+Name = Mosaic Mail
+NamePlural = Mosaic Mail
+PortionName = piece of Mosaic Mail
+PortionNamePlural = pieces of Mosaic Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a vivid rainbow pattern. Let a Pokémon hold it for delivery.
+#-------------------------------
+[BRICKMAIL]
+Name = Brick Mail
+NamePlural = Brick Mail
+PortionName = piece of Brick Mail
+PortionNamePlural = pieces of Brick Mail
+Pocket = 5
+Price = 50
+Flags = IconMail
+Description = Stationery featuring a print of a tough-looking brick pattern. Let a Pokémon hold it for delivery.
+
+[BRIDGETMAIL]
+Name = Bridge Mail T
+NamePlural = Bridge Mail T
+PortionName = piece of Bridge Mail T
+PortionNamePlural = pieces of Bridge Mail T
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery featuring a print of a steel suspension bridge. Let a Pokémon hold it for use.
+#-------------------------------
+[BRIDGEDMAIL]
+Name = Bridge Mail D
+NamePlural = Bridge Mail D
+PortionName = piece of Bridge Mail D
+PortionNamePlural = pieces of Bridge Mail D
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery featuring a print of a red drawbridge. Let a Pokémon hold it for use.
+#-------------------------------
+[BRIDGESMAIL]
+Name = Bridge Mail S
+NamePlural = Bridge Mail S
+PortionName = piece of Bridge Mail S
+PortionNamePlural = pieces of Bridge Mail S
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery featuring a print of a sky-piercing bridge. Let a Pokémon hold it for use.
+#-------------------------------
+[BRIDGEVMAIL]
+Name = Bridge Mail V
+NamePlural = Bridge Mail V
+PortionName = piece of Bridge Mail V
+PortionNamePlural = pieces of Bridge Mail V
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery featuring a print of a brick bridge. Let a Pokémon hold it for use.
+#-------------------------------
+[BRIDGEMMAIL]
+Name = Bridge Mail M
+NamePlural = Bridge Mail M
+PortionName = piece of Bridge Mail M
+PortionNamePlural = pieces of Bridge Mail M
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery featuring a print of an arched bridge. Let a Pokémon hold it for use.
+#-------------------------------
+[FAVOREDMAIL]
+Name = Favored Mail
+NamePlural = Favored Mail
+PortionName = piece of Favored Mail
+PortionNamePlural = pieces of Favored Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for writing about your favorite things. Let a Pokémon hold it for use.
+#-------------------------------
+[THANKSMAIL]
+Name = Thanks Mail
+NamePlural = Thanks Mail
+PortionName = piece of Thanks Mail
+PortionNamePlural = pieces of Thanks Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for a thank-you note. Let a Pokémon hold it for use.
+#-------------------------------
+[INQUIRYMAIL]
+Name = Inquiry Mail
+NamePlural = Inquiry Mail
+PortionName = piece of Inquiry Mail
+PortionNamePlural = pieces of Inquiry Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for writing questions. Let a Pokémon hold it for use.
+#-------------------------------
+[GREETMAIL]
+Name = Greet Mail
+NamePlural = Greet Mail
+PortionName = piece of Greet Mail
+PortionNamePlural = pieces of Greet Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for introductory greetings. Let a Pokémon hold it for use.
+#-------------------------------
+[RSVPMAIL]
+Name = RSVP Mail
+NamePlural = RSVP Mail
+PortionName = piece of RSVP Mail
+PortionNamePlural = pieces of RSVP Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for invitations. Let a Pokémon hold it for use.
+#-------------------------------
+[LIKEMAIL]
+Name = Like Mail
+NamePlural = Like Mail
+PortionName = piece of Like Mail
+PortionNamePlural = pieces of Like Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for writing recommendations. Let a Pokémon hold it for use.
+#-------------------------------
+[REPLYMAIL]
+Name = Reply Mail
+NamePlural = Reply Mail
+PortionName = piece of Reply Mail
+PortionNamePlural = pieces of Reply Mail
+Pocket = 5
+Price = 50
+Flags = Mail
+Description = Stationery designed for writing a reply. Let a Pokémon hold it for use.
+#-------------------------------
+[XATTACK]
+Name = X Attack
+NamePlural = X Attacks
+Pocket = 5
+Price = 1000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the Attack stat of a Pokémon while it remains in battle.
+#-------------------------------
+[XATTACK2]
+Name = X Attack 2
+NamePlural = X Attack 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the Attack stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XATTACK3]
+Name = X Attack 3
+NamePlural = X Attack 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the Attack stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XATTACK6]
+Name = X Attack 6
+NamePlural = X Attack 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the Attack stat of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XDEFENSE]
+Name = X Defense
+NamePlural = X Defenses
+Pocket = 5
+Price = 2000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the Defense of a Pokémon while it remains in battle.
+#-------------------------------
+[XDEFENSE2]
+Name = X Defense 2
+NamePlural = X Defense 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the Defense stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XDEFENSE3]
+Name = X Defense 3
+NamePlural = X Defense 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the Defense stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XDEFENSE6]
+Name = X Defense 6
+NamePlural = X Defense 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the Defense stat of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPATK]
+Name = X Sp. Atk
+NamePlural = X Sp. Atks
+Pocket = 5
+Price = 1000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the Sp. Atk stat of a Pokémon while it remains in battle.
+#-------------------------------
+[XSPATK2]
+Name = X Sp. Atk 2
+NamePlural = X Sp. Atk 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the Sp. Atk stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPATK3]
+Name = X Sp. Atk 3
+NamePlural = X Sp. Atk 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the Sp. Atk stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPATK6]
+Name = X Sp. Atk 6
+NamePlural = X Sp. Atk 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the Sp. Atk stat of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPDEF]
+Name = X Sp. Def
+NamePlural = X Sp. Defs
+Pocket = 5
+Price = 2000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the Sp. Def stat of a Pokémon while it remains in battle.
+#-------------------------------
+[XSPDEF2]
+Name = X Sp. Def 2
+NamePlural = X Sp. Def 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the Sp. Def stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPDEF3]
+Name = X Sp. Def 3
+NamePlural = X Sp. Def 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the Sp. Def stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPDEF6]
+Name = X Sp. Def 6
+NamePlural = X Sp. Def 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the Sp. Def stat of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPEED]
+Name = X Speed
+NamePlural = X Speeds
+Pocket = 5
+Price = 1000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the Speed stat of a Pokémon while it remains in battle.
+#-------------------------------
+[XSPEED2]
+Name = X Speed 2
+NamePlural = X Speed 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the Speed stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPEED3]
+Name = X Speed 3
+NamePlural = X Speed 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the Speed stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XSPEED6]
+Name = X Speed 6
+NamePlural = X Speed 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the Speed stat of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XACCURACY]
+Name = X Accuracy
+NamePlural = X Accuracies
+Pocket = 5
+Price = 1000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = An item that sharply boosts the accuracy of a Pokémon while it remains in battle.
+#-------------------------------
+[XACCURACY2]
+Name = X Accuracy 2
+NamePlural = X Accuracy 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It sharply raises the accuracy of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XACCURACY3]
+Name = X Accuracy 3
+NamePlural = X Accuracy 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It drastically raises the accuracy of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+[XACCURACY6]
+Name = X Accuracy 6
+NamePlural = X Accuracy 6s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It raises the accuracy of a Pokémon in battle immensely. It wears off if the Pokémon is withdrawn.
+#-------------------------------
+
+[DIREHIT]
+Name = Dire Hit
+NamePlural = Dire Hits
+Pocket = 5
+Price = 1000
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It shifts a Pokémon into the Critical Hit style, and boosts focus gained. Wears off if withdrawn.
+#-------------------------------
+[DIREHIT2]
+Name = Dire Hit 2
+NamePlural = Dire Hit 2s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It shifts a Pokémon into the Critical Hit style, and sharply boosts focus gained. Wears off if withdrawn.
+#-------------------------------
+[DIREHIT3]
+Name = Dire Hit 3
+NamePlural = Dire Hit 3s
+Pocket = 5
+Price = 0
+BattleUse = OnBattler
+Flags = Fling_30
+Description = It shifts a Pokémon into the Critical Hit style, and greatly boosts focus gained. Wears off if withdrawn.
+#-------------------------------
+[GUARDSPEC]
+Name = Guard Spec.
+NamePlural = Guard Specs.
+Pocket = 5
+Price = 1500
+BattleUse = Direct
+Flags = Fling_30
+Description = An item that prevents stat reduction among the Trainer's party Pokémon for five turns after use.
+#-------------------------------
+[RESETURGE]
+Name = Reset Urge
+NamePlural = Reset Urges
+Pocket = 5
+Price = 0
+Flags = Fling_30
+Description = When used, it restores any stat changes of an ally Pokémon.
+#-------------------------------
+[ABILITYURGE]
+Name = Ability Urge
+NamePlural = Ability Urges
+Pocket = 5
+Price = 0
+Flags = Fling_30
+Description = When used, it activates the Ability of an ally Pokémon.
+#-------------------------------
+[ITEMURGE]
+Name = Item Urge
+NamePlural = Item Urges
+Pocket = 5
+Price = 0
+Flags = Fling_30
+Description = When used, it causes an ally Pokémon to use its held item.
+#-------------------------------
+[ITEMDROP]
+Name = Item Drop
+NamePlural = Item Drops
+Pocket = 5
+Price = 0
+Flags = Fling_30
+Description = When used, it causes an ally Pokémon to drop a held item.
+#-------------------------------
+[ZRING]
+Name = Z-Ring
+NamePlural = Z-Rings
+Pocket = 1
+Price = 0
+Flags = ZRing,KeyItem
+Description = A mysterious ring that enables Pokémon to use Z-Power if they are holding a compatible Z-Crystal.
+#-------------------------------
+[ZPOWERRING]
+Name = Z-Power Ring
+NamePlural = Z-Power Rings
+Pocket = 1
+Price = 0
+Flags = ZRing,KeyItem
+Description = A mysterious ring that enables Pokémon to use Z-Power if they are holding a compatible Z-Crystal.
+#-------------------------------
+[NORMALIUMZ]
+Name = Normalium Z
+NamePlural = Normalium Z
+PortionName = piece of Normalium Z
+PortionNamePlural = pieces of Normalium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Normal-type moves to Normal-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Normal-type moves to Z-Moves.
+#-------------------------------
+[FIGHTINIUMZ]
+Name = Fightinium Z
+NamePlural = Fightinium Z
+PortionName = piece of Fightinium Z
+PortionNamePlural = pieces of Fightinium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Fighting-type moves to Fighting-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Fighting-type moves to Z-Moves.
+#-------------------------------
+[FLYINIUMZ]
+Name = Flyinium Z
+NamePlural = Flyinium Z
+PortionName = piece of Flyinium Z
+PortionNamePlural = pieces of Flyinium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Flying-type moves to Flying-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Flying-type moves to Z-Moves.
+#-------------------------------
+[POISONIUMZ]
+Name = Poisonium Z
+NamePlural = Poisonium Z
+PortionName = piece of Poisonium Z
+PortionNamePlural = pieces of Poisonium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Poison-type moves to Poison-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Poison-type moves to Z-Moves.
+#-------------------------------
+[GROUNDIUMZ]
+Name = Groundium Z
+NamePlural = Groundium Z
+PortionName = piece of Groundium Z
+PortionNamePlural = pieces of Groundium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Ground-type moves to Ground-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Ground-type moves to Z-Moves.
+#-------------------------------
+[ROCKIUMZ]
+Name = Rockium Z
+NamePlural = Rockium Z
+PortionName = piece of Rockium Z
+PortionNamePlural = pieces of Rockium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Rock-type moves to Rock-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Rock-type moves to Z-Moves.
+#-------------------------------
+[BUGINIUMZ]
+Name = Buginium Z
+NamePlural = Buginium Z
+PortionName = piece of Buginium Z
+PortionNamePlural = pieces of Buginium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Bug-type moves to Bug-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Bug-type moves to Z-Moves.
+#-------------------------------
+[GHOSTIUMZ]
+Name = Ghostium Z
+NamePlural = Ghostium Z
+PortionName = piece of Ghostium Z
+PortionNamePlural = pieces of Ghostium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Ghost-type moves to Ghost-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Ghost-type moves to Z-Moves.
+#-------------------------------
+[STEELIUMZ]
+Name = Steelium Z
+NamePlural = Steelium Z
+PortionName = piece of Steelium Z
+PortionNamePlural = pieces of Steelium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Steel-type moves to Steel-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Steel-type moves to Z-Moves.
+#-------------------------------
+[FIRIUMZ]
+Name = Firium Z
+NamePlural = Firium Z
+PortionName = piece of Firium Z
+PortionNamePlural = pieces of Firium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Fire-type moves to Fire-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Fire-type moves to Z-Moves.
+#-------------------------------
+[WATERIUMZ]
+Name = Waterium Z
+NamePlural = Waterium Z
+PortionName = piece of Waterium Z
+PortionNamePlural = pieces of Waterium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Water-type moves to Water-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Water-type moves to Z-Moves.
+#-------------------------------
+[GRASSIUMZ]
+Name = Grassium Z
+NamePlural = Grassium Z
+PortionName = piece of Grassium Z
+PortionNamePlural = pieces of Grassium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Grass-type moves to Grass-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Grass-type moves to Z-Moves.
+#-------------------------------
+[ELECTRIUMZ]
+Name = Electrium Z
+NamePlural = Electrium Z
+PortionName = piece of Electrium Z
+PortionNamePlural = pieces of Electrium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Electric-type moves to Electric-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Electric-type moves to Z-Moves.
+#-------------------------------
+[PSYCHIUMZ]
+Name = Psychium Z
+NamePlural = Psychium Z
+PortionName = piece of Psychium Z
+PortionNamePlural = pieces of Psychium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Psychic-type moves to Psychic-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Psychic-type moves to Z-Moves.
+#-------------------------------
+[ICIUMZ]
+Name = Icium Z
+NamePlural = Icium Z
+PortionName = piece of Icium Z
+PortionNamePlural = pieces of Icium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Ice-type moves to Ice-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Ice-type moves to Z-Moves.
+#-------------------------------
+[DRAGONIUMZ]
+Name = Dragonium Z
+NamePlural = Dragonium Z
+PortionName = piece of Dragonium Z
+PortionNamePlural = pieces of Dragonium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Dragon-type moves to Dragon-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Dragon-type moves to Z-Moves.
+#-------------------------------
+[DARKINIUMZ]
+Name = Darkinium Z
+NamePlural = Darkinium Z
+PortionName = piece of Darkinium Z
+PortionNamePlural = pieces of Darkinium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Dark-type moves to Dark-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Dark-type moves to Z-Moves.
+#-------------------------------
+[FAIRIUMZ]
+Name = Fairium Z
+NamePlural = Fairium Z
+PortionName = piece of Fairium Z
+PortionNamePlural = pieces of Fairium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Fairy-type moves to Fairy-type Z-Moves.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Fairy-type moves to Z-Moves.
+#-------------------------------
+[PIKANIUMZ]
+Name = Pikanium Z
+NamePlural = Pikanium Z
+PortionName = piece of Pikanium Z
+PortionNamePlural = pieces of Pikanium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Pikachu's Volt Tackle to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Pikachu's Volt Tackle to a Z-Move.
+#-------------------------------
+[PIKASHUNIUMZ]
+Name = Pikashunium Z
+NamePlural = Pikashunium Z
+PortionName = piece of Pikashunium Z
+PortionNamePlural = pieces of Pikashunium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade a capped Pikachu's Thunderbolt to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades a capped Pikachu's Thunderbolt to a Z-Move.
+#-------------------------------
+[ALORAICHIUMZ]
+Name = Aloraichium Z
+NamePlural = Aloraichium Z
+PortionName = piece of Aloraichium Z
+PortionNamePlural = pieces of Aloraichium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Alolan Raichu's Thunderbolt to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Alolan Raichu's Thunderbolt to a Z-Move.
+#-------------------------------
+[EEVIUMZ]
+Name = Eevium Z
+NamePlural = Eevium Z
+PortionName = piece of Eevium Z
+PortionNamePlural = pieces of Eevium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Eevee's Last Resort to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Eevee's Last Resort to a Z-Move.
+#-------------------------------
+[SNORLIUMZ]
+Name = Snorlium Z
+NamePlural = Snorlium Z
+PortionName = piece of Snorlium Z
+PortionNamePlural = pieces of Snorlium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Snorlax's Giga Impact to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Snorlax's Giga Impact to a Z-Move.
+#-------------------------------
+[MEWNIUMZ]
+Name = Mewnium Z
+NamePlural = Mewnium Z
+PortionName = piece of Mewnium Z
+PortionNamePlural = pieces of Mewnium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Mew's Psychic to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Mew's Psychic to a Z-Move.
+#-------------------------------
+[DECIDIUMZ]
+Name = Decidium Z
+NamePlural = Decidium Z
+PortionName = piece of Decidium Z
+PortionNamePlural = pieces of Decidium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Decidueye's Spirit Shackle to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Decidueye's Spirit Shackle to a Z-Move.
+#-------------------------------
+[INCINIUMZ]
+Name = Incinium Z
+NamePlural = Incinium Z
+PortionName = piece of Incinium Z
+PortionNamePlural = pieces of Incinium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Incineroar's Darkest Lariat to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Incineroar's Darkest Lariat to a Z-Move.
+#-------------------------------
+[PRIMARIUMZ]
+Name = Primarium Z
+NamePlural = Primarium Z
+PortionName = piece of Primarium Z
+PortionNamePlural = pieces of Primarium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Primarina's Sparkling Aria to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Primarina's Sparkling Aria to a Z-Move.
+#-------------------------------
+[LYCANIUMZ]
+Name = Lycanium Z
+NamePlural = Lycanium Z
+PortionName = piece of Lycanium Z
+PortionNamePlural = pieces of Lycanium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Lycanroc's Stone Edge to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Lycanroc's Stone Edge to a Z-Move.
+#-------------------------------
+[MIMIKIUMZ]
+Name = Mimikium Z
+NamePlural = Mimikium Z
+PortionName = piece of Mimikium Z
+PortionNamePlural = pieces of Mimikium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Mimikyu's Play Rough to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Mimikyu's Play Rough to a Z-Move.
+#-------------------------------
+[KOMMONIUMZ]
+Name = Kommonium Z
+NamePlural = Kommonium Z
+PortionName = piece of Kommonium Z
+PortionNamePlural = pieces of Kommonium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Kommo-o's Clanging Scales to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Kommo-o's Clanging Scales to a Z-Move.
+#-------------------------------
+[TAPUNIUMZ]
+Name = Tapunium Z
+NamePlural = Tapunium Z
+PortionName = piece of Tapunium Z
+PortionNamePlural = pieces of Tapunium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade the tapus' Nature's Madness to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades the tapu's Nature's Madness to a Z-Move.
+#-------------------------------
+[SOLGANIUMZ]
+Name = Solganium Z
+NamePlural = Solganium Z
+PortionName = piece of Solganium Z
+PortionNamePlural = pieces of Solganium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Solgaleo's Sunsteel Strike to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Solgaleo's Sunsteel Strike to a Z-Move.
+#-------------------------------
+[LUNALIUMZ]
+Name = Lunalium Z
+NamePlural = Lunalium Z
+PortionName = piece of Lunalium Z
+PortionNamePlural = pieces of Lunalium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Lunala's Moongeist Beam to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Lunala's Moongeist Beam to a Z-Move.
+#-------------------------------
+[MARSHADIUMZ]
+Name = Marshadium Z
+NamePlural = Marshadium Z
+PortionName = piece of Marshadium Z
+PortionNamePlural = pieces of Marshadium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,KeyItem
+Description = It converts Z-Power into crystals that upgrade Marshadow's Spectral Thief to an exclusive Z-Move.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Marshadow's Spectral Thief to a Z-Move.
+#-------------------------------
+[ULTRANECROZIUMZ]
+Name = Ultranecrozium Z
+NamePlural = Ultranecrozium Z
+PortionName = piece of Ultranecrozium Z
+PortionNamePlural = pieces of Ultranecrozium Z
+Pocket = 5
+Price = 0
+FieldUse = OnPokemon
+Flags = ZCrystal,UltraItem,KeyItem
+Description = It's a crystal that turns Necrozma fused with Solgaleo or Lunala into a new form.
+HeldDescription = This is a crystallized form of Z-Power. It upgrades Necrozma's Photon Geyser to a Z-Move.
+#-------------------------------
+[ZBOOSTER]
+Name = Z-Booster
+NamePlural = Z-Boosters
+Pocket = 5
+Price = 4000
+BattleUse = Direct
+Flags = Fling_30,UsesAllBattleActions
+Description = A crystal brimming with Z-Power. It can fully recharge your Z-Ring in battle.
+#-------------------------------
+[DYNAMAXBAND]
+Name = Dynamax Band
+NamePlural = Dynamax Bands
+Pocket = 1
+Price = 0
+Flags = DynamaxBand,KeyItem
+Description = A Wishing Star has been affixed to it. It lets out light that allows Pokémon to Dynamax when at a Power Spot.
+#-------------------------------
+[WISHINGSTAR]
+Name = Wishing Star
+NamePlural = Wishing Stars
+Pocket = 5
+Price = 4000
+BattleUse = Direct
+Flags = Fling_50,UsesAllBattleActions
+Description = A stone that radiates Dynamax energy. It can fully recharge your Dynamax Band in battle.
+#-------------------------------
+[WISHINGPIECE]
+Name = Wishing Piece
+NamePlural = Wishing Pieces
+Pocket = 1
+Price = 10
+Flags = Fling_50
+Description = Throw one into a Pokémon Den to attract a wild Dynamax Pokémon.
+#-------------------------------
+[TERAORB]
+Name = Tera Orb
+NamePlural = Tera Orbs
+Pocket = 1
+Price = 0
+Flags = KeyItem,TeraOrb
+Description = An orb that holds the power to crystallize. When charged, it allows Pokémon to Terastallize.
+#-------------------------------
+[NORMALTERASHARD]
+Name = Normal Tera Shard
+NamePlural = Normal Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_NORMAL
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[FIRETERASHARD]
+Name = Fire Tera Shard
+NamePlural = Fire Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_FIRE
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[WATERTERASHARD]
+Name = Water Tera Shard
+NamePlural = Water Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_WATER
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[ELECTRICTERASHARD]
+Name = Electric Tera Shard
+NamePlural = Electric Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_ELECTRIC
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[GRASSTERASHARD]
+Name = Grass Tera Shard
+NamePlural = Grass Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_GRASS
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[ICETERASHARD]
+Name = Ice Tera Shard
+NamePlural = Ice Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_ICE
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[FIGHTINGTERASHARD]
+Name = Fighting Tera Shard
+NamePlural = Fighting Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_FIGHTING
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[POISONTERASHARD]
+Name = Poison Tera Shard
+NamePlural = Poison Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_POISON
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[GROUNDTERASHARD]
+Name = Ground Tera Shard
+NamePlural = Ground Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_GROUND
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[FLYINGTERASHARD]
+Name = Flying Tera Shard
+NamePlural = Flying Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_FLYING
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[PSYCHICTERASHARD]
+Name = Psychic Tera Shard
+NamePlural = Psychic Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_PSYCHIC
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[BUGTERASHARD]
+Name = Bug Tera Shard
+NamePlural = Bug Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_BUG
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[ROCKTERASHARD]
+Name = Rock Tera Shard
+NamePlural = Rock Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_ROCK
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[GHOSTTERASHARD]
+Name = Ghost Tera Shard
+NamePlural = Ghost Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_GHOST
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[DRAGONTERASHARD]
+Name = Dragon Tera Shard
+NamePlural = Dragon Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_DRAGON
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[DARKTERASHARD]
+Name = Dark Tera Shard
+NamePlural = Dark Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_DARK
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[STEELTERASHARD]
+Name = Steel Tera Shard
+NamePlural = Steel Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_STEEL
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[FAIRYTERASHARD]
+Name = Fairy Tera Shard
+NamePlural = Fairy Tera Shards
+Pocket = 1
+Price = 2000
+FieldUse = OnPokemon
+Flags = Fling_30,TeraShard_FAIRY
+Description = On rare occasions, these shards form when a Tera Pokémon falls in battle and its Tera Jewel shatters.
+#-------------------------------
+[MYSTERYTERAJEWEL]
+Name = Mystery Tera Jewel
+NamePlural = Mystery Tera Jewels
+Pocket = 1
+Price = 10000
+FieldUse = OnPokemon
+Flags = Fling_60,TeraShard_Random
+Description = A mostly in-tact Tera Jewel. Its awkward shape makes it hard to tell what Tera Type it may unlock.
+#-------------------------------
+[MASTERTERAJEWEL]
+Name = Master Tera Jewel
+NamePlural = Master Tera Jewels
+Pocket = 1
+Price = 100000
+FieldUse = OnPokemon
+Flags = Fling_60,TeraShard_Choose
+Description = A perfectly hexogonal Tera Jewel. Using this can unlock any Tera Type that the user desires.
+#-------------------------------
+[RADIANTTERAJEWEL]
+Name = Radiant Tera Jewel
+NamePlural = Radiant Tera Jewels
+Pocket = 5
+Price = 4000
+BattleUse = Direct
+Flags = Fling_50,UsesAllBattleActions
+Description = A jewel glistening with Tera energy. It can fully recharge your Tera Orb in battle.
+#-------------------------------
+[VENUSAURITE]
+Name = Venusaurite
+NamePlural = Venusaurites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Venusaur hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[CHARIZARDITEX]
+Name = Charizardite X
+NamePlural = Charizardite Xs
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Charizard hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[CHARIZARDITEY]
+Name = Charizardite Y
+NamePlural = Charizardite Ys
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Charizard hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[BLASTOISINITE]
+Name = Blastoisinite
+NamePlural = Blastoisinites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Blastoise hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[BEEDRILLITE]
+Name = Beedrillite
+NamePlural = Beedrillites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Beedrill hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[PIDGEOTITE]
+Name = Pidgeotite
+NamePlural = Pidgeotites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Pidgeot hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[ALAKAZITE]
+Name = Alakazite
+NamePlural = Alakazites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Alakazam hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SLOWBRONITE]
+Name = Slowbronite
+NamePlural = Slowbronites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Slowbro hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GENGARITE]
+Name = Gengarite
+NamePlural = Gengarites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Gengar hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[KANGASKHANITE]
+Name = Kangaskhanite
+NamePlural = Kangaskhanites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Kangaskhan hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[PINSIRITE]
+Name = Pinsirite
+NamePlural = Pinsirites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Pinsir hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GYARADOSITE]
+Name = Gyaradosite
+NamePlural = Gyaradosites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Gyarados hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[AERODACTYLITE]
+Name = Aerodactylite
+NamePlural = Aerodactylites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Aerodactyl hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MEWTWONITEX]
+Name = Mewtwonite X
+NamePlural = Mewtwonite Xs
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Mewtwo hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MEWTWONITEY]
+Name = Mewtwonite Y
+NamePlural = Mewtwonite Ys
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Mewtwo hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[AMPHAROSITE]
+Name = Ampharosite
+NamePlural = Ampharosites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Ampharos hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[STEELIXITE]
+Name = Steelixite
+NamePlural = Steelixites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Steelix hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SCIZORITE]
+Name = Scizorite
+NamePlural = Scizorites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Scizor hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[HERACRONITE]
+Name = Heracronite
+NamePlural = Heracronites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Heracross hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[HOUNDOOMINITE]
+Name = Houndoominite
+NamePlural = Houndoominites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Houndoom hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[TYRANITARITE]
+Name = Tyranitarite
+NamePlural = Tyranitarites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Tyranitar hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SCEPTILITE]
+Name = Sceptilite
+NamePlural = Sceptilites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Sceptile hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[BLAZIKENITE]
+Name = Blazikenite
+NamePlural = Blazikenites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Blaziken hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SWAMPERTITE]
+Name = Swampertite
+NamePlural = Swampertites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Swampert hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GARDEVOIRITE]
+Name = Gardevoirite
+NamePlural = Gardevoirites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Gardevoir hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SABLENITE]
+Name = Sablenite
+NamePlural = Sablenites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Sableye hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MAWILITE]
+Name = Mawilite
+NamePlural = Mawilites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Mawile hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[AGGRONITE]
+Name = Aggronite
+NamePlural = Aggronites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Aggron hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MEDICHAMITE]
+Name = Medichamite
+NamePlural = Medichamites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Medicham hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MANECTITE]
+Name = Manectite
+NamePlural = Manectites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Manectric hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SHARPEDONITE]
+Name = Sharpedonite
+NamePlural = Sharpedonites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Sharpedo hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[CAMERUPTITE]
+Name = Cameruptite
+NamePlural = Cameruptites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Camerupt hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[ALTARIANITE]
+Name = Altarianite
+NamePlural = Altarianites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Altaria hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[BANETTITE]
+Name = Banettite
+NamePlural = Banettites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Banette hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[ABSOLITE]
+Name = Absolite
+NamePlural = Absolites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Absol hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GLALITITE]
+Name = Glalitite
+NamePlural = Glalitites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Glalie hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[SALAMENCITE]
+Name = Salamencite
+NamePlural = Salamencites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Salamence hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[METAGROSSITE]
+Name = Metagrossite
+NamePlural = Metagrossites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Metagross hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[LATIASITE]
+Name = Latiasite
+NamePlural = Latiasites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Latias hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[LATIOSITE]
+Name = Latiosite
+NamePlural = Latiosites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Latios hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[LOPUNNITE]
+Name = Lopunnite
+NamePlural = Lopunnites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Lopunny hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GARCHOMPITE]
+Name = Garchompite
+NamePlural = Garchompites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Garchomp hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[LUCARIONITE]
+Name = Lucarionite
+NamePlural = Lucarionites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Lucario hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[ABOMASITE]
+Name = Abomasite
+NamePlural = Abomasites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Abomasnow hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[GALLADITE]
+Name = Galladite
+NamePlural = Galladites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Gallade hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[AUDINITE]
+Name = Audinite
+NamePlural = Audinites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Audino hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[DIANCITE]
+Name = Diancite
+NamePlural = Diancites
+Pocket = 1
+Price = 0
+Flags = MegaStone,Fling_80
+Description = One of a variety of mysterious Mega Stones. Have Diancie hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MAMOSWINITE]
+Name = Mamoswinite
+NamePlural = Mamoswinites
+Pocket = 1
+Price = 0
+Flags = Fling_80,MegaStone
+Description = One of a variety of mysterious Mega Stones. Have Mamoswine hold it, and it will be able to Mega Evolve.
+#-------------------------------
+[MEGASTONE]
+Name = Megastone
+NamePlural = Megastones
+Pocket = 1
+Price = 0
+Flags = Fling_80
+Description = A Megastone untied to any POKeMON, it can be used to craft other Megastones.
+#-------------------------------

@@ -35,8 +35,41 @@ class DemoHud < Component
   def shouldDraw?; return true if $PokemonSystem.playermode == 0; end
 
   def refresh
+	if Input.triggerex?(:W)
     remainingtime = ($player.demotimer/60/60)
-    text = _INTL("Hours left in Demo: {1}",remainingtime)
+    text = _INTL("{1} IG Hours left",remainingtime)
+	$type = "hours"
+	elsif Input.triggerex?(:S)
+    remainingtime = ($player.demotimer/60)
+    text = _INTL("{1} IG Minutes left",remainingtime)
+	$type = "minutes"
+	elsif Input.triggerex?(:A)
+    remainingtime = ($player.demotimer)
+    text = _INTL("{1} IG Seconds left",remainingtime)
+	$type = "seconds"
+	elsif Input.triggerex?(:D)
+    remainingtime = ($player.demotimer/60/60/24)
+    text = _INTL("{1} IG Days left",remainingtime)
+	$type = "days"
+	else
+	case $type
+	when "seconds"
+    remainingtime = ($player.demotimer)
+    text = _INTL("{1} IG Seconds left",remainingtime)
+	when "minutes"
+    remainingtime = ($player.demotimer/60)
+    text = _INTL("{1} IG Minutes left",remainingtime)
+	when "hours"
+    remainingtime = ($player.demotimer/60/60)
+    text = _INTL("{1} IG Hours left",remainingtime)
+	when "days"
+    remainingtime = ($player.demotimer/60/60/24)
+    text = _INTL("{1} IG Days left",remainingtime)
+	else
+    remainingtime = ($player.demotimer/60/60/24)
+    text = _INTL("{1} IG Days left",remainingtime)
+	end
+	end
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
     pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 12,1,@baseColor,@shadowColor]])
@@ -49,125 +82,224 @@ end
 class SurvivalHud < Component
   def startComponent(viewport)
     super(viewport)
-    @sprites["overlay"] = BitmapSprite.new(Graphics.width/2,96,viewport)
+    @sprites["overlay"] = BitmapSprite.new(Graphics.width/2,192,viewport)
     @sprites["overlay"].ox = @sprites["overlay"].bitmap.width
     @sprites["overlay"].x = Graphics.width
-	if $player.playerhealth >= 80
-         trainerhealth = _INTL("Healthy")
-         @healthColor=Color.new(55,255,55)
-     else
-       if $player.playerhealth >= 50
-         trainerhealth = _INTL("Injured")
-         @healthColor=Color.new(255,255,55)
-     else
-        if $player.playerhealth >= 25
-         trainerhealth = _INTL("Wounded")
-         @healthColor=Color.new(255,125,55)
-     else
-        if $player.playerhealth <= 24
-         trainerhealth = _INTL("Critical")
-         @healthColor=Color.new(255,55,55)
-        end
-        end
-     end
-    end
-
-    if $player.playerfood >= 80
-         trainerhunger = _INTL("Full")
-         @hungerColor=Color.new(55,255,55)
-       else
-         if $player.playerfood >= 75
-           trainerhunger = _INTL("Well Off")
-           @hungerColor=Color.new(255,255,55)
-         else
-           if $player.playerfood >= 50
-             trainerhunger = _INTL("Hungry")
-             @hungerColor=Color.new(255,125,55)
-           else
-               if $player.playerfood >= 25
-                trainerhunger = _INTL("Starving")
-                @hungerColor=Color.new(255,125,55)
-                else
-                 if $player.playerfood <= 24
-                   trainerhunger= _INTL("Dying")
-                   @hungerColor=Color.new(255,55,55)
-			    end
-			   end
-           end
-         end
-       end   
-
-
-    if $player.playerwater >= 80
-         trainerthirst = _INTL("Quenched")
-         @thirstColor=Color.new(55,255,55)
-       else
-         if $player.playerwater >= 75
-           trainerthirst = _INTL("Well Off")
-           @thirstColor=Color.new(255,255,55)
-         else
-           if $player.playerwater >= 50
-             trainerthirst = _INTL("Thirsty")
-             @thirstColor=Color.new(255,125,55)
-           else
-               if $player.playerwater >= 25
-                trainerthirst = _INTL("Dehydrated")
-                @thirstColor=Color.new(255,125,55)
-                else
-                 if $player.playerwater <= 24
-                   trainerthirst= _INTL("Dying")
-                   @thirstColor=Color.new(255,55,55)
-			    end
-			   end
-           end
-         end
-       end   
-
-    if $player.playersleep >= 80
-          trainersleep = _INTL("Rested")
-          @sleepColor=Color.new(55,255,55)
-       else
-         if $player.playersleep >= 75
-            trainersleep = _INTL("Well Off")
-            @sleepColor=Color.new(255,255,55)
-         else
-           if $player.playersleep >= 50
-              trainersleep = _INTL("Tired")
-              @sleepColor=Color.new(255,125,55)
-           else
-               if $player.playersleep >= 25
-                 trainersleep = _INTL("Deprived")
-                 @sleepColor=Color.new(255,125,55)
-                else
-                 if $player.playersleep <= 24
-                   trainersleep= _INTL("Dying")
-                   @sleepColor=Color.new(255,55,55)
-			    end
-			   end
-           end
-         end
-       end 
-  end
+    @sprites["overlay2"] = BitmapSprite.new(410,187,viewport)
+    @sprites["overlay2"].ox = @sprites["overlay2"].bitmap.width
+    @sprites["overlay2"].x = Graphics.width
+    @sprites["overlay2"].z = -9
+    @sprites["trainer"] = IconSprite.new(Graphics.width/2,96,viewport)
+    @sprites["trainer"].setBitmap(GameData::TrainerType.player_front_sprite_filename($player.trainer_type))
+    @sprites["trainer"].x = Graphics.width/2+120
+    @sprites["trainer"].y = Graphics.height/2-85
+    @sprites["trainer"].z = -9
+    @sprites["nubg"] = IconSprite.new(Graphics.width/2,96,viewport)
+    @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
+    @sprites["nubg"].x = 0
+    @sprites["nubg"].y = 0
+    @sprites["nubg"].z = -10
+	@regionname = ""
+	createBars(viewport)
+	createMap(viewport)
+    @baseColor = Color.new(248,248,248)
     @shadowColor = Color.new(48,48,48)
+  end
 
 
-  def shouldDraw?; return true if $PokemonSystem.survivalmode == 0; end
+  def shouldDraw?; return true; end
+  def createMap(viewport)
+  
+    map_data = pbLoadTownMapData
+    map_metadata = $game_map.metadata
+    playerpos = (map_metadata) ? map_metadata.town_map_position : nil
+    mapindex = playerpos[0]
+    map     = map_data[playerpos[0]]
+	 @regionname = map[0]
+    @sprites["map"] = IconSprite.new(0, 0, @viewport)
+	if @regionname == "The Island"
+	maptemp = map[1].gsub(".png", "")
+    @sprites["map"].setBitmap("Graphics/Pictures/#{maptemp}#{getUncoveredMapAmt}.png")
+	else
+    @sprites["map"].setBitmap("Graphics/Pictures/#{map[1]}")
+	end
+    @sprites["map"].zoom_x=0.5
+    @sprites["map"].zoom_y=0.5
+    @sprites["map"].x = (Graphics.width - @sprites["map"].bitmap.width) / 2
+    @sprites["map"].y = ((Graphics.height - @sprites["map"].bitmap.height) / 2)+30
+    @sprites["map"].z = -10
+    #[@regionname,((Graphics.width - @sprites["map"].bitmap.width) / 2)-60, 55,99,@baseColor,@shadowColor],
+  end
+ 
+  def createBars(viewport)
+    x = 360
+    width= 70
+    height= 10
+    fillWidth = width-4
+    fillHeight = height-4
+	if true
+    @sprites["fodbarborder"] = BitmapSprite.new(width,height,viewport)
+    @sprites["fodbarborder"].x = x-width/2
+    @sprites["fodbarborder"].y = (@sprites["trainer"].y-height/2)+20
+    @sprites["fodbarborder"].bitmap.fill_rect(  Rect.new(0,0,width,height), Color.new(32,32,32) )
+    @sprites["fodbarborder"].bitmap.fill_rect(  (width-fillWidth)/2, (height-fillHeight)/2,fillWidth, fillHeight, Color.new(96,96,96)   )
+    @sprites["fodbarfill"] = BitmapSprite.new(fillWidth,fillHeight,viewport)
+    @sprites["fodbarfill"].x = x-fillWidth/2
+    @sprites["fodbarfill"].y = (@sprites["trainer"].y-fillHeight/2)+20
+	end
+	
+	if true
+    @sprites["H2Obarborder"] = BitmapSprite.new(width,height,viewport)
+    @sprites["H2Obarborder"].x = x-width/2
+    @sprites["H2Obarborder"].y = (@sprites["trainer"].y-height/2)+50
+    @sprites["H2Obarborder"].bitmap.fill_rect(  Rect.new(0,0,width,height), Color.new(32,32,32) )
+    @sprites["H2Obarborder"].bitmap.fill_rect(  (width-fillWidth)/2, (height-fillHeight)/2,fillWidth, fillHeight, Color.new(96,96,96)   )
+    @sprites["H2Obarfill"] = BitmapSprite.new(fillWidth,fillHeight,viewport)
+    @sprites["H2Obarfill"].x = x-fillWidth/2
+    @sprites["H2Obarfill"].y = (@sprites["trainer"].y-fillHeight/2)+50
+	end
+	
+	
+	if true
+    @sprites["SLPbarborder"] = BitmapSprite.new(width,height,viewport)
+    @sprites["SLPbarborder"].x = x-width/2
+    @sprites["SLPbarborder"].y = (@sprites["trainer"].y-height/2)+80
+    @sprites["SLPbarborder"].bitmap.fill_rect(  Rect.new(0,0,width,height), Color.new(32,32,32) )
+    @sprites["SLPbarborder"].bitmap.fill_rect(  (width-fillWidth)/2, (height-fillHeight)/2,fillWidth, fillHeight, Color.new(96,96,96)   )
+    @sprites["SLPbarfill"] = BitmapSprite.new(fillWidth,fillHeight,viewport)
+    @sprites["SLPbarfill"].x = x-fillWidth/2
+    @sprites["SLPbarfill"].y = (@sprites["trainer"].y-fillHeight/2)+80
+	end
+  end
 
+
+  def refreshbars
+    width= 70
+    height= 10
+    fillWidth = width-4
+    fillHeight = height-4
+	
+	if true
+	@sprites["fodbarfill"].bitmap.clear
+    fillAmount = ($player.playerfood==0 || $player.playermaxfood==0) ? 0 : (
+      $player.playerfood*@sprites["fodbarfill"].bitmap.width/$player.playermaxfood
+    )
+    if fillAmount > 0
+	if $player.playersaturation > 0
+    hpColors = CurrentColorsAlt($player.playerfood, $player.playermaxfood)
+	else
+    hpColors = CurrentColors($player.playerfood, $player.playermaxfood)
+	end
+    shadowHeight = 2
+    @sprites["fodbarfill"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors
+    )
+    @sprites["fodbarfill"].bitmap.fill_rect(
+      Rect.new(
+        0,shadowHeight,fillAmount,
+        @sprites["fodbarfill"].bitmap.height-shadowHeight
+      ), hpColors
+    )
+    end
+   end
+	
+	if true
+	@sprites["H2Obarfill"].bitmap.clear
+    fillAmount = ($player.playerwater==0 || $player.playermaxwater==0) ? 0 : (
+      $player.playerwater*@sprites["H2Obarfill"].bitmap.width/$player.playermaxwater
+    )
+    if fillAmount > 0
+	if $player.playersaturation > 0
+    hpColors = CurrentColorsAlt($player.playerwater, $player.playermaxwater)
+	else
+    hpColors = CurrentColors($player.playerwater, $player.playermaxwater)
+	end
+    shadowHeight = 2
+    @sprites["H2Obarfill"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors
+    )
+    @sprites["H2Obarfill"].bitmap.fill_rect(
+      Rect.new(
+        0,shadowHeight,fillAmount,
+        @sprites["H2Obarfill"].bitmap.height-shadowHeight
+      ), hpColors
+    )
+    end
+   end
+   
+	if true
+	@sprites["SLPbarfill"].bitmap.clear
+    fillAmount = ($player.playersleep==0 || $player.playermaxsleep==0) ? 0 : (
+      $player.playersleep*@sprites["SLPbarfill"].bitmap.width/$player.playermaxsleep
+    )
+    if fillAmount > 0
+    hpColors = CurrentColors($player.playersleep, $player.playermaxsleep)
+    shadowHeight = 2
+    @sprites["SLPbarfill"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors
+    )
+    @sprites["SLPbarfill"].bitmap.fill_rect(
+      Rect.new(
+        0,shadowHeight,fillAmount,
+        @sprites["SLPbarfill"].bitmap.height-shadowHeight
+      ), hpColors
+    )
+    end
+   end
+   
+   
+   
+   
+   
+   
+   
+  end
+
+  def CurrentColors(hp, totalhp)
+    if hp<(totalhp/4.0)
+      return Color.new(255,55,55)
+    elsif hp<=(totalhp/4.0)
+      return Color.new(255,125,55)
+    elsif hp<=(totalhp/2.0)
+      return Color.new(255,255,55)
+    end
+    return Color.new(55,255,55)
+  end
+  def CurrentColorsAlt(hp, totalhp)
+      return Color.new(152,208,248)
+  end
   def refresh
    sta = $player.playerstamina
    maxsta = $player.playermaxstamina
+    @healthColor=CurrentColors($player.playerhealth, $player.playermaxhealth)
+	if $player.playersaturation > 0
+    @hungerColor = CurrentColorsAlt($player.playerfood, $player.playermaxfood)
+	else
+    @hungerColor=CurrentColors($player.playerfood, $player.playermaxfood)
+	end
+	if $player.playersaturation > 0
+    @thirstColor = CurrentColorsAlt($player.playerwater, $player.playermaxwater)
+	else
+    @thirstColor = CurrentColors($player.playerwater, $player.playermaxwater)
+	end
+    @sleepColor=CurrentColors($player.playersleep, $player.playermaxsleep)
+    refreshbars
+    x = Graphics.width/2 - 195
+    text5 = "#{$player.playerclass} Lv#{$player.playerclasslevel.to_i}" 
+    text4 = $player.name
     text = _INTL("FOD")
     text2 =_INTL("H20")
     text3 =_INTL("SLP")
-	if $DEBUG
-    text4 =_INTL("#{ElectricityPower.globalPower}")
-	end
+    text4 = $player.name
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
+    pbSetSystemFont(@sprites["overlay2"].bitmap)
+    pbDrawTextPositions(@sprites["overlay2"].bitmap,[[@regionname,0, 45,99,@baseColor,@shadowColor]])
 #	if $DEBUG
 #    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 5,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,27,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,49,1,@sleepColor,@shadowColor],[text4,(Graphics.width/2)-70 - 8,49,1,@sleepColor,@shadowColor]])
 #    else
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 5,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,27,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,49,1,@sleepColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text5,Graphics.width/2 - 62, 65,1,@baseColor,@shadowColor],
+	[text4,Graphics.width/2 - 77, 87,1,@baseColor,@shadowColor],[text,x, 110,1,@hungerColor,@shadowColor],[text2,x,140,1,@thirstColor,@shadowColor],[text3,x,170,1,@sleepColor,@shadowColor]])
 
 #	end
   end
@@ -328,7 +460,7 @@ class DateAndTimeHud < Component
     @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
   end
 
-  def shouldDraw?; return ($PokemonBag.pbHasItem?(:CLOCK) || $PokemonBag.pbHasItem?(:CALENDAR)); end
+  def shouldDraw?; return (!$PokemonBag.pbHasItem?(:CLOCK) || !$PokemonBag.pbHasItem?(:CALENDAR)); end
 
   def update
     super
@@ -342,8 +474,8 @@ class DateAndTimeHud < Component
     text2 = _INTL("",pbGetTimeNow.strftime("%I:%M %p")) if !$bag.has?(:CLOCK)
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 47,5,1,
-      @baseColor,@shadowColor],[text2,Graphics.width/2 - 50,27,1,@baseColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 7,5,1,
+      @baseColor,@shadowColor],[text2,Graphics.width/2 - 7,27,1,@baseColor,@shadowColor]])
     @last_time = pbGetTimeNow.strftime("%I:%M %p")
   end
 end

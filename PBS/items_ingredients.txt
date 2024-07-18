@@ -1,0 +1,349 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[GLASSBOTTLE]
+Name = Glass Bottle
+NamePlural = Glass Bottle
+Pocket = 7
+Price = 5
+FieldUse = Direct
+Description = 
+#-------------------------------
+[GLASS]
+Name = Glass
+NamePlural = Glass
+Pocket = 1
+Price = 5
+Flags = 
+Description = 
+#-------------------------------
+[SILK]
+Name = Silk
+NamePlural = Silk
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[LEATHER]
+Name = Leather
+NamePlural = Leather
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[GOLDORE]
+Name = Gold Ore
+NamePlural = Gold Ore
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[COPPERORE]
+Name = Copper Ore
+NamePlural = Copper Ore
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[SILVERORE]
+Name = Silver Ore
+NamePlural = Silver Ore
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[GOLD2]
+Name = Gold Bar
+NamePlural = Gold Bar
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[SILVER2]
+Name = Silver Bar
+NamePlural = Silver Bar
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[COPPER2]
+Name = Copper Bar
+NamePlural = Copper Bar
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[CLAY2]
+Name = Hardened Clay
+NamePlural = Hardened Clay
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[DARTCASING]
+Name = Dart Casing
+NamePlural = Dart Casing
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[IRONDUST]
+Name = Iron Dust
+NamePlural = Iron Dust
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[GOLDDUST]
+Name = Gold Dust
+NamePlural = Gold Dust
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[CLAYDUST]
+Name = Clay Ball
+NamePlural = Clay Ball
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[BONEDUST]
+Name = Bone Dust
+NamePlural = Bone Dust
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[COPPERDUST]
+Name = Copper Dust
+NamePlural = Copper Dust
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[SILVERDUST]
+Name = Silver Dust
+NamePlural = Silver Dust
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[IRONORE]
+Name = Iron Ore
+NamePlural = Iron Ore
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[WOOL]
+Name = Wool
+NamePlural = Wool
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[BOWL]
+Name = Bowl
+NamePlural = Bowl
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[WOODENPLANKS]
+Name = Wooden Plank
+NamePlural = Wooden Planks
+Pocket = 1
+Price = 0
+Flags = Fling_10,Coal
+Description = 
+#-------------------------------
+[WOODENSTICKS]
+Name = Wooden Stick
+NamePlural = Wooden Sticks
+Pocket = 1
+Price = 0
+Flags = Fling_10,Coal
+Description = 
+#-------------------------------
+[IRON2]
+Name = Fine Iron Bar
+NamePlural = Fine Iron Bars
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[WOODENLOG]
+Name = Wooden Log
+NamePlural = Wooden Logs
+Pocket = 1
+Price = 0
+Flags = Fling_10,Coal
+Description = 
+#-------------------------------
+[TUMBLEROCK]
+Name = Tumblestone
+NamePlural = Tumblestones
+Pocket = 3
+Price = 0
+Flags = Fling_10
+Description = 
+#-------------------------------
+[COAL]
+Name = Coal
+NamePlural = Coals
+Pocket = 1
+Price = 0
+Flags = Fling_10,Coal
+Description = 
+#-------------------------------
+[ARMORITEORE]
+Name = Armorite Ore
+NamePlural = Armorite Ore
+PortionName = piece of Armorite Ore
+PortionNamePlural = pieces of Armorite Ore
+Pocket = 1
+Price = 10
+Flags = Fling_30
+Description = Rare ore that can be obtained in a Max Raid Den. Certain collectors covet these items.
+#-------------------------------
+[DYNITEORE]
+Name = Dynite Ore
+NamePlural = Dynite Ore
+PortionName = piece of Dynite Ore
+PortionNamePlural = pieces of Dynite Ore
+Pocket = 1
+Price = 10
+Flags = Fling_30
+Description = Mysterious ore that can be obtained in a Max Lair. Certain collectors covet these items.
+#-------------------------------
+[CHARCOAL]
+Name = Charcoal
+NamePlural = Charcoals
+PortionName = piece of Charcoal
+PortionNamePlural = pieces of Charcoal
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_30,Coal
+Description = An item to be held by a Pokémon. It is a combustible fuel that boosts the power of Fire-type moves.
+#-------------------------------
+[LIGHTCLAY]
+Name = Light Clay
+NamePlural = Light Clays
+PortionName = lump of Light Clay
+PortionNamePlural = lumps of Light Clay
+Pocket = 1
+Price = 4000
+Flags = Fling_30
+Description = An item to be held by a Pokémon. Protective moves like Light Screen and Reflect will be effective longer.
+#-------------------------------
+[FIRESTONE]
+Name = Fire Stone
+NamePlural = Fire Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30,Coal
+Description = A peculiar stone that makes certain species of Pokémon evolve. It is colored orange.
+#-------------------------------
+[THUNDERSTONE]
+Name = Thunder Stone
+NamePlural = Thunder Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It has a thunderbolt pattern.
+#-------------------------------
+[WATERSTONE]
+Name = Water Stone
+NamePlural = Water Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It is a clear, light blue.
+#-------------------------------
+[LEAFSTONE]
+Name = Leaf Stone
+NamePlural = Leaf Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It has a leaf pattern.
+#-------------------------------
+[MOONSTONE]
+Name = Moon Stone
+NamePlural = Moon Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It is as black as the night sky.
+#-------------------------------
+[SUNSTONE]
+Name = Sun Stone
+NamePlural = Sun Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It is as red as the sun.
+#-------------------------------
+[DUSKSTONE]
+Name = Dusk Stone
+NamePlural = Dusk Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_80
+Description = A peculiar stone that makes certain species of Pokémon evolve. It is as dark as dark can be.
+#-------------------------------
+[DAWNSTONE]
+Name = Dawn Stone
+NamePlural = Dawn Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_80
+Description = A peculiar stone that makes certain species of Pokémon evolve. It sparkles like eyes.
+#-------------------------------
+[SHINYSTONE]
+Name = Shiny Stone
+NamePlural = Shiny Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_80
+Description = A peculiar stone that makes certain species of Pokémon evolve. It shines with a dazzling light.
+#-------------------------------
+[ICESTONE]
+Name = Ice Stone
+NamePlural = Ice Stones
+Pocket = 1
+Price = 3000
+FieldUse = OnPokemon
+Flags = EvolutionStone,Fling_30
+Description = A peculiar stone that makes certain species of Pokémon evolve. It has a snowflake pattern.
+#-------------------------------

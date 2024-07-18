@@ -5,6 +5,7 @@ class MenuEntryPokemon < MenuEntry
   def initialize
     @icon = "menuPokemon"
     @name = "Pokemon"
+    @text = "P"
   end
 
   def selected(menu)
@@ -31,6 +32,7 @@ class MenuEntryPokedex < MenuEntry
   def initialize
     @icon = "menuPokedex"
     @name = "Pokédex"
+    @text = "-"
   end
 
   def selected(menu)
@@ -51,7 +53,7 @@ class MenuEntryPokedex < MenuEntry
   end
 
   def selectable?
-    return false if $game_switches[485]==true
+    return false if pbGetCurrentRegion() == 0
     return ($player.has_pokedex && $player.pokedex.accessible_dexes.length > 0)
   end
 end
@@ -62,6 +64,7 @@ class MenuEntryBag < MenuEntry
   def initialize
     @icon = "menuBag"
     @name = "Bag"
+    @text = "B"
   end
 
   def selected(menu)
@@ -88,16 +91,20 @@ class MenuEntryCraft < MenuEntry
 	def initialize
 		@icon = "menuCrafting"
 		@name = "Crafting"
+       @text = "C"
 	end
 
 	def selected(menu)
 	  item = nil
 	  pbFadeOutIn(99999) {
-    pbCommonEvent(19)
+    pbCraftingBench(:POCKETCRAFTING)
 	  }
 	end
 
-	def selectable?; return true if $game_switches[485]==false; end
+	def selectable? 
+	return false if $PokemonSystem.playermode == 0
+	return true if $game_switches[485]==false
+	end
 end
 #-------------------------------------------------------------------------------
 # Entry for Mystery Gift Screen
@@ -106,6 +113,7 @@ class MenuEntryMystery < MenuEntry
 	def initialize
 		@icon = "menuDebug"
 		@name = "Mystery Gift"
+       @text = "-"
 	end
 
 	def selected(menu)
@@ -124,16 +132,40 @@ class MenuEntryVentures < MenuEntry
 	def initialize
 		@icon = "menuAdventures"
 		@name = "Adventures"
+       @text = "V"
 	end
 
 	def selected(menu)
+	    if !pbSeenTipCard?(:ADVENTURE)
+		 pbShowTipCard(:ADVENTURE)
+		end
 	  item = nil
 	  pbFadeOutIn(99999) {
     pbStartAdventureMenu
 	  }
 	end
+def selectable?
+	return true
+	end
+end
+#-------------------------------------------------------------------------------
+# Entry for Craft Screen
+#-------------------------------------------------------------------------------
+class MenuEntryTips < MenuEntry
+	def initialize
+		@icon = "menuQuest"
+		@name = "Tips"
+       @text = "-"
+	end
 
-	def selectable?; return true if $game_switches[485]==false; end
+	def selected(menu)
+	  pbFadeOutIn(99999) {
+      pbRevisitTipCards
+	  }
+	end
+def selectable?
+	return true
+	end
 end
 #-------------------------------------------------------------------------------
 # Entry for CAchievements Screen
@@ -142,6 +174,7 @@ class MenuEntryAchievements < MenuEntry
 	def initialize
 		@icon = "menuAchievements"
 		@name = "Achievements"
+       @text = "T"
 	end
 
 	def selected(menu)
@@ -160,6 +193,7 @@ class MenuEntryControls < MenuEntry
 	def initialize
 		@icon = "menuControls"
 		@name = "Controls"
+       @text = "-"
 	end
 
 	def selected(menu)
@@ -177,6 +211,7 @@ class MenuEntryPokegear < MenuEntry
   def initialize
     @icon = "menuPokegear"
     @name = "PokéGear"
+    @text = "-"
   end
 
   def selected(menu)
@@ -187,7 +222,7 @@ class MenuEntryPokegear < MenuEntry
     }
   end
 
-  def selectable?; return $player.has_pokegear; end
+  def selectable?; return false; end#$player.has_pokegear; end
 end
 #-------------------------------------------------------------------------------
 # Entry for Trainer Card Screen
@@ -196,6 +231,7 @@ class MenuEntryTrainer < MenuEntry
   def initialize
     @icon = "menuTrainer"
     @name = $player.name
+       @text = "-"
   end
 
   def selected(menu)
@@ -206,7 +242,7 @@ class MenuEntryTrainer < MenuEntry
     }
   end
 
-  def selectable?; return true; end
+  def selectable?; return false; end
 end
 #-------------------------------------------------------------------------------
 # Entry for Badge Case
@@ -215,6 +251,7 @@ class MenuEntryBadge < MenuEntry
   def initialize
     @icon = "menuBadge"
     @name = "Badge Case"
+       @text = "-"
   end
 
   def selected(menu)
@@ -234,6 +271,7 @@ class MenuEntrySave < MenuEntry
   def initialize
     @icon = "menuSave"
     @name = "Save"
+    @text = "S"
   end
 
   def selected(menu)
@@ -256,6 +294,7 @@ class MenuEntryMap < MenuEntry # Play Pokémon Splice
   def initialize
     @icon = "menuMap"
     @name = "Map"
+       @text = "-"
   end
 
   def selected(menu)
@@ -271,6 +310,7 @@ class MenuEntryOptions < MenuEntry
   def initialize
     @icon = "menuOptions"
     @name = "Options"
+       @text = "-"
   end
 
   def selected(menu)
@@ -292,6 +332,7 @@ class MenuEntryDebug < MenuEntry
   def initialize
     @icon = "menuDebug"
     @name = "Debug"
+       @text = "-"
   end
 
   def selected(menu)
@@ -308,6 +349,7 @@ class MenuEntryExitSafari < MenuEntry
   def initialize
     @icon = "menuBack"
     @name = "Quit Safari"
+       @text = "-"
   end
 
   def selected(menu)
@@ -330,6 +372,7 @@ class MenuEntryExitBugContest < MenuEntry
   def initialize
     @icon = "menuBack"
     @name = "Quit Contest"
+       @text = "-"
   end
 
   def selected(menu)
@@ -350,12 +393,12 @@ class MenuEntryExitDemo < MenuEntry
   def initialize
     @icon = "menuBack"
     @name = "Quit Demo"
+       @text = "-"
   end
 
   def selected(menu)
     menu.pbHideMenu
 	pbDemoExit
-    menu.pbShowMenu
   end
 
   def selectable?; return true if $PokemonSystem.playermode == 0; end
@@ -367,6 +410,7 @@ class MenuEntryQuit < MenuEntry
   def initialize
     @icon = "menuQuit"
     @name = "Quit"
+       @text = "Q"
   end
 
   def selected(menu)
@@ -390,6 +434,7 @@ class MenuEntryEncounterList < MenuEntry
   def initialize
     @icon = "menuDebug"
     @name = "Encounters"
+       @text = "-"
   end
 
   def selected(menu)
@@ -400,7 +445,7 @@ class MenuEntryEncounterList < MenuEntry
     }
   end
 
-  def selectable?; return defined?(EncounterList_Scene); end
+  def selectable?; return false; end
 end
 
 #-------------------------------------------------------------------------------
@@ -410,6 +455,7 @@ class MenuEntryQuests < MenuEntry
   def initialize
     @icon = "menuQuest"
     @name = "Quests"
+    @text = "G"
   end
 
   def selected(menu); pbFadeOutIn(99999) { pbViewQuests }; end

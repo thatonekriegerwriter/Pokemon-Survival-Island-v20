@@ -1,0 +1,594 @@
+﻿# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[NORMALSHOES]
+Name = Shoes
+NamePlural = Shoes
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shoes
+Description = Your long term pair of shoes. Instructions: Wash in SLOW or NO SPIN cycle.
+#-------------------------------
+[MAKESHIFTRUNNINGSHOES]
+Name = Running Shoes (Makeshift)
+NamePlural = Running Shoes (Makeshift)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shoes
+Description = Shoes that you made at your Workbench! Instructions: Hold SHIFT to run!
+#-------------------------------
+[RUNNINGSHOES]
+Name = Running Shoes
+NamePlural = Running Shoes
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shoes
+Description = Special high-quality shoes that launch you at speed with compressed air! Instructions: Hold SHIFT to run!
+#-------------------------------
+[SEASHOES]
+Name = Sea Shoes
+NamePlural = Sea Shoes
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shoes
+Description = Special high-quality shoes that let you walk on Water! Instructions: Hold SHIFT to walk in Shallow Water!
+#-------------------------------
+[DASHBOOTS]
+Name = Dash Boots
+NamePlural = Dash Boots
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shoes
+Description = Special high-quality shoes that trade a sustained run for a quick dash! Instructions: Hold SHIFT and Double Tap a direction to Dash!
+#-------------------------------
+[NORMALSHIRT]
+Name = Shirt
+NamePlural = Shirts
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shirt
+Description = The Shirt you have worn since the wreck, probably needs a wash.
+#-------------------------------
+[SILKSHIRT]
+Name = Silk Shirt
+NamePlural = Silk Shirts
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shirt
+Description = A Clean Silk Shirt that makes you feel clean.
+#-------------------------------
+[WOOLENCLOAK]
+Name = Woolen Cloak
+NamePlural = Woolen Cloaks
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shirt
+Description = A Cloak that keeps you warm in your coldest moments.
+#-------------------------------
+[LEATHERJACKET]
+Name = Leather Jacket
+NamePlural = Leather Jackets
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shirt
+Description = A Snazzy Looking Leather Coat.
+#-------------------------------
+[IRONARMOR]
+Name = Chain Armor
+NamePlural = Chain Armor
+Pocket = 1
+Price = 0
+Flags = KeyItem,Shirt
+Description = A Set of Armor that makes you feel a little more secure.
+#-------------------------------
+[NORMALPANTS]
+Name = Pants
+NamePlural = Pants
+Pocket = 1
+Price = 0
+Flags = KeyItem,Pants
+Description = The Pants you have worn since the wreck, probably need a wash.
+#-------------------------------
+[SPOOKYPANTS]
+Name = Spooky Pants
+NamePlural = Spooky Pants
+Pocket = 1
+Price = 0
+Flags = KeyItem,Pants
+Description = A Pair of Pants that prevents you from dying.
+#-------------------------------
+[PROTECTIVEPANTS]
+Name = Protective Pants
+NamePlural = Protective Pants
+Pocket = 1
+Price = 0
+Flags = KeyItem,Pants
+Description = Pants that make you feel more secure.
+#-------------------------------
+[BALD]
+Name = Bald
+NamePlural = Bald
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[SHORT]
+Name = Short (A)
+NamePlural = Short (A)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[SHORT2]
+Name = Short (B)
+NamePlural = Short (B)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[MEDIUM]
+Name = Medium
+NamePlural = Medium
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[LONG]
+Name = Long
+NamePlural = Long
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[SPIKEY]
+Name = Spikey (A)
+NamePlural = Spikey
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[SPIKEY2]
+Name = Spikey (B)
+NamePlural = Spikey (B)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+
+#-------------------------------
+[SLICKEDBACK]
+Name = Slicked Back
+NamePlural = Slicked Back
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[PONYTAIL]
+Name = Ponytail
+NamePlural = Ponytail
+Pocket = 1
+Price = 0
+Flags = KeyItem,Hair
+Description = BALD!
+#-------------------------------
+[BEACHTOP]
+Name = Beach Top
+NamePlural = Beach Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[CLASSYTOP]
+Name = Classy Top
+NamePlural = Classy Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[COLLAREDSHIRT]
+Name = Collared Shirt
+NamePlural = Collared Shirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[FORMALTOP]
+Name = Formal Top
+NamePlural = Formal Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[HOODIE]
+Name = Hoodie
+NamePlural = Hoodie
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[JUMPSUITTOPA]
+Name = Jumpsuit Top (A)
+NamePlural = Jumpsuit Top (A)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[JUMPSUITTOPB]
+Name = Jumpsuit Top (B)
+NamePlural = Jumpsuit Top (B)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[LORDSUITTOP]
+Name = Lord Suit Top
+NamePlural = Lord Suit Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[OPENJACKET]
+Name = Open Jacket
+NamePlural = Open Jacket
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[SCARFSHIRT]
+Name = Scarf Shirt
+NamePlural = Scarf Shirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[SCHOOLTOP]
+Name = School Top
+NamePlural = School Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[TANKTOP]
+Name = Tank Top
+NamePlural = Tank Top
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[TRENCHCOAT]
+Name = Trenchcoat
+NamePlural = Trenchcoat
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[TSHIRT]
+Name = T-Shirt
+NamePlural = T-Shirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[TURTLENECK]
+Name = Turtleneck
+NamePlural = Turtleneck
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[VEST]
+Name = Vest
+NamePlural = Vest
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[VNECK]
+Name = V-Neck
+NamePlural = V-Neck
+Pocket = 1
+Price = 0
+Flags = KeyItem,Top
+Description = BALD!
+#-------------------------------
+[BEACHBOTTOM]
+Name = Beach Bottom
+NamePlural = Beach Bottom
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[CAPRIS]
+Name = Capris
+NamePlural = Capris
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[CLASSYBOTTOM]
+Name = Classy Bottom
+NamePlural = Classy Bottom
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[FORMALBOTTOM]
+Name = Formal Bottom
+NamePlural = Formal Bottom
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[JEANS]
+Name = Jeans
+NamePlural = Jeans
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[JUMPSUITPANTA]
+Name = Jumpsuit Pants (A)
+NamePlural = Jumpsuit Pants (A)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[JUMPSUITPANTSB]
+Name = Jumpsuit Pants (B)
+NamePlural = Jumpsuit Pants (B)
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[LORDSUITPANTS]
+Name = Lord Suit Pants
+NamePlural = Lord Suit Pants
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[LONGSKIRT]
+Name = Long Skirt
+NamePlural = Long Skirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[PANTSANDBOOTS]
+Name = Pants & Boots
+NamePlural = Pants & Boots
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[PENCILSKIRT]
+Name = Pencil Skirt
+NamePlural = Pencil Skirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[RIBBONSHIRT]
+Name = Ribbon Skirt
+NamePlural = Ribbon Skirt
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[SCHOOLPANTS]
+Name = School Pants
+NamePlural = School Pants
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[SHORTS]
+Name = Shorts
+NamePlural = Shorts
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bottom
+Description = BALD!
+#-------------------------------
+[BEANIE]
+Name = Beanie
+NamePlural = Beanie
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[GLASSES]
+Name = Glasses
+NamePlural = Glasses
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[YOUNGSTERCAP]
+Name = Youngster Cap
+NamePlural = Youngster Cap
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[BONNET]
+Name = Bonnet
+NamePlural = Bonnet
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[FEATHERHAT]
+Name = Feather Hat
+NamePlural = Feather Hat
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[FEDORA]
+Name = Fedora
+NamePlural = Fedora
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[RIBBON]
+Name = Ribbon
+NamePlural = Ribbon
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[STRAWHAT]
+Name = Straw Hat
+NamePlural = Straw Hat
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[SUNHAT]
+Name = Sun Hat
+NamePlural = Sun Hat
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[CROWNACCESSORY]
+Name = Crown
+NamePlural = Crown
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[HAIRFLOWER]
+Name = Flower
+NamePlural = Flower
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[CATEARS]
+Name = Cat
+NamePlural = Cat
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[DEVIL]
+Name = Devil
+NamePlural = Devil
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[HAIRBAND]
+Name = Hair Band
+NamePlural = Hair Band
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[HEADBAND]
+Name = Head Band
+NamePlural = Head Band
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[MINERHELMET]
+Name = Miner Helmet
+NamePlural = Miner Helmet
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[POOP]
+Name = Poop
+NamePlural = Poop
+Pocket = 1
+Price = 0
+Flags = KeyItem,Headgear
+Description = BALD!
+#-------------------------------
+[BAG]
+Name = Bag
+NamePlural = Bag
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bag
+Description = BALD!
+#-------------------------------
+[RUCKSACK]
+Name = Rucksack
+NamePlural = Rucksack
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bag
+Description = BALD!
+#-------------------------------
+[SBACKPACK]
+Name = Sporty Backpack
+NamePlural = Sporty Backpack
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bag
+Description = BALD!
+#-------------------------------
+[ALTERNATEBAG]
+Name = Bag
+NamePlural = Bag
+Pocket = 1
+Price = 0
+Flags = KeyItem,Bag
+Description = BALD!

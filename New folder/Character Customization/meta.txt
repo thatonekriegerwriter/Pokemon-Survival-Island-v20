@@ -1,4 +1,0 @@
-Name         = Character Custom
-Version      = 1.5
-Website      = https://reliccastle.com/threads/3930
-Credits      = Voltseon, Golisopod User, ENLS

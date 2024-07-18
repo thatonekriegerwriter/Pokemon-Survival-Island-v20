@@ -123,7 +123,7 @@ end
 #===============================================================================
 # PC menus
 #===============================================================================
-def pbCrateItemStorage
+def pbCrateItemStorage(storage)
   command = 0
   loop do
     command = pbShowCommandsWithHelp(nil,
@@ -138,35 +138,29 @@ def pbCrateItemStorage
     )
     case command
     when 0   # Withdraw Item
-      if !$PokemonGlobal.pcItemStorage
-        $PokemonGlobal.pcItemStorage = PCItemStorage.new
-      end
-      if $PokemonGlobal.pcItemStorage.empty?
+      if storage.empty?
         pbMessage(_INTL("There are no items."))
       else
         pbFadeOutIn {
           scene = WithdrawItemScene.new
           screen = PokemonBagScreen.new(scene,$PokemonBag)
-          screen.pbWithdrawItemScreen
+          screen.pbWithdrawItemScreen(storage)
         }
       end
     when 1   # Deposit Item
       pbFadeOutIn {
         scene = PokemonBag_Scene.new
         screen = PokemonBagScreen.new(scene,$PokemonBag)
-        screen.pbDepositItemScreen
+        screen.pbDepositItemScreen(storage)
       }
     when 2   # Toss Item
-      if !$PokemonGlobal.pcItemStorage
-        $PokemonGlobal.pcItemStorage = PCItemStorage.new
-      end
-      if $PokemonGlobal.pcItemStorage.empty?
+      if storage.empty?
         pbMessage(_INTL("There are no items."))
       else
         pbFadeOutIn {
           scene = TossItemScene.new
           screen = PokemonBagScreen.new(scene,$PokemonBag)
-          screen.pbTossItemScreen
+          screen.pbTossItemScreen(storage)
         }
       end
     else
@@ -175,7 +169,7 @@ def pbCrateItemStorage
   end
 end
 
-def pbTrainerCrateMenu
+def pbTrainerCrateMenu(storage)
   command = 0
   loop do
     command = pbMessage(_INTL("What do you want to do?"),[
@@ -184,16 +178,16 @@ def pbTrainerCrateMenu
        _INTL("Close Crate")
        ],-1,nil,command)
     case command
-    when 0 then pbCrateItemStorage
+    when 0 then pbCrateItemStorage(storage)
     when 1 then pbCrateClothes
     else        break
     end
   end
 end
 
-def pbTrainerCrate
+def pbTrainerCrate(storage)
   pbMessage(_INTL("\\se[Voltorb Flip Tile]{1} opened up the Crate.",$player.name))
-  pbTrainerCrateMenu
+  pbTrainerCrateMenu(storage)
   pbSEPlay("Voltorb Flip mark")
 end
 

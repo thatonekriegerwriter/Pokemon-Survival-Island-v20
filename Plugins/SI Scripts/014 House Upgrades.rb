@@ -124,7 +124,6 @@ def pbBuildingHouses
 	   pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	   pbCaveEntrance
 	   pbAchievementGet(4)
-	   advanceQuestToStage(:PSIMQ1, 4)
 	   $game_switches[132]=true
 	   pbToneChangeAll(Tone.new(0,0,0,0),20)
 	   return true

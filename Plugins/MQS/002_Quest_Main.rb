@@ -15,7 +15,7 @@ class Quest
     self.stage    = 1
     self.time     = pbGetTimeNow
     self.location = $game_map.name
-    self.new      = true
+    self.new      = false
     self.color    = color
     self.story    = story
   end
@@ -78,13 +78,11 @@ class Player_Quests
     found = false
     for i in 0...@completed_quests.length
       if @completed_quests[i].id == quest
-        pbMessage("You have already completed this quest.")
         return
       end
     end
     for i in 0...@failed_quests.length
       if @failed_quests[i].id == quest
-        pbMessage("You have already failed this quest.")
         return
       end
     end 
@@ -92,12 +90,11 @@ class Player_Quests
       if @active_quests[i].id == quest
         temp_quest = @active_quests[i]
         temp_quest.color = color if color != nil
-        temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
+        #temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
         temp_quest.time = pbGetTimeNow
         @failed_quests.push(temp_quest)
         @active_quests.delete_at(i)
         found = true
-        pbMessage(_INTL("\\se[{1}]<ac><c2=#{colorQuest("red")}>Quest failed!</c2>\nYour quest log has been updated!</ac>",QUEST_FAIL))
         break
       end
     end
@@ -128,7 +125,7 @@ class Player_Quests
       if @active_quests[i].id == quest
         temp_quest = @active_quests[i]
         temp_quest.color = color if color != nil
-        temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
+        #temp_quest.new = true # Setting this back to true makes the "!" icon appear when the quest updates
         temp_quest.time = pbGetTimeNow
         @completed_quests.push(temp_quest)
         @active_quests.delete_at(i)

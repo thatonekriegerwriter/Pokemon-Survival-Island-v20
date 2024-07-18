@@ -262,17 +262,17 @@ def look_at_event(event_a,event_b)
   # Turn the event based on the other event's location (Y-Axis is prioritized if both distances are the same)
   if distance_x <= distance_y
     # Prioritize Y
-    if event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnDown])
-    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnUp])
-    elsif event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnRight])
-    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnLeft])
+    if event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_DOWN])
+    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_UP])
+    elsif event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_RIGHT])
+    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_LEFT])
     end
   else
     # Prioritize X
-    if event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnRight])
-    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnLeft])
-    elsif event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnDown])
-    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnUp])
+    if event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_RIGHT])
+    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_LEFT])
+    elsif event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_DOWN])
+    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_UP])
     end
   end
 end
@@ -290,17 +290,17 @@ def look_at_location(event,x,y)
   # Turn the event based on the other event's location (Y-Axis is prioritized if both distances are the same)
   if distance_x <= distance_y
     # Prioritize Y
-    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnDown])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnUp])
-    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnRight])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnLeft])
+    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_DOWN])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_UP])
+    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_RIGHT])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_LEFT])
     end
   else
     # Prioritize X
-    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnRight])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnLeft])
-    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnDown])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnUp])
+    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_RIGHT])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_LEFT])
+    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_DOWN])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_UP])
     end
   end
 end
@@ -359,18 +359,18 @@ end
 
 # Calculate the needed move route
 def calc_move_route(position_a, position_b)
-  return PBMoveRoute::Right if position_a.x < position_b.x
-  return PBMoveRoute::Left if position_a.x > position_b.x
-  return PBMoveRoute::Up if position_a.y > position_b.y
-  return PBMoveRoute::Down if position_a.y < position_b.y
+  return PBMoveRoute::RIGHT if position_a.x < position_b.x
+  return PBMoveRoute::LEFT if position_a.x > position_b.x
+  return PBMoveRoute::UP if position_a.y > position_b.y
+  return PBMoveRoute::DOWN if position_a.y < position_b.y
 end
 
 # Calculate the needed move route but inverted
 def calc_move_route_inverted(position_a, position_b)
-  return PBMoveRoute::Right if position_a.x > position_b.x
-  return PBMoveRoute::Left if position_a.x < position_b.x
-  return PBMoveRoute::Up if position_a.y < position_b.y
-  return PBMoveRoute::Down if position_a.y > position_b.y
+  return PBMoveRoute::RIGHT if position_a.x > position_b.x
+  return PBMoveRoute::LEFT if position_a.x < position_b.x
+  return PBMoveRoute::UP if position_a.y < position_b.y
+  return PBMoveRoute::DOWN if position_a.y > position_b.y
 end
 
 # Calculates all the costs of a tile
@@ -399,19 +399,19 @@ def pbAStarMoveRoute(event, commands, waitComplete = false)
   i = 0
   while i<commands.length
     case commands[i]
-    when PBMoveRoute::Wait, PBMoveRoute::SwitchOn, PBMoveRoute::SwitchOff,
-       PBMoveRoute::ChangeSpeed, PBMoveRoute::ChangeFreq, PBMoveRoute::Opacity,
-       PBMoveRoute::Blending, PBMoveRoute::PlaySE, PBMoveRoute::Script
+    when PBMoveRoute::WAIT, PBMoveRoute::SWITCH_ON, PBMoveRoute::SWITCH_OFF,
+       PBMoveRoute::CHANGE_SPEED, PBMoveRoute::CHANGE_FREQUENCY, PBMoveRoute::OPACITY,
+       PBMoveRoute::BLENDING, PBMoveRoute::PLAY_SE, PBMoveRoute::SCRIPT
       route.list.push(RPG::MoveCommand.new(commands[i],[commands[i+1]]))
       i += 1
-    when PBMoveRoute::ScriptAsync
-      route.list.push(RPG::MoveCommand.new(PBMoveRoute::Script,[commands[i+1]]))
-      route.list.push(RPG::MoveCommand.new(PBMoveRoute::Wait,[0]))
+    when PBMoveRoute::SCRIPT_ASYNC
+      route.list.push(RPG::MoveCommand.new(PBMoveRoute::SCRIPT,[commands[i+1]]))
+      route.list.push(RPG::MoveCommand.new(PBMoveRoute::WAIT,[0]))
       i += 1
-    when PBMoveRoute::Jump
+    when PBMoveRoute::JUMP
       route.list.push(RPG::MoveCommand.new(commands[i],[commands[i+1],commands[i+2]]))
       i += 2
-    when PBMoveRoute::Graphic
+    when PBMoveRoute::GRAPHIC
       route.list.push(RPG::MoveCommand.new(commands[i],
          [commands[i+1],commands[i+2],commands[i+3],commands[i+4]]))
       i += 4

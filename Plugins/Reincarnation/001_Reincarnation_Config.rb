@@ -1,7 +1,7 @@
 module Reincarnation
   # If you want your reincarnation to cost an item, defined in COST_ITEM,
   # and the amount of that item, COST_AMOUNT. Set to nil if no cost
-  COST_ITEM           = nil
+  COST_ITEM           = :SUSPO
   COST_AMOUNT         = 1
 
   # Custom Music for the Menu, has to be in BGM/SE folders respectively.

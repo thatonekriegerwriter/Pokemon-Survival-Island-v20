@@ -12,67 +12,67 @@ BicycleBGM = Airship
 #-------------------------------
 [1]
 TrainerType = POKEMONTRAINER_Red
-WalkCharset = 3M.png
-RunCharset = 3M.png
+WalkCharset = 3MB.png
+RunCharset = 3MB.png
 CycleCharset = 0bike.png
-SurfCharset = 3M.png
-FishCharset = 3MFish.png
+SurfCharset = 3MB.png
+FishCharset = 3MBFish.png
 #-------------------------------
 [2]
 TrainerType = POKEMONTRAINER_Leaf
-WalkCharset = 4F.png
-RunCharset = 4F.png
+WalkCharset = 4FD.png
+RunCharset = 4FD.png
 CycleCharset = 0bike.png
-SurfCharset = 4F.png
-FishCharset = 4FFishing.png
+SurfCharset = 4FD.png
+FishCharset = 4FDFish.png
 #-------------------------------
 [3]
 TrainerType = POKEMONTRAINER_Hiro
-WalkCharset = 2M.png
-RunCharset = 2M.png
+WalkCharset = 2MJ.png
+RunCharset = 2MJ.png
 CycleCharset = 0bike.png
-SurfCharset = 2M.png
-FishCharset = 2MFishing.png
+SurfCharset = 2MJ.png
+FishCharset = 2MJFish.png
 #-------------------------------
 [4]
 TrainerType = POKEMONTRAINER_Kris
-WalkCharset = 1F.png
-RunCharset = 1F.png
+WalkCharset = 1FS.png
+RunCharset = 1FS.png
 CycleCharset = 0bike.png
-SurfCharset = 1F.png
-FishCharset = 1FFish.png
+SurfCharset = 1FS.png
+FishCharset = 1FSFish.png
 #-------------------------------
 [5]
 TrainerType = POKEMONTRAINER_Brendan
-WalkCharset = 4M.png
-RunCharset = 4M.png
+WalkCharset = 4MJ.png
+RunCharset = 4MJ.png
 CycleCharset = 0bike.png
-SurfCharset = 4M.png
-FishCharset = 4MFishing.png
+SurfCharset = 4MJ.png
+FishCharset = 4MJFish.png
 #-------------------------------
 [6]
 TrainerType = POKEMONTRAINER_May
-WalkCharset = 3F.png
-RunCharset = 3F.png
+WalkCharset = 3FS.png
+RunCharset = 3FS.png
 CycleCharset = 0bike.png
-SurfCharset = 3F.png
-FishCharset = 3FFishing.png
+SurfCharset = 3FS.png
+FishCharset = 3FSFish.png
 #-------------------------------
 [7]
 TrainerType = POKEMONTRAINER_Lucas
-WalkCharset = 1M.png
-RunCharset = 1M.png
+WalkCharset = 1MD.png
+RunCharset = 1MD.png
 CycleCharset = 0bike.png
-SurfCharset = 1M.png
-FishCharset = 1MFishing.png
+SurfCharset = 1MD.png
+FishCharset = 1MDFish.png
 #-------------------------------
 [8]
 TrainerType = POKEMONTRAINER_Dawn
-WalkCharset = 2F.png
-RunCharset = 2F.png
+WalkCharset = 2FA.png
+RunCharset = 2FA.png
 CycleCharset = 0bike.png
-SurfCharset = 2F.png
-FishCharset = 2FFishing.png
+SurfCharset = 2FA.png
+FishCharset = 2FAFish.png
 #-------------------------------
 [9]
 TrainerType = POKEMONTRAINER_RocketM
@@ -91,5 +91,17 @@ SurfCharset = 2F.png
 FishCharset = 0RMFish.png
 #-------------------------------
 [11]
-TrainerType = POKEMONRANGER_F
-WalkCharset = spooky.png
+TrainerType = CUSTOMMALE
+WalkCharset = CustomMale.png
+RunCharset = CustomMale.png
+CycleCharset = CustomBike.png
+SurfCharset = CustomMale.png
+FishCharset = CustomMaleFish.png
+#-------------------------------
+[12]
+TrainerType = CUSTOMFEMALE
+WalkCharset = CustomFemale.png
+RunCharset = CustomFemale.png
+CycleCharset = CustomBike.png
+SurfCharset = CustomFemale.png
+FishCharset = CustomFemaleFish.png

@@ -107,7 +107,10 @@ module Battle::CatchAndStoreMixin
     pkmn.ev[:SPEED] = rand(200)
     pkmn.ev[:HP] = rand(200)
   end
+
+
     # Store the Pokémon
+	if (@sendToBoxes == 0 || @sendToBoxes == 2) && pbPlayer.party.length > 5
      if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
       cmds = [_INTL("Add to your party"),
               _INTL("Send to a Box"),
@@ -173,7 +176,7 @@ module Battle::CatchAndStoreMixin
           @scene.pbPartyScreen(0, true, 2)
         end
       end
-
+   end
     # Store as normal (add to party if there's space, or send to a Box if not)
     stored_box = @peer.pbStorePokemon(pbPlayer, pkmn)
     if stored_box < 0

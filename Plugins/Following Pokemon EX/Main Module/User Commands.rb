@@ -13,9 +13,9 @@ module FollowingPkmn
       target = [leader.map.map_id, leader.x, leader.y] if !target
       event.moveto(target[1], target[2])
     end
-    $game_temp.followers.remove_follower_by_name("FollowerPkmn")
-    $game_temp.followers.remove_follower_by_name("FollowingPkmn") if FollowingPkmn.get
-    $game_temp.followers.add_follower(event, "FollowingPkmn", FollowingPkmn::FOLLOWER_COMMON_EVENT)
+    $game_temp.followers.remove_follower_by_name("PlayerPkmn")
+    $game_temp.followers.remove_follower_by_name("PlayerPkmn") if FollowingPkmn.get
+    $game_temp.followers.add_follower(event, "PlayerPkmn", FollowingPkmn::FOLLOWER_COMMON_EVENT)
     $PokemonGlobal.follower_toggled = true
     event = FollowingPkmn.get_event
     $game_temp.followers.each_follower do |event, follower|
@@ -25,7 +25,7 @@ module FollowingPkmn
       end
       leader = event
     end
-    FollowingPkmn.refresh(anim)
+    FollowingPkmn.refresh(false)
   end
   #-----------------------------------------------------------------------------
   # Script Command to remove the event following the player as a Following
@@ -33,8 +33,8 @@ module FollowingPkmn
   #-----------------------------------------------------------------------------
   def self.stop_following
     return if !FollowingPkmn.can_check?
-    $game_temp.followers.remove_follower_by_name("FollowerPkmn")
-    $game_temp.followers.remove_follower_by_name("FollowingPkmn")
+    $game_temp.followers.remove_follower_by_name("PlayerPkmn")
+    $game_temp.followers.remove_follower_by_name("PlayerPkmn")
   end
   #-----------------------------------------------------------------------------
   # Script Command to toggle Following Pokemon
@@ -47,11 +47,13 @@ module FollowingPkmn
       # This may seem redundant but it keeps follower_toggled a boolean always
       $PokemonGlobal.follower_toggled = !(!forced)
     else
+	  
+	return if FollowingPkmn.get_pokemon == $ball_order[$PokemonGlobal.ball_hud_index]
       $PokemonGlobal.follower_toggled = !($PokemonGlobal.follower_toggled)
     end
     anim_2 = FollowingPkmn.active?
     anim = anim_1 != anim_2 if anim.nil?
-    FollowingPkmn.refresh(anim)
+    FollowingPkmn.refresh(false)
     $game_temp.followers.move_followers
     $game_temp.followers.turn_followers
   end
@@ -65,6 +67,7 @@ module FollowingPkmn
   # Script Command to toggle Following Pokemon on
   #-----------------------------------------------------------------------------
   def self.toggle_on(anim = nil)
+	return if FollowingPkmn.get_pokemon == $ball_order[$PokemonGlobal.ball_hud_index]
     FollowingPkmn.toggle(true, anim)
   end
   #-----------------------------------------------------------------------------
@@ -97,7 +100,7 @@ module FollowingPkmn
   #-----------------------------------------------------------------------------
   def self.move_route(commands = nil, wait_complete = false)
     if commands.nil?
-      pbMapInterpreter&.follower_move_route("FollowingPkmn")
+      pbMapInterpreter&.follower_move_route("PlayerPkmn")
       return
     end
     return if !FollowingPkmn.can_check?
@@ -111,7 +114,7 @@ module FollowingPkmn
   def self.animation(id)
     return if !FollowingPkmn.can_check? || !FollowingPkmn.active?
     if id.nil?
-      pbMapInterpreter&.follower_animation("FollowingPkmn")
+      pbMapInterpreter&.follower_animation("PlayerPkmn")
       return
     end
     sprites = $scene.spritesetGlobal.follower_sprites

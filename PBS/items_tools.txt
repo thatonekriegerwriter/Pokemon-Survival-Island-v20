@@ -1,0 +1,949 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[WOODENPAIL]
+Name = Wooden Pail
+NamePlural = Wooden Pails
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = A watering can made of wood. It helps promote healthy growth of Berries planted in soft soil.
+#-------------------------------
+[SQUIRTBOTTLE]
+Name = Squirt Bottle
+NamePlural = Squirt Bottles
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = A watering can shaped like a Squirtle. It helps promote healthy growth of Berries planted in soft soil.
+#-------------------------------
+[SPRAYDUCK]
+Name = Sprayduck
+NamePlural = Sprayducks
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = A watering can shaped like a Psyduck. It helps promote healthy growth of Berries planted in soft soil.
+#-------------------------------
+[WAILMERPAIL]
+Name = Wailmer Pail
+NamePlural = Wailmer Pails
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = A nifty watering pail. Use it to promote strong growth in Berries planted in soft soil.
+#-------------------------------
+[SPRINKLOTAD]
+Name = Sprinklotad
+NamePlural = Sprinklotads
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = A watering can shaped like a Lotad. It helps promote the healthy growth of any Berries planted in soft soil.
+#-------------------------------
+[LVLDETECTOR]
+Name = Level Detector
+NamePlural = Level Detectors
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = An advanced device that allows you to see a POKeMON's level.
+#-------------------------------
+[HPDETECTOR]
+Name = HP Detector
+NamePlural = HP Detectors
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,Overworld
+Description = An advanced device that allows you to see a POKeMON's HP.
+#-------------------------------
+[CALENDAR]
+Name = Calendar
+NamePlural = Calendars
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool
+Description = A small pocket calendar that you use to track the days.
+#-------------------------------
+[APOWERMONITOR]
+Name = Power Monitor
+NamePlural = Power Monitors
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool
+Description = A small device you built to monitor the power back at your house.
+#-------------------------------
+[CLOCK]
+Name = Clock
+NamePlural = Clocks
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool
+Description = A simple clock you crafted that you use to tell the time.
+#-------------------------------
+[SUPPLIES]
+Name = Basic Climbing Equipment
+NamePlural = Basic Climbing Equipment
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,HMItem
+Description = A set of ropes that can be used to climb rocky hills.
+#-------------------------------
+[ADVANCEDSUPPLIES]
+Name = Professional Climbing Equipment
+NamePlural = Professional Climbing Equipment
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool,HMItem
+Description = A sturdier set of supplies that can be used for navigating even the steepest of mountains and valleys.
+#-------------------------------
+[SNATCHER]
+Name = Snatcher
+NamePlural = Snatchers
+Pocket = 7
+Price = 0
+Flags = Tool,Overworld
+Description = A Machine designed to steal an item from a Pokemon.
+#-------------------------------
+[STONEPICKAXE]
+Name = Stone Pickaxe
+NamePlural = Stone Pickaxes
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon
+Description = A pickaxe made of stone, lets you go mining in the Mountains.
+#-------------------------------
+[IRONPICKAXE]
+Name = Pickaxe
+NamePlural = Pickaxes
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A pickaxe made of iron, lets you go mining in the Mountains.
+#-------------------------------
+[SHOVEL]
+Name = Shovel
+NamePlural = Shovels
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A shovel made of iron, lets you go mining in the Mountains.
+#-------------------------------
+[BAIT]
+Name = Bait
+NamePlural = Baits
+Pocket = 7
+Price = 5
+FieldUse = Direct
+Flags = Tool,Berry,Weapon
+Description = A spongy, aromatic fungus that attracts Pokémon, it can be used to attract Pokémon, or escape ongoing fights.
+#-------------------------------
+[MACHETE]
+Name = Machete
+NamePlural = Machetes
+Pocket = 7
+Price = 0
+Flags = Tool,Weapon,HMItem,Overworld,Durable
+Description = A blade typically used for cutting and carving. If be trees or POKeMON, it will be useful.
+#-------------------------------
+[STONEAXE]
+Name = Stone Axe
+NamePlural = Stone Axes
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon
+Description = A axe made of stone, it can be used to cut down trees.
+#-------------------------------
+[IRONAXE]
+Name = Axe
+NamePlural = Axe
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A axe made of iron, it can be used to cut down trees.
+#-------------------------------
+[STONEHAMMER]
+Name = Stone Hammer
+NamePlural = Stone Hammers
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon
+Description = A hammer made of stone, it can be used for mining.
+#-------------------------------
+[POLE]
+Name = Vaulting Pole
+NamePlural = Vaulting Poles
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A Pole for traversing a distance.
+#-------------------------------
+[IRONHAMMER]
+Name = Hammer
+NamePlural = Hammers
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A hammer made of iron, it can be used for mining.
+#-------------------------------
+[TOWNMAP]
+Name = Local Map
+NamePlural = Local Maps
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool
+Description = A very convenient map that can be viewed anytime. It even shows your present location.
+#-------------------------------
+[OLDROD]
+Name = Old Rod
+NamePlural = Old Rods
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool,Overworld
+Description = An old and beat-up fishing rod. Use it by any body of water to fish for wild aquatic Pokémon.
+#-------------------------------
+[GOODROD]
+Name = Good Rod
+NamePlural = Good Rods
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool,Overworld
+Description = A new, good-quality fishing rod. Use it by any body of water to fish for wild aquatic Pokémon.
+#-------------------------------
+[SUPERROD]
+Name = Super Rod
+NamePlural = Super Rods
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool,Overworld
+Description = An awesome, high-tech fishing rod. Use it by any body of water to fish for wild aquatic Pokémon.
+#-------------------------------
+[ITEMFINDER]
+Name = Itemfinder
+NamePlural = Itemfinders
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool
+Description = A device used for finding items. If there is a hidden item nearby when it is used, it emits a signal.
+#-------------------------------
+[DOWSINGMACHINE]
+Name = Dowsing Machine
+NamePlural = Dowsing Machines
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool
+Description = It checks for unseen items in the area and makes noise and lights when it finds something.
+#-------------------------------
+[POKERADAR]
+Name = Poké Radar
+NamePlural = Poké Radars
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = KeyItem,Tool
+Description = A tool that can search out Pokémon that are hiding in grass. Its battery is recharged as you walk.
+#-------------------------------
+[POISONDART]
+Name = Poison Dart
+NamePlural = Poison Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart gun that poisons a Pokémon in battle.
+#-------------------------------
+[SLEEPDART]
+Name = Sleep Dart
+NamePlural = Sleep Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart gun that sedates a Pokémon in battle.
+#-------------------------------
+[PARALYZDART]
+Name = Paralysis Dart
+NamePlural = Paralysis Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart gun that stuns a Pokémon in battle.
+#-------------------------------
+[ICEDART]
+Name = Ice Dart
+NamePlural = Ice Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart gun that freezes a Pokémon in battle.
+#-------------------------------
+[FIREDART]
+Name = Fire Dart
+NamePlural = Fire Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart gun that burns a Pokémon in battle.
+#-------------------------------
+[WATERBOTTLE]
+Name = Iron Canteen
+NamePlural = Iron Canteen
+Pocket = 7
+Price = 0
+Flags = KeyItem,Tool
+Description = 
+#-------------------------------
+[STONE]
+Name = Stone
+NamePlural = Stone
+Pocket = 1
+Price = 0
+Flags = Fling_10,Weapon,Tool,Overworld
+Description = 
+#-------------------------------
+[RAFT]
+Name = Raft
+NamePlural = Rafts
+Pocket = 7
+Price = 0
+Flags = Fling_10,Tool,HMItem,Durable
+Description = A Raft that can be used for traversing water.
+#-------------------------------
+[PARAGLIDER]
+Name = Paraglider
+NamePlural = Paraglider
+Pocket = 7
+Price = 0
+Flags = Fling_10,Tool,HMItem,Durable
+Description = A Paraglider that can be used for traversing the sky.
+#-------------------------------
+[JACKETEDCABLE]
+Name = Copper Cable
+NamePlural = Copper Cables
+Pocket = 7
+Price = 0
+Flags = Fling_10,Tool
+Description = Copper Cables for wiring up machines.
+#-------------------------------
+[MASTERBALL]
+Name = Master Ball
+NamePlural = Master Balls
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = The best Ball with the ultimate level of performance. It will catch any wild Pokémon without fail.
+#-------------------------------
+[ULTRABALL]
+Name = Ultra Ball
+NamePlural = Ultra Balls
+Pocket = 3
+Price = 800
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = An ultra-performance Ball that provides a higher Pokémon catch rate than a Great Ball.
+#-------------------------------
+[GREATBALL]
+Name = Great Ball
+NamePlural = Great Balls
+Pocket = 3
+Price = 600
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A good, high-performance Ball that provides a higher Pokémon catch rate than a standard Poké Ball.
+#-------------------------------
+[POKEBALL]
+Name = Poké Ball
+NamePlural = Poké Balls
+Pocket = 3
+Price = 200
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A device for catching wild Pokémon. It is thrown like a ball at the target. It is designed as a capsule system.
+#-------------------------------
+[SAFARIBALL]
+Name = Safari Ball
+NamePlural = Safari Balls
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball that is used only in the Safari Zone. It is decorated in a camouflage pattern.
+#-------------------------------
+[PARKBALL]
+Name = Park Ball
+NamePlural = Park Balls
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball that is used only in the Safari Zone. It is decorated in a camouflage pattern.
+#-------------------------------
+[SPORTBALL]
+Name = Sport Ball
+NamePlural = Sport Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball for the Bug-Catching Contest.
+#-------------------------------
+[NETBALL]
+Name = Net Ball
+NamePlural = Net Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Water- and Bug-type Pokémon.
+#-------------------------------
+[DIVEBALL]
+Name = Dive Ball
+NamePlural = Dive Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Pokémon that live underwater.
+#-------------------------------
+[NESTBALL]
+Name = Nest Ball
+NamePlural = Nest Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on weaker Pokémon in the wild.
+#-------------------------------
+[REPEATBALL]
+Name = Repeat Ball
+NamePlural = Repeat Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Pokémon species that were previously caught.
+#-------------------------------
+[TIMERBALL]
+Name = Timer Ball
+NamePlural = Timer Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Ball that becomes progressively better the more turns there are in a battle.
+#-------------------------------
+[LUXURYBALL]
+Name = Luxury Ball
+NamePlural = Luxury Balls
+Pocket = 3
+Price = 3000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A comfortable Poké Ball that makes a caught wild Pokémon quickly grow friendly.
+#-------------------------------
+[PREMIERBALL]
+Name = Premier Ball
+NamePlural = Premier Balls
+Pocket = 3
+Price = 200
+SellPrice = 10
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat rare Poké Ball that has been specially made to commemorate an event of some sort.
+#-------------------------------
+[DUSKBALL]
+Name = Dusk Ball
+NamePlural = Dusk Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon at night or in dark places like caves.
+#-------------------------------
+[HEALBALL]
+Name = Heal Ball
+NamePlural = Heal Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A remedial Poké Ball that restores the caught Pokémon's HP and eliminates any status problem.
+#-------------------------------
+[QUICKBALL]
+Name = Quick Ball
+NamePlural = Quick Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that provides a better catch rate if used at the start of a wild encounter.
+#-------------------------------
+[CHERISHBALL]
+Name = Cherish Ball
+NamePlural = Cherish Balls
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A quite rare Poké Ball that has been specially crafted to commemorate an occasion of some sort.
+#-------------------------------
+[FASTBALL]
+Name = Fast Ball
+NamePlural = Fast Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that makes it easier to catch fast Pokémon.
+#-------------------------------
+[LEVELBALL]
+Name = Level Ball
+NamePlural = Level Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that are a lower level than your own.
+#-------------------------------
+[LUREBALL]
+Name = Lure Ball
+NamePlural = Lure Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon hooked by a Rod when fishing.
+#-------------------------------
+[HEAVYBALL]
+Name = Heavy Ball
+NamePlural = Heavy Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching very heavy Pokémon.
+#-------------------------------
+[LOVEBALL]
+Name = Love Ball
+NamePlural = Love Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that are the opposite gender of your Pokémon.
+#-------------------------------
+[FRIENDBALL]
+Name = Friend Ball
+NamePlural = Friend Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that makes caught Pokémon more friendly.
+#-------------------------------
+[MOONBALL]
+Name = Moon Ball
+NamePlural = Moon Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that evolve using the Moon Stone.
+#-------------------------------
+[DREAMBALL]
+Name = Dream Ball
+NamePlural = Dream Balls
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon while they're asleep.
+#-------------------------------
+[BEASTBALL]
+Name = Beast Ball
+NamePlural = Beast Balls
+Pocket = 3
+Price = 1000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball designed to catch Ultra Beasts. It has a low success rate for catching others.
+#-------------------------------
+[MASTERBALLC]
+Name = Master Ball (Crafted)
+NamePlural = Master Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = The best Ball with the ultimate level of performance. It will catch any wild Pokémon without fail.
+#-------------------------------
+[ULTRABALLC]
+Name = Ultra Ball (Crafted)
+NamePlural = Ultra Balls (Crafted)
+Pocket = 3
+Price = 800
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = An ultra-performance Ball that provides a higher Pokémon catch rate than a Great Ball.
+#-------------------------------
+[GREATBALLC]
+Name = Great Ball (Crafted)
+NamePlural = Great Balls (Crafted)
+Pocket = 3
+Price = 600
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A good, high-performance Ball that provides a higher Pokémon catch rate than a standard Poké Ball.
+#-------------------------------
+[POKEBALLC]
+Name = Poké Ball (Crafted)
+NamePlural = Poké Balls (Crafted)
+Pocket = 3
+Price = 200
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A device for catching wild Pokémon. It is thrown like a ball at the target. It is designed as a capsule system.
+#-------------------------------
+[SAFARIBALLC]
+Name = Safari Ball (Crafted)
+NamePlural = Safari Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball that is used only in the Safari Zone. It is decorated in a camouflage pattern.
+#-------------------------------
+[SPORTBALLC]
+Name = Sport Ball (Crafted)
+NamePlural = Sport Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball for the Bug-Catching Contest.
+#-------------------------------
+[NETBALLC]
+Name = Net Ball (Crafted)
+NamePlural = Net Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Water- and Bug-type Pokémon.
+#-------------------------------
+[DIVEBALLC]
+Name = Dive Ball (Crafted)
+NamePlural = Dive Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Pokémon that live underwater.
+#-------------------------------
+[NESTBALLC]
+Name = Nest Ball (Crafted)
+NamePlural = Nest Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on weaker Pokémon in the wild.
+#-------------------------------
+[REPEATBALLC]
+Name = Repeat Ball (Crafted)
+NamePlural = Repeat Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that works especially well on Pokémon species that were previously caught.
+#-------------------------------
+[TIMERBALLC]
+Name = Timer Ball (Crafted)
+NamePlural = Timer Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Ball that becomes progressively better the more turns there are in a battle.
+#-------------------------------
+[LUXURYBALLC]
+Name = Luxury Ball (Crafted)
+NamePlural = Luxury Balls (Crafted)
+Pocket = 3
+Price = 3000
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A comfortable Poké Ball that makes a caught wild Pokémon quickly grow friendly.
+#-------------------------------
+[PREMIERBALLC]
+Name = Premier Ball (Crafted)
+NamePlural = Premier Balls (Crafted)
+Pocket = 3
+Price = 200
+SellPrice = 10
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat rare Poké Ball that has been specially made to commemorate an event of some sort.
+#-------------------------------
+[DUSKBALLC]
+Name = Dusk Ball (Crafted)
+NamePlural = Dusk Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon at night or in dark places like caves.
+#-------------------------------
+[HEALBALLC]
+Name = Heal Ball (Crafted)
+NamePlural = Heal Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A remedial Poké Ball that restores the caught Pokémon's HP and eliminates any status problem.
+#-------------------------------
+[QUICKBALLC]
+Name = Quick Ball (Crafted)
+NamePlural = Quick Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that provides a better catch rate if used at the start of a wild encounter.
+#-------------------------------
+[CHERISHBALLC]
+Name = Cherish Ball (Crafted)
+NamePlural = Cherish Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A quite rare Poké Ball that has been specially crafted to commemorate an occasion of some sort.
+#-------------------------------
+[FASTBALLC]
+Name = Fast Ball (Crafted)
+NamePlural = Fast Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that makes it easier to catch fast Pokémon.
+#-------------------------------
+[LEVELBALLC]
+Name = Level Ball (Crafted)
+NamePlural = Level Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that are a lower level than your own.
+#-------------------------------
+[LUREBALLC]
+Name = Lure Ball (Crafted)
+NamePlural = Lure Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon hooked by a Rod when fishing.
+#-------------------------------
+[HEAVYBALLC]
+Name = Heavy Ball (Crafted)
+NamePlural = Heavy Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching very heavy Pokémon.
+#-------------------------------
+[LOVEBALLC]
+Name = Love Ball (Crafted)
+NamePlural = Love Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that are the opposite gender of your Pokémon.
+#-------------------------------
+[FRIENDBALLC]
+Name = Friend Ball (Crafted)
+NamePlural = Friend Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that makes caught Pokémon more friendly.
+#-------------------------------
+[MOONBALLC]
+Name = Moon Ball (Crafted)
+NamePlural = Moon Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that evolve using the Moon Stone.
+#-------------------------------
+[DREAMBALLC]
+Name = Dream Ball (Crafted)
+NamePlural = Dream Balls (Crafted)
+Pocket = 3
+Price = 300
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon while they're asleep.
+#-------------------------------
+[BEASTBALLC]
+Name = Beast Ball (Crafted)
+NamePlural = Beast Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A special Poké Ball designed to catch Ultra Beasts. It has a low success rate for catching others.
+#-------------------------------
+[SUPERBALLC]
+Name = Super Ball (Crafted)
+NamePlural = Super Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = An supreme-performance Ball that provides a higher Pokémon catch rate than an Ultra Ball.
+#-------------------------------
+[HIGHBALLC]
+Name = Pressure Ball (Crafted)
+NamePlural = Pressure Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball for catching Pokémon that are a higher level than your own.
+#-------------------------------
+[DAWNBALLC]
+Name = Dawn Ball (Crafted)
+NamePlural = Dawn Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon during the daytime.
+#-------------------------------
+[BARBEDBALLC]
+Name = Barbed Ball (Crafted)
+NamePlural = Barbed Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball fitted with barbed wire. If it misses, it damages the enemy slightly.
+#-------------------------------
+[YOLOBALLC]
+Name = Emergency Ball (Crafted)
+NamePlural = Emergency Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A somewhat different Poké Ball that makes it easier to catch Pokémon when yours is at low health.
+#-------------------------------
+[STATUSBALLC]
+Name = Status Ball (Crafted)
+NamePlural = Status Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that is better at catching Pokémon that have status effects.
+#-------------------------------
+[SHOCKBALLC]
+Name = Shock Ball (Crafted)
+NamePlural = Shock Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that is better at catching Electric Pokémon.
+#-------------------------------
+[HIDDENBALLC]
+Name = Hidden Ball (Crafted)
+NamePlural = Hidden Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that upon capture gives your Pokémon it's Hidden Ability.
+#-------------------------------
+[SHADOWBALL]
+Name = Shadow Ball
+NamePlural = Shadow Balls
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball filled with malice that will convert a Pokémon into a Shadow Pokemon.
+#-------------------------------
+[IMMUNEBALLC]
+Name = Immune Ball (Crafted)
+NamePlural = Immune Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A rare ball that works well on Pokémon that are immune to one of your Pokémon's types.
+#-------------------------------
+[DEBUFFBALLC]
+Name = Debuff Ball (Crafted)
+NamePlural = Debuff Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that works better if an enemy has stat reductions.
+#-------------------------------
+[BURNBALLC]
+Name = Burn Ball (Crafted)
+NamePlural = Burn Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that works better if an enemy is burned.
+#-------------------------------
+[FREEZEBALLC]
+Name = Freeze Ball (Crafted)
+NamePlural = Freeze Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that works better if an enemy is frozen.
+#-------------------------------
+[STUNBALLC]
+Name = Stun Ball (Crafted)
+NamePlural = Stun Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that works better if an enemy is paralyzed.
+#-------------------------------
+[TOXICBALLC]
+Name = Toxic Ball (Crafted)
+NamePlural = Toxic Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Poké Ball that works better if an enemy is poisoned.

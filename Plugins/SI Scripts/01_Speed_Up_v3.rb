@@ -24,7 +24,7 @@ class PokemonSystem
 
   def gamespeed
     # Default is Faster than original
-    @gamespeed = 1 if @gamespeed == nil
+    @gamespeed = 0 if @gamespeed == nil
     return @gamespeed
   end
 
@@ -40,6 +40,7 @@ end
   MenuHandlers.add(:options_menu, :gamespeed, {
     "name"        => _INTL("Game Speed"),
     "order"       => 31,
+    "parent"      => :gameplay_menu2,
     "type"        => EnumOption,
     "parameters"  => [_INTL("Normal"), _INTL("Fast"), _INTL("Faster")],
     "description" => _INTL("Choose the speed at which Game animate."),

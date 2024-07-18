@@ -3,6 +3,7 @@
 #-------------------------------------------------------------------------------
 class MenuEntry
   attr_reader :name
+  attr_reader :text
 
   # defined by user
   def icon; return MENU_FILE_PATH + @icon; end
@@ -109,6 +110,8 @@ class VoltseonsPauseMenu_Scene
           sprite.opacity.clamp(0,255)
         elsif key[/location/]
           sprite.x -= (sprite.bitmap.width/duration)
+        elsif sprite.y >= (Graphics.height/2)
+          sprite.y += ((Graphics.height/2)/duration)
         elsif sprite.y >= (Graphics.height/2)
           sprite.y += ((Graphics.height/2)/duration)
         else
@@ -344,6 +347,7 @@ MenuHandlers.add(:debug_menu, :set_menu_theme, {
 MenuHandlers.add(:options_menu, :menu_theme, {
   "name"        => _INTL("Menu Theme"),
   "order"       => 200,
+  "parent"      => :ui_menu,
   "type"        => NumberOption,
   "condition"   => proc { next CHANGE_THEME_IN_OPTIONS },
   "parameters"  => 0..MENU_TEXTCOLOR.length,

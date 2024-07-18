@@ -621,7 +621,7 @@ end
       [_INTL("Name"), 37, 64, 0, baseColor, shadowColor],
       [$player.name, 305, 64, 1, baseColor, shadowColor],
       [_INTL("{1}",$player.playerclass), 350, 64, 0, baseColor, shadowColor],
-      [_INTL("Lv{1}",$game_system.level_cap), 468, 64, 1, baseColor, shadowColor],
+      [_INTL("Lv{1}",($game_system.level_cap.to_i+$player.playerclasslevel.to_i)), 468, 64, 1, baseColor, shadowColor],
        [_INTL("Health"),40,109,0,baseColor,shadowColor],
        [_INTL(trainerhealth),305,109,1,healthColor,shadowColor],
        [_INTL("{1}%",$player.playerhealth.to_s_formatted),190,109,1,healthColor,shadowColor],
@@ -839,7 +839,7 @@ end
           wait(3)
         end
       end
-      if Input.trigger?(Input::RIGHT)
+      if Input.trigger?(Input::RIGHT) && $PokemonSystem.playermode != 0
 	    @volume = 0
 	    if @selection+1>1
 		  @selection = 0
@@ -855,7 +855,7 @@ end
 	    pbDrawTrainerCardFront2
 	  end
       end
-      if Input.trigger?(Input::LEFT)
+      if Input.trigger?(Input::LEFT) && $PokemonSystem.playermode != 0
 	    @volume = 0
 	    if @selection-1<0
 		  @selection = 1

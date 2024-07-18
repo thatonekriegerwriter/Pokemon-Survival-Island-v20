@@ -1,103 +1,847 @@
 ﻿# See the documentation on the wiki to learn how to edit this file.
-CHERIBERRY = 4,15,2,5,0
-CHESTOBERRY = 4,15,2,5,0
-PECHABERRY = 4,15,2,5,0
-RAWSTBERRY = 4,15,2,5,0
-ASPEARBERRY = 4,15,2,5,0
-LEPPABERRY = 4,15,2,5,0
-ORANBERRY = 4,15,2,5,0
-PERSIMBERRY = 4,15,2,5,0
-LUMBERRY = 12,8,2,5,0
-SITRUSBERRY = 8,7,2,5,0
-FIGYBERRY = 5,10,2,5,0
-WIKIBERRY = 5,10,2,5,0
-MAGOBERRY = 5,10,2,5,0
-AGUAVBERRY = 5,10,2,5,0
-IAPAPABERRY = 5,10,2,5,1
-RAZZBERRY = 2,35,2,10,1
-BLUKBERRY = 2,35,2,10,1
-NANABBERRY = 2,35,2,10,1
-WEPEARBERRY = 2,35,2,10,1
-PINAPBERRY = 2,35,2,10,1
-POMEGBERRY = 8,8,2,5,0
-KELPSYBERRY = 8,8,2,5,0
-QUALOTBERRY = 8,8,2,5,0
-HONDEWBERRY = 8,8,2,5,0
-GREPABERRY = 8,8,2,5,0
-TAMATOBERRY = 8,8,2,5,0
-CORNNBERRY = 6,10,2,10,0
-MAGOSTBERRY = 6,10,2,10,0
-RABUTABERRY = 6,10,2,10,0
-NOMELBERRY = 6,10,2,10,0
-SPELONBERRY = 15,8,2,15,3
-PAMTREBERRY = 15,8,3,15,3
-WATMELBERRY = 15,8,2,15,3
-DURINBERRY = 15,8,3,15,3
-BELUEBERRY = 15,8,2,15,3
-OCCABERRY = 18,6,2,5,
-PASSHOBERRY = 18,6,2,5,3
-WACANBERRY = 18,6,2,5,0
-RINDOBERRY = 18,6,2,5,0
-YACHEBERRY = 18,6,2,5,0
-CHOPLEBERRY = 18,6,2,5,0
-KEBIABERRY = 18,6,2,5,0
-SHUCABERRY = 18,6,2,5,3
-COBABERRY = 18,6,2,5,3
-PAYAPABERRY = 18,6,2,5,3
-TANGABERRY = 18,6,2,5,3
-CHARTIBERRY = 18,6,2,5,3
-KASIBBERRY = 18,6,2,5,3
-HABANBERRY = 18,6,2,5,3
-COLBURBERRY = 18,6,2,5,3
-BABIRIBERRY = 18,6,2,5,3
-CHILANBERRY = 18,6,2,5,0
-LIECHIBERRY = 24,4,2,5,0
-GANLONBERRY = 24,4,2,5,3
-SALACBERRY = 24,4,2,5,3
-PETAYABERRY = 24,4,2,5,3
-APICOTBERRY = 24,4,2,5,2
-LANSATBERRY = 24,4,2,5,2
-STARFBERRY = 24,4,2,5,
-ENIGMABERRY = 24,7,2,5,2
-MICLEBERRY = 24,7,2,5,2
-CUSTAPBERRY = 24,7,2,5,2
-JABOCABERRY = 24,7,2,5,2
-ROWAPBERRY = 24,7,2,5,2
-ARGOSTBERRY = 14,13,2,4,2
-REDAPRICORN = 3,4,4,7,0
-YELLOWAPRICORN = 3,15,3,5,1
-BLUEAPRICORN = 6,10,4,7,0
-GREENAPRICORN = 6,10,3,5,1
-PINKAPRICORN = 8,8,3,5,2
-WHITEAPRICORN = 8,8,3,5,1
-BLACKAPRICORN = 15,8,3,5,1
-PURPLEAPRICORN = 15,12,2,2,3
-MIRACLESEED = 6,11,2,5,2
-PURESEED = 6,11,2,5,2
-ELECTRICSEED = 6,11,2,5,2
-GRASSYSEED = 6,11,2,5,2
-MISTYSEED = 6,11,2,5,2
-PSYCHICSEED = 6,11,2,5,2
-LUMINOUSMOSS = 6,11,2,5,2
-MENTALHERB = 6,11,2,5,3
-WHITEHERB = 6,11,2,5,3
-POWERHERB = 6,12,2,5,3
-BIGROOT = 6,11,2,5,3
-ENERGYROOT = 24,12,2,1,2
-TINYMUSHROOM = 4,11,2,5,3
-BIGMUSHROOM = 6,11,2,5,3
-BALMMUSHROOM = 7,10,2,5,3
-REVIVALHERB = 24,10,2,3,3
-MAXMUSHROOMS = 24,10,2,3,3
-SEEDOFMASTERY = 24,10,2,3,3
-ACORN = 1,1,2,7,0
-POTATO = 8,7,2,5,0
-ONION = 8,7,2,5,0
-CARROT = 8,7,2,5,0
-WHEAT = 8,7,3,6,0
-LEMON = 8,7,2,5,0
-COCOABEAN = 8,7,2,5,1
-SUGARCANE = 8,7,3,6,0
-BAIT = 3,7,2,5,1
-APPLE = 3,7,2,5,0
-TEALEAF = 3,7,2,5,0
+# Season 0 = Spring
+# Season 1 = Summer
+# Season 2 = Autumn
+# Season 3 = Window
+#-------------------------------
+[CHERIBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[CHESTOBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PECHABERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[RAWSTBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[ASPEARBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[LEPPABERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[ORANBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PERSIMBERRY]
+HoursPerStage = 4
+DryingPerHour = 15
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[LUMBERRY]
+HoursPerStage = 12
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[SITRUSBERRY]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,5
+Season = 2
+Climate = Marsh
+Weather = None
+#-------------------------------
+[FIGYBERRY]
+HoursPerStage = 5
+DryingPerHour = 10
+Yield = 2,5
+Season = 1
+Climate = Marsh
+Weather = None
+#-------------------------------
+[WIKIBERRY]
+HoursPerStage = 5
+DryingPerHour = 10
+Yield = 2,5
+Season = 1
+Climate = Marsh
+Weather = None
+#-------------------------------
+[MAGOBERRY]
+HoursPerStage = 5
+DryingPerHour = 10
+Yield = 2,5
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[AGUAVBERRY]
+HoursPerStage = 5
+DryingPerHour = 10
+Yield = 2,5
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[IAPAPABERRY]
+HoursPerStage = 5
+DryingPerHour = 10
+Yield = 2,5
+Season = 1
+Climate = Marsh
+Weather = None
+#-------------------------------
+[RAZZBERRY]
+HoursPerStage = 2
+DryingPerHour = 35
+Yield = 2,10
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[BLUKBERRY]
+HoursPerStage = 2
+DryingPerHour = 35
+Yield = 2,10
+Season = 3
+Climate = Temperate
+Weather = None
+#-------------------------------
+[NANABBERRY]
+HoursPerStage = 2
+DryingPerHour = 35
+Yield = 2,10
+Season = 2
+Climate = Marsh
+Weather = None
+#-------------------------------
+[WEPEARBERRY]
+HoursPerStage = 2
+DryingPerHour = 35
+Yield = 2,10
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PINAPBERRY]
+HoursPerStage = 2
+DryingPerHour = 35
+Yield = 2,10
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[POMEGBERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Highland
+Weather = None
+#-------------------------------
+[KELPSYBERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Shore
+Weather = None
+#-------------------------------
+[QUALOTBERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Shore
+Weather = None
+#-------------------------------
+[HONDEWBERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[GREPABERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[TAMATOBERRY]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = Rain
+#-------------------------------
+[CORNNBERRY]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 2,10
+Season = 0
+Climate = Plain
+Weather = Rain
+#-------------------------------
+[MAGOSTBERRY]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 2,10
+Season = 4
+Climate = Frigid
+Weather = None
+#-------------------------------
+[RABUTABERRY]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 2,10
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[NOMELBERRY]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 2,10
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[SPELONBERRY]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 2,15
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PAMTREBERRY]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 3,15
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[WATMELBERRY]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 2,15
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[DURINBERRY]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 3,15
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[BELUEBERRY]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 2,15
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[OCCABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PASSHOBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[WACANBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[RINDOBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[YACHEBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[CHOPLEBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[KEBIABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[SHUCABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[COBABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PAYAPABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[TANGABERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[CHARTIBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[KASIBBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[HABANBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[COLBURBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[BABIRIBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[CHILANBERRY]
+HoursPerStage = 18
+DryingPerHour = 6
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[LIECHIBERRY]
+HoursPerStage = 24
+DryingPerHour
+Season = 0
+Climate = Temperate
+Season = 4
+Weather = None 
+Yield = 2,5
+#-------------------------------
+[GANLONBERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[SALACBERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PETAYABERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[APICOTBERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[LANSATBERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[STARFBERRY]
+HoursPerStage = 24
+DryingPerHour = 4
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[ENIGMABERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[MICLEBERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[CUSTAPBERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[JABOCABERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[MARANGABERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[ROWAPBERRY]
+HoursPerStage = 24
+DryingPerHour = 7
+Yield = 2,2
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[ARGOSTBERRY]
+HoursPerStage = 14
+DryingPerHour = 13
+Yield = 2,4
+Season = 4
+Climate = Chilled
+Weather = Snow
+#-------------------------------
+[REDAPRICORN]
+HoursPerStage = 3
+DryingPerHour = 4
+Yield = 4,7
+Season = 0
+Climate = Temperate
+Weather = Rain
+#-------------------------------
+[YELLOWAPRICORN]
+HoursPerStage = 3
+DryingPerHour = 15
+Yield = 3,5
+Season = 1
+Climate = Temperate
+Weather = None
+#-------------------------------
+[BLUEAPRICORN]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 4,7
+Season = 2
+Climate = Temperate
+Weather = None
+#-------------------------------
+[GREENAPRICORN]
+HoursPerStage = 6
+DryingPerHour = 10
+Yield = 3,5
+Season = 2
+Climate = Temperate
+Weather = None
+#-------------------------------
+[PINKAPRICORN]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 3,5
+Season = 2
+Climate = Temperate
+Weather = None
+#-------------------------------
+[WHITEAPRICORN]
+HoursPerStage = 8
+DryingPerHour = 8
+Yield = 3,5
+Season = 2
+Climate = Temperate Highlands
+Weather = None
+#-------------------------------
+[BLACKAPRICORN]
+HoursPerStage = 15
+DryingPerHour = 8
+Yield = 3,5
+Season = 2
+Climate = Highlands
+Weather = None
+#-------------------------------
+[PURPLEAPRICORN]
+HoursPerStage = 15
+DryingPerHour = 12
+Yield = 2,2
+Season = 3
+Climate = Skies
+Weather = None
+#-------------------------------
+[MIRACLESEED]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Temperate Highlands
+Weather = None
+#-------------------------------
+[PURESEED]
+HoursPerStage = 7
+DryingPerHour = 10
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[ELECTRICSEED]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[GRASSYSEED]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[MISTYSEED]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[PSYCHICSEED]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[LUMINOUSMOSS]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,5
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[MENTALHERB]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[WHITEHERB]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[POWERHERB]
+HoursPerStage = 6
+DryingPerHour = 12
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[BIGROOT]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[ENERGYROOT]
+HoursPerStage = 24
+DryingPerHour = 12
+Yield = 2,1
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[TINYMUSHROOM]
+HoursPerStage = 4
+DryingPerHour = 11
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[BIGMUSHROOM]
+HoursPerStage = 6
+DryingPerHour = 11
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[BALMMUSHROOM]
+HoursPerStage = 7
+DryingPerHour = 10
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[REVIVALHERB]
+HoursPerStage = 24
+DryingPerHour = 10
+Yield = 2,3
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[MAXMUSHROOMS]
+HoursPerStage = 24
+DryingPerHour = 10
+Yield = 2,3
+Season = 0
+Climate = Forest
+Weather = None
+#-------------------------------
+[SEEDOFMASTERY]
+HoursPerStage = 24
+DryingPerHour = 10
+Yield = 2,3
+Season = 0
+Climate = Skies
+Weather = None
+#-------------------------------
+[ACORN]
+HoursPerStage = 1
+DryingPerHour = 1
+Yield = 2,7
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[POTATO]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[ONION]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[CARROT]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[WHEAT]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 3,6
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[LEMON]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[COCOABEAN]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 2,1
+Season = 0
+Climate = Jungle
+Weather = None
+#-------------------------------
+[SUGARCANE]
+HoursPerStage = 8
+DryingPerHour = 7
+Yield = 3,6
+Season = 0
+Climate = Jungle
+Weather = None
+#-------------------------------
+[BAIT]
+HoursPerStage = 3
+DryingPerHour = 7
+Yield = 2,1
+Season = 0
+Climate = Marsh
+Weather = None
+#-------------------------------
+[APPLE]
+HoursPerStage = 3
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[TEALEAF]
+HoursPerStage = 3
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Plain
+Weather = None
+#-------------------------------
+[ROSELIBERRY]
+HoursPerStage = 3
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------
+[KEEBERRY]
+HoursPerStage = 3
+DryingPerHour = 7
+Yield = 2,5
+Season = 0
+Climate = Temperate
+Weather = None
+#-------------------------------

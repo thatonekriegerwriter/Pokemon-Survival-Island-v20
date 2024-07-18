@@ -16,8 +16,6 @@ module Radio
 end
 
 
-
-
 class Scene_Radio
   #-----------------------------------------------------------------------------
   # * Object Initialization
@@ -166,3 +164,8 @@ class Scene_Radio
       return
     end
   end
+  
+  
+  
+  
+  

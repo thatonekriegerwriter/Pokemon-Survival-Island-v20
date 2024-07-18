@@ -1,3 +1,113 @@
+ItemHandlers::UseFromBag.add(:BAIT, proc { |item|
+  next 2
+})
+ItemHandlers::UseInField.add(:BAIT,proc { |item|
+  pbBait
+  next true
+})
+
+
+
+ItemHandlers::UseFromBag.add(:WATERBOTTLE,proc { |item|
+  next 2
+})
+
+ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
+  next 2
+})
+
+ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
+  next 2
+})
+
+ItemHandlers::UseInField.add(:WATERBOTTLE,proc { |item|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Want to pick up water?"))
+    if pbConfirmMessage(message)
+      message=(_INTL("Do you want to use all your bottles?"))
+    if pbConfirmMessage(message)
+       $bag.add(:WATER,$bag.quantity(:WATERBOTTLE))
+	else
+       $bag.add(:WATER,1)
+	end
+	end
+	next true
+   else
+    pbMessage(_INTL("That is not water."))
+	next false
+end
+})
+ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |item|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Want to pick up water?"))
+    if pbConfirmMessage(message)
+      message=(_INTL("Do you want to use all your bottles?"))
+    if pbConfirmMessage(message)
+       $bag.add(:WATER,$bag.quantity(:GLASSBOTTLE))
+	else
+       $PokemonBag.add(:WATER,1)
+	end
+
+	end
+	next true
+   else
+    pbMessage(_INTL("That is not water."))
+	next false
+end
+})
+ItemHandlers::UseInField.add(:IRONAXE,proc { |item|
+if $game_player.pbFacingTerrainTag.can_knockdown
+     message=(_INTL("Want to knock down some branches?"))
+    if pbConfirmMessage(message)
+       $bag.add(:ACORN,(rand(6)))
+	end
+	next true
+   else
+    pbMessage(_INTL("That is not a tree."))
+	next false
+end
+})
+
+
+
+def pbBait
+  viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+  viewport.z = 99999
+  count = 0
+  viewport.color.red   = 255
+  viewport.color.green = 0
+  viewport.color.blue  = 0
+  viewport.color.alpha -= 10
+  alphaDiff = 12 * 20 / Graphics.frame_rate
+  loop do
+    if count == 0 && viewport.color.alpha < 128
+      viewport.color.alpha += alphaDiff
+    elsif count > Graphics.frame_rate / 4
+      viewport.color.alpha -= alphaDiff
+    else
+      count += 1
+    end
+    Graphics.update
+    Input.update
+    pbUpdateSceneMap
+    break if viewport.color.alpha <= 0
+  end
+  viewport.dispose
+  enctype = $PokemonEncounters.encounter_type
+  if !enctype || !$PokemonEncounters.encounter_possible_here?
+    pbMessage(_INTL("There appears to be nothing here..."))
+  else
+   pbMessage(_INTL("You throw the bait on the ground, and a POKeMON appeared!"))
+	$game_temp.in_safari=true
+   if pbEncounter(enctype)
+   end
+	$game_temp.in_safari=false
+  end
+end
+
+
+
+
 def pbHasCrate?
  return true if $bag.has?(:PORTABLEPC)
  return true if $bag.has?(:ITEMCRATE)
@@ -230,33 +340,6 @@ ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
 })
 
 
-
-ItemHandlers::UseInField.add(:PORTABLECAMP,proc{|item|
-   if pbConfirmMessage(_INTL("Are you sure you want to use the Camp?"))
-  pbFadeOutIn {
-     pbMessage(_INTL("You laid down in the Portable Camp, heading to sleep."))
-     $game_variables[29] += 67200
-     pbSleepRestore(10)}
-				if $player.playersleep >= 100
-			        pbMessage(_INTL("You feel well rested!"))
-				elsif $player.playersleep >= 75
-			        pbMessage(_INTL("You feel a little groggy, but are raring to go!"))
-				elsif $player.playersleep >= 50
-			        pbMessage(_INTL("Your brain feels fuzzy."))
-				elsif $player.playersleep >= 25
-			        pbMessage(_INTL("You want to go back to bed."))
-				else
-			        pbMessage(_INTL("You really need to sleep."))
-				end 
-    next 2
-   next true
-   else
-     pbMessage(_INTL("You decide against sleeping."))
-	 next false
-   end
-     next false
-})
-
 ItemHandlers::UseInField.add(:BERRYBLENDER,proc{|item|
   pbCommonEvent(29)
     next 1
@@ -390,56 +473,3 @@ ItemHandlers::UseInBattle.add(:PICKAXE,proc { |item,battler,battle|
 
 
 
-
-
-ItemHandlers::UseFromBag.add(:WATERBOTTLE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
-    if pbConfirmMessage(message)
-      message=(_INTL("Do you want to use all your bottles?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:WATER,$bag.quantity(:WATERBOTTLE))
-	   $bag.remove(:WATERBOTTLE,($bag.quantity(:WATERBOTTLE)-1))
-	else
-       $PokemonBag.pbStoreItem(:WATER,1)
-	end
-	end
-	next 4
-   else
-    Kernel.pbMessage(_INTL("That is not water."))
-	next 0
-end
-})
-
-ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
-    if pbConfirmMessage(message)
-      message=(_INTL("Do you want to use all your bottles?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:WATER,$bag.quantity(:GLASSBOTTLE))
-	   $bag.remove(:GLASSBOTTLE,($bag.quantity(:GLASSBOTTLE)-1))
-	else
-       $PokemonBag.pbStoreItem(:WATER,1)
-	end
-
-	end
-	next 4
-   else
-    Kernel.pbMessage(_INTL("That is not water."))
-	next 0
-end
-})
-
-ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_knockdown
-     message=(_INTL("Want to knock down some branches?"))
-    if pbConfirmMessage(message)
-       $PokemonBag.pbStoreItem(:ACORN,(rand(6)))
-	end
-	next 2
-   else
-    Kernel.pbMessage(_INTL("That is not a tree."))
-	next 0
-end
-})

@@ -1606,6 +1606,7 @@ MenuHandlers.add(:party_menu_item, :move, {
 MenuHandlers.add(:party_menu, :tend, {
   "name"      => _INTL("Tend"),
   "order"     => 39,
+  "condition" => proc { |screen, party, party_idx| next $PokemonSystem.playermode == 1 },
   "effect"    => proc { |screen, party, party_idx|    # Get all commands
     command_list = []
     commands = []
@@ -1745,19 +1746,6 @@ MenuHandlers.add(:party_menu_tend, :evolve, {
   }
 })
 
-MenuHandlers.add(:party_menu_tend, :relearn, {
-  "name"      => _INTL("Relearn"),
-  "order"     => 40,
-  "effect"    => proc { |screen, party, party_idx|
-    pkmn = party[party_idx]
-	form = pkmn.form
-        if MoveRelearnerScreen.pbGetRelearnableMoves(pkmn).empty?
-          pbMessage(_INTL("This Pokémon doesn't have any moves to remember yet."))
-        else
-          pbRelearnMoveScreen(pkmn) 
-        end
-  }
-})
 
 #===============================================================================
 # Open the party screen

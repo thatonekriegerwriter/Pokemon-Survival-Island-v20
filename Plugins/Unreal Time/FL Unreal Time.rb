@@ -13,7 +13,7 @@
 #== HOW TO USE =================================================================
 #
 # This script automatic works after installed. 
-#
+#pbGetThisTime
 # If you wish to add/reduce time, there are 3 ways:
 #
 # 1. EXTRA_SECONDS/EXTRA_DAYS are variables numbers that hold time passage;
@@ -48,7 +48,7 @@
 if defined?(PluginManager) && !PluginManager.installed?("Unreal Time System")
   PluginManager.register({                                                 
     :name    => "Unreal Time System",                                        
-    :version => "1.1",                                                     
+    :version => "1.1.1",                                                     
     :link    => "https://www.pokecommunity.com/showthread.php?t=285831",             
     :credits => "FL"
   })
@@ -225,6 +225,59 @@ def pbGetTimeNow
   return time_ret
 end
 
+
+def pbGetThisTime(time,type="add")
+  day_seconds = 60*60*24
+  curTime = time
+  monthamt = 1
+  start_time=UnrealTime.initial_date
+  if type == "add"
+    if curTime.month+monthamt==13
+	themonth = 0
+	else
+	themonth = curTime.month
+	end
+    dayamt=pbGetTotalDays(themonth+monthamt,curTime.year)
+    modifytime = monthamt*dayamt*day_seconds
+    time_ret=curTime+modifytime
+  else
+    if curTime.month-monthamt==0
+	themonth = 13
+	else
+	themonth = curTime.month
+	end
+    dayamt=pbGetTotalDays(curTime.month-monthamt,curTime.year)
+    modifytime = monthamt*dayamt*day_seconds
+	if (curTime-modifytime).sec > 0
+    time_ret=curTime-modifytime
+	else
+    time_ret=start_time
+	end
+  end
+
+  return time_ret
+end
+
+def pbGetNextYear(time,type="add")
+  day_seconds = 60*60*24
+  curTime = time
+  start_time=UnrealTime.initial_date
+  monthamt = 12
+	themonth = curTime.month
+  dayamt=pbGetTotalDays(themonth,curTime.year)
+  modifytime = monthamt*dayamt*day_seconds
+if type == "add"
+  time_ret=curTime+modifytime
+else
+  time_ret=curTime-modifytime
+end
+  return time_ret
+end
+
+
+
+
+
 if UnrealTime::ENABLED
   class PokemonGlobalMetadata
     attr_accessor :newFrameCount # Became float when using extra values
@@ -238,10 +291,6 @@ if UnrealTime::ENABLED
         day_care.step_counter = 0 if !day_care.egg_generated
         day_care.step_counter += 1
 	   end
-
-  if $PokemonSystem.playermode == 0 
-     $player.demotimer = $player.demotimer.to_i-1
-  end
       self.newFrameCount+=1
     end
     

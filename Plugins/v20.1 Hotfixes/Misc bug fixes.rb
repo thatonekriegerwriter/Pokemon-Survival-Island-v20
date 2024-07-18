@@ -695,13 +695,8 @@ module Game
     $scene = Scene_Map.new
     SaveData.load_new_game_values
     $stats.play_sessions += 1
-    if $PokemonSystem.playermode == 1
     $map_factory = PokemonMapFactory.new($data_system.start_map_id)
     $game_player.moveto($data_system.start_x, $data_system.start_y)
-    elsif $PokemonSystem.playermode == 0
-    $map_factory = PokemonMapFactory.new(394)
-    $game_player.moveto(000, 001)
-    end
     $game_player.refresh
     $PokemonEncounters = PokemonEncounters.new
     $PokemonEncounters.setup($game_map.map_id)

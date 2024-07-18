@@ -14,6 +14,7 @@ module ShowSeasonBW2
     if !pbMapInterpreterRunning?
       checked = 0
       loop do
+        $PokemonGlobal.addNewFrameCount 
         Graphics.update
         case checked
         when 0
@@ -59,6 +60,7 @@ module Game
   def self.load(save_data)
     validate save_data => Hash
     SaveData.load_all_values(save_data)
+    $game_temp.last_uptime_refreshed_play_time = System.uptime
     $stats.play_sessions += 1
     self.load_map
     pbAutoplayOnSave
@@ -66,6 +68,22 @@ module Game
     $PokemonMap.updateMap
     $scene = Scene_Map.new
     ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
-	pbToneChangeAll(Tone.new(0,0,0,0),20)
+    pbToneChangeAll(Tone.new(0,0,0,0),20)
   end
+  
+  
+  
+  
+  
 end
+
+  EventHandlers.add(:on_map_transfer, :season_splash,
+    proc { |_old_map_id|
+      next if !$game_map
+      next if !$game_map.metadata&.outdoor_map
+      ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
+    }
+  )
+  
+  
+  

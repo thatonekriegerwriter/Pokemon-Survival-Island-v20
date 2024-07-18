@@ -456,6 +456,7 @@ ItemHandlers::UseOnPokemon.add(:RARECANDY, proc { |item, qty, pkmn, scene|
 
 MenuHandlers.add(:options_menu, :level_caps, {
   "name"        => _INTL("Level Caps"),
+  "parent"      => :gameplay_menu,
   "order"       => 90,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],

@@ -79,7 +79,7 @@
 # an error. This won't occurs if the previous selection is only an order change. 
 #
 # To perform only an order change, use
-# 'PokemonSelection.choose($Trainer.party.size,$Trainer.party.size)'.
+# 'PokemonSelection.choose($player.party.size,$player.party.size)'.
 #
 # If you take a look in PokemonChallengeRules applications in scripts you can
 # customize some others choice conditions like have a certain level or ban
@@ -179,10 +179,10 @@ module PokemonSelection
     end
     if validPartyChosen
       # If the party size is the same, it is only an order change 
-      if($Trainer.party.size != pbBattleChallenge.getParty.size)
-        $PokemonGlobal.pokemonSelectionOriginalParty=$Trainer.party
+      if($player.party.size != pbBattleChallenge.getParty.size)
+        $PokemonGlobal.pokemonSelectionOriginalParty=$player.party
       end 
-      $Trainer.party=pbBattleChallenge.getParty
+      $player.party=pbBattleChallenge.getParty
     end
     pbBattleChallenge.pbCancel
     return validPartyChosen
@@ -194,14 +194,14 @@ module PokemonSelection
       return false
     end
     newPokemon = newPokemonOnParty
-    $Trainer.party=$PokemonGlobal.pokemonSelectionOriginalParty
+    $player.party=$PokemonGlobal.pokemonSelectionOriginalParty
     $PokemonGlobal.pokemonSelectionOriginalParty=nil
     addPokemonOnArray(newPokemon)
     return true
   end  
 
   def self.newPokemonOnParty
-    return $Trainer.party.find_all{|partyPokemon|
+    return $player.party.find_all{|partyPokemon|
       !$PokemonGlobal.pokemonSelectionOriginalParty.find{|originalPartyPokemon| 
         originalPartyPokemon.personalID == partyPokemon.personalID
       }
@@ -210,10 +210,10 @@ module PokemonSelection
 
   def self.addPokemonOnArray(pokemonArray)
     for pokemon in pokemonArray
-      if $Trainer.party.length==6
+      if $player.party.length==6
         $PokemonStorage.pbStoreCaught(pokemon)
       else
-        $Trainer.party.push(pokemon)
+        $player.party.push(pokemon)
       end
     end
   end

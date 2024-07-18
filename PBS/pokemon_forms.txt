@@ -233,6 +233,8 @@ Color = White
 Pokedex = Alolan Vulpii have very little control over their movements, they slide along the ground like it is ice.
 Generation = 7
 WildItemUncommon = SNOWBALL
+WildItemCommon = LIGHTCLAY
+WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE,VULPIX,Level,14
 #-------------------------------
 [VULPIX,1]
@@ -247,6 +249,8 @@ Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
 WildItemUncommon = SNOWBALL
+WildItemCommon = LIGHTCLAY
+WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE,VULRECUR,HasMove,COLDFRONT
 #-------------------------------
 [VULRECUR,1]
@@ -261,6 +265,8 @@ Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
 WildItemUncommon = SNOWBALL
+WildItemCommon = LIGHTCLAY
+WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE
 #-------------------------------
 [NINETALES,1]

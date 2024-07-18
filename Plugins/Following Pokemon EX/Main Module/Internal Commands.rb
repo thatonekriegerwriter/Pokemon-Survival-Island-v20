@@ -41,8 +41,10 @@ module FollowingPkmn
     $PokemonGlobal.time_taken += 1
     friendship_time = FollowingPkmn::FRIENDSHIP_TIME_TAKEN * Graphics.frame_rate
     item_time = FollowingPkmn::ITEM_TIME_TAKEN * Graphics.frame_rate
+	if !FollowingPkmn.get_pokemon.nil?
     FollowingPkmn.get_pokemon.changeHappiness("FollowerPkmn",FollowingPkmn.get_pokemon) if ($PokemonGlobal.time_taken % friendship_time) == 0
     FollowingPkmn.get_pokemon.changeLoyalty("FollowerPkmn",FollowingPkmn.get_pokemon) if ($PokemonGlobal.time_taken % friendship_time) == 0
+	end
     $PokemonGlobal.follower_hold_item = true if ($PokemonGlobal.time_taken > item_time)
   end
   #-----------------------------------------------------------------------------

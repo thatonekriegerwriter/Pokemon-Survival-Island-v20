@@ -51,11 +51,11 @@ module Nuzlocke
       cmdwindow.update
       msgwindow.update if !msgwindow.nil?
       # updates command output
-      if Input.trigger?(Input::B)
+      if Input.trigger?(Input::BACK)
         pbPlayCancelSE
         ret = -1
         break
-      elsif Input.trigger?(Input::C)
+      elsif Input.trigger?(Input::USE)
         pbPlayDecisionSE
         ret = cmdwindow.index
         break
@@ -126,14 +126,8 @@ module Nuzlocke
     ret = self.selection unless skip
     $PokemonGlobal.qNuzlocke = ret
     # sets the nuzlocke to true if already has a bag and Pokeballs
-    for i in self.all_items
-      break if !$PokemonBag
-      if GameData::Item.get(i).is_poke_ball? && $PokemonBag.pbHasItem?(i)
-        @@nuzlocke = ret
-        $PokemonGlobal.isNuzlocke = ret
-        break
-      end
-    end
+    $PokemonGlobal.isNuzlocke = true
+
     # creates global variable
     $PokemonGlobal.nuzlockeData = {} if $PokemonGlobal.nuzlockeData.nil?
   end
@@ -153,46 +147,46 @@ module Nuzlocke
       _INTL("Exclude shiny from encounter limit")
     ]
     # default
-    added = [:NOREVIVE, :DUPSCLAUSE, :ONEROUTE, :STATIC, :SHINY]; cmd = 0
-    # creates help text message window
-    msgwindow = pbCreateMessageWindow(nil, "choice 1")
-    msgwindow.text = _INTL("Select the Nuzlocke Rules you wish to apply.")
+    added = [:NOREVIVE]; cmd = 0
+    ## creates help text message window
+    #msgwindow = pbCreateMessageWindow(nil, "choice 1")
+    #msgwindow.text = _INTL("Select the Nuzlocke Rules you wish to apply.")
     # main loop
-    loop do
-      # generates all commands
-      commands = []
-      for i in 0...modifiers.length
-        commands.push(_INTL("{1} {2}",(added.include?(modifiers[i])) ? "[X]" : "[  ]",desc[i]))
-      end
-      commands.push(_INTL("Done"))
-      # goes to command window
-      cmd = self.commandWindow(commands, cmd, msgwindow)
-      # processes return
-      if cmd < 0
-        clear = pbConfirmMessage("Do you wish to cancel the Nuzlocke selection?")
-        added.clear if clear
-        next unless clear
-      end
-      break if cmd < 0 || cmd >= (commands.length - 1)
-      if cmd >= 0 && cmd < (commands.length - 1)
-        if added.include?(modifiers[cmd])
-          added.delete(modifiers[cmd])
-        else
-          added.push(modifiers[cmd])
-        end
-      end
-    end
+   # loop do
+    #  # generates all commands
+    #  commands = []
+    #  for i in 0...modifiers.length
+    #    commands.push(_INTL("{1} {2}",(added.include?(modifiers[i])) ? "[X]" : "[  ]",desc[i]))
+    #  end
+    #  commands.push(_INTL("Done"))
+    #  # goes to command window
+     # cmd = self.commandWindow(commands, cmd, msgwindow)
+    #  # processes return
+     # if cmd < 0
+    #    clear = pbConfirmMessage("Do you wish to cancel the Nuzlocke selection?")
+     #   added.clear if clear
+    #    next unless clear
+    #  end
+    #  break if cmd < 0 || cmd >= (commands.length - 1)
+    #  if cmd >= 0 && cmd < (commands.length - 1)
+    #    if added.include?(modifiers[cmd])
+    #      added.delete(modifiers[cmd])
+    #    else
+    #      added.push(modifiers[cmd])
+    #    end
+    #  end
+    #end
     # disposes of message window
-    pbDisposeMessageWindow(msgwindow)
+    #pbDisposeMessageWindow(msgwindow)
     # adds nuzlocke rules
     $PokemonGlobal.nuzlockeRules = added
     @@rules = added
     # shows message
-    msg = _INTL("Your selected Nuzlocke rules have been applied.")
-    msg = _INTL("No Nuzlocke rules have been applied.") if added.length < 1
-    msg = _INTL("Your selection has been cancelled.") if cmd < 0
-    pbMessage(msg)
-    Input.update
+    #msg = _INTL("Your selected Nuzlocke rules have been applied.")
+    #msg = _INTL("No Nuzlocke rules have been applied.") if added.length < 1
+    #msg = _INTL("Your selection has been cancelled.") if cmd < 0
+    #pbMessage(msg)
+    #Input.update
     return added.length > 0
   end
   #-----------------------------------------------------------------------------

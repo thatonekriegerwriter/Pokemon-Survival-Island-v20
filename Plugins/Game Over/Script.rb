@@ -100,10 +100,15 @@ class Scene_Gameover
 	end
 	@sprite.z = 950
     # Stop BGM and BGS
-    $game_system.bgm_play(nil)
-    $game_system.bgs_play(nil)
+    $game_system.bgm_stop
+    $game_system.bgs_stop
 	potato = false
     # Play game over ME
+	if $PokemonGlobal.hardcore == true
+	 slot = SaveData::MANUAL_SLOTS[0]
+	 save_data = SaveData.get_full_path(slot)
+     SaveData.delete_this_save(save_data)
+	end
 	if chance==0
      @sprite.bitmap = RPG::Cache.gameover($data_system.gameover_name)
      $game_system.me_play($data_system.gameover_me)

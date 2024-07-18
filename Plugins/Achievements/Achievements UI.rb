@@ -1,4 +1,65 @@
 ###---ACHIEVEMENTS
+class AchievementUnlockWindow
+  def initialize(number)
+    @achName=AchievementsList.getAchievements[number][0]
+    #@achievementID=$game_map.map_id
+    @window=Window_AdvancedTextPokemon.new("")
+    Kernel.pbMessage(_INTL("\\ts[]\\w[textbox9]\\wu\\wtnp[15]\\op<icon=bagPocket3>Achievement Unlocked: {1}\\cl",@achName))
+    @window.width=256
+    @window.height=96
+    @window.x=@window.width-256
+    @window.y=-@window.height
+    @window.z=99999
+    @frames=0
+  end
+
+  def disposed?
+    @window.disposed?
+  end
+
+  def dispose
+    @window.dispose
+  end
+
+  def update
+    return if @window.disposed?
+    @window.update
+    if $game_temp.message_window_showing
+      @window.dispose
+      return
+    end
+    if @frames>80
+      @window.y-=4
+      @window.dispose if @window.y+@window.height<0
+    else
+      @window.y+=4 if @window.y<0
+      @frames+=1
+    end
+  end
+end
+
+
+def pbAchievementGet(number)
+  if $PokemonGlobal.achievements[number][0]==true
+  $PokemonGlobal.achievements[number][1] = 0 if $PokemonGlobal.achievements[number][1]==false
+  $PokemonGlobal.achievements[number][1]+=1
+  return 
+  else
+  $PokemonGlobal.achievements[number][0]=true
+  $PokemonGlobal.achievements[number][1] = 0 if $PokemonGlobal.achievements[number][1]==false
+  $PokemonGlobal.achievements[number][1]+=1
+  pbMEPlay("Bug catching 3rd")
+  AchievementUnlockWindow.new(number)
+  end
+  
+end
+
+
+
+
+
+
+
 class Achievements_Scene
 #################################
 ## Configuration
@@ -29,11 +90,11 @@ class Achievements_Scene
     @selectY=36
     @achList=AchievementsList.getAchievements
     for i in 0..@achList.length
-      if $game_switches[(i+1201)]==true
+      if $PokemonGlobal.achievements[i][0]==true
         @imagepos.push(["Graphics/Pictures/AchievementsC/achievement#{i}",32+64*(coord%7),36+64*(coord/7).floor,
              0,0,48,48])
         coord+=1
-      elsif $game_switches[(i+1201)]==false
+      elsif $PokemonGlobal.achievements[i][0]==false
         @imagepos.push(["Graphics/Pictures/AchievementsC/achievementEmpty",32+64*(coord%7),36+64*(coord/7).floor,
              0,0,48,48])
         coord+=1
@@ -92,12 +153,11 @@ class Achievements_Scene
       @sprites["selector"].x=@selectX
       @sprites["selector"].y=@selectY
       selectionNum=@selection
-      @achievementName=AchievementsList.getAchievements[selectionNum][1]
-      @achievementText=AchievementsList.getAchievements[selectionNum][2]
-      @sprites["achievementName"].text=_INTL("???")
+      @achievementName=AchievementsList.getAchievements[selectionNum][0]
+      @achievementText=AchievementsList.getAchievements[selectionNum][1]
       @sprites["achievementText"].text=_INTL("???")
-      @sprites["achievementName"].text=_INTL("{1}",@achievementName) if $game_switches[(selectionNum+1201)]==true
-      @sprites["achievementText"].text=_INTL("{1}",@achievementText) if $game_switches[(selectionNum+1201)]==true
+      @sprites["achievementName"].text=_INTL("{1}",@achievementName)
+      @sprites["achievementText"].text=_INTL("{1}",@achievementText) if $PokemonGlobal.achievements[selectionNum][0]==true
       if Input.trigger?(Input::LEFT)
         if @selection==0||@selection==7||@selection==14||@selection==21
           @selectX=416
@@ -142,14 +202,33 @@ class Achievements_Scene
   end
 end
 
-
+class PokemonGlobalMetadata
+  attr_accessor :achievements
+  
+  
+  def achievements
+    @achievements = get_achievements if !@achievements
+	 if @achievements.length < AchievementsList.getAchievements.length
+	   amt = AchievementsList.getAchievements.length-@achievements.length
+	   amt.times do |i|
+	    @achievements << [false,0]
+	   end
+	 end
+    return @achievements
+  end
+  
+  def get_achievements
+     achievements=[]
+    AchievementsList.getAchievements.length.times do |i|
+	    achievements << [false,0]
+	end
+    return achievements
+  end
+end
 
 class PokemonAchievementSelect
   attr_accessor :lastAchievement
   attr_reader :Achievements
-  def numChars()
-    return Achievements_Scene.achievementsList().length-1
-  end
   def initialize
     @lastAchievement=1
     @achievements=[]
@@ -160,9 +239,16 @@ class PokemonAchievementSelect
       @choices[i]=0
     end
   end
+  
+
   def achievements
-    rearrange()
+    #rearrange()
     return @achievements
+  end
+  
+  
+  def numChars()
+    return Achievements_Scene.achievementsList().length-1
   end
 
   def rearrange()
@@ -175,39 +261,60 @@ class PokemonAchievementSelect
       @achievements=newAchievements
     end
   end
+
+
+
 end
 
 module AchievementsList
   def self.getAchievements
     @achievementsList=[
-      [0,"The Violence Begins","Win a battle against a wild Pokemon."],
-      [1,"The End","Complete the Survival Island story."],
-      [2,"Nuzlocke and Load","Start and finish the game in Nuzlocke Mode."],
-      [3,"Dead on Survival","Start and finish the game in Survival Mode."],
-      [4,"Thrive","Make a house."],
-      [5,"Futility's Triumph","Win a battle using 'struggle'."],
-      [6,"Bad Romance","Breed a Skitty and Wailord."],
-      [7,"One-Hit Wonder","Land 15 One-Hit K-Os."],
-      [8,"Pure Hatred","Bring a Pokemon's happiness down to 0."],
-      [9,"Explorer","Walk off the beaten path."],
-      [10,"Explorer","Walk off the beaten path."],
-      [11,"Explorer","Walk off the beaten path."],
-      [12,"Explorer","Walk off the beaten path."],
-      [13,"Explorer","Walk off the beaten path."],
-      [14,"Explorer","Walk off the beaten path."],
-      [15,"Explorer","Walk off the beaten path."],
-      [16,"Explorer","Walk off the beaten path."],
-      [17,"Explorer","Walk off the beaten path."],
-      [18,"Explorer","Walk off the beaten path."],
-      [19,"N/A",""],
-      [20,"N/A",""],
-      [21,"N/A",""],
-      [22,"N/A",""],
-      [23,"N/A",""],
-      [24,"N/A",""],
-      [25,"N/A",""],
-      [26,"N/A",""],
-      [27,"N/A",""]
+      ["Survive","Begin your stay on the Island."], #0
+      ["Explorer","Head off the beaten path."], #1
+      ["Thrive","Place an Item."], #2
+	  
+	  
+	  
+	  
+      ["The Violence Begins","Win a Command Battle against a wild POKéMON."], #3
+      ["Futility's Triumph","Win a Command Battle using 'Struggle'."], #4
+      ["One-Hit Wonder","Land 15 One-Hit K-Os in either a Command or Field Battle."], #5
+      ["I'll Handle This.","Win a Field Battle personally."], #6
+      ["Riskier Plays.","Win a Field Battle using a POKéMON."], #7
+      ["Took the Bullet","Die in Field Battle with all your POKéMON healthy."], #8
+	  
+	  
+	  
+	  
+	  
+      ["Filled with Malice","Catch a POKéMON with a Hateful Nature."], #9
+      ["Pure Hatred","Bring a POKéMON's happiness down to 0."], #10
+      ["Ain't Loyal","Bring a POKéMON's loyalty down to 0."], #11
+      ["Fallen Comrade","Have a POKéMON die."], #12
+      ["Bad Romance","Breed a Skitty and Wailord."], #13
+	  
+      ["Watermelon Festival","Grow a Plant of Superb Quality."], #14
+      ["5-Star Chef","Cook a Meal of Superb Quality."], #15
+      ["Gonna Catch Them All","Make more lifetime POKéBALLs than there are POKéMON types."], #16
+      ["Fished a Big One","Fish up a Magikarp of Extreme Size."], #17
+      ["On the Rocks","Have your Pickaxe or Hammer break while Mining."], #18
+	  
+	  
+	  
+      ["Abandoned by a Comrade","Have a POKéMON you sent on an Adventure ditch you."],#19
+      ["Full House","Have a Full Party both with you and on an Adventure."],#20
+      ["Dungeon Dove","Have a POKéMON complete a Dungeon."],#21
+	  
+	  
+      ["???",""],#22
+      ["???",""],#23
+      ["???",""],#24
+      ["???",""],#25
+	  
+	  
+      ["Nuzlocke and Load","Start the game in Nuzlocke Mode."], #26
+      ["Dead on Survival","Start the game in Survival Mode."], #27
+      ["True Story","Complete the game with both Nuzlocke and Survival Mode on the entire time."] #28
     ]
     return @achievementsList
   end

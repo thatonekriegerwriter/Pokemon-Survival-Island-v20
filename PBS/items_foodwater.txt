@@ -1,0 +1,1190 @@
+# See the documentation on the wiki to learn how to edit this file.
+#-------------------------------
+[MEAT]
+Name = Meat
+NamePlural = Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[HONEY]
+Name = Honey
+NamePlural = Honey
+PortionName = jar of Honey
+PortionNamePlural = jars of Honey
+Pocket = 1
+Price = 900
+FieldUse = Direct
+Flags = Fling_30,FoodWater
+Description = A sweet honey with a lush aroma that attracts wild Pokémon when used in tall grass, in caves, or elsewhere.
+#-------------------------------
+[BIRDMEAT]
+Name = Bird Meat
+NamePlural = Bird Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[POISONOUSMEAT]
+Name = Poisonous Meat
+NamePlural = Poisonous Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[ROCKYMEAT]
+Name = Rocky Meat
+NamePlural = Rocky Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[BUGMEAT]
+Name = Bug Meat
+NamePlural = Bug Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[STEELYMEAT]
+Name = Steely Meat
+NamePlural = Steely Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SUSHI]
+Name = Sushi
+NamePlural = Sushi
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[LEAFYMEAT]
+Name = Leafy Meat
+NamePlural = Leafy Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[FROZENMEAT]
+Name = Icey Rocks
+NamePlural = Icey Rocks
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[DRAGONMEAT]
+Name = Dragon Meat
+NamePlural = Dragon Meat
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[EDIABLESCRYSTAL]
+Name = Ediable Crystal
+NamePlural = Ediable Crystal
+Pocket = 6
+Price = 5
+Flags = 
+Description = 
+#-------------------------------
+[ORANMASH]
+Name = Oran Mash
+NamePlural = Oran Mash
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDMEAT]
+Name = Meat (Cooked)
+NamePlural = Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[FISHSOUP]
+Name = Soup (Fish)
+NamePlural = Soup (Fish)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SOUPBROTH]
+Name = Soup Broth
+NamePlural = Soup Broth
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDBIRDMEAT]
+Name = Bird Meat (Cooked)
+NamePlural = Bird Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = It tastes like chicken?
+#-------------------------------
+[COOKEDROCKYMEAT]
+Name = Rocky Meat (Cooked)
+NamePlural = Rocky Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = Crunchy. Ow.
+#-------------------------------
+[COOKEDBUGMEAT]
+Name = Bug Meat (Cooked)
+NamePlural = Bug Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = Ew. Tasty.
+#-------------------------------
+[COOKEDSTEELYMEAT]
+Name = Steely Meat (Cooked)
+NamePlural = Steely Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = Ow. Tasty.
+#-------------------------------
+[COOKEDSUSHI]
+Name = Sushi (Cooked)
+NamePlural = Sushi (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = Kitties love.
+#-------------------------------
+[COOKEDLEAFYMEAT]
+Name = Leafy Meat (Cooked)
+NamePlural = Leafy Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = A NonVegan Plant Alternate
+#-------------------------------
+[COOKEDDRAGONMEAT]
+Name = Dragon Meat (Cooked)
+NamePlural = Dragon Meat (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = If this was an Isekai, you would die.
+#-------------------------------
+[COOKEDEDIABLESCRYSTAL]
+Name = Ediable Crystal (Cooked)
+NamePlural = Ediable Crystal (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICH]
+Name = Meat Sandwich (Normal)
+NamePlural = Meat Sandwich (Normal)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHMJ]
+Name = Meat Sandwich (Meat Jesus)
+NamePlural = Meat Sandwich (Meat Jesus)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSUS]
+Name = Meat Sandwich (Sus)
+NamePlural = Meat Sandwich (Sus)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHLEAFY]
+Name = Meat Sandwich (Leafy)
+NamePlural = Meat Sandwich (Leafy)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHCRYSTAL]
+Name = Meat Sandwich (Crystal)
+NamePlural = Meat Sandwich (Crystal)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHROCKY]
+Name = Meat Sandwich (Crunchy)
+NamePlural = Meat Sandwich (Crunchy)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHBUG]
+Name = Meat Sandwich (Ew)
+NamePlural = Meat Sandwich (Ew)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSTEELY]
+Name = Meat Sandwich (Dental Visit)
+NamePlural = Meat Sandwich (Dental Visit)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHBIRD]
+Name = Meat Sandwich (Chicken?)
+NamePlural = Meat Sandwich (Chicken?)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATSANDWICHSLOWPOKETAIL]
+Name = Meat Sandwich (Slowpoke Tail)
+NamePlural = Meat Sandwich (Slowpoke Tail)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SITRUSJUICE]
+Name = Sitrus Juice
+NamePlural = Sitrus Juice
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[BERRYMASH]
+Name = Berry Mash
+NamePlural = Berry Mash
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[COOKEDORAN]
+Name = Oran Berry (Cooked)
+NamePlural = Oran Berry (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[BREAD]
+Name = Bread
+NamePlural = Bread
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[TEA]
+Name = Tea
+NamePlural = Tea
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[WATER]
+Name = Water
+NamePlural = Water
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CARROTCAKE]
+Name = Carrot Cake
+NamePlural = Carrot Cake
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CHOCOLATE]
+Name = Chocolate
+NamePlural = Chocolate
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SUGAR]
+Name = Sugar
+NamePlural = Sugar
+Pocket = 1
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CSLOWPOKETAIL]
+Name = Slowpoke Tail (Cooked)
+NamePlural = Slowpoke Tail (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[BAKEDPOTATO]
+Name = Potato (Cooked)
+NamePlural = Potato (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CHERUBIBALL]
+Name = Cherubi Ball
+NamePlural = Cherubi Ball
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[EGGEDIBLE]
+Name = Egg
+NamePlural = Eggs
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[POTATOSTEW]
+Name = Stew (Potato)
+NamePlural = Stew (Potato)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[ATKCURRY]
+Name = Spelon Curry
+NamePlural = Spelon Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SATKCURRY]
+Name = Kelpsy Curry
+NamePlural = Kelpsy Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SPEEDCURRY]
+Name = Watmel Curry
+NamePlural = Watmel Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SPDEFCURRY]
+Name = Durin Curry
+NamePlural = Durin Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[ACCCURRY]
+Name = Micle Curry
+NamePlural = Micle Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[DEFCURRY]
+Name = Belue Curry
+NamePlural = Belue Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CRITCURRY]
+Name = Lansat Curry
+NamePlural = Lansat Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[GSCURRY]
+Name = Starf Curry
+NamePlural = Starf Curry
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[LARGEMEAL]
+Name = Hearty Meal
+NamePlural = Hearty Meal
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[HOTDOG]
+Name = Hot Dog
+NamePlural = Hot Dog
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CORNDOG]
+Name = Corn Dog
+NamePlural = Corn Dog
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[FUNNELCAKE]
+Name = Funnel Cake
+NamePlural = Funnel Cake
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CHEESECAKE]
+Name = Cheese Cake
+NamePlural = Cheese Cake
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[ICECREAMSANDWICH]
+Name = Ice Cream Sandwich
+NamePlural = Ice Cream Sandwich
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[CHURROS]
+Name = Churro
+NamePlural = Churro
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[TOFFEEAPPLE]
+Name = Toffee Apple
+NamePlural = Toffee Apple
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[JAMDONUT]
+Name = Jelly Donut
+NamePlural = Jelly Donut
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[DEEPFRIEDFRIES]
+Name = Deep Fried Fries
+NamePlural = Deep Fried Fries
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[PRETZELS]
+Name = Pretzel
+NamePlural = Pretzel
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[ICECREAM]
+Name = Ice Cream
+NamePlural = Ice Cream
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[SNOWCONE]
+Name = Snow Cone
+NamePlural = Snow Cone
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MEATKABOB]
+Name = Kabob (Meat)
+NamePlural = Kabob (Meat)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = 
+#-------------------------------
+[MAXHONEY]
+Name = Max Honey
+NamePlural = Max Honeys
+PortionName = comb of Max Honey
+PortionNamePlural = combs of Max Honey
+Pocket = 2
+Price = 8000
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Honey that Dynamax Vespiquen produces. It has the same effect as a Max Revive.
+#-------------------------------
+[BERRYJUICE]
+Name = Berry Juice
+NamePlural = Berry Juices
+PortionName = cup of Berry Juice
+PortionNamePlural = cups of Berry Juice
+Pocket = 6
+Price = 100
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = A 100% pure juice made of Berries. It restores the HP of one Pokémon by just 20 points.
+#-------------------------------
+[SWEETHEART]
+Name = Sweet Heart
+NamePlural = Sweet Hearts
+Pocket = 6
+Price = 3000
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Very sweet chocolate. It restores the HP of one Pokémon by only 20 points.
+#-------------------------------
+[FRESHWATER]
+Name = Fresh Water
+NamePlural = Fresh Waters
+PortionName = bottle of Fresh Water
+PortionNamePlural = bottles of Fresh Water
+Pocket = 6
+Price = 200
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Water with high mineral content. It can be used to restore 30 HP to a single Pokémon.
+#-------------------------------
+[SODAPOP]
+Name = Soda Pop
+NamePlural = Soda Pops
+PortionName = bottle of Soda Pop
+PortionNamePlural = bottles of Soda Pop
+Pocket = 6
+Price = 300
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = A highly carbonated soda drink. It can be used to restore 50 HP to a single Pokémon.
+#-------------------------------
+[LEMONADE]
+Name = Lemonade
+NamePlural = Lemonades
+PortionName = can of Lemonade
+PortionNamePlural = cans of Lemonade
+Pocket = 6
+Price = 350
+SellPrice = 200
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = A very sweet and refreshing drink. It can be used to restore 70 HP to a single Pokémon.
+#-------------------------------
+[MOOMOOMILK]
+Name = Moomoo Milk
+NamePlural = Moomoo Milks
+PortionName = bottle of Moomoo Milk
+PortionNamePlural = bottles of Moomoo Milk
+Pocket = 6
+Price = 600
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 100 points.
+#-------------------------------
+[PEWTERCRUNCHIES]
+Name = Pewter Crunchies
+NamePlural = Pewter Crunchies
+PortionName = bag of Pewter Crunchies
+PortionNamePlural = bags of Pewter Crunchies
+Pocket = 6
+Price = 250
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Pewter City's famous crunchy snack. They can be used to heal all status conditions of a single Pokémon.
+#-------------------------------
+[RAGECANDYBAR]
+Name = Rage Candy Bar
+NamePlural = Rage Candy Bars
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Mahogany Town's famous candy. It can be used once to heal all the status conditions of a Pokémon.
+#-------------------------------
+[LAVACOOKIE]
+Name = Lava Cookie
+NamePlural = Lava Cookies
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Lavaridge Town's local specialty. It heals all the status problems of one Pokémon.
+#-------------------------------
+[OLDGATEAU]
+Name = Old Gateau
+NamePlural = Old Gateaux
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Old Chateau's hidden specialty. It heals all the status problems of a single Pokémon.
+#-------------------------------
+[CASTELIACONE]
+Name = Casteliacone
+NamePlural = Casteliacones
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Castelia City's specialty, soft-serve ice cream. It heals all the status problems of a single Pokémon.
+#-------------------------------
+[LUMIOSEGALETTE]
+Name = Lumiose Galette
+NamePlural = Lumiose Galettes
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = A popular treat in Lumiose City. It can be used once to heal all the status conditions of a Pokémon.
+#-------------------------------
+[SHALOURSABLE]
+Name = Shalour Sable
+NamePlural = Shalour Sables
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = Shalour City's famous shortbread. It can be used once to heal all the status conditions of a Pokémon.
+#-------------------------------
+[BIGMALASADA]
+Name = Big Malasada
+NamePlural = Big Malasadas
+Pocket = 6
+Price = 350
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = The Alola region's specialty--fried bread. It can be used once to heal all the status conditions of a Pokémon.
+#-------------------------------
+[MAXSOUP]
+Name = Max Soup
+NamePlural = Max Soups
+PortionName = serving of Max Soup
+PortionNamePlural = servings of Max Soup
+Pocket = 2
+Price = 10000
+FieldUse = OnPokemon
+Flags = Fling_30,FoodWater
+Description = A soup that packs a huge kick. Certain Pokémon that consume it may be given the ability to Gigantamax.
+#-------------------------------
+[MAXEGGS]
+Name = Max Eggs
+NamePlural = Max Eggs
+PortionName = clutch of Max Eggs
+PortionNamePlural = clutches of Max Eggs
+Pocket = 2
+Price = 20000
+FieldUse = Direct
+Flags = Fling_30,FoodWater
+Description = A bundle of highly nutritious, jumbo-sized eggs. Grants the entire party a large amount of Exp. Points.
+#-------------------------------
+[HARDYMINT]
+Name = Hardy Mint
+NamePlural = Hardy Mints
+PortionName = sprig of Hardy Mint
+PortionNamePlural = sprigs of Hardy Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[DOCILEMINT]
+Name = Docile Mint
+NamePlural = Docile Mints
+PortionName = sprig of Docile Mint
+PortionNamePlural = sprigs of Docile Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[BASHFULMINT]
+Name = Bashful Mint
+NamePlural = Bashful Mints
+PortionName = sprig of Bashful Mint
+PortionNamePlural = sprigs of Bashful Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[QUIRKYMINT]
+Name = Quirky Mint
+NamePlural = Quirku Mints
+PortionName = sprig of Quirky Mint
+PortionNamePlural = sprigs of Quirky Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[DULLMINT]
+Name = Dull Mint
+NamePlural = Dull Mints
+PortionName = sprig of Dull Mint
+PortionNamePlural = sprigs of Dull Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[POISEDMINT]
+Name = Poised Mint
+NamePlural = Poised Mints
+PortionName = sprig of Poised Mint
+PortionNamePlural = sprigs of Poised Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, it's Attack will grow at a slightly faster rate.
+#-------------------------------
+[TENSEMINT]
+Name = Tense Mint
+NamePlural = Tense Mints
+PortionName = sprig of Tense Mint
+PortionNamePlural = sprigs of Tense Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, it's Defense will grow at a slightly faster rate.
+#-------------------------------
+[ALERTMINT]
+Name = Alert Mint
+NamePlural = Alert Mints
+PortionName = sprig of Alert Mint
+PortionNamePlural = sprigs of Alert Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, it's Speed will grow at a slightly faster rate.
+#-------------------------------
+[NUTTYMINT]
+Name = Nutty Mint
+NamePlural = Nutty Mints
+PortionName = sprig of Nutty Mint
+PortionNamePlural = sprigs of Nutty Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, it's Special Attack will grow at a slightly faster rate.
+#-------------------------------
+[WEARYMINT]
+Name = Weary Mint
+NamePlural = Weary Mints
+PortionName = sprig of Weary Mint
+PortionNamePlural = sprigs of Weary Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = When a Pokémon smells this mint, it's Special Defense will grow at a slightly faster rate.
+#-------------------------------
+[BLUNTMINT]
+Name = Blunt Mint
+NamePlural = Blunt Mints
+PortionName = sprig of Blunt Mint
+PortionNamePlural = sprigs of Blunt Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A mint that make's Attack and Special Attack grow slightly faster, while Defense and Special Defense grow slightly slower.
+#-------------------------------
+[CAUTIOUSMINT]
+Name = Cautious Mint
+NamePlural = Cautious Mints
+PortionName = sprig of Cautious Mint
+PortionNamePlural = sprigs of Cautious Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A mint that make's Defense and Special Defense grow slightly faster, while Attack and Special Attack grow slightly slower.
+#-------------------------------
+[WISEMINT]
+Name = Wise Mint
+NamePlural = Wise Mints
+PortionName = sprig of Wise Mint
+PortionNamePlural = sprigs of Wise Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A mint that make's Special Attack and Special Defense grow slightly faster, while Attack and Defense grow slightly slower.
+#-------------------------------
+[DETERMINEDMINT]
+Name = Determined Mint
+NamePlural = Determined Mints
+PortionName = sprig of Determined Mint
+PortionNamePlural = sprigs of Determined Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A mint that make's Attack and Defense grow slightly faster, while Special Attack and Special Defense grow slightly slower.
+#-------------------------------
+[GOLDENMINT]
+Name = Golden Mint
+NamePlural = Golden Mints
+PortionName = sprig of Golden Mint
+PortionNamePlural = sprigs of Golden Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A special mint that slightly increases all stats with no downside.
+#-------------------------------
+[RADIANTMINT]
+Name = Radiant Mint
+NamePlural = Radiant Mints
+PortionName = sprig of Radiant Mint
+PortionNamePlural = sprigs of Radiant Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A special mint that increases all stats with no downside.
+#-------------------------------
+[WIMPYMINT]
+Name = Wimpy Mint
+NamePlural = Wimpy Mints
+PortionName = sprig of Wimpy Mint
+PortionNamePlural = sprigs of Wimpy Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A special mint that slightly decreases all stats with no upside.
+#-------------------------------
+[PATHETICMINT]
+Name = Pathetic Mint
+NamePlural = Pathetic Mints
+PortionName = sprig of Pathetic Mint
+PortionNamePlural = sprigs of Pathetic Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,Mint,FoodWater
+Description = A special mint that decreases all stats with no upside.
+#-------------------------------
+[LONELYMINT]
+Name = Lonely Mint
+NamePlural = Lonely Mints
+PortionName = sprig of Lonely Mint
+PortionNamePlural = sprigs of Lonely Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Attack will grow more easily, but its Defense will grow more slowly.
+#-------------------------------
+[ADAMANTMINT]
+Name = Adamant Mint
+NamePlural = Adamant Mints
+PortionName = sprig of Adamant Mint
+PortionNamePlural = sprigs of Adamant Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Attack will grow more easily, but its Sp. Atk will grow more slowly.
+#-------------------------------
+[NAUGHTYMINT]
+Name = Naughty Mint
+NamePlural = Naughty Mints
+PortionName = sprig of Naughty Mint
+PortionNamePlural = sprigs of Naughty Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Attack will grow more easily, but its Sp. Def will grow more slowly.
+#-------------------------------
+[BRAVEMINT]
+Name = Brave Mint
+NamePlural = Brave Mints
+PortionName = sprig of Brave Mint
+PortionNamePlural = sprigs of Brave Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Attack will grow more easily, but its Speed will grow more slowly.
+#-------------------------------
+[BOLDMINT]
+Name = Bold Mint
+NamePlural = Bold Mints
+PortionName = sprig of Bold Mint
+PortionNamePlural = sprigs of Bold Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Defense will grow more easily, but its Attack will grow more slowly.
+#-------------------------------
+[IMPISHMINT]
+Name = Impish Mint
+NamePlural = Impish Mints
+PortionName = sprig of Impish Mint
+PortionNamePlural = sprigs of Impish Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Defense will grow more easily, but its Sp. Atk will grow more slowly.
+#-------------------------------
+[LAXMINT]
+Name = Lax Mint
+NamePlural = Lax Mints
+PortionName = sprig of Lax Mint
+PortionNamePlural = sprigs of Lax Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Defense will grow more easily, but its Sp. Def will grow more slowly.
+#-------------------------------
+[RELAXEDMINT]
+Name = Relaxed Mint
+NamePlural = Relaxed Mints
+PortionName = sprig of Relaxed Mint
+PortionNamePlural = sprigs of Relaxed Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Defense will grow more easily, but its Speed will grow more slowly.
+#-------------------------------
+[MODESTMINT]
+Name = Modest Mint
+NamePlural = Modest Mints
+PortionName = sprig of Modest Mint
+PortionNamePlural = sprigs of Modest Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Atk will grow more easily, but its Attack will grow more slowly.
+#-------------------------------
+[MILDMINT]
+Name = Mild Mint
+NamePlural = Mild Mints
+PortionName = sprig of Mild Mint
+PortionNamePlural = sprigs of Mild Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Atk will grow more easily, but its Defense will grow more slowly.
+#-------------------------------
+[RASHMINT]
+Name = Rash Mint
+NamePlural = Rash Mints
+PortionName = sprig of Rash Mint
+PortionNamePlural = sprigs of Rash Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Atk will grow more easily, but its Sp. Def will grow more slowly.
+#-------------------------------
+[QUIETMINT]
+Name = Quiet Mint
+NamePlural = Quiet Mints
+PortionName = sprig of Quiet Mint
+PortionNamePlural = sprigs of Quiet Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Atk will grow more easily, but its Speed will grow more slowly.
+#-------------------------------
+[CALMMINT]
+Name = Calm Mint
+NamePlural = Calm Mints
+PortionName = sprig of Calm Mint
+PortionNamePlural = sprigs of Calm Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Def will grow more easily, but its Attack will grow more slowly.
+#-------------------------------
+[GENTLEMINT]
+Name = Gentle Mint
+NamePlural = Gentle Mints
+PortionName = sprig of Gentle Mint
+PortionNamePlural = sprigs of Gentle Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Def will grow more easily, but its Defense will grow more slowly.
+#-------------------------------
+[CAREFULMINT]
+Name = Careful Mint
+NamePlural = Careful Mints
+PortionName = sprig of Careful Mint
+PortionNamePlural = sprigs of Careful Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Def will grow more easily, but its Sp. Atk will grow more slowly.
+#-------------------------------
+[SASSYMINT]
+Name = Sassy Mint
+NamePlural = Sassy Mints
+PortionName = sprig of Sassy Mint
+PortionNamePlural = sprigs of Sassy Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Sp. Def will grow more easily, but its Speed will grow more slowly.
+#-------------------------------
+[TIMIDMINT]
+Name = Timid Mint
+NamePlural = Timid Mints
+PortionName = sprig of Timid Mint
+PortionNamePlural = sprigs of Timid Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Speed will grow more easily, but its Attack will grow more slowly.
+#-------------------------------
+[HASTYMINT]
+Name = Hasty Mint
+NamePlural = Hasty Mints
+PortionName = sprig of Hasty Mint
+PortionNamePlural = sprigs of Hasty Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Speed will grow more easily, but its Defense will grow more slowly.
+#-------------------------------
+[JOLLYMINT]
+Name = Jolly Mint
+NamePlural = Jolly Mints
+PortionName = sprig of Jolly Mint
+PortionNamePlural = sprigs of Jolly Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Speed will grow more easily, but its Sp. Atk will grow more slowly.
+#-------------------------------
+[NAIVEMINT]
+Name = Naive Mint
+NamePlural = Naive Mints
+PortionName = sprig of Naive Mint
+PortionNamePlural = sprigs of Naive Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, its Speed will grow more easily, but its Sp. Def will grow more slowly.
+#-------------------------------
+[SERIOUSMINT]
+Name = Serious Mint
+NamePlural = Serious Mints
+PortionName = sprig of Serious Mint
+PortionNamePlural = sprigs of Serious Mint
+Pocket = 2
+Price = 20
+FieldUse = OnPokemon
+Flags = Fling_10,FoodWater
+Description = When a Pokémon smells this mint, all of its stats will grow at an equal rate.
+#-------------------------------
+[LEFTOVERS]
+Name = Leftovers
+NamePlural = Leftovers
+PortionName = serving of Leftovers
+PortionNamePlural = servings of Leftovers
+Pocket = 1
+Price = 4000
+Flags = Fling_10,FoodWater
+Description = An item to be held by a Pokémon. The holder's HP is gradually restored during battle.

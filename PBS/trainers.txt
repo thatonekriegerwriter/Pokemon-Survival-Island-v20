@@ -995,11 +995,25 @@ NumPkmn = 2
 Guaranteed = 1
 Pokemon = MACHOKE,30
     Moves = BODYSLAM,DYNAMICPUNCH,ROCKSMASH,BULKUP
-    Shadow = True
+    Shadow = yes
 Pokemon = FALINKS,40
 Pokemon = RIOLU,30
 Pokemon = DUGTRIO,30
-    Shadow = True
+    Shadow = yes
+#-------------------------------
+[TEAMROCKET_M,Purple Haired Grunt,2]
+LoseText = "..."
+NumPkmn = 4
+Guaranteed = 1
+Pokemon = LUCARIO_2,43
+    Shadow = yes
+Pokemon = FERROTHORN,40
+Pokemon = CROBAT,40
+Pokemon = FRAXURE,40
+    Shadow = yes
+Pokemon = FLYGON,40
+Pokemon = GOLEM,40
+Pokemon = GRIMMSNARL,40
 #-------------------------------
 [LASS,Yelly]
 LoseText = "..."
@@ -1173,6 +1187,30 @@ Pokemon = MEOWSTIC,20
 Pokemon = ESPEON,20
 #-------------------------------
 [POKEMONTRAINER_May,Samantha]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_RocketM,Rocket]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[POKEMONTRAINER_RocketF,Rocket]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[CUSTOMFEMALE,Player]
+LoseText = "... darn..."
+Pokemon = HATTREM,20
+Pokemon = MEOWSTIC,20
+Pokemon = ESPEON,20
+#-------------------------------
+[CUSTOMMALE,Player]
 LoseText = "... darn..."
 Pokemon = HATTREM,20
 Pokemon = MEOWSTIC,20

@@ -59,7 +59,7 @@ module FollowingPkmn
   #-----------------------------------------------------------------------------
   def self.refresh(anim = false)
     return if !FollowingPkmn.can_check?
-    FollowingPkmn.remove_sprite
+    #FollowingPkmn.remove_sprite
     first_pkmn = FollowingPkmn.get_pokemon
     return if !first_pkmn
     FollowingPkmn.refresh_internal
@@ -75,7 +75,7 @@ module FollowingPkmn
         pbWait(Graphics.frame_rate/5)
       end
     end
-    FollowingPkmn.change_sprite(first_pkmn) if ret
+    #FollowingPkmn.change_sprite(first_pkmn) if ret
     FollowingPkmn.move_route([(ret ? PBMoveRoute::StepAnimeOn : PBMoveRoute::StepAnimeOff)]) if FollowingPkmn::ALWAYS_ANIMATE
     $PokemonGlobal.time_taken = 0 if !ret
     return ret

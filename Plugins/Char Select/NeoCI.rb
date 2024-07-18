@@ -45,36 +45,36 @@ class CharacterSelect_Scene
     @sprites["character"].setBitmap(sprintf("Graphics/Pictures/charskin#{lastplayerCharacter-1}"))
     
 #---TOP ROW---------------
-    @sprites["minichar_0"]=AnimatedSprite.new("Graphics/Characters/3M",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_0"]=AnimatedSprite.new("Graphics/Characters/3MB",4,32,40,animSpeed,@viewport)
     @sprites["minichar_0"].x=168
     @sprites["minichar_0"].y=230
     
-    @sprites["minichar_1"]=AnimatedSprite.new("Graphics/Characters/4F",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_1"]=AnimatedSprite.new("Graphics/Characters/4FD",4,32,40,animSpeed,@viewport)
     @sprites["minichar_1"].x=216
     @sprites["minichar_1"].y=230
     
-    @sprites["minichar_2"]=AnimatedSprite.new("Graphics/Characters/2M",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_2"]=AnimatedSprite.new("Graphics/Characters/2MJ",4,32,40,animSpeed,@viewport)
     @sprites["minichar_2"].x=264
     @sprites["minichar_2"].y=230
     
-    @sprites["minichar_3"]=AnimatedSprite.new("Graphics/Characters/1F",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_3"]=AnimatedSprite.new("Graphics/Characters/1FS",4,32,40,animSpeed,@viewport)
     @sprites["minichar_3"].x=312
     @sprites["minichar_3"].y=230
     
 #---BOTTOM ROW------------
-    @sprites["minichar_4"]=AnimatedSprite.new("Graphics/Characters/4M",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_4"]=AnimatedSprite.new("Graphics/Characters/4MJ",4,32,40,animSpeed,@viewport)
     @sprites["minichar_4"].x=168
     @sprites["minichar_4"].y=286
     
-    @sprites["minichar_5"]=AnimatedSprite.new("Graphics/Characters/3F",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_5"]=AnimatedSprite.new("Graphics/Characters/3FS",4,32,40,animSpeed,@viewport)
     @sprites["minichar_5"].x=216
     @sprites["minichar_5"].y=286
     
-    @sprites["minichar_6"]=AnimatedSprite.new("Graphics/Characters/1M",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_6"]=AnimatedSprite.new("Graphics/Characters/1MD",4,32,40,animSpeed,@viewport)
     @sprites["minichar_6"].x=264
     @sprites["minichar_6"].y=286
     
-    @sprites["minichar_7"]=AnimatedSprite.new("Graphics/Characters/2F",4,32,40,animSpeed,@viewport)
+    @sprites["minichar_7"]=AnimatedSprite.new("Graphics/Characters/2FA",4,32,40,animSpeed,@viewport)
     @sprites["minichar_7"].x=312
     @sprites["minichar_7"].y=286
     

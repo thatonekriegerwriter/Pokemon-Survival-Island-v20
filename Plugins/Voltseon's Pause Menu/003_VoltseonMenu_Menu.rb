@@ -34,12 +34,39 @@ class VoltseonsPauseMenu < Component
     @sprites["dummyiconR"].ox = $game_temp.menu_icon_width/2
     @sprites["dummyiconR"].oy = $game_temp.menu_icon_width/2
     calculateXPositions(true)
-    @sprites["entrytext"] = BitmapSprite.new(Graphics.width/2,40,@viewport)
+    @sprites["entrytext"] = BitmapSprite.new(Graphics.width,@sprites["menuback"].height,@viewport)
     @sprites["entrytext"].y = Graphics.height - 188
-    @sprites["entrytext"].ox = 128
-    @sprites["entrytext"].x = Graphics.width/2
+    #@sprites["entrytext"].ox = 128
+    @sprites["entrytext"].x = 0
     @sprites["leftarrow"].visible = !(@displayIndexes.length == 1)
     @sprites["rightarrow"].visible = @displayIndexes.length > 1
+	7.times do |i|
+    @sprites["boxi#{i}"] = IconSprite.new(0,0,@viewport)
+    @sprites["boxi#{i}"].visible = true
+	x=0
+    case i
+	 when 0
+	   x=-5
+	 when 1
+	   x=64
+	 when 2
+	   x=133
+	 when 3
+	   x=226
+	 when 4
+	   x=319
+	 when 5
+	   x=388
+	 when 6
+	   x=457
+	end 
+	 @sprites["boxi#{i}"].x = x+12
+    @sprites["boxi#{i}"].y = Graphics.height - 10
+    @sprites["boxi#{i}"].z = @sprites["entrytext"].z-1
+    @sprites["boxi#{i}"].ox = $game_temp.menu_icon_width/2
+    @sprites["boxi#{i}"].oy = $game_temp.menu_icon_width/2
+    @sprites["boxi#{i}"].setBitmap("Graphics/Pictures/tinyuiboxgrey.png")
+	end
     @doingStartup = true
   end
 
@@ -49,15 +76,14 @@ class VoltseonsPauseMenu < Component
       @menu.shouldExit = true
       $game_temp.last_menu_selection = @currentSelection
       return
-    elsif Input.press?(Input::LEFT)
+    elsif Input.press?(Input::LEFT) || Input.scroll_v==-1
       shiftCursor(-1)
-    elsif Input.press?(Input::RIGHT) && @displayIndexes.length > 1
+    elsif (Input.press?(Input::RIGHT)  || Input.scroll_v==1  )&& @displayIndexes.length > 1
       shiftCursor(1)
     elsif Input.trigger?(Input::USE)
       pbPlayDecisionSE
-	  puts @currentSelection
       exit = @entries[@currentSelection].selected(@menu) # trigger selected entry.
-	  if @currentSelection == 13 && exit == false
+	  if @entries[@currentSelection].name == "Quit" && exit == false
 	  else
       calculateMenuEntries
       calculateDisplayIndex
@@ -66,6 +92,91 @@ class VoltseonsPauseMenu < Component
       @shouldRefresh = true
       $game_temp.last_menu_selection = @currentSelection
 	  end
+    elsif Input.triggerex?(:P) #Pokemon
+	   @entries.each do |i|
+	    if i.name == "Pokemon"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:B) #Bag
+	   @entries.each do |i|
+	    if i.name == "Bag"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:C) #Craft
+	   @entries.each do |i|
+	    if i.name == "Crafting"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:V) #Adventure
+	   @entries.each do |i|
+	    if i.name == "Adventures"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:S) #Save
+	   @entries.each do |i|
+	    if i.name == "Save"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:W) #Disable Menu?
+	   
+    elsif Input.triggerex?(:G) #Quest
+	   @entries.each do |i|
+	    if i.name == "Quests"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:T) #Advancement
+	   @entries.each do |i|
+	    if i.name == "Achievements"
+	   i.selected(@menu)
+	   end
+	   end
+      calculateMenuEntries
+      calculateDisplayIndex
+      redrawMenuIcons
+      calculateXPositions(true)
+      @shouldRefresh = true
+    elsif Input.triggerex?(:Q) #Quit
+	   @entries.each do |i|
+	    if i.name == "Quit"
+	   i.selected(@menu)
+	   end
+	   end
     end
     if @shouldRefresh && !@menu.shouldExit
       refreshMenu
@@ -126,10 +237,12 @@ class VoltseonsPauseMenu < Component
       end
       @sprites["icon#{middle}"].zoom_x -= (ACTIVE_SCALE - 1.0)/(duration)
       @sprites["icon#{middle}"].zoom_y -= (ACTIVE_SCALE - 1.0)/(duration)
+      @sprites["icon#{middle}"].z = -1
       mdr = middle + direction
       mdr = mdr.clamp(0,6)
       @sprites["icon#{mdr}"].zoom_x += (ACTIVE_SCALE - 1.0)/(duration)
       @sprites["icon#{mdr}"].zoom_y += (ACTIVE_SCALE - 1.0)/(duration)
+      @sprites["icon#{mdr}"].z = -1
       pbUpdateSpriteHash(@sprites)
       Graphics.update
     end
@@ -193,13 +306,15 @@ class VoltseonsPauseMenu < Component
       @sprites["icon#{i}"].y = Graphics.height - 42
       @sprites["icon#{i}"].ox = $game_temp.menu_icon_width/2
       @sprites["icon#{i}"].oy = $game_temp.menu_icon_width/2
+      @sprites["icon#{i}"].z = -1
     end
     if @displayIndexes.length == 2
       @sprites["icon1"] = IconSprite.new(0,0,@viewport)
       @sprites["icon1"].visible = true
-      @sprites["icon1"].y = Graphics.height - 42
+      @sprites["icon1"].y = Graphics.height - 20
       @sprites["icon1"].ox = $game_temp.menu_icon_width/2
       @sprites["icon1"].oy = $game_temp.menu_icon_width/2
+      @sprites["icon1"].z = -1
     end
   end
 
@@ -257,11 +372,16 @@ class VoltseonsPauseMenu < Component
 
   def refreshMenu
     calculateDisplayIndex
+    baseColor = MENU_TEXTCOLOR[$PokemonSystem.current_menu_theme].is_a?(Color) ? MENU_TEXTCOLOR[$PokemonSystem.current_menu_theme] : Color.new(248,248,248)
+    shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme].is_a?(Color) ? MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] : Color.new(48,48,48)
     middle = @displayIndexes.length/2
+	textpos = []
+	textpos << [@entries[@currentSelection].name,Graphics.width/2,20,2,baseColor,shadowColor]
     for i in 0...@displayIndexes.length
       @sprites["icon#{i}"].setBitmap(@entries[@displayIndexes[i]].icon)
       @sprites["icon#{i}"].zoom_x = 1
       @sprites["icon#{i}"].zoom_y = 1
+	  textpos << [@entries[@displayIndexes[i]].text,(@sprites["icon#{i}"].x-30),155,99,baseColor,shadowColor] 
     end
     @sprites["icon#{middle}"].zoom_x = ACTIVE_SCALE
     @sprites["icon#{middle}"].zoom_y = ACTIVE_SCALE
@@ -276,12 +396,8 @@ class VoltseonsPauseMenu < Component
     end
     @sprites["dummyiconL"].setBitmap(b1)
     @sprites["dummyiconR"].setBitmap(b2)
-    return if !SHOW_MENU_NAMES
     @sprites["entrytext"].bitmap.clear
-    text = @entries[@currentSelection].name
     pbSetSystemFont(@sprites["entrytext"].bitmap)
-    baseColor = MENU_TEXTCOLOR[$PokemonSystem.current_menu_theme].is_a?(Color) ? MENU_TEXTCOLOR[$PokemonSystem.current_menu_theme] : Color.new(248,248,248)
-    shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme].is_a?(Color) ? MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] : Color.new(48,48,48)
-    pbDrawTextPositions(@sprites["entrytext"].bitmap,[[text,128,12,2,baseColor,shadowColor]])
+    pbDrawTextPositions(@sprites["entrytext"].bitmap,textpos)
   end
 end

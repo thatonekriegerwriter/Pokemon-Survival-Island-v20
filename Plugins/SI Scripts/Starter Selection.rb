@@ -15,7 +15,7 @@ LEVELBUFF = true
 LEVELBUFFTYPE = "add"
 #This just gives the buff a cap, in case you don't want people inputing level 100 Pokemon as their starters.
 #Default 5.
-LEVELBUFFCAP = pbGet(327)
+LEVELBUFFCAP = pbGet(326)
 #Taking a few queues from Pokémon Colosseum, Wes has two starters in that game.
 #This just makes it to where you can set a max amount of starters for the user to choose from.
 #If it is greater than 1, it will allow the user to choose a second POKeMON.
@@ -194,12 +194,13 @@ def pbStarterSelection(level)
 	loop do
      msgwindow = pbCreateMessageWindow(nil,nil)
      pbMessageDisplay(msgwindow,_INTL("How long ago did you get them?"))
+	puts $game_variables[326]
     params = ChooseNumberParams.new
     params.setMaxDigits(3)
-    params.setRange(0,LEVELBUFFCAP)
+    params.setRange(0,$game_variables[326])
 	 lvlbuff = pbChooseNumber(msgwindow,params)
      pbDisposeMessageWindow(msgwindow)
-	 if lvlbuff > LEVELBUFFCAP
+	 if lvlbuff > $game_variables[326]
 	   pbMessage(_INTL("You can't have a Pokemon that high of a level."))
 	 else
 	 if pbConfirmMessage(_INTL("You got them {1} years ago?",lvlbuff))
@@ -220,10 +221,10 @@ def pbStarterSelection(level)
 	pkmn = pkmn.upcase
 	pkmn = pbFixSpellingErrors(pkmn)
 	pkmn = pbRandomCheck(pkmn)
-	pkmnid = GameData::Species.get(pkmn).id
-	if !GameData::Species.exists?(pkmnid)
+	if !GameData::Species.try_get(pkmn).id
 	  pbMessage(_INTL("That's not a Pokemon!"))
 	else
+	pkmnid = GameData::Species.try_get(pkmn).id
     if pbLegendaryStarter?(pkmn)
 	   pbMessage(_INTL("{1} is too powerful.",pkmn))
 	elsif pbihaveacommentonthatpokemoninparticular(pkmn)
@@ -270,8 +271,73 @@ def pbStarterSelection(level)
             summary_screen = PokemonSummaryScreen.new(summary_scene, true)
             summary_screen.pbStartScreen([pkmn], 0)
           }
-	      if !pbConfirmMessageSerious(_INTL("Do you want to reset?",pkmn.name))  
-           menu.pbEndScene
+	      if pbConfirmMessageSerious(_INTL("Do you want to reset?",pkmn.name))  
+           $scene = nil
+           Graphics.transition(20) # changed line (from 40 to 1)
+           go_to_title # added line
+		  end
+		end
+		break
+	  end
+	end 	
+	end
+	end
+end
+end
+
+
+
+def pbStarterSelectionDemo(level,verify=true)
+    amt = 0
+    lvlbuff = 5
+	location = 0
+	 amt = 1
+  
+    amt.times do
+	 loop do
+	pkmn = pbEnterText("Enter a Pokemon name.", 1, 10, "", 0, nil, true)
+	pkmn = pkmn.upcase
+	pkmn = pbFixSpellingErrors(pkmn)
+	pkmn = pbRandomCheck(pkmn)
+	if !GameData::Species.try_get(pkmn).id
+	  pbMessage(_INTL("That's not a Pokemon!"))
+	else
+	pkmnid = GameData::Species.try_get(pkmn).id
+    if pbLegendaryStarter?(pkmn) && verify==true
+	   pbMessage(_INTL("{1} is too powerful.",pkmn))
+	elsif pbihaveacommentonthatpokemoninparticular(pkmn)
+	elsif BANLIST.include?(pkmn) && verify==true
+	   pbMessage(_INTL("{1} cannot be selected.",pkmn))
+	elsif pkmnid!=GameData::Species.get(pkmnid).get_baby_species && verify==true
+	   pbMessage(_INTL("{1} is an evolved Pokemon, {2} will be used instead.",pkmn,GameData::Species.get(pkmnid).get_baby_species))
+	   pkmnid = GameData::Species.get(pkmnid).get_baby_species
+	   pkmn = GameData::Species.get(pkmnid).name
+	   	 if pbConfirmMessage(_INTL("Are you sure you want to select {1}?",pkmn))
+	    pkmnlevel = level
+	    pkmn = generateStarter(pkmnid,pkmnlevel)
+		$game_variables[3] = pkmn
+	    if pbConfirmMessage(_INTL("Do you want to view the Summary Screen for {1}?",pkmn))
+		  pbFadeOutIn {
+            summary_scene = PokemonSummary_Scene.new
+            summary_screen = PokemonSummaryScreen.new(summary_scene, true)
+            summary_screen.pbStartScreen(pkmn, 0)
+          }
+		end
+		break
+	  end
+	else 
+	 if pbConfirmMessage(_INTL("Are you sure you want to select {1}?",pkmn))
+	    pkmnlevel = level
+	    pkmn = generateStarter(pkmnid,pkmnlevel)
+		pkmn.age = lvlbuff
+		$game_variables[3] = pkmn
+	    if pbConfirmMessage(_INTL("Do you want to view the Summary Screen for {1}?",pkmn.name))
+		  pbFadeOutIn {
+            summary_scene = PokemonSummary_Scene.new
+            summary_screen = PokemonSummaryScreen.new(summary_scene, true)
+            summary_screen.pbStartScreen([pkmn], 0)
+          }
+	      if pbConfirmMessageSerious(_INTL("Do you want to reset?",pkmn.name))  
            $scene = nil
            Graphics.transition(20) # changed line (from 40 to 1)
            go_to_title # added line

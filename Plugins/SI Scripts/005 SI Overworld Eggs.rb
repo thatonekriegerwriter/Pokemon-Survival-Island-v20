@@ -293,6 +293,7 @@ end
     pkmn.nature = :HATEFUL if rand(255)<=25 
 
    elsif cmd==6
+
      $Trainer.party[$Trainer.party.length] = pkmn
     Kernel.pbMessage(_INTL("{1}",war))
 	 $game_variables[bar] = 0

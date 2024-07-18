@@ -1,0 +1,69 @@
+# Tasks to add:
+#   HATCH
+#   HASHIDDENABILITY
+#-------------------------------
+[CAPTURE]
+SourceName=CAPTURE
+Name=Number Caught
+Description=Catch REPLACE of PKMN
+Thresholds=1,4,8,10
+#-------------------------------
+[CAPTURE1]
+SourceName=CAPTURE1
+Name=Number Caught
+Description=Catch this PKMN
+Thresholds=1
+#-------------------------------
+[CAPTURENIGHT]
+SourceName=CAPTURENIGHT
+Name=Number Caught
+Description=Catch REPLACE at night
+Thresholds=1,3,5,8
+#-------------------------------
+[CAPTUREEVENING]
+SourceName=CAPTUREEVENING
+Name=Number Caught
+Description=Catch REPLACE in the Evening
+Thresholds=1,3,5,8
+#-------------------------------
+[MOVE]
+SourceName=MOVE
+Name=Move
+Description=Observe PKMN using MOVE REPLACE times
+Thresholds=3,6,9,15
+#-------------------------------
+[DEFEATED]
+SourceName=DEFEATED
+Name=Defeat
+Description=Defeat REPLACE PKMN
+Thresholds=1,4,8,10
+#-------------------------------
+[DEFEATEDTYPE]
+SourceName=DEFEATEDTYPE
+Name=Defeat (Move)
+Description=Defeat REPLACE with TYPE
+Thresholds=1,4,8,10
+#-------------------------------
+[EVOLVED]
+SourceName=EVOLVED
+Name=Evolve
+Description=Evolve PKMN
+Thresholds=1,3,5
+#-------------------------------
+[EVOLVEDWITHITEM]
+SourceName=EVOLVEDWITHITEM
+Name=Evolve (Stone)
+Description=Evolve PKMN with a
+Thresholds=3,6,9,15
+#-------------------------------
+[ITEMWINBATTLES]
+SourceName=ITEMWINBATTLES
+Name=Win (Held Item)
+Description=Win REPLACE battles holding ITEM
+Thresholds=1,5,10,15,20
+#-------------------------------
+[ITEMUSEBATTLE]
+SourceName=ITEMUSEBATTLE
+Name=Item (Battle)
+Description=In battle use ITEM REPLACE times
+Thresholds=1,3,6,10

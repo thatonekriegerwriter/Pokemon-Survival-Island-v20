@@ -131,6 +131,7 @@ end
 
 
 def itemAnim(item,qty=1)
+  item = GameData::Item.get(item)
   bitmap = Bitmap.new("Graphics/Pictures/Object")
   pbSetSystemFont(bitmap)
   base = Color.new(248,248,248)

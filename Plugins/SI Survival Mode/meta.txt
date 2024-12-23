@@ -1,1 +1,2 @@
-Name         = Survival Mode
+Name = Survival Mode
+Version = 0

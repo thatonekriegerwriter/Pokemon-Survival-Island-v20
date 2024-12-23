@@ -61,6 +61,7 @@ module UnrealTime
   # Time proportion here. 
   # So if it is 100, one second in real time will be 100 seconds in game.
   # If it is 60, one second in real time will be one minute in game.
+  #PROPORTION=900
   PROPORTION=60
 
   # Starting on Essentials v17, the map tone only try to refresh tone each 30 
@@ -341,6 +342,29 @@ def setNewTime(hour,min=0,sec=0) # Hour is 0..23
   secWished = hour*60*60+min*60+sec
   secondsAdded = secWished-secNow
   secondsAdded +=secInDay if secondsAdded<0
-  $game_variables[EXTRA_SECONDS]+=secondsAdded
+  $game_variables[UnrealTime::EXTRA_SECONDS]+=secondsAdded
 end
 
+def setDay(day) # Hour is 0..23
+  timeNow = pbGetTimeNow
+  curDay = timeNow.day
+  wishedday = curDay-day
+  secInDay = 60*60*24
+  secWished = wishedday*secInDay
+  secNow = pbGetTimeNow.hour*60*60+pbGetTimeNow.min*60+pbGetTimeNow.sec
+  secWished = hour*60*60+min*60+sec
+  secondsAdded = secWished-secNow
+  secondsAdded +=secInDay if secondsAdded<0
+  $game_variables[UnrealTime::EXTRA_SECONDS]+=secondsAdded
+end
+
+
+
+def setNewTimeWithinDay(hour,min=0,sec=0) # Hour is 0..23
+  timeNow = pbGetTimeNow
+  secInDay = 60*60*24
+  secNow = pbGetTimeNow.hour*60*60+pbGetTimeNow.min*60+pbGetTimeNow.sec
+  secWished = hour*60*60+min*60+sec
+  secondsAdded = secWished-secNow
+  $game_variables[UnrealTime::EXTRA_SECONDS]+=secondsAdded
+end

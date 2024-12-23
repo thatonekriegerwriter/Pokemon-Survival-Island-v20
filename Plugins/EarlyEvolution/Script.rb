@@ -169,7 +169,7 @@ module EarlyEvolution
   end
 
   def self.evolution_level(new_species, parameter, check_item=true)
-    return parameter if check_item && ITEM && !$bag.has?(ITEM)
+    return parameter if check_item && rand(2)==0
     return NEW_LEVEL_PER_EVOLUTION.fetch(new_species, parameter)
   end
 

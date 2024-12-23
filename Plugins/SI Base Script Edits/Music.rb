@@ -52,7 +52,7 @@ when 1
 when 2
   return "Original SI Battle"
 when 3
-  return false
+  return "kanto"
 when 4
   return false
 when 5
@@ -64,12 +64,39 @@ when 7
  when 8
  return false
  when 8
- return "Normal Battle"
+ return "NormalBattle"
 else
  return GameData::Metadata.get.wild_battle_BGM
 end
 
 end
+
+
+
+def pbGetBossBattleBGM
+#[_INTL("Default"), _INTL("Map Theme"), _INTL("Wild Arms"), _INTL("Chrono Trigger"), _INTL("Stadium"),_INTL("Colosseum")]
+case $PokemonSystem.bossbattleMusic
+when 0
+ return "002-Battle02x"
+when 1
+ return $game_map.bgm.name
+when 2
+ return false
+when 3
+ return false
+when 4
+ return false
+when 5
+ return false
+when 6
+ return false
+else
+ return "002-Battle02x"
+end
+
+end
+
+
 
 def pbGetTrainerBGM
 case $PokemonSystem.trainerbattleMusic
@@ -118,29 +145,6 @@ end
 
 end
 
-
-def pbGetBossBattleBGM
-#[_INTL("Default"), _INTL("Map Theme"), _INTL("Wild Arms"), _INTL("Chrono Trigger"), _INTL("Stadium"),_INTL("Colosseum")]
-case $PokemonSystem.bossbattleMusic
-when 0
- return "002-Battle02x"
-when 1
- return $game_map.bgm.name
-when 2
- return false
-when 3
- return false
-when 4
- return false
-when 5
- return false
-when 6
- return false
-else
- return false
-end
-
-end
 
 def pbGetPokemonCenterBGM
 case $PokemonSystem.bikeMusic

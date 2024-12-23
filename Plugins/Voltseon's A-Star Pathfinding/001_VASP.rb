@@ -96,7 +96,8 @@ def move_to_location(event = nil, desired_x = 0, desired_y = 0, wait_for_complet
   # Make event the current one if none is specified
   event = pbMapInterpreter.get_character(0) if event.nil? && pbMapInterpreter
   # Return if the event is already at the desired location
-  return if !event || (event.x == desired_x && event.y == desired_y)
+  return false if !event 
+  return true if (event.x == desired_x && event.y == desired_y)
   # Calculates the pathfinding
   if event.through
     moveroute = calc_path_through(event,[desired_x, desired_y])
@@ -104,7 +105,9 @@ def move_to_location(event = nil, desired_x = 0, desired_y = 0, wait_for_complet
     moveroute = calc_path(event,[desired_x, desired_y])
   end
   # Performs the moveroute
-  pbAStarMoveRoute(event,moveroute,wait_for_completion)
+  pbAStarMoveRoute(event,moveroute,wait_for_completion) if !moveroute.is_a?(TrueClass) && !moveroute.is_a?(FalseClass)
+  return true if (event.x == desired_x && event.y == desired_y)
+  return false
 end
 
 # Moves the designated event to the defined event
@@ -125,8 +128,9 @@ def move_to_event(event_a = nil, event_b = nil, wait_for_completion = false)
   else
     moveroute = calc_path(event_a, [event_b.x, event_b.y])
   end
+  
   # Performs the moveroute
-  pbAStarMoveRoute(event_a, moveroute, wait_for_completion)
+  pbAStarMoveRoute(event_a, moveroute, wait_for_completion) if !moveroute.is_a?(TrueClass) && !moveroute.is_a?(FalseClass)
 end
 
 # Calculates the pathfinding liniar
@@ -165,6 +169,71 @@ end
 
 
 
+
+# Calculates the pathfinding (A*)
+# initial = start location
+# destination = an array of the desired location [x,y]
+def calc_path2(event, destination)
+  # Updates the array with all the tiles that are passable
+  update_passable_tiles
+  # Starting point is always on the designated event
+  initial_point = [event.x, event.y]
+  # The bare minimum distance that needs to be traveled
+  distance_needed = calc_dist(initial_point, destination)
+  # Array containing the move route
+  move_route = []
+  # Array containing all the possible movable tiles that have not been checked
+  open_tiles = []
+  # Array containing the path that's best suited for moving to the destination
+  closed_tiles = []
+  # Defining tiles
+  initial_tile = PathfindingTile.new(initial_point[0], initial_point[1])
+  destination_tile = PathfindingTile.new(destination[0], destination[1])
+  # Adds the first tile to the open tiles
+  open_tiles.push(initial_tile)
+  # Loops until every possible tile is checked
+  while open_tiles.length > 0
+    # Select the first tile
+    current = open_tiles[0]
+    # Select the tile with the lowest f-cost
+    for i in 1...open_tiles.length
+      if open_tiles[i].f_cost <= current.f_cost && open_tiles[i].h_cost < current.h_cost
+        current = open_tiles[i]
+      end
+    end
+    # Remove the selected tile from open and add to closed
+    open_tiles.delete(current)
+    closed_tiles.push(current)
+    # Save the selected location
+    current_location = [current.x, current.y]
+    # Stop when the destination is not reachable
+    return false if $impassable_tiles.any? { |new_tile| destination[0] == new_tile[0] && destination[1] == new_tile[1] }
+    # Stop when it has reached its destination
+    return true if current_location == destination
+    # Select a neighbour and save it
+    current_neighbours = get_neighbours(current, closed_tiles, open_tiles)
+    # Calculate the costs of the selected tile
+    calc_tile_costs(current, initial_point, destination)
+    # Get data from all 4 neighbours
+    for neighbour in current_neighbours
+      # Get the selected neighbour's location
+      neighbour_location = [neighbour.x, neighbour.y]
+      # Get the cost between current and neighbour
+      cost_to_neighbour = current.g_cost + calc_dist(current_location, neighbour_location)
+      # Set costs of the neighbour
+      neighbour.g_cost = cost_to_neighbour
+      neighbour.h_cost = calc_dist(neighbour_location, destination)
+      # Make the selected tile a parent of the neighbour
+      neighbour.parent = current
+      # Add neighbour to the open tiles
+      open_tiles.push(neighbour)
+    end
+  end
+  # Sort the path (it's reversed at first)
+  move_route = calc_sorted_path(closed_tiles)
+  return move_route
+end
+
 # Calculates the pathfinding (A*)
 # initial = start location
 # destination = an array of the desired location [x,y]
@@ -202,7 +271,8 @@ def calc_path(event, destination)
     # Save the selected location
     current_location = [current.x, current.y]
     # Stop when the destination is not reachable
-    break if $impassable_tiles.any? { |new_tile| destination[0] == new_tile[0] && destination[1] == new_tile[1] }
+	potatosfeg = $impassable_tiles.any? { |new_tile| (destination[0] == new_tile[0] && destination[1] == new_tile[1])}
+    break if potatosfeg
     # Stop when it has reached its destination
     break if current_location == destination
     # Select a neighbour and save it
@@ -262,17 +332,17 @@ def look_at_event(event_a,event_b)
   # Turn the event based on the other event's location (Y-Axis is prioritized if both distances are the same)
   if distance_x <= distance_y
     # Prioritize Y
-    if event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_DOWN])
-    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_UP])
-    elsif event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_RIGHT])
-    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_LEFT])
+    if event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnDown])
+    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnUp])
+    elsif event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnRight])
+    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnLeft])
     end
   else
     # Prioritize X
-    if event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_RIGHT])
-    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TURN_LEFT])
-    elsif event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_DOWN])
-    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TURN_UP])
+    if event_a.x<event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnRight])
+    elsif event_a.x>event_b.x; pbMoveRoute(event_a,[PBMoveRoute::TurnLeft])
+    elsif event_a.y<event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnDown])
+    elsif event_a.y>event_b.y; pbMoveRoute(event_a,[PBMoveRoute::TurnUp])
     end
   end
 end
@@ -290,17 +360,17 @@ def look_at_location(event,x,y)
   # Turn the event based on the other event's location (Y-Axis is prioritized if both distances are the same)
   if distance_x <= distance_y
     # Prioritize Y
-    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_DOWN])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_UP])
-    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_RIGHT])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_LEFT])
+    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Down])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Up])
+    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Right])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Left])
     end
   else
     # Prioritize X
-    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_RIGHT])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TURN_LEFT])
-    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_DOWN])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TURN_UP])
+    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Right])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Left])
+    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Down])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Up])
     end
   end
 end
@@ -342,6 +412,11 @@ def update_passable_tiles(full_reset = true)
     for j in 0...$game_map.height
       # Checks whether the current tile is impassable or is a blocked terrain tag
       next if $game_map.passable?(i, j, 0)
+	  event_id=$game_map.check_event(i, j)
+	  potato = $game_map.events[event_id]
+	   if !potato.nil?
+      next if potato.name.include?("inter")
+	  end
       next if TERRAIN_BLOCKS.include?($game_map.terrain_tag(i, j))
       # Add current tile to the array
       $impassable_tiles.push([i, j])
@@ -359,18 +434,18 @@ end
 
 # Calculate the needed move route
 def calc_move_route(position_a, position_b)
-  return PBMoveRoute::RIGHT if position_a.x < position_b.x
-  return PBMoveRoute::LEFT if position_a.x > position_b.x
-  return PBMoveRoute::UP if position_a.y > position_b.y
-  return PBMoveRoute::DOWN if position_a.y < position_b.y
+  return PBMoveRoute::Right if position_a.x < position_b.x
+  return PBMoveRoute::Left if position_a.x > position_b.x
+  return PBMoveRoute::Up if position_a.y > position_b.y
+  return PBMoveRoute::Down if position_a.y < position_b.y
 end
 
 # Calculate the needed move route but inverted
 def calc_move_route_inverted(position_a, position_b)
-  return PBMoveRoute::RIGHT if position_a.x > position_b.x
-  return PBMoveRoute::LEFT if position_a.x < position_b.x
-  return PBMoveRoute::UP if position_a.y < position_b.y
-  return PBMoveRoute::DOWN if position_a.y > position_b.y
+  return PBMoveRoute::Right if position_a.x > position_b.x
+  return PBMoveRoute::Left if position_a.x < position_b.x
+  return PBMoveRoute::Up if position_a.y < position_b.y
+  return PBMoveRoute::Down if position_a.y > position_b.y
 end
 
 # Calculates all the costs of a tile
@@ -392,26 +467,43 @@ end
 
 # New move route functionality
 def pbAStarMoveRoute(event, commands, waitComplete = false)
+commands_duplicate = commands.map do |command|
+  case command
+  when 1
+    "Down"
+  when 2
+    "Left"
+  when 3
+    "Right"
+  when 4
+    "Up"
+  else
+    command # In case of any other values, keep them as they are
+  end
+end
+#puts commands_duplicate.to_s
   route = RPG::MoveRoute.new
   route.repeat    = false
   route.skippable = true
   route.list.clear
   i = 0
   while i<commands.length
+   
+    event.decrease_attack_opportunity(6) if event.attack_opportunity>0 if event.is_a?(Game_PokeEventA)
     case commands[i]
-    when PBMoveRoute::WAIT, PBMoveRoute::SWITCH_ON, PBMoveRoute::SWITCH_OFF,
-       PBMoveRoute::CHANGE_SPEED, PBMoveRoute::CHANGE_FREQUENCY, PBMoveRoute::OPACITY,
-       PBMoveRoute::BLENDING, PBMoveRoute::PLAY_SE, PBMoveRoute::SCRIPT
+    when PBMoveRoute::Wait, PBMoveRoute::SwitchOn, PBMoveRoute::SwitchOff,
+       PBMoveRoute::ChangeSpeed, PBMoveRoute::ChangeFreq, PBMoveRoute::Opacity,
+       PBMoveRoute::Blending, PBMoveRoute::PlaySE, PBMoveRoute::Script
       route.list.push(RPG::MoveCommand.new(commands[i],[commands[i+1]]))
       i += 1
-    when PBMoveRoute::SCRIPT_ASYNC
-      route.list.push(RPG::MoveCommand.new(PBMoveRoute::SCRIPT,[commands[i+1]]))
-      route.list.push(RPG::MoveCommand.new(PBMoveRoute::WAIT,[0]))
+    when PBMoveRoute::ScriptAsync
+      route.list.push(RPG::MoveCommand.new(PBMoveRoute::Script,[commands[i+1]]))
+      route.list.push(RPG::MoveCommand.new(PBMoveRoute::Wait,[0]))
       i += 1
-    when PBMoveRoute::JUMP
+    when PBMoveRoute::Jump
       route.list.push(RPG::MoveCommand.new(commands[i],[commands[i+1],commands[i+2]]))
       i += 2
-    when PBMoveRoute::GRAPHIC
+    when PBMoveRoute::Graphic
       route.list.push(RPG::MoveCommand.new(commands[i],
          [commands[i+1],commands[i+2],commands[i+3],commands[i+4]]))
       i += 4
@@ -420,6 +512,7 @@ def pbAStarMoveRoute(event, commands, waitComplete = false)
     end
     i += 1
   end
+   
   route.list.push(RPG::MoveCommand.new(0))
   if event
     event.force_move_route(route)

@@ -1,0 +1,4 @@
+Name = SI Lightning Engine
+Version = 0
+Essentials = 20.1
+Requires = Berries

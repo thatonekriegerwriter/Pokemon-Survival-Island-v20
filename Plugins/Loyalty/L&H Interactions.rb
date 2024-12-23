@@ -1362,6 +1362,7 @@ else
       gain += 1 if @poke_ball == :LUXURYBALL
       gain = (gain * 1.5).floor if hasItem?(:SOOTHEBELL)
     end
+	 gain = 0 if gain < 0 && $player.is_it_this_class?(:COORDINATOR)
 	if @happiness.nil?
 	pkmn.happiness = 70
 	end
@@ -2900,7 +2901,7 @@ class Battle::Battler
     if r <= 20 && r >= 10 && @status != :SLEEP && @pokemon.happiness <= 60
       injury = rand(10)+2
       @battle.pbDisplay(_INTL("{1} turned around and attacked you for {2} damage!",pbThis, injury))
-      $player.playerhealth -= injury
+	  damagePlayer(injury)
       return false 
     end
     if r <= 20 && r >= 10 && @status != :SLEEP && @pokemon.happiness >= 100
@@ -2910,7 +2911,7 @@ class Battle::Battler
     if r <= 30 && r >= 20 && @status != :SLEEP && @pokemon.happiness <= 30
       injury = rand(10)+2
       @battle.pbDisplay(_INTL("{1} turned around rushed you down, hurting you for {2} damage!",pbThis, injury))
-      $player.playerhealth -= injury
+	  damagePlayer(injury)
       return false 
     end
     if r <= 30 && r >= 20 && @status != :SLEEP && @pokemon.happiness >= 200

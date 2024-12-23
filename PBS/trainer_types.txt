@@ -1,4 +1,3 @@
-﻿# See the documentation on the wiki to learn how to edit this file.
 #-------------------------------
 [POKEMONTRAINER_Red]
 Name = Pokémon Trainer
@@ -268,29 +267,29 @@ SkillLevel = 16
 #-------------------------------
 [COOLCOUPLE]
 Name = Cool Couple
-Gender = Unknown
+Gender = Female
 BaseMoney = 72
 SkillLevel = 48
 #-------------------------------
 [CRUSHKIN]
 Name = Crush Kin
-Gender = Unknown
+Gender = Female
 BaseMoney = 48
 #-------------------------------
 [SISANDBRO]
 Name = Sis and Bro
-Gender = Unknown
+Gender = Female
 BaseMoney = 16
 SkillLevel = 48
 #-------------------------------
 [TWINS]
 Name = Twins
-Gender = Unknown
+Gender = Female
 BaseMoney = 24
 #-------------------------------
 [YOUNGCOUPLE]
 Name = Young Couple
-Gender = Unknown
+Gender = Female
 BaseMoney = 60
 SkillLevel = 32
 #-------------------------------
@@ -650,10 +649,12 @@ BaseMoney = 60
 [CUSTOMFEMALE]
 Name = Pokémon Trainer
 Gender = Female
+BaseMoney = 30
 #-------------------------------
 [CUSTOMMALE]
 Name = Pokémon Trainer
 Gender = Male
+BaseMoney = 30
 #-------------------------------
 [PI]
 Name = Private Eye

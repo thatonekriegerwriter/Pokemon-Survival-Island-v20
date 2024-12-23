@@ -81,9 +81,11 @@ def pbStartScene
  @pkmnicons2={}
  @pkmnicons3={}
  @notetext={}
+ @playericons={}
  end
 $value="???"
 $coal=:COAL
+@notessection = $PokemonGlobal.notebook + getAllTips
  if true
  
  end
@@ -133,6 +135,8 @@ $coal=:COAL
  @bottommost = Graphics.height
  @selection_length = 0
  @selection2_length = 0
+	@bar_image = RPG::Cache.picture("Hud/overlay_hp")
+	@bar_image2 = RPG::Cache.picture("Hud/overlay_hp2")
  if true
  @temperate_forest = [5,4,243,300,7,349,350,8,9,13,45,54,47,282,44,68,64]
  @temperate_highlands=[16,24,31,19,30,29,28,17]
@@ -279,7 +283,7 @@ def pagechange(dir)
 
 	    
    when "use"
-		 if Input.press?(Input::CTRL) && $DEBUG
+		 if Input.press?(Input::CTRL) && $DEBUG && Input.pressex?(0x12)
 		 openCalendar
 		 
 		 
@@ -520,6 +524,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 
 
 	  if Input.trigger?(Input::USE)
+	   if !@map_types_temp.empty?
 		if @depth+1==0
 		 @selection=0 if @selection==-1
 		 
@@ -557,7 +562,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
          @startend = [0,8]
 		end
 
-
+       end
       end
 	  
 	  	
@@ -735,9 +740,22 @@ def page1
 	  if Input.trigger?(Input::USE)
 	    if @selection==0 
 		 writeNote
+        @notessection = $PokemonGlobal.notebook + getAllTips
 		elsif @selection>0
+		  note = @notessection[@selection-1]
         pbFadeOutIn {
-         pbDisplayMail($PokemonGlobal.notebook[@selection-1])
+		   if note.is_a?(Mail)
+         pbDisplayMail(note)
+		  elsif note.is_a?(Symbol)
+           if isthisAGroup(note)
+		       pbShowTipCardsGrouped(note)
+           else
+              pbShowTipCard(note)
+           end
+		  
+		  else
+		  end
+        
         }
 		else
         pagechange("use")
@@ -755,11 +773,15 @@ def page1
 		
 	  if Input.trigger?(Input::ACTION)
 	    if @selection>0
-            if pbConfirmMessage(_INTL("The note #{$PokemonGlobal.notebook[@selection-1].matter} will be lost. Is that OK?"))
+		     note = @notessection[@selection-1]
+		     if note.is_a?(Mail)
+            if pbConfirmMessage(_INTL("The note #{note.matter} will be lost. Is that OK?"))
               pbMessage(_INTL("The note was deleted."))
-              $PokemonGlobal.notebook.delete_at(@selection-1)
+			    $PokemonGlobal.notebook.delete(note)
+              @notessection = $PokemonGlobal.notebook + getAllTips
 			   @selection=0
             end
+			  end
         end
 	  end
 
@@ -911,12 +933,15 @@ def pbSelectMenu
  
     while true
     $PokemonGlobal.addNewFrameCount 
+     update
     Graphics.update
-      Input.update
-      self.update
+    Input.update
      if Input.trigger?(Input::BACK)
 	  	if @depth==-1
 	    destroy_sidebar_text
+		 destroy_player
+		 destroy_pkmn_icons
+		 destroy_note_content
 	    break
 	   end
 	 end
@@ -975,12 +1000,20 @@ def update
      destroy_sidebar_text
      destroy_pkmn_icons
 	 destroy_note_content
+	 display_player
    end
    def statsmenu
      destroy_sidebar_text
      destroy_pkmn_icons
+	 destroy_player
 	 display_notes  if (@depth==-1 || @depth==0)
 	 display_note_content if @depth==0
+	 if @notetext["cook-1"]
+	 @notetext["cook-1"].visible = false if @selection==0
+	 end
+	 if @notetext["cook-2"]
+	 @notetext["cook-2"].visible = false if @selection==0
+	 end
    end
    
    
@@ -988,6 +1021,7 @@ def update
      destroy_sidebar_text
      destroy_pkmn_icons
 	 destroy_note_content
+	 destroy_player
     display_crafting if (@depth==-1 || @depth==0)
 	@the_recipe = [] if (@depth==-1 || @depth==0)
     if  @selection!=-1 && (@depth==1 || @depth==2)
@@ -1002,9 +1036,11 @@ def update
    def researchmenu
     destroy_sidebar_text
 	destroy_note_content
+	destroy_player
 	@map_types_temp=[] if (@depth==-1 || @depth==0)
     display_maps if (@depth==-1 || @depth==0)
 	@submap_types = [] if (@depth==-1 || @depth==0)
+	if !@map_types_temp.empty?
     if  @selection!=-1 && (@depth==1 || @depth==2)
 	display_sub_maps(@map_types_temp[@selection])
 	@selection3=0 if @selection3==-1
@@ -1049,18 +1085,21 @@ def update
     @sprites["selector"].visible = false if @depth<2
     @sprites["selarrow"].visible = false if @selection==-1
     @sprites["selarrow"].visible = false if @depth==-1
+	end
    end
 
 
 
 
-
   def pbEndScene
-    pbFadeOutAndHide(@icons)
-    pbDisposeSpriteHash(@icons)
 
     pbFadeOutAndHide(@sprites)
     pbDisposeSpriteHash(@sprites)
+	
+    pbFadeOutAndHide(@icons)
+    pbDisposeSpriteHash(@icons)
+	
+	$game_temp.notebook_calling=false
     @viewport.dispose
   end
 
@@ -1073,6 +1112,314 @@ def update
 
 
 end
+
+
+class PlayerNotebook
+  def display_player
+    destroy_player
+	create_player
+    refresh_player if !@playericons.empty?
+	
+  end
+  def hpBarCurrentColors(hp, totalhp)
+    if hp<=(totalhp/4.0)
+      return [Color.new(240,80,32),Color.new(168,48,56)]
+    elsif hp<=(totalhp/2.0)
+      return [Color.new(250,250,51),Color.new(184,112,0)]
+    end
+    return [Color.new(24,192,32),Color.new(0,144,0)]
+  end
+  def refresh_player
+  
+    
+    @playericons["starbarborder"].visible = $player.playerstamina!=nil
+    @playericons["bar"].visible = @playericons["starbarborder"].visible
+    @playericons["starbarfill"].visible = @playericons["starbarborder"].visible
+    @playericons["starbar_bar"].visible = @playericons["starbarborder"].visible
+    @playericons["starbar_num"].visible = @playericons["starbarborder"].visible
+    @playericons["starbarfill"].bitmap.clear
+    fillAmount = ($player.playerstamina==0 || $player.playermaxstamina==0) ? 0 : (
+      $player.playerstamina*@playericons["hpbarfill"].bitmap.width/$player.playermaxstamina
+    )
+	
+    return if fillAmount <= 0
+    hpColors = Color.new(255,182,66)
+    shadowHeight = 2
+    @playericons["starbarfill"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors
+    )
+    @playericons["starbarfill"].bitmap.fill_rect(
+      Rect.new(
+        0,shadowHeight,fillAmount,
+        @playericons["starbarfill"].bitmap.height-shadowHeight
+      ), hpColors
+    )
+
+
+
+    @playericons["hpbarborder"].visible = $player.playerhealth!=nil
+    @playericons["bar2"].visible = @playericons["hpbarborder"].visible
+    @playericons["hpbarfill"].visible = @playericons["hpbarborder"].visible
+    @playericons["health_bar"].visible = @playericons["hpbarborder"].visible
+    @playericons["health_num"].visible = @playericons["hpbarborder"].visible
+    @playericons["hpbarfill"].bitmap.clear
+    fillAmount = ($player.playerhealth==0 || $player.playermaxhealth2==0) ? 0 : (
+      $player.playerhealth*@playericons["hpbarfill"].bitmap.width/$player.playermaxhealth2
+    )
+    return if fillAmount <= 0
+    hpColors = hpBarCurrentColors($player.playerhealth, $player.playermaxhealth2)
+    shadowHeight = 2
+    @playericons["hpbarfill"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors[1]
+    )
+    @playericons["hpbarfill"].bitmap.fill_rect(
+      Rect.new(
+        0,shadowHeight,fillAmount,
+        @playericons["hpbarfill"].bitmap.height-shadowHeight
+      ), hpColors[0]
+    )
+  
+  end
+  def create_player
+     if @playericons["trainer"].nil?
+    @playericons["trainer"] = IconSprite.new(200,70,@viewport)
+    @playericons["trainer"].setBitmap(GameData::TrainerType.player_front_sprite_filename($player.trainer_type))
+    @playericons["trainer"].x = 360
+    @playericons["trainer"].y = 40
+    @playericons["trainer"].z = 98
+    @playericons["trainer"].visible=true
+     end
+	if $player.playerclass.is_a?(PlayerClass)
+	theclass = $player.playerclass.name
+	else
+	theclass = $player.playerclass
+	end
+
+
+
+     if @playericons["playerclassname"].nil?
+    @playericons["playerclassname"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["playerclassname"])
+    @playericons["playerclassname"].viewport=@viewport
+    @playericons["playerclassname"].windowskin=nil
+    @playericons["playerclassname"].width=240
+    @playericons["playerclassname"].height=90
+    @playericons["playerclassname"].x = 390
+    @playericons["playerclassname"].y = 178
+    @playericons["playerclassname"].z=98
+    @playericons["playerclassname"].text="#{theclass} Lv#{$player.playerclasslevel.to_i}"
+    @playericons["playerclassname"].resizeToFit("#{theclass} Lv#{$player.playerclasslevel.to_i}")
+    @playericons["playerclassname"].visible=true
+     end
+	
+	
+     if @playericons["playername1"].nil?
+    @playericons["playername1"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["playername1"])
+    @playericons["playername1"].viewport=@viewport
+    @playericons["playername1"].windowskin=nil
+    @playericons["playername1"].width=240
+    @playericons["playername1"].height=90
+    @playericons["playername1"].x = 20
+    @playericons["playername1"].y = 80
+    @playericons["playername1"].z=98
+    @playericons["playername1"].text="Property of:"
+    @playericons["playername1"].resizeToFit("Property of:")
+    @playericons["playername1"].visible=true
+     end
+	
+	
+     if @playericons["playername"].nil?
+    @playericons["playername"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["playername"])
+    @playericons["playername"].viewport=@viewport
+    @playericons["playername"].windowskin=nil
+    @playericons["playername"].width=240
+    @playericons["playername"].height=90
+    @playericons["playername"].x = 35
+    @playericons["playername"].y = 110
+    @playericons["playername"].z=98
+    @playericons["playername"].text=$player.name
+    @playericons["playername"].resizeToFit($player.name)
+    @playericons["playername"].visible=true
+     end
+#"Graphics/Pictures/Hud/Heart"
+    if true
+
+	sta = $player.playerstamina
+	totalsta = $player.playermaxstamina
+
+    width = 90
+    height = 8
+    fillWidth = width-4
+    fillHeight = height-4
+	
+	
+
+
+
+
+
+
+
+	 
+     if @playericons["starbarborder"].nil?
+    @playericons["starbarborder"] = BitmapSprite.new(width,height,@viewport)
+    @playericons["starbarborder"].x = 310
+    @playericons["starbarborder"].y = 90
+    @playericons["starbarborder"].z=98
+    @playericons["starbarborder"].bitmap.fill_rect(Rect.new(0,0,width,height), Color.new(32,32,32))
+    @playericons["starbarborder"].bitmap.fill_rect((width-fillWidth)/2, (height-fillHeight)/2,fillWidth, fillHeight, Color.new(96,96,96))
+    @playericons["starbarborder"].visible = false
+	
+	
+    @playericons["starbarfill"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
+    @playericons["starbarfill"].x = @playericons["starbarborder"].x+2
+    @playericons["starbarfill"].y = @playericons["starbarborder"].y+2
+    @playericons["starbarfill"].z=98
+    @playericons["starbarfill"].visible = false
+     end
+	
+     if @playericons["bar"].nil?
+    @playericons["bar"]=IconSprite.new((@playericons["starbarborder"].x-7),(@playericons["starbarborder"].y-6),@viewport)
+    @playericons["bar"].setBitmap("Graphics/Pictures/Hud/Bolt")
+    @playericons["bar"].visible = false
+    @playericons["bar"].z = 99
+     end
+	
+
+
+     if @playericons["starbar_bar"].nil?
+    @playericons["starbar_bar"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["starbar_bar"])
+    @playericons["starbar_bar"].viewport=@viewport
+    @playericons["starbar_bar"].windowskin=nil
+    @playericons["starbar_bar"].width=240
+    @playericons["starbar_bar"].height=90
+    @playericons["starbar_bar"].z=98
+    @playericons["starbar_bar"].text="Stamina:"
+    @playericons["starbar_bar"].resizeToFit("Stamina:")
+    @playericons["starbar_bar"].x = @playericons["starbarborder"].x-100
+    @playericons["starbar_bar"].y = @playericons["starbarborder"].y-30
+    @playericons["starbar_bar"].visible=false
+     end
+
+     if @playericons["starbar_num"].nil?
+    @playericons["starbar_num"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["starbar_num"])
+    @playericons["starbar_num"].viewport=@viewport
+    @playericons["starbar_num"].windowskin=nil
+    @playericons["starbar_num"].width=240
+    @playericons["starbar_num"].height=90
+    @playericons["starbar_num"].z=98
+    @playericons["starbar_num"].text="#{sta.to_i}/#{totalsta.to_i}"
+    @playericons["starbar_num"].resizeToFit("#{sta.to_i}/#{totalsta.to_i}")
+    @playericons["starbar_num"].zoom_x = 0.8
+    @playericons["starbar_num"].zoom_y = 0.8
+	# @playericons["starbar_num"].ox = @playericons["starbarborder"].width
+    @playericons["starbar_num"].x = @playericons["starbarborder"].x + 65
+    @playericons["starbar_num"].y = @playericons["starbarborder"].y + 15
+    @playericons["starbar_num"].visible=false
+     end
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+     if @playericons["hpbarborder"].nil?
+    @playericons["hpbarborder"] = BitmapSprite.new(width,height,@viewport)
+    @playericons["hpbarborder"].x = 310
+    @playericons["hpbarborder"].y = 60
+    @playericons["hpbarborder"].z=98
+    @playericons["hpbarborder"].bitmap.fill_rect(
+      Rect.new(0,0,width,height), Color.new(32,32,32)
+    )
+    @playericons["hpbarborder"].bitmap.fill_rect(
+      (width-fillWidth)/2, (height-fillHeight)/2,
+      fillWidth, fillHeight, Color.new(96,96,96)
+    )
+    @playericons["hpbarborder"].visible = false
+     end
+	
+     if @playericons["bar2"].nil?
+    @playericons["bar2"]=IconSprite.new((@playericons["hpbarborder"].x-5),(@playericons["hpbarborder"].y-7),@viewport)
+    @playericons["bar2"].setBitmap("Graphics/Pictures/Hud/Heart")
+    @playericons["bar2"].visible = false
+    @playericons["bar2"].z = 98
+     end
+	
+
+	
+     if @playericons["hpbarfill"].nil?
+    @playericons["hpbarfill"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
+    @playericons["hpbarfill"].x = @playericons["hpbarborder"].x+2
+    @playericons["hpbarfill"].y = @playericons["hpbarborder"].y+2
+    @playericons["hpbarfill"].z=98
+    @playericons["hpbarfill"].visible = false
+     end
+
+
+	hp = $player.playerhealth
+	totalhp = $player.playermaxhealth2
+
+     if @playericons["health_bar"].nil?
+    @playericons["health_bar"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["health_bar"])
+    @playericons["health_bar"].viewport=@viewport
+    @playericons["health_bar"].windowskin=nil
+    @playericons["health_bar"].width=240
+    @playericons["health_bar"].height=90
+    @playericons["health_bar"].z=98
+    @playericons["health_bar"].text="Health:"
+    @playericons["health_bar"].resizeToFit("Health:")
+    @playericons["health_bar"].visible=false
+    @playericons["health_bar"].x = @playericons["hpbarborder"].x-100
+    @playericons["health_bar"].y = @playericons["hpbarborder"].y-30
+     end
+
+     if @playericons["health_num"].nil?
+    @playericons["health_num"]=Window_UnformattedTextPokemon.new("")
+    pbPrepareWindow(@playericons["health_num"])
+    @playericons["health_num"].viewport=@viewport
+    @playericons["health_num"].windowskin=nil
+    @playericons["health_num"].width=240
+    @playericons["health_num"].height=90
+    @playericons["health_num"].z=98
+    @playericons["health_num"].text="#{hp.to_i}/#{totalhp.to_i}"
+    @playericons["health_num"].resizeToFit("#{hp.to_i}/#{totalhp.to_i}")
+    @playericons["health_num"].visible=false
+    @playericons["health_num"].zoom_x = 0.8
+    @playericons["health_num"].zoom_y = 0.8
+	# @playericons["health_num"].ox = @playericons["hpbarborder"].width
+    @playericons["health_num"].x = @playericons["hpbarborder"].x + 65
+    @playericons["health_num"].y = @playericons["hpbarborder"].y + 8
+     end
+
+
+
+    end
+
+
+  end
+def destroy_player
+
+ @playericons.each_key do |key|
+  @playericons[key].visible=false
+  @playericons.delete(key)
+ end
+ @playericons={}
+
+
+end
+end
+
 
 class PlayerNotebook
 
@@ -1095,7 +1442,7 @@ def create_species
  
  
       species_data = GameData::Species.get(thespecies)
-      if !$player.pokedex.owned?(thespecies) && !seen_form_any_gender?(thespecies,species_data.form)
+      if !$player.pokedex.owned?(thespecies) && !seen_form_any_gender?(thespecies,species_data.form) && !$player.is_it_this_class?(:EXPERT)
         @pkmnicons2["dex_icon"].setSpeciesBitmap(nil)
         @pkmnicons2["dex_icon"].zoom_x=0.5
         @pkmnicons2["dex_icon"].zoom_y=0.5
@@ -1353,10 +1700,13 @@ def display_task(pokemon_task,i,thespecies)
 
 
 end
+
+
 def display_maps
  destroy_sidebar_text
  create_map_text
  count = 0
+ if @sidebar_text["selection_map-1"].nil?
  @map_types_temp.each_with_index do |object, i|
   next if $PokemonGlobal.visitedMaps[object[0]].nil?
  @sidebar_text["selection_map#{count}"].visible=true
@@ -1372,6 +1722,10 @@ def display_maps
  count+=1
  end
  @selection_length = count-1
+ else
+ @sidebar_text["selection_map-1"].visible=true
+ 
+ end
 end 
 def create_map_text
  return if !@sidebar_text.empty?
@@ -1389,16 +1743,32 @@ def create_map_text
  @sidebar_text["selection_map#{count}"].y = 40+(25*count) if count != 0
  #@sprites["header#{i}"].zoom_x=0.5
  #@sprites["header#{i}"].zoom_y=0.5
+
  @sidebar_text["selection_map#{count}"].z=98
  @sidebar_text["selection_map#{count}"].text=pbLoadMapInfos[object[0]].name
  @sidebar_text["selection_map#{count}"].visible=false
  @map_types_temp << object
  count+=1
  end
+ if count==0
 
+ @sidebar_text["selection_map-1"]=Window_UnformattedTextPokemon.new("")
+ pbPrepareWindow(@sidebar_text["selection_map-1"])
+ @sidebar_text["selection_map-1"].viewport=@viewport
+ @sidebar_text["selection_map-1"].windowskin=nil
+ @sidebar_text["selection_map-1"].width=240
+ @sidebar_text["selection_map-1"].height=90
+ @sidebar_text["selection_map-1"].x = 0
+ @sidebar_text["selection_map-1"].y = 40 if count == 0
+ @sidebar_text["selection_map-1"].y = 40+(25*count) if count != 0
+ #@sprites["header#{i}"].zoom_x=0.5
+ #@sprites["header#{i}"].zoom_y=0.5
 
+ @sidebar_text["selection_map-1"].z=98
+ @sidebar_text["selection_map-1"].text="[NO MAPS]"
+ @sidebar_text["selection_map-1"].visible=false
 
-
+ end
 end
 
 def create_submap_text(map_set)
@@ -1575,7 +1945,7 @@ end
     enc_array.each do |s|
      next if @pkmnicons["icon_#{i}"].nil?
       species_data = GameData::Species.get(s)
-      if !$player.pokedex.owned?(s) && !seen_form_any_gender?(s,species_data.form)
+      if (!$player.pokedex.owned?(s) && !seen_form_any_gender?(s,species_data.form) && !$player.is_it_this_class?(:EXPERT))
         @pkmnicons["icon_#{i}"].pbSetParams(0,0,0,false)
         @pkmnicons["icon_#{i}"].tone = Tone.new(0,0,0,255)
         @pkmnicons["icon_#{i}"].visible = true
@@ -1615,7 +1985,7 @@ def display_notes
  count = 0
  @sidebar_text["cook-1"].visible=true
 
- $PokemonGlobal.notebook.each_with_index do |mail, i|
+ @notessection.each_with_index do |mail, i|
  @sidebar_text["cook#{count}"].visible=true
  if @selection==count+1
   @sprites["selarrow"].x = @sidebar_text["cook#{count}"].x
@@ -1624,6 +1994,12 @@ def display_notes
  end
  count+=1
  end
+ 
+ 
+ 
+ 
+ 
+ 
  if @selection==0
   @sprites["selarrow"].x = @sidebar_text["cook-1"].x
   @sprites["selarrow"].y = @sidebar_text["cook-1"].y+10
@@ -1637,6 +2013,7 @@ def display_notes
  end
  @selection_length = count
 end 
+
 def create_notes_text
  return if !@sidebar_text.empty?
  @sidebar_text["cook-1"]=Window_UnformattedTextPokemon.new("")
@@ -1654,7 +2031,7 @@ def create_notes_text
  @sidebar_text["cook-1"].visible=false
  
  count = 0
- $PokemonGlobal.notebook.each_with_index do |mail, i|
+ @notessection.each_with_index do |note, i|
  @sidebar_text["cook#{count}"]=Window_UnformattedTextPokemon.new("")
  pbPrepareWindow(@sidebar_text["cook#{count}"])
  @sidebar_text["cook#{count}"].viewport=@viewport
@@ -1667,8 +2044,21 @@ def create_notes_text
  #@sprites["header#{i}"].zoom_x=0.5
  #@sprites["header#{i}"].zoom_y=0.5
  @sidebar_text["cook#{count}"].z=98
- @sidebar_text["cook#{count}"].text=mail.matter
+  if note.is_a?(Symbol)
+   if isthisAGroup(note)
+     thegroup = Settings::TIP_CARDS_GROUPS[note]
+     @sidebar_text["cook#{count}"].text = thegroup[:Title]
+   else
+     thetip = $PokemonGlobal.tipcards[note]
+     @sidebar_text["cook#{count}"].text = thetip[:Title]
+   end
+  elsif note.is_a?(Mail)
+ @sidebar_text["cook#{count}"].text=note.matter
+  else
+ @sidebar_text["cook#{count}"].text="ERROR"
+  end
  @sidebar_text["cook#{count}"].visible=false
+
  
  count+=1
  end
@@ -1682,10 +2072,12 @@ def display_note_content
  destroy_note_content
  create_note_content if @selection>0
  @notetext["cook-1"].visible = true if @selection>0
+ @notetext["cook-2"].visible = true if @selection>0
 end
 def create_note_content
  return if !@notetext.empty?
- return if $PokemonGlobal.notebook[@selection-1].nil?
+ return if @notessection[@selection-1].nil?
+ note = @notessection[@selection-1]
  @notetext["cook-1"]=Window_UnformattedTextPokemon.new("")
  pbPrepareWindow(@notetext["cook-1"])
  @notetext["cook-1"].viewport=@viewport
@@ -1697,9 +2089,65 @@ def create_note_content
  #@sprites["header#{i}"].zoom_x=0.5
  #@sprites["header#{i}"].zoom_y=0.5
  @notetext["cook-1"].z=98
- @notetext["cook-1"].text="Topic: #{$PokemonGlobal.notebook[@selection-1].matter}\nContents:\n#{$PokemonGlobal.notebook[@selection-1].message}"
- @notetext["cook-1"].resizeToFit("Topic: #{$PokemonGlobal.notebook[@selection-1].matter}\nContents:\n#{$PokemonGlobal.notebook[@selection-1].message}")
+  if note.is_a?(Symbol)
+   if isthisAGroup(note)
+     thegroup = Settings::TIP_CARDS_GROUPS[note]
+     topic = thegroup[:Title]
+   else
+     thetip = $PokemonGlobal.tipcards[note]
+     topic = thetip[:Title]
+   end
+  elsif note.is_a?(Mail)
+     topic = "#{note.matter} - #{note.date_created}"
+  else
+     topic = "ERROR"
+  end
+ @notetext["cook-1"].text="Topic: #{topic}"
+ @notetext["cook-1"].resizeToFit("Topic: #{topic}")
  @notetext["cook-1"].visible=false
+ 
+ 
+ 
+ 
+ 
+ @notetext["cook-2"]=Window_UnformattedTextPokemon.new("")
+ pbPrepareWindow(@notetext["cook-2"])
+ @notetext["cook-2"].viewport=@viewport
+ @notetext["cook-2"].windowskin=nil
+ @notetext["cook-2"].width=240
+ @notetext["cook-2"].height=90
+ @notetext["cook-2"].x = 190
+ @notetext["cook-2"].y = 70
+ #@sprites["header#{i}"].zoom_x=0.5
+ #@sprites["header#{i}"].zoom_y=0.5
+ @notetext["cook-2"].z=98
+  if note.is_a?(Symbol)
+   if isthisAGroup(note)
+     thegroup = Settings::TIP_CARDS_GROUPS[note]
+     contents = "This is a Tutorial Group, so it cannot be \ndisplayed, press USE to view."
+   else
+     thetip = $PokemonGlobal.tipcards[note]
+     contents = thetip[:Text]
+    if contents.length > 71
+     contents = contents.slice(0, 71) 
+	  contents += "...\n\nIn order to continue reading, press USE."
+	  else
+	  contents += "\n\nYou can also press USE to view the Tip itself."
+	 end
+   end
+  elsif note.is_a?(Mail)
+     contents = note.message
+    if contents.length > 71
+     contents = contents.slice(0, 71) 
+	  contents += "...\nIn order to continue reading, press USE."
+	 end
+  else
+     topic = "ERROR"
+     contents = "This should not occur."
+  end
+ @notetext["cook-2"].text="Contents:\n#{contents}"
+ @notetext["cook-2"].resizeToFit("Contents:\n#{contents}")
+ @notetext["cook-2"].visible=false
 end
 def destroy_note_content
  @notetext.each_key do |key|
@@ -1966,12 +2414,76 @@ SaveData.register(:recipe_book) do
   }
 end
 
-def send_pokemon_list
+
+def prepareforsendingfile
+    # list of all possible rules
+    modifiers = [:ROAMING_SPECIES, :FAMILY, :MOVES, :TYPES]
+    # list of rule descriptions
+    desc = [
+      _INTL("Adds Roaming Species to the Pokemon Pool"),
+      _INTL("Adds Evolutions and Preevolutions to the Pokemon Pool"),
+      _INTL("Enables Moves in the Output"),
+      _INTL("Enables Types in the Output")
+    ]
+    # default
+    added = []; cmd = 0
+    ## creates help text message window
+    msgwindow = pbCreateMessageWindow(nil, "choice 1")
+    msgwindow.text = _INTL("Select what you wish to apply.")
+    # main loop
+    loop do
+    #  # generates all commands
+      commands = []
+      for i in 0...modifiers.length
+        commands.push(_INTL("{1} {2}",(added.include?(modifiers[i])) ? "[X]" : "[  ]",desc[i]))
+      end
+      commands.push(_INTL("Done"))
+    #  # goes to command window
+      cmd = pbShowCommands(msgwindow,commands,cmd)
+    #  # processes return
+      if cmd < 0
+        clear = pbConfirmMessage("Do you wish to cancel?")
+        added.clear if clear
+        next unless clear
+      end
+      break if cmd < 0 || cmd >= (commands.length - 1)
+      if cmd >= 0 && cmd < (commands.length - 1)
+        if added.include?(modifiers[cmd])
+          added.delete(modifiers[cmd])
+        else
+          added.push(modifiers[cmd])
+        end
+      end
+    end
+    # disposes of message window
+    pbDisposeMessageWindow(msgwindow)
+    Input.update
+	 if cmd < 0
+	  return false
+	 end
+	 send_pokemon_list(added)
+    return true
+end
+
+
+def send_pokemon_list(options)
+    
+	
+	have_roamers = options.include?(:ROAMING_SPECIES)
+	have_family = options.include?(:FAMILY)
+	have_moves = options.include?(:MOVES)
+	have_types = options.include?(:TYPES)
     arr = []
     enc_array = []
+    move_array = []
+    type_array = []
 	map_info = pbLoadMapInfos
+	puts "BEGINNING PRINTING..."
+	puts "BEGINNING ENCOUNTER TABLES..."
+	 encversion = 0 if $PokemonGlobal.nil?
+	 encversion = $PokemonGlobal.encounter_version if !$PokemonGlobal.nil?
    map_info.each do |map|
-   newEncData = GameData::Encounter.get(map[0], $PokemonGlobal.encounter_version)
+   newEncData = GameData::Encounter.get(map[0], encversion)
    next if newEncData.nil?
    encounter_tables = Marshal.load(Marshal.dump(newEncData.types))
    encounter_tables.keys.each do |key|
@@ -1981,11 +2493,19 @@ def send_pokemon_list
    end
    end
 
+
+    if have_roamers==true
+	puts "BEGINNING ROAMING SPECIES..."
+
    Settings::ROAMING_SPECIES.each do |pkmn|
       name = GameData::Species.get(pkmn[0]).id
     enc_array<<name
     enc_array.uniq!
   end
+    end 
+  
+    if have_family==true
+	puts "BEGINNING FAMILY SPECIES..."
    enc_array.each do |pkmn|
    
     other_family = GameData::Species.get(pkmn).get_family_species
@@ -1995,13 +2515,155 @@ def send_pokemon_list
     enc_array.uniq!
     end
    end
-   enc_array = enc_array.sort
-   results = enc_array.unshift(enc_array.length)
-   results2 = results.join("\n")
-   File.open("Pokemon List.txt", "wb") do |file|
-     file.write(results2)
+    end
+
+
+
+    pokemonlength = enc_array.length
+	
+	
+	
+    if have_moves==true
+	puts "BEGINNING MOVE INDEXING..."
+    moves = []
+   enc_array.each_with_index do |pkmn1, index|
+     pkmn = GameData::Species.get(pkmn1)
+      pkmn.moves.each do |move|
+	    themove = move
+	    themove = move[1] if move.is_a? Array
+	    moves << GameData::Move.get(themove).name
+	  end
+      pkmn.tutor_moves.each do |move|
+	   next if moves.include?(GameData::Move.get(move).name)
+	    themove = move
+	    themove = move[1] if move.is_a? Array
+	    moves << GameData::Move.get(move).name
+	  end
+      pkmn.egg_moves.each do |move|
+	   next if moves.include?(GameData::Move.get(move).name)
+	    themove = move
+	    themove = move[1] if move.is_a? Array
+	    moves << GameData::Move.get(move).name
+	  end
    end
+	move_hash = {}
+   move_hash = moves.tally
+   
+	puts "BEGINNING FULL MOVE LIST INDEXING..."
+	 GameData::Move.each do |move|
+	    themove = move
+	    themove = move[1] if move.is_a? Array
+		
+	   next if GameData::Move.get(themove).flags.include?("MaxMove")
+	   next if GameData::Move.get(themove).flags.include?("ZMove")
+	   next if move_hash.keys.include?(GameData::Move.get(themove).name)
+	   if GameData::Move.get(themove).type!=:SHADOW
+	    move_hash[GameData::Move.get(themove).name] = 0 
+	   else
+	    move_hash[GameData::Move.get(themove).name] = :SHADOW
+	   end
+	 end
+	 
+   end
+
+
+
+    if have_types==true
+	puts "BEGINNING TYPE INDEXING..."
+    types = []
+   enc_array.each_with_index do |pkmn1, index|
+     pkmn = GameData::Species.get(pkmn1)
+      pkmn.types.each do |type|
+	    types << GameData::Type.get(type).real_name
+	  end
+   end
+    end
+	 
+
+	puts "BEGINNING RENAMING..."
+   enc_array.each_with_index do |pkmn, index|
+    name = GameData::Species.get(pkmn).name
+    formName = GameData::Species.get(pkmn).form_name
+	 formName = "Normal Form" if nil_or_empty?(formName)
+     enc_array[index] = "#{name} - #{formName}"
+   end
+   enc_array = enc_array.sort
+	puts "BEGINNING SHIFTING..."
+   enc_array = enc_array.unshift("  ")
+   enc_array = enc_array.unshift("List of Available Species:")
+   enc_array = enc_array.unshift("  ")
+   
+    if have_types==true
+   counts = types.tally
+	 GameData::Type.each do |type|
+	    thetype = type
+	    thetype = type[1] if type.is_a? Array
+		
+	   next if GameData::Type.get(thetype).real_name == "???"
+	   next if GameData::Type.get(thetype).real_name == "Shadow"
+	   next if counts.keys.include?(GameData::Type.get(thetype).real_name)
+	    counts[GameData::Type.get(type).real_name] = 0 
+	 end
+   
+   counts.each do |key, value|
+   type_array << "#{value} Pokemon which Types include: #{key}"
+   end
+   type_array = type_array.sort_by do |string|
+       string.match(/^\d+/)[0].to_i  # Extracts the leading number and converts to integer
+   end
+   type_array = type_array.unshift("  ")
+   type_array = type_array.unshift("Type Data:")
+   end
+  
+    if have_moves==true
+	puts "BEGINNING MOVE APPENDING..."
+   enc_array << "  "
+   enc_array << "Move Data:"
+   enc_array << "  "
+   move_hash.each do |key, value|
+    if value != :SHADOW
+   move_array  << "#{value} Pokemon which have Move: #{key}"
+    else
+   move_array  << "9999 No Pokemon have #{key} has it is a Shadow Move."
+   end
+   end
+ move_array = move_array.sort_by do |string|
+  string.match(/^\d+/)[0].to_i  # Extracts the leading number and converts to integer
 end
+ move_array.reverse!
+   end
+   
+   
+   enc_array = type_array + enc_array + move_array 
+   
+   enc_array = enc_array.unshift("  ")
+     
+     settings_message = "Approximately #{pokemonlength} Pokemon Available under: "
+     settings_message += "'Default'"
+     settings_message += ", " if  have_roamers
+     settings_message += "'have_roamers'" if have_roamers
+     settings_message += ", " if have_family && have_roamers
+     settings_message += "'have_family'" if have_family
+   enc_array = enc_array.unshift(settings_message)
+   
+   
+   results = enc_array.join("\n")
+   File.open("IG Pokemon Data.txt", "wb") do |file|
+     file.write(results)
+   end
+	puts "FINISHED."
+end
+  
+  MenuHandlers.add(:debug_menu, :print_living_dex, {
+  "name"        => _INTL("Print Real Dex"),
+  "parent"      => :main,
+  "description" => _INTL("Prints all Pokemon currently available in game to a file."),
+   "effect"      => proc {
+    prepareforsendingfile
+  },
+  #"always_show" => false
+})
+  
   
 def seen_form_any_gender?(species, form)
   ret = false

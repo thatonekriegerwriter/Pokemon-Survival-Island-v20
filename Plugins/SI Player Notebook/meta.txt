@@ -1,1 +1,2 @@
-Name         = SI Player Notebook
+Name = SI Player Notebook
+Version = 0

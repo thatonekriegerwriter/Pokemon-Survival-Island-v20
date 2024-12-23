@@ -1,2 +1,2 @@
-Name         = Collection Scripts
-Version      = 1
+Name = Collection Scripts
+Version = 1

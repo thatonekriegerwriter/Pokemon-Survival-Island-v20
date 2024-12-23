@@ -94,8 +94,10 @@ end
 
 #yeah sorry for changing the method here :D you're getting what I want, not 
 #what your gamefiles say
+
 alias load_data_old_aiyinsi load_data
 def load_data(file)
+  
   ret = load_data_old_aiyinsi(file)
   if file.start_with?("Data/Map") && $PokemonGlobal && $PokemonGlobal.bgm_state_array && ret.respond_to?('bgm')
     map_id = file[8..file.length-1].to_i

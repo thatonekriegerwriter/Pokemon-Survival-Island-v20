@@ -1,6 +1,12 @@
 #Call NeoCI.ChoosePlayerCharacter
 #Return the item internal number or 0 if canceled
-
+def intro_character_select
+NeoCI.ChoosePlayerCharacter
+ if $game_variables[27]==11 || $game_variables[27]==12
+   pbFullCustomization
+ end
+$game_variables[27]=0
+end
 
 module NeoCI
  def self.ChoosePlayerCharacter()
@@ -21,7 +27,14 @@ module NeoCI
   #return charskin
  end
 end
+def ask_for_gender
 
+def pbBodyTypeMessage(message,&block)
+  return (pbMessage(message,[_INTL("Feminine"),_INTL("Masculine")],1,&block)==0)
+end
+
+
+end
 class CharacterSelect_Scene
 #################################
 ## Configuration
@@ -98,38 +111,41 @@ class CharacterSelect_Scene
     playerCharacter = 0
     prevCharacter = -1
     #pbRefresh
-    @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}"))
-	@sprites["minichar_#{playerCharacter}"].play
+    @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}")) if !@sprites["minichar_#{playerCharacter}"].nil?
+    @sprites["character"].setBitmap(sprintf("Graphics/Characters/blank")) if @sprites["minichar_#{playerCharacter}"].nil?
+	@sprites["minichar_#{playerCharacter}"].play if !@sprites["minichar_#{playerCharacter}"].nil?
     loop do
          Graphics.update
          Input.update
          self.update
          
          if prevCharacter>=0
-         @sprites["minichar_#{prevCharacter}"].stop
+         @sprites["minichar_#{prevCharacter}"].stop if !@sprites["minichar_#{prevCharacter}"].nil?
         end
          if Input.trigger?(Input::LEFT)
            prevCharacter = playerCharacter
            if playerCharacter == 0
-             playerCharacter = 7
+             playerCharacter = 8
            else
              playerCharacter -= 1
            end
           #pbRefresh
           @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
-          @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}"))
-          @sprites["minichar_#{playerCharacter}"].play
+          @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}")) if !@sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/blank")) if @sprites["minichar_#{playerCharacter}"].nil?
+          @sprites["minichar_#{playerCharacter}"].play if !@sprites["minichar_#{playerCharacter}"].nil?
         elsif Input.trigger?(Input::RIGHT)
              prevCharacter = playerCharacter
-            if playerCharacter == 7
+            if playerCharacter == 8
                playerCharacter = 0
              else
                playerCharacter += 1
              end
            #pbRefresh
            @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
-           @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}"))
-           @sprites["minichar_#{playerCharacter}"].play
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}")) if !@sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/blank")) if @sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["minichar_#{playerCharacter}"].play if !@sprites["minichar_#{playerCharacter}"].nil?
            end
         
          if Input.trigger?(Input::UP)
@@ -141,8 +157,9 @@ class CharacterSelect_Scene
            end
           #pbRefresh
           @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
-          @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}"))
-          @sprites["minichar_#{playerCharacter}"].play
+          @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}")) if !@sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/blank")) if @sprites["minichar_#{playerCharacter}"].nil?
+          @sprites["minichar_#{playerCharacter}"].play if !@sprites["minichar_#{playerCharacter}"].nil?
         elsif Input.trigger?(Input::DOWN)
           prevCharacter = playerCharacter
              if playerCharacter > 3
@@ -152,22 +169,37 @@ class CharacterSelect_Scene
              end
            #pbRefresh
            @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
-           @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}"))
-           @sprites["minichar_#{playerCharacter}"].play
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/trainer00#{playerCharacter}")) if !@sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["character"].setBitmap(sprintf("Graphics/Characters/blank")) if @sprites["minichar_#{playerCharacter}"].nil?
+           @sprites["minichar_#{playerCharacter}"].play if !@sprites["minichar_#{playerCharacter}"].nil?
         end
          
          #Cancel
-           if Input.trigger?(Input::X)
+           if Input.trigger?(Input::BACK)
              return -1
            end
            
          # Confirm selection
-         if Input.trigger?(Input::C)
-           if playerCharacter<8
+         if Input.trigger?(Input::USE)
+           if playerCharacter<9
                #pbRefresh
                @sprites["background"].setBitmap(sprintf("Graphics/Pictures/charselect#{playerCharacter}"))
+			   if playerCharacter==8
+			    if pbConfirmMessage(_INTL("You can create your own character, however, assets for this option are quite limited, and some visual assets, such as a trainer sprite for battles, do not exist. Would you still like to use this option?"))
+                    if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
+					   playerCharacter=11
+					 else
+					   playerCharacter=12
+					 end
+
+              else
+			     playerCharacter=playerCharacter+1
+			   
+			    end
+			   else
 			   playerCharacter=playerCharacter+1
-			   pbChangePlayer(playerCharacter)
+			   end
+			   pbChangePlayer(playerCharacter) 
                return playerCharacter
            else
              return -1

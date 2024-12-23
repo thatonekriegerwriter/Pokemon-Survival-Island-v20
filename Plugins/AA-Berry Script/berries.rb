@@ -5,6 +5,7 @@ module GameData
     attr_reader :drying_per_hour
     attr_reader :yield
     attr_reader :season
+    attr_reader :flavor
 
     DATA = {}
     DATA_FILENAME = "berry_plants.dat"
@@ -15,7 +16,8 @@ module GameData
       "Yield"         => [:yield,           "uv"],
       "Season"       => [:season,         "u"],
       "Climate"       => [:climate,         "s"],
-      "Weather"       => [:weather,         "e",:Weather]
+      "Weather"       => [:weather,         "e",:Weather],
+      "Flavor"       => [:flavor,         "uuuuu"]
     }
 
     NUMBER_OF_REPLANTS           = 9
@@ -35,6 +37,7 @@ module GameData
       @season            = hash[:season]            || 0
       @climate           = hash[:climate]           || "Temperate"
       @weather           = hash[:weather]           || :None
+      @flavor           = hash[:flavor]           || [0,0,0,0,0]
     end
 
     def minimum_yield
@@ -53,9 +56,11 @@ module GameData
     end
 	def weather
 	 return @weather.to_sym
-	 
 	end
   end
+	def flavor
+	 return @flavor
+	end
 end
 
 #===============================================================================
@@ -245,6 +250,7 @@ end
 
 class BerryPlantData
   attr_accessor :new_mechanics        # false for Gen 3, true for Gen 4
+  attr_accessor :berry_obj
   attr_accessor :berry_id
   attr_accessor :mulch_id             # Gen 4 mechanics
   attr_accessor :time_alive
@@ -272,6 +278,7 @@ class BerryPlantData
     attr_accessor :mutated_berry_tried
     attr_accessor :mutated_berry_info
     attr_accessor :preferred_weather
+    attr_accessor :preferred_season
     attr_accessor :exposed_to_preferred_weather
     attr_accessor :weeds
     attr_accessor :weeds_timer
@@ -305,15 +312,18 @@ class BerryPlantData
 		end
 	
   def initialize(event = nil)
-    @event = event if !event.nil?
+     @event = event if !event.nil?
 	 @centered = false
+	 if !event.nil?
 	 @centered = true if @event.name.include?("center")
+	 end
     reset
   end
 
   def reset(planting = false)
     @event = pbMapInterpreter.get_self if @event.nil?
     @new_mechanics      = true
+	@berry_obj           = nil
     @berry_id           = nil
     @mulch_id           = nil if !planting
     @time_alive         = 0
@@ -349,6 +359,7 @@ class BerryPlantData
     @weedsamt = 0
     @pulledweeds = 0
     @preferred_weather = nil
+    @preferred_season = nil
     @exposed_to_preferred_weather = false
     @watering_cans_used = []
 	@time_in_stage = 0
@@ -357,11 +368,13 @@ class BerryPlantData
 
   def plant(berry_id)
     reset(true)
-    @berry_id          = berry_id
+	 @berry_obj = berry_id
+    @berry_id          = @berry_obj.id
     @growth_stage      = 1
     @time_last_updated = pbGetTimeNow.to_i
     @timewithoutberry       = 0
     @preferred_weather = GameData::BerryPlant.get(@berry_id).weather
+    @preferred_season = @berry_obj.season
 	@time_in_stage = 0
     @weeds = false
     @weeds_timer = pbGetTimeNow.to_i
@@ -396,8 +409,7 @@ class BerryPlantData
     time_delta = time_now.to_i - @time_last_updated
     return if time_delta <= 0
     new_time_alive = @time_alive + time_delta
-	
-	@berry_id = @berry_id.id if defined?(@berry_id.id)
+	 
     berrydata = GameData::BerryPlant.get(@berry_id)
 	plant_data = berrydata
 	 propagate if @cropsticks == true
@@ -405,11 +417,23 @@ class BerryPlantData
     max_yield = berrydata.maximum_yield
     min_yield = berrydata.minimum_yield
     # Get all growth data
-    time_per_stage = plant_data.hours_per_stage * 3600   # In seconds
+	hours_per_stage_2 = plant_data.hours_per_stage
+	hours_per_stage_2 -= rand(2)+1 if $player.is_it_this_class?(:GARDENER,false)
+	hours_per_stage_2 = 1 if hours_per_stage_2<1
+	
+	
+    time_per_stage = hours_per_stage_2 * 3600   # In seconds
+
+
     drying_per_hour = plant_data.drying_per_hour
-    berry_season = plant_data.season
+    berry_season = @preferred_season || plant_data.season
     berry_climate = plant_data.climate
     berry_weather = plant_data.weather
+	
+	
+	
+	
+	
     max_replants = GameData::BerryPlant::NUMBER_OF_REPLANTS
     stages_growing = 4
     stages_fully_grown = GameData::BerryPlant::NUMBER_OF_FULLY_GROWN_STAGES
@@ -599,17 +623,26 @@ end
 
 end
 
+def pailInteraction
+current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+return false if $PokemonGlobal.ball_hud_enabled==false
+return false if current_selection.is_a?(Pokemon)
+return false if !GameData::BerryPlant::WATERING_CANS.include?(current_selection.id)
+ItemHandlers.triggerUseFromBox(current_selection)
+return true
+end
 
 def pbBerryPlant
   interp = pbMapInterpreter
   this_event = interp.get_self
   berry_plant = interp.getVariable
   if !berry_plant
-    berry_plant = BerryPlantData.new
+    berry_plant = BerryPlantData.new(this_event)
     interp.setVariable(berry_plant)
   end
   berry = berry_plant.berry_id
-     
+
+
   berry_plant.dead=false if !berry_plant.dead
   
   if berry_plant.dead==true
@@ -621,8 +654,14 @@ def pbBerryPlant
     return
   end
     not_planted = !berry_plant&.planted?
+	if !not_planted
+    if pailInteraction
+	  return
+    end
+	end
     pbPestInteraction 
     pbOtherInteractions if !not_planted
+
   # Interact with the event based on its growth
   
   if berry_plant.grown?
@@ -800,11 +839,13 @@ end
 
 
 def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
+  
+  qty *= 2 if $player.activeCharm?(:BERRYCHARM)
   interp = pbMapInterpreter
   this_event = interp.get_self
   berry_plant = interp.getVariable
   if !berry_plant
-    berry_plant = BerryPlantData.new
+    berry_plant = BerryPlantData.new(this_event)
     interp.setVariable(berry_plant)
     berry_plant.berry_id = berry
   end
@@ -813,6 +854,7 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   
   
   berry = GameData::Item.get(berry)
+  puts berry
   mut_berry_qty = 0
   
   
@@ -924,8 +966,8 @@ if true
 	 message += ", obtained #{mut_berry_qty} #{mut_berry_name}#{berry_name_extra2}, and got a #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty > 1 && wooden_log_amt==1
 	 message += ", obtained #{mut_berry_qty} #{mut_berry_name}#{berry_name_extra2}, and got #{wooden_log_amt} #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty > 1 && wooden_log_amt>1
 	 
-	 message += ", and got a #{wooden_log}." if mutation_info.nil? && show_log == true && wooden_log_amt==1
-	 message += ", and got #{wooden_log_amt} #{wooden_log}." if mutation_info.nil? && show_log == true && wooden_log_amt>1
+	 message += ", and got a #{wooden_log}" if mutation_info.nil? && show_log == true && wooden_log_amt==1
+	 message += ", and got #{wooden_log_amt} #{wooden_log}" if mutation_info.nil? && show_log == true && wooden_log_amt>1
 	 message += "."
 	 pbMessage((message))
 end
@@ -1048,9 +1090,10 @@ end
   if $bag.remove(berry)
   $stats.berries_planted += 1
   pbSetSelfSwitch(this_event.id, "A", true)  
+  nuid = berry_plant.berry_id
   berry_plant.reset
   berry_plant.event           = this_event
-  berry_plant.berry_id           = berry
+  berry_plant.berry_id           = nuid
   berry_plant.growth_stage       = 1
   berry_plant.time_last_updated  = pbGetTimeNow.to_i
   berry_plant.last_berry = berry
@@ -1082,9 +1125,10 @@ end
     if pbShowBerryMessage
 			pbMessage(_INTL("The {1} plant seems to have survived you picking it!", berry_name))
 	end
+  nuid = berry_plant.berry_id
   berry_plant.reset
   berry_plant.event           = this_event
-  berry_plant.berry_id           = berry
+  berry_plant.berry_id           = nuid
   berry_plant.growth_stage       = 1
   berry_plant.time_last_updated  = pbGetTimeNow.to_i
   berry_plant.last_berry = berry
@@ -1123,12 +1167,14 @@ end
 
 def pbBerryPlantWitheredItem
     berry_plant = pbMapInterpreter.getVariable
+    berry = berry_plant.berry_id
     return if !berry_plant
     item = berry_plant.withered_item
     return if berry_plant.planted? || !item
     pbMessage(_INTL("The plant appears to have died."))
     pbMessage(_INTL("There's something on the ground..."))
     pbReceiveItem(:WOODENSTICKS,rand(7)+4)
+	$bag.add(berry) if $player.is_it_this_class?(:GARDENER)
 end
 
 
@@ -2180,3 +2226,5 @@ def pbBerryPlantPestRandomEncounter(berry)
 	
     return result
 end
+
+

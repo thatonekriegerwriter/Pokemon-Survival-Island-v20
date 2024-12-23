@@ -53,20 +53,20 @@ attr_accessor :clothesUnlocking
    alias _CharaCust_Init initialize
   def initialize(name, trainer_type)
     _CharaCust_Init(name, trainer_type)
-    @character_customization=UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT
-    @base                 = "None"
-    @hair                 = "None"
-    @top                  = "None"
-    @bottom               = "None"
-    @headgear             = "None"
-    @accessory            = "None"
-    @bag                  = "None"
-    @contact              = "None"
-    @shoes                = "None"
+    @character_customization =UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT
+    @base                  = nil
+    @hair                  = nil
+    @top                  = nil
+    @bottom               = nil
+    @headgear             = nil
+    @accessory            = nil
+    @bag                  = nil
+    @contact              = nil
+    @shoes                = nil
     @hairList             = [:BALD,:SHORT,:SHORT2,:MEDIUM,:LONG,:SPIKEY,:SPIKEY2,:SLICKEDBACK,:PONYTAIL]
-    @topList              = []
-    @bottomList           = []
-    @headgearList         = []
+    @topList              = [:SHIRTA,:SHIRTB,:SHIRTC]
+    @bottomList           = [:BOTTOMA,:BOTTOMB]
+    @headgearList         = [:BEANIE,:BONNET,:FEDORA,:GLASSES,:HAIRBAND,:HEADBAND,:MINERHELMET,:RIBBON,:SUNHAT,:YOUNGSTERCAP]
     @accessoryList        = [:BAG]
     @clothesUnlocking     = 0
 	
@@ -79,10 +79,11 @@ attr_accessor :clothesUnlocking
   
   
 def character_customization
-if !@character_customization
+
 @character_customization=UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT
-end
+
 return @character_customization
+
 end
 
 def character_customization=(boolean)
@@ -96,9 +97,7 @@ end
 end
 
 def base
-if !@base
-@base="None"
-end
+@base = nil if @base=="None"
 return @base
 end
 
@@ -107,10 +106,7 @@ def base=(values)
 end
  
 def hair
-if !@hair
-@hair="None"
-end
-
+@hair = nil if @hair=="None"
 return @hair
 end
  
@@ -119,15 +115,20 @@ def hair=(values)
 end
 
  
+def hairList
+@hairList = [:BALD,:SHORT,:SHORT2,:MEDIUM,:LONG,:SPIKEY,:SPIKEY2,:SLICKEDBACK,:PONYTAIL] if @hairList.nil? || @hairList.empty?
+return @hairList
+end
+ 
 def top
-if !@top
-if ((TOP_ITEMS[0][1] == true) || (TOP_ITEMS[0][1] == false))
-@top="None"
-else
-@top="None"
-end
-end
+@top = nil if @top=="None"
 return @top
+end
+
+ 
+def topList
+@topList = [:SHIRTA,:SHIRTB,:SHIRTC] if @topList.nil? || @topList.empty?
+return @topList
 end
  
 def top=(values)
@@ -136,28 +137,23 @@ end
 
  
 def bottom
-if !@bottom
-if ((BOTTOM_ITEMS[0][1] == true) || (BOTTOM_ITEMS[0][1] == false))
-@bottom="None"
-else
-@bottom="None"
-end
-end
+@bottom = nil if @bottom=="None"
 return @bottom
 end
  
 def bottom=(values)
 @bottom=values
 end
+
+ 
+def bottomList
+@bottomList = [:BOTTOMA,:BOTTOMB] if @bottomList.nil? || @bottomList.empty?
+return @bottomList
+end
+ 
  
 def headgear
-if !@headgear
-if ((HEADGEAR_ITEMS[0][1] == true) || (HEADGEAR_ITEMS[0][1] == false))
-@headgear="None"
-else
-@headgear="None"
-end
-end
+@headgear = nil if @headgear=="None"
 return @headgear
 end
  
@@ -165,24 +161,30 @@ def headgear=(values)
 @headgear=values
 end
  
+ 
+def headgearList
+@headgearList = [:BEANIE,:BONNET,:FEDORA,:GLASSES,:HAIRBAND,:HEADBAND,:MINERHELMET,:RIBBON,:SUNHAT,:YOUNGSTERCAP] if @headgearList.nil? || @headgearList.empty?
+return @headgearList
+end
+ 
 def accessory
-if !@accessory
-if ((ACCESSORY_ITEMS[0][1] == true) || (ACCESSORY_ITEMS[0][1] == false))
-@accessory="None"
-else
-@accessory="None"
-end
-end
+@accessory = nil if @accessory=="None"
 return @accessory
 end
+ 
+def accessoryList
+@accessoryList = [:BAG] if @accessoryList.nil? || @accessoryList.empty?
+return @accessoryList
+end
+ 
  
 def accessory=(values)
 @accessory=values
 end
  
-def clothesUnlocking
-
-end
+#def clothesUnlocking
+#return @clothesUnlocking
+#end
 end
 class Game_Temp
 attr_accessor :savedoutfit

@@ -1,7 +1,103 @@
 
-#===============================================================================
-# new Method spawnPokeEvent in Class Game_Map in Script Game_Map
-#===============================================================================
+class Game_Player < Game_Character
+  def pbCheckEventTriggerFromDistance(triggers)
+    ret = pbTriggeredTrainerEvents(triggers)
+    ret.concat(pbTriggeredCounterEvents(triggers))
+    ret.concat(pbTriggeredSurroundingEvents(triggers))
+    return false if ret.length == 0
+    ret.each do |event|
+      event.start
+    end
+    return true
+  end
+  def force_start_event(event)
+      event.start
+  end
+  def pbCheckEventTriggerFromDistanceMoving(triggers)
+    ret = pbTriggeredSurroundingEvents(triggers)
+    return if ret.length == 0
+    ret.each do |event| 
+	   next if !event.is_a?(Game_PokeEvent)
+	    if rand(10)<4
+      event.battle_timer-=1 if event.battle_timer>0
+	#puts "Battle Timer (skip_move): #{event.battle_timer}"
+	  end
+    end
+  end
+
+  def update_event_triggering
+    pbCheckEventTriggerFromDistanceMoving([2])
+    return if moving?
+    # Try triggering events upon walking into them/in front of them
+    if @moved_this_frame
+      $game_temp.followers.turn_followers
+      result = pbCheckEventTriggerFromDistance([2])
+      # Event determinant is via touch of same position event
+      result |= check_event_trigger_here([1, 2])
+      # No events triggered, try other event triggers upon finishing a step
+      pbOnStepTaken(result)
+    end
+    # Try to manually interact with events
+    if (Input.trigger?(Input::USE)|| Input.trigger?(Input::MOUSELEFT) )&& !$game_temp.in_mini_update
+      # Same position and front event determinant
+      check_event_trigger_here([0])
+      check_event_trigger_there([0, 2])
+    end
+  end
+
+  def check_event_trigger_touch(dir)
+    result = false
+    return result if $game_system.map_interpreter.running?
+    # All event loops
+    x_offset = (dir == 4) ? -1 : (dir == 6) ? 1 : 0
+    y_offset = (dir == 8) ? -1 : (dir == 2) ? 1 : 0
+    $game_map.events.each_value do |event|
+      next if ![1, 2].include?(event.trigger)   # Player touch, event touch
+      # If event coordinates and triggers are consistent
+      next if !event.at_coordinate?(@x + x_offset, @y + y_offset)
+      if event.name[/(?:sight|trainer)\((\d+)\)/i]
+        distance = $~[1].to_i
+        next if !pbEventCanReachPlayer?(event, self, distance)
+      elsif event.name[/counter\((\d+)\)/i]
+        distance = $~[1].to_i
+        next if !pbEventFacesPlayer?(event, self, distance)
+      elsif event.name[/surrounding\((\d+)\)/i]
+        distance = $~[1].to_i
+        next if !pbPlayerOnOrAroundEvent?(event, self, distance)
+      end
+      # If starting determinant is front event (other than jumping)
+      next if event.jumping? || event.over_trigger?
+      event.start
+      result = true
+    end
+    return result
+  end
+
+  def pbTriggeredSurroundingEvents(triggers, checkIfRunning = true)
+    result = []
+    # If event is running
+    return result if checkIfRunning && $game_system.map_interpreter.running?
+    # All event loops
+    $game_map.events.each_value do |event|
+      next if !triggers.include?(event.trigger)
+      next if !event.name[/surrounding\((\d+)\)/i]
+      distance = $~[1].to_i
+	   potato = []
+	  if !pbPlayerOnOrAroundEvent?(event, self, distance)
+	    event.angry_at.each do |target|
+		  if pbPlayerOnOrAroundEvent?(event, target, distance)
+		   potato << target
+		   force_start_event(event) if rand(10)<3
+		  end
+		end
+      next if potato.empty?
+	  end
+      next if event.jumping? || event.over_trigger?
+      result.push(event)
+    end
+    return result
+  end
+end
 
 
 
@@ -115,6 +211,40 @@ def inputDetection2(enemy,baddir)
 end
 
 
+def pbPlayerOnOrAroundEvent?(event, player, distance)
+  return false if !event || !player
+  left_min_x = right_max_x = top_min_y = bottom_max_y = -1
+  # Calculate the area in each of the four cardinal directions
+  left_min_x  = event.x - distance
+  right_max_x = event.x + distance
+  top_min_y   = event.y - distance
+  bottom_max_y= event.y + distance
+  
+  # Check if the player is in line with the event in the left direction
+  if player.y == event.y && player.x.between?(left_min_x, event.x - 1)
+    return true
+  end
+  
+  # Check if the player is in line with the event in the right direction
+  if player.y == event.y && player.x.between?(event.x + 1, right_max_x)
+    return true
+  end
+  
+  # Check if the player is in line with the event in the upward direction
+  if player.x == event.x && player.y.between?(top_min_y, event.y - 1)
+    return true
+  end
+  
+  # Check if the player is in line with the event in the downward direction
+  if player.x == event.x && player.y.between?(event.y + 1, bottom_max_y)
+    return true
+  end
+  
+  return false
+end
+
+
+
 
 def tutorial_fight(key_id)
     event = $game_map.events[key_id]
@@ -180,6 +310,7 @@ def tutorial_fight(key_id)
 	  $game_temp.in_safari = true
 	  pbSingleOrDoubleWildBattle($game_map.map_id, event.x, event.y, event.pokemon)
 	  $game_temp.in_safari = false
+	  $game_switches[556]=false
 	  $PokemonGlobal.battlingSpawnedPokemon = false
 	  pbResetTempAfterBattle()
       event.removeThisEventfromMap
@@ -241,7 +372,7 @@ def get_the_unnil_class(key_id,map=$game_map.map_id)
   return false
 end
 
-def manuallyGenerate(x,y,dir)
+def manuallyGenerate(x,y,dir,pkmn=nil)
   encounter_type = $PokemonEncounters.find_valid_encounter_type_for_time(:Land, pbGetTimeNow)
   $game_temp.encounter_type = encounter_type
   encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
@@ -249,7 +380,8 @@ def manuallyGenerate(x,y,dir)
   $PokemonGlobal.creatingSpawningPokemon = true
   EventHandlers.trigger(:on_wild_species_chosen, encounter)
   if $PokemonEncounters.allow_encounter?(encounter, repel_active)
-    pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
+    pokemon = pbGenerateWildPokemon(encounter[0],encounter[1]) if pkmn.nil?
+    pokemon = pbGenerateWildPokemon(pkmn,encounter[1]) if !pkmn.nil?
     # trigger event on spawning of pokemon
     EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
     pbPlaceEncounter(x,y,pokemon,dir)
@@ -292,11 +424,14 @@ def pbMoveTowardCoordinates(event,nux,nuy)
     y = event.y
     event.move_toward_the_coordinate(nux,nuy)
     break if event.x == x && event.y == y
-    while event.moving?
-      Graphics.update
-      Input.update
-      pbUpdateSceneMap
-    end
+	 while event.moving?
+
+    Graphics.update
+    Input.update
+    $scene.update
+	 
+	 
+	 end
   end
    return true
 end
@@ -315,13 +450,15 @@ def pbEventCanReachCoordinates?(event, x, y, distance)
   when 8   # Up
     real_distance = event.y - event.height - y
   end
-  if real_distance > 0
-    real_distance.times do |i|
+    real_distance.to_i.times do |i|
       return false if !event.can_move_from_coordinate?(event.x + (i * delta_x), event.y + (i * delta_y), event.direction)
     end
-  end
+
   return true
 end
+
+
+
 class Game_Character
   def move_toward_the_coordinate(x,y)
     sx = @x + (@width / 2.0) - (x + ($game_player.width / 2.0))
@@ -384,81 +521,91 @@ end
   end
 
 end
+class Sprite_Character < RPG::Sprite
+  attr_accessor :nux
+  attr_accessor :nuy
 
+  def nux
+    return self.x
+  end
+
+  def nuy
+    return self.y
+  end
+  def nux=(value)
+    self.x = value
+  end
+
+  def nuy=(value)
+    self.y = value
+  end
+
+end
 
 
 class Game_Map
   def spawnPokeEvent(x,y,pokemon,dir=false)
-    
-    #--- generating a new event ---------------------------------------
-	potato = false
 	if $game_switches[556]==true
 		 @events.each do |event|
-	  if event.is_a?(Array)
-	   potato = true if event[1].name == "tutorialvanishingEncounter" 
-	  else
-	   potato = true if event.name == "tutorialvanishingEncounter" 
-	  end
+	      if event.is_a?(Array)
+	       return if event[1].name == "tutorialvanishingEncounter" 
+	      else
+	       return if event.name == "tutorialvanishingEncounter" 
+	      end
 	 end
-
-	
 	end
-
-	if potato==false
+    
+    #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
-	if $game_switches[556]==true 
-    event.name = "tutorialvanishingEncounter" 
+    mapId = $game_map.map_id
+	 amt = rand(3)+3
+    event.name = "vanishingEncounter.surrounding(#{amt})" 
+    event.name = "tutorialvanishingEncounter" if $game_switches[556]==true 
 
-	else
-	amt = rand(3)+3
-    event.name = "vanishingEncounter.counter(3)" 
-	end
     #--- nessassary properties ----------------------------------------
-	amtofkeysinroom = 0
     key_id = (@events.keys.max || -1) + 1
     event.id = key_id
     event.x = x
     event.y = y
-	 chance = rand(100)
+	chance = rand(100)
+	is_hidden_voltorb = (chance<26 || $PokemonGlobal.in_dungeon==true) && pokemon.species == :VOLTORB
     #--- Graphic of the event -----------------------------------------
     encounter = [pokemon.species,pokemon.level]
     form = pokemon.form
     gender = pokemon.gender
     shiny = pokemon.shiny?
-    #event.pages[0].graphic.tile_id = 0
     graphic_form = (VisibleEncounterSettings::SPRITES[0] && form!=nil) ? form : 0
     graphic_gender = (VisibleEncounterSettings::SPRITES[1] && gender!=nil) ? gender : 0
     graphic_shiny = (VisibleEncounterSettings::SPRITES[2] && shiny!=nil) ? shiny : false
-	if pokemon.species == :VOLTORB && chance<76
-	fname = "Object Ball"
-	else
+	
     fname = ow_sprite_filename(encounter[0].to_s, graphic_form, graphic_gender, graphic_shiny)
+	 fname = "Object Ball" if is_hidden_voltorb
     fname.gsub!("Graphics/Characters/","")
-	end
-
     event.pages[0].graphic.character_name = fname
+	
+	
     #--- movement of the event --------------------------------
+	
+	
     event.pages[0].step_anime = true if VisibleEncounterSettings::USE_STEP_ANIMATION
     event.pages[0].through = false
+    event.pages[0].through = true if pokemon.types.include?(:FLYING)
+    event.pages[0].always_on_top = true if pokemon.types.include?(:FLYING)
+	
+	
     event.pages[0].move_speed = VisibleEncounterSettings::DEFAULT_MOVEMENT[0]
     event.pages[0].move_frequency = 4
-	if $game_switches[556]==true
-    event.pages[0].move_type = 0
-	elsif pokemon.species == :VOLTORB && chance<76
-    event.pages[0].move_type = 0
-    event.pages[0].trigger = 0
-	elsif $game_temp.bossfight==true
-    event.pages[0].move_type = 0
-    event.pages[0].trigger = 2
-	else
     event.pages[0].trigger = 2
     event.pages[0].move_type = 3
+	
+	
+	
+	if $game_switches[556]==true || is_hidden_voltorb
+    event.pages[0].move_type = 0
+    event.pages[0].trigger = 0 if is_hidden_voltorb
+	else
     event.pages[0].move_route.list[0].code = 52879
     event.pages[0].move_route.list[0].parameters  = ["self.pkmnmovement2"]
-	
-	
-	
-	
 	
 	
     for move in VisibleEncounterSettings::Enc_Movements do
@@ -470,19 +617,81 @@ class Game_Map
     end
 	
 	
+	if $game_switches[556]==true
+     Compiler::push_script(event.pages[0].list,sprintf("tutorial_fight(#{key_id})"))
+	elsif is_hidden_voltorb
+	  create_battle(event,key_id,mapId)
+	else
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.ov_combat_loop($map_factory.getMap("+mapId.to_s+").events[#{key_id}]) if !$map_factory.getMap("+mapId.to_s+").events[#{key_id}].nil?"))
+	end
+    #  - finally push end command
+    Compiler::push_end(event.pages[0].list)
 	
 	
-    #--- event commands of the event -------------------------------------
-    #  - add a method that stores temp data when PokeEvent is triggered, must include
-      mapId = $game_map.map_id
-    #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
-	if pokemon.species == :VOLTORB && chance<76    
+	
+	
+	
+	
+    #--- creating and adding the Game_PokeEvent ------------------------------------
+    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, self)
+    gameEvent.id = key_id
+    gameEvent.moveto(x,y)
+    gameEvent.direction = dir if dir!=false
+	
+	
+    for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
+      step_method = step[0]
+      step_value = step[1]
+      step_count = step[2]
+      if pokemon.method(step_method).call == step_value
+        gameEvent.remaining_steps += step_count
+      end
+    end
+	
+	
+	
+    $ExtraEvents.pokemon[key_id] = StoredEvent.new(mapId,event,pokemon)
+	
+	
+	if $game_temp.preventspawns==true #|| $game_system.map_interpreter.running?
+	 $game_temp.spawnqueue << [gameEvent,event]
+	 return
+	end
+
+    @events[key_id] = gameEvent
+	
+	
+	
+	
+	
+	
+    #--- updating the sprites --------------------------------------------------------
+    sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
+    $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
+    $scene.spritesets[self.map_id].character_sprites.push(sprite)
+	$player.pokedex.register(pokemon.species)
+    $player.pokedex.set_seen(pokemon.species)
+	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+    # alternatively: updating the sprites (old and slow but working):
+    #$scene.disposeSpritesets
+    #$scene.createSpritesets
+  end
+
+ def create_battle(event,key_id,mapId)
+
 	if true
-	Compiler::push_script(event.pages[0].list,sprintf(" pbStoreTempForBattle()"))
-    #  - add method pbSingleOrDoubleWildBattle for the battle
-    #  - set data for roamer and encounterType, that is
-    #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
 	if true
+	 Compiler::push_script(event.pages[0].list,sprintf(" pbStoreTempForBattle()"))
     if $PokemonGlobal.roamEncounter!=nil # i.e. $PokemonGlobal.roamEncounter = [i,species,poke[1],poke[4]]
       parameter1 = $PokemonGlobal.roamEncounter[0].to_s
       parameter2 = $PokemonGlobal.roamEncounter[1].to_s
@@ -535,76 +744,19 @@ class Game_Map
     Compiler::push_script(event.pages[0].list,sprintf(parameter),1)
 	end
    end
-    elsif $game_switches[556]==true
-    Compiler::push_script(event.pages[0].list,sprintf("tutorial_fight(#{key_id})"))
-	else
-    Compiler::push_branch(event.pages[0].list,sprintf("get_the_nil_class(#{key_id},"+mapId.to_s+")"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle=OverworldCombat.new($map_factory.getMap("+mapId.to_s+").events[#{key_id}])"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.ov_combat_loop"))
-    #  - add the end of branch
-    Compiler::push_branch_end(event.pages[0].list,1)
-	
-	
-    Compiler::push_branch(event.pages[0].list,sprintf("get_the_unnil_class(#{key_id},"+mapId.to_s+")"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.ov_combat_loop if !$map_factory.getMap("+mapId.to_s+").events[#{key_id}].nil?"))
-    Compiler::push_branch_end(event.pages[0].list,1)
-	end
-    #  - finally push end command
-    Compiler::push_end(event.pages[0].list)
-    #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, self)
-    gameEvent.id = key_id
-    gameEvent.moveto(x,y)
-    gameEvent.pokemon = pokemon
-    gameEvent.direction = dir if dir!=false
-    for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
-      step_method = step[0]
-      step_value = step[1]
-      step_count = step[2]
-      if pokemon.method(step_method).call == step_value
-        gameEvent.remaining_steps += step_count
-      end
-    end
-	if $game_temp.preventspawns.nil?
-	 $game_temp.preventspawns=false
-	end
-    if $game_temp.preventspawns==false && !pbMapInterpreterRunning?
-    $ExtraEvents.pokemon[key_id] = [mapId,event,pokemon,x,y]
-	
-    @events[key_id] = gameEvent
-    #--- updating the sprites --------------------------------------------------------
-    sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
-    $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
-    $scene.spritesets[self.map_id].character_sprites.push(sprite)
-	index = $scene.spritesets[self.map_id].character_sprites.index(sprite)
-	puts "key_id Index:#{key_id}"
-	puts "Sprite Index:#{index}"
-	if !index.nil?
-	 #@events[key_id].sprite = $scene.spritesets[self.map_id].character_sprites[index]
-	end
-	if true 
-	 
-	$player.pokedex.register(pokemon.species)
-    $player.pokedex.set_seen(pokemon.species)
-	end 
-    # alternatively: updating the sprites (old and slow but working):
-    #$scene.disposeSpritesets
-    #$scene.createSpritesets
-    else
-	 $game_temp.spawnqueue << [gameEvent,event]
-	end
 
 
-end
 
-  end
 
+ end
+ 
+ 
   def spawnPokeBoss(x,y,pokemon,boss,view,dir=false)
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
-    event.name = "vanishingEncounter.counter(#{view})" 
+    event.name = "vanishingEncounter.surrounding(#{view})" 
     #--- nessassary properties ----------------------------------------
-	amtofkeysinroom = 0
+    mapId = $game_map.map_id
     key_id = (@events.keys.max || -1) + 1
     event.id = key_id
     event.x = x
@@ -638,18 +790,15 @@ end
       mapId = $game_map.map_id
     #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
 
-    Compiler::push_branch(event.pages[0].list,sprintf("get_the_nil_class(#{key_id})"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle=OverworldCombat.new($map_factory.getMap("+mapId.to_s+").events[#{key_id}])"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.bossfight($map_factory.getMap("+mapId.to_s+").events[#{key_id}],'#{boss}')"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.add_rule('No Player Damage')"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.add_rule('Catchless')"))
-    Compiler::push_script(event.pages[0].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.add_rule('Theftless')"))
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.bossfight($map_factory.getMap("+mapId.to_s+").events[#{key_id}],'#{boss}')"))
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.add_rule('No Player Damage')"))
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.add_rule('Catchless')"))
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.add_rule('Theftless')"))
 
 
 
     Compiler::push_script(event.pages[0].list,sprintf(" pbSetSelfSwitch($map_factory.getMap("+mapId.to_s+").events[#{key_id}], 'A', true)"))
     #  - add the end of branch
-    Compiler::push_branch_end(event.pages[0].list,1)
 	
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
@@ -672,13 +821,10 @@ end
 	
     #--- event commands of the event -------------------------------------
     #  - add a method that stores temp data when PokeEvent is triggered, must include
-      mapId = $game_map.map_id
     #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
 
-    Compiler::push_branch(event.pages[1].list,sprintf("get_the_unnil_class(#{key_id})"))
-    Compiler::push_script(event.pages[1].list,sprintf(" $map_factory.getMap("+mapId.to_s+").events[#{key_id}].ov_battle.bossfight($map_factory.getMap("+mapId.to_s+").events[#{key_id}],'#{boss}')"))
+    Compiler::push_script(event.pages[1].list,sprintf(" $PokemonGlobal.ov_combat.bossfight($map_factory.getMap("+mapId.to_s+").events[#{key_id}],'#{boss}')"))
     #  - add the end of branch
-    Compiler::push_branch_end(event.pages[1].list,1)
     #  - finally push end command
     Compiler::push_end(event.pages[1].list)
 	
@@ -697,10 +843,9 @@ end
 	
 	
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, self)
+    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, self)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
-    gameEvent.pokemon = pokemon
     gameEvent.direction = dir if dir!=false
     for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
       step_method = step[0]
@@ -713,8 +858,8 @@ end
 	if $game_temp.preventspawns.nil?
 	 $game_temp.preventspawns=false
 	end
-    if $game_temp.preventspawns==false
-    $ExtraEvents.pokemon[key_id] = [mapId,event,pokemon,x,y]
+    if $game_temp.preventspawns==false #&& !$game_system.map_interpreter.running?
+    $ExtraEvents.pokemon[key_id] = StoredEvent.new(mapId,event,pokemon)
 	$player.pokedex.register(pokemon)
     $player.pokedex.set_seen(pokemon.species)
     @events[key_id] = gameEvent
@@ -725,10 +870,116 @@ end
     # alternatively: updating the sprites (old and slow but working):
     #$scene.disposeSpritesets
     #$scene.createSpritesets
+	$player.pokedex.register(pokemon.species)
+    $player.pokedex.set_seen(pokemon.species)
+	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
     else
 	 $game_temp.spawnqueue << [gameEvent,event]
 	end
   end
+ 
+  def spawnPokeEventForChallenge(x,y,pokemon,spawn_now=false)
+    
+    #--- generating a new event ---------------------------------------
+    event = RPG::Event.new(x,y)
+	amt = rand(3)+3
+    event.name = "vanishingEncounter.surrounding(#{amt})" 
+    #--- nessassary properties ----------------------------------------
+	amtofkeysinroom = 0
+    key_id = (@events.keys.max || -1) + 1
+    event.id = key_id if spawn_now
+    event.x = x if spawn_now
+    event.y = y if spawn_now
+    #--- Graphic of the event -----------------------------------------
+    encounter = [pokemon.species,pokemon.level]
+    form = pokemon.form
+    gender = pokemon.gender
+    shiny = pokemon.shiny?
+    #event.pages[0].graphic.tile_id = 0
+    graphic_form = (VisibleEncounterSettings::SPRITES[0] && form!=nil) ? form : 0
+    graphic_gender = (VisibleEncounterSettings::SPRITES[1] && gender!=nil) ? gender : 0
+    graphic_shiny = (VisibleEncounterSettings::SPRITES[2] && shiny!=nil) ? shiny : false
+    fname = ow_sprite_filename(encounter[0].to_s, graphic_form, graphic_gender, graphic_shiny)
+    fname.gsub!("Graphics/Characters/","")
+
+    event.pages[0].graphic.character_name = fname
+    #--- movement of the event --------------------------------
+    event.pages[0].step_anime = true if VisibleEncounterSettings::USE_STEP_ANIMATION
+    event.pages[0].through = false
+    event.pages[0].move_speed = VisibleEncounterSettings::DEFAULT_MOVEMENT[0]
+    event.pages[0].move_frequency = 4
+    event.pages[0].trigger = 2
+    event.pages[0].move_type = 3
+    event.pages[0].move_route.list[0].code = 52879
+    event.pages[0].move_route.list[0].parameters  = ["self.pkmnmovement2"]
+	
+	
+	
+	
+	
+	
+    for move in VisibleEncounterSettings::Enc_Movements do
+      if pokemon.method(move[0]).call == move[1]
+        event.pages[0].move_speed = move[2] if move[2]
+        event.pages[0].move_frequency = move[3] if move[3]
+      end
+    end
+
+	
+	
+	
+	
+    #--- event commands of the event -------------------------------------
+    #  - add a method that stores temp data when PokeEvent is triggered, must include
+      mapId = $game_map.map_id
+    #    $PokemonGlobal.roamEncounter, $game_temp.roamer_index_for_encounter, $PokemonGlobal.nextBattleBGM, $game_temp.force_single_battle, $game_temp.encounter_type
+
+    Compiler::push_script(event.pages[0].list,sprintf(" $PokemonGlobal.ov_combat.ov_combat_loop($map_factory.getMap("+mapId.to_s+").events[#{key_id}]) if !$map_factory.getMap("+mapId.to_s+").events[#{key_id}].nil?"))
+
+    #  - finally push end command
+    Compiler::push_end(event.pages[0].list)
+    #--- creating and adding the Game_PokeEvent ------------------------------------
+    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, self)
+    gameEvent.id = key_id
+    gameEvent.moveto(x,y)
+    for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
+      step_method = step[0]
+      step_value = step[1]
+      step_count = step[2]
+      if pokemon.method(step_method).call == step_value
+        gameEvent.remaining_steps += step_count
+      end
+    end
+	
+	 return if $PokemonGlobal.cur_challenge.nil?
+	 return if $PokemonGlobal.cur_challenge==false
+	 if spawn_now==true #&& !$game_system.map_interpreter.running?
+	     $game_map.events[key_id] = gameEvent
+	     sprite = Sprite_Character.new(Spriteset_Map.viewport,$game_map.events[key_id])
+	     $scene.spritesets[$game_map.map_id]=Spriteset_Map.new($game_map) if $scene.spritesets[$game_map.map_id]==nil
+	     $scene.spritesets[$game_map.map_id].character_sprites.push(sprite)
+	     $PokemonGlobal.cur_challenge.opponent_events<<key_id
+		  makeAggressive($game_map.events[key_id]) #if !pkmn.is_aggressive?
+	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
+		  else
+	 $PokemonGlobal.cur_challenge.spawn_queue << [pokemon,event]
+	   end
+	
+   # alternatively: updating the sprites (old and slow but working):
+    #$scene.disposeSpritesets
+    #$scene.createSpritesets
+
+
+
+  end
+
 
 
 end
+
+
+
+
+
+
+

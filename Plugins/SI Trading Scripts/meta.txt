@@ -1,2 +1,2 @@
-Name         = Trading Scripts
-Version      = 1
+Name = Trading Scripts
+Version = 1

@@ -1,4 +1,4 @@
-Name         = Boon's Phenomena
-Version      = 3.1
-Website      = https://reliccastle.com/resources/371/
-Credits      = Boonzeet
+Name = Boon's Phenomena
+Version = 3.1
+Credits = Boonzeet
+Link = https://reliccastle.com/resources/371/

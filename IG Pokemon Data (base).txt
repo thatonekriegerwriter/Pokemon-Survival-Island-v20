@@ -1,0 +1,1256 @@
+Approximately 428 Pokemon Available under: 'Default', 'have_roamers'
+  
+Type Data:
+  
+0 Pokemon which Types include: Wind
+0 Pokemon which Types include: Crystal
+16 Pokemon which Types include: Steel
+16 Pokemon which Types include: Fairy
+19 Pokemon which Types include: Fighting
+22 Pokemon which Types include: Electric
+24 Pokemon which Types include: Ghost
+24 Pokemon which Types include: Dragon
+26 Pokemon which Types include: Fire
+27 Pokemon which Types include: Ice
+33 Pokemon which Types include: Dark
+35 Pokemon which Types include: Rock
+37 Pokemon which Types include: Poison
+42 Pokemon which Types include: Psychic
+43 Pokemon which Types include: Bug
+47 Pokemon which Types include: Grass
+49 Pokemon which Types include: Ground
+58 Pokemon which Types include: Normal
+60 Pokemon which Types include: Flying
+71 Pokemon which Types include: Water
+  
+List of Available Species:
+  
+Absol - Normal Form
+Accelgor - Normal Form
+Aerodactyl - Normal Form
+Altaria - Normal Form
+Amaura - Normal Form
+Anorith - Normal Form
+Arbok - Normal Form
+Archeops - Normal Form
+Armaldo - Normal Form
+Aron - Normal Form
+Avalugg - Normal Form
+Axew - Normal Form
+Azelf - Normal Form
+Azumarill - Normal Form
+Azurill - Normal Form
+Bagon - Normal Form
+Baltoy - Normal Form
+Banette - Normal Form
+Basculin - Red-Striped Form
+Bastiodon - Normal Form
+Beautifly - Normal Form
+Beedrill - Normal Form
+Beheeyem - Normal Form
+Beldum - Normal Form
+Bellossom - Normal Form
+Bellsprout - Normal Form
+Bergmite - Normal Form
+Bewear - Normal Form
+Binacle - Normal Form
+Blitzle - Normal Form
+Bouffalant - Normal Form
+Bounsweet - Normal Form
+Braviary - Normal Form
+Breloom - Normal Form
+Bronzor - Normal Form
+Buizel - Normal Form
+Bulbasaur - Normal Form
+Burmy - Plant Cloak
+Butterfree - Normal Form
+Cacnea - Normal Form
+Cacturne - Normal Form
+Camerupt - Normal Form
+Carnivine - Normal Form
+Castform - Normal
+Caterpie - Normal Form
+Celebi - Normal Form
+Chansey - Normal Form
+Charmander - Normal Form
+Chatot - Normal Form
+Cherubi - Normal Form
+Chewtle - Normal Form
+Chikorita - Normal Form
+Chinchou - Normal Form
+Chingling - Normal Form
+Clauncher - Normal Form
+Claydol - Normal Form
+Clefable - Normal Form
+Clefairy - Normal Form
+Cleffa - Normal Form
+Cloyster - Normal Form
+Combee - Normal Form
+Combusken - Normal Form
+Corphish - Normal Form
+Corsola - Johtonian Form
+Cradily - Normal Form
+Croagunk - Normal Form
+Crobat - Normal Form
+Crustle - Normal Form
+Cryogonal - Normal Form
+Cubchoo - Normal Form
+Cubone - Normal Form
+Cutiefly - Normal Form
+Cyndaquil - Normal Form
+Darkrai - Normal Form
+Darumaka - Galarian Form
+Decidueye - Normal Form
+Dedenne - Normal Form
+Deerling - Spring Form
+Deino - Normal Form
+Delibird - Normal Form
+Deoxys - Normal Forme
+Dewgong - Normal Form
+Dewpider - Normal Form
+Diggersby - Normal Form
+Diglett - Kantonian Form
+Dodaerie - Normal Form
+Dodrio - Normal Form
+Doduo - Normal Form
+Donphan - Normal Form
+Dragonair - Normal Form
+Drampa - Normal Form
+Drapion - Normal Form
+Dratini - Normal Form
+Drednaw - Normal Form
+Dreepy - Normal Form
+Drifblim - Normal Form
+Drifloon - Normal Form
+Drilbur - Normal Form
+Drowzee - Normal Form
+Ducklett - Normal Form
+Dugtrio - Kantonian Form
+Dunsparce - Normal Form
+Durant - Normal Form
+Dusclops - Normal Form
+Dustox - Normal Form
+Eelektrik - Normal Form
+Eevee - Normal Form
+Ekans - Normal Form
+Electrike - Normal Form
+Electrode - Normal Form
+Elgyem - Normal Form
+Emolga - Normal Form
+Entei - Normal Form
+Espeon - Normal Form
+Espurr - Normal Form
+Excadrill - Normal Form
+Falinks - Normal Form
+Farfetch'd - Kantonian Form
+Feebas - Normal Form
+Fletchling - Normal Form
+Floatzel - Normal Form
+Flygon - Normal Form
+Forretress - Normal Form
+Frillish - Normal Form
+Froakie - Normal Form
+Froslass - Normal Form
+Furret - Normal Form
+Gabite - Normal Form
+Gastly - Normal Form
+Gengar - Normal Form
+Geodude - Kantonian Form
+Gible - Normal Form
+Girafarig - Normal Form
+Glaceon - Normal Form
+Glalie - Normal Form
+Gligar - Normal Form
+Gliscor - Normal Form
+Gloom - Normal Form
+Gogoat - Normal Form
+Golbat - Normal Form
+Goldeen - Normal Form
+Golem - Kantonian Form
+Golett - Normal Form
+Goomy - Normal Form
+Gorebyss - Normal Form
+Gothita - Normal Form
+Graveler - Kantonian Form
+Grookey - Normal Form
+Grotle - Normal Form
+Growlithe - Normal Form
+Grubbin - Normal Form
+Gulpin - Normal Form
+Gurdurr - Normal Form
+Gyarados - Normal Form
+Hariyama - Normal Form
+Hatenna - Normal Form
+Haunter - Normal Form
+Hawlucha - Normal Form
+Heatmor - Normal Form
+Helioptile - Normal Form
+Heracross - Normal Form
+Herdier - Normal Form
+Hippopotas - Normal Form
+Hippowdon - Normal Form
+Ho-Oh - Normal Form
+Honchkrow - Normal Form
+Honedge - Normal Form
+Hoppip - Normal Form
+Horsea - Normal Form
+Houndoom - Normal Form
+Houndour - Normal Form
+Hydreigon - Normal Form
+Hypno - Normal Form
+Illumise - Normal Form
+Inkay - Normal Form
+Jigglypuff - Normal Form
+Joltik - Normal Form
+Jumpluff - Normal Form
+Kabuto - Normal Form
+Kadabra - Normal Form
+Kakuna - Normal Form
+Kangaskhan - Normal Form
+Karrablast - Normal Form
+Kingler - Normal Form
+Kirlia - Normal Form
+Koffing - Normal Form
+Komala - Normal Form
+Krabby - Normal Form
+Krokorok - Normal Form
+Krookodile - Normal Form
+Kyurem - Kyurem
+Lairon - Normal Form
+Lampent - Normal Form
+Lanturn - Normal Form
+Lapras - Normal Form
+Larvesta - Normal Form
+Larvitar - Normal Form
+Latias - Normal Form
+Latios - Normal Form
+Lickitung - Normal Form
+Liepard - Normal Form
+Linoone - Hoennian Form
+Lotad - Normal Form
+Loudred - Normal Form
+Ludicolo - Normal Form
+Lugia - Normal Form
+Lunatone - Normal Form
+Luvdisc - Normal Form
+Lycanroc - Midnight Form
+Machamp - Normal Form
+Machop - Normal Form
+Magby - Normal Form
+Magcargo - Normal Form
+Magikarp - Normal Form
+Magmar - Normal Form
+Magnemite - Normal Form
+Makuhita - Normal Form
+Mamoswine - Normal Form
+Mandibuzz - Normal Form
+Mankey - Normal Form
+Mantine - Normal Form
+Mareanie - Normal Form
+Mareep - Normal Form
+Marill - Normal Form
+Marowak - Kantonian Form
+Masquerain - Normal Form
+Mawile - Normal Form
+Meditite - Normal Form
+Meowth - Kantonian Form
+Mesprit - Normal Form
+Metagross - Normal Form
+Metang - Normal Form
+Mightyena - Normal Form
+Miltank - Normal Form
+Mimikyu - Disguised Form
+Minccino - Normal Form
+Minior - Meteor Form
+Minun - Normal Form
+Misdreavus - Normal Form
+Mr. Mime - Normal Form
+Mudbray - Normal Form
+Mudkip - Normal Form
+Muk - Kantonian Form
+Munna - Normal Form
+Natu - Normal Form
+Nidoran♀ - Normal Form
+Nidoran♂ - Normal Form
+Noibat - Normal Form
+Noivern - Normal Form
+Nosepass - Normal Form
+Numel - Normal Form
+Nuzleaf - Normal Form
+Obstagoon - Normal Form
+Oddish - Normal Form
+Omanyte - Normal Form
+Onix - Normal Form
+Oricorio - Baile Style
+Oshawott - Normal Form
+Pachirisu - Normal Form
+Palpitoad - Normal Form
+Pansage - Normal Form
+Paras - Normal Form
+Parasect - Normal Form
+Patrat - Normal Form
+Persian - Kantonian Form
+Petilil - Normal Form
+Phanpy - Normal Form
+Pidgeotto - Normal Form
+Pidgey - Normal Form
+Pikachu - Normal Form
+Piloswine - Normal Form
+Pineco - Normal Form
+Pinsir - Normal Form
+Piplup - Normal Form
+Plusle - Normal Form
+Poliwag - Normal Form
+Poliwhirl - Normal Form
+Ponyta - Kantonian Form
+Poochyena - Normal Form
+Popplio - Normal Form
+Primeape - Normal Form
+Prinplup - Normal Form
+Psyduck - Normal Form
+Pumpkaboo - Average Size
+Pupitar - Normal Form
+Pupperon - Normal Form
+Quagsire - Normal Form
+Quilladin - Normal Form
+Qwilfish - Normal Form
+Raichu - Kantonian Form
+Raikou - Normal Form
+Ralts - Normal Form
+Raticate - Kantonian Form
+Rattata - Alolan Form
+Rattata - Kantonian Form
+Remoraid - Normal Form
+Reshiram - Normal Form
+Rhydon - Normal Form
+Rhyhorn - Normal Form
+Riolu - Normal Form
+Rockruff - Normal Form
+Rolycoly - Normal Form
+Rookidee - Normal Form
+Roselia - Normal Form
+Roserade - Normal Form
+Rufflet - Normal Form
+Sableye - Normal Form
+Salamence - Normal Form
+Sandile - Normal Form
+Sandshrew - Alolan Form
+Sandshrew - Kantonian Form
+Sandslash - Kantonian Form
+Sandygast - Normal Form
+Sawsbuck - Spring Form
+Scatterbug - Normal Form
+Scrafty - Normal Form
+Scraggy - Normal Form
+Scyther - Normal Form
+Sealeo - Normal Form
+Seedot - Normal Form
+Sentret - Normal Form
+Seviper - Normal Form
+Sewaddle - Normal Form
+Sharpedo - Normal Form
+Shelgon - Normal Form
+Shellos - West Sea
+Shelmet - Normal Form
+Shiftry - Normal Form
+Shuckle - Normal Form
+Shuppet - Normal Form
+Sigilyph - Normal Form
+Simipour - Normal Form
+Sinistea - Phony Form
+Skrelp - Normal Form
+Skuntank - Normal Form
+Slowpoke - Kantonian Form
+Slugma - Normal Form
+Smeargle - Normal Form
+Smoochum - Normal Form
+Sneasel - Normal Form
+Snivy - Normal Form
+Snom - Normal Form
+Snorlax - Normal Form
+Snorunt - Normal Form
+Solrock - Normal Form
+Spearow - Normal Form
+Spheal - Normal Form
+Spinarak - Normal Form
+Spiritomb - Normal Form
+Spoink - Normal Form
+Squirtle - Normal Form
+Stantler - Normal Form
+Staravia - Normal Form
+Starmie - Normal Form
+Staryu - Normal Form
+Steelix - Normal Form
+Stunfisk - Normal Form
+Stunky - Normal Form
+Sudowoodo - Normal Form
+Suicune - Normal Form
+Sunkern - Normal Form
+Swablu - Normal Form
+Swadloon - Normal Form
+Swalot - Normal Form
+Swampert - Normal Form
+Swanna - Normal Form
+Swinub - Normal Form
+Taillow - Normal Form
+Talonflame - Normal Form
+Tangela - Normal Form
+Tangrowth - Normal Form
+Tauros - Normal Form
+Teddiursa - Normal Form
+Tentacool - Normal Form
+Tirtouga - Normal Form
+Togedemaru - Normal Form
+Togetic - Normal Form
+Torchic - Normal Form
+Torkoal - Normal Form
+Torterra - Normal Form
+Totodile - Normal Form
+Toucannon - Normal Form
+Tranquill - Normal Form
+Trapinch - Normal Form
+Treecko - Normal Form
+Trevenant - Normal Form
+Tropius - Normal Form
+Tympole - Normal Form
+Tyranitar - Normal Form
+Tyrogue - Normal Form
+Umbreon - Normal Form
+Unfezant - Normal Form
+Uxie - Normal Form
+Vanillite - Normal Form
+Vaporeon - Normal Form
+Venomoth - Normal Form
+Venonat - Normal Form
+Vespiquen - Normal Form
+Vibrava - Normal Form
+Victini - Normal Form
+Volbeat - Normal Form
+Vulpix - Alolan Form
+Vulpix - Kantonian Form
+Wailmer - Normal Form
+Wartortle - Normal Form
+Weavile - Normal Form
+Weedle - Normal Form
+Weepinbell - Normal Form
+Whimsicott - Normal Form
+Whismur - Normal Form
+Wimpod - Normal Form
+Wingull - Normal Form
+Wishiwashi - Solo Form
+Wobbuffet - Normal Form
+Woobat - Normal Form
+Wooloo - Normal Form
+Wooper - Normal Form
+Wurmple - Normal Form
+Yamask - Normal Form
+Yamper - Normal Form
+Yanma - Normal Form
+Yungoos - Normal Form
+Zangoose - Normal Form
+Zekrom - Normal Form
+Zigzagoon - Hoennian Form
+Zorua - Normal Form
+Zubat - Normal Form
+Zygarde - Zygarde 50% Forme
+  
+Move Data:
+  
+9999 No Pokemon have Shadow Wave has it is a Shadow Move.
+9999 No Pokemon have Shadow Sky has it is a Shadow Move.
+9999 No Pokemon have Shadow End has it is a Shadow Move.
+9999 No Pokemon have Shadow Shed has it is a Shadow Move.
+9999 No Pokemon have Shadow Storm has it is a Shadow Move.
+9999 No Pokemon have Shadow Blast has it is a Shadow Move.
+9999 No Pokemon have Shadow Bolt has it is a Shadow Move.
+9999 No Pokemon have Shadow Break has it is a Shadow Move.
+9999 No Pokemon have Shadow Chill has it is a Shadow Move.
+9999 No Pokemon have Shadow Fire has it is a Shadow Move.
+9999 No Pokemon have Shadow Rave has it is a Shadow Move.
+9999 No Pokemon have Shadow Rush has it is a Shadow Move.
+9999 No Pokemon have Shadow Panic has it is a Shadow Move.
+9999 No Pokemon have Shadow Blitz has it is a Shadow Move.
+9999 No Pokemon have Shadow Down has it is a Shadow Move.
+9999 No Pokemon have Shadow Half has it is a Shadow Move.
+9999 No Pokemon have Shadow Mist has it is a Shadow Move.
+9999 No Pokemon have Shadow Hold has it is a Shadow Move.
+145 Pokemon which have Move: Tackle
+92 Pokemon which have Move: Bite
+92 Pokemon which have Move: Growl
+86 Pokemon which have Move: Leer
+74 Pokemon which have Move: Crunch
+67 Pokemon which have Move: Take Down
+64 Pokemon which have Move: Quick Attack
+62 Pokemon which have Move: Water Gun
+58 Pokemon which have Move: Double-Edge
+57 Pokemon which have Move: Sand Attack
+52 Pokemon which have Move: Scary Face
+49 Pokemon which have Move: Agility
+49 Pokemon which have Move: Screech
+46 Pokemon which have Move: Slash
+45 Pokemon which have Move: Tail Whip
+45 Pokemon which have Move: Protect
+44 Pokemon which have Move: Focus Energy
+43 Pokemon which have Move: Absorb
+43 Pokemon which have Move: Hydro Pump
+43 Pokemon which have Move: Confusion
+42 Pokemon which have Move: Astonish
+39 Pokemon which have Move: Flail
+38 Pokemon which have Move: Harden
+38 Pokemon which have Move: Headbutt
+38 Pokemon which have Move: Earthquake
+37 Pokemon which have Move: Charm
+37 Pokemon which have Move: Scratch
+36 Pokemon which have Move: Sucker Punch
+36 Pokemon which have Move: Psychic
+34 Pokemon which have Move: Confuse Ray
+33 Pokemon which have Move: Ancient Power
+33 Pokemon which have Move: Slam
+31 Pokemon which have Move: Swords Dance
+31 Pokemon which have Move: Helping Hand
+31 Pokemon which have Move: Defense Curl
+31 Pokemon which have Move: Fury Swipes
+31 Pokemon which have Move: Psybeam
+31 Pokemon which have Move: Thrash
+30 Pokemon which have Move: Mega Drain
+30 Pokemon which have Move: Zen Headbutt
+29 Pokemon which have Move: Sandstorm
+29 Pokemon which have Move: Supersonic
+29 Pokemon which have Move: Nasty Plot
+29 Pokemon which have Move: Giga Drain
+28 Pokemon which have Move: Rain Dance
+28 Pokemon which have Move: Gust
+28 Pokemon which have Move: Amnesia
+28 Pokemon which have Move: Body Slam
+28 Pokemon which have Move: Ember
+28 Pokemon which have Move: Rock Slide
+28 Pokemon which have Move: Growth
+28 Pokemon which have Move: Pound
+28 Pokemon which have Move: Iron Defense
+28 Pokemon which have Move: Swagger
+27 Pokemon which have Move: Payback
+27 Pokemon which have Move: Air Slash
+27 Pokemon which have Move: Mud-Slap
+27 Pokemon which have Move: Taunt
+27 Pokemon which have Move: Water Pulse
+27 Pokemon which have Move: Rest
+26 Pokemon which have Move: Bug Bite
+26 Pokemon which have Move: Knock Off
+25 Pokemon which have Move: Stun Spore
+25 Pokemon which have Move: Endeavor
+25 Pokemon which have Move: Leech Seed
+25 Pokemon which have Move: Bubble Beam
+25 Pokemon which have Move: Toxic
+25 Pokemon which have Move: Dragon Breath
+25 Pokemon which have Move: Peck
+25 Pokemon which have Move: Curse
+25 Pokemon which have Move: Roar
+24 Pokemon which have Move: Tailwind
+24 Pokemon which have Move: Yawn
+24 Pokemon which have Move: Assurance
+24 Pokemon which have Move: Double Team
+24 Pokemon which have Move: Swift
+23 Pokemon which have Move: Rollout
+23 Pokemon which have Move: Dig
+23 Pokemon which have Move: Recover
+23 Pokemon which have Move: Poison Sting
+22 Pokemon which have Move: Hypnosis
+22 Pokemon which have Move: Future Sight
+22 Pokemon which have Move: Rock Throw
+22 Pokemon which have Move: Blizzard
+22 Pokemon which have Move: Bulldoze
+22 Pokemon which have Move: Endure
+22 Pokemon which have Move: Ice Fang
+22 Pokemon which have Move: Flamethrower
+21 Pokemon which have Move: Stone Edge
+21 Pokemon which have Move: Aqua Tail
+21 Pokemon which have Move: Brine
+21 Pokemon which have Move: Hone Claws
+21 Pokemon which have Move: Rapid Spin
+21 Pokemon which have Move: Icy Wind
+20 Pokemon which have Move: Discharge
+20 Pokemon which have Move: Explosion
+20 Pokemon which have Move: Fury Cutter
+20 Pokemon which have Move: Shadow Ball
+20 Pokemon which have Move: Razor Leaf
+20 Pokemon which have Move: Safeguard
+20 Pokemon which have Move: Mist
+20 Pokemon which have Move: Earth Power
+20 Pokemon which have Move: Whirlwind
+20 Pokemon which have Move: Sweet Scent
+20 Pokemon which have Move: Encore
+20 Pokemon which have Move: Baton Pass
+19 Pokemon which have Move: Copycat
+19 Pokemon which have Move: Wing Attack
+19 Pokemon which have Move: Hyper Voice
+19 Pokemon which have Move: Poison Powder
+19 Pokemon which have Move: Roost
+19 Pokemon which have Move: Thunder Wave
+19 Pokemon which have Move: Bug Buzz
+18 Pokemon which have Move: Outrage
+18 Pokemon which have Move: Fury Attack
+18 Pokemon which have Move: Aerial Ace
+18 Pokemon which have Move: Uproar
+18 Pokemon which have Move: Pursuit
+18 Pokemon which have Move: Light Screen
+18 Pokemon which have Move: Hex
+18 Pokemon which have Move: Imprison
+18 Pokemon which have Move: Powder Snow
+18 Pokemon which have Move: Metal Claw
+18 Pokemon which have Move: Synthesis
+17 Pokemon which have Move: Aqua Ring
+17 Pokemon which have Move: Play Rough
+17 Pokemon which have Move: Disable
+17 Pokemon which have Move: Hyper Beam
+17 Pokemon which have Move: Spark
+17 Pokemon which have Move: Night Slash
+17 Pokemon which have Move: Destiny Bond
+16 Pokemon which have Move: Stomp
+16 Pokemon which have Move: Sand Tomb
+16 Pokemon which have Move: Stockpile
+16 Pokemon which have Move: Night Shade
+16 Pokemon which have Move: Covet
+16 Pokemon which have Move: Extrasensory
+16 Pokemon which have Move: Wrap
+16 Pokemon which have Move: Calm Mind
+16 Pokemon which have Move: Dragon Pulse
+16 Pokemon which have Move: Last Resort
+15 Pokemon which have Move: Smack Down
+15 Pokemon which have Move: Fire Fang
+15 Pokemon which have Move: Reversal
+15 Pokemon which have Move: Baby-Doll Eyes
+15 Pokemon which have Move: X-Scissor
+15 Pokemon which have Move: Splash
+15 Pokemon which have Move: Haze
+15 Pokemon which have Move: Air Cutter
+15 Pokemon which have Move: Bind
+15 Pokemon which have Move: Bounce
+15 Pokemon which have Move: Heavy Slam
+15 Pokemon which have Move: Acid
+15 Pokemon which have Move: Swallow
+15 Pokemon which have Move: Spit Up
+15 Pokemon which have Move: Charge
+14 Pokemon which have Move: Feint Attack
+14 Pokemon which have Move: Counter
+14 Pokemon which have Move: Mud Shot
+14 Pokemon which have Move: Superpower
+14 Pokemon which have Move: Howl
+14 Pokemon which have Move: Dark Pulse
+14 Pokemon which have Move: Self-Destruct
+14 Pokemon which have Move: Fling
+14 Pokemon which have Move: Withdraw
+14 Pokemon which have Move: Rock Polish
+14 Pokemon which have Move: Sleep Powder
+13 Pokemon which have Move: Double Hit
+13 Pokemon which have Move: Memento
+13 Pokemon which have Move: Lick
+13 Pokemon which have Move: Hail
+13 Pokemon which have Move: Aromatherapy
+13 Pokemon which have Move: Shell Smash
+13 Pokemon which have Move: Rock Blast
+13 Pokemon which have Move: Surf
+13 Pokemon which have Move: Mean Look
+13 Pokemon which have Move: Gastro Acid
+13 Pokemon which have Move: Pin Missile
+13 Pokemon which have Move: Vine Whip
+13 Pokemon which have Move: Smokescreen
+13 Pokemon which have Move: Feather Dance
+13 Pokemon which have Move: Ice Shard
+13 Pokemon which have Move: Thunder Fang
+13 Pokemon which have Move: Hurricane
+13 Pokemon which have Move: Detect
+12 Pokemon which have Move: Inferno
+12 Pokemon which have Move: Fissure
+12 Pokemon which have Move: Sheer Cold
+12 Pokemon which have Move: Hammer Arm
+12 Pokemon which have Move: Play Nice
+12 Pokemon which have Move: Water Sport
+12 Pokemon which have Move: Moonblast
+12 Pokemon which have Move: Thunder
+12 Pokemon which have Move: Disarming Voice
+12 Pokemon which have Move: Sunny Day
+12 Pokemon which have Move: Spite
+12 Pokemon which have Move: Sing
+12 Pokemon which have Move: Power Gem
+12 Pokemon which have Move: Fake Out
+12 Pokemon which have Move: Struggle Bug
+12 Pokemon which have Move: Feint
+12 Pokemon which have Move: Moonlight
+11 Pokemon which have Move: Stealth Rock
+11 Pokemon which have Move: Echoed Voice
+11 Pokemon which have Move: Brave Bird
+11 Pokemon which have Move: Poison Jab
+11 Pokemon which have Move: Energy Ball
+11 Pokemon which have Move: Muddy Water
+11 Pokemon which have Move: String Shot
+11 Pokemon which have Move: Cosmic Power
+11 Pokemon which have Move: Toxic Spikes
+11 Pokemon which have Move: Sweet Kiss
+11 Pokemon which have Move: Electro Ball
+11 Pokemon which have Move: Dragon Claw
+11 Pokemon which have Move: Belch
+11 Pokemon which have Move: Super Fang
+11 Pokemon which have Move: Low Kick
+11 Pokemon which have Move: Life Dew
+11 Pokemon which have Move: Solar Beam
+11 Pokemon which have Move: Venoshock
+10 Pokemon which have Move: Sketch
+10 Pokemon which have Move: Dragon Rush
+10 Pokemon which have Move: Ingrain
+10 Pokemon which have Move: Revenge
+10 Pokemon which have Move: Flare Blitz
+10 Pokemon which have Move: Gyro Ball
+10 Pokemon which have Move: Smog
+10 Pokemon which have Move: Pluck
+10 Pokemon which have Move: Worry Seed
+10 Pokemon which have Move: Shadow Sneak
+10 Pokemon which have Move: Rock Tomb
+10 Pokemon which have Move: Foul Play
+10 Pokemon which have Move: Thunder Shock
+10 Pokemon which have Move: Psych Up
+10 Pokemon which have Move: Whirlpool
+10 Pokemon which have Move: Leaf Storm
+10 Pokemon which have Move: Minimize
+10 Pokemon which have Move: Ice Beam
+10 Pokemon which have Move: Aqua Jet
+9 Pokemon which have Move: Giga Impact
+9 Pokemon which have Move: Iron Head
+9 Pokemon which have Move: Fire Blast
+9 Pokemon which have Move: Sky Attack
+9 Pokemon which have Move: Odor Sleuth
+9 Pokemon which have Move: Belly Drum
+9 Pokemon which have Move: Rage
+9 Pokemon which have Move: Leech Life
+9 Pokemon which have Move: Acid Spray
+9 Pokemon which have Move: Acrobatics
+9 Pokemon which have Move: Stomping Tantrum
+9 Pokemon which have Move: Lava Plume
+9 Pokemon which have Move: Final Gambit
+9 Pokemon which have Move: Guillotine
+9 Pokemon which have Move: Nuzzle
+9 Pokemon which have Move: Double Kick
+9 Pokemon which have Move: Bide
+9 Pokemon which have Move: Round
+9 Pokemon which have Move: Quiver Dance
+9 Pokemon which have Move: Dream Eater
+9 Pokemon which have Move: Torment
+9 Pokemon which have Move: Beat Up
+9 Pokemon which have Move: Drill Peck
+9 Pokemon which have Move: Aurora Beam
+9 Pokemon which have Move: Work Up
+9 Pokemon which have Move: Flame Wheel
+9 Pokemon which have Move: U-turn
+9 Pokemon which have Move: Will-O-Wisp
+9 Pokemon which have Move: Laser Focus
+9 Pokemon which have Move: Coil
+9 Pokemon which have Move: Metal Sound
+9 Pokemon which have Move: Nature Power
+9 Pokemon which have Move: Poison Gas
+8 Pokemon which have Move: Quick Guard
+8 Pokemon which have Move: Magical Leaf
+8 Pokemon which have Move: Megahorn
+8 Pokemon which have Move: Bulk Up
+8 Pokemon which have Move: Flame Charge
+8 Pokemon which have Move: Dragon Dance
+8 Pokemon which have Move: Horn Attack
+8 Pokemon which have Move: Teleport
+8 Pokemon which have Move: Embargo
+8 Pokemon which have Move: Mirror Coat
+8 Pokemon which have Move: Magnet Rise
+8 Pokemon which have Move: Guard Split
+8 Pokemon which have Move: Venom Drench
+8 Pokemon which have Move: Stored Power
+8 Pokemon which have Move: Close Combat
+8 Pokemon which have Move: Seed Bomb
+8 Pokemon which have Move: Wring Out
+8 Pokemon which have Move: Poison Fang
+8 Pokemon which have Move: Fake Tears
+8 Pokemon which have Move: Rock Smash
+8 Pokemon which have Move: Guard Swap
+8 Pokemon which have Move: Perish Song
+8 Pokemon which have Move: Phantom Force
+8 Pokemon which have Move: Reflect
+8 Pokemon which have Move: Crush Claw
+7 Pokemon which have Move: Healing Wish
+7 Pokemon which have Move: Acid Armor
+7 Pokemon which have Move: Seismic Toss
+7 Pokemon which have Move: Psyshock
+7 Pokemon which have Move: Sludge Bomb
+7 Pokemon which have Move: Snore
+7 Pokemon which have Move: Fairy Wind
+7 Pokemon which have Move: Block
+7 Pokemon which have Move: Twister
+7 Pokemon which have Move: Grassy Terrain
+7 Pokemon which have Move: Switcheroo
+7 Pokemon which have Move: Wide Guard
+7 Pokemon which have Move: Razor Shell
+7 Pokemon which have Move: Pain Split
+7 Pokemon which have Move: Spikes
+7 Pokemon which have Move: False Swipe
+7 Pokemon which have Move: Incinerate
+7 Pokemon which have Move: Draining Kiss
+7 Pokemon which have Move: After You
+7 Pokemon which have Move: Defog
+7 Pokemon which have Move: Flatter
+7 Pokemon which have Move: Heal Pulse
+7 Pokemon which have Move: Gunk Shot
+7 Pokemon which have Move: Natural Gift
+7 Pokemon which have Move: Liquidation
+7 Pokemon which have Move: Wood Hammer
+7 Pokemon which have Move: Soak
+7 Pokemon which have Move: Freeze-Dry
+7 Pokemon which have Move: Entrainment
+7 Pokemon which have Move: Bullet Seed
+7 Pokemon which have Move: Retaliate
+7 Pokemon which have Move: Autotomize
+7 Pokemon which have Move: Power Split
+6 Pokemon which have Move: Acupressure
+6 Pokemon which have Move: Strength
+6 Pokemon which have Move: Clear Smog
+6 Pokemon which have Move: Grudge
+6 Pokemon which have Move: Magnitude
+6 Pokemon which have Move: Zap Cannon
+6 Pokemon which have Move: Glare
+6 Pokemon which have Move: Cross Chop
+6 Pokemon which have Move: Signal Beam
+6 Pokemon which have Move: Dragon Tail
+6 Pokemon which have Move: Wonder Room
+6 Pokemon which have Move: Snarl
+6 Pokemon which have Move: Hyper Fang
+6 Pokemon which have Move: Fire Spin
+6 Pokemon which have Move: Fly
+6 Pokemon which have Move: Power Swap
+6 Pokemon which have Move: Cotton Spore
+6 Pokemon which have Move: Leaf Blade
+6 Pokemon which have Move: Thunderbolt
+6 Pokemon which have Move: Infestation
+6 Pokemon which have Move: Drill Run
+6 Pokemon which have Move: Shadow Punch
+6 Pokemon which have Move: Wild Charge
+6 Pokemon which have Move: Jump Kick
+5 Pokemon which have Move: Mimic
+5 Pokemon which have Move: Horn Drill
+5 Pokemon which have Move: Vital Throw
+5 Pokemon which have Move: Force Palm
+5 Pokemon which have Move: Mirror Move
+5 Pokemon which have Move: Petal Blizzard
+5 Pokemon which have Move: Metronome
+5 Pokemon which have Move: Foresight
+5 Pokemon which have Move: Petal Dance
+5 Pokemon which have Move: Power Trick
+5 Pokemon which have Move: Dual Chop
+5 Pokemon which have Move: Mud Sport
+5 Pokemon which have Move: Cotton Guard
+5 Pokemon which have Move: Power Whip
+5 Pokemon which have Move: Iron Tail
+5 Pokemon which have Move: Leaf Tornado
+5 Pokemon which have Move: Shadow Claw
+5 Pokemon which have Move: Dynamic Punch
+5 Pokemon which have Move: Follow Me
+5 Pokemon which have Move: Avalanche
+5 Pokemon which have Move: Tri Attack
+5 Pokemon which have Move: Rage Powder
+5 Pokemon which have Move: Fell Stinger
+5 Pokemon which have Move: Frost Breath
+5 Pokemon which have Move: Volt Switch
+5 Pokemon which have Move: Gravity
+5 Pokemon which have Move: Head Smash
+5 Pokemon which have Move: Sludge
+5 Pokemon which have Move: Sonic Boom
+5 Pokemon which have Move: Bubble
+5 Pokemon which have Move: Cross Poison
+5 Pokemon which have Move: Dive
+5 Pokemon which have Move: Attract
+5 Pokemon which have Move: Eruption
+5 Pokemon which have Move: Flame Burst
+4 Pokemon which have Move: Eerie Impulse
+4 Pokemon which have Move: Flash Cannon
+4 Pokemon which have Move: Weather Ball
+4 Pokemon which have Move: Role Play
+4 Pokemon which have Move: Fire Punch
+4 Pokemon which have Move: Dazzling Gleam
+4 Pokemon which have Move: Vise Grip
+4 Pokemon which have Move: Trick
+4 Pokemon which have Move: Psycho Shift
+4 Pokemon which have Move: Needle Arm
+4 Pokemon which have Move: Bone Rush
+4 Pokemon which have Move: Thunder Punch
+4 Pokemon which have Move: Morning Sun
+4 Pokemon which have Move: Recycle
+4 Pokemon which have Move: Horn Leech
+4 Pokemon which have Move: High Horsepower
+4 Pokemon which have Move: Trick-or-Treat
+4 Pokemon which have Move: Sticky Web
+4 Pokemon which have Move: Snatch
+4 Pokemon which have Move: Wish
+4 Pokemon which have Move: Brick Break
+4 Pokemon which have Move: Meteor Mash
+4 Pokemon which have Move: Silver Wind
+4 Pokemon which have Move: High Jump Kick
+4 Pokemon which have Move: Dragon Rage
+4 Pokemon which have Move: Teeter Dance
+4 Pokemon which have Move: Focus Punch
+4 Pokemon which have Move: Me First
+4 Pokemon which have Move: Wake-Up Slap
+4 Pokemon which have Move: Captivate
+4 Pokemon which have Move: Ice Punch
+4 Pokemon which have Move: Tickle
+4 Pokemon which have Move: Power Trip
+4 Pokemon which have Move: Crabhammer
+4 Pokemon which have Move: Sleep Talk
+3 Pokemon which have Move: Submission
+3 Pokemon which have Move: Mud Bomb
+3 Pokemon which have Move: Hidden Power
+3 Pokemon which have Move: Extreme Speed
+3 Pokemon which have Move: Aromatic Mist
+3 Pokemon which have Move: Electric Terrain
+3 Pokemon which have Move: Shock Wave
+3 Pokemon which have Move: Spiky Shield
+3 Pokemon which have Move: Icicle Spear
+3 Pokemon which have Move: Synchronoise
+3 Pokemon which have Move: Skull Bash
+3 Pokemon which have Move: Slack Off
+3 Pokemon which have Move: Pay Day
+3 Pokemon which have Move: Sludge Wave
+3 Pokemon which have Move: Noble Roar
+3 Pokemon which have Move: Quash
+3 Pokemon which have Move: Meditate
+3 Pokemon which have Move: Charge Beam
+3 Pokemon which have Move: Overheat
+3 Pokemon which have Move: Low Sweep
+3 Pokemon which have Move: Parabolic Charge
+3 Pokemon which have Move: Boomburst
+3 Pokemon which have Move: Waterfall
+3 Pokemon which have Move: Psycho Cut
+3 Pokemon which have Move: Metal Burst
+3 Pokemon which have Move: Heal Bell
+3 Pokemon which have Move: Ally Switch
+3 Pokemon which have Move: Magic Room
+3 Pokemon which have Move: Magic Coat
+3 Pokemon which have Move: Steel Wing
+3 Pokemon which have Move: Aurora Veil
+3 Pokemon which have Move: Lock-On
+3 Pokemon which have Move: Leafage
+3 Pokemon which have Move: Sky Uppercut
+3 Pokemon which have Move: Throat Chop
+3 Pokemon which have Move: Arm Thrust
+3 Pokemon which have Move: Facade
+2 Pokemon which have Move: Substitute
+2 Pokemon which have Move: Mach Punch
+2 Pokemon which have Move: Mind Reader
+2 Pokemon which have Move: Thief
+2 Pokemon which have Move: Psywave
+2 Pokemon which have Move: Skill Swap
+2 Pokemon which have Move: Cut
+2 Pokemon which have Move: Bullet Punch
+2 Pokemon which have Move: Obstruct
+2 Pokemon which have Move: Nightmare
+2 Pokemon which have Move: Scald
+2 Pokemon which have Move: Brutal Swing
+2 Pokemon which have Move: Psychic Terrain
+2 Pokemon which have Move: Grass Knot
+2 Pokemon which have Move: Twineedle
+2 Pokemon which have Move: Simple Beam
+2 Pokemon which have Move: Burn Up
+2 Pokemon which have Move: Mega Kick
+2 Pokemon which have Move: Chatter
+2 Pokemon which have Move: Jaw Lock
+2 Pokemon which have Move: Confide
+2 Pokemon which have Move: Bonemerang
+2 Pokemon which have Move: Mega Punch
+2 Pokemon which have Move: Misty Terrain
+2 Pokemon which have Move: Spore
+2 Pokemon which have Move: Spirit Shackle
+2 Pokemon which have Move: Heat Wave
+2 Pokemon which have Move: Aura Sphere
+2 Pokemon which have Move: Razor Wind
+2 Pokemon which have Move: Beak Blast
+2 Pokemon which have Move: Karate Chop
+2 Pokemon which have Move: Punishment
+2 Pokemon which have Move: Bestow
+2 Pokemon which have Move: Smelling Salts
+2 Pokemon which have Move: Heat Crash
+2 Pokemon which have Move: Poison Tail
+2 Pokemon which have Move: Mirror Shot
+2 Pokemon which have Move: Electroweb
+2 Pokemon which have Move: Tail Slap
+2 Pokemon which have Move: Tearful Look
+2 Pokemon which have Move: Grass Whistle
+2 Pokemon which have Move: Milk Drink
+2 Pokemon which have Move: Land's Wrath
+2 Pokemon which have Move: Sacred Fire
+2 Pokemon which have Move: Camouflage
+2 Pokemon which have Move: Ominous Wind
+2 Pokemon which have Move: Water Spout
+2 Pokemon which have Move: Reflect Type
+2 Pokemon which have Move: Branch Poke
+1 Pokemon which have Move: Mystical Fire
+1 Pokemon which have Move: Rock Climb
+1 Pokemon which have Move: Glaciate
+1 Pokemon which have Move: Bolt Strike
+1 Pokemon which have Move: Psychic Fangs
+1 Pokemon which have Move: Fusion Bolt
+1 Pokemon which have Move: Blue Flare
+1 Pokemon which have Move: Magma Storm
+1 Pokemon which have Move: Fusion Flare
+1 Pokemon which have Move: Scorching Sands
+1 Pokemon which have Move: Scale Shot
+1 Pokemon which have Move: Mist Ball
+1 Pokemon which have Move: Luster Purge
+1 Pokemon which have Move: Aeroblast
+1 Pokemon which have Move: Refresh
+1 Pokemon which have Move: V-create
+1 Pokemon which have Move: Psycho Boost
+1 Pokemon which have Move: Searing Shot
+1 Pokemon which have Move: Thousand Arrows
+1 Pokemon which have Move: Thousand Waves
+1 Pokemon which have Move: Kinesis
+1 Pokemon which have Move: Defend Order
+1 Pokemon which have Move: Core Enforcer
+1 Pokemon which have Move: Dark Void
+1 Pokemon which have Move: Attack Order
+1 Pokemon which have Move: Dual Wingbeat
+1 Pokemon which have Move: Heart Swap
+1 Pokemon which have Move: Sky Drop
+1 Pokemon which have Move: Heart Stamp
+1 Pokemon which have Move: Lucky Chant
+1 Pokemon which have Move: Fire Lash
+1 Pokemon which have Move: Grass Pledge
+1 Pokemon which have Move: Flying Press
+1 Pokemon which have Move: Frustration
+1 Pokemon which have Move: Draco Meteor
+1 Pokemon which have Move: Steamroller
+1 Pokemon which have Move: Body Press
+1 Pokemon which have Move: Return
+1 Pokemon which have Move: Darkest Lariat
+1 Pokemon which have Move: Flip Turn
+1 Pokemon which have Move: Hydro Cannon
+1 Pokemon which have Move: Grassy Glide
+1 Pokemon which have Move: Soft-Boiled
+1 Pokemon which have Move: Electrify
+1 Pokemon which have Move: Head Charge
+1 Pokemon which have Move: Telekinesis
+1 Pokemon which have Move: Chip Away
+1 Pokemon which have Move: Trick Room
+1 Pokemon which have Move: Zing Zap
+1 Pokemon which have Move: Terrain Pulse
+1 Pokemon which have Move: Meteor Beam
+1 Pokemon which have Move: Present
+1 Pokemon which have Move: No Retreat
+1 Pokemon which have Move: First Impression
+1 Pokemon which have Move: Power-Up Punch
+1 Pokemon which have Move: Volt Tackle
+1 Pokemon which have Move: Solar Blade
+1 Pokemon which have Move: Water Pledge
+1 Pokemon which have Move: Triple Axel
+1 Pokemon which have Move: Water Shuriken
+1 Pokemon which have Move: Trump Card
+1 Pokemon which have Move: Expanding Force
+1 Pokemon which have Move: Focus Blast
+1 Pokemon which have Move: Warm Front
+1 Pokemon which have Move: Magnetic Flux
+1 Pokemon which have Move: Skitter Smack
+1 Pokemon which have Move: Shore Up
+1 Pokemon which have Move: Burning Jealousy
+1 Pokemon which have Move: Night Daze
+1 Pokemon which have Move: Frenzy Plant
+1 Pokemon which have Move: Misty Explosion
+1 Pokemon which have Move: Smart Strike
+1 Pokemon which have Move: Steel Roller
+1 Pokemon which have Move: Storm Throw
+1 Pokemon which have Move: Constrict
+1 Pokemon which have Move: Spider Web
+1 Pokemon which have Move: Toxic Thread
+1 Pokemon which have Move: Topsy-Turvy
+1 Pokemon which have Move: Breaking Swipe
+1 Pokemon which have Move: Pollen Puff
+1 Pokemon which have Move: Drain Punch
+1 Pokemon which have Move: Coaching
+1 Pokemon which have Move: Rising Voltage
+1 Pokemon which have Move: Speed Swap
+1 Pokemon which have Move: Steel Beam
+1 Pokemon which have Move: Revelation Dance
+1 Pokemon which have Move: Rock Wrecker
+1 Pokemon which have Move: Flash
+1 Pokemon which have Move: Tail Glow
+1 Pokemon which have Move: Double Slap
+1 Pokemon which have Move: Cold Front
+1 Pokemon which have Move: Crafty Shield
+1 Pokemon which have Move: Poltergeist
+1 Pokemon which have Move: Ice Ball
+1 Pokemon which have Move: Lunge
+1 Pokemon which have Move: Blaze Kick
+1 Pokemon which have Move: Fire Pledge
+1 Pokemon which have Move: Forest's Curse
+1 Pokemon which have Move: Icicle Crash
+1 Pokemon which have Move: Lash Out
+1 Pokemon which have Move: Strength Sap
+1 Pokemon which have Move: Sacred Sword
+1 Pokemon which have Move: Corrosive Gas
+0 Pokemon which have Move: Spectral Thief
+0 Pokemon which have Move: Shadow Bone
+0 Pokemon which have Move: Moongeist Beam
+0 Pokemon which have Move: Astral Barrage
+0 Pokemon which have Move: Seed Flare
+0 Pokemon which have Move: Trop Kick
+0 Pokemon which have Move: Drum Beating
+0 Pokemon which have Move: Grav Apple
+0 Pokemon which have Move: Apple Acid
+0 Pokemon which have Move: Snap Trap
+0 Pokemon which have Move: Jungle Healing
+0 Pokemon which have Move: Precipice Blades
+0 Pokemon which have Move: Bone Club
+0 Pokemon which have Move: Rototiller
+0 Pokemon which have Move: Freeze Shock
+0 Pokemon which have Move: Ice Burn
+0 Pokemon which have Move: Ice Hammer
+0 Pokemon which have Move: Glacial Lance
+0 Pokemon which have Move: Shadow Force
+0 Pokemon which have Move: Techno Blast
+0 Pokemon which have Move: Oblivion Wing
+0 Pokemon which have Move: Dragon Ascent
+0 Pokemon which have Move: Egg Bomb
+0 Pokemon which have Move: Judgment
+0 Pokemon which have Move: Multi-Attack
+0 Pokemon which have Move: Relic Song
+0 Pokemon which have Move: Pyro Ball
+0 Pokemon which have Move: Dizzy Punch
+0 Pokemon which have Move: Secret Power
+0 Pokemon which have Move: Struggle
+0 Pokemon which have Move: Hold Back
+0 Pokemon which have Move: Fiery Dance
+0 Pokemon which have Move: Shell Trap
+0 Pokemon which have Move: Mind Blown
+0 Pokemon which have Move: Spike Cannon
+0 Pokemon which have Move: Comet Punch
+0 Pokemon which have Move: Barrage
+0 Pokemon which have Move: Crush Grip
+0 Pokemon which have Move: Blast Burn
+0 Pokemon which have Move: Thunderous Kick
+0 Pokemon which have Move: Assist
+0 Pokemon which have Move: Celebrate
+0 Pokemon which have Move: Conversion
+0 Pokemon which have Move: Conversion 2
+0 Pokemon which have Move: Meteor Assault
+0 Pokemon which have Move: Happy Hour
+0 Pokemon which have Move: Octolock
+0 Pokemon which have Move: Mat Block
+0 Pokemon which have Move: Hold Hands
+0 Pokemon which have Move: Lovely Kiss
+0 Pokemon which have Move: Triple Kick
+0 Pokemon which have Move: Sharpen
+0 Pokemon which have Move: Vacuum Wave
+0 Pokemon which have Move: Rolling Kick
+0 Pokemon which have Move: Spotlight
+0 Pokemon which have Move: Transform
+0 Pokemon which have Move: Court Change
+0 Pokemon which have Move: Stuff Cheeks
+0 Pokemon which have Move: Teatime
+0 Pokemon which have Move: Circle Throw
+0 Pokemon which have Move: Secret Sword
+0 Pokemon which have Move: Baneful Bunker
+0 Pokemon which have Move: Strange Steam
+0 Pokemon which have Move: Decorate
+0 Pokemon which have Move: Spirit Break
+0 Pokemon which have Move: Nature's Madness
+0 Pokemon which have Move: Geomancy
+0 Pokemon which have Move: Purify
+0 Pokemon which have Move: Shell Side Arm
+0 Pokemon which have Move: Prismatic Laser
+0 Pokemon which have Move: Photon Geyser
+0 Pokemon which have Move: Flower Shield
+0 Pokemon which have Move: Psystrike
+0 Pokemon which have Move: Hyperspace Hole
+0 Pokemon which have Move: Floral Healing
+0 Pokemon which have Move: Barrier
+0 Pokemon which have Move: Fairy Lock
+0 Pokemon which have Move: Heal Block
+0 Pokemon which have Move: Fleur Cannon
+0 Pokemon which have Move: Instruct
+0 Pokemon which have Move: Lunar Dance
+0 Pokemon which have Move: Miracle Eye
+0 Pokemon which have Move: Magic Powder
+0 Pokemon which have Move: Eerie Spell
+0 Pokemon which have Move: Freezing Glare
+0 Pokemon which have Move: Diamond Storm
+0 Pokemon which have Move: Accelerock
+0 Pokemon which have Move: Tar Shot
+0 Pokemon which have Move: Doom Desire
+0 Pokemon which have Move: Sunsteel Strike
+0 Pokemon which have Move: Light of Ruin
+0 Pokemon which have Move: Anchor Shot
+0 Pokemon which have Move: Double Iron Bash
+0 Pokemon which have Move: Magnet Bomb
+0 Pokemon which have Move: Thunder Cage
+0 Pokemon which have Move: Gear Grind
+0 Pokemon which have Move: Gear Up
+0 Pokemon which have Move: Bolt Beak
+0 Pokemon which have Move: King's Shield
+0 Pokemon which have Move: Aura Wheel
+0 Pokemon which have Move: Overdrive
+0 Pokemon which have Move: Ion Deluge
+0 Pokemon which have Move: Shift Gear
+0 Pokemon which have Move: Behemoth Bash
+0 Pokemon which have Move: Plasma Fists
+0 Pokemon which have Move: Dragon Energy
+0 Pokemon which have Move: Clangorous Soul
+0 Pokemon which have Move: Behemoth Blade
+0 Pokemon which have Move: Origin Pulse
+0 Pokemon which have Move: Steam Eruption
+0 Pokemon which have Move: Sparkling Aria
+0 Pokemon which have Move: Octazooka
+0 Pokemon which have Move: Clamp
+0 Pokemon which have Move: Eternabeam
+0 Pokemon which have Move: Snipe Shot
+0 Pokemon which have Move: Fishious Rend
+0 Pokemon which have Move: Surging Strikes
+0 Pokemon which have Move: Crosswind
+0 Pokemon which have Move: Breeze
+0 Pokemon which have Move: Uplifting Wind
+0 Pokemon which have Move: Gust Gun
+0 Pokemon which have Move: Jet Stream
+0 Pokemon which have Move: Ancient Wind
+0 Pokemon which have Move: Grounding Wind
+0 Pokemon which have Move: Dynamax Cannon
+0 Pokemon which have Move: Mysterious Wind
+0 Pokemon which have Move: Dragon Darts
+0 Pokemon which have Move: Clear Skies
+0 Pokemon which have Move: Crystal Bash
+0 Pokemon which have Move: Dragon Hammer
+0 Pokemon which have Move: Spacial Rend
+0 Pokemon which have Move: Clanging Scales
+0 Pokemon which have Move: Roar of Time
+0 Pokemon which have Move: Piercing Crystals
+0 Pokemon which have Move: Fiery Wrath
+0 Pokemon which have Move: Crystal Dust
+0 Pokemon which have Move: Dire Claw
+0 Pokemon which have Move: Psyshield Bash
+0 Pokemon which have Move: Power Shift
+0 Pokemon which have Move: Stone Axe
+0 Pokemon which have Move: Springtide Storm
+0 Pokemon which have Move: Wicked Blow
+0 Pokemon which have Move: Mystical Power
+0 Pokemon which have Move: Raging Fury
+0 Pokemon which have Move: False Surrender
+0 Pokemon which have Move: Parting Shot
+0 Pokemon which have Move: Wave Crash
+0 Pokemon which have Move: Chloroblast
+0 Pokemon which have Move: Mountain Gale
+0 Pokemon which have Move: Victory Dance
+0 Pokemon which have Move: Hyperspace Fury
+0 Pokemon which have Move: Headlong Rush
+0 Pokemon which have Move: Powder
+0 Pokemon which have Move: Barb Barrage
+0 Pokemon which have Move: Esper Wing
+0 Pokemon which have Move: Heal Order
+0 Pokemon which have Move: Bitter Malice
+0 Pokemon which have Move: Shelter
+0 Pokemon which have Move: Triple Arrows
+0 Pokemon which have Move: Infernal Parade
+0 Pokemon which have Move: Ceaseless Edge
+0 Pokemon which have Move: Bleakwind Storm
+0 Pokemon which have Move: Wildbolt Storm
+0 Pokemon which have Move: Sandsear Storm
+0 Pokemon which have Move: Lunar Blessing
+0 Pokemon which have Move: Take Heart
+0 Pokemon which have Move: Tera Blast

@@ -199,6 +199,7 @@ end
 
 
 ItemHandlers::UseInField.add(:OLDROD, proc { |item|
+  puts "Item: #{item}"
   notCliff = $game_map.passable?($game_player.x, $game_player.y, $game_player.direction, $game_player)
   
   if !$game_player.pbFacingTerrainTag.can_fish || (!$PokemonGlobal.surfing && !notCliff)
@@ -276,6 +277,8 @@ def theRods(item,level,encounter_type)
     when 2
 	if encounter_type !="item"
   encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
+    level = encounter[1]
+	level = encounter+rand(5)+1 if $player.is_it_this_class?(:FISHER,false)
     pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
     $player.pokedex.set_seen(pokemon.species)
 	if !bait_name.nil?
@@ -294,7 +297,7 @@ commands.push(_INTL("Throw it back"))
 commands.push(_INTL("Check Stats")) 
 commandMail = pbMessage(_INTL("Do you want to use #{pokemon.name} for food?"),commands, -1)
  if commandMail == 0
-	pbCookMeat(false,pokemon,true,true)
+	pbCookMeat(pokemon)
 	break
  elsif commandMail == 1
  
@@ -327,7 +330,7 @@ pbCollectionMain
     pbMessage(_INTL("It seems to have died of the poison."))
 	else
     pbMessage(_INTL("It seems to have died.")) 
-	pbCookMeat(false,pokemon,true,true)
+	pbCookMeat(pokemon)
 	end
 	end
     else

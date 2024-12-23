@@ -1,2 +1,2 @@
-Name         = BOTW
-Version      = 1
+Name = BOTW
+Version = 1

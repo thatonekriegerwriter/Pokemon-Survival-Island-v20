@@ -5,9 +5,8 @@ class Game_Map
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     #--- nessassary properties ----------------------------------------
-    if $ExtraEvents.objects.nil?
-	$ExtraEvents.objects = {}
-	end 
+    
+	$ExtraEvents.objects = {} if $ExtraEvents.objects.nil?
 	amtofkeysinroom = 0
     key_id = ((@events.keys.max)|| -1) + 1
     event.id = key_id
@@ -34,6 +33,8 @@ class Game_Map
     event.pages[0].step_anime = true
     event.pages[0].always_on_top = false #Sets movement type.
     event.pages[0].through = false #Sets movement type.
+    event.pages[0].always_on_top = true if pokemon.types.include?(:FLYING)
+    event.pages[0].through = true if pokemon.types.include?(:FLYING)
     event.pages[0].trigger = 0 #Action Button    event.pages[0].move_type = VisibleEncounterSettings::DEFAULT_MOVEMENT[2]
     event.pages[0].move_route.list[0].code = 52879
     event.pages[0].move_route.list[0].parameters  = ["self.pkmnmovement"]
@@ -44,12 +45,14 @@ class Game_Map
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_Event ------------------------------------
 	
-    gameEvent = Game_ObjectEvent.new(pokemon, mapId, event, self)
+    gameEvent = Game_PokeEventA.new(pokemon, mapId, event, self)
     gameEvent.id = key_id
     gameEvent.type = pokemon
 	if $game_temp.preventspawns==false
-    $ExtraEvents.special[key_id] = [mapId,event,pokemon,x,y]
-	@events[key_id] = gameEvent
+    $ExtraEvents.special[key_id] = StoredEvent.new(mapId,event,pokemon)
+	 @events[key_id] = gameEvent
+	 
+    pokemon.associatedevent=key_id
     #--- updating the sprites --------------------------------------------------------
     sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
     $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
@@ -57,23 +60,26 @@ class Game_Map
     # alternatively: updating the sprites (old and slow but working):
     #$scene.disposeSpritesets
     #$scene.createSpritesets
+	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
 	end
   end
 end
 
 
 
-EventHandlers.add(:on_player_interact, :pkmn_event,
-  proc {
-    
-    facingEvent = $game_player.pbFacingEvent
-    if facingEvent && facingEvent.name[/PlayerPkmn/i]
-	  pkmninteraction(facingEvent)
-	 
-	
-	end
-  }
-)
+#EventHandlers.add(:on_player_interact, :pkmn_event,
+#  proc {
+#    next if $mouse.current_mode!=:DEFAULT
+#    facingEvent = $game_player.pbFacingEvent
+#    if facingEvent && facingEvent.name[/PlayerPkmn/i]
+#      next if facingEvent.jumping? || facingEvent.moving?
+#	  facingEvent.pokemonchoices(facingEvent)
+#	  #pkmninteraction(facingEvent)
+#	 
+#	
+#	end
+#  }
+#)
 
 
 def get_events_in_range(eventa,eventb,distance)
@@ -147,6 +153,7 @@ end
 def pbPlacePokemon(x,y,pokemon)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
+  if !pokemon.fainted?
   if pbObjectIsPossible(x,y)
   if !$map_factory
     event = $game_map.generatePokemon(x,y,pokemon)
@@ -155,13 +162,20 @@ def pbPlacePokemon(x,y,pokemon)
     spawnMap = $map_factory.getMap(mapId)
     event = spawnMap.generatePokemon(x,y,pokemon)
   end
-
+   
+   pokemon.set_in_world(true,event)
   return true
   else
   pokemon.inworld=false
+  $game_temp.preventspawns=false
   end 
   pokemon.inworld=false
+  $game_temp.preventspawns=false
  # Play the pokemon cry of encounter
+ else 
+  pokemon.inworld=false
+  $game_temp.preventspawns=false
+ end
 end
 
 def toggle_in_world(pokemon)
@@ -238,28 +252,32 @@ end
 
 
 def getOverworldPokemonfromPokemon(pokemon)
-if $game_temp.preventspawns==true
+$game_temp.preventspawns=true
 $game_map.events.each do |id,event|
   if event.name == "PlayerPkmn"
     if event.type == pokemon
+	  $game_temp.preventspawns=false
 	  return event.id
 	end
   end
 end
-end
+
+$game_temp.preventspawns=false
 return nil
 end
 
 def getOverworldPokemonfromPokemonMap(pokemon,map)
-if $game_temp.preventspawns==true
+$game_temp.preventspawns=true
 $map_factory.getMap(map).events.each do |id,event|
   if event.name == "PlayerPkmn"
     if event.type == pokemon
+	  $game_temp.preventspawns=false
 	  return event.id
 	end
   end
 end
-end
+
+$game_temp.preventspawns=false
 return nil
 end
 
@@ -298,16 +316,28 @@ def pbReturnPokemon(event,message=false)
 key_id = event
 $game_temp.interactingwithpokemon=true
 if message==true
-pbMessage(_INTL("#{$game_map.events[key_id].type.name}, come back!"))
+if rand(2)==0
+sideDisplay(_INTL("#{$game_map.events[key_id].type.name}, come back!"))
+else
+sideDisplay(_INTL("#{$game_map.events[key_id].type.name}, return!"))
+
+end
 end
 pbSEPlay("Battle recall")
 
+pbRemoveFollowerPokemon(key_id) if $game_temp.following_ov_pokemon[key_id] && $game_temp.following_ov_pokemon[key_id][1]==$game_map.events[key_id].pokemon
+pbDeselectThisPokemon($game_map.events[key_id].pokemon)
 $game_map.events[key_id].pokemon.set_in_world(false,$game_map.events[key_id])
 deletefromSISData(key_id)
 $game_map.events[key_id].removeThisEventfromMap
+$game_temp.preventspawns=false
 $game_temp.interactingwithpokemon=false
 $game_temp.pokemon_calling=false
 end
+
+
+
+
 
 module FollowingPkmn
 

@@ -1,5 +1,5 @@
-Name         = Voltseon's Pause Menu
-Essentials   = 20
-Version      = 1.8
-Website      = https://reliccastle.com/threads/3930
-Credits      = Voltseon, Golisopod User, ENLS
+Name = Voltseon's Pause Menu
+Version = 1.8
+Essentials = 20
+Credits = Voltseon,Golisopod User,ENLS
+Link = https://reliccastle.com/threads/3930

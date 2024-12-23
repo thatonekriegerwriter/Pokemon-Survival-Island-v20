@@ -1,4 +1,4 @@
-Name         = SOS Battles
-Version    = 1.0.0
+Name = SOS Battles
+Version = 1
 Essentials = 20.1
-Credits    = thatonekriegerwriter, Vendily (For Original Script), SoloReprise (for v19 Update)
+Credits = thatonekriegerwriter,Vendily (For Original Script),SoloReprise (for v19 Update)

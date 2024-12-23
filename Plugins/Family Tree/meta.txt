@@ -1,1 +1,2 @@
-Name         = Family Tree
+Name = Family Tree
+Version = 0

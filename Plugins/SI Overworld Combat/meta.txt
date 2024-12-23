@@ -1,0 +1,6 @@
+Name = SI Overworld Combat
+Version = 20
+Essentials = 20
+Credits = derFischae
+Link = https://www.pokecommunity.com/showthread.php?t
+Requires = Berries

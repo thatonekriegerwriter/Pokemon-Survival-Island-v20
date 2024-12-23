@@ -13,10 +13,61 @@ GAMEOVERSWITCH = 80
 
 alias :_old_FL_pbStartOver :pbStartOver
 def pbStartOver(gameover=false)
+    $game_temp.in_menu = false if $game_temp.in_menu==true
     pbLoadRpgxpScene(Scene_Gameover.new)
     return
   _old_FL_pbStartOver(gameover)
 end
+
+def pbRespawnAtBed
+    $game_temp.in_menu = false if $game_temp.in_menu==true
+    pbBGMFade(1.0)
+    pbBGSFade(1.0)
+    pbFadeOutIn { pbRespawnItself }
+end
+
+ def pbRespawnItself
+  if pbInBugContest?
+    pbBugContestStartOver
+    return
+  end
+  $stats.blacked_out_count += 1
+  $player.decrease_current_total_hp
+  if $PokemonGlobal.pokecenterMapId && $PokemonGlobal.pokecenterMapId >= 0 && is_dead==false
+    mapname = GameData::MapMetadata&.try_get($PokemonGlobal.pokecenterMapId).name
+	if mapname.include?("(Folder)")
+    mapname = "Dreamyard"
+	end
+    pbMessage(_INTL("\\w[]\\wm\\c[8]\\l[3]You started blacking out, you manage to collapse back in #{mapname}."))
+    pbCancelVehicles
+    $game_temp.player_new_map_id    = $PokemonGlobal.pokecenterMapId
+    $game_temp.player_new_x         = $PokemonGlobal.pokecenterX
+    $game_temp.player_new_y         = $PokemonGlobal.pokecenterY
+    $game_temp.player_new_direction = $PokemonGlobal.pokecenterDirection
+    pbDismountBike
+    $scene.transfer_player if $scene.is_a?(Scene_Map)
+    $game_map.refresh
+	 pbBedMessageLoss
+ else
+    pbStartOver
+ end
+ 
+ 
+ 
+ 
+ end
+
+
+def pbCheckAllFainted
+  if $player.able_pokemon_count == 0
+    pbMessage(_INTL("You have no more Pokémon that can fight!\1"))
+    pbMessage(_INTL("You blacked out!"))
+  end
+end
+
+
+
+
 
 class Game_Temp
   if !respond_to?(:to_title)
@@ -105,21 +156,17 @@ class Scene_Gameover
 	potato = false
     # Play game over ME
 	if $PokemonGlobal.hardcore == true
-	 slot = SaveData::MANUAL_SLOTS[0]
+	 slot = SaveData::HARDCORE_SLOTS
 	 save_data = SaveData.get_full_path(slot)
      SaveData.delete_this_save(save_data)
 	end
-	if chance==0
+	if chance!=0
      @sprite.bitmap = RPG::Cache.gameover($data_system.gameover_name)
      $game_system.me_play($data_system.gameover_me)
 	 else 
 	  potato = true
      @sprite.bitmap = RPG::Cache.gameover("GameOver.png")
-	 if rand(100)==0
      pbMEPlay("Game Over Meme")
-	 else
-     pbMEPlay("Game Over")
-	 end
 	end
     # Execute transition
     Graphics.transition(120)
@@ -161,9 +208,95 @@ class Scene_Gameover
   #--------------------------------------------------------------------------
   def update
     # If C button was pressed
-    if Input.trigger?(Input::C)
+    if Input.trigger?(Input::USE)
  # commented line
-      $scene = nil; # added line
+      $scene = nil # added line
     end
   end
+end
+
+
+
+#===============================================================================
+#
+#===============================================================================
+class PokemonClose_Scene
+  def pbStartScreen
+    
+    $mouse.show if $mouse && !$mouse.disposed? 
+    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport.z = 99999
+    @sprites = {}
+    totalsec = $stats.play_time.to_i
+    hour = totalsec / 60 / 60
+    min = totalsec / 60 % 60
+    mapname = "Exiting..."
+    textColor = ["0070F8,78B8E8", "E82010,F8A8B8", "0070F8,78B8E8"][$player.gender]
+    locationColor = "209808,90F090"   # green
+    loctext = _INTL("<ac><c3={1}>{2}</c3></ac>", locationColor, mapname)
+    loctext += _INTL("Player<r><c3={1}>{2}</c3><br>", textColor, $player.name)
+	classy = $player.playerclass.name if $player.playerclass.respond_to?("name")
+	classy = $player.playerclass if !$player.playerclass.respond_to?("name")
+    loctext += _INTL("Class<r><c3={1}>{2} Lv{3}</c3><br>", textColor, classy, $player.playerclasslevel.to_i)
+    @sprites["nubg"] = IconSprite.new(0,0,@viewport)
+    @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
+    @sprites["locwindow"] = Window_AdvancedTextPokemon.new(loctext)
+    @sprites["locwindow"].viewport = @viewport
+    @sprites["locwindow"].x = 0-BorderSettings::SCREENPOSX
+    @sprites["locwindow"].y = 0-BorderSettings::SCREENPOSY
+    @sprites["locwindow"].width = 228 if @sprites["locwindow"].width < 228
+    @sprites["locwindow"].visible = true
+  end
+  
+
+
+  def pbEndScreen
+    pbDisposeSpriteHash(@sprites)
+    @viewport.dispose
+  end
+end
+
+#===============================================================================
+#
+#===============================================================================
+class PokemonCloseScreen
+  def initialize(scene)
+    @scene = scene
+  end
+
+  def pbDisplay(text, brief = false)
+    @scene.pbDisplay(text, brief)
+  end
+
+  def pbDisplayPaused(text)
+    @scene.pbDisplayPaused(text)
+  end
+
+  def pbConfirm(text)
+    return @scene.pbConfirm(text)
+  end
+
+  def pbCloseScreen(menu=nil)
+    ret = false
+    @scene.pbStartScreen
+    if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
+        pbFadeOutIn {
+      pbSEPlay("GUI save choice")
+	  pbWait(1)
+      menu.pbEndScene if !menu.nil?
+     @scene.pbEndScreen
+	  pbWait(1)
+	  $scene.dispose
+        }
+	$scene = pbCallTitle(false)
+    while $scene != nil
+      $scene.main
+    end
+    Graphics.transition(20)
+	else
+    @scene.pbEndScreen
+    end
+  end
+
+
 end

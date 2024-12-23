@@ -1,4 +1,3 @@
 Name = Better Healing Machine
-Version = 1.0
-Credits = mej71, Rua
-
+Version = 1
+Credits = mej71,Rua

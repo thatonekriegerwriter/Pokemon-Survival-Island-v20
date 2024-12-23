@@ -125,6 +125,7 @@ end
 
 class Scene_Map
   def addSprite(x, y, bitmap)
+    return if self.spriteset.nil?
     self.spriteset.ui.addSprite(x, y, bitmap)
   end
 end

@@ -1,4 +1,4 @@
-﻿Name      = Battle Introductions
-Version   = 1.0
+Name = Battle Introductions
+Version = 1
 Essentials = 20.1
-Credits   = YTKrakerwat(SkyArmyRecru1t), bo4p5687, Richard PT (graphics)
+Credits = YTKrakerwat(SkyArmyRecru1t),bo4p5687,Richard PT (graphics)

@@ -1,5 +1,5 @@
-﻿Name       = Custom Dex Entries
-Version    = 1.0 
+Name = Custom Dex Entries
+Version = 1
 Essentials = 20
-Link       = https://reliccastle.com/resources/345/
-Credits    = TechSkylander1518
+Credits = TechSkylander1518
+Link = https://reliccastle.com/resources/345/

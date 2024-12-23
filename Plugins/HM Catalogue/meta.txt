@@ -1,2 +1,3 @@
-Name         = Rock Climb
+Name = Rock Climb
+Version = 0
 Essentials = 20

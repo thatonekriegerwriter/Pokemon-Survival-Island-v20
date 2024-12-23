@@ -18,6 +18,7 @@ module ModularTitle
   # Configuration constant used to style the Title Screen
   # Add multiple modifiers to add visual effects to the Title Screen
   # Non additive modifiers do not stack i.e. you can only use one of each type
+  #MODIFIERS = ["SI","logo:shine","misc5:splashbars","misc3_x260_y150"
   MODIFIERS = ["SI", "logo:shine","intro:4","misc5:splashbars","misc3_x260_y150"
   #-------------------------------------------------------------------------------
   #                                  PRESETS

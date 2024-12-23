@@ -960,6 +960,7 @@ module PluginManager
   
   # Used to ensure all plugins that rely on Essentials Deluxe are up to date.
   def self.dx_plugin_check(version = "1.2.7")
+    return
     if self.installed?("Essentials Deluxe", version, true)
       {"ZUD Mechanics"         => "1.2.4",
        "Enhanced UI"           => "1.1.2",

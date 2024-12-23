@@ -5,25 +5,9 @@
 #=============================================================================
 USEARROWS = true  # Whether to use BW Styled Arrows for pocket changing 
 ANIMEBG   =true  # Whether to use an Animated Background for the bag
-module GameData
-  class Item
-  
-    def is_foodwater?;       return has_flag?("FoodWater"); end   # Does NOT include Red Orb/Blue Orb
-    def is_medicine?;        return has_flag?("Medicine"); end
-    def is_offitem?;         return has_flag?("OffItem"); end   # Does NOT include Red Orb/Blue Orb
-    def is_tool?;            return has_flag?("Tool"); end
-    def is_durable?;            return has_flag?("Durable"); end
-    def is_weapon?;           return has_flag?("Weapon"); end
-    def is_shoes?;            return has_flag?("Shoes"); end
-    def is_shirt?;            return has_flag?("Shirt"); end
-    def is_pants?;            return has_flag?("Pants"); end
-    def is_dart?;            return has_flag?("Dart"); end
-    def is_coal?;            return has_flag?("Coal"); end
-    def is_overworld?;            return has_flag?("Overworld"); end
-    def is_hmitem?;            return has_flag?("HMItem"); end
-    def is_placeitem?;            return has_flag?("PlacingItem"); end
-end
-end
+
+
+
 class Window_PokemonBag < Window_DrawableCommand
   attr_reader :pocket
   attr_accessor :sorting
@@ -755,6 +739,7 @@ class PokemonBagScreen
       cmdMedicate = -1
       cmdUse      = -1
       cmdRegister = -1
+      cmdInfo     = -1
       cmdGive     = -1
       cmdToss     = -1
       cmdDebug    = -1
@@ -772,6 +757,7 @@ class PokemonBagScreen
           commands[cmdUse = commands.length]    = _INTL("Use")
         end
       end
+      commands[cmdInfo = commands.length]       = _INTL("Info")
       commands[cmdGive = commands.length]       = _INTL("Give") if $player.pokemon_party.length > 0 && itm.can_hold?
       commands[cmdToss = commands.length]       = _INTL("Toss") if !itm.is_important? || $DEBUG
       if @bag.registered?(item)
@@ -796,8 +782,8 @@ class PokemonBagScreen
       elsif cmdEquip >=0 && command==cmdEquip   # Equip
         $player.equip(item)
 		decreaseStamina(1)
-	    $ball_order=getCurrentItemOrder
-		$PokemonGlobal.ball_hud_index=$ball_order.index(item)
+	    $PokemonGlobal.ball_order=getCurrentItemOrder
+		$PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_order.index(item)
 		$PokemonGlobal.ball_hud_enabled=true
         @scene.pbRefresh
         next
@@ -821,6 +807,11 @@ class PokemonBagScreen
         break if ret == 2   # End screen
         @scene.pbRefresh
         next
+      elsif cmdInfo >= 0 && command == cmdInfo   # CHECK THE ITEM FOR ITS DURABILITY AND SHIT
+          pbFadeOutIn {
+            item = pbItemSummaryScreen(item)
+            @scene.pbRefresh
+          }
       elsif cmdGive >= 0 && command == cmdGive   # Give item to Pokémon
         if $player.pokemon_count == 0
           @scene.pbDisplay(_INTL("There is no Pokémon."))
@@ -834,6 +825,8 @@ class PokemonBagScreen
             @scene.pbRefresh
           }
         end
+
+
       elsif cmdToss >= 0 && command == cmdToss   # Toss item
         qty = @bag.quantity(item)
         if qty > 1

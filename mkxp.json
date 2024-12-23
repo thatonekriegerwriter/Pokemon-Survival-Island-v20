@@ -43,7 +43,7 @@
     // FPS display toggled via F2
     // (default: disabled)
     //
- "printFPS": false,
+ "printFPS": true,
 
 
     // Game window is resizable
@@ -307,12 +307,12 @@
 
     // Activate "chorus" effect for midi playback
     //
-    // "midiChorus": false,
+     "midiChorus": true,
 
 
     // Activate "reverb" effect for midi playback
     //
-    // "midiReverb": false,
+     "midiReverb": true,
 
 
     // Number of OpenAL sources to allocate for SE playback. If there are a lot

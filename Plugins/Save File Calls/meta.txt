@@ -1,4 +1,5 @@
-﻿Name       = Save File Calls
+Name = Save File Calls
+Version = 0
 Essentials = 20.1
-Website    = https://reliccastle.com/resources/808/
-Credits    = TechSkylander1518
+Credits = TechSkylander1518
+Link = https://reliccastle.com/resources/808/

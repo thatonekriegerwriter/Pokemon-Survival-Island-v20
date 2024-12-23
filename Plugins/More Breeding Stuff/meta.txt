@@ -1,6 +1,6 @@
-Name       = More Breeding Stuff
-Version    = 1.0.2
+Name = More Breeding Stuff
+Version = 1.0.2
 Essentials = 20.1
-Optional   = Pokemon Color Variants
-Website    = github.com/MickTK/Pokemon-Essentials-Plugins
-Credits    = MickTK
+Credits = MickTK
+Link = github.com/MickTK/Pokemon-Essentials-Plugins
+Optional = Pokemon Color Variants

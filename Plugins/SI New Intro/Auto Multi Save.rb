@@ -61,6 +61,7 @@ EventHandlers.add(:on_player_step_taken, :auto_save, proc {
 
 			 
 module SaveData
+  TESTING_MODE = false
   # You can rename these slots or change the amount of them
   # They change the actual save file names though, so it would take some extra work to use the translation system on them.
   AUTO_SLOTS = [
@@ -79,24 +80,35 @@ module SaveData
     'File G',
     'File H'
   ]
-
+  TESTING_SLOTS = [
+   "Test 1",
+   "Test 2",
+   "Test 3",
+   "Test 4"
+  ]
+  HARDCORE_SLOTS = 'Hardcore Mode'
   # For compatibility with games saved without this plugin
   OLD_SAVE_SLOT = 'Game'
-
-  SAVE_DIR = "Saves"#if File.directory?(System.data_directory)
-              # System.data_directory + "Saves"
-            # else
-            #  '.'
-            # end #
+  
+  SAVE_DIR = if File.directory?("Saves")
+               "Saves"
+            elsif File.directory?(System.data_directory)
+               System.data_directory + "/Saves"
+             else
+               "Saves"
+             end
 
   def self.getSlots
-   if File.file?(self.get_full_path(MANUAL_SLOTS[0]))
-   save_data = self.read_from_file(self.get_full_path(MANUAL_SLOTS[0]))
+   if File.file?(self.get_full_path(HARDCORE_SLOTS))
+   save_data = self.read_from_file(self.get_full_path(HARDCORE_SLOTS))
    else
    save_data = nil
    end
+   if TESTING_MODE==true && $DEBUG
+     return TESTING_SLOTS
+   end
    if !save_data.nil?
-   return [MANUAL_SLOTS[0]] if save_data[:global_metadata].hardcore == true
+   return [HARDCORE_SLOTS] if save_data[:global_metadata].hardcore == true
    end
    return (AUTO_SLOTS + MANUAL_SLOTS)
   end
@@ -104,8 +116,23 @@ module SaveData
     self.getSlots.each { |f| yield f }
   end
 
+  def self.get_all_saves
+    save_file_list = SaveData.getSlots
+	realsaves = []
+	save_file_list.each do |f|
+      realsaves << f if File.file?(self.get_full_path(f))
+    end
+	return realsaves
+  end
+  
+  
+
   def self.get_full_path(file)
     return "#{SAVE_DIR}/#{file}.rxdata"
+  end
+
+  def self.get_full_path_original_directory(file)
+    return "#{System.data_directory}/Saves/#{file}.rxdata"
   end
 
   def self.get_backup_file_path
@@ -280,7 +307,7 @@ class PokemonLoadPanel < Sprite
     return if @refreshing
     return if disposed?
     @refreshing = true
-    if !self.bitmap || self.bitmap.disposed?
+    if (!self.bitmap || self.bitmap.disposed?) && !@bgbitmap.nil?
       self.bitmap = BitmapWrapper.new(@bgbitmap.width, 222)
       pbSetSystemFont(self.bitmap)
     end
@@ -327,6 +354,9 @@ class PokemonLoadPanel < Sprite
 		end
         mapname = pbGetMapNameFromId(@mapid)
         mapname.gsub!(/\\PN/, @trainer.name)
+	     if mapname.include?("(Folder)")
+           mapname = "Dreamyard"
+	     end
 		text = "#{mapname} ->"
 		
 		if !save_data.nil?
@@ -407,6 +437,7 @@ class PokemonLoad_Scene
   def pbPrepareWindow(window)
     window.letterbyletter=false
   end
+
   def pbStartDeleteScene
     @sprites = {}
     @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -495,9 +526,9 @@ class PokemonLoad_Scene
 		        
 
 	  elsif @sprites["cmdwindow"].index == continue_idx
-        if Input.trigger?(Input::LEFT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::MANUAL_SLOTS[0])))[:global_metadata].hardcore == false
+        if Input.trigger?(Input::LEFT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::HARDCORE_SLOTS)))[:global_metadata].hardcore == false
           return -3
-        elsif Input.trigger?(Input::RIGHT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::MANUAL_SLOTS[0])))[:global_metadata].hardcore == false
+        elsif Input.trigger?(Input::RIGHT) && SaveData.read_from_file((SaveData.get_full_path(SaveData::HARDCORE_SLOTS)))[:global_metadata].hardcore == false
           return -2
 		elsif Input.triggerex?(:DELETE)
           return -9
@@ -616,9 +647,11 @@ class PokemonLoadScreen
   end
 
   def pbStartLoadScreen
+    handle_saves
+    pbValidateGameVersionAndUpdate() if (GameVersion::POKE_UPDATER_CONFIG['FORCE_UPDATE']==true || forcetheupdate) && getUpdate && GameVersion::ENABLED
     save_file_list = SaveData.getSlots
     first_time = true
-	pbSIDataStorage()
+	 pbSIDataStorage()
     loop do # Outer loop is used for switching save files
       if @selected_file
         @save_data = load_save_file(SaveData.get_full_path(@selected_file))
@@ -628,10 +661,14 @@ class PokemonLoadScreen
       commands = []
       cmd_continue     = -1
       cmd_new_game     = -1
+      cmd_update       = -1
       cmd_language     = -1
       cmd_mystery_gift = -1
       cmd_debug        = -1
       cmd_quit         = -1
+      cmd_left = -3
+      cmd_right = -2
+      cmd_delete = -9
       show_continue = !@save_data.empty?
       if show_continue
 	     item = _INTL('<- Continue Game')
@@ -642,12 +679,10 @@ class PokemonLoadScreen
 #        end
       end
       commands[cmd_new_game = commands.length]  = _INTL('New Game')
+      commands[cmd_update = commands.length]    = _INTL('Check for Updates') if getUpdate && GameVersion::ENABLED
       commands[cmd_language = commands.length]  = _INTL('Language') if Settings::LANGUAGES.length >= 2
       commands[cmd_debug = commands.length]     = _INTL('Debug') if $DEBUG
       commands[cmd_quit = commands.length]      = _INTL('Quit Game')
-      cmd_left = -3
-      cmd_right = -2
-      cmd_delete = -9
       map_id = show_continue ? @save_data[:map_factory].map.map_id : 0
     @scene.pbStartScene(commands, show_continue, @selected_file, @save_data[:player],
                         @save_data[:frame_count] || 0, @save_data[:stats], map_id)
@@ -748,6 +783,8 @@ class PokemonLoadScreen
 	
         when cmd_mystery_gift
           pbFadeOutIn { pbDownloadMysteryGift(@save_data[:player]) }
+        when cmd_update
+		   pbValidateGameVersionAndUpdate(true)
         when cmd_language
           @scene.pbEndScene
           $PokemonSystem.language = pbChooseLanguage
@@ -777,7 +814,9 @@ class PokemonLoadScreen
 		  save_data = SaveData.get_full_path(@selected_file)
 		  self.prompt_save_deletion_manual(save_data,@selected_file)
           @scene.pbCloseScene
-		  @selected_file = SaveData.get_newest_save_slot
+		  file = SaveData.get_newest_save_slot
+		  file = {} if file.nil?
+		  @selected_file = file
           break # to outer loop
         else
           pbPlayBuzzerSE
@@ -799,17 +838,23 @@ class PokemonSave_Scene
     hour = totalsec / 60 / 60
     min = totalsec / 60 % 60
     mapname = $game_map.name
+
+	if mapname.include?("(Folder)")
+    mapname = "Dreamyard"
+	end
     textColor = ["0070F8,78B8E8", "E82010,F8A8B8", "0070F8,78B8E8"][$player.gender]
     locationColor = "209808,90F090"   # green
     loctext = _INTL("<ac><c3={1}>{2}</c3></ac>", locationColor, mapname)
     loctext += _INTL("Player<r><c3={1}>{2}</c3><br>", textColor, $player.name)
-    loctext += _INTL("Class<r><c3={1}>{2} Lv{3}</c3><br>", textColor, $player.playerclass, $player.playerclasslevel.to_i)
+	classy = $player.playerclass.name if $player.playerclass.respond_to?("name")
+	classy = $player.playerclass if !$player.playerclass.respond_to?("name")
+    loctext += _INTL("Class<r><c3={1}>{2} Lv{3}</c3><br>", textColor, classy, $player.playerclasslevel.to_i)
     @sprites["nubg"] = IconSprite.new(0,0,@viewport)
     @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
     @sprites["locwindow"] = Window_AdvancedTextPokemon.new(loctext)
     @sprites["locwindow"].viewport = @viewport
-    @sprites["locwindow"].x = 0
-    @sprites["locwindow"].y = 0
+    @sprites["locwindow"].x = 0-BorderSettings::SCREENPOSX
+    @sprites["locwindow"].y = 0-BorderSettings::SCREENPOSY
     @sprites["locwindow"].width = 228 if @sprites["locwindow"].width < 228
     @sprites["locwindow"].visible = true
   end
@@ -852,15 +897,17 @@ class PokemonSaveScreen
       ret = slotSelect(exiting)
 	 elsif $PokemonGlobal.hardcore == true
         pbSEPlay('GUI save choice')
-        slot = SaveData::MANUAL_SLOTS[0]
+        slot = SaveData::HARDCORE_SLOTS
         if !File.file?(SaveData.get_full_path(slot)) ||
             pbConfirmMessageSerious(_INTL("Are you sure you want to save?")) # If the slot names were changed this grammar might need adjustment.
           pbSEPlay('GUI save choice')
           ret = doSave(slot)
         end
     else
+	  slotrx = $player.save_slot
+	    choices = SaveData::TESTING_SLOTS[0] if SaveData::TESTING_MODE==true && $DEBUG
       choices = [
-        _INTL("Save to #{$player.save_slot}"),
+        _INTL("Save to #{slotrx}"),
         _INTL("Save to another file"),
         exiting ? _INTL("Quit without saving") : _INTL("Cancel")
       ]
@@ -883,12 +930,16 @@ class PokemonSaveScreen
   # Returns true if the game was saved, otherwise false
   def slotSelect(exiting=false)
     ret = false
+	if SaveData::TESTING_MODE==true && $DEBUG
+     choices = SaveData::TESTING_SLOTS
+	else 
     choices = SaveData::MANUAL_SLOTS
-    choice_info = SaveData::MANUAL_SLOTS.map { |s| getSaveInfoBoxContents(s) }
+    end
+    choice_info = choices.map { |s| getSaveInfoBoxContents(s) }
     loop do
       index = slotSelectCommands(choices, choice_info)
       if index >= 0
-        slot = SaveData::MANUAL_SLOTS[index]
+        slot = choices[index]
         # Confirm if slot not empty
         if !File.file?(SaveData.get_full_path(slot)) ||
             pbConfirmMessageSerious(_INTL("Are you sure you want to overwrite the save in #{slot}?")) # If the slot names were changed this grammar might need adjustment.
@@ -1024,9 +1075,8 @@ module Game
     slot = $player.save_slot if slot.nil?
     return false if slot.nil?
 	if $PokemonGlobal.hardcore == true
-	slot = SaveData::MANUAL_SLOTS[0]
+	slot = SaveData::HARDCORE_SLOTS
 	end
-    
     file_path = SaveData.get_full_path(slot)
     $PokemonGlobal.safesave = safe
     $game_system.save_count += 1
@@ -1048,7 +1098,7 @@ module Game
     oldest_time = nil
     oldest_slot = nil
 	if $PokemonGlobal.hardcore == true
-	  slot = SaveData::MANUAL_SLOTS[0]
+	  slot = SaveData::HARDCORE_SLOTS
 	  full_path = SaveData.get_full_path(slot)
       temp_save_data = SaveData.read_from_file(full_path)
       save_time = temp_save_data[:player].last_time_saved || Time.at(1)
@@ -1133,16 +1183,104 @@ def pbStorePokemonPC2(pkmn)
 end
 
 
-def pbCallTitle(bgmchange=nil)
+def pbCallTitle(bgmchange=true)
   if bgmchange == false
     pbBGMPlay("anthemmix")
   else
-	pbBGMPlay("Title")
+	pbBGMPlay("Title",75)
   end
   return Scene_Intro.new
 end
 
+def get_si_default_values
+return {
+	 "stars" => [0,[]],
+	 "classicTitleScreen" => 0
+	 }
 
+
+end
+
+def getSIDataStatus(option)
+  save_dir2 = if File.directory?(System.data_directory)
+               System.data_directory
+             else
+              '.'
+             end
+ loaded_data = nil
+ file_name = "#{save_dir2}/SI_FUN.rxdata"
+ if !File.exist?(file_name)
+  createSIDataValues
+ end
+ File.open(file_name, "rb") do |file|
+    loaded_data = Marshal.load(file.read)
+ end
+  if option == "classicTitleScreen"
+    if loaded_data[option]==true
+	  loaded_data[option]=1
+	else
+	  loaded_data[option]=0
+	end
+  end
+  if option == "stars"
+   return getStarsSI(loaded_data)
+  else
+   return loaded_data[option]
+  end
+end
+
+def setSIDataStatus(option,value)
+  save_dir2 = if File.directory?(System.data_directory)
+               System.data_directory
+             else
+              '.'
+             end
+ loaded_data = nil
+ file_name = "#{save_dir2}/SI_FUN.rxdata"
+ if !File.exist?(file_name)
+  createSIDataValues
+ end
+  File.open(file_name, "rb") do |file|
+    loaded_data = Marshal.load(file.read)
+ end
+
+  if option == "stars"
+   setStarsSI(loaded_data,value)
+  else
+    loaded_data[option] = value
+  end
+  if File.exist?(file_name)
+   File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump(loaded_data))
+   end
+   end
+  
+end
+
+def setStarsSI(loaded_data,value)
+  return if loaded_data["stars"][1].include?(value)
+  loaded_data["stars"][0]+=1
+  loaded_data["stars"][1]<<value
+end
+def getStarsSI(loaded_data)
+  return loaded_data["stars"][0]
+end
+
+
+def createSIDataValues
+  save_dir2 = if File.directory?(System.data_directory)
+               System.data_directory
+             else
+              '.'
+             end
+ loaded_data = nil
+ file_name = "#{save_dir2}/SI_FUN.rxdata"
+  return if File.exist?(file_name)
+  default_values = get_si_default_values
+	 File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump(default_values))
+     end
+end
 
 def pbSIDataStorage(option=nil,object=nil,goal=nil)
   save_dir2 = if File.directory?(System.data_directory)
@@ -1153,51 +1291,35 @@ def pbSIDataStorage(option=nil,object=nil,goal=nil)
  loaded_data = nil
  file_name = "#{save_dir2}/SI_FUN.rxdata"
   if !File.exist?(file_name)
-     default_values = {"demo_mode" => true,"adventure_mode" => true,"rocket_mode" => false,"speedrun_mode" => false,"kanto_unlocked" => false,
-	 "johto_unlocked" => false,"completed_demo" => false,"completed_rocket" => false,"completed_speedrun" => false,"demo_team" => nil,"stars" => 0,
-	 "played_before" => false,"original_player_name" => nil}
-	 File.open(file_name, "wb") do |file|
-      file.write(Marshal.dump(default_values))
-     end
-  else
-  File.open(file_name, "rb") do |file|
-    loaded_data = Marshal.load(file.read)
+     createSIDataValues
   end
-  if loaded_data
-  if $DEBUG
-  end
-else
-end
+  
+  
+  
+  
   if loaded_data && loaded_data[object] && option == :SAVE
-  if object == "original_player_name" && option == :SAVE
-  loaded_data[object] = $player.name 
-  elsif object == "demo_team" && option == :SAVE
-  loaded_data[object] = $player.party 
-  else
-  loaded_data[object] = goal  
-  end
-  	 if File.exist?(file_name)
-	 File.open(file_name, "wb") do |file|
-      file.write(Marshal.dump(loaded_data))
-     end
-	 end
-  return loaded_data[object]
+   setSIDataStatus(object,goal)
+
+  
+  
   elsif loaded_data && loaded_data[object] && option == :LOAD
-  return loaded_data[object]
+   getSIDataStatus(object)
+  
+  
+  
+  
   elsif loaded_data && option == :UPDATE
-  loaded_data[object] = goal
-  	 if File.exist?(file_name)
-	 File.open(file_name, "wb") do |file|
-      file.write(Marshal.dump(loaded_data))
-     end
-	 end
-  return loaded_data[object]
+   setSIDataStatus(object,goal)
+  
   elsif loaded_data && option == :DELETE 
    File.delete(file_name)
-  return true
   end
+
+
+
+
   end
-end
+
 
 
 def pbDemoExit

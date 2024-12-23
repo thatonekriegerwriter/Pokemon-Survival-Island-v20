@@ -356,7 +356,9 @@ class DayCare
   def get_compatibility
     return compatibility
   end
-
+  def get_compatibility2(pkmn1,pkmn2)
+    return compatibility([pkmn1,pkmn2])
+  end
   def generate_egg
     return nil if self.count != 2
     pkmn1, pkmn2 = pokemon_pair
@@ -397,7 +399,11 @@ class DayCare
       if !@egg_generated && count == 2
         compat = compatibility
         egg_chance = [0, 20, 50, 70][compat]
-        egg_chance = [0, 40, 80, 88][compat] if $bag.has?(:OVALCHARM)
+   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0
+   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0
+   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat>0
+   egg_chance += 1 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat==0
+		 
         @egg_generated = true if rand(100) < egg_chance
       end
       if @egg_generated == true

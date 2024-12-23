@@ -23,10 +23,14 @@ CHARACTER_CUSTOMIZATION = true
 UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT = true
 # whether to also fusion the base graphic or not. Remember:
 USE_BASE_GRAPHIC = false
-
 module CustomCharacterSettings
 CHARACTERIDS = [11,12]
 
+
+
+end
+def can_customize?
+ return CHARACTER_CUSTOMIZATION && UNLOCK_CHARACTER_CUSTOMIZATION_BY_DEFAULT
 
 
 end
@@ -256,25 +260,29 @@ def initialize
 @meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
 @savegetup = true
 if !defined?($player.clothesUnlocking) # Checks if the Script is functional.
-Kernel.pbMessage("Your game is missing some Variables of the Character Costumization Script. In order to fix this you'll need to save the game.")
-if Kernel.pbConfirmMessage("Would you like to save the game now?")
+pbMessage("Your game is missing some Variables of the Character Costumization Script. In order to fix this you'll need to save the game.")
+if pbConfirmMessage("Would you like to save the game now?")
 if !$player
-Kernel.pbMessage("Unable to save the game since the player is not a trainer at this point. Do not use the CharacterCustomization Script before you call the script pbTrainerName in your intro event.")
+pbMessage("Unable to save the game since the player is not a trainer at this point. Do not use the CharacterCustomization Script before you call the script pbTrainerName in your intro event.")
 else
 pbSave
-Kernel.pbMessage("The game was saved, try again now.")
+pbMessage("The game was saved, try again now.")
 end
 end
 return
 end
+
+
 if $game_temp.savedoutfit == false
 $game_temp.savedoutfit = true
 @savegetup = false
 end
+
+
 return if !addNecessaryFiles
-if @savegetup.nil?
- @savegetup = false
-end
+
+@savegetup = false if @savegetup.nil?
+
 if @savegetup == false
 $game_temp.savedoutfit = false
 end
@@ -282,7 +290,7 @@ end
 
 @index=0
 @index2=0
-@indexR=-1
+@indexR=0
 @new_val=2
 
 
@@ -307,7 +315,11 @@ puts charset
 @sprites["player"].x=Graphics.width/2-@sprites["player"].bitmap.width/8
 @sprites["player"].y=Graphics.height/2-@sprites["player"].bitmap.height/8 -64
 @sprites["player"].z=9999999
+
+
 $game_temp.savedoutfit = true
+
+
 temp=WALK_FOLDER+"/"+@accessoryNames[1]+"/"+"0A"
 @sprites["playerAccessory"]=TrainerWalkingCharSprite2.new(temp,@viewport)
 @sprites["playerAccessory"].x=Graphics.width/2-@sprites["playerAccessory"].bitmap.width/8
@@ -318,7 +330,8 @@ temp=WALK_FOLDER+"/"+@accessoryNames[1]+"/"+"0A"
 @sprites["playerAccessory"].zoom_x=2
 @sprites["playerAccessory"].zoom_y=2
 @sprites["playerAccessory"].visible=false
-@playerAccessory=@sprites["playerAccessory"]
+
+
 charheight=@sprites["player"].bitmap.height
 @y=[charheight/4*2,0,charheight/4,charheight/4*3]
 @sprites["heading1"]=Window_CommandPokemonEx.new(["BODYPART"])
@@ -355,7 +368,7 @@ charheight=@sprites["player"].bitmap.height
 @sprites["cmdwindow"]=Window_CommandPokemonEx.new(@commands.list)
 @sprites["cmdwindow"].viewport=@viewport
 @sprites["cmdwindow"].y=@sprites["heading1"].height
-@sprites["cmdwindow2"]=Window_CommandPokemonEx.new(retListCmdBox2)
+@sprites["cmdwindow2"]=Window_CommandPokemonEx.new(getObjectsList)
 @sprites["cmdwindow2"].viewport=@viewport
 @sprites["cmdwindow2"].y=@sprites["heading2"].height
 @sprites["cmdwindow2"].x=Graphics.width-@sprites["cmdwindow2"].width
@@ -414,7 +427,7 @@ end
 if @selectionChange #Updates the heading, and the continents of the right command box.
 updateHeading2
 if @secondSelection
-@cmdwindow2.index=@indexR
+@cmdwindow2.index= get_current_equip_for_type.nil? ? @indexR : @indexR + 1
 else
 @cmdwindow2.index=0
 end
@@ -429,9 +442,9 @@ if @secondSelection
 if cmdWindow2IndexChanged && @cmdwindow2.index != -1
 if !(@cmdwindow2.index==(@cmdwindow2.itemCount-1)) && !hasVariants
 @sprites["window2"].visible=true
-@sprites["playerAccessory"].visible=true
 $game_temp.savedoutfit = true
 updateAccessoryBitmap #if @cmdwindow2.index != @cmdwindow2.
+@sprites["playerAccessory"].visible=true
 $game_temp.savedoutfit = false
 else
 @sprites["window2"].visible=false
@@ -441,9 +454,9 @@ end
 elsif cmdWindow2IndexChanged && @cmdwindow2.index != -1
 if !(@cmdwindow2.index==(@cmdwindow2.itemCount-1))
 @sprites["window2"].visible=true
-@sprites["playerAccessory"].visible=true
 $game_temp.savedoutfit = true
 updateAccessoryBitmap2 
+@sprites["playerAccessory"].visible=true
 $game_temp.savedoutfit = false
 else
 @sprites["window2"].visible=false
@@ -459,6 +472,7 @@ if Input.trigger?(Input::USE) && @list[0]!="[NONE]" # Using the Left Command Box
 
 
 if @firstSelection   #If using the left window, move to right window.
+puts "I ran0"
 @cmdwindow2.index=0
 @firstSelection=false
 if !hasVariants
@@ -476,17 +490,29 @@ elsif @secondSelection #Go through options in the second window.
 
 
 if @cmdwindow2.index==(@cmdwindow2.itemCount-1) # Cancel Button.
+puts "I ran1"
 @cmdwindow2.index=-1; @cmdwindow2.update
 @firstSelection=true
 @sprites["window2"].visible=false
 @sprites["playerAccessory"].visible=false
-puts "kills.... quickly"
 
-
-
+elsif @cmdwindow2.index == 0 && !get_current_equip_for_type.nil? && @cmdwindow2.commands[@cmdwindow2.index]=="[REMOVE]"
+puts "I ran2"
+ set_current_equip_for_type
+@indexR = get_current_equip_for_type.nil? ? @cmdwindow2.index : @cmdwindow2.index - 1
+ @cmdwindow2.commands=getObjectsList
+ @cmdwindow2.update
+$game_temp.savedoutfit = true
+changeClothes
+charset = pbBuildCharset
+$game_temp.savedoutfit = false
+#@sprites["player"].bitmap.clear
+updateTrainerOutfit
+@sprites["player"].charset=charset
+@selectionMade=true
 
 elsif !hasVariants #If the item does not have subtypes.
-puts "kills"
+puts "I ran3"
 $game_temp.savedoutfit = true
 changeClothes
 charset = pbBuildCharset
@@ -500,8 +526,8 @@ updateTrainerOutfit
 
 
 else #The Most common behavior: Item has a subtype, that you are now selecting.
-puts "kills.... slowly"
-@indexR=@cmdwindow2.index
+puts "I ran4"
+@indexR = get_current_equip_for_type.nil? ? @cmdwindow2.index : @cmdwindow2.index - 1
 @secondSelection=false
 @selectionChange=true
 @sprites["window2"].visible=true
@@ -518,16 +544,18 @@ else
 
 
 if @cmdwindow2.index==(@cmdwindow2.itemCount-1) # Cancel Button (Again)
-@cmdwindow2.index=@indexR; @cmdwindow2.update
+puts "I ran5"
+@cmdwindow2.index=-1; @cmdwindow2.update
 @secondSelection=true
 @selectionChange=true
 @sprites["window2"].visible=false
 @sprites["playerAccessory"].visible=false
-
+elsif @cmdwindow2.index == 0 && !get_current_equip_for_type.nil? && @cmdwindow2.commands[@cmdwindow2.index]=="[REMOVE]"
+puts "I ran6"
 
 else   #Applys the selected variant of the item.
+puts "I ran7"
 
-puts "Hi?"
 $game_temp.savedoutfit = true
 changeClothes
 charset = pbBuildCharset
@@ -570,7 +598,7 @@ end
 if Input.trigger?(Input::BACK)
 
 
-if @firstSelection && Kernel.pbConfirmMessage("Have you finished?") #First selection is when you are navigating the left box.
+if @firstSelection && pbConfirmMessage("Have you finished?") #First selection is when you are navigating the left box.
 pbBuildCharsetandUpdateMain
 updateTrainerOutfit
 
@@ -586,11 +614,13 @@ break
 # goes back to the left command box.
 elsif !@firstSelection && @secondSelection #Second selection is if you are in the second box.
 @cmdwindow2.index=-1; @cmdwindow2.update
+@indexR = -1
 @firstSelection=true
 @sprites["window2"].visible=false
 @sprites["playerAccessory"].visible=false
 elsif !@firstSelection && !@secondSelection #This if you are in neither, but a secret third thing.
-@cmdwindow2.index=@indexR; @cmdwindow2.update
+@cmdwindow2.index=0; @cmdwindow2.update
+@indexR = 0
 @secondSelection=true
 @selectionChange=true
 @sprites["window2"].visible=false
@@ -605,11 +635,11 @@ end
 
 
 # Allows you to control the item and player facing.
-if Input.trigger?(Input::JUMPUP) #A
+if Input.trigger?(Input::JUMPUP) || Input.scroll_v==1#A
 @dir-=1
 @sprites["player"].src_rect.y=@y[@dir%4]
 @sprites["playerAccessory"].src_rect.y=@sprites["player"].src_rect.y
-elsif Input.trigger?(Input::SPECIAL) #D
+elsif Input.trigger?(Input::JUMPDOWN)  || Input.scroll_v==-1#D
 @dir+=1
 @sprites["player"].src_rect.y=@y[@dir%4]
 @sprites["playerAccessory"].src_rect.y=@sprites["player"].src_rect.y
@@ -736,12 +766,14 @@ addBackgroundPlane(@sprites, "background", "loadslotsbg", @viewport)
 temp="base graphics/examples/0"
 temp=pbGetCustomCharset(temp)
 @sprites["baseRep"]= IconSprite.new(0,0,@viewport)
+puts temp
 @sprites["baseRep"].setBitmap("Graphics/Characters/"+temp)
 @sprites["baseRep"].x=@sprites["window"].width/2-@sprites["baseRep"].bitmap.width/2 +8
 @sprites["baseRep"].y=@sprites["window"].height/2-@sprites["baseRep"].bitmap.height/2 +8
 @sprites["baseRep"].z=9999999
 charset="base graphics/"+WALK_FOLDER+"/0"
 filename=pbGetCustomCharset(charset)
+puts filename
 @sprites["walkSprite"]=TrainerWalkingCharSprite.new(filename,@viewport)
 @sprites["walkSprite"].x=@sprites["window2"].width/2-@sprites["walkSprite"].bitmap.width/2 +8
 @sprites["walkSprite"].y=@sprites["window2"].height/2-@sprites["walkSprite"].bitmap.height/2 +208
@@ -766,7 +798,7 @@ looping
 end
  
 def addBaseFiles
-return true
+return true if $DEBUG && Input.press?(Input::CTRL)
 files=[]
 meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
 filenames=[pbGetPlayerCharset(meta.walk_charset),pbGetPlayerCharset(meta.run_charset),pbGetPlayerCharset(meta.cycle_charset),pbGetPlayerCharset(meta.surf_fish_charset),pbGetPlayerCharset(meta.fish_charset)]
@@ -790,14 +822,14 @@ files_to_add.push(files[i]+".png")
 end
 end
 if !files_to_add.empty? && false
-Kernel.pbMessage("The game is missing one or more graphic files for the Character Customization.")
-ret=Kernel.pbConfirmMessage("Would you like to add these files as blank placeholder sprites in order to let this Script work properly?")
+pbMessage("The game is missing one or more graphic files for the Character Customization.")
+ret=pbConfirmMessage("Would you like to add these files as blank placeholder sprites in order to let this Script work properly?")
 if ret
 files_to_add.length.times {|i| blank_bitmap.save_to_png(files_to_add[i])}
-Kernel.pbMessage("The missing files were added to the Graphics/Characters/base graphics/ folder. The script will continue working as supposed now.")
+pbMessage("The missing files were added to the Graphics/Characters/base graphics/ folder. The script will continue working as supposed now.")
 else
-Kernel.pbMessage("The script stopped running until these neccessary files were added:")
-files_to_add.length.times{|i| Kernel.pbMessage(files_to_add[i])}
+pbMessage("The script stopped running until these neccessary files were added:")
+files_to_add.length.times{|i| pbMessage(files_to_add[i])}
 end
 return ret
 end
@@ -882,8 +914,8 @@ end
 end
 
 
-if Input.trigger?(Input::USE) && Kernel.pbConfirmMessage("So you're choosing #{@commands.list[@index]}?")
-$player.base=getFolders4(@commands.list[@index])
+if Input.trigger?(Input::USE) && pbConfirmMessage("So you're choosing #{@commands.list[@index]}?")
+$player.base=get_base(@commands.list[@index])
 saveAllBases
 pbDisposeSpriteHash(@sprites)
 pbBuildCharsetandUpdateMain
@@ -902,18 +934,19 @@ end
 end
 end
 
-def getFolders4(base,movementtype="overworld walk",pack="default")
+def get_base(base,movementtype="overworld walk",pack="default")
+   pack=pack.downcase
    base = "#{base}#{$player.gender}"
    
    folder_path = "Graphics/Plugins/Character Customization/#{pack.downcase}/base graphics/#{movementtype.downcase}"
-   folder = nil
+   item_image = nil
   Dir.glob(folder_path + '/*') do |file|
     if base == File.basename(file).gsub(/\.png/,"")
-	  folder = File.basename(file)
+	  item_image = File.basename(file)
     end
   end
-  if !folder.nil?
-   potato = [pack.downcase,folder]
+  if !item_image.nil?
+   potato =  AccessoryObject.new(item_image,"",pack,"")
   return potato
   end
 end

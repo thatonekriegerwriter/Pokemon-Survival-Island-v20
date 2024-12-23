@@ -1,4 +1,4 @@
-Name      = Overworld Weather Enhancements
-Version   = 2.0
-Credits   = DerxwnaKapsyla
+Name = Overworld Weather Enhancements
+Version = 2
 Essentials = 21.1
+Credits = DerxwnaKapsyla

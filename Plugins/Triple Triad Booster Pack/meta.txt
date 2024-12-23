@@ -1,2 +1,2 @@
-Name         = triple triad
-Version      = 1
+Name = triple triad
+Version = 1

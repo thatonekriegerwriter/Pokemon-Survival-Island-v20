@@ -1,123 +1,6 @@
 
 
 
-class Game_Player < Game_Character
-  
-    def can_run?
-    return @move_speed > 3 if @move_route_forcing
-    return false if $game_temp.in_menu || $game_temp.in_battle ||
-                    $game_temp.message_window_showing || pbMapInterpreterRunning? || $player.playerstamina==0
-    return false if (!$player.has_running_shoes && ($player.playershoes == :NORMALSHOES || $player.playershoes == :SEASHOES))&& !$PokemonGlobal.diving &&
-                    !$PokemonGlobal.surfing && !$PokemonGlobal.bicycle
-    return false if jumping?
-    return false if $PokemonGlobal.partner
-    return false if pbTerrainTag.must_walk
-    return Input.press?(Input::RUNNING)
-  end
-  def set_movement_type(type)
-    meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
-    new_charset = nil
-    case type
-    when :fishing
-      new_charset = pbGetPlayerCharset(meta.fish_charset)
-    when :surf_fishing
-      new_charset = pbGetPlayerCharset(meta.surf_fish_charset)
-    when :diving, :diving_fast, :diving_jumping, :diving_stopped
-      self.move_speed = 3 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.dive_charset)
-    when :surfing, :surfing_fast, :surfing_jumping, :surfing_stopped
-      if !@move_route_forcing
-        self.move_speed = (type == :surfing_jumping) ? 3 : 4
-      end
-      new_charset = pbGetPlayerCharset(meta.surf_charset)
-    when :cycling, :cycling_fast, :cycling_jumping, :cycling_stopped
-      if !@move_route_forcing
-        self.move_speed = (type == :cycling_jumping) ? 3 : 5
-      end
-      new_charset = pbGetPlayerCharset(meta.cycle_charset)
-    when :running
-      self.move_speed = 4.25 if !@move_route_forcing && $player.has_running_shoes
-      self.move_speed = 3.75 if !@move_route_forcing && $player.playershoes == :MAKESHIFTRUNNINGSHOES
-      self.move_speed = 4.25 if !@move_route_forcing && $player.playershoes == :RUNNINGSHOES
-      new_charset = pbGetPlayerCharset(meta.run_charset)
-    when :ice_sliding
-      self.move_speed = 4 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.walk_charset)
-    else   # :walking, :jumping, :walking_stopped
-      self.move_speed = 3 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.walk_charset)
-    end
-    @character_name = new_charset if new_charset
-  end
-
-end
-
-
-
-class Player < Trainer
-
-  attr_reader :held_item
-  attr_reader :held_item_object
-  attr_reader :equipped_item
-  def held_item=(value)
-    @held_item = value
-  end
-  def held_item_object=(value)
-    @held_item_object = value
-  end
-     alias _SI2_Player_Init initialize
-  def initialize(name, trainer_type)
-    _SI2_Player_Init(name, trainer_type)
-    @held_item           = nil
-    @held_item_object = nil
-    @equipped_item = nil
-  end
-
-    def hold(item)
-    if !@held_item
-        @held_item=item
-	  if !pbSeenTipCard?(:OVERWORLDITEMS)
-	    pbShowTipCard(:OVERWORLDITEMS)
-	  end
-        pbHoldingObject($game_player.x,$game_player.y-1,item,true)
-		return true
-	end
-    return false
-    end
-    
-    def equip(item)
-    @equipped_item = item
-	end
-    def unequip
-    @equipped_item = nil
-	end
-
-    def place(x,y)
-    if !@held_item.nil?
-	    item = @held_item
-		key_id = @held_item_object
-		direction = $game_map.events[key_id].direction
-		if pbPlaceObject(x,y,item,false,direction)
-		if !$map_factory
-           $game_map.removeThisEventfromMap(key_id)
-        else
-           mapId = $game_map.map_id
-           $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-        end
-		deletefromSIData(key_id)
-        @held_item=nil
-		@held_item_object=nil
-           return true
-	    else
-           return false
-	    end
-    else
-      return false
-    end
-    end
-
-
-end
 
 class Game_Character
   def move_through2(direction)
@@ -234,6 +117,32 @@ class Game_Character
     end
     return true
   end
+
+
+  def move_toward_player(target=$game_player)
+      target = $game_map.events[target] if target.is_a?(Integer)
+    sx = @x + (@width / 2.0) - (target.x + (target.width / 2.0))
+    sy = @y - (@height / 2.0) - (target.y - (target.height / 2.0))
+    return if sx == 0 && sy == 0
+    abs_sx = sx.abs
+    abs_sy = sy.abs
+    if abs_sx == abs_sy
+      (rand(2) == 0) ? abs_sx += 1 : abs_sy += 1
+    end
+    if abs_sx > abs_sy
+      (sx > 0) ? move_left : move_right
+      if !moving? && sy != 0
+        (sy > 0) ? move_up : move_down
+      end
+    else
+      (sy > 0) ? move_up : move_down
+      if !moving? && sx != 0
+        (sx > 0) ? move_left : move_right
+      end
+    end
+  end
+
+
 end
 
 class Battle
@@ -323,6 +232,8 @@ end
     isPartic    = participants.include?(pkmn)
     hasExpShare = expShare.include?(pkmn)
     level = caughtmon.level
+    level_cap = $PokemonSystem.level_caps == 0 ? LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL
+	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
     # Main Exp calculation
     exp = 0
     a = level * caughtmon.base_exp
@@ -354,8 +265,18 @@ end
       exp *= levelAdjust
       exp = exp.floor
       exp += 1 if isPartic || hasExpShare
+      if pkmn.level >= level_cap
+        exp /= 250
+      end
+      if exp >= level_cap_gap
+        exp = level_cap_gap + 1
+      end
     else
-      exp /= 7
+      if a <= level_cap_gap
+        exp = a
+      else
+        exp /= 7
+      end
     end
     # Foreign Pokémon gain more Exp
     isOutsider = (pkmn.owner.id != $player.id ||
@@ -533,92 +454,9 @@ end
 	  
 	  
 	  if pkmnless==false
-	  exp = exp/4
 	  $player.party.each do |pkmn|
-	    next if pkmn.egg?
-      expFinal = growth_rate.add_exp(pkmn.exp, exp)
-      expGained = expFinal-pkmn.exp
-      return if expGained<=0
-      curLevel = pkmn.level
-      newLevel = growth_rate.level_from_exp(expFinal)
-      tempExp1 = pkmn.exp
-      loop do   # For each level gained in turn...
-        # EXP Bar animation
-        levelMaxExp = growth_rate.minimum_exp_for_level(curLevel + 1)
-        tempExp2 = (levelMaxExp<expFinal) ? levelMaxExp : expFinal
-        pkmn.exp = tempExp2
-        tempExp1 = tempExp2
-        curLevel += 1
-		pbSEPlay("Pkmn exp gain")
-        if curLevel>newLevel
-        pkmn.calc_stats
-		 pbMessage("\\ts[]" + (_INTL"#{pkmn.name} leveled up to #{newLevel}!\\wtnp[10]"))
-         break
-        end
-    end
-      oldTotalHP = pkmn.totalhp
-      oldAttack  = pkmn.attack
-      oldDefense = pkmn.defense
-      oldSpAtk   = pkmn.spatk
-      oldSpDef   = pkmn.spdef
-      oldSpeed   = pkmn.speed
-        pkmn.changeHappiness("levelup",pkmn)
-        pkmn.changeLoyalty("levelup",pkmn)
-      if pkmn.shadowPokemon?
-         potato = pkmn.level
-         if potato == 12
-          if rand(100) <= 5
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 13
-          if rand(100) <= 10
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 14
-          if rand(100) <= 15
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 15
-          if rand(100) <= 20
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 16
-          if rand(100) <= 25
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 17
-          if rand(100) <= 30
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 18
-          if rand(100) <= 35
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 19
-          if rand(100) <= 40
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato >= 20
-          if rand(100) <= 50
-          pkmn.nature=:HATEFUL
-          end
-         else
-       end
-      end
- 
-	 
-      moveList = pkmn.getMoveList
-      moveList.each { |m| pbLearnMove(pkmn, m[1]) if m[0] == curLevel }
-      newspecies=pkmn.check_evolution_on_level_up
-          if newspecies
-            pbFadeOutInWithMusic(99999){
-            evo=PokemonEvolutionScene.new
-            evo.pbStartScreen(pkmn,newspecies)
-            evo.pbEvolution
-            evo.pbEndScreen
-          }
-        end
-	   
+	    pokemonEXP([pkmn],caughtmon,pkmn)
+      
 	  end
      end
   end
@@ -697,16 +535,19 @@ end
 EventHandlers.add(:on_enter_map, :recreate_follower_event,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     next if old_map_id == 0 || old_map_id == $game_map.map_id
-    next if $game_temp.following_ov_pokemon==false
-	         event_id = $game_temp.following_ov_pokemon[0]
+    next if $game_temp.following_ov_pokemon.empty?
+	  $game_temp.following_ov_pokemon.keys.each do |key|
+	         event_id = key
 		     next if event_id.nil?
-		     theevent = $map_factory.getMap(old_map_id).events[event_id]
+		     theevent = $game_temp.following_ov_pokemon[key][2]
 			 next if theevent.nil?
+			 puts "Hey this is running while map interpA" if $game_system.map_interpreter.running?
 			 $game_map.recreateEvent2(theevent) if theevent.movement_type == :FOLLOW
 			 pkmn.inworld=false if theevent.movement_type != :FOLLOW
 			 theevent.removeThisEventfromMap
 
 
+      end
 
 }
 )
@@ -714,20 +555,24 @@ EventHandlers.add(:on_enter_map, :recreate_follower_event,
 EventHandlers.add(:on_map_transfer, :recreate_follower_event,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     next if old_map_id == 0 || old_map_id == $game_map.map_id
-    next if $game_temp.following_ov_pokemon==false
-	         event_id = $game_temp.following_ov_pokemon[0]
+    next if $game_temp.following_ov_pokemon.empty?
+	  $game_temp.following_ov_pokemon.keys.each do |key|
+	         event_id = key
 		     next if event_id.nil?
-		     theevent = $game_temp.following_ov_pokemon[2]
+		     theevent = $game_temp.following_ov_pokemon[key][2]
 			 next if theevent.nil?
+			 puts "Hey this is running while map interpB" if $game_system.map_interpreter.running?
 			 $game_map.recreateEvent2(theevent) if theevent.movement_type == :FOLLOW
 			 pkmn.inworld=false if theevent.movement_type != :FOLLOW
 			 theevent.removeThisEventfromMap
 
 
-
+      end
 }
 )
 
-
+def pbRemoveFollowerPokemon(id)
+  $game_temp.following_ov_pokemon.delete(id)
+end
 
 

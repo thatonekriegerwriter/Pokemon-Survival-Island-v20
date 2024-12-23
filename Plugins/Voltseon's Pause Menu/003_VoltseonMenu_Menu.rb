@@ -149,9 +149,9 @@ class VoltseonsPauseMenu < Component
       @shouldRefresh = true
     elsif Input.triggerex?(:W) #Disable Menu?
 	   
-    elsif Input.triggerex?(:G) #Quest
+    elsif Input.triggerex?(:N) #Quest
 	   @entries.each do |i|
-	    if i.name == "Quests"
+	    if i.name == "Notebook"
 	   i.selected(@menu)
 	   end
 	   end

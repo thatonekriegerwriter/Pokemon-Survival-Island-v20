@@ -1,2 +1,2 @@
-﻿Name      = Battle-Worn Opponents
-
+Name = Battle-Worn Opponents
+Version = 0

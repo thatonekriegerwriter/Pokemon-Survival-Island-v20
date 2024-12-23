@@ -608,6 +608,13 @@ class Battle
     isPartic    = defeatedBattler.participants.include?(idxParty)
     hasExpShare = expShare.include?(idxParty)
     level = defeatedBattler.level
+    level_cap = $PokemonSystem.level_caps == 0 ? LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL
+	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
+	if !growth_rate.exp_values[level_cap]
+    level_cap_gap = growth_rate.exp_values[level_cap] - pkmn.exp
+	else
+    level_cap_gap = growth_rate.exp_values[4] - pkmn.exp
+	end
     # Main Exp calculation
     exp = 0
     a = level * defeatedBattler.pokemon.base_exp
@@ -639,8 +646,18 @@ class Battle
       exp *= levelAdjust
       exp = exp.floor
       exp += 1 if isPartic || hasExpShare
+      if pkmn.level >= level_cap
+        exp /= 250
+      end
+      if exp >= level_cap_gap
+        exp = level_cap_gap + 1
+      end
     else
-      exp /= 7
+      if a <= level_cap_gap
+        exp = a
+      else
+        exp /= 7
+      end
     end
     # Foreign Pokémon gain more Exp
     isOutsider = (pkmn.owner.id != pbPlayer.id ||

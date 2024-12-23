@@ -1,2 +1,2 @@
-Name         = Gamlbing
-Version      = 1
+Name = Gamlbing
+Version = 1

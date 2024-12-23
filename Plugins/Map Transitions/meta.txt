@@ -1,2 +1,2 @@
-Name         = Map Transitions
-Version      = 1.1
+Name = Map Transitions
+Version = 1.1

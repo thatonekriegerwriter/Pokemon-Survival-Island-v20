@@ -1,3 +1,4 @@
+#TODO: Get revisiting tip cards to be functional
 def pbRevisitTipCards
     return Console.echo_warn "No available tips to show" if !$stats.tip_cards_seen || $stats.tip_cards_seen.empty?
     arr = []
@@ -36,6 +37,63 @@ def pbRevisitTipCardsGrouped(*groups, continuous: false)
         Console.echo_warn "No available tips to show"
     end
 end
+
+def getTipCardGroups
+    return [] if !$stats.tip_cards_seen || $stats.tip_cards_seen.empty?
+    groups = Settings::TIP_CARDS_GROUPS.keys if !groups || groups.empty?
+    sections = []
+    groups.each_with_index do |group, i|
+        group = Settings::TIP_CARDS_GROUPS[group]
+        next unless group
+        group[:Tips].each do |tip|
+            next if !$PokemonGlobal.tipcards[tip] || $PokemonGlobal.tipcards[tip][:HideRevisit] || 
+                !pbSeenTipCard?(tip)
+            sections.push(groups[i])
+            break
+        end
+    end
+
+    return sections
+end
+
+def getTipCard(card)
+    return [] if !$stats.tip_cards_seen || $stats.tip_cards_seen.empty?
+    arr = []
+    $stats.tip_cards_seen.each { |tip_id| arr.push(tip_id) if card==tip_id }
+    return arr
+end
+def pbTipIsInAGroup(thetip)
+    groups = Settings::TIP_CARDS_GROUPS.keys if !groups || groups.empty?
+
+    groups.each_with_index do |group, i|
+        group = Settings::TIP_CARDS_GROUPS[group]
+        next unless group
+        return group[:Tips].include?(thetip)
+    end
+end
+
+def isthisAGroup(item)
+   group = Settings::TIP_CARDS_GROUPS[item]
+   return true if group
+   return false
+end
+
+
+def getAllTips
+  tips = []
+  getTipCardGroups.each do |group|
+  tips << group
+  end
+  $PokemonGlobal.tipcards.each do |tip|
+   next !$stats.tip_cards_seen.include?(tip)
+   next pbTipIsInAGroup(tip)
+   tips << tip
+		
+  end
+
+  return tips
+end
+
 
 def pbSetTipCardSeen(tip_id, seen = true)
     $stats.tip_cards_seen ||= []

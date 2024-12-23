@@ -1497,7 +1497,7 @@ end
 
 
 
-
+class Adventure
 
 	def remove_pokemon_at_index(index)
 		return false if index < 0 || index >= @party.length
@@ -1780,7 +1780,7 @@ end
       egg.givePokerus if rand(65_536) < Settings::POKERUS_CHANCE
     end
 
-
+end
 def giveAdventureItemList(itemlist)
   list = itemlist.dup.compact()
   string = ""

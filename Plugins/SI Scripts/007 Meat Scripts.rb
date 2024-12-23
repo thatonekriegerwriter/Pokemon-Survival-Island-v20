@@ -1,155 +1,86 @@
-def pbCookMeat(home=false,poke=nil,combat=false,anim=false)
-	   if home==true
-	   pkmn = pbGetPokemon(1)
-	   poke = pkmn
-	   end
-	   if !poke.nil?
-	   pkmn = poke
-	   end
-	   if combat==false
-	   if $bag.add(GameData::Item.get(pkmn.poke_ball).id,1)
-	   end
-	   end
-	   if pkmn == :SLOWPOKE
-		b=(rand(2)+2)
-	    a=(rand(2)+2)
-		$bag.add(:MEAT,a)
-		$bag.add(:SLOWPOKETAIL,b)
-		if anim==true
-		itemAnim(:MEAT,a)
-		itemAnim(:SLOWPOKETAIL,b)
-		end
-	   elsif pkmn == :SNORLAX
-	    a=(rand(3)+4)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :FLYING
-	    a=(rand(2)+1)
-		$bag.add(:BIRDMEAT,a)
-		if anim==true
-		itemAnim(:BIRDMEAT,a)
-		end
-	   elsif pkmn.type1 == :NORMAL
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :FIGHTING
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :POISON
-	    a=(rand(2)+1)
-		$bag.add(:POISONOUSMEAT,a)
-		if anim==true
-		itemAnim(:POISONOUSMEAT,a)
-		end
-	   elsif pkmn.type1 == :GROUND
-	    a=(rand(2)+1)
-		$bag.add(:ROCKYMEAT,a)
-		if anim==true
-		itemAnim(:ROCKYMEAT,a)
-		end
-	   elsif pkmn.type1 == :ROCK
-	    a=(rand(2)+1)
-		$bag.add(:ROCKYMEAT,a)
-		if anim==true
-		itemAnim(:ROCKYMEAT,a)
-		end
-	   elsif pkmn.type1 == :BUG
-	    a=(rand(2)+1)
-		$bag.add(:BUGMEAT,a)
-		if anim==true
-		itemAnim(:BUGMEAT,a)
-		end
-	   elsif pkmn.type1 == :GHOST
-	    if home==true
-        Kernel.pbMessage(_INTL("You can't kill a ghost."))
-		else
-        pbDisplayPaused(_INTL("You can't kill a ghost."))
-		end
-	   elsif pkmn.type1 == :STEEL
-	    a=(rand(2)+1)
-		$bag.add(:STEELYMEAT,a)
-		if anim==true
-		itemAnim(:STEELYMEAT,a)
-		end
-	   elsif pkmn.type1 == :WATER
-	    a=(rand(2)+1)
-		$bag.add(:SUSHI,a)
-		if anim==true
-		itemAnim(:SUSHI,a)
-		end
-	   elsif pkmn.type1 == :GRASS
-	    a=(rand(2)+1)
-		$bag.add(:LEAFYMEAT,a)
-		if anim==true
-		itemAnim(:LEAFYMEAT,a)
-		end
-	   elsif pkmn.type1 == :ELECTRIC
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :PSYCHIC
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :ICE
-	    a=(rand(2)+1)
-		$bag.add(:FROZENMEAT,a)
-		if anim==true
-		itemAnim(:FROZENMEAT,a)
-		end
-	   elsif pkmn.type1 == :DRAGON
-	    a=(rand(2)+1)
-		$bag.add(:DRAGONMEAT,a)
-		if anim==true
-		itemAnim(:DRAGONMEAT,a)
-		end
-	   elsif pkmn.type1 == :DARK
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   elsif pkmn.type1 == :CRYSTAL
-	    a=(rand(2)+1)
-		$bag.add(:EDIABLESCRYSTAL,a)
-		if anim==true
-		itemAnim(:EDIABLESCRYSTAL,a)
-		end
-	   elsif pkmn.type1 == :WIND
-	    a=(rand(2)+1)
-		$bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   else
-	    a=(rand(2)+1)
-	    $bag.add(:MEAT,a)
-		if anim==true
-		itemAnim(:MEAT,a)
-		end
-	   end
-	    if rand(4)==0
-		$bag.add(:RAREBONE,1)
-		if anim==true
-		itemAnim(:RAREBONE,1)
-		end
-		end
-	   if home==true
-       $player.remove_pokemon_at_index(pbGet(1))
-	   end
+  def pbCookMeat(pkmn)
+   if pkmn.species==:MAGIKARP && $player.is_it_this_class?(:FISHER)
+    if $player.party.include?(pkmn)
+		index = $player.party.index(pkmn)
+		$player.remove_pokemon_at_index(index)
+		ball = pkmn.poke_ball if pkmn.poke_ball.is_a?(ItemData)
+		ball = GameData::Item.get(pkmn.poke_ball).id if !pkmn.poke_ball.is_a?(ItemData)
+		$bag.add(ball,1)
+    end
+    if rand(2)==0
+		$bag.add(:RAREBONE,3)
+		itemAnim(:RAREBONE,3) if !$game_temp.in_battle
+	end
+   
+    return
+   end
+    food_item = ItemData.new(:MEAT)
+     weight = pkmn.weight
+	 amt = (weight*10)
+     amt = 4 if amt>4
+     amt = 1 if amt<1
+     total_ivs = pkmn.iv[:HP] + pkmn.iv[:ATTACK] + pkmn.iv[:DEFENSE] + pkmn.iv[:SPECIAL_ATTACK] + pkmn.iv[:SPECIAL_DEFENSE] + pkmn.iv[:SPEED]
+     max_ivs = 31 * 6
+     food_item.food_water_stats["Quality"]=(total_ivs.to_f / max_ivs * 4).round
+     food_item.food_water_stats["Priority"]=3
+     food_item.food_water_stats["Servings"]=1
+	  amt *= 1.5 if $player.is_it_this_class?(:FISHER,false)
+	  amt = 1 if pkmn.species==:MAGIKARP && $player.is_it_this_class?(:FISHER)
+    if pkmn.species == :SLOWPOKE
+		$bag.add(food_item,amt)
+		$bag.add(:SLOWPOKETAIL,1)
+		itemAnim(food_item,amt) if !$game_temp.in_battle
+		itemAnim(:SLOWPOKETAIL,1) if !$game_temp.in_battle
+	    
+	    
+	else
+      case pkmn.type1
+        when :FLYING
+		  food_item.id = :BIRDMEAT
+        when :POISON
+		  food_item.id = :POISONOUSMEAT
+        when :GROUND
+		  food_item.id = :ROCKYMEAT
+        when :ROCK
+		  food_item.id = :ROCKYMEAT
+        when :BUG
+		  food_item.id = :BUGMEAT
+        when :GHOST
+		  return
+        when :STEEL
+		  food_item.id = :STEELYMEAT
+        when :WATER
+		  food_item.id = :SUSHI
+        when :GRASS
+		  food_item.id = :LEAFYMEAT
+        when :ICE
+		  food_item.id = :FROZENMEAT
+        when :DRAGON
+		  food_item.id = :DRAGONMEAT
+        when :CRYSTAL
+		  food_item.id = :EDIABLESCRYSTAL
+	  
+	  
+	  
+	  
 	  end
+    end
+    if pkmn.species != :SLOWPOKE
+		$bag.add(food_item,amt)
+		itemAnim(:RAREBONE,1) if !$game_temp.in_battle
+	end
+    if rand(12)==0
+		$bag.add(:RAREBONE,1)
+		itemAnim(:RAREBONE,1) if !$game_temp.in_battle
+	end
+    if $player.party.include?(pkmn)
+		index = $player.party.index(pkmn)
+		$player.remove_pokemon_at_index(index)
+		ball = pkmn.poke_ball if pkmn.poke_ball.is_a?(ItemData)
+		ball = GameData::Item.get(pkmn.poke_ball).id if !pkmn.poke_ball.is_a?(ItemData)
+		$bag.add(ball,1)
+    end
+  end
 
 
 

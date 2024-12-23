@@ -1,5 +1,7 @@
 class Game_Temp
   attr_accessor :position_calling
+  attr_accessor :in_throwing
+  attr_accessor :no_moving
   attr_accessor :equipment_calling
   attr_accessor :pokemon_calling
   attr_accessor :in_safari
@@ -22,7 +24,33 @@ class Game_Temp
   attr_accessor :overworld_pokemon
   attr_accessor :notebook_calling
   attr_accessor :carried_evo_stones
-
+  attr_accessor :saved_bgms
+  attr_accessor :saved_bgm_poses
+  attr_accessor :disable_running
+  def saved_bgms
+    @saved_bgms = [] if !@saved_bgms
+    return @saved_bgms
+  end
+  def disable_running
+    @disable_running = false if !@disable_running
+    return @disable_running
+  end
+  def saved_bgm_poses
+    @saved_bgm_poses = {} if !@saved_bgm_poses
+    return @saved_bgm_poses
+  end
+  def position_calling
+    @position_calling = false if !@position_calling
+    return @position_calling
+  end
+  def in_throwing
+    @in_throwing = false if !@in_throwing
+    return @in_throwing
+  end
+  def no_moving
+    @no_moving = false if !@no_moving
+    return @no_moving
+  end
   def automove
     @auto_move = false if !@auto_move
     return @auto_move
@@ -32,7 +60,9 @@ class Game_Temp
     return @bossfight
   end
   def following_ov_pokemon
-    @following_ov_pokemon = false if !@following_ov_pokemon
+    @following_ov_pokemon = {} if !@following_ov_pokemon
+    @following_ov_pokemon = {} if @following_ov_pokemon.is_a?(FalseClass)
+    @following_ov_pokemon = {} if @following_ov_pokemon.is_a?(Array)
     return @following_ov_pokemon
   end
   def overworld_pokemon
@@ -59,6 +89,14 @@ class Game_Temp
   def check_for_invisible_events
     @check_for_invisible_events = false if !@check_for_invisible_events
     return @check_for_invisible_events
+  end
+  def preventspawns
+    @preventspawns = false if !@preventspawns
+    return @preventspawns
+  end
+  def pokemon_calling
+    @pokemon_calling = false if !@pokemon_calling
+    return @pokemon_calling
   end
   
   

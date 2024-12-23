@@ -58,7 +58,9 @@ def pbCollectionMain
   chanceCollect=rand(6)  #Encounters 2/10 of the time
   if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
     vbItem = vbItems[rand(vbItems.length)]
-    pbItemBall(vbItem)
+		  amt = 1
+	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
+    pbItemBall(vbItem,amt)
   elsif  chanceCollect==1 ||  chanceCollect==4
     pbMessage("You didn't find anything.")
   end
@@ -70,7 +72,9 @@ def pbCollectionMain2
   chanceCollect=rand(26)  #Encounters 2/10 of the time
   if  chanceCollect==0 ||  chanceCollect==2
     vbItem = vbItems[rand(vbItems.length)]
-    pbItemBall(vbItem)
+		  amt = 1
+	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
+    pbItemBall(vbItem,amt)
   else
   end
 end

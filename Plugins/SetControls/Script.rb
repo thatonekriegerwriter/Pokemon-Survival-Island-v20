@@ -52,8 +52,18 @@ module Input
 	RUNNING = 45
 	DEBUGMENU = 46
 	PKMNCONTROL = 47
-	NOTESMENU = 48
+	ALTMENU = 48
 	PUNCH = 49
+	CYCLEMOUSETYPE = 50
+	NOTEBOOK = 51
+	EXPAND = 52
+	WHATISTHIS = 53
+	ALTERNATEMOUSEMODE = 54
+	
+  @key_last_pressed = {}
+  @key_press_time = {}
+  @key_last_pressed2 = {}
+  @key_press_time2 = {}
   class << self
     if !method_defined?(:_old_fl_press?)
       alias :_old_fl_press? :press?
@@ -118,6 +128,14 @@ module Input
       end
       return 0
     end
+    def dir4alt
+      return 0 if trigger?(DOWN) && trigger?(UP)
+      return 0 if trigger?(LEFT) && trigger?(RIGHT)
+      for button in [DOWN,LEFT,RIGHT,UP]
+        return button if trigger?(button)
+      end
+      return 0
+    end
 
     def dir8
       buttons = []
@@ -153,7 +171,65 @@ module Input
       end
     end
     
+  # Detect a double tap for a specific key
+  def double_tap?(key)
+    current_time = Graphics.frame_count
+    duris = trigger?(key)
+    if duris
+      if @key_last_pressed[key] && (current_time - @key_last_pressed[key] <= 10)
+        # Double tap detected
+        @key_last_pressed[key] = nil
+        return true
+      else
+        # Store the time of the first tap
+        @key_last_pressed[key] = current_time
+      end
+    end
 
+    return false
+  end
+    
+  def jumping_up?
+    return trigger?(Input::JUMPUP)  || scroll_v==1
+  end
+  def jumping_down?
+    return trigger?(Input::JUMPDOWN)  || scroll_v==-1
+  end
+  # Detect a double tap for a specific key
+  def single_tap?(key)
+    current_time = Graphics.frame_count
+    duris = trigger?(key)
+    if duris
+      if @key_last_pressed[key] && (current_time - @key_last_pressed[key] >= 20)
+        # Double tap detected
+        @key_last_pressed[key] = nil
+	   elsif @key_last_pressed[key]
+      else
+        @key_last_pressed[key] = current_time
+        return true
+      end
+    end
+
+    return false
+  end
+
+
+  def double_tap_dir4?
+    current_time = Graphics.frame_count
+	  key = dir4alt
+    if key!=0
+      if @key_last_pressed[key] && (current_time - @key_last_pressed[key] <= 10)
+        # Double tap detected
+        @key_last_pressed[key] = nil
+        return true
+      else
+        # Store the time of the first tap
+        @key_last_pressed[key] = current_time
+      end
+    end
+
+    return false
+  end
 	
     def buttonToKey(button)
       $PokemonSystem = PokemonSystem.new if !$PokemonSystem
@@ -183,26 +259,30 @@ module Input
           return $PokemonSystem.game_control_code("Scroll Up")
         when Input::JUMPDOWN # S, Page Down
           return $PokemonSystem.game_control_code("Scroll Down")
-        when Input::SEARCH # F, F5, Tab
-          return $PokemonSystem.game_control_code("Direct Pokemon")
         when Input::LOCKON # F, F5, Tab
           return $PokemonSystem.game_control_code("Lock On")
         when Input::TOGGLETYPE # F, F5, Tab
           return $PokemonSystem.game_control_code("Toggle HUD Contents")
-        when Input::CYCLEFOLLOWER # F, F5, Tab
-          return $PokemonSystem.game_control_code("Cycle Follower")
         when Input::TOGGLEHUD # F, F5, Tab
           return $PokemonSystem.game_control_code("Show HUD")
         when Input::RUNNING # F, F5, Tab
           return $PokemonSystem.game_control_code("Running")
         when Input::DEBUGMENU # F, F5, Tab
           return $PokemonSystem.game_control_code("Debug Menu")
-        #when Input::PKMNCONTROL # F, F5, Tab
-        #  return $PokemonSystem.game_control_code("Control Pokemon")
-        when Input::NOTESMENU # F, F5, Tab
-          return $PokemonSystem.game_control_code("Notes Menu")
+        when Input::PKMNCONTROL # F, F5, Tab
+          return $PokemonSystem.game_control_code("Direct Pokemon")
+        when Input::ALTMENU # F, F5, Tab
+          return $PokemonSystem.game_control_code("Direct Group")
         when Input::PUNCH # F, F5, Tab
           return $PokemonSystem.game_control_code("Punch")
+        when Input::CYCLEMOUSETYPE # F, F5, Tab
+          return $PokemonSystem.game_control_code("Cycle Mouse Mode")
+        when Input::NOTEBOOK # F, F5, Tab
+          return $PokemonSystem.game_control_code("Open Notebook")
+        when Input::EXPAND # F, F5, Tab
+          return $PokemonSystem.game_control_code("Expand HUD")
+        when Input::ALTERNATEMOUSEMODE # F, F5, Tab
+          return $PokemonSystem.game_control_code("Selection Mouse Mode")
         else
           return nil
       end
@@ -220,7 +300,6 @@ module Keys
       ControlConfig.new("Left", "A"),
       ControlConfig.new("Right", "D"),
       ControlConfig.new("Up", "W"),
-      ControlConfig.new("Running", "Shift"),
       ControlConfig.new("Action", "Enter"),
       ControlConfig.new("Action", "Space"),
       ControlConfig.new("Action", "MouseLeft"),
@@ -229,20 +308,22 @@ module Keys
       ControlConfig.new("Cancel", "MouseRight"),
       ControlConfig.new("Menu", "E"),
       ControlConfig.new("Menu", "Z"),
+      ControlConfig.new("Running", "None"),
+      ControlConfig.new("Punch", "F"),
+      ControlConfig.new("Cycle Mouse Mode", "Tab"),
+      ControlConfig.new("Selection Mouse Mode", "Shift"),
+      ControlConfig.new("Open Notebook", "N"),
       ControlConfig.new("Show HUD", "R"),
+      ControlConfig.new("Toggle HUD Contents", "MouseMiddle"),
+      ControlConfig.new("Expand HUD", "C"),
+      ControlConfig.new("Display Moves", "G"),
+      ControlConfig.new("Direct Group", "Alt"),
+      ControlConfig.new("Lock On", "Q"),
       ControlConfig.new("Scroll Up", "Up"),
       ControlConfig.new("Scroll Down", "Down"),
-      ControlConfig.new("Toggle HUD Contents", "MouseMiddle"),
-      ControlConfig.new("Ready Menu", "Tab"),
       ControlConfig.new("Aux 1", "J"),
       ControlConfig.new("Aux 2", "Y"),
-      ControlConfig.new("Cycle Follower", "P"),
-      ControlConfig.new("Lock On", "Q"),
-      ControlConfig.new("Direct Pokemon", "F"),
-      ControlConfig.new("Debug Menu", "/?"),
-      #ControlConfig.new("Control Pokemon", "B"),
-      ControlConfig.new("Notes Menu", "Alt"),
-      ControlConfig.new("Punch", "C")
+      ControlConfig.new("Direct Pokemon", "~")
     ]
   end 
 
@@ -369,17 +450,18 @@ module Keys
     "-"            => 0xBD,
     "."            => 0xBE,
     "/?"           => 0xBF,
-    "`~"           => 0xC0,
+    "~"           => 0xC0,
     "{"            => 0xDB,
     "\|"           => 0xDC,
     "}"            => 0xDD,
     "'\""          => 0xDE,
-    "AX"           => 0xE1 # Japan only,
+    "AX"           => 0xE1, # Japan only,,
+    "None"         => 0x00
   }
 
   def self.key_name(key_code)
     return CONTROLS_LIST.key(key_code) if CONTROLS_LIST.key(key_code)
-    return key_code==0 ? "None" : "?"
+    return "None"
   end 
 
   def self.key_code(key_name)
@@ -399,14 +481,19 @@ module Keys
   end
 end 
 
-def get_keyname(action)
-  key = ""
+def get_keyname(action,version=0)
+  key = nil
+   keys = []
  $PokemonSystem.game_controls.each do |control|
   if control.control_action==action
-  key = control.key_name 
+    keys << control.key_name 
   end
  end
- 
+ if keys.length>0
+  key = keys[version]
+  key = keys[keys.length] if key.nil?
+ end
+ key = "None" if key.nil?
  return key
 end
 
@@ -424,8 +511,12 @@ class ControlConfig
   end
 end
 
+
+
 class Window_PokemonControls < Window_DrawableCommand
   attr_reader :reading_input
+  attr_reader :deleting_input
+  attr_reader :default_input
   attr_reader :controls
   attr_reader :changed
 
@@ -439,6 +530,8 @@ class Window_PokemonControls < Window_DrawableCommand
     @sel_base_color    = Color.new(24,112,216)
     @sel_shadow_color  = Color.new(136,168,208)
     @reading_input = false
+    @deleting_input = false
+    @default_input = false
     @changed = false
     super(x,y,width,height)
   end
@@ -449,14 +542,43 @@ class Window_PokemonControls < Window_DrawableCommand
 
   def set_new_input(new_input)
     @reading_input = false
+	 puts new_input
     return if @controls[@index].key_code==new_input
-    for control in @controls # Remove the same input for the same array
-      control.key_code = 0 if control.key_code==new_input
-    end
+    #for control in @controls # Remove the same input for the same array
+    #  control.key_code = 0 if control.key_code==new_input
+    #end
     @controls[@index].key_code=new_input
     @changed = true
+	
     refresh
   end
+
+  def remove_input
+    @deleting_input = false
+    @controls[@index].key_code=0
+    @changed = true
+	
+    refresh
+  end
+
+  def default_the_input
+    @default_input = false
+	key_code = 0
+	if Keys.default_controls[@index].control_action == @controls[@index].control_action
+	key_code = Keys.default_controls[@index].key_code
+	else
+	  Keys.default_controls.each do |control|
+	     next if control.control_action != @controls[@index].control_action
+	     #next if control.key_code == @controls[@index].key_code
+	     key_code = control.key_code
+	  end
+	end
+    @controls[@index].key_code=key_code
+    @changed = true
+	
+    refresh
+  end
+
 
   def on_exit_index?
     return @controls.length + EXIT_EXTRA_INDEX == @index
@@ -465,6 +587,7 @@ class Window_PokemonControls < Window_DrawableCommand
   def on_default_index?
     return @controls.length + DEFAULT_EXTRA_INDEX == @index
   end
+  
   
   def item_description
     ret=nil
@@ -478,32 +601,37 @@ class Window_PokemonControls < Window_DrawableCommand
     return ret
   end 
   
-  
 
   def control_description(control_action)
     hash = {}
-    hash["Down"        ] = _INTL("Moves the character. Select entries and navigate menus.")
-    hash["Left"        ] = hash["Down"]
-    hash["Right"       ] = hash["Down"]
-    hash["Up"          ] = hash["Down"]
-    hash["Action"      ] = _INTL("Confirm a choice, check things, talk to people, and move through text.")
-    hash["Cancel"      ] = _INTL("Exit, cancel a choice or mode, and move at field in a different speed.")
-    hash["Menu"        ] = _INTL("Open the menu. Also has various functions depending on context.")
-    hash["Show HUD"   ] = _INTL("Disables and Enables the Overworld HUD.")
-    hash["Scroll Up"   ] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
-    hash["Scroll Down" ] = hash[ "Scroll Up"]
-    hash["Toggle Box"   ] = _INTL("Changes the Contents of the Overworld HUD to Items or Pokemon.")
-    hash["Ready Menu"  ] = _INTL("Open Ready Menu, with registered items and available field moves.")
-    hash["Trainer Card"  ] = _INTL("Open Trainer Card to see various stats about the Trainer.")
-    hash["Following Pokemon"  ] = _INTL("Toggle your Following Pokemon.")
-    hash["Lock On"  ] = _INTL("Lock on to an Overworld Pokemon.")
-    hash["Search"  ] = _INTL("Direct your Overworld Pokemon to Search.")
-    hash["Following Pokemon"  ] = _INTL("Toggle your Following Pokemon.")
-    hash["Cycle Follower"  ] = _INTL("Cycles your Following Pokemon.")
-    hash["Lock On"  ] = _INTL("Lock on to an Overworld Pokemon.")
-    hash["Search"  ] = _INTL("Direct your Overworld Pokemon to Search.")
+    hash["Down"] = _INTL("Moves the character. Select entries and navigate menus.")
+    hash["Left"] = hash["Down"]
+    hash["Right"] = hash["Down"]
+    hash["Up"] = hash["Down"]
+    hash["Running"] = _INTL("An optional key which can be assigned to run. The default behavior is double tap to run.")
+    hash["Action"] = _INTL("Confirm a choice, check things, talk to people, and move through text.")
+    hash["Cancel"] = _INTL("Exit, cancel a choice or mode, and move at field in a different speed.")
+    hash["Menu"] = _INTL("Open the menu. Also has various functions depending on context.")
+    hash["Show HUD"] = _INTL("Disables and Enables the Overworld HUD.")
+    hash["Scroll Up"] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
+    hash["Scroll Down"] = hash[ "Scroll Up"]
+    hash["Toggle HUD Contents"] = _INTL("Changes the HUD between it's various content types.")
+    hash["Expand HUD"] = _INTL("Shows the full version of the Pokemon HUD Type.")
+    hash["Lock On"] = _INTL("Lock on to an Overworld Pokemon.")
+    hash["Punch"] = _INTL("Punch whatever is in front of you.")
+    hash["Cycle Mouse Mode"] = _INTL("Cycle your mouse through it's different controls states.")
+    hash["Open Notebook"] = _INTL("Opens Player Notebook.")
+    hash["Debug Menu"] = _INTL("Open the Debug Menu if accessible.")
+    hash["Direct Group"] = _INTL("Direct a large group of Overworld Pokemon.")
+    hash["Display Moves"] = _INTL("Display currently selected Overworld Pokemon's Moves.")
+    hash["Selection Mouse Mode"] = _INTL("Immediately change to Selection Mouse Mode.")
+    hash["Direct Pokemon"] = _INTL("Opens a Menu to allow for finer direction of Overworld Pokemon.")
+    hash["Aux 1"] = _INTL("Anxillary Control: Currently unused.")
+    hash["Aux 2"] = _INTL("Anxillary Control: Currently unused.")
     return hash.fetch(control_action, _INTL("Set the controls."))
   end
+
+
 
   def drawItem(index,count,rect)
     rect=drawCursor(index,rect)
@@ -542,39 +670,83 @@ class Window_PokemonControls < Window_DrawableCommand
             do_refresh = true
           end
         elsif self.index<@controls.length
+	
+          commands = []
+		   command = -1
+          cmdGiveItem = -1
+          cmdPokedex  = -1
+          cmdMark     = -1
+          commands[cmdGiveItem = commands.length]       = _INTL("Change Key")
+          commands[cmdMark = commands.length]       = _INTL("Delete Key")
+          commands[cmdPokedex = commands.length]       = _INTL("Default Key")
+          commands[commands.length]                 = _INTL("Cancel")
+		   puts command
+             msgwindow = pbCreateMessageWindow(nil,nil)
+             pbMessageDisplay(msgwindow,_INTL("What will you do?\\wtnp[1]"))
+          command = pbShowCommands(msgwindow, commands)
+             pbDisposeMessageWindow(msgwindow)
+          if cmdGiveItem >= 0 && command == cmdGiveItem	 
           @reading_input = true
+		   elsif cmdMark >= 0 && command == cmdMark	 
+          @deleting_input = true
+		   elsif cmdPokedex >= 0 && command == cmdPokedex	 
+          @default_input = true
+          end	
         end
       end
     end
     refresh if do_refresh
   end
+
+
 end
 
 class PokemonControls_Scene
+
   def start_scene
     @sprites={}
     @viewport=Viewport.new(0,0,Graphics.width,Graphics.height)
     @viewport.z=99999
+	
+	
+	
     @sprites["title"]=Window_UnformattedTextPokemon.newWithSize(
       _INTL("Controls"),0,0,Graphics.width,64,@viewport
     )
+	
+	
+	
+	
     @sprites["textbox"]=pbCreateMessageWindow
     @sprites["textbox"].letterbyletter=false
+	
+	
+	
     game_controls = $PokemonSystem.game_controls.map{|c| c.clone}
     @sprites["controlwindow"]=Window_PokemonControls.new(
       game_controls,0,@sprites["title"].height,Graphics.width,
       Graphics.height-@sprites["title"].height-@sprites["textbox"].height
     )
+	
+	
+	
+	
     @sprites["controlwindow"].viewport=@viewport
     @sprites["controlwindow"].visible=true
     @changed = false
     pbDeactivateWindows(@sprites)
     pbFadeInAndShow(@sprites) { update }
+	
+	
+	
   end
 
   def update
     pbUpdateSpriteHash(@sprites)
   end
+
+
+
 
   def main
     last_index=-1
@@ -590,6 +762,16 @@ class PokemonControls_Scene
         @sprites["controlwindow"].set_new_input(Keys.detect_key)
         should_refresh_text = true
         @changed = true
+	  elsif @sprites["controlwindow"].deleting_input
+        @sprites["textbox"].text=_INTL("Unbinding Key.")
+        @sprites["controlwindow"].remove_input
+        should_refresh_text = true
+        @changed = true
+	  elsif @sprites["controlwindow"].default_input
+        @sprites["textbox"].text=_INTL("Setting key to default.")
+        @sprites["controlwindow"].default_the_input
+        should_refresh_text = true
+        @changed = true
       else
         if Input.trigger?(Input::B) || (
           Input.trigger?(Input::C) && @sprites["controlwindow"].on_exit_index?
@@ -599,13 +781,8 @@ class PokemonControls_Scene
             pbConfirmMessage(_INTL("Keep changes?"))
           )
             should_refresh_text = true # Visual effect
-            if @sprites["controlwindow"].controls.find{|c| c.key_code == 0}
-              @sprites["textbox"].text=_INTL("Fill all fields!")
-              should_refresh_text = false
-            else
               $PokemonSystem.game_controls = @sprites["controlwindow"].controls
               break
-            end
           else
             break
           end
@@ -621,13 +798,25 @@ class PokemonControls_Scene
     }
   end
 
+
+
+
+
+
+
   def end_scene
     pbFadeOutAndHide(@sprites) { update }
     pbDisposeMessageWindow(@sprites["textbox"])
     pbDisposeSpriteHash(@sprites)
     @viewport.dispose
   end
+
+
+
 end
+
+
+
 
 class PokemonControlsScreen
   def initialize(scene)
@@ -641,13 +830,38 @@ class PokemonControlsScreen
   end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 class PokemonSystem
   attr_writer :game_controls
   def game_controls
     @game_controls = Keys.default_controls if !@game_controls
+	@game_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && has_debug_menu?
+	@game_controls = Keys.default_controls if !$DEBUG && has_debug_menu?(@game_controls)
     return @game_controls
   end
-
+  
+  def has_debug_menu?
+    @game_controls.each do |control|
+	  if control.control_action == "Debug Menu"
+	    return false
+	  end
+	end
+    return true
+  end
+  
+  
   def game_control_code(control_action)
     ret = []
     for control in game_controls
@@ -656,6 +870,33 @@ class PokemonSystem
     return ret
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

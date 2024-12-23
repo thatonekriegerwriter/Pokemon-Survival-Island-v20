@@ -48,7 +48,7 @@ module Settings
                 :Tips => [:CONTROLS1, :CONTROLS2, :CONTROLS3]
             },
             :HUDSTUFF => {
-                :Title => _INTL("Hud Tips"),
+                :Title => _INTL("HUD Tips"),
                 :Tips => [:HUD, :HUD2, :CATCH]
             },
             :SURVIVAL => {
@@ -56,11 +56,11 @@ module Settings
                 :Tips => [:SURVIVALMODE, :SURVIVALMODE2, :SURVIVALMODE3, :SURVIVALMODE4]
             },
             :BASICCOMBAT => {
-                :Title => _INTL("Combat"),
-                :Tips => [:CONTROLS3,:COMBAT1, :COMBAT2, :COMBAT3]
+                :Title => _INTL("Overworld Combat"),
+                :Tips => [:CONTROLS3,:COMBAT1, :COMBAT2]
             },
             :BASICSCOMBAT => {
-                :Title => _INTL("Combat"),
+                :Title => _INTL("Turn Based Combat (Player)"),
                 :Tips => [:SCOMBAT0,:SCOMBAT1, :SCOMBAT2, :SCOMBAT3]
             }
         }
@@ -93,7 +93,7 @@ class PokemonGlobalMetadata
             },
             :CONTROLS1 => {
                 :Title => _INTL("Basic Controls"),
-                :Text => _INTL("#{get_keyname("Up")}#{get_keyname("Left")}#{get_keyname("Down")}#{get_keyname("Right")} to move. Use #{get_keyname("Running")} to run if you have Running Shoes.\nUse is the key to interact with people and things and use Overworld Items. Key:#{get_keyname("Action")}\nBack is the key to exit, cancel a choice, or cancel a mode. Key: #{get_keyname("Cancel")}\n Action is used to open the Pause Menu. Key: #{get_keyname("Menu")}"),
+                :Text => _INTL("#{get_keyname("Up")}#{get_keyname("Left")}#{get_keyname("Down")}#{get_keyname("Right")} to move. You can double tap to run, or running can be bound in the Options menu.\nUse is the key to interact with people and things and use Overworld Items. Key:#{get_keyname("Action")}\nBack is the key to exit, cancel a choice, or cancel a mode. Key: #{get_keyname("Cancel")}\n Action is used to open the Pause Menu. Key: #{get_keyname("Menu")}"),
                 :Image => "controlset1",
                 :ImagePosition => :Top2,
                 :ImageZoom => 0.75,
@@ -104,7 +104,7 @@ class PokemonGlobalMetadata
             },
             :CONTROLS2 => {
                 :Title => _INTL("Specialized Controls"),
-                :Text => _INTL("These are more specialized controls.\nSpecial is used to quickly access items from the bag. Key: #{get_keyname("Special")}\nHud Keys are used to control the overworld HUD. To show the hud, use #{get_keyname("Show HUD")}. To toggle it's contents, use #{get_keyname("Toggle HUD Contents")}.\nThe two AUX keys have various functions, and are tied to #{get_keyname("Aux 1")} and #{get_keyname("Aux 2")}."),
+                :Text => _INTL("These are more specialized controls.\nHud Keys are used to control the overworld HUD. To show the hud, use #{get_keyname("Show HUD")}. To toggle it's contents, use #{get_keyname("Toggle HUD Contents")}.\nThe two AUX keys have various functions, and are tied to #{get_keyname("Aux 1")} and #{get_keyname("Aux 2")}."),
                 :Image => "controlset2",
                 :ImagePosition => :Top2,
                 :ImageZoom => 0.75,
@@ -115,7 +115,7 @@ class PokemonGlobalMetadata
             },
             :CONTROLS3 => {
                 :Title => _INTL("Combat Controls"),
-                :Text => _INTL("These are Overworld Combat Controls.\nThe key #{get_keyname("Punch")} will let you punch.\nTo Control your Pokémon that are on the Overworld, you use the key #{get_keyname("Direct Pokemon")}.\nTo lock on to an enemy target, you use the key #{get_keyname("Lock On")}."),
+                :Text => _INTL("These are Overworld Combat Controls.\nThe key #{get_keyname("Punch")} will let you punch.\nTo lock on to an enemy target, you use the key #{get_keyname("Lock On")}."),
                 :Image => "controlset3",
                 :ImagePosition => :Top2,
                 :ImageZoom => 0.75,
@@ -189,23 +189,10 @@ class PokemonGlobalMetadata
                 :Text => _INTL("Every choice has a cost."),
                 :Background => "help_bg"
             },
-            :ADVENTURE => {
-                :Title => _INTL("Adventures"),
-                :Text => _INTL("You can send any Pokémon you have\nout on Adventures, while out, they\nwill encounter their own battles\nand will collect items."),
-                :Image => "adventure",
-                :ImagePosition => :Left,
-                :YAdjustment => 20,
-                :Background => "help_bg"
-            },
-            :ITEMS => {
-                :Title => _INTL("Items"),
-                :Text => _INTL("This is the text of the other tip. You may find items lying around."),
-                :Image => "items",
-                :YAdjustment => -70
-            },
+
             :COMBAT1 => {
                 :Title => _INTL("Combat Controls 1"),
-                :Text => _INTL("You will be presented an input prompt, when offered, hit a direction. You will dodge at a cost of Stamina."),
+                :Text => _INTL("When a Pokemon approaches you and attacks, you need to dodge in a direction, for the tutorial, this will be shown visually."),
                 :Image => "Dodging",
                 :ImagePosition => :Top2,
                 :ImageZoom => 0.5,
@@ -216,17 +203,6 @@ class PokemonGlobalMetadata
             },
             :COMBAT2 => {
                 :Title => _INTL("Combat Controls 2"),
-                :Text => _INTL("If you dodge towards the attacking POKeMON, you will dodge past them, it will cost more stamina. If you cannot dodge past them, or you dodge the direction it's moving, you will take damage."),
-                :Image => "Dodging",
-                :ImagePosition => :Top2,
-                :ImageZoom => 0.5,
-                :AdjustImageX => 145,
-                :AdjustImageY => 20,
-                :YAdjustment => -180,
-                :Background => "help_bg"
-            },
-            :COMBAT3 => {
-                :Title => _INTL("Combat Controls 3"),
                 :Text => _INTL("If you are hit from the side or behind, you will take greater damage. If you do the same to the POKeMON, it will result in the same."),
                 :Image => "Dodging",
                 :ImagePosition => :Top2,
@@ -274,6 +250,23 @@ class PokemonGlobalMetadata
                 :YAdjustment => -50,
                 :Background => "help_bg"
             },
+			
+			
+			
+            :ADVENTURE => {
+                :Title => _INTL("Adventures"),
+                :Text => _INTL("You can send any Pokémon you have\nout on Adventures, while out, they\nwill encounter their own battles\nand will collect items."),
+                :Image => "adventure",
+                :ImagePosition => :Left,
+                :YAdjustment => 20,
+                :Background => "help_bg"
+            },
+            :ITEMS => {
+                :Title => _INTL("Items"),
+                :Text => _INTL("This is the text of the other tip. You may find items lying around."),
+                :Image => "items",
+                :YAdjustment => -70
+            },
             :SHOVEL => {
                 :Title => _INTL("Digging"),
                 :Text => _INTL("When using a Shovel, you can dig on sand, or dig on newly planted crops to dig them up. When digging on sand, you have a chance to dig up items."),
@@ -305,6 +298,13 @@ class PokemonGlobalMetadata
                 :YAdjustment => -43,
                 :Background => "help_bg"
             }
+
+
+
+
+
+
+
 }
 
     

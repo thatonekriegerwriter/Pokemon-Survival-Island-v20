@@ -1,1 +1,2 @@
-Name         = Neo CI
+Name = Neo CI
+Version = 0

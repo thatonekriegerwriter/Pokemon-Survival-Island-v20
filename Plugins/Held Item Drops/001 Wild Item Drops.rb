@@ -1,7 +1,18 @@
 #Settings
 def pbHeldItemDropOW(pkmn,meat=false)
-if meat==true
-pbCookMeat(false,pkmn,true,true)
+
+
+
+pbCookMeat(pkmn) if meat==true
+if pkmn.types.include?(:ROCK)
+  amt = rand(2)+1
+        if $bag.add(:STONE,amt)
+		itemAnim(:STONE,amt)
+        end
+elsif pkmn.types.include?(:STEEL)
+        if $bag.add(:IRON2,1)
+		itemAnim(:IRON2,1)
+        end
 end
 return if pkmn.wildHoldItems.nil?
     wildDrop = pkmn.wildHoldItems

@@ -342,6 +342,8 @@ class MiningGameScene
       ptotal+=i[1]
     end
     numitems=3+rand(4)
+	
+    numitems+=2 if $player.is_it_this_class?(:HIKER)
     tries = 0
     while numitems>0
       rnd=rand(ptotal)
@@ -605,7 +607,9 @@ class MiningGameScene
       Input.update
       next if @sprites["cursor"].isAnimating?
       # Check end conditions
-      if @sprites["crack"].hits >= 49
+	   hitsamt = 49
+	   hitsamt += 10 if $player.is_it_this_class?(:HIKER)
+      if @sprites["crack"].hits >= hitsamt
         @sprites["cursor"].visible = false
         pbSEPlay("Mining collapse")
         collapseviewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -885,7 +889,7 @@ def ov_mining(type)
  if hasPickaxe?
   image = nil
   pbMessage(_INTL("You hack away at it with a Pickaxe."))
-   amt = 1 
+   amt = 1
   case type 
    when :TUMBLESTONE
      image = "Legends_Tumblestone"
@@ -898,6 +902,7 @@ def ov_mining(type)
    else
      image = "Legends_Tumblestone"
   end
+   amt *= 2 if $player.is_it_this_class?(:HIKER,false) && rand(100)<=25
   route = [PBMoveRoute::Wait,4,
           PBMoveRoute::Graphic, image, 0, 2, 1,
 		   PBMoveRoute::Wait,4,
@@ -917,6 +922,7 @@ def ov_mining(type)
  else 
   pbMessage(_INTL("While you don't have a pickaxe, you chip off a piece of the #{GameData::Item.get(type).name}."))
    amt = rand(2)+1
+   amt *= 2 if $player.is_it_this_class?(:HIKER,false) && rand(100)<=25
   if !$bag.add(type,amt)
   pbMessage(_INTL("You don't have space!"))
   else 
@@ -956,6 +962,7 @@ def ov_mining2(type)
 		   PBMoveRoute::Wait,4,
           PBMoveRoute::Graphic, image, 0, 2, 0]
   pbMoveRoute2(this_event,route)
+   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
   if !$bag.add(type,amt)
   pbMessage(_INTL("You don't have space!"))
   else 
@@ -966,6 +973,7 @@ def ov_mining2(type)
  else 
   pbMessage(_INTL("While you don't have a pickaxe, you chip off a piece of the #{GameData::Item.get(type).name}."))
    amt = rand(2)+1
+   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
   if !$bag.add(type,amt)
   pbMessage(_INTL("You don't have space!"))
   else 

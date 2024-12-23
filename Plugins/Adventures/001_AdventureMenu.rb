@@ -64,7 +64,9 @@ class Adventure_Scene
 	def getbg(map_id)
        time = pbGetTimeNow
 	   if $map_factory.getMap(map_id).metadata.battle_background != "" || $map_factory.getMap(map_id).metadata.battle_background.nil?
-	   base = $map_factory.getMap(map_id).metadata.battle_background.downcase
+	   base = $map_factory.getMap(map_id).metadata.battle_background
+	   return "indoor1_bg" if base.nil?
+	   base = base.downcase
 	   if $map_factory.getMap(map_id).metadata.battle_background!="LavaCave"
 	   if PBDayNight.isMorning?(time)
 	   stabbies = "_morn"
@@ -732,15 +734,23 @@ class Adventure_Scene
 	end
 
 	def pbMoveToAdventure(pos)
+	        puts @party[pos].inworld
+	        puts @party[pos].name
+	        puts @party[pos].associatedevent
+	      if @party[pos].inworld==false 
 			if !@adventure.party_full?
+			   puts pos
 				@party[pos].play_cry
 			    @party[pos].location = $game_map.map_id
 				@party[pos].onAdventure = true
 				@adventure.add_pokemon(@party[pos].dup)
-				$player.remove_pokemon_at_index2(pos)
+				$player.remove_pokemon_at_index2(pos,true)
 			else
 				pbMessage(_INTL("The adventuring Party is already full!"))
 			end
+          else
+				pbMessage(_INTL("#{@party[pos].name} is in the world currently!"))
+		  end
 	end
 
 	def pbMoveToParty(pos) 

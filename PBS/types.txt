@@ -1,4 +1,3 @@
-﻿# See the documentation on the wiki to learn how to edit this file.
 #-------------------------------
 [NORMAL]
 Name = Normal
@@ -54,7 +53,7 @@ Immunities = NORMAL,FIGHTING
 [STEEL]
 Name = Steel
 IconPosition = 8
-Weaknesses = FIGHTING,GROUND,FIRE,SHADOW
+Weaknesses = FIGHTING,GROUND,FIRE,SHADOW,ELECTRIC
 Resistances = NORMAL,FLYING,ROCK,BUG,STEEL,GRASS,PSYCHIC,ICE,DRAGON,FAIRY
 Immunities = POISON
 #-------------------------------
@@ -124,31 +123,28 @@ Immunities = PSYCHIC
 Name = Fairy
 IconPosition = 18
 IsSpecialType = true
-Weaknesses = POISON,STEEL,SHADOW
+Weaknesses = POISON,STEEL,SHADOW,ICE
 Resistances = FIGHTING,BUG,DARK
 Immunities = DRAGON
 #-------------------------------
 [SHADOW]
-Name=Shadow
+Name = Shadow
 IconPosition = 19
-IsSpecialType=true
-Resistances=SHADOW
+IsSpecialType = true
+Resistances = SHADOW
 #-------------------------------
 [CRYSTAL]
-Name=Crystal
+Name = Crystal
 IconPosition = 20
-IsSpecialType=true
-Weaknesses = STEEL,DARK,SHADOW
+IsSpecialType = true
+Weaknesses = STEEL,DARK,SHADOW,ROCK
 Resistances = ROCK,GROUND,FAIRY,FLYING,WIND
 Immunities = FIRE
 #-------------------------------
 [WIND]
-Name=Wind
+Name = Wind
 IconPosition = 21
-IsSpecialType=true
-Weaknesses = ELECTRIC,DARK,SHADOW,FIRE,ROCK
+IsSpecialType = true
+Weaknesses = ELECTRIC,SHADOW,FIRE,ROCK
 Resistances = NORMAL,FIGHTING,WATER,DRAGON
 Immunities = FLYING
-
-
-

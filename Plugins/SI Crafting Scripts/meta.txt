@@ -1,1 +1,2 @@
-Name         = SI Crafting Scripts
+Name = SI Crafting Scripts
+Version = 0

@@ -45,9 +45,12 @@ end
 #===============================================================================
 MenuHandlers.add(:options_menu, :autosave, {
   "name"        => _INTL("Autosave"),
-  "order"       => 30,
+  "order"       => 20,
   "parent"      => :main,
   "type"        => EnumOption,
+  "condition"   => proc { next $player
+    next $PokemonGlobal
+    next $PokemonGlobal.hardcore==false},
   "parameters"  => [_INTL("On"), _INTL("Off")],
   "description" => _INTL("Choose whether your game saved automatically or not."),
   "get_proc"    => proc { next $PokemonSystem.autosave },
@@ -66,9 +69,12 @@ end
 
 def pbAutosave(scene = nil)
   scene = $scene if !scene
+  return if $PokemonGlobal.cur_challenge!=false
   return if $PokemonSystem.autosave!=0
+  return if $PokemonGlobal.hardcore==true
+  return if SaveData::TESTING_MODE==false
   if !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
-    scene.spriteset.addUserSprite(Autosave.new)
+    $scene.spriteset.addUserSprite(SideDisplayUI.new)
 	Game.auto_save
   end
 end
@@ -77,9 +83,12 @@ end
 EventHandlers.add(:on_enter_map, :autosave,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     next if $game_map.map_id==3
+    next if $PokemonGlobal.hardcore==true
+	next true
     map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
     old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
     if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
+      pbAutosave
       $game_temp.changeUnConnectedMap = true 
     end
   }
@@ -103,34 +112,73 @@ EventHandlers.add(:on_wild_battle_end, :autosave_catchpkm,
     pbAutosave if pbCanAutosave? && decision==4
   }
 )
-class Autosave
-  def initialize
+
+def sideDisplay2(text)
+return false if !$scene
+$scene.spriteset.addUserSprite(SideDisplayUI.new(text)) 
+return true
+end
+
+class SideDisplayUI2
+  attr_accessor :text
+  def initialize(text="Now Saving...",x=10,y=1,z=99999)
+    $scene.spriteset.usersprites.each do |sprite| 
+	  next if !sprite.is_a?(SideDisplayUI) 
+	  next if sprite == self
+	  next if sprite.disposed?
+	  if sprite.text.is_a? Array
+	    potato = sprite.text
+	   potato << text
+	  text = potato
+	  else
+	  text = [sprite.text,text]
+	  end
+	  sprite.dispose 
+	end
+	 text = [text] if text.is_a? String
+	@text = text
     @bitmapsprite = BitmapSprite.new(Graphics.width,Graphics.height,nil)
     @bitmap = @bitmapsprite.bitmap
     pbSetSmallFont(@bitmap)
-    text=[["Now Saving...",392,1,0,Color.new(248,248,248),Color.new(97,97,97)]]
-    pbDrawTextPositions(@bitmap,text)
+	text2 = []
+	 loops = 0
+	text.each do |i|
+	    y1 = y+(loops*21)
+	  text2 << [i,x,y1,z,Color.new(248,248,248),Color.new(97,97,97)]
+	  loops+=1
+	end
+    pbDrawTextPositions(@bitmap,text2)
     @bitmapsprite.visible = true
     @frame = 0
     @looptime = 0
     @i = 1
+    @value = false
     @currentmap = $game_map.map_id
   end
+  
   def pbStart
     @bitmapsprite.visible = true
     @i = -1
   end
+  
   def isStart?
     return @start
   end
   def disposed?
     @bitmapsprite.disposed?
   end
+  
   def update
     if @currentmap != $game_map.map_id
       @bitmapsprite.dispose
       return
     end
+	if @text.length>4 && @looptime<3 && @value==false
+	    @frame = 16
+	    @looptime = 2
+		@value = true
+	end
+	
     if @frame > Graphics.frame_rate / 2
       if @looptime == 3
         @bitmapsprite.dispose
@@ -144,6 +192,122 @@ class Autosave
       @frame += 1
       @bitmapsprite.opacity += 10 * @i
     end
+  end
+  def dispose
+    @bitmapsprite.dispose if @bitmapsprite
+  end
+end
+
+
+
+
+
+
+
+def sideDisplay(text,onlyme=false)
+return false if !$scene
+$sidedisplay.set_text(text)
+return true
+end
+
+class SideDisplayUI
+  attr_accessor :text
+  def initialize(viewport,x=10,y=1,z=999999)
+    @bitmapsprite = BitmapSprite.new(Graphics.width,Graphics.height,viewport)
+    @bitmap = @bitmapsprite.bitmap
+    pbSetSmallFont(@bitmap)
+	 @text = []
+    @bitmapsprite.visible = true
+    @frame = 0
+    @looptime = 0
+    @i = 1
+	@x = x
+	@y = y 
+	@z = z
+    @value = false
+    @currentmap = $game_map.map_id
+  end
+  
+  def set_text(text,onlyme=false)
+    @currentmap = $game_map.map_id
+	 clear_text if onlyme==true
+	  
+	 @text << text
+        @frame = 0
+        @looptime = 0
+        @i = 1
+	 refresh
+	 show
+  end
+  
+  def disposed?
+    @bitmapsprite.disposed?
+  end
+  
+  def refresh
+   return if cleared?
+   @bitmap.clear
+	text2 = []
+	loops = 0
+	puts @text
+	@text.each do |i|
+	    y1 = @y+(loops*21)
+	  text2 << [i,@x,y1,@z,Color.new(248,248,248),Color.new(97,97,97)]
+	  loops+=1
+	end
+    pbDrawTextPositions(@bitmap,text2)
+  
+  end
+  
+  def update
+    if @currentmap != $game_map.map_id
+	   clear_text
+      hide
+      refresh
+        @frame = 0
+        @looptime = 0
+        @i = 1
+	  return
+    end
+	return if @bitmapsprite.visible == false
+	return if cleared?
+	if @text.length>4 && @looptime<3 && @value==false
+	    @frame = 16
+	    @looptime = 2
+		@value = true
+	end
+	
+    if @frame > Graphics.frame_rate / 2
+      if @looptime == 3
+	    clear_text
+        hide
+        refresh
+        @frame = 0
+        @looptime = 0
+        @i = 1
+      else
+        @looptime += 1
+        @frame = 0
+        @i *= -1
+      end
+    else
+      @frame += 1
+      @bitmapsprite.opacity += 10 * @i
+    end
+  end
+  
+  def clear_text
+   @bitmapsprite.visible = false
+   @text = []
+  end
+  def cleared?
+    return @text.empty?
+  end
+  def hide
+    @bitmapsprite.visible = false
+  end
+  def show
+    @bitmapsprite.visible = true
   end
   def dispose
     @bitmapsprite.dispose if @bitmapsprite

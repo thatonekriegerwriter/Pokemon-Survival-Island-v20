@@ -161,7 +161,7 @@ def pbPlacePokemonDungeon(index)
 
   if $game_temp.preventspawns == false
 
-	if FollowingPkmn.get_pokemon == $ball_order[$PokemonGlobal.ball_hud_index]
+	if FollowingPkmn.get_pokemon == $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 	  FollowingPkmn.toggle_off
 	end
   start_coord=[$PokemonGlobal.dungeon_x,$PokemonGlobal.dungeon_y]
@@ -412,40 +412,7 @@ class Game_Map
   end
 end
 
-#===============================================================================
-# adding a new variable remaining_steps and replacing the method increase_steps
-# in class Game_PokeEvent to count the remaining steps of the PokeEvent of the 
-# overworld encounter before vanishing from map and to make them disappear after
-# remaining_steps became <= 0 
-#===============================================================================
 
-
-          #########################################################
-          #                                                       #
-          #             3. PART: ADDITIONAL FEATURES              #
-          #                                                       #
-          #########################################################
-
-#===============================================================================
-# introduces EventHandlers
-# :on_wild_pokemon_created_for_spawning_end (used for roamer)
-# :on_wild_pokemon_created_for_spawning (nessessary?)
-# This Event is triggered  when a new pokemon spawns. Use this Event instead of OnWildPokemonCreate
-# if you want to add a new procedure that modifies a pokemon on spawning 
-# but not on creation while going into battle with an already spawned pokemon.
-#Note that OnPokemonCreate is also triggered when a pokemon is created for spawning,
-#But OnPokemonCreateForSpawning is not triggered when a pokemon is created in other situations than for spawning
-#===============================================================================
-
-#-------------------------------------------------------------------------------
-# adding a process to the EncounterModifier TriggerEncounterEnd For roaming
-# encounters. We have to set roamed_already to true after one roamer spawned.
-#-------------------------------------------------------------------------------
-
-#===============================================================================
-# adds new parameter battlingSpawnedPokemon to the class PokemonGlobalMetadata.
-# Also overrides initialize include that parameter there.
-#===============================================================================
 class PokemonGlobalMetadata
   attr_accessor :creatingSpawningPokemon
   attr_accessor :battlingSpawnedPokemon
@@ -458,24 +425,6 @@ class PokemonGlobalMetadata
   end
 end
 
-
-          #########################################################
-          #                                                       #
-          #            4. PART: ROAMING POKEMON                   #
-          #                                                       #
-          #########################################################
-#===============================================================================
-# This part is about roaming pokemon
-#
-# By default roaming pokemon can encounter as overworld and as normal encounters
-#===============================================================================
-
-#-------------------------------------------------------------------------------
-# Overwriting pbRoamingMethodAllowed such that the encounter_type is not computed
-# by the position of the player but of the chosen tile near the player
-# Returns whether the given category of encounter contains the actual encounter
-# method that will not occur in the player's current position.
-#-------------------------------------------------------------------------------
 def pbRoamingMethodAllowed(roamer_method)
   enc_type = $game_temp.encounter_type # $game_temp.encounter_type stores the encounter type of the chosen tile
   type = GameData::EncounterType.get(enc_type).type

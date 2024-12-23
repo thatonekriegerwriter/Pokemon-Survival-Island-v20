@@ -40,7 +40,7 @@ class MTS_INTRO_ANIM
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -168,7 +168,7 @@ class MTS_INTRO_ANIM1
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -255,7 +255,7 @@ class MTS_INTRO_ANIM2
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -374,7 +374,7 @@ class MTS_INTRO_ANIM3
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -442,7 +442,8 @@ class MTS_INTRO_ANIM4
   # function to update all title screen elements (except for logo)
   def updateScene
     for key in @scene.keys
-      next if @scene[key].id?("logo")
+	  #next if @scene[key].is_a?(Window_UnformattedTextPokemon)
+      next if @scene[key].respond_to?(:id) && @scene[key].id?("logo")
       @scene[key].update
     end
   end
@@ -530,7 +531,7 @@ class MTS_INTRO_ANIM5
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -749,7 +750,7 @@ class MTS_INTRO_ANIM6
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end
@@ -875,7 +876,7 @@ class MTS_INTRO_ANIM7
       self.updateScene
       Graphics.update
       Input.update
-      @skip = true if Input.trigger?(Input::C)
+      #@skip = true if Input.trigger?(Input::C)
     end
     return true
   end

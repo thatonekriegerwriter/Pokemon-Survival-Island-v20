@@ -186,7 +186,7 @@ module CraftsList
 [:WOODENPLANKS,[:WOODENSTICKS,2]],
 [[:WOODENPLANKS,2],[:WOODENLOG,1]],
 [[:WOODENSTICKS,2],[:WOODENPLANKS,1]],
-[:CRAFTINGBENCH,[:WOODENPLANKS,2],[:WOODENLOG,1],[:WOODENPLANKS,2]],
+[:CRAFTINGBENCH,[:WOODENPLANKS,2],[:WOODENLOG,1]],
 [[:HEALPOWDER,2],[:CHERIBERRY,1]],
 [[:ENERGYPOWDER,2],[:SITRUSBERRY,1]],
 [:GLASSBOTTLE,[:GLASS,1]],
@@ -265,7 +265,40 @@ module CraftsList
      
 	  return crafting
   end
-
+  def self.machinecrafting
+    if $player.is_it_this_class?(:ENGINEER,false)
+      ncrafting = [
+        [:SPRINKLER,[:STONE,5],[:MACHINEBOX,1],false],
+        [:ELECTRICGRINDER,[:CLAY2,6],[:CHARCOAL,3],[:GRINDER,1],false],
+        [:ELECTRICFURNACE,[:COPPER2,8],[:IRON2,30],[:FURNACE,1],[:STONE,10],false],
+        [:ELECTRICPRESS,[:COPPER2,2],[:IRON2,20],[:STONE,5],false],
+        [:APRICORNMACHINE,[:COPPER2,8],[:SILVER2,2],[:APRICORNCRAFTING,2],[:STONE,20],false],
+        [:SEWINGMACHINE,[:COPPER2,4],[:IRON2,5],[:CRAFTINGBENCH,2],[:STONE,5],false],
+        [:CUTTER,[:COPPER2,4],[:IRON2,7],[:WOODENLOG,5],[:STONE,5],false],
+        [:COALGENERATOR,[:COPPER2,8],[:IRON2,30],[:FURNACE,4],[:STONE,10],false],
+        [:SOLARGENERATOR,[:COPPER2,8],[:IRON2,30],[:GLASS,20],[:STONE,10],false],
+        [:WINDGENERATOR,[:COPPER2,8],[:IRON2,60],false],
+        [:HYDROGENERATOR,[:COPPER2,8],[:IRON2,30],[:CAULDRON,4],[:STONE,10],false],
+        [:POKEGENERATOR,[:COPPER2,8],[:IRON2,30],[:PKMNCRATE,2],[:STONE,10],false]
+        ]
+	else
+      ncrafting = [
+        [:SPRINKLER,[:STONE,5],[:MACHINEBOX,1],false],
+        [:ELECTRICGRINDER,[:CLAY2,6],[:CHARCOAL,3],[:GRINDER,1],[:MACHINEBOX,1],false],
+        [:ELECTRICFURNACE,[:COPPER2,8],[:IRON2,30],[:FURNACE,1],[:STONE,10],[:MACHINEBOX,1],false],
+        [:ELECTRICPRESS,[:COPPER2,2],[:IRON2,20],[:STONE,5],[:MACHINEBOX,1],false],
+        [:APRICORNMACHINE,[:COPPER2,8],[:SILVER2,2],[:APRICORNCRAFTING,2],[:STONE,20],[:MACHINEBOX,1],false],
+        [:SEWINGMACHINE,[:COPPER2,4],[:IRON2,5],[:CRAFTINGBENCH,2],[:STONE,5],[:MACHINEBOX,1],false],
+        [:CUTTER,[:COPPER2,4],[:IRON2,7],[:WOODENLOG,5],[:STONE,5],[:MACHINEBOX,1],false],
+        [:COALGENERATOR,[:COPPER2,8],[:IRON2,30],[:FURNACE,4],[:STONE,10],[:MACHINEBOX,1],false],
+        [:SOLARGENERATOR,[:COPPER2,8],[:IRON2,30],[:GLASS,20],[:STONE,10],[:MACHINEBOX,1],false],
+        [:WINDGENERATOR,[:COPPER2,8],[:IRON2,60],[:MACHINEBOX,1],false],
+        [:HYDROGENERATOR,[:COPPER2,8],[:IRON2,30],[:CAULDRON,4],[:STONE,10],[:MACHINEBOX,1],false]
+        ]
+    end
+  
+	  return ncrafting
+  end
 
   def self.ucrafting
      crafting = []
@@ -291,23 +324,12 @@ module CraftsList
         [:SNATCHER,[:IRON2,20],[:SILVER2,5],[:COPPER2,2]],
         [:MEGARING,[:MEGASTONE,1],[:SILVER2,3],false],
         [:JACKETEDCABLE,[:COPPER2,1],[:LEATHER,2],false],
-        [:MACHINEBOX,[:THUNDERSTONE,1],[:IRON2,5],[:JACKETEDCABLE,5],false],
-        [:SPRINKLER,[:STONE,5],[:MACHINEBOX,1],false],
-        [:ELECTRICGRINDER,[:CLAY2,6],[:CHARCOAL,3],[:GRINDER,1],[:MACHINEBOX,1],false],
-        [:ELECTRICFURNACE,[:COPPER2,8],[:IRON2,30],[:FURNACE,1],[:STONE,10],[:MACHINEBOX,1],false],
-        [:ELECTRICPRESS,[:COPPER2,2],[:IRON2,20],[:STONE,5],[:MACHINEBOX,1],false],
-        [:APRICORNMACHINE,[:COPPER2,8],[:SILVER2,2],[:APRICORNCRAFTING,2],[:STONE,20],[:MACHINEBOX,1],false],
-        [:SEWINGMACHINE,[:COPPER2,4],[:IRON2,5],[:CRAFTINGBENCH,2],[:STONE,5],[:MACHINEBOX,1],false],
-        [:CUTTER,[:COPPER2,4],[:IRON2,7],[:WOODENLOG,5],[:STONE,5],[:MACHINEBOX,1],false],
-        [:COALGENERATOR,[:COPPER2,8],[:IRON2,30],[:FURNACE,4],[:STONE,10],[:MACHINEBOX,1],false],
-        [:SOLARGENERATOR,[:COPPER2,8],[:IRON2,30],[:GLASS,20],[:STONE,10],[:MACHINEBOX,1],false],
-        [:WINDGENERATOR,[:COPPER2,8],[:IRON2,60],[:MACHINEBOX,1],false],
-        [:HYDROGENERATOR,[:COPPER2,8],[:IRON2,30],[:CAULDRON,4],[:STONE,10],[:MACHINEBOX,1],false],
-        [:POKEGENERATOR,[:COPPER2,8],[:IRON2,30],[:PKMNCRATE,2],[:STONE,10],[:MACHINEBOX,1],false]
+        [:MACHINEBOX,[:THUNDERSTONE,1],[:IRON2,5],[:JACKETEDCABLE,5],false]
 	  
 	  ]
 
      crafting += ncrafting
+     crafting += self.machinecrafting
 
 	  return crafting
   end
@@ -374,39 +396,39 @@ module CraftsList
   end
 
   def self.furnace
-
+      coal = GameData::Item.try_get($coal).id
 
  [
     [:NO,:NO,:NO,:NO], 
-[:CHARCOAL,[:WOODENPLANKS,1],[$coal,$value]],
-[:IRON2,[:IRONORE,1],[$coal,$value]],
-[[:IRON2,2],[:IRONDUST,1],[$coal,$value]],
-[:GOLD2,[:GOLDORE,1],[$coal,$value]],
-[[:GOLD2,2],[:GOLDDUST,1],[$coal,$value]],
-[:COPPER2,[:COPPERORE,1],[$coal,$value]],
-[[:COPPER2,2],[:COPPERDUST,1],[$coal,$value]],
-[:SILVER2,[:SILVERORE,1],[$coal,$value]],
-[[:SILVER2,2],[:SILVERDUST,1],[$coal,$value]],
-[:CLAY2,[:LIGHTCLAY,1],[$coal,$value]],
-[[:CLAY2,2],[:CLAYDUST,1],[$coal,$value]],
-[:COOKEDORAN,[:ORANBERRY,1],[$coal,$value]],
-[:BAKEDPOTATO,[:POTATO,1],[$coal,$value]],
-[:CSLOWPOKETAIL,[:SLOWPOKETAIL,1],[$coal,$value]],
-[:COOKEDMEAT,[:MEAT,1],[$coal,$value]],
-[:MEAT,[:POISONOUSMEAT,1],[$coal,$value]],
-[:MEAT,[:FROZENMEAT,1],[$coal,$value]],
-[:COOKEDMEAT,[:MEAT,1],[$coal,$value]],
-[:COOKEDBIRDMEAT,[:BIRDMEAT,1],[$coal,$value]],
-[:COOKEDROCKYMEAT,[:ROCKYMEAT,1],[$coal,$value]],
-[:COOKEDBUGMEAT,[:BUGMEAT,1],[$coal,$value]],
-[:COOKEDSTEELYMEAT,[:STEELYMEAT,1],[$coal,$value]],
-[:COOKEDSUSHI,[:SUSHI,1],[$coal,$value]],
-[:COOKEDLEAFYMEAT,[:LEAFYMEAT,1],[$coal,$value]],
-[:COOKEDDRAGONMEAT,[:DRAGONMEAT,1],[$coal,$value]],
-[:COOKEDEDIABLESCRYSTAL,[:EDIABLESCRYSTAL,1],[$coal,$value]],
-[:FRESHWATER,[:WATER,1],[$coal,(($value)/3).ceil]],
-[:GLASS,[:SOFTSAND,4],[$coal,(($value)/3).ceil]],
-[:BLACKFLUTE,[:GLASS,4],[$coal,$value]]
+[:CHARCOAL,[:WOODENPLANKS,1],[coal,$value.to_i]],
+[:IRON2,[:IRONORE,1],[coal,$value.to_i]],
+[[:IRON2,2],[:IRONDUST,1],[coal,$value.to_i]],
+[:GOLD2,[:GOLDORE,1],[coal,$value.to_i]],
+[[:GOLD2,2],[:GOLDDUST,1],[coal,$value.to_i]],
+[:COPPER2,[:COPPERORE,1],[coal,$value.to_i]],
+[[:COPPER2,2],[:COPPERDUST,1],[coal,$value.to_i]],
+[:SILVER2,[:SILVERORE,1],[coal,$value.to_i]],
+[[:SILVER2,2],[:SILVERDUST,1],[coal,$value.to_i]],
+[:CLAY2,[:LIGHTCLAY,1],[coal,$value.to_i]],
+[[:CLAY2,2],[:CLAYDUST,1],[coal,$value.to_i]],
+[:COOKEDORAN,[:ORANBERRY,1],[coal,$value.to_i]],
+[:BAKEDPOTATO,[:POTATO,1],[coal,$value.to_i]],
+[:CSLOWPOKETAIL,[:SLOWPOKETAIL,1],[coal,$value.to_i]],
+[:COOKEDMEAT,[:MEAT,1],[coal,$value.to_i]],
+[:MEAT,[:POISONOUSMEAT,1],[coal,$value.to_i]],
+[:MEAT,[:FROZENMEAT,1],[coal,$value.to_i]],
+[:COOKEDMEAT,[:MEAT,1],[coal,$value.to_i]],
+[:COOKEDBIRDMEAT,[:BIRDMEAT,1],[coal,$value.to_i]],
+[:COOKEDROCKYMEAT,[:ROCKYMEAT,1],[coal,$value.to_i]],
+[:COOKEDBUGMEAT,[:BUGMEAT,1],[coal,$value.to_i]],
+[:COOKEDSTEELYMEAT,[:STEELYMEAT,1],[coal,$value.to_i]],
+[:COOKEDSUSHI,[:SUSHI,1],[coal,$value.to_i]],
+[:COOKEDLEAFYMEAT,[:LEAFYMEAT,1],[coal,$value.to_i]],
+[:COOKEDDRAGONMEAT,[:DRAGONMEAT,1],[coal,$value.to_i]],
+[:COOKEDEDIABLESCRYSTAL,[:EDIABLESCRYSTAL,1],[coal,$value.to_i]],
+[:FRESHWATER,[:WATER,1],[coal,(($value.to_i)/3).ceil]],
+[:GLASS,[:SOFTSAND,4],[coal,(($value.to_i)/3).ceil]],
+[:BLACKFLUTE,[:GLASS,4],[coal,$value.to_i]]
 ]
   end
 

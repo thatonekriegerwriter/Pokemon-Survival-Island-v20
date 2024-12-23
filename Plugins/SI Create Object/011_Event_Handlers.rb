@@ -1,29 +1,38 @@
 
 EventHandlers.add(:on_leave_tile, :update_sprite_position,
   proc {|event|
-  
     next if !$scene.is_a?(Scene_Map)
     next if event != $game_player
-  
     if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
     $player.held_item_object=nil
     $player.held_item=nil
 	end
+	
+	
     next if $player.held_item_object.nil?
     next if $player.held_item.nil?
+	
+	
 	type = $player.held_item
 	key_id = $player.held_item_object
+	
+	
     pbMoveRoute2($game_map.events[key_id], [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,
 	PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
+	
+	
 	if type != :PORTABLECAMP
-$game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
-elsif type == :PORTABLECAMP
-$game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
-end
+      $game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
+   elsif type == :PORTABLECAMP
+      $game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
+   end
   }
 )
+
+
 EventHandlers.add(:on_leave_map, :update_sprite_position2,
   proc {
+    next
     if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
     $player.held_item_object=nil
     $player.held_item=nil
@@ -43,6 +52,7 @@ EventHandlers.add(:on_leave_map, :update_sprite_position2,
 )
 EventHandlers.add(:on_leave_map, :update_sprite_position2,
   proc {
+    next
 	$game_map.events.each do |id,event|
 	if event.name == "PlayerPkmn"
 	deletefromSISData(event.id)
@@ -97,6 +107,7 @@ EventHandlers.add(:on_leave_tile, :spawn_queued_events,
 EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
     next if $scene.to_s.include?("#<Scene_Intro")
+	next
 
 
     if $ExtraEvents.objects.nil?
@@ -130,6 +141,7 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
 EventHandlers.add(:on_enter_map, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
     next if $scene.to_s.include?("#<Scene_Intro")
+	next
 
 
     if $ExtraEvents.objects.nil?

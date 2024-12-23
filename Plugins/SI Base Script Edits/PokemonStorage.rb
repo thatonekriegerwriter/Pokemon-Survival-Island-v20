@@ -2,6 +2,7 @@ class PokemonGlobalMetadata
   attr_accessor :iceboxStorageSystems
   attr_accessor :itemStorageSystems
   attr_accessor :pokemonStorageSystems
+  attr_accessor :storagesystemssteps
   attr_accessor :bossesArrayTimer
   attr_accessor :bossesRefightAmt
 
@@ -11,13 +12,16 @@ class PokemonGlobalMetadata
     @itemStorageSystems              = {}
     @pokemonStorageSystems           = {}
     @iceboxStorageSystems            = {}
+    @storagesystemssteps             = 0
     @bossesArrayTimer                    = {}
     @bossesRefightAmt                    = {}
    end
 
 
-
-
+  def storagesystemssteps
+    @storagesystemssteps = 0 if @storagesystemssteps.nil?
+	return @storagesystemssteps
+  end
 
 
 end
@@ -51,22 +55,38 @@ end
 class PCItemStorage
   attr_reader :items
   attr_accessor :name
+  attr_accessor :active
 
   MAX_SIZE     = 20   # Number of different slots in storage
   MAX_PER_SLOT = 99   # Max. number of items per slot
 
-  def initialize
-    @items = []
-	@name = ""
+  def initialize(maxsize=MAX_SIZE,maxperslot=MAX_PER_SLOT)
     $PokemonGlobal.itemStorageSystems = {} if $PokemonGlobal.itemStorageSystems.nil?
+    @items = []
+	@active = false
+	@name = ""
     @name = "Item#{$PokemonGlobal.itemStorageSystems.keys.length}"
-	$PokemonGlobal.itemStorageSystems[@name] = [self,Spoilage.new,false]
+	$PokemonGlobal.itemStorageSystems[@name] = self
   end
+  
+  
+  
   def changeName(name)
     $PokemonGlobal.itemStorageSystems[name] = $PokemonGlobal.itemStorageSystems.delete(@name)
   end
+  
+  
   def [](i)
     return @items[i]
+  end
+
+  def active?
+    return @active
+  end
+
+  def active
+    @active = false if @active.nil?
+    return @active
   end
 
   def length
@@ -92,27 +112,36 @@ class PCItemStorage
     return (index < 0 || index >= @items.length) ? 0 : @items[index][1]
   end
 
-  def quantity(item)
+
+  def quantity(item, durability = false, water = false)
     item = GameData::Item.get(item).id
     return ItemStorageHelper.quantity(@items, item)
   end
 
-  def can_add?(item, qty = 1)
-    item = GameData::Item.get(item).id
+  def can_add?(item, qty = 1, durability = false, water = false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.can_add?(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def add(item, qty = 1)
-    item = GameData::Item.get(item).id
-	result = ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
-    return result
+  def add(item, qty = 1, durability=false, water=false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
+    return ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def remove(item, qty = 1)
-    item = GameData::Item.get(item).id
-	result = ItemStorageHelper.remove(@items, item, qty)
-    return result
+  def remove(item, qty = 1, durability=false, water=false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
+    return ItemStorageHelper.remove(@items, item, qty)
   end
+
+
+  def update
+   @items.each do |i|
+   end
+  end
+
 
 end
 
@@ -120,23 +149,37 @@ end
 class IceBoxStorage
   attr_reader :items
   attr_accessor :name
+  attr_accessor :active
 
   MAX_SIZE     = 20   # Number of different slots in storage
   MAX_PER_SLOT = 99   # Max. number of items per slot
 
   def initialize
-    @items = []
-	@name = ""
     $PokemonGlobal.iceboxStorageSystems = {} if $PokemonGlobal.iceboxStorageSystems.nil?
-    @name = "Item#{$PokemonGlobal.iceboxStorageSystems.keys.length}"
-	$PokemonGlobal.iceboxStorageSystems[@name] = [self,Spoilage.new,false]
+    @items = []
+	@active = false
+	@name = ""
+    @name = "Box#{$PokemonGlobal.iceboxStorageSystems.keys.length}"
+	$PokemonGlobal.iceboxStorageSystems[@name] = self
   end
+  
   def changeName(name)
     $PokemonGlobal.iceboxStorageSystems[name] = $PokemonGlobal.iceboxStorageSystems.delete(@name)
   end
+  
   def [](i)
     return @items[i]
   end
+
+  def active?
+    return @active
+  end
+
+  def active
+    @active = false if @active.nil?
+    return @active
+  end
+
 
   def length
     return @items.length
@@ -161,37 +204,36 @@ class IceBoxStorage
     return (index < 0 || index >= @items.length) ? 0 : @items[index][1]
   end
 
-  def quantity(item)
+
+  def quantity(item, durability = false, water = false)
     item = GameData::Item.get(item).id
     return ItemStorageHelper.quantity(@items, item)
   end
 
-  def can_add?(item, qty = 1)
-    item_data = GameData::Item.get(item)
-	 if !item_data.is_foodwater?
-	   return false
-	 end
-    item = item_data.id
+  def can_add?(item, qty = 1, durability = false, water = false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.can_add?(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def add(item, qty = 1)
-    item = GameData::Item.get(item).id
-	result = ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
-	if result==true
-	$PokemonGlobal.iceboxStorageSystems[@name][1].add(item, qty)
-	end
-    return result
+  def add(item, qty = 1, durability=false, water=false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
+    return ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def remove(item, qty = 1)
-    item = GameData::Item.get(item).id
-	result = ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
-	if result==true
-	$PokemonGlobal.iceboxStorageSystems[@name][1].remove(item, qty)
-	end
-    return result
+  def remove(item, qty = 1, durability=false, water=false)
+    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
+	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
+    return ItemStorageHelper.remove(@items, item, qty)
   end
+  
+  def update
+   @items.each do |i|
+   end
+  end
+
+
 end
 
 
@@ -200,6 +242,7 @@ class PokemonStorage
   attr_accessor :currentBox
   attr_writer   :unlockedWallpapers
   attr_accessor :name
+  attr_accessor :active
 
   BASICWALLPAPERQTY = 16
 
@@ -210,6 +253,7 @@ class PokemonStorage
       @boxes[i].background = i % BASICWALLPAPERQTY
     end
     @currentBox = 0
+    @active = 0
     @boxmode = -1
     @unlockedWallpapers = []
     allWallpapers.length.times do |i|
@@ -219,6 +263,19 @@ class PokemonStorage
     $PokemonGlobal.pokemonStorageSystems = {} if $PokemonGlobal.pokemonStorageSystems.nil?
     @name = "Box#{$PokemonGlobal.pokemonStorageSystems.keys.length}"
 	$PokemonGlobal.pokemonStorageSystems[@name] = self
+  end
+
+  def active?
+    return @active
+  end
+  
+  def box_pokemon
+   return @boxes[0].pokemon
+  end 
+  
+  def active
+    @active = false if @active.nil?
+    return @active
   end
 
   def allWallpapers
@@ -406,8 +463,49 @@ class PokemonStorage
   def clear
     self.maxBoxes.times { |i| @boxes[i].clear }
   end
+ 
+  def update
+   pokemon = box_pokemon
+   pokemon.each do |i|
+   end
+  end
+
 end
 
+EventHandlers.add(:on_step_taken, :update_pokemon_storages,
+  proc { |event|
+    next if !$scene.is_a?(Scene_Map)
+    next if event != $game_player
+	$PokemonGlobal.storagesystemssteps+=1
+	 next $PokemonGlobal.storagesystemssteps<100
+    $PokemonGlobal.pokemonStorageSystems.each_key do |key|
+	  $PokemonGlobal.pokemonStorageSystems[key] = $PokemonGlobal.pokemonStorageSystems[key][0] if $PokemonGlobal.pokemonStorageSystems[key].is_a? Array
+	  $PokemonGlobal.pokemonStorageSystems[key].update
+	end
+  }
+)
+EventHandlers.add(:on_step_taken, :update_item_storages,
+  proc { |event|
+    next if !$scene.is_a?(Scene_Map)
+    next if event != $game_player
+	 next $PokemonGlobal.storagesystemssteps<100
+    $PokemonGlobal.itemStorageSystems.each_key do |key|
+	  $PokemonGlobal.itemStorageSystems[key] = $PokemonGlobal.itemStorageSystems[key][0] if $PokemonGlobal.itemStorageSystems[key].is_a? Array
+	  $PokemonGlobal.itemStorageSystems[key].update
+	end
+  }
+)
+EventHandlers.add(:on_step_taken, :update_icebox_storages,
+  proc { |event|
+    next if !$scene.is_a?(Scene_Map)
+    next if event != $game_player
+	next $PokemonGlobal.storagesystemssteps<100
+    $PokemonGlobal.iceboxStorageSystems.each_key do |key|
+	  $PokemonGlobal.iceboxStorageSystems[key] = $PokemonGlobal.iceboxStorageSystems[key][0] if $PokemonGlobal.iceboxStorageSystems[key].is_a? Array
+	  $PokemonGlobal.iceboxStorageSystems[key].update
+	end
+  }
+)
 
 
 def pbBoxesFull?
@@ -416,9 +514,9 @@ def pbBoxesFull?
   
     if $PokemonStorage.full?
    $PokemonGlobal.pokemonStorageSystems.keys.each do |i|
-     next if $PokemonGlobal.pokemonStorageSystems[i][2]==false
-	  next if $PokemonGlobal.pokemonStorageSystems[i][0].full?
-        $PokemonStorage = $PokemonGlobal.pokemonStorageSystems[i][0]
+	  next if !$PokemonGlobal.pokemonStorageSystems[i].active?
+	  next if $PokemonGlobal.pokemonStorageSystems[i].full?
+        $PokemonStorage = $PokemonGlobal.pokemonStorageSystems[i]
       end
 	if $PokemonStorage.nil? && $player.party_full?
 	  return true

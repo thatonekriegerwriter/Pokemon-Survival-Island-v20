@@ -154,13 +154,14 @@ end
 class MenuEntryTips < MenuEntry
 	def initialize
 		@icon = "menuQuest"
-		@name = "Tips"
-       @text = "-"
+		@name = "Notebook"
+       @text = "N"
 	end
 
 	def selected(menu)
 	  pbFadeOutIn(99999) {
-      pbRevisitTipCards
+	  NoteOpen.openWindow
+      #pbRevisitTipCards
 	  }
 	end
 def selectable?
@@ -336,7 +337,11 @@ class MenuEntryDebug < MenuEntry
   end
 
   def selected(menu)
+   $mouse.hide if $mouse && !$mouse.disposed?
+	Graphics.show_cursor=true
     pbFadeOutIn(99999) { pbDebugMenu }
+	Graphics.show_cursor=false
+    $mouse.show if $mouse && !$mouse.disposed?
     return $game_temp.menu_theme_changed
   end
 
@@ -414,15 +419,13 @@ class MenuEntryQuit < MenuEntry
   end
 
   def selected(menu)
+    
     menu.pbHideMenu
-    if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
-      menu.pbEndScene
-	$scene = pbCallTitle(false)
-    while $scene != nil
-      $scene.main
-    end
-    Graphics.transition(20)
-    end
+	$game_temp.in_menu = false
+    scene = PokemonClose_Scene.new
+    screen = PokemonCloseScreen.new(scene)
+    screen.pbCloseScreen(menu)
+
   end
 
   def selectable?; return !pbInBugContest?; end

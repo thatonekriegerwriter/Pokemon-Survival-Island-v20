@@ -1,4 +1,4 @@
-Name         = Character Custom
-Version      = 1.0
-Website      = https://reliccastle.com/threads/3930
-Credits      = thatonekriegerwriter
+Name = Character Custom
+Version = 1
+Credits = thatonekriegerwriter
+Link = https://reliccastle.com/threads/3930

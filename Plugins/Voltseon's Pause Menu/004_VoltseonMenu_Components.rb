@@ -285,7 +285,12 @@ class SurvivalHud < Component
     @sleepColor=CurrentColors($player.playersleep, $player.playermaxsleep)
     refreshbars
     x = Graphics.width/2 - 195
-    text5 = "#{$player.playerclass} Lv#{$player.playerclasslevel.to_i}" 
+	if $player.playerclass.is_a?(PlayerClass)
+	theclass = $player.playerclass.name
+	else
+	theclass = $player.playerclass
+	end
+    text5 = "#{theclass} Lv#{$player.playerclasslevel.to_i}" 
     text4 = $player.name
     text = _INTL("FOD")
     text2 =_INTL("H20")

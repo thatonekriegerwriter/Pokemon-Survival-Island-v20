@@ -1,2 +1,3 @@
-Name         = Unreal Time
-Credits      = FL
+Name = Unreal Time
+Version = 0
+Credits = FL

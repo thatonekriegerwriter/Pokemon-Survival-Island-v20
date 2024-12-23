@@ -81,6 +81,7 @@ class VoltseonsPauseMenu_Scene
   end
 
   def pbStartScene
+   $mouse.hide if $mouse && !$mouse.disposed?
     @viewport.z = 99999
     @components = []
     @componentNames = []
@@ -102,6 +103,7 @@ class VoltseonsPauseMenu_Scene
   end
 
   def pbHideMenu
+    $mouse.show if $mouse && !$mouse.disposed?
     duration = Graphics.frame_rate/6
     duration.times do
       @sprites.each do |key,sprite|
@@ -134,6 +136,9 @@ class VoltseonsPauseMenu_Scene
   end
 
   def pbShowMenu
+    if @hidden
+     $mouse.show if $mouse && !$mouse.disposed?
+	end 
     xvals = {}
     yvals = {}
     if !@hidden
@@ -248,11 +253,14 @@ class VoltseonsPauseMenu_Scene
     end
     @sprites["location"].bitmap = Bitmap.new(filename)
     mapname = $game_map.name
+	if mapname.include?("(Folder)")
+    mapname = "Dreamyard"
+	end
     baseColor = LOCATION_TEXTCOLOR[$PokemonSystem.current_menu_theme].is_a?(Color) ? LOCATION_TEXTCOLOR[$PokemonSystem.current_menu_theme] : Color.new(248,248,248)
     shadowColor = LOCATION_TEXTOUTLINE[$PokemonSystem.current_menu_theme].is_a?(Color) ? LOCATION_TEXTOUTLINE[$PokemonSystem.current_menu_theme] : Color.new(48,48,48)
     xOffset = @sprites["location"].bitmap.width - 64
     pbSetSystemFont(@sprites["location"].bitmap)
-    pbDrawTextPositions(@sprites["location"].bitmap,[["#{$game_map.name}",xOffset,12,1,baseColor,shadowColor,true]])
+    pbDrawTextPositions(@sprites["location"].bitmap,[["#{mapname}",xOffset,12,1,baseColor,shadowColor,true]])
     @sprites["location"].x = -@sprites["location"].bitmap.width + (@sprites["location"].bitmap.text_size($game_map.name).width + 64 + 32)
     @components.each do |component|
       component.refresh
@@ -272,6 +280,7 @@ class VoltseonsPauseMenu_Scene
       component.dispose
     end
     pbDisposeSpriteHash(@sprites)
+    $mouse.show if $mouse && !$mouse.disposed?
     @viewport.dispose
   end
 end

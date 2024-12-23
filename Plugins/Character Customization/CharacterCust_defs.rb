@@ -2,7 +2,7 @@
 def pbTrainerNotDefined
 if !defined?($player)
 if $DEBUG
-Kernel.pbMessage("The player is not a Trainer at this point. Implement the script into your game after you call the script pbTrainerName in your intro event.")
+pbMessage("The player is not a Trainer at this point. Implement the script into your game after you call the script pbTrainerName in your intro event.")
 end
 return true
 else
@@ -33,23 +33,8 @@ def pbChooseBaseGraphic
 ChooseBase.new
 end
  
-# Method for changing a certain item. Used by game designer
-# item: String representing item player will put on.
-# variant (Use when accessory has variants): The variant of the item to be put on.
-def pbDressAccessory(item,variant=nil)
-dressAccessory(item,variant)
-end
  
-# Gives the player randomized clothes (e.g good thing for randomizer challenges)
-def pbRandomizeOutfit
-return false if pbTrainerNotDefined
-for i in 0...5 #0 to Number of bodyparts (change if adding/deleting bodyparts)
-randomizeOutfitHelper(i)
-end
-saveAllCustomizedBitmapsToFolder
-updateTrainerOutfit
-$game_temp.savedoutfit = false
-end
+
  
 
 
@@ -75,7 +60,9 @@ end
 
 
 # Method to add an additional bitmap to another bitmap.
-def addAdditionalBitmap2(filepath,formerBitmap)
+def addAdditionalBitmap(filepath,formerBitmap)
+puts filepath
+puts File.exists?(filepath)
 if File.exists?(filepath)
 formerBitmap.blt(0,0,Bitmap.new(filepath),Rect.new(0,0,Graphics.width,Graphics.height))
 end
@@ -83,33 +70,39 @@ return formerBitmap
 end
  
 #Draws a specific bitmap for the player sprite.
-def drawCharacterCustomizedBitmap2(folder,folder2,bmp,trainerClass=$player)
+def drawCharacterCustomizedBitmap(folder,folder2,bmp,player=$player)
 return nil if !folder.is_a?(String)
-return bmp if !trainerClass
+return bmp if !player
 basefilepath = "Graphics/Plugins/Character Customization/"+folder2+"/base graphics/"+folder+"/"
-if trainerClass.base!="None"
-bmp = addAdditionalBitmap2(basefilepath + trainerClass.base[1],bmp)
+if !player.base.nil?
+bmp = addAdditionalBitmap(basefilepath + player.base.image,bmp)
 end
 oldfilepath = "Graphics/Plugins/Character Customization/"+folder2+"/"+folder+"/"
 # Adding Bottom Bitmap
-if trainerClass.bottom!="None"
-bmp = addAdditionalBitmap2(oldfilepath + trainerClass.bottom[1] + "/"+trainerClass.bottom[2] + "/"+trainerClass.bottom[3] ,bmp)
+if !player.bottom.nil?
+filepath = "Graphics/Plugins/Character Customization/" + player.bottom.pack + "/" + folder + "/"
+bmp = addAdditionalBitmap(filepath + player.bottom.folder + "/"+player.bottom.style + "/"+player.bottom.image ,bmp)
 end
 # Adding Top Bitmap
-if trainerClass.top!="None"
-bmp = addAdditionalBitmap2(oldfilepath + trainerClass.top[1] + "/"+trainerClass.top[2] + "/"+trainerClass.top[3] ,bmp)
-end
-# Adding Accessory Bitmap
-if trainerClass.accessory!="None"
-bmp = addAdditionalBitmap2(oldfilepath + trainerClass.accessory[1] + "/" +trainerClass.accessory[2] + trainerClass.accessory[3] ,bmp)
+if !player.top.nil?
+filepath = "Graphics/Plugins/Character Customization/" + player.top.pack + "/" + folder + "/"
+bmp = addAdditionalBitmap(filepath + player.top.folder + "/"+player.top.style + "/"+player.top.image ,bmp)
 end
 # Adding Hair Bitmap
-if trainerClass.hair!="None"
-addAdditionalBitmap2(oldfilepath + trainerClass.hair[1] + "/" + trainerClass.hair[2] + "/" + trainerClass.hair[3] ,bmp)
+if !player.hair.nil?
+filepath = "Graphics/Plugins/Character Customization/" + player.hair.pack + "/" + folder + "/"
+addAdditionalBitmap(filepath + player.hair.folder + "/" + player.hair.style + "/" + player.hair.image ,bmp)
 end
 # Adding Headgear Bitmap
-if trainerClass.headgear!="None"
-addAdditionalBitmap2(oldfilepath + trainerClass.headgear[1] + "/" + trainerClass.headgear[2] + "/" + trainerClass.headgear[3] ,bmp)
+if !player.headgear.nil?
+filepath = "Graphics/Plugins/Character Customization/" + player.headgear.pack + "/" + folder + "/"
+addAdditionalBitmap(filepath + player.headgear.folder + "/" + player.headgear.style + "/" + player.headgear.image ,bmp)
+end
+# Adding Accessory Bitmap
+if !player.accessory.nil?
+filepath = "Graphics/Plugins/Character Customization/" + player.accessory.pack + "/" + folder + "/"
+
+bmp = addAdditionalBitmap(filepath + player.accessory.folder + "/" +player.accessory.style + "/" + player.accessory.image ,bmp)
 end
 
 return bmp
@@ -138,13 +131,14 @@ def pbBuildCharset
 end
 
 def buildwalkscreen
-  bitmap = "Graphics/Plugins/Character Customization/" + $player.base[0] + "/base graphics/overworld walk/" + $player.base[1]
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
+   filename = "#{getFilenames[0]}_curr.png"
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld walk",$player.base[0],bmp)
-   item = bmp.save_to_png("Graphics/Characters/#{getFilenames[0]}"+"_curr.png")
-   refreshPlayerSprite("Graphics/Characters/","#{getFilenames[0]}_curr.png")
-   return getFilenames[0]+"_curr.png"
+   bmp = drawCharacterCustomizedBitmap("overworld walk",$player.base.pack,bmp)
+   item = bmp.save_to_png("Graphics/Characters/#{filename}")
+   refreshPlayerSprite("Graphics/Characters/",filename)
+   return filename
 end
 end
 
@@ -171,10 +165,10 @@ end
  
 
 def buildwalk
-  bitmap = "Graphics/Plugins/Character Customization/" + $player.base[0] + "/base graphics/overworld walk/" + $player.base[1]
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld walk",$player.base[0],bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld walk",$player.base.pack,bmp)
    item = bmp.save_to_png("Graphics/Characters/#{getFilenames[0]}"+".png")
    refreshPlayerSprite("Graphics/Characters/","#{getFilenames[0]}.png")
    return getFilenames[0]
@@ -182,10 +176,10 @@ end
 end
 
 def buildrun
-  bitmap = "Graphics/Characters/base graphics/overworld run/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld run",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld run",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[1]+".png")
    refreshPlayerSprite("Graphics/Characters/#{getFilenames[1]}.png")
    return getFilenames[1]
@@ -193,10 +187,10 @@ end
 end
 
 def buildcycle
-  bitmap = "Graphics/Characters/base graphics/overworld bike/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld bike",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld bike",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[2]+".png")
    RPG::Cache.forget("Graphics/Characters/#{getFilenames[2]}.png")
    return getFilenames[2]
@@ -204,10 +198,10 @@ end
 end
 
 def buildsurf
-  bitmap = "Graphics/Characters/base graphics/overworld surf/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld surf",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld surf",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[3]+".png")
    RPG::Cache.forget("Graphics/Characters/#{getFilenames[3]}.png")
    return getFilenames[3]
@@ -215,10 +209,10 @@ end
 end
 
 def builddive
-  bitmap = "Graphics/Characters/base graphics/overworld dive/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld dive",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld dive",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[4]+".png")
    RPG::Cache.forget("Graphics/Characters/#{getFilenames[4]}.png")
    return getFilenames[4]
@@ -226,10 +220,10 @@ end
 end
 
 def buildfish
-  bitmap = "Graphics/Characters/base graphics/overworld fish/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld fish",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld fish",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[5]+".png")
    RPG::Cache.forget("Graphics/Characters/#{getFilenames[5]}.png")
    return getFilenames[5]
@@ -237,10 +231,10 @@ end
 end
 
 def buildsurffish
-  bitmap = "Graphics/Characters/base graphics/overworld fishsurf/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("overworld fishsurf",bmp)
+   bmp = drawCharacterCustomizedBitmap("overworld fishsurf",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[6]+".png")
    RPG::Cache.forget("Graphics/Characters/#{getFilenames[6]}.png")
    return getFilenames[6]
@@ -248,10 +242,10 @@ end
 end
 
 def buildtrainerback
-  bitmap = "Graphics/Characters/base graphics/trainer back/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("trainer back",bmp)
+   bmp = drawCharacterCustomizedBitmap("trainer back",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[7]+".png")
    RPG::Cache.forget("Graphics/Trainers/#{getFilenames[7]}")
    return getFilenames[7]
@@ -259,22 +253,21 @@ def buildtrainerback
 end
 
 def buildtrainerfront
-  bitmap = "Graphics/Characters/base graphics/trainer front/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("trainer front",bmp)
+   bmp = drawCharacterCustomizedBitmap("trainer front",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[9]+".png")
    RPG::Cache.forget("Graphics/Trainers/#{getFilenames[8]}")
    return getFilenames[8]
   end
 end
   
-  
 def buildtrainermap
-  bitmap = "Graphics/Characters/base graphics/trainer map/" + $player.base.to_s + ($player.gender+65).chr
+  bitmap = "Graphics/Plugins/Character Customization/" + $player.base.pack + "/base graphics/overworld walk/" + $player.base.image
   if pbResolveBitmap(bitmap)
    bmp=Bitmap.new(bitmap)
-   bmp = drawCharacterCustomizedBitmap2("trainer map",bmp)
+   bmp = drawCharacterCustomizedBitmap("trainer map",$player.base.pack,bmp)
    item = bmp.save_to_png(getFilenames[9]+".png")
    RPG::Cache.forget("Graphics/Pictures/#{getFilenames[9]}")
    return getFilenames[9]

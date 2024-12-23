@@ -1,4 +1,3 @@
-﻿# See the documentation on the wiki to learn how to edit this file.
 #-------------------------------
 [VENUSAUR,1]
 FormName = Mega Venusaur
@@ -232,8 +231,8 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = Alolan Vulpii have very little control over their movements, they slide along the ground like it is ice.
 Generation = 7
-WildItemUncommon = SNOWBALL
 WildItemCommon = LIGHTCLAY
+WildItemUncommon = SNOWBALL
 WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE,VULPIX,Level,14
 #-------------------------------
@@ -248,8 +247,8 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
-WildItemUncommon = SNOWBALL
 WildItemCommon = LIGHTCLAY
+WildItemUncommon = SNOWBALL
 WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE,VULRECUR,HasMove,COLDFRONT
 #-------------------------------
@@ -264,8 +263,8 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
-WildItemUncommon = SNOWBALL
 WildItemCommon = LIGHTCLAY
+WildItemUncommon = SNOWBALL
 WildItemRare = LIGHTCLAY
 Evolutions = NINETALES,Item,ICESTONE
 #-------------------------------
@@ -2432,7 +2431,6 @@ Pokedex = This Milotic seems to have evolved from the Cave Magikarp, how is unkn
 [METANG,2]
 FormName = Iced Steel
 Types = STEEL,ICE
-BaseStats = 60,75,100,50,55,80
 Abilities = SNOWWARNING,CLEARBODY
 Moves = 0,HAMMERARM,1,HAMMERARM,1,ICESHARD,1,METALCLAW,1,MAGNETRISE,1,TAKEDOWN,23,PURSUIT,26,BULLETPUNCH,29,POWDERSNOW,32,BLIZZARD,35,SCARYFACE,38,ICEBURN,41,AGILITY,44,METEORMASH,52,IRONDEFENSE,60,HYPERBEAM
 Pokedex = This Metang has iced over due to years of being inside this cave.

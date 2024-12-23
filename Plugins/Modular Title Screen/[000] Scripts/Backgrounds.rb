@@ -24,7 +24,7 @@ class MTS_Element_BG0
 "splash16 copy","splash17 copy","splash18 copy","splash19 copy","splash20 copy",
 "splash21 copy","splash22 copy","splash23 copy"]
     @introBackgroundGameFrameCount = 0
-    @introBackgroundG_BFrameCount = 4 * 30
+    @introBackgroundG_BFrameCount = 3 * 30
 	@currentRand=0
   end
   # disposes of everything

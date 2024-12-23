@@ -4,9 +4,6 @@ class Game_Map
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     #--- nessassary properties ----------------------------------------
-    if $ExtraEvents.objects.nil?
-	$ExtraEvents.objects = {}
-	end 
     key_id = ((@events.keys.max)|| -1) + 1
     event.id = key_id
     event.x = x

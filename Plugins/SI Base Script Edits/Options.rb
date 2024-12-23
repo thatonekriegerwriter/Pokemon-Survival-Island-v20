@@ -75,6 +75,7 @@ end
 class EnumOption
   include PropertyMixin
   attr_reader :values
+  attr_reader :name
 
   def initialize(name, parent, values, get_proc, set_proc)
     @name     = name
@@ -82,7 +83,10 @@ class EnumOption
     @get_proc = get_proc
     @set_proc = set_proc
   end
-
+  
+  
+  
+  
   def next(current)
     index = current + 1
     index = @values.length - 1 if index > @values.length - 1
@@ -298,9 +302,12 @@ class Window_PokemonOption < Window_DrawableCommand
           xpos += spacing
           ivalue += 1
         end
+	   elsif @options[index].values.length == 0
       else
+	    if optionname != "Hardcore Mode"
         pbDrawShadowText(self.contents, rect.x + optionwidth, rect.y, optionwidth, rect.height,
                          optionname, self.baseColor, self.shadowColor)
+		end
       end
     when AltOption
 	
@@ -402,7 +409,13 @@ class Window_PokemonOption < Window_DrawableCommand
         self[self.index] = @options[self.index].next(self[self.index])
         dorefresh = true
         @value_changed = true
-	  elsif Input.press?(Input::USE)
+	  elsif Input.trigger?(Input::USE)
+	    currentoption = @options[self.index]
+		if currentoption.is_a? EnumOption
+		  if currentoption.values.length == 1
+		    pbHardcoreMode if currentoption.name == "Hardcore Mode"
+		  end
+		end
       end
     end
     refresh if dorefresh
@@ -612,6 +625,10 @@ class PokemonOption_Scene
 		  elsif @options[index].name == "Music Options..."
 			$PokemonSystem.currentList = :music_menu
 			pbUpdate2
+		  elsif @options[index].name == "Controls Options..."
+		    pbFadeOutIn(99999) {
+	  	      open_set_controls_ui
+	        }
 		  elsif @sprites["option"].index == @options.length
 		   break
 		  end
@@ -824,10 +841,32 @@ def pbHardcoreMode
 end
 
 
+MenuHandlers.add(:options_menu, :movement_style, {
+  "name"        => _INTL("Double Tap to Run"),
+  "parent"      => :main,
+  "order"       => 28,
+  "condition"   => proc { next $player },
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Enables Double Tapping the Movement Controls to Run."),
+  "get_proc"    => proc { next $PokemonSystem.runstyle },
+  "set_proc"    => proc { |value, _scene| $PokemonSystem.runstyle = value }
+})
+
+MenuHandlers.add(:options_menu, :controls_menu, {
+  "name"        => _INTL("Controls Options..."),
+  "parent"      => :main,
+  "type"        => SelectOption,
+  "order"       => 29,
+  "description" => _INTL("View Options related to Controls..."),
+})
+
+
 
 MenuHandlers.add(:options_menu, :gameplay_menu, {
   "name"        => _INTL("Battle Gameplay Options..."),
   "parent"      => :main,
+  "condition"   => proc { next $player },
   "type"        => SelectOption,
   "order"       => 31,
   "description" => _INTL("View Options Related to Gameplay in Battle..."),
@@ -836,6 +875,7 @@ MenuHandlers.add(:options_menu, :gameplay_menu, {
 MenuHandlers.add(:options_menu, :gameplay_menu2, {
   "name"        => _INTL("Overworld Gameplay Options..."),
   "parent"      => :main,
+  "condition"   => proc { next $player },
   "type"        => SelectOption,
   "order"       => 31,
   "description" => _INTL("View Options Related to Gameplay in the Overworld..."),
@@ -860,6 +900,8 @@ MenuHandlers.add(:options_menu, :music_menu, {
 
 
 
+
+
 #Main
 MenuHandlers.add(:options_menu, :bgm_volume, {
   "name"        => _INTL("Music Volume"),
@@ -872,7 +914,7 @@ MenuHandlers.add(:options_menu, :bgm_volume, {
   "set_proc"    => proc { |value, scene|
     next if $PokemonSystem.bgmvolume == value
     $PokemonSystem.bgmvolume = value
-    next if scene.in_load_screen || $game_system.playing_bgm.nil?
+    next if $game_system.playing_bgm.nil?
     playingBGM = $game_system.getPlayingBGM
     $game_system.bgm_pause
     $game_system.bgm_resume(playingBGM)
@@ -925,18 +967,52 @@ MenuHandlers.add(:options_menu, :hardcore, {
   "parent"      => :main,
   "order"       => 50,
   "type"        => EnumOption,
-  "parameters"  => [_INTL("On"), _INTL("Off")],
-  "description" => _INTL("Enables Hardcore Mode (Irreversable)."),
-  "condition"   => proc { next $PokemonGlobal.hardcore == false },
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Press USE to Enable Hardcore Mode. Once Enabled, you cannot disable unless you start a new save, or die."),
+  "condition"   => proc { 
+  next $player
+  next $PokemonGlobal
+  next $PokemonGlobal.hardcore == false },
   "get_proc"    => proc { next $PokemonSystem.hardcore },
   "set_proc"    => proc { |value, scene|
      value = 1 if $PokemonGlobal.hardcore==false
+    next if scene.in_load_screen 
     next if value == $PokemonSystem.hardcore
 	if value == 0
     pbHardcoreMode
 	end
   }
 })
+
+MenuHandlers.add(:options_menu, :tension_screen, {
+  "name"        => _INTL("Tension Screen"),
+  "parent"      => :main,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Off"), _INTL("On")],
+  "description" => _INTL("Display the tension screen within you are within attack range."),
+  "condition"   => proc { next $player },
+  "get_proc"    => proc { next $PokemonSystem.tension_screen },
+  "set_proc"    => proc { |value, scene|
+    next if scene.in_load_screen 
+      $PokemonSystem.tension_screen = value }
+  }
+)
+
+
+MenuHandlers.add(:options_menu, :simple_title, {
+  "name"        => _INTL("Simple Title Screen"),
+  "parent"      => :main,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Off"), _INTL("On")],
+  "description" => _INTL("Shows a more Vanilla styled titled screen."),
+  "get_proc"    => proc { next getSIDataStatus("classicTitleScreen") },
+  "set_proc"    => proc { |value, scene|
+      setSIDataStatus("classicTitleScreen",value) }
+  }
+)
+
 
 MenuHandlers.add(:options_menu, :screen_size, {
   "name"        => _INTL("Screen Size"),
@@ -1008,17 +1084,6 @@ MenuHandlers.add(:options_menu, :give_nicknames, {
 
 #Overworld Stuff
 
-MenuHandlers.add(:options_menu, :movement_style, {
-  "name"        => _INTL("Default Movement"),
-  "parent"      => :gameplay_menu2,
-  "order"       => 60,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("Walking"), _INTL("Running")],
-  "description" => _INTL("Choose your movement speed. Hold Back while moving to move at the other speed."),
-  "condition"   => proc { next $player&.has_running_shoes },
-  "get_proc"    => proc { next $PokemonSystem.runstyle },
-  "set_proc"    => proc { |value, _scene| $PokemonSystem.runstyle = value }
-})
 
 #UI Stuff
 
@@ -1080,8 +1145,6 @@ MenuHandlers.add(:options_menu, :wbattle_music, {
   "get_proc"    => proc { next $PokemonSystem.wildbattleMusic },
   "set_proc"    => proc { |value, scene| 
   $PokemonSystem.wildbattleMusic = value
-  puts !$game_temp.memorized_bgm
-  puts $game_system.is_a?(Game_System)
 
   if $game_system.is_a?(Game_System) && !$game_temp.memorized_bgm
     $game_system.bgm_pause

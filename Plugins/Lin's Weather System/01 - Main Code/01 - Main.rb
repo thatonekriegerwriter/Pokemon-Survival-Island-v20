@@ -199,6 +199,21 @@ def pbForceUpdateZoneWeather(zone)
   pbSetNewWeather(zone)
 end
 
+def pbUpdateCurrentWeather(weather)
+  pbFindZone
+  zone = $WeatherSystem.currentZone
+  startTime = pbGetStartTime
+  $WeatherSystem.actualWeather[zone].startTime = startTime
+  endTime = pbGetEndTime(startTime)
+  $WeatherSystem.actualWeather[zone].endTime = endTime
+  $WeatherSystem.actualWeather[zone].mainWeather = weather
+  $WeatherSystem.actualWeather[zone].secondWeather = $WeatherSystem.nextWeather[zone].secondWeather
+    power = (weather == :None) ? 0 : 9
+    duration = 0
+    $game_screen.weather(weather,power,duration)
+end
+
+
 def pbSetNewWeather(zone)
   zoneWeather = WeatherConfig::ZONE_WEATHER_SUMMER if pbIsSummer
   zoneWeather = WeatherConfig::ZONE_WEATHER_AUTUMN if pbIsAutumn

@@ -172,6 +172,7 @@
       @sprites["pokemon"].x = 414
       @sprites["pokemon"].y = 208
       @sprites["pokemon"].setPokemonBitmap(@pokemon)
+      @sprites["pokemon"].tone = Tone.new(0,0,0,255) if @pokemon.dead?
       @sprites["pokeicon"] = PokemonIconSprite.new(@pokemon, @viewport)
       @sprites["pokeicon"].setOffset(PictureOrigin::CENTER)
       # Changed the position of Pokémon Icon

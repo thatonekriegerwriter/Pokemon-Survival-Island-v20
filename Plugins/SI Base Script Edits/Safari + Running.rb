@@ -65,6 +65,12 @@ class Battle
       @decision = 3
       return 1
     end
+    if $player.is_it_this_class?(:RANGER)
+      pbSEPlay("Battle flee")
+      pbDisplayPaused(_INTL("You got away safely!"))
+      @decision = 3
+      return 1
+    end
     if !@canRun
       pbDisplayPaused(_INTL("You can't escape!"))
       return 0
@@ -150,7 +156,7 @@ class Battle
         pbDisplayPaused(_INTL("{1} got hit with an attack! It did {2} damage!",self.pbPlayer.name,injury))
         end
         @runCommand -= 2 if !duringBattle
-        $player.playerhealth -= injury
+        damagePlayer(injury)
 		pbSEPlay("normaldamage")
        return -1
       end
@@ -161,7 +167,7 @@ class Battle
           injury = injury*2
         end
         pbDisplayPaused(_INTL("While {1} was running away, they got nicked by an attack! It did {2} damage!",self.pbPlayer.name,injury))
-        $player.playerhealth -= injury
+        damagePlayer(injury)
 		pbSEPlay("normaldamage")
         @decision = 3
       return 1
@@ -191,19 +197,21 @@ class Battle::Battler
     return true if choice[0]!=:UseMove
     return true if !@battle.internalBattle
     return true if !@battle.pbOwnedByPlayer?(@index)
+	return true if $player.is_it_this_class?(:COORDINATOR,false)
+
     disobedient = false
     # Pokémon may be disobedient; calculate if it is
-    badgeLevel = 10 * (@battle.pbPlayer.badge_count + 1)
+    badgeLevel = 10 * ($player.badge_count + 1)
     r = @battle.pbRandom(256)
-    badgeLevel = GameData::GrowthRate.max_level if @battle.pbPlayer.badge_count >= 8
-    if @pokemon.foreign?(@battle.pbPlayer) && @level>badgeLevel
+    badgeLevel = GameData::GrowthRate.max_level if $player.badge_count >= 8
+    if @pokemon.foreign?($player) && @level>badgeLevel
 	
       a = ((@level+badgeLevel)*@battle.pbRandom(256)/256).floor
       disobedient |= (a>=badgeLevel)
 	  
     end
 #EDIT
-    return pbDisobey(choice, badgeLevel) if PbCalculate_disobedience_chance(@pokemon.loyalty,@pokemon.happiness) && rand(100)<= 25
+    return pbDisobey(choice, badgeLevel) if rand(100)+1<= PbCalculate_disobedience_chance(pkmn.loyalty,pkmn.happiness)
 #END EDIT
     disobedient |= !pbHyperModeObedience(choice[2])
     return true if !disobedient
@@ -236,7 +244,7 @@ class Battle::Battler
     if r <= 20 && r >= 10 && @status != :SLEEP && @pokemon.happiness <= 149
       injury = rand(10)+2
       @battle.pbDisplay(_INTL("{1} turned around and attacked you for {2} damage!",pbThis, injury))
-      $player.playerhealth -= injury
+	  damagePlayer(injury)
 		pbSEPlay("normaldamage")
       return false 
     end
@@ -247,7 +255,7 @@ class Battle::Battler
     if r <= 30 && r >= 20 && @status != :SLEEP && @pokemon.happiness <= 50
       injury = rand(10)+2
       @battle.pbDisplay(_INTL("{1} turned around rushed you down, hurting you for {2} damage!",pbThis, injury))
-      $player.playerhealth -= injury
+	  damagePlayer(injury)
 		pbSEPlay("normaldamage")
       return false 
     end
@@ -284,101 +292,29 @@ class Battle::Battler
 def PbCalculate_disobedience_chance(loyalty,happiness)
  amt = 0
   case loyalty
-  when 0..50
-    amt = 100
-  when 50..75
+  when 0..10
     amt = 80
-  when 76..149
+  when 11..50
     amt = 60
-  when 150..224
+  when 51..64
+    amt = 45
+  when 65..149
     amt = 30
+  when 150..224
+    amt = 20
   when 225..254
     amt = 10
   when 255
-    amt = 0 # No disobedience at maximum loyalty
+    amt = 0 
   else
-    amt = 0 # Default to no chance of disobedience if conditions are not met
+    amt = 0
   end
   amt-= (happiness/20).floor
   amt = 0 if amt<0
 end
 
   end
-  
-  
-def check_obedience(pkmn,directing=true)
-  return true if pkmn == @opponent
-  return disobeying(pkmn,directing) if calculate_disobedience_chance(pkmn.loyalty,pkmn.happiness) && rand(100)<= 25
 
-end  
-  
-def disobeying(pkmn,directing)
-   chance = rand(90)
-  if pkmn.status == :SLEEP
-	  pbMessage("\\ts[]" + (_INTL"#{pkmn.name} ignored you and continued sleeping.\\wtnp[10]"))
-      return false
-  end
-    if r <= 10  && pkmn.status==:NONE
-	  pkmn.status=:SLEEP
-	  pbMessage("\\ts[]" + (_INTL"#{pkmn.name} began to nap!\\wtnp[10]"))
-      return false
-    end
-     if r <= 10 && @status != :SLEEP && directing==false
-      pbMessage("\\ts[]" + ("#{pkmn.name} won't obey! It hurt itself in its confusion!\\wtnp[10]"))
-	  pkmn.hp-=rand(25)+5
-      return false
-    end
-    if r <= 20 && r >= 10 && @status != :SLEEP && pkmn.loyalty <= 50 && directing==false
-      injury = rand(10)+2
-      pbMessage("\\ts[]" + ("#{pkmn.name} turned around and attacked you for #{injury} damage!\\wtnp[10]"))
-      $player.playerhealth -= injury
-		pbSEPlay("normaldamage")
-      return false 
-    end
-
-    if r <= 30 && r >= 20 && @status != :SLEEP && @pokemon.happiness >= 200 && directing==false
-      pbMessage("\\ts[]" + ("#{pkmn.name} wants you to praise it before it does anything!\\wtnp[10]"))
-      return false 
-    end
-    if r <= 20 && r >= 10 && @status != :SLEEP && pkmn.happiness >= 199 && directing==false
-      pbMessage("\\ts[]" + ("#{pkmn.name} wants to play!\\wtnp[10]"))
-      return false 
-    end
-
-
-
-
-    case rand(4)
-    when 0 then pbMessage("\\ts[]" + ("#{pkmn.name} won't obey!\\wtnp[10]"))
-    when 1 then pbMessage("\\ts[]" + ("#{pkmn.name} turned away!\\wtnp[10]"))
-    when 2 then pbMessage("\\ts[]" + ("#{pkmn.name} is loafing around!\\wtnp[10]"))
-    when 3 then pbMessage("\\ts[]" + ("#{pkmn.name} pretended not to notice!\\wtnp[10]"))
-    end
-	return false
-end  
-
-def calculate_disobedience_chance(loyalty,happiness)
- amt = 0
-  case loyalty
-  when 0..50
-    amt = 100
-  when 50..75
-    amt = 80
-  when 76..149
-    amt = 60
-  when 150..224
-    amt = 30
-  when 225..254
-    amt = 10
-  when 255
-    amt = 0 # No disobedience at maximum loyalty
-  else
-    amt = 0 # Default to no chance of disobedience if conditions are not met
-  end
-  amt-= (happiness/20).floor
-  amt = 0 if amt<0
-end
-  
   
 class PokemonEncounters
  # Returns whether a wild encounter should happen, based on its encounter
@@ -500,7 +436,7 @@ class PokemonEncounters
       min_steps_needed *= 2 if $PokemonMap.blackFluteUsed
       encounter_chance *= 1.5 if $PokemonMap.whiteFluteUsed
       min_steps_needed /= 2 if $PokemonMap.whiteFluteUsed
-      encounter_chance /= 3 if $player.playerclass == "Runner"
+      encounter_chance /= 3 if $player.is_it_this_class?(:TRIATHLETE)
     first_pkmn = $player.first_pokemon
     if first_pkmn
       case first_pkmn.item_id
@@ -716,18 +652,18 @@ class Battle
           case foeParty.length
             when 1
             pbDisplayPaused(_INTL("{1} panicked and tried to escape, but tripped!",self.pbPlayer.name))
-            $player.playerhealth -= rand(30)+5
+            damagePlayer(rand(15)+5)
 		pbSEPlay("normaldamage")
             pbDisplayPaused(_INTL("The Wild {1} started charging at you!",foeParty[0].name))
           when 2
             pbDisplayPaused(_INTL("{1} panicked and tried to escape, but tripped!",self.pbPlayer.name))
-            $player.playerhealth -= rand(30)+5
+            damagePlayer(rand(15)+5)
 		pbSEPlay("normaldamage")
             pbDisplayPaused(_INTL("Oh! A wild {1} and {2} started charging at you!",foeParty[0].name,
                foeParty[1].name))
           when 3
             pbDisplayPaused(_INTL("{1} panicked and tried to escape, but tripped!",self.pbPlayer.name))
-            $player.playerhealth -= rand(30)+5
+            damagePlayer(rand(15)+5)
 		pbSEPlay("normaldamage")
             pbDisplayPaused(_INTL("The Wild {1}, {2} and {3} all started charging at once!",foeParty[0].name,
                foeParty[1].name,foeParty[2].name))
@@ -795,7 +731,8 @@ class Interpreter
     pbPushThisEvent 
     return true
    elsif $player.playerstamina == $player.playermaxstamina
-    $player.playerstamina = 0
+    $player.playerstamina = 0.0
+	$PokemonMap.strengthUsed = true
     pbPushThisEvent 
     return true
    elsif $player.playerstamina < $player.playermaxstamina
@@ -1024,11 +961,11 @@ class Battle::Scene::SafariDataBox < Sprite
 	when 2  
 	case $shifted3  
 	 when 0
-    textpos.push([_INTL("Stone x{2}", @battle.pbPlayer.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
+    textpos.push([_INTL("Stone x{2}", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
 	 when 1
-    textpos.push([_INTL("Punch", @battle.pbPlayer.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
+    textpos.push([_INTL("Punch", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
 	 when 2
-    textpos.push([_INTL("Machete", @battle.pbPlayer.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
+    textpos.push([_INTL("Machete", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
 	end
 
 
@@ -1083,7 +1020,7 @@ class Battle::Scene::SafariDataBox < Sprite
 
 
 	end
-    textpos.push([_INTL("{1}", @battle.pbPlayer.name), 30, 20, false, base, shadow])
+    textpos.push([_INTL("{1}", $player.name), 30, 20, false, base, shadow])
     textpos.push([_INTL("{1}/{2} HP", $player.playerhealth,$player.playermaxhealth), 127, 20, false, base, shadow])
     pbDrawTextPositions(self.bitmap, textpos)
   end
@@ -1260,7 +1197,7 @@ class Battle::Scene
   
   def getCommands
    commands = []
-	commands << _INTL("What will {1} do?", @battle.pbPlayer.name)
+	commands << _INTL("What will {1} do?", $player.name)
 	commands << _INTL("CATCH")
 	commands << _INTL("APPEAL") 
 	commands << _INTL("ATTACK")
@@ -1776,14 +1713,14 @@ end
       rate=10
       return if rate==0 # should never trigger anyways but you never know.
 	  return if GameData::MapMetadata.try_get($game_map.map_id)&.random_dungeon
-      pbDisplay(_INTL("{1} lunged at {2} for an attack!", pkmn.name,pbPlayer.name))
+      pbDisplay(_INTL("{1} lunged at {2} for an attack!", caller.name,pbPlayer.name))
       rate=rate.to_f # don't want to lose decimal points
       intimidate=false
       rate*=1.2 if intimidate
 
       rate*=4.0 if $player.playerstamina < 50 && $player.playerstamina > 25
       rate*=5.0 if $player.playerstamina < 25
-      rate*2.0 if pkmn.speed > player.shoespeed*2
+      rate*2.0 if caller.speed > player.shoespeed*2
       rate=rate.round # rounding it off.
   
 
@@ -1791,11 +1728,11 @@ end
 	  if caller.shadowPokemon
         injury = rand(50)+1
         pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
-        $player.playerhealth -= injury 
+	  damagePlayer(injury)
       else
         injury = rand(40)+1
         pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
-        $player.playerhealth -= injury 
+	  damagePlayer(injury)
 	  end
   else
      pbDisplay(_INTL("Thankfully, it missed!!"))
@@ -2208,8 +2145,8 @@ end
       pkmn = @party2[0]
       pbSetSeen(pkmn)
       @scene.pbStartBattle(self)
-      pbDisplayPaused(_INTL("{1} was jumped by a wild {2}!", @battle.pbPlayer.name,pkmn.name)) if @party2.length==1
-      pbDisplayPaused(_INTL("{1} was jumped by a wild {2}, and a wild {3}!", @battle.pbPlayer.name,pkmn.name,@party2[1].name)) if @party2.length==2
+      pbDisplayPaused(_INTL("{1} was jumped by a wild {2}!", $player.name,pkmn.name)) if @party2.length==1
+      pbDisplayPaused(_INTL("{1} was jumped by a wild {2}, and a wild {3}!", $player.name,pkmn.name,@party2[1].name)) if @party2.length==2
       @scene.pbSafariStart
 	   @ballType = nil
 	   @see_tutorial_messages = false
@@ -2311,7 +2248,7 @@ end
 		if !@decision.is_a?(Array)
 	  if @decision == 1
 		 pbDisplayPaused(_INTL("You collected some meat from {1}! ",pkmn.name))
-		 pbCookMeat(false,pkmn,true)
+		 pbCookMeat(pkmn)
         pbHeldItemDropOW(pkmn,true)
 		 @scene.pbEndCombat
 	  end
@@ -2489,69 +2426,10 @@ class PokemonPauseMenu
   end
 end
 
-MenuHandlers.add(:pause_menu, :quit_safari_game, {
-  "name"      => _INTL("Quit"),
-  "order"     => 60,
-  "condition" => proc { next pbInSafari? },
-  "effect"    => proc { |menu|
-    menu.pbHideMenu
-    if pbConfirmMessage(_INTL("Would you like to leave the Safari Game right now?"))
-      menu.pbEndScene
-      pbSafariState.decision = 1
-      pbSafariState.pbGoToStart
-      next true
-    end
-    menu.pbRefresh
-    menu.pbShowMenu
-    next false
-  }
-})
 
-
-class PokemonBag
-
-  def amtwithFlag?
-    item_data = GameData::Item.try_get(:POKEBALL)
-    return false if !item_data
-    pocket = item_data.pocket
-    return ItemStorageHelper.hasflagamt(@pockets[pocket])
-  end
-  
-  def withWhatPokeballs?
-    item_data = GameData::Item.try_get(:POKEBALL)
-    return false if !item_data
-    pocket = item_data.pocket
-    return ItemStorageHelper.whatpkballs(@pockets[pocket])
-  end
-
-end
-
-module ItemStorageHelper
-  def self.hasflagamt(items)
-    ret = 0
-    items.each_with_index do |item_slot, i|
-      next if !item_slot ||!GameData::Item.get(item_slot[0]).is_pokeball?
-      ret = item_slot[1]
-    end
-    return ret
-  end
-
-  def self.whatpkballs(items)
-    ret = []
-    items.each_with_index do |item_slot, i|
-      next if !item_slot ||!GameData::Item.get(item_slot[0]).is_pokeball?
-      ret << item_slot[0]
-    end
-    return ret
-  end
-
-end
 
 def pbCheckAllFainted
-  if $player.able_pokemon_count == 0
-    pbMessage(_INTL("You have no more Pokémon that can fight!\1"))
-    pbMessage(_INTL("Be careful! Pokémon will only be targeting you!"))
-  end
+  return
 end
 
 
@@ -2578,25 +2456,6 @@ def pbBattleOnStepTaken(repel_active)
   $game_temp.force_single_battle = false
 end
 
-
-
-
-
-EventHandlers.add(:on_player_change_direction, :trigger_npmode,
-  proc {
-  if $player.able_pokemon_count == 0
-    pbSafariState.pbStart(30)
-  end
-  }
-)
-
-
-
-module GameData
-  class Item
-    def is_pokeball?;            return has_flag?("PokeBall"); end
-  end
-end
 
 
 
@@ -2772,7 +2631,7 @@ module Battle::CatchAndStoreMixin
           }
         when 3   # Check party
          if $bag.has?(:MACHETE) && !pkmn.shadowPokemon? && !pkmn.egg? && !pkmn.foreign?($player)
-          pbCookMeat(false,pkmn)
+          pbCookMeat(pkmn)
           return
           else
           @scene.pbPartyScreen(0, true, 2)
@@ -2800,6 +2659,10 @@ module Battle::CatchAndStoreMixin
 
   def pbThrowPokeBall(idxBattler, ball, catch_rate = nil, showPlayer = false)
     # Determine which Pokémon you're throwing the Poké Ball at
+    if $player.is_it_this_class?(:RANGER,false)
+      pbDisplay(_INTL("You are a Ranger, don't use POKeBALLs!"))
+      return
+    end
     battler = nil
     if opposes?(idxBattler)
       battler = @battlers[idxBattler]
@@ -2841,19 +2704,15 @@ module Battle::CatchAndStoreMixin
     case numShakes
     when 0
       pbDisplay(_INTL("It's like the ball didn't even exist!"))
-      $PokemonBag.pbStoreItem(ball) if $player.playerclass == "Catcher" && rand(100)<=20
       Battle::PokeBallEffects.onFailCatch(ball, self, battler)
     when 1
       pbDisplay(_INTL("The Pokemon broke free easily!"))
-      $PokemonBag.pbStoreItem(ball) if $player.playerclass == "Catcher" && rand(100)<=20
       Battle::PokeBallEffects.onFailCatch(ball, self, battler)
     when 2
       pbDisplay(_INTL("Aargh! Almost had it!"))
-      $PokemonBag.pbStoreItem(ball) if $player.playerclass == "Catcher" && rand(100)<=20
       Battle::PokeBallEffects.onFailCatch(ball, self, battler)
     when 3
       pbDisplay(_INTL("Gah! It broke out, and it's not happy!"))
-      $PokemonBag.pbStoreItem(ball) if $player.playerclass == "Catcher" && rand(100)<=20
       Battle::PokeBallEffects.onFailCatch(ball, self, battler)
     when 4
       pbDisplayBrief(_INTL("Gotcha! {1} was caught!", pkmn.name))
@@ -2976,6 +2835,6 @@ MenuHandlers.add(:debug_menu, :killme, {
   "parent"      => :player_menu,
   "description" => _INTL("Kill the Player."),
   "effect"      => proc {
-    $player.playerhealth = 0
+    $player.playerhealth = 0.0
   }
 })

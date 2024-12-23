@@ -24,16 +24,58 @@ def heal_BED(wari,pkmn)
   return if pkmn.egg?
     newHP = pkmn.hp + ((pkmn.totalhp * wari)/8) 
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
+    newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)
     pkmn.hp = newHP
-    pkmn.heal_status if chance <= wari
-    pkmn.heal_PP if chance <= wari
+    pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
+    pkmn.heal_PP if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
   @ready_to_evolve = false
 end
 
+def breederEgg
+  return if $player.is_it_this_class?(:BREEDER,false)
+  ran = false
+  $player.able_party.each do |pkmn1|
+     next if ran==true
+    $player.able_party.each do |pkmn2|
+   compat = $PokemonGlobal.day_care.get_compatibility2(pkmn1,pkmn2)
+   egg_chance = [0, 20, 50, 70][compat]
+   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0
+   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0
+   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat>0
+   egg_chance += 1 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat==0
+   daycare.egg_generated = true if rand(100) < egg_chance
+   if daycare.egg_generated == true
+        egg = EggGenerator.generate(pkmn1,pkmn2)
+        raise _INTL("Couldn't generate the egg.") if egg.nil
+        if !$map_factory
+           event = $game_map.generateEvent($game_player.x,$game_player.y,egg,false,false,2)
+       else
+          mapId = $game_map.map_id
+          spawnMap = $map_factory.getMap(mapId)
+          event = spawnMap.generateEvent($game_player.x+1,$game_player.y,egg,false,false,2)
+       end
+        $game_player.move_backward
+      ran = true
+   end 
+  end
+ end
 
-def pbBedCore(temperate=false)
+end
+
+def pbErasePokemonCenter(map)
+  if $PokemonGlobal.pokecenterMapId == map
+    $PokemonGlobal.pokecenterMapId      = -1
+    $PokemonGlobal.pokecenterX          = -1
+    $PokemonGlobal.pokecenterY          = -1
+    $PokemonGlobal.pokecenterDirection  = -1
+	return true
+  end
+  return false
+end
+
+
+def pbBedCore(item)
 command = 0
-pbSetPokemonCenter
   loop do
       cmdSleep  = -1
       cmdNap   = -1
@@ -45,7 +87,7 @@ pbSetPokemonCenter
       commands[cmdNap  = commands.length] = _INTL("Nap")
       commands[cmdSave   = commands.length] = _INTL("Save")
       commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
-      commands[cmdPickUp  = commands.length] = _INTL("Pick Up") if temperate==false
+      commands[cmdPickUp  = commands.length] = _INTL("Pick Up")
       commands[commands.length]              = _INTL("Cancel")
       command = pbShowCommands(nil, commands)
       if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
@@ -57,21 +99,18 @@ pbSetPokemonCenter
              pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?"))
 		     hours = pbChooseNumber(msgwindow,params)
              pbDisposeMessageWindow(msgwindow)
-			  if hours == 1
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for an hour."))
-				 if $player.playerhealth>$player.playermaxhealth
-				   $player.playerhealth=$player.playermaxhealth
-				 end
-			  elsif hours == 0
+			  if hours == 0
 			    pbMessage(_INTL("You decide not to sleep.",hours))
 				 break
 			  else
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for {1} hours.",hours))
-				$player.playerhealth += (1.5*hours)
-				 if $player.playerhealth>$player.playermaxhealth
-				   $player.playerhealth=$player.playermaxhealth
-				 end
+			    pbMessage(_INTL("You lay down to rest with your Pokemon for {1} hours.",hours)) if hours>1
+			    pbMessage(_INTL("You lay down to rest with your Pokemon for an hour.")) if hours==1
+				 
+				 
 			  end
+
+             pbSetPokemonCenter
+			  
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	            pbMEPlay("Pokemon Healing")
 				party = $player.party
@@ -81,12 +120,11 @@ pbSetPokemonCenter
 				 end
 				pbWait(80)
 				pbRandomEvent
-
-				if pbPokerus?
-			    pbMessage(_INTL("Your Pokemon seems a little off tonight."))
-				end 
+				
+			    pbMessage(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
 				$game_variables[29] += (3600*hours)
 				pbSleepRestore(hours)
+			   increaseHealthAndTotalHP((1.5*hours))
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100.0
 			        pbMessage(_INTL("You feel well rested!"))
@@ -107,6 +145,7 @@ pbSetPokemonCenter
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 			    hours = 1
 				$game_variables[29] += ((3600*hours)/2).round
+              pbSetPokemonCenter
 	            pbMEPlay("Pokemon Healing")
 				pbWait(40)
 				pbRandomEvent
@@ -140,7 +179,8 @@ pbSetPokemonCenter
 		break
       elsif cmdPickUp >= 0 && command == cmdPickUp   # Summary
           if pbConfirmMessage(_INTL("Do you want to pick up the Bed?"))
-		    pbReceiveItem(:BEDROLL)
+		    pbErasePokemonCenter($game_map.map_id)
+		    pbReceiveItem(item)
 		    this_event = pbMapInterpreter.get_self
 	  if !$map_factory
            $game_map.removeThisEventfromMap(this_event.id)
@@ -160,13 +200,28 @@ pbSetPokemonCenter
 end
 end
 
+EventHandlers.add(:on_frame_update, :midnight_activations,
+  proc {
+    next if !$player
+    next if !PBDayNight.isMidnight?
+	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
+	$PokemonGlobal.everytwodays+=1
+	if $PokemonGlobal.everytwodays==2
+	  bed_plant_reset
+	  $PokemonGlobal.collection_maps = {}
+	  $PokemonGlobal.everytwodays=0
+	end
+  }
+)
+
+
 
 def bed_plant_reset
 	 $map_factory.maps.each do |map|
       map.events.each_value do |event|
         if event.name[/berryplant/i]
           time = 24*3600
-          plant = getVariableSup(map,event)
+          plant = pbMapInterpreter.getVariableOther(event,map)
 		   if plant
 		   if plant.timewithoutberry>(time+rand(time/2))
 		    if plant.last_berry
@@ -193,15 +248,15 @@ end
 
 
 def pbBedMessageLoss
-if $player.playerhealth >=75
+if $player.current_total_hp >=75
     pbMessage(_INTL("{1} woke up feeling well-rested."),$player.name)
-elsif $player.playerhealth >=50
+elsif $player.current_total_hp >=50
     pbMessage(_INTL("{1} woke up feeling rested, if a little achey.."),$player.name)
-elsif $player.playerhealth >=25
+elsif $player.current_total_hp >=25
     pbMessage(_INTL("{1} woke up feeling tired, but determined."),$player.name)
-elsif $player.playerhealth >=10
+elsif $player.current_total_hp >=10
     pbMessage(_INTL("{1} woke up in pain, but shrugged it off. It can't be *that* bad..."),$player.name)
-elsif $player.playerhealth <=9
+elsif $player.current_total_hp <=9
     pbMessage(_INTL("{1} really doesn't want to get out of bed."),$player.name)
 end
 end
@@ -238,3 +293,13 @@ def pbPositionNearMsgWindow(cmdwindow, msgwindow, side)
   end
 end
 end
+
+
+class PokemonGlobalMetadata
+    attr_accessor :everytwodays
+	
+	  def everytwodays
+	   @everytwodays = 0 if @everytwodays.nil?
+	   return @everytwodays
+	  end
+	end

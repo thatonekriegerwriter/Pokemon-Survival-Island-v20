@@ -42,6 +42,7 @@ class Crafts_Scene
     @currentArray=0
     @alternatecontrolmode=false
 	@items=[]
+   @itemsdata=[{},{},{},{}]
 	@quants=[]
 	 $value=0
 	 $coal=0
@@ -187,6 +188,8 @@ class Crafts_Scene
 
 
   def pbEndScene
+	 $value=0
+	 $coal=0
     pbFadeOutAndHide(@icons)
     pbDisposeSpriteHash(@icons)
 
@@ -199,6 +202,7 @@ class Crafts_Scene
 
   def reset_items
    @items=[]
+   @itemsdata=[{},{},{},{}]
    @quants=[]
    @amt.times do |i|
 	 @items << :NO
@@ -226,26 +230,27 @@ pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
 $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
+coal = $coal.id
 }
-	 if $coal
-	 if $coal == :CHARCOAL
+	 if coal
+	 if coal == :CHARCOAL
   	   $value=3
-	 elsif $coal == :COAL
+	 elsif coal == :COAL
   	   $value=2
-	 elsif $coal == :ACORN
+	 elsif coal == :ACORN
   	   $value=10
-	 elsif $coal == :WOODENLOG
+	 elsif coal == :WOODENLOG
   	   $value=5
-	 elsif $coal == :WOODENPLANKS
+	 elsif coal == :WOODENPLANKS
   	   $value=8
-	 elsif $coal == :HEATROCK
+	 elsif coal == :HEATROCK
   	   $value=1
-	 elsif $coal == :FIRESTONE
+	 elsif coal == :FIRESTONE
   	   $value=1
 	 end
  end
 
-	if $coal.nil?
+	if coal.nil?
       @sprites["craftResult"].windowskin=nil
 	  @sprites["craftResult"].text=""
 	  
@@ -265,7 +270,7 @@ $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal
         end
 	  return -1
 	else
-           @items[0]=$coal
+           @items[0]=coal
 	
 	end
 
@@ -308,7 +313,7 @@ end
 	    #puts @items[i]
        @sprites["craft#{i}"].text=_INTL("{1}",GameData::Item.get(@items[i]).name.slice(0, 5))
 	   if @ramt==i
-       @sprites["quant#{i}"].text=_INTL("{1}+{2}",$bag.quantity(@items[i][0]),@quants[i]*@quant)
+       @sprites["quant#{i}"].text=_INTL("{1}+{2}",$bag.quantity(@items[i]),@quants[i]*@quant)
 	   else
        @sprites["quant#{i}"].text=_INTL("{1}-{2}",$bag.quantity(@items[i]),@quants[i]*@quant)
 	   end
@@ -354,10 +359,6 @@ end
 	  
 	  
 	  
-	  
-	  
-	  
-	  
       if Input.trigger?(Input::UP) || Input.repeat?(Input::UP)  #INCREASING QUANTITY
         pbSEPlay("GUI sel cursor")
         if @quant>99
@@ -393,6 +394,7 @@ end
 		  
 		  end
         @sprites["craftResult"].text=oranges
+			 pbWait(6)
         end
         end
 
@@ -402,6 +404,10 @@ end
 		   
 		    if @items[@ramt]!=:NO
 			  if pbCheckRecipe(@items[0...-1])
+			    if $player.is_it_this_class?(:RANGER,false) && GameData::Item&.try_get(item).is_poke_ball?
+                  @sprites["craftResult"].text=_INTL("You are a Ranger! You don't need POKeBALLs!")
+				   pbWait(6)
+				else
 			    if pbGetAllowedAmounts
 			    if pbCheckPrices 
                 pbSEPlay("GUI save choice")
@@ -410,9 +416,11 @@ end
 				  reset_items
 			    end
 				end
+               end 
 			  end
            else
              @sprites["craftResult"].text=_INTL("You must first select an item!")
+				  pbWait(6)
 			end
 		   
 		elsif @type==:FURNACE && @selection == 0
@@ -421,21 +429,22 @@ pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
 $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
+coal = $coal.id
 }
-	 if $coal
-	 if $coal == :CHARCOAL
+	 if coal
+	 if coal == :CHARCOAL
   	   $value=3
-	 elsif $coal == :COAL
+	 elsif coal == :COAL
   	   $value=2
-	 elsif $coal == :ACORN
+	 elsif coal == :ACORN
   	   $value=6
-	 elsif $coal == :WOODENLOG
+	 elsif coal == :WOODENLOG
   	   $value=4
-	 elsif $coal == :WOODENPLANKS
+	 elsif coal == :WOODENPLANKS
   	   $value=6
-	 elsif $coal == :HEATROCK
+	 elsif coal == :HEATROCK
   	   $value=1
-	 elsif $coal == :FIRESTONE
+	 elsif coal == :FIRESTONE
   	   $value=1
 	 end
  end
@@ -481,9 +490,14 @@ $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal
 		else  
 		  
 		    @items[@ramt]=:NO
-           @items[@selection]=pbChooseItem
-		    if @items[@selection].nil?
+           item=pbChooseItem
+		   
+		    if item.nil?
 		      @items[@selection] = :NO 
+             @itemsdata[@selection] = {}
+			 else
+		      @items[@selection] = item.id
+             @itemsdata[@selection] = item
 		    end 
 			if $bag.quantity(@items[@selection]).is_a? Float
 			  amt = $bag.quantity(@items[@selection]).to_i
@@ -589,6 +603,7 @@ $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal
 		   else
            $bag.add(item,@quants[@ramt]*@quant)
              @sprites["craftResult"].text=_INTL("You crafted #{item}!")
+				  pbWait(6)
 		   end
 		  else
 		    removeamt = get_remove_amt(item)*@quant
@@ -694,7 +709,8 @@ end
 	          recipesthatmatch << i if !recipesthatmatch.include?(i)
 		     else
 			   
-             @sprites["craftResult"].text=_INTL("You don't have that Recipe!") if $DEBUG
+             @sprites["craftResult"].text=_INTL("You don't have that Recipe!")
+				  pbWait(6)
 			   next
 			 end
            else
@@ -710,16 +726,19 @@ end
       if recipesthatmatch.length>1
       @alternatecontrolmode=true
       @sprites["craftResult"].text=_INTL("There is multiple recipes that match the result!")
+	  pbWait(6)
       index = 0
 	  loop do
 	    if Input.trigger?(Input::LEFT)
 		    index-=1 if index-1>=0
 			index=recipesthatmatch.length if index-1<0
            @sprites["craftResult"].text=_INTL("#{recipesthatmatch[index]}!")
+		   pbWait(6)
 		 elsif Input.trigger?(Input::RIGHT)
 		    index+=1 if index+1<=recipesthatmatch.length
 			index=0 if index+1>recipesthatmatch.length
            @sprites["craftResult"].text=_INTL("#{recipesthatmatch[index]}!")
+		   pbWait(6)
 		 elsif Input.trigger?(Input::USE)
 	       @currentArray=recipesthatmatch[index]
           @alternatecontrolmode=false
@@ -801,11 +820,13 @@ end
 		    if $bag.quantity(item[0])<(item[1]*@quant)
 			  
              @sprites["craftResult"].text=_INTL("You don't have enough #{item[0]}!")
+			 pbWait(6)
 		      return false
 			end
 		   else
 		    if $bag.quantity(item)<@quant
              @sprites["craftResult"].text=_INTL("You don't have enough #{item}!")
+			 pbWait(6)
 		      return false
 			end
 		   

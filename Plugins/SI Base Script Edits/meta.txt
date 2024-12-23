@@ -1,1 +1,2 @@
-Name         = SI Base Scripts
+Name = SI Base Scripts
+Version = 0

@@ -11,6 +11,7 @@ module ShowSeasonBW2
     return Bitmap.new("Graphics/Pictures/Seasons/#{name}")
   end
   def pbSeason_Screen
+   $mouse.hide if $mouse && !$mouse.disposed?
     if !pbMapInterpreterRunning?
       checked = 0
       loop do
@@ -54,6 +55,7 @@ module ShowSeasonBW2
       @checked = nil if $season_number != pbGetSeason
     end
   end
+    $mouse.show if $mouse && !$mouse.disposed?
 end
 module Game
 
@@ -69,6 +71,7 @@ module Game
     $scene = Scene_Map.new
     ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
     pbToneChangeAll(Tone.new(0,0,0,0),20)
+    #$mouse.enable if $mouse && !$mouse.disposed?
   end
   
   

@@ -1,3 +1,3 @@
-Name         = Loyalty and Happiness
-Version      = 1.0.0
-Credits      = thatonekriegerwriter
+Name = Loyalty and Happiness
+Version = 1
+Credits = thatonekriegerwriter

@@ -1,6 +1,7 @@
 class PokemonGlobalMetadata
     attr_accessor :active_statues
     attr_accessor :unlocked_classes
+    attr_accessor :all_classes
 	
 	
 	def active_statues
@@ -9,13 +10,37 @@ class PokemonGlobalMetadata
 	end
 
 	def unlocked_classes
-	 @unlocked_classes = [$player.playerclass] if @unlocked_classes.nil?
+	 @unlocked_classes = [$player.playerclass.id] if @unlocked_classes.nil?
 	 return @unlocked_classes
 	end
+
+	def all_classes
+	  if @all_classes.nil?
+	  @all_classes = [:TRIATHLETE,:ACTOR,:EXPERT,:RANGER,:COOK,:BLACKBELT,:COORDINATOR,:ENGINEER,:NURSE,:BREEDER,:COLLECTOR,:GARDENER,:FISHER,:HIKER]
+	  end
+	 return @all_classes
+	end
+	
+	
 end
+
+
+
+   def pbUnlockPlayerClass(aclass=nil)
+      if aclass.nil?
+        options = $PokemonGlobal.all_classes - $PokemonGlobal.unlocked_classes
+        $PokemonGlobal.unlocked_classes << options[0] 
+	  else
+        $PokemonGlobal.unlocked_classes << aclass
+	  end
+   end
+
+
 def howmanystatues()
  return $PokemonGlobal.active_statues.length
 end
+
+
 
 class StatueData
     attr_accessor :event
@@ -42,7 +67,7 @@ class StatueData
   end
   def evo_stones
     @evo_stones = [] if @evo_stones.nil?
-    return evo_stones
+    return @evo_stones
   end
   
   def reset 
@@ -80,13 +105,16 @@ class StatueData
   end
 end
 
-def pbTeleportToLocation
+def pbTeleportToLocation(loc1=nil,loc2=nil,loc3=nil)
   return false if $game_temp.fly_destination.nil?
   pbFadeOutIn {
     pbSEPlay("OWThunder1")
-    $game_temp.player_new_map_id    = $game_temp.fly_destination[0]
-    $game_temp.player_new_x         = $game_temp.fly_destination[1]
-    $game_temp.player_new_y         = $game_temp.fly_destination[2]
+    $game_temp.player_new_map_id    = $game_temp.fly_destination[0] if loc1.nil?
+    $game_temp.player_new_x         = $game_temp.fly_destination[1] if loc2.nil?
+    $game_temp.player_new_y         = $game_temp.fly_destination[2] if loc3.nil?
+    $game_temp.player_new_map_id    = loc1 if !loc1.nil?
+    $game_temp.player_new_x         = loc2 if !loc2.nil?
+    $game_temp.player_new_y         = loc3 if !loc3.nil?
     $game_temp.player_new_direction = 2
     $game_temp.fly_destination = nil
     pbDismountBike
@@ -166,10 +194,12 @@ def pbTeleportStatues1
 	   this_event.turn_left
 	   pbWait(2)
 	   pbTeleportStatues2
-      pbSetSelfSwitch(this_event.id, "A", true)  
+	   pbUnlockPlayerClass if $player.playerclass.id==:ACTOR
+       pbSetSelfSwitch(this_event.id, "A", true)  
 	 end
     end
 end
+
 
 
 def pbTeleportStatues2(home=false)
@@ -222,10 +252,10 @@ command = 0
   
   
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?"))
+    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
     command = pbShowCommands(msgwindow,
                     [_INTL("Use Statue"),
-                    _INTL("Recall Adventure"),
+                    _INTL("Save Game"),
                     _INTL("Place Star Pieces"),
                     _INTL("Return its Power"),
                     _INTL("Exit")],-1)
@@ -236,28 +266,31 @@ command = 0
 	
     case command
     when 0   # Use Statue
-
+     if true
 
 
 
     pbDisposeMessageWindow(msgwindow)
+	   commands = []
+      cmd_move_statues     = -1
+      cmd_present_pokemon     = -1
+      cmd_change_class     = -1
+      cmd_evolve     = -1
+      cmd_rest     = -1
+      cmd_quit     = -1
+      commands[cmd_move_statues = commands.length] = _INTL('Move Between Statues') if $PokemonGlobal.active_statues.length>1
+      commands[cmd_present_pokemon = commands.length] = _INTL('Learn Move') if $player.party.length>0
+      commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.playerclass.id==:ACTOR
+      commands[cmd_evolve = commands.length]  = _INTL('Use Evo Stone') if statue.evo_stones.length > 0
+      commands[cmd_new_game = commands.length]  = _INTL('Try to Rest') if PBDayNight.isNight?(pbGetTimeNow)
+      commands[cmd_quit = commands.length]      = _INTL('Cancel')
+	  
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?"))
-	 thecommands = [_INTL("Move Between Statues"),
-                    _INTL("Present Pokemon"),
-                    _INTL("Change Class"),
-                    _INTL("Evolve")]
-	
-	 thecommands << _INTL("Try to Rest") if PBDayNight.isNight?(pbGetTimeNow)
-	 thecommands << _INTL("Cancel")
-    commands2 = pbShowCommands(msgwindow,thecommands,-1)
+    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
+    commands2 = pbShowCommands(msgwindow,commands,-1)
 	pbDisposeMessageWindow(msgwindow)
-	
-	
-	
-	
-	case commands2
-    when 0
+	if cmd_move_statues >= 0 && commands2 == cmd_move_statues
+	if true
 	pbDisposeMessageWindow(msgwindow)
 	 if statue.star_pieces == [1,1] && statue.power>100
    	  pbShowTeleportMap if $game_temp.fly_destination.nil?
@@ -278,8 +311,9 @@ command = 0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
     end
-	when 1
-	
+   end
+	elsif cmd_present_pokemon >= 0 && commands2 == cmd_present_pokemon
+	  if true
 	
 	
 	pbDisposeMessageWindow(msgwindow)
@@ -318,38 +352,56 @@ command = 0
       statue.star_pieces = [0,0]
      end
     end
-   when 2
+
+      end
+	elsif cmd_change_class >= 0 && commands2 == cmd_change_class
+      if true
    	  cmd12 = []
-	 pbMessageDisplay(msgwindow,_INTL("What do you want to change your class to?"))
+	 pbMessageDisplay(msgwindow,_INTL("What do you want to change your acted class to?\\wtnp[1]"))
+	  cmd12 << "Remove" if $player.playerclass.acted_class!=:NONE
 	 $PokemonGlobal.unlocked_classes.each do |tclass|
-	  cmd12 << tclass
+	  cmd12 << getPlayerClassName(tclass)
 	 end
-	
 	 cmd12 << _INTL("Cancel")
     commands3 = pbShowCommands(msgwindow,cmd12,-1)
 	pbDisposeMessageWindow(msgwindow)
 	  case commands3 
 	   when commands3.length
 	     break
-	   when $PokemonGlobal.unlocked_classes[commands3]==$player.playerclass
-	    pbMessage(_INTL("You do not change your class."))
-	   else
-	     if pbConfirmMessage(_INTL("Are you sure you want to change your class to #{$PokemonGlobal.unlocked_classes[commands3]} for the cost of One Level?"))
-		 pbMessage(_INTL("You change your class to #{$PokemonGlobal.unlocked_classes[commands3]}."))
-		  $player.playerclass = $PokemonGlobal.unlocked_classes[commands3]
-		  $player.playerclasslevel -= 1
+	   when $PokemonGlobal.unlocked_classes[commands3]==$player.playerclass.id
+	    pbMessage(_INTL("You do not change your acted class."))
+	   when $player.playerclass.acted_class!=:NONE && commands3==0
+	      pbMessage(_INTL("You do not change your acted class."))
+	      $player.playerclass.acted_class=:NONE
+	   
+	   when $player.playerclass.acted_class!=:NONE && commands3>0
+	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3-1].getName)}?"))
+		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3-1].getName)}."))
+		  $player.playerclass.acted_class = $PokemonGlobal.unlocked_classes[commands3-1]
 		 else 
-	    pbMessage(_INTL("You do not change your class."))
+	    pbMessage(_INTL("You do not change your acted class."))
 	     break
 		 end
+
+	   
+	   else
+	   
+	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3].getName)}?"))
+		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3].getName)}."))
+		  $player.playerclass.acted_class = $PokemonGlobal.unlocked_classes[commands3]
+		 else 
+	    pbMessage(_INTL("You do not change your acted class."))
+	     break
+		 end
+
 	   end
-	
-	when 3
+	  end
+	elsif cmd_evolve >= 0 && commands2 == cmd_evolve	
 	  if statue.evo_stones.length<1
 	   pbMessage(_INTL("You don't have any specialized stones."))
 	  else 
    	  cmd12 = []
-	 pbMessageDisplay(msgwindow,_INTL("What stone do you use?"))
+	 pbMessageDisplay(msgwindow,_INTL("What stone do you use?\\wtnp[1]"))
 	 statue.evo_stones.each do |stone|
 	  cmd12 << GameData::Item.get(stone).name
 	 end
@@ -373,7 +425,7 @@ command = 0
 	   end
 	
 	  end
-   when 4 
+	elsif cmd_rest >= 0 && commands2 == cmd_rest     
     if PBDayNight.isNight?(pbGetTimeNow)
 	    pbMessage(_INTL("You get the best rest you can in the Wilderness."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
@@ -384,34 +436,14 @@ command = 0
 	else
 	 break
 	end
-   else
-     break
+	elsif cmd_quit >= 0 && commands2 == cmd_quit
+	   break
+	elsif Input.trigger?(Input::BACK)
+	   break
 	end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	end
 	when 1  # Save Game
-	
-
-
-
-
-	
+	if true
     pbDisposeMessageWindow(msgwindow)
 	if statue.power-5<1
      pbMessage(_INTL("The Statue doesn't have enough energy to store your memories!"))
@@ -440,15 +472,10 @@ command = 0
 
 
 
-
-
-	when 2
-	
-	
-	
-	
-	
-	
+  
+    end
+	when 2 #Place Star Pieces
+	 if true
     pbDisposeMessageWindow(msgwindow)
 	if $bag.has?(:STARPIECE, 2) && (statue.star_pieces != [0,1] || statue.star_pieces != [1,0]  || statue.star_pieces != [1,1]) 
      pbMessage(_INTL("The Star Pieces in your bag seem like they would fit in its eyes."))
@@ -463,7 +490,7 @@ command = 0
      pbMessage(_INTL("The Star Pieces in your bag seem like they would fit in its eyes."))
 	 if pbConfirmMessage(_INTL("Do you wish to place Star Pieces in its eyes?"))
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("Which eye do you wish to place your Star Piece in?"))
+    pbMessageDisplay(msgwindow,_INTL("Which eye do you wish to place your Star Piece in?\\wtnp[1]"))
     command = pbShowCommands(msgwindow,
                                    [_INTL("Left"),
                                     _INTL("Right"),
@@ -531,18 +558,9 @@ command = 0
 	else 
      pbMessage(_INTL("It looks like something would fit in its eyes."))
 	end
-
-
-
-
-
-
-
-
-
-
-	when 3  # Save Game
-	
+     end
+	when 3  # Return its Power
+	 if true
      pbDisposeMessageWindow(msgwindow)
      pbMessage(_INTL("You feel some energy leave your body."))
       statue.charging = true
@@ -552,17 +570,10 @@ command = 0
 
 
 
-
-
+    end
     else
-	
-	
-      pbDisposeMessageWindow(msgwindow)
+	  pbDisposeMessageWindow(msgwindow)
       break
-	  
-	  
-	  
-	  
     end
 end
 
@@ -623,7 +634,7 @@ def pbTeleportStatues3(home=false)
 command = 0
   loop do
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?"))
+    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
     command = pbShowCommands(msgwindow,
                     [_INTL("Save Game"),
                     _INTL("Exit")],-1)
@@ -650,7 +661,7 @@ def pbTeleportStatues4(home=false)
 command = 0
   loop do
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?"))
+    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
     command = pbShowCommands(msgwindow,
                     [_INTL("Use Statue"),
                     _INTL("Save Game"),

@@ -1,9 +1,22 @@
-
+def pbCrateMessage(message,&block)
+  return (pbMessage(message,[_INTL("Customize"),_INTL("Equip")],2,&block)==0)
+end
 
 def pbCrateClothes
+   if $player.character_ID == 11 || $player.character_ID == 12
+      if pbCrateMessage(_INTL("Would you like to customize your character or equip normally?"))
+        pbCustomizeCharacter
+	   else
+        scene = WardrobeScene.new
+        screen = WardrobeScreen.new(scene)
+        screen.pbStartScreen
+	   
+	   end
+   else
       scene = WardrobeScene.new
       screen = WardrobeScreen.new(scene)
       screen.pbStartScreen
+	end
 end
 
 def pbClothingEffect(clothing)

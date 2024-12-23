@@ -12,6 +12,21 @@
   end
   }
 )
+
+  EventHandlers.add(:on_frame_update, :iframes,
+  proc {
+  if $player.iframes>0
+    $player.iframes-=1
+  end
+  $player.party.each do |pkmn|
+    if pkmn.iframes>0
+      pkmn.iframes-=1
+    end
+  end
+  }
+)
+
+
   EventHandlers.add(:on_frame_update, :sleepstepsplayer,
   proc {
   if  $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $PokemonGlobal.in_dungeon==false
@@ -37,31 +52,21 @@
   }
 )
 
-  EventHandlers.add(:on_frame_update, :healthplayer,
+
+
+EventHandlers.add(:on_player_step_taken, :nurse_healing,
   proc {
-  if $player.playerhealth <= 0
-    pbStartOver
-  end 
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $PokemonGlobal.in_dungeon==false
-   if $player.playerwater < 1
-    damagePlayer(3) if rand(256) <= 1
-		pbSEPlay("normaldamage")
-   end
-   if $player.playersleep < 1
-    damagePlayer(3) if rand(256) <= 1
-		pbSEPlay("normaldamage")
-   end
-   if $player.playerfood < 1
-    damagePlayer(3) if rand(256) <= 1
-		pbSEPlay("normaldamage")
-   end
+   next if $player.playerwater < 1
+   next if $player.playersleep < 1
+   next if $player.playerfood < 1
+   next if $player.playerfood < 1
+   next if !$player.is_it_this_class?(:NURSE,false)
+     increaseHealth(1)
 
 
-  end
+
   }
 )
-
-
 
 
   EventHandlers.add(:on_frame_update, :saturationstepsplayer,
@@ -77,52 +82,95 @@
   }
 )
 
+  EventHandlers.add(:on_frame_update, :healthplayer,
+  proc {
+   if $PokemonGlobal.cur_challenge==true && $player.playerhealth<=0
+     pbChallengeOver 
+	  next
+   end
+   next if $PokemonGlobal.in_dungeon==true
+   next if $PokemonSystem.survivalmode == 1
+   next if $game_temp.in_menu
+   
+   pbStartOver if $player.current_total_hp<=0
+   pbRespawnAtBed if $player.playerhealth<=0
+   next if $player.playerhealth<=0
+  
+   waterchance = rand(100) <= 10
+   foodchance = rand(100) <= 10
+   sleepchance = rand(100) <= 10
+   damaged = 0
+   damaged += 1 if $player.playerwater < 1 && waterchance
+   damaged += 1 if $player.playersleep < 1 && sleepchance
+   damaged += 1 if $player.playerfood < 1 && foodchance
+    next if damaged==0
+   damagePlayer(3*damaged) 
+   pbSEPlay("normaldamage")
+  }
+)
+
+
   EventHandlers.add(:on_frame_update, :stamina,
   proc {
   if $PokemonGlobal.in_dungeon==false
-	if $player.playerstamina.is_a? Integer
-    $player.playerstamina = $player.playerstamina.to_f
-	end
-	if $player.playermaxstamina.is_a? Integer
-    $player.playermaxstamina = $player.playermaxstamina.to_f
-	end
-	if $player.playerstaminamod.is_a? Integer
-	$player.playerstaminamod = $player.playerstaminamod.to_f
-	end
-    oldsta = $player.playerstamina
-	if $player.playermaxstamina.nil?
-	$player.playermaxstamina = 100.0
-	end
-	if $player.playerstaminamod.nil?
-	$player.playerstaminamod = 0.0
-	end
-	if $player.playerstamina < 0 && Input.press?(Input::BACK) && $game_player.moving? && Input.press?(Input::BACK) && !$game_temp.in_menu
-	  damagePlayer(1) if rand(30) == 1
-		pbSEPlay("normaldamage")
-	end
-    if $player.playerstamina < 0 && (!Input.press?(Input::BACK))
-	   $player.playerstamina=0
-	end
-	if $player.playerstamina > $player.playermaxstamina
-	   $player.playerstamina = $player.playermaxstamina
-	end
-	if ($player.playershoes == :RUNNINGSHOES || $player.playershoes == :MAKESHIFTRUNNINGSHOES) && $game_player.moving? && Input.press?(Input::BACK) && !$game_temp.in_menu && !$PokemonGlobal.partner
-	   $player.playerstamina-=4 if rand(30) == 1
+  
+  
+  
+  
+	
+    $player.playerstamina = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
+    $player.playermaxstamina = $player.playermaxstamina.to_f if $player.playermaxstamina.is_a? Integer
+	$player.playerstaminamod = $player.playerstaminamod.to_f if $player.playerstaminamod.is_a? Integer
+
+	
+	$player.playermaxstamina = 100.0 if $player.playermaxstamina.nil?
+	
+	$player.playerstaminamod = 0.0 if $player.playerstaminamod.nil?
+
+
+
+		pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
+
+	   duris = rand(30) == 1
+   
+	
+	if $game_player.can_run_unforced? && !$game_temp.in_menu && $player.running
+	
+	   decreaseStamina(4) if duris && ($player.playershoes == :NORMALSHOES || $player.playershoes == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(3) if duris && $player.playershoes == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(2) if duris && $player.playershoes == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
+	   
+	   
 	else
-	  if !$game_player.moving? && (!Input.press?(Input::BACK) && (!Input.press?(Input::LEFT) || !Input.press?(Input::UP) || !Input.press?(Input::RIGHT) || !Input.press?(Input::DOWN))) && (oldsta == $player.playerstamina)
+	  prereqs = !$player.acting && $player.held_item.nil?
+	  if  prereqs
+      if !$game_player.moving? && !$game_player.can_run_unforced? && (!Input.press?(Input::LEFT) || !Input.press?(Input::UP) || !Input.press?(Input::RIGHT) || !Input.press?(Input::DOWN))
+      
 	   if $player.playerstamina < 1
-	   $player.playerstamina+=1 if rand(60) == 1
-	   else
-	   $player.playerstamina+=3 if rand(30) == 1
-	   end
-	  elsif oldsta == $player.playerstamina
-	  if $player.playerstamina < 1
-	   $player.playerstamina+=1 if rand(90) == 1
-	   else
 	   $player.playerstamina+=3 if rand(60) == 1
+	   else
+	   $player.playerstamina+=1 if rand(30) == 1
 	   end
+	  
+	  elsif !$game_player.can_run_unforced? && (Input.press?(Input::LEFT) || Input.press?(Input::UP) || Input.press?(Input::RIGHT) || Input.press?(Input::DOWN))
+
+	   $player.playerstamina+=1 if rand(140) == 1
+	  end
+
+
+
+
+
+
 	  end
 	end
+
+
+
+
+	   $player.playerstamina = $player.playermaxstamina if $player.playerstamina > $player.playermaxstamina
+
   end
   }
 )
@@ -137,7 +185,7 @@
 	pkmn.changeAge
 	pkmn.changeLifespan("age",pkmn)
     if pkmn.lifespan == 0 
-      pkmn.permadeath=true
+      pkmn.permaFaint=true
       pbMessage(_INTL("{1} has died!"))
       pkmn.hp = 0
 	  next
@@ -147,10 +195,6 @@
 
   }
 )
-
-
-
-
 
 
 
@@ -194,6 +238,7 @@ EventHandlers.add(:on_step_taken, :play_walk_sfx,
 EventHandlers.add(:on_step_taken, :play_water_sounds,
   proc { |event|
     next if !$scene.is_a?(Scene_Map)
+    next if !$game_map.map_id==11
     next if event != $game_player
     if is_near_water($game_player.x, $game_player.y)
 	 if !$PokemonGlobal.water_playing
@@ -224,24 +269,36 @@ def is_near_water(x, y)
 end
 
 
-# Poison party Pokémon
-EventHandlers.add(:on_player_step_taken_can_transfer, :kill_party,
-  proc { |handled|
-    # handled is an array: [nil]. If [true], a transfer has happened because of
-    # this event, so don't do anything that might cause another one
-    next if handled[0]
+# Kill dead pokemon
+EventHandlers.add(:on_step_taken, :kill_party,
+  proc { |event|
+    next if !$scene.is_a?(Scene_Map)
     next if $PokemonGlobal.stepcount % 4 != 0
+	if event == $game_player
+	duris = false
+	elsif event&.name.include?("PlayerPkmn")
+	duris = false
+	else
+	duris = true
+	end
+    next if duris
     flashed = false
     $player.party.each do |pkmn|
-	  next if pkmn.hp!=0
+	  next if !pkmn.fainted?
+	  next if pkmn.dead?
       if !flashed
-        pbFlash(Color.new(255, 0, 0, 128), 8)
+        pbFlash(Color.new(102, 3, 0, 128), 8)
+	     pbSEPlay("dying")
         flashed = true
       end
-      pkmn.lifespan -= 1 if pkmn.lifespan > 1
-      if pkmn.lifespan == 0
+      pkmn.lifespan -= 3
+	  puts "#{pkmn.name}'s lifespan is now #{pkmn.lifespan} wellness."
+      if pkmn.lifespan <= 0
+	     pbSEPlay("DeathDQ")
         pkmn.changeHappiness("faint",pkmn)
-        pkmn.permadeath=true
+        pkmn.changeHappiness("powder",pkmn)
+        pkmn.changeLoyalty("faint",pkmn)
+        pkmn.permaFaint=true
         pbMessage(_INTL("{1} died...", pkmn.name))
       end
 
@@ -253,7 +310,37 @@ EventHandlers.add(:on_player_step_taken_can_transfer, :kill_party,
 
 
 
-
+# Poison party Pokémon
+EventHandlers.add(:on_player_step_taken_can_transfer, :poison_party,
+  proc { |handled|
+    # handled is an array: [nil]. If [true], a transfer has happened because of
+    # this event, so don't do anything that might cause another one
+    next if handled[0]
+    next if $PokemonGlobal.stepcount % 4 != 0
+    flashed = false
+    $player.able_party.each do |pkmn|
+      next if pkmn.status != :POISON || pkmn.hasAbility?(:IMMUNITY)
+      if !flashed
+        pbFlash(Color.new(255, 0, 0, 128), 8)
+        flashed = true
+	     pbSEPlay("SFX_POISONED")
+      end
+	  damage = 1
+      pkmn.hp -= damage
+        pkmn.changeHappiness("damaged",pkmn)
+        pkmn.changeLoyalty("damaged",pkmn)
+      if pkmn.hp > 0 && rand(100)<1
+        pkmn.status = :NONE
+        sideDisplay(_INTL("{1} survived the poisoning.\\nThe poison faded away!\1", pkmn.name))
+        next
+      elsif pkmn.hp <= 0
+        pkmn.changeHappiness("faint",pkmn)
+        pkmn.status = :NONE
+	    sideDisplay("#{pkmn.name} fainted from poison!")
+      end
+    end
+  }
+)
 
 
 
@@ -289,98 +376,6 @@ end
   }
 )
 
-  EventHandlers.add(:on_frame_update, :demotimer,
-  proc {
-    next if $game_temp.in_menu == true
-    next if $game_temp.in_storage == true
-    next if $game_temp.in_battle == true
-   if $PokemonSystem.playermode == 0	
-   $player.demotimer-=1
-   end
-
-  }
-)
-  EventHandlers.add(:on_frame_update, :gametimer,
-  proc {
-    next if $game_temp.in_menu == true
-   if $PokemonSystem.playermode == 0	
-   $player.demotimer+=1
-   end
-
-
-  }
-)
-
-
-EventHandlers.add(:on_enter_map, :setup_new_map23,
-  proc { |old_map_id|
-  return if false
-  map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
-  if map_metadata&.outdoor_map == false || map_metadata&.outdoor_map.nil?
-   $game_screen.weather(:None, 0, 0)
-  else
-  if $PokemonSystem.survivalmode == 0 && $PokemonSystem.temperature == 0 && map_metadata&.outdoor_map
-
-    map_infos = pbLoadMapInfos
-    new_map_metadata = $game_map.metadata
-    weather_chance = rand(100)
-    next if $game_screen.weather_type != :None
-  if $game_map.name == map_infos[old_map_id].name
-      old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
-      next if old_map_metadata&.weather
-   elsif pbIsSpring == true
-   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 40 && ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   elsif  pbIsSummer == true
-#######################################################################################################################################
-   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:Sun, rand(9)+1, rand(19)+1)  if weather_chance <= 25 
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 50 && ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   elsif pbIsAutumn  == true
-################################################################################################################################################
-   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:HeavyRain, rand(9)+1, rand(19)+1) if weather_chance <= 15
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 50 && ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   $game_screen.weather(:HeavyRain, rand(9)+1, rand(19)+1)  if weather_chance <= 90 && ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   elsif pbIsWinter  == true
-################################################################################################################################################
-   $game_screen.weather(:None, rand(9)+1, rand(19)+1)  if weather_chance <= 25
-   $game_screen.weather(:Snow, rand(9)+1, rand(19)+1) if weather_chance <= 15 && !$game_screen.weather_type==:Blizzard
-   $game_screen.weather(:Blizzard, rand(9)+1, rand(19)+1) if weather_chance <= 40 && !$game_screen.weather_type==:Snow
-   $game_screen.weather(:Snow, rand(9)+1, rand(19)+1) if weather_chance <= 15 && (!$game_screen.weather_type==:Blizzard || !$game_screen.weather_type==:Rain)&& ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   $game_screen.weather(:Blizzard, rand(9)+1, rand(19)+1) if weather_chance <= 50 && (!$game_screen.weather_type==:Snow || !$game_screen.weather_type==:Rain)&& ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore")
-   $game_screen.weather(:Rain, rand(9)+1, rand(19)+1)  if weather_chance <= 35 && ($game_map.name  == "Temperate Plains" || $game_map.name  == "Temperate Shore") && (!$game_screen.weather_type==:Blizzard || !$game_screen.weather_type==:Snow)
-  end
-   case $game_variables[382] #Day
-   when 0
-
-   when 1
-
-   when 2
-
-   when 3
-
-   when 4
-
-   when 5
-
-   when 6
-
- end
-
-if checkHours(23)
- pbAmbientTemperature
- pbSetTemperature
-end 
-#------------------------------------------------------------------------------#
-#------------------------------------------------------------------------------#
-end
-  end
-
-})
-
 
 MenuHandlers.add(:debug_menu, :kill_me, {
   "name"        => _INTL("Kill me!"),
@@ -388,7 +383,6 @@ MenuHandlers.add(:debug_menu, :kill_me, {
   "description" => _INTL("Kill the player."),
   "effect"      => proc {
     $player.playerhealth = 0
-    pbMessage(_INTL("YOU DIE!"))
   }
 })
 
@@ -398,8 +392,8 @@ MenuHandlers.add(:debug_menu, :set_hp, {
   "description" => _INTL("Edit the player's Health."),
   "effect"      => proc {
     params = ChooseNumberParams.new
-    params.setRange(0, 200)
-    $player.playerhealth = pbMessageChooseNumber(_INTL("Set the player's health."), params)
+    params.setRange(0, $player.playermaxhealth)
+    $player.playerhealth = (pbMessageChooseNumber(_INTL("Set the player's health."), params)).to_f
   }
 })
 
@@ -409,8 +403,8 @@ MenuHandlers.add(:debug_menu, :set_sleep, {
   "description" => _INTL("Edit the player's Sleep."),
   "effect"      => proc {
     params = ChooseNumberParams.new
-    params.setRange(0, 200)
-    $player.playersleep = pbMessageChooseNumber(_INTL("Set the player's sleep."), params)
+    params.setRange(0, $player.playermaxsleep)
+    $player.playersleep = (pbMessageChooseNumber(_INTL("Set the player's sleep."), params)).to_f
   }
 })
 
@@ -420,8 +414,8 @@ MenuHandlers.add(:debug_menu, :set_water, {
   "description" => _INTL("Edit the player's Water."),
   "effect"      => proc {
     params = ChooseNumberParams.new
-    params.setRange(0, 200)
-    $player.playerwater = pbMessageChooseNumber(_INTL("Set the player's water."), params)
+    params.setRange(0, $player.playermaxwater)
+    $player.playerwater = (pbMessageChooseNumber(_INTL("Set the player's water."), params)).to_f
   }
 })
 
@@ -431,8 +425,8 @@ MenuHandlers.add(:debug_menu, :set_food, {
   "description" => _INTL("Edit the player's Food."),
   "effect"      => proc {
     params = ChooseNumberParams.new
-    params.setRange(0, 200)
-    $player.playerfood = pbMessageChooseNumber(_INTL("Set the player's food."), params)
+    params.setRange(0, $player.playermaxfood)
+    $player.playerfood = (pbMessageChooseNumber(_INTL("Set the player's food."), params)).to_f
   }
 })
 
@@ -443,52 +437,6 @@ MenuHandlers.add(:debug_menu, :set_saturation, {
   "effect"      => proc {
     params = ChooseNumberParams.new
     params.setRange(0, 200)
-    $player.playersaturation = pbMessageChooseNumber(_INTL("Set the player's saturation."), params)
-  }
-})
-
-MenuHandlers.add(:debug_menu, :demo_mode, {
-  "name"        => _INTL("Control Demo Mode!"),
-  "parent"      => :player_menu,
-  "description" => _INTL("Demo Mode."),
-  "effect"      => proc {
-    trainerCmd = 0
-    loop do
-      trainerCmds = []
-      break if trainerCmd < 0
-	  if $PokemonSystem.playermode == 1
-	  trainerCmds.push(_INTL("[Enable Demo Mode]"))
-	  elsif $PokemonSystem.playermode == 0
-	  trainerCmds.push(_INTL("[Disable Demo Mode]"))
-	  end
-	  trainerCmds.push(_INTL("Cancel"))
-      trainerCmd = pbShowCommands(nil, trainerCmds, -1, trainerCmd)
-	  if trainerCmd == 0
-	  if $PokemonSystem.playermode == 1
-	    $PokemonSystem.playermode = 0
-	  elsif $PokemonSystem.playermode == 0
-	    $PokemonSystem.playermode = 1
-	  end
-	  
-	  else
-	    break
-	  end
-	end
-  }
-})
-
-
-MenuHandlers.add(:debug_menu, :set_timer, {
-  "name"        => _INTL("Set Timer"),
-  "parent"      => :player_menu,
-  "description" => _INTL("Edit the player's Timer."),
-  "effect"      => proc {
-    params = ChooseNumberParams.new
-    params.setRange(0, 99999)
-	amt = pbMessageChooseNumber(_INTL("Add to the player's Timer."), params)
-	if amt > 86400
-	 amt = 86400
-	end
-    $player.demotimer += amt
+    $player.playersaturation = (pbMessageChooseNumber(_INTL("Set the player's saturation."), params)).to_f
   }
 })

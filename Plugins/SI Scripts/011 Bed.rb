@@ -1,3 +1,127 @@
+
+class Window_InputNumberPokemon < SpriteWindow_Base
+  attr_reader :sign
+
+  def initialize(digits_max)
+    @digits_max = digits_max
+    @number = 0
+    @frame = 0
+    @sign = false
+    @negative = false
+    super(0, 0, 32, 32)
+    self.width = (digits_max * 24) + 8 + self.borderX
+    self.height = 32 + self.borderY
+    colors = getDefaultTextColors(self.windowskin)
+    @baseColor = colors[0]
+    @shadowColor = colors[1]
+    @index = digits_max - 1
+    self.active = true
+    refresh
+  end
+
+  def active=(value)
+    super
+    refresh
+  end
+
+  def number
+    @number * (@sign && @negative ? -1 : 1)
+  end
+
+  def number=(value)
+    value = 0 if !value.is_a?(Numeric)
+    if @sign
+      @negative = (value < 0)
+      @number = [value.abs, (10**@digits_max) - 1].min
+    else
+      @number = [[value, 0].max, (10**@digits_max) - 1].min
+    end
+    refresh
+  end
+
+  def sign=(value)
+    @sign = value
+    self.width = (@digits_max * 24) + 8 + self.borderX + (@sign ? 24 : 0)
+    @index = (@digits_max - 1) + (@sign ? 1 : 0)
+    refresh
+  end
+
+  def refresh
+    self.contents = pbDoEnsureBitmap(self.contents,
+                                     self.width - self.borderX, self.height - self.borderY)
+    pbSetSystemFont(self.contents)
+    self.contents.clear
+    s = sprintf("%0*d", @digits_max, @number.abs)
+    if @sign
+      textHelper(0, 0, @negative ? "-" : "+", 0)
+    end
+    @digits_max.times do |i|
+      index = i + (@sign ? 1 : 0)
+      textHelper(index * 24, 0, s[i, 1], index)
+    end
+  end
+
+  def update
+    super
+    digits = @digits_max + (@sign ? 1 : 0)
+    refresh if @frame % 15 == 0
+    if self.active
+      if Input.repeat?(Input::UP) || Input.repeat?(Input::DOWN) || Input.scroll_v==1 || Input.scroll_v==-1
+        pbPlayCursorSE
+        if @index == 0 && @sign
+          @negative = !@negative
+        else
+          place = 10**(digits - 1 - @index)
+          n = @number / place % 10
+          @number -= n * place
+          if Input.repeat?(Input::UP) || Input.scroll_v==1
+            n = (n + 1) % 10
+          elsif Input.repeat?(Input::DOWN) || Input.scroll_v==-1
+            n = (n + 9) % 10
+          end
+          @number += n * place
+        end
+        refresh
+      elsif Input.repeat?(Input::RIGHT)
+        if digits >= 2
+          pbPlayCursorSE
+          @index = (@index + 1) % digits
+          @frame = 0
+          refresh
+        end
+      elsif Input.repeat?(Input::LEFT)
+        if digits >= 2
+          pbPlayCursorSE
+          @index = (@index + digits - 1) % digits
+          @frame = 0
+          refresh
+        end
+      end
+    end
+    @frame = (@frame + 1) % 30
+  end
+
+  private
+
+  def textHelper(x, y, text, i)
+    textwidth = self.contents.text_size(text).width
+    pbDrawShadowText(self.contents,
+                     x + (12 - (textwidth / 2)),
+                     y - 2 + (self.contents.text_offset_y || 0),   # TEXT OFFSET (the - 2)
+                     textwidth + 4, 32, text, @baseColor, @shadowColor)
+    if @index == i && @active && @frame / 15 == 0
+      self.contents.fill_rect(x + (12 - (textwidth / 2)), y + 30, textwidth, 2, @baseColor)
+    end
+  end
+end
+
+
+
+
+
+
+
+
 def heal_BED(wari,pkmn)
   case $PokemonSystem.difficulty
     when 0
@@ -8,11 +132,10 @@ def heal_BED(wari,pkmn)
 	 chance = rand(17)+1
     when 3
 	 chance = rand(19)+1
+	 else
+	 chance = rand(19)+6
   end
   if Nuzlocke.on?
-	 chance += rand(2)+1
-  end
-  if $PokemonSystem.survivalmode == 0
 	 chance += rand(2)+1
   end
   pkmn.lifespan=100 if pkmn.lifespan.nil?
@@ -93,8 +216,8 @@ command = 0
       if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
           if pbConfirmMessage(_INTL("Do you want to head to bed?"))
              params = ChooseNumberParams.new
-             params.setMaxDigits(1)
-             params.setRange(0,9)
+             params.setMaxDigits(2)
+             params.setRange(0,24)
              msgwindow = pbCreateMessageWindow(nil,nil)
              pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?"))
 		     hours = pbChooseNumber(msgwindow,params)
@@ -124,7 +247,7 @@ command = 0
 			    pbMessage(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
 				$game_variables[29] += (3600*hours)
 				pbSleepRestore(hours)
-			   increaseHealthAndTotalHP((1.5*hours))
+			   increaseHealthAndTotalHP((3.125*hours))
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100.0
 			        pbMessage(_INTL("You feel well rested!"))
@@ -157,6 +280,7 @@ command = 0
                  pkmn.heal_PP
 				 end
 				 pbSleepRestore(hours)
+			   increaseHealthAndTotalHP((1.5*hours))
 			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up feeling great!"))
 				 elsif chance == 1
@@ -248,15 +372,15 @@ end
 
 
 def pbBedMessageLoss
-if $player.current_total_hp >=75
+if $player.playermaxhealth2 >=75
     pbMessage(_INTL("{1} woke up feeling well-rested."),$player.name)
-elsif $player.current_total_hp >=50
+elsif $player.playermaxhealth2 >=50
     pbMessage(_INTL("{1} woke up feeling rested, if a little achey.."),$player.name)
-elsif $player.current_total_hp >=25
+elsif $player.playermaxhealth2 >=25
     pbMessage(_INTL("{1} woke up feeling tired, but determined."),$player.name)
-elsif $player.current_total_hp >=10
+elsif $player.playermaxhealth2 >=10
     pbMessage(_INTL("{1} woke up in pain, but shrugged it off. It can't be *that* bad..."),$player.name)
-elsif $player.current_total_hp <=9
+elsif $player.playermaxhealth2 <=9
     pbMessage(_INTL("{1} really doesn't want to get out of bed."),$player.name)
 end
 end

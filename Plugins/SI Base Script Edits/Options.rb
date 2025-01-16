@@ -989,7 +989,7 @@ MenuHandlers.add(:options_menu, :tension_screen, {
   "parent"      => :main,
   "order"       => 50,
   "type"        => EnumOption,
-  "parameters"  => [_INTL("Off"), _INTL("On")],
+  "parameters"  => [_INTL("On"), _INTL("Off")],
   "description" => _INTL("Display the tension screen within you are within attack range."),
   "condition"   => proc { next $player },
   "get_proc"    => proc { next $PokemonSystem.tension_screen },

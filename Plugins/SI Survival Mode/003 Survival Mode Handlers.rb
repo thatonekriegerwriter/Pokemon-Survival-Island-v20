@@ -92,7 +92,7 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    next if $PokemonSystem.survivalmode == 1
    next if $game_temp.in_menu
    
-   pbStartOver if $player.current_total_hp<=0
+   pbStartOver if $player.playermaxhealth2<=0
    pbRespawnAtBed if $player.playerhealth<=0
    next if $player.playerhealth<=0
   

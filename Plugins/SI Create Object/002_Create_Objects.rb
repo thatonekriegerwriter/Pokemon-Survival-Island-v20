@@ -10,10 +10,6 @@ def get_own_event
     return statue
  end
 
-
-
-
-
 def deletefromSIData(id)
   $ExtraEvents.removethisEvent(:OBJECT,id)
 end
@@ -80,6 +76,11 @@ def getObjectImage(object)
  return image
 end
 
+def pbResetPlacing
+
+
+end
+
 def pbPlaceObject(x,y,object,aat=false,direction=nil)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
@@ -97,7 +98,8 @@ def pbPlaceObject(x,y,object,aat=false,direction=nil)
   return true
   else
   pbMessage(_INTL("You cannot place that there!"))
-  $bag.add(object)
+  #$bag.add(object)
+  return false
   end 
  # Play the pokemon cry of encounter
 end
@@ -116,23 +118,29 @@ def pbHoldingObject(x,y,object,aat=false)
   return true
   else
   pbMessage(_INTL("You cannot place that there!"))
-  $bag.add(object)
+  #$bag.add(object)
+  return false
   end 
  # Play the pokemon cry of encounter
 end
 
 def pbObjectIsPossible(x,y)
+   puts "STARTING?!?!"
   if !$game_map.valid?(x,y) #check if the tile is on the map
     return false
   else
     tile_terrain_tag = $game_map.terrain_tag(x,y)
   end
+   puts "a1"
   for event in $game_map.events.values
+    next if event==$game_map.events[$player.held_item_object]
     if event.x==x && event.y==y
+	
 	 if !$player.held_item_object.nil?
+	 
 	 if event.x != $game_map.events[$player.held_item_object].x && event.y != $game_map.events[$player.held_item_object].y
-      return false
-	 elsif $player.held_item == :BEDROLL && ($game_map.events[$player.held_item_object].direction==4||$game_map.events[$player.held_item_object].direction==6)
+      next
+	 elsif is_bedroll?
 	 else 
       return false
 	 end
@@ -142,6 +150,8 @@ def pbObjectIsPossible(x,y)
     
 	end
   end
+   puts "a2"
+
   return false if !tile_terrain_tag
   #check if it's a valid grass, water or cave etc. tile
   return false if tile_terrain_tag.ice
@@ -150,10 +160,18 @@ def pbObjectIsPossible(x,y)
   return false if tile_terrain_tag.waterfall_crest
   return false if tile_terrain_tag.id == :Rock
   return false if tile_terrain_tag.can_surf
-  return false if !$game_map.passableStrict?(x, y, 0)
+   potato = !$game_map.passableStrict?(x, y, 0) && !is_bedroll?
+   puts potato
+  return false if potato
   return true
 end
-
+def is_bedroll_or_camp?
+ puts (($player.held_item == :BEDROLL || $player.held_item == :PORTABLECAMP ) && $game_player.direction==8)
+ return (($player.held_item == :BEDROLL || $player.held_item == :PORTABLECAMP ) && $game_player.direction==8)
+end
+def is_bedroll?
+ return ($player.held_item == :BEDROLL && ($game_map.events[$player.held_item_object].direction==4||$game_map.events[$player.held_item_object].direction==6))
+end
 def pickMeUp(event,type)
 key_id = event
 $player.held_item=type
@@ -274,12 +292,16 @@ else
 		end
     
    
-   $player.place(x,y)
+   if $player.place(x,y)
    if GameData::Item.get(item).id == :PORTABLECAMP
     pbPlaceObject(x+1,y,"CampsiteDoor")
    end
-   end
+   
 	return true
+   else
+    return false
+   end
+   end
 end
 
 	return false

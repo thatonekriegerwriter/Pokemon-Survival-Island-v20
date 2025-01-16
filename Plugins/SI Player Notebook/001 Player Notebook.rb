@@ -542,6 +542,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 	    @selection2 = 0 if @selection2==-1 
 		end
 
+       end
       elsif Input.trigger?(Input::BACK)
 		if @depth==3 && @selection2!=-1 && @cur_page==4
 		 destroy_pkmn_icons
@@ -561,8 +562,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 		  @selection4=0
          @startend = [0,8]
 		end
-
-       end
+   
       end
 	  
 	  	

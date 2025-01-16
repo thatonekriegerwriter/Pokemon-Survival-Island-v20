@@ -781,7 +781,15 @@ class Scene_Map
 	   $game_system.save_disabled = false
 	   $game_temp.position_calling = false
 	  end
-	elsif Input.jumping_up?#A
+	elsif Input.triggerex?(:DOWN)
+		 event.direction = 8
+	elsif Input.triggerex?(:UP)
+		 event.direction = 2
+	elsif Input.triggerex?(:LEFT)
+		 event.direction = 4
+	elsif Input.triggerex?(:RIGHT)
+		 event.direction = 6
+	elsif Input.scroll_v==1
 	  case currentdir
 	   when 2
 		 event.direction = 6
@@ -792,7 +800,7 @@ class Scene_Map
 	   when 8
 		 event.direction = 4
 	  end
-	elsif Input.jumping_down? #D
+	elsif Input.scroll_v==-1
 	  case currentdir
 	   when 2
 		 event.direction = 4

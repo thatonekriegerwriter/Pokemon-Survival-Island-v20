@@ -780,10 +780,15 @@ class Player < Trainer #SECONDARY DEFINITIONS
    end
     return shoespeed + bonus
   end
+  
+  
   def current_total_hp
    @playermaxhealth2 = @playermaxhealth if @playermaxhealth2.nil?
+   @playermaxhealth2 = @playermaxhealth2.to_f if @playermaxhealth2.is_a? Integer
    return @playermaxhealth2
   end
+  
+  
   def totalhp
    return @playermaxhealth
   end
@@ -1830,7 +1835,7 @@ end
 
 
  def pbMedicine(bag=nil,item=nil)
-return if $player.playerhealth == $player.current_total_hp
+return if $player.playerhealth == $player.playermaxhealth2
 sideDisplay(_INTL("You used {1} to heal yourself.",GameData::Item.get(item).name))
 $bag.remove(item)
 #205 is Hunger, 207 is Saturation, 206 is Thirst, 208 is Sleep
@@ -1974,14 +1979,13 @@ def increaseHealth(amount)
 
 $player.playerhealth = $player.playerhealth.to_f if $player.playerhealth.is_a? Integer
 $player.playerhealth+=amount.to_f
-$player.playerhealth=$player.current_total_hp if $player.playerhealth > $player.current_total_hp
+$player.playerhealth=$player.playermaxhealth2 if $player.playerhealth > $player.playermaxhealth2
 
 end
 def increaseTotalHealth(amount)
 
-$player.current_total_hp = $player.current_total_hp.to_f if $player.current_total_hp.is_a? Integer
-$player.current_total_hp+=amount.to_f
-$player.current_total_hp=$player.playermaxhealth if $player.current_total_hp > $player.playermaxhealth
+$player.playermaxhealth2+=amount.to_f
+$player.playermaxhealth2=$player.playermaxhealth if $player.playermaxhealth2 > $player.playermaxhealth
 
 end
 

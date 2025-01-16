@@ -1720,7 +1720,7 @@ end
 
       rate*=4.0 if $player.playerstamina < 50 && $player.playerstamina > 25
       rate*=5.0 if $player.playerstamina < 25
-      rate*2.0 if caller.speed > player.shoespeed*2
+      rate*2.0 if caller.speed > $player.shoespeed*2
       rate=rate.round # rounding it off.
   
 
@@ -1782,7 +1782,7 @@ class SafariBattle
 			   pbDisplay(_INTL("You can't catch any more Pokémon!")) 
 		       return -1
 			  end
-		       if $bag.quantity(@ballType) == 0 || @ballType.nil?
+		       if @ballType.nil?
 		       @ballType = @scene.pbSafariBalls
 			    @cmd = -1 if @ballType.nil? && pbDisplayPaused2(_INTL("You did not choose a POKeBALL!"))
 		       return -1 if @ballType.nil?
@@ -1791,6 +1791,14 @@ class SafariBattle
 	           @scene.pbRefresh
 		       end
 			   if @ballType
+			   if $bag.quantity(@ballType) == 0 
+		       @ballType = @scene.pbSafariBalls
+			    @cmd = -1 if @ballType.nil? && pbDisplayPaused2(_INTL("You did not choose a POKeBALL!"))
+		       return -1 if @ballType.nil?
+		       @ballType = GameData::Item.get(@ballType).id if !@ballType.nil?
+	           @scene.pbUpdate
+	           @scene.pbRefresh
+		       end
               $bag.remove(@ballType,1)
 		       rare = (@battlers[@party2.length].catchFactor * 1275) / 100
 		       if $player.decreaseStamina(5)

@@ -35,8 +35,6 @@ end
 
 
 def chooseMove(attacker,target,distance)
-   $PokemonSystem.difficulty =  4 if $PokemonSystem.difficulty.nil?
-   $PokemonSystem.difficultymodifier =  80 if $PokemonSystem.difficultymodifier.nil?
    skill=(($PokemonSystem.difficulty+1)*$PokemonSystem.difficultymodifier)+(rand(80)+1)	
    potato = []
    potato2 = []

@@ -525,7 +525,7 @@ end
      @sprites2["namewindow"] = Window_UnformattedTextPokemon.newWithSize("", x-24, 250, 270, 64)
      @sprites2["namewindow"].visible = true
      @sprites2["namewindow"].windowskin  = nil
-     @sprites2["amt"] = Window_UnformattedTextPokemon.newWithSize("", x-24+46, 240+56, 270+1, 200)
+     @sprites2["amt"] = Window_UnformattedTextPokemon.newWithSize("", x-24+46, 256+56, 270+1, 200)
      @sprites2["amt"].visible = true
      @sprites2["amt"].windowskin  = nil
      @sprites2["durawindow"] = Window_UnformattedTextPokemon.new("")
@@ -1810,7 +1810,7 @@ end
 EventHandlers.add(:on_step_taken, :tension_screen,
   proc { |mevent|
     next if !$scene.is_a?(Scene_Map)
-	 next if $PokemonSystem.tension_screen==0
+	 next if $PokemonSystem.tension_screen==1
     #next if mevent != $game_player && $game_temp.current_pkmn_controlled==false && !TrainerSensor.triggered?
     #next if $game_temp.current_pkmn_controlled!=false && mevent != $game_temp.current_pkmn_controlled && !TrainerSensor.triggered?
 	event2 = $game_player if $game_temp.current_pkmn_controlled==false

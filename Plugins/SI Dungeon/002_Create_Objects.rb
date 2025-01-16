@@ -22,8 +22,6 @@ class Game_Map
     event.pages[0].through = false #Sets movement type.
     event.pages[0].trigger = 0 #Action Button
     #--- event commands of the event -------------------------------------
-    mapId = $game_map.map_id
-    Compiler::push_script(event.pages[0].list,sprintf("puts 'hi'"))
 	Compiler::push_script(event.pages[0].list,sprintf("ov_mining2(#{object})"))
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)

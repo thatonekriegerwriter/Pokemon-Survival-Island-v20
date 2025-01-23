@@ -961,9 +961,9 @@ class Battle::Scene::SafariDataBox < Sprite
 	when 2  
 	case $shifted3  
 	 when 0
-    textpos.push([_INTL("Stone x{2}", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
-	 when 1
     textpos.push([_INTL("Punch", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
+	 when 1
+    textpos.push([_INTL("Stone x{2}", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
 	 when 2
     textpos.push([_INTL("Machete", $player.name,$bag.quantity(:STONE)), 30, 40, false, base, shadow])
 	end
@@ -1883,16 +1883,6 @@ class SafariBattle
 			pbDisplayPaused2(_INTL("You overexerted yourself using your Machete!"))
 		 end 
 	  when 1
-	    if $player.decreaseStamina(10)
-		  pkmn.hp -= rand(5)+6
-          pbDisplayBrief(_INTL("You punched the {1}!", pkmn.name))
-          @battlers[@party2.index(pkmn)+1].attackFactor  -= 7                       # Easier to catch
-          @battlers[@party2.index(pkmn)+1].escapeFactor += 5  # More likely to escape
-		  @cmd = 7
-		 else
-			pbDisplayPaused2(_INTL("You overexerted yourself while punching!"))
-		 end 
-	  when 0		 
          if $bag.quantity(:STONE) < 1
           pbDisplayBrief(_INTL("You do not have enough Stones!"))
 		  elsif decreaseStamina(10)
@@ -1912,6 +1902,22 @@ class SafariBattle
 		  end
          end
 
+	  
+	  
+	  
+
+
+	  when 0	
+	    if $player.decreaseStamina(10)
+		  pkmn.hp -= rand(5)+6
+          pbDisplayBrief(_INTL("You punched the {1}!", pkmn.name))
+          @battlers[@party2.index(pkmn)+1].attackFactor  -= 7                       # Easier to catch
+          @battlers[@party2.index(pkmn)+1].escapeFactor += 5  # More likely to escape
+		  @cmd = 7
+		 else
+			pbDisplayPaused2(_INTL("You overexerted yourself while punching!"))
+		 end 
+	 
     end
 
  end
@@ -2214,9 +2220,6 @@ end
 	    if $player.playerhealth <=0
 		 pbDisplayPaused(_INTL("You've died to {1}! ",pkmn.name))
 		 @decision = 2
-		elsif pkmn.hp <= 0
-		 pbDisplayPaused(_INTL("You've knocked out {1}! ",pkmn.name))
-		 @decision = 1
 		end
 
 
@@ -2522,7 +2525,15 @@ module Battle::CatchAndStoreMixin
   def pbStorePokemon(pkmn)
     # Nickname the Pokémon (unless it's a Shadow Pokémon)
     if !pkmn.shadowPokemon?
-      if $PokemonSystem.givenicknames == 0 &&
+      
+	 if nuzlocke_has?(:NICKNAMES)
+      nickname = ""
+	    loop do
+        nickname = @scene.pbNameEntry(_INTL("{1}'s nickname?", pkmn.speciesName), pkmn)
+	    break if nickname.length>2
+	    end
+        pkmn.name = nickname
+    elsif $PokemonSystem.givenicknames == 0 &&
          pbDisplayConfirm(_INTL("Would you like to give a nickname to {1}?", pkmn.name))
         nickname = @scene.pbNameEntry(_INTL("{1}'s nickname?", pkmn.speciesName), pkmn)
         pkmn.name = nickname

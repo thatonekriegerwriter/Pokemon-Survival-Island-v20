@@ -316,6 +316,15 @@ class PokemonGlobalMetadata
   end
 end
 
+class Game_Event < Game_Character
+attr_accessor   :extra_events_id
+ 
+ def extra_events_id
+   @extra_events_id = @event.id if @extra_events_id.nil?
+  return @extra_events_id
+ end
+
+end
 
 
 class ExtraEvents
@@ -330,8 +339,11 @@ def initialize
     @special   = {}
     @misc = {}
 end
-
-  def addMovedEvent(type,key_id,x=nil,y=nil,direction=nil)
+  def clearOverworldPokemonMemory
+    @pokemon   = {}
+  end
+  def addMovedEvent(type,key_id,x=nil,y=nil,direction=nil) 
+   #THIS IS PASSING KEY ID YOU NEED TO PASS EVENT.
      case type
       when :OBJECT
 	   $ExtraEvents.objects[key_id].event.x=$game_map.events[key_id].x = x if !x.nil?
@@ -1062,7 +1074,7 @@ end
           end
         end
       end
-		$ExtraEvents.removethisEvent(:SPECIAL,@id)
+		$ExtraEvents.removethisEvent(:SPECIAL,extra_events_id)
       $game_map.events.delete(@id)
     else
       if $map_factory

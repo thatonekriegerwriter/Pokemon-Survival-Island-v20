@@ -121,7 +121,7 @@ def move_to_event(event_a = nil, event_b = nil, wait_for_completion = false)
   event_a = pbMapInterpreter.get_character(0) if event_a.nil? && pbMapInterpreter
   event_b = pbMapInterpreter.get_character(-1) if event_b.nil? && pbMapInterpreter
   # Return if the event is already at the desired location
-  return if (!event_a || !event_b) || (event_a.x == event_b.x && event_a.y == event_b.y)
+  return true if (!event_a || !event_b) || (event_a.x == event_b.x && event_a.y == event_b.y)
   # Calculates the pathfinding based on whether through is on
   if event_a.through
     moveroute = calc_path_through(event_a, [event_b.x, event_b.y])
@@ -131,6 +131,8 @@ def move_to_event(event_a = nil, event_b = nil, wait_for_completion = false)
   
   # Performs the moveroute
   pbAStarMoveRoute(event_a, moveroute, wait_for_completion) if !moveroute.is_a?(TrueClass) && !moveroute.is_a?(FalseClass)
+  return true if (!event_a || !event_b) || (event_a.x == event_b.x && event_a.y == event_b.y)
+  return false
 end
 
 # Calculates the pathfinding liniar
@@ -481,7 +483,7 @@ commands_duplicate = commands.map do |command|
     command # In case of any other values, keep them as they are
   end
 end
-#puts commands_duplicate.to_s
+puts commands_duplicate.to_s
   route = RPG::MoveRoute.new
   route.repeat    = false
   route.skippable = true

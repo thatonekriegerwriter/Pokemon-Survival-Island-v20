@@ -13,6 +13,88 @@
 #==============================================================================#
 #Thanks Maurili and Vendily for the Original Hunger Script  
 
+def pbPurify(pkmn, scene)
+  return if !pkmn.shadowPokemon? || pkmn.heart_gauge != 0
+  $stats.shadow_pokemon_purified += 1
+  pkmn.shadow = false
+  pkmn.hyper_mode = false
+  pkmn.giveRibbon(:NATIONAL)
+  GameData::Stat.each_main do |s|
+    pkmn.raw_shadow_bonus[s.id]       = 0
+  end
+  pkmn.update_level_cap_for_shadow
+  scene.pbDisplay(_INTL("{1} opened the door to its heart!", pkmn.name))
+  old_moves = []
+  pkmn.moves.each { |m| old_moves.push(m.id) }
+  pkmn.update_shadow_moves
+  pkmn.moves.each_with_index do |m, i|
+    next if m.id == old_moves[i]
+    scene.pbDisplay(_INTL("{1} regained the move {2}!", pkmn.name, m.name))
+  end
+  pkmn.record_first_moves
+  if pkmn.saved_ev
+    pkmn.add_evs(pkmn.saved_ev)
+    pkmn.saved_ev = nil
+  end
+  pbDoLevelUps(pkmn)
+  
+	 if nuzlocke_has?(:NICKNAMES)
+      nickname = ""
+	    loop do
+      nickname = pbEnterPokemonName(_INTL("{1}'s nickname?", pkmn.speciesName),
+                                    0, Pokemon::MAX_NAME_SIZE, "", pkmn.speciesName, true)
+	    break if nickname.length>2
+	    end
+      pkmn.name = nickname
+      @nicknamed = true
+    elsif $PokemonSystem.givenicknames == 0 &&
+     scene.pbConfirm(_INTL("Would you like to give a nickname to {1}?", pkmn.speciesName))
+    newname = pbEnterPokemonName(_INTL("{1}'s nickname?", pkmn.speciesName),
+                                 0, Pokemon::MAX_NAME_SIZE, "", pkmn)
+    pkmn.name = newname
+  end
+end
+
+def pbIncreaseLevelCap(pkmn,stat,amt)
+ pkmn.level_cap_bonus+=amt
+end
+
+def pbDecreaseLevelCap(pkmn,stat,amt)
+ pkmn.level_cap_bonus-=amt
+end
+
+def pbIncreaseStat(pkmn,stat,amt)
+ pkmn.raw_stat_bonus[stat]+=amt
+end
+
+def pbDecreaseStat(pkmn,stat,amt)
+ pkmn.raw_stat_bonus[stat]-=amt
+end
+
+def pbDecreaseShadStat(pkmn,stat,amt)
+ pkmn.raw_shadow_bonus[stat]-=amt
+end
+
+def pbDecreaseShadStat(pkmn,stat,amt)
+ pkmn.raw_shadow_bonus[stat]-=amt
+end
+
+def pbDecreasePureStat(pkmn,stat,amt)
+ pkmn.raw_purified_bonus[stat]-=amt
+end
+
+def pbDecreasePureStat(pkmn,stat,amt)
+ pkmn.raw_purified_bonus[stat]-=amt
+end
+
+def pbDecreaseTempStat(pkmn,stat,amt)
+ pkmn.raw_temp_bonus[stat]-=amt
+end
+
+def pbDecreaseTempStat(pkmn,stat,amt)
+ pkmn.raw_temp_bonus[stat]-=amt
+end
+
 class Pokemon
   attr_accessor :happiness
   attr_accessor :loyalty
@@ -44,6 +126,14 @@ class Pokemon
   attr_accessor :associatedevent
   attr_accessor :deselecttimer
   attr_accessor :overworld_targets
+  attr_accessor :stored_exp
+  attr_accessor :level_cap
+  attr_accessor :level_cap_basic
+  attr_accessor :level_cap_bonus
+  attr_accessor :raw_stat_bonus
+  attr_accessor :raw_shadow_bonus
+  attr_accessor :raw_purified_bonus
+  attr_accessor :raw_temp_bonus
   
   
   class Move
@@ -97,14 +187,96 @@ def initialize(species, level, owner = $player, withMoves = true, recheck_form =
     @iframes     = 0
     @associatedevent     = nil
     @deselecttimer     = 0
+    @stored_exp     = 0
+    @level_cap_bonus     = 0
+    @level_cap_basic     = pbPersonalLevelCap(self)
+    @level_cap = @level_cap_basic
     @overworld_targets = {}
+    @raw_stat_bonus               = {}
+    @raw_shadow_bonus               = {}
+    @raw_purified_bonus               = {}
+    @raw_temp_bonus               = {}
+    GameData::Stat.each_main do |s|
+      @raw_stat_bonus[s.id]       = 0
+      @raw_shadow_bonus[s.id]       = 0
+      @raw_purified_bonus[s.id]       = 0
+      @raw_temp_bonus[s.id]       = [0,0]
+    end
 
 end
+   
+   def raw_stat_bonus
+   if @raw_stat_bonus.nil?
+   @raw_stat_bonus = {}
+    GameData::Stat.each_main do |s|
+      @raw_stat_bonus[s.id]       = 0
+    end
+   end
+   return @raw_stat_bonus
+   end
 
+   
+   def raw_shadow_bonus
+   if @raw_shadow_bonus.nil?
+   @raw_shadow_bonus = {}
+    GameData::Stat.each_main do |s|
+      @raw_shadow_bonus[s.id]       = 0
+    end
+   end
+   return @raw_shadow_bonus
+   end
+
+   
+   def raw_purified_bonus
+   if @raw_purified_bonus.nil?
+   @raw_purified_bonus = {}
+    GameData::Stat.each_main do |s|
+      @raw_purified_bonus[s.id]       = 0
+    end
+   end
+   return @raw_purified_bonus
+   end
+
+   
+   def raw_temp_bonus
+   if @raw_temp_bonus.nil?
+   @raw_temp_bonus = {}
+    GameData::Stat.each_main do |s|
+      @raw_temp_bonus[s.id]       = [0,0]
+    end
+   end
+   return @raw_temp_bonus
+   end
+
+
+   def update_level_cap
+      @level_cap = @level_cap_basic + @level_cap_bonus
+   end
+   
+   def update_level_cap_for_shadow
+      cap = pbPersonalLevelCap(self)
+	  if cap > @level_cap_basic
+	   @level_cap_basic = cap
+	  end
+	  update_level_cap
+   end
+   
    def associatedevent
    return @associatedevent
    end
 
+   def stored_exp
+   @stored_exp = 0 if @stored_exp.nil?
+   return @stored_exp
+   end
+   
+
+   def level_cap
+   @level_cap_basic = pbPersonalLevelCap(self) if @level_cap_basic.nil?
+   @level_cap = @level_cap_basic if @level_cap.nil?
+   return @level_cap
+   end
+   
    def inworld
    @inworld = false if @inworld.nil?
    return @inworld
@@ -183,7 +355,85 @@ end
    def in_world
     return @inworld
    end
-   
+
+
+  # @return [Hash<Integer>] this Pokémon's base stats, a hash with six key/value pairs
+  def baseStats
+    this_base_stats = species_data.base_stats
+    ret = {}
+    GameData::Stat.each_main { |s| ret[s.id] = this_base_stats[s.id] }
+    return ret
+  end
+
+  # Returns this Pokémon's effective IVs, taking into account Hyper Training.
+  # Only used for calculating stats.
+  # @return [Hash<Integer>] hash containing this Pokémon's effective IVs
+  def calcIV
+    this_ivs = self.iv
+    ret = {}
+    GameData::Stat.each_main do |s|
+      ret[s.id] = (@ivMaxed[s.id]) ? IV_STAT_LIMIT : this_ivs[s.id]
+    end
+    return ret
+  end
+
+
+  # @return [Integer] the maximum HP of this Pokémon
+  def calcHP(base, level, iv, ev, modifiers, shadow, pure, temp)
+    return 1 + modifiers + shadow + pure + temp if base == 1   # For Shedinja
+    return (((((base * 2) + iv + (ev / 4)) * level / 100).floor + level + 10) * dynamax_boost).ceil + modifiers + shadow + pure + temp
+  end
+
+  # @return [Integer] the specified stat of this Pokémon (not used for total HP)
+  def calcStat(base, level, iv, ev, nat, modifiers, shadow, pure, temp)
+    return (((((base * 2) + iv + (ev / 4)) * level / 100).floor + 5) * nat / 100).floor + modifiers + shadow + pure + temp
+  end
+
+
+
+  def calc_stats
+    if should_force_revert?
+      @reverted = true if dynamax?
+      @dynamax = false
+      @gmax_factor = false
+    end
+    base_stats = self.baseStats
+    this_level = self.level
+    this_IV    = self.calcIV
+    # Format stat multipliers due to nature
+    nature_mod = {}
+    GameData::Stat.each_main { |s| nature_mod[s.id] = 100 }
+    this_nature = self.nature_for_stats
+    if this_nature
+      this_nature.stat_changes.each { |change| nature_mod[change[0]] += change[1] }
+    end
+    # Calculate stats
+    stats = {}
+    GameData::Stat.each_main do |s|
+      if s.id == :HP
+        stats[s.id] = calcHP(base_stats[s.id], this_level, this_IV[s.id], @ev[s.id], self.raw_stat_bonus[s.id], self.raw_shadow_bonus[s.id], self.raw_purified_bonus[s.id], self.raw_temp_bonus[s.id][0])
+      else
+        stats[s.id] = calcStat(base_stats[s.id], this_level, this_IV[s.id], @ev[s.id], nature_mod[s.id], self.raw_stat_bonus[s.id], self.raw_shadow_bonus[s.id], self.raw_purified_bonus[s.id], self.raw_temp_bonus[s.id][0])
+      end
+    end
+    hp_difference = stats[:HP] - @totalhp
+    @totalhp = stats[:HP]
+    self.hp = [@hp + hp_difference, 1].max if @hp > 0 || hp_difference > 0
+    @attack  = stats[:ATTACK]
+    @defense = stats[:DEFENSE]
+    @spatk   = stats[:SPECIAL_ATTACK]
+    @spdef   = stats[:SPECIAL_DEFENSE]
+    @speed   = stats[:SPEED]
+    # Resets remaining Dynamax attributes for ineligible Pokemon.
+    if should_force_revert?
+      @dynamax_lvl = 0
+      @reverted = false
+      @dynamax_able = false
+    end
+  end
+
+
+
    
   # @return [Integer] the height of this Pokémon in decimetres (0.1 metres)
   def height
@@ -665,7 +915,7 @@ class Player < Trainer
     @playerstateffect     = "None"    
     @punch_cooldown     = 0     # Text input mode (0=PSID, 1=PSIA)
     @healthiness     = 100
-    @disease     = :NONE
+    @disease     = []
     @iframes     = 0
     @running     = false
     @stages      = getStages
@@ -678,7 +928,40 @@ class Player < Trainer
 	
   end
   
+   
+   
+   def add_disease(disease_id,length=8,severity=:NORMAL)
+      disease = GameData::Diseases.try_get(disease_id)
+      return false if disease.nil?
+	   index = has_disease?(disease_id)
+	   if index==false
+        @disease << Disease.new(disease,length,severity)
+		else
+		 curdisease = @disease[index]
+		 curdisease.length += length
+		 curdisease.severity += severity
+		end
+   end
+   def remove_disease(disease_id)
+      disease = GameData::Diseases.try_get(disease_id)
+      return false if disease.nil?
+	   index = has_disease?(disease_id)
+	   if index!=false
+        @disease.delete_at(index)
+      end
+   end
+   def has_disease?(disease_id)
+      @disease = [] if @disease.nil?
+      @disease = [] if @disease == :NONE
+      @disease.each_with_index do |disease,index|
+	    next if disease.id!=disease_id
+	     return index
+	  end
+     return false
+   end
 end
+
+
 
 
 
@@ -1123,16 +1406,16 @@ def pbSleepRestore(wari,vari=nil)
   end
 #       FoodWater     #
  if $player.playersaturation==0
-   $player.playerfood=$player.playerfood-(wari*2)
-   $player.playerwater=$player.playerwater-(wari*2)
+   $player.playerfood=$player.playerfood-(wari*1.25)
+   $player.playerwater=$player.playerwater-(wari*1.25)
   else
-   if $player.playersaturation-(wari*7) < 0
-    potato = $player.playersaturation-(wari*7)
-	$player.playersaturation=0
-   $player.playerfood=$player.playerfood+(potato*2)
-   $player.playerwater=$player.playerwater+(potato*2)
+   if $player.playersaturation-(wari*7) < 0.0
+    potato = $player.playersaturation-(wari*2)
+	$player.playersaturation=0.0
+   $player.playerfood=$player.playerfood+(potato*1.25)
+   $player.playerwater=$player.playerwater+(potato*1.25)
    else
-   $player.playersaturation=$player.playersaturation-(wari*7)
+   $player.playersaturation=$player.playersaturation-(wari*2)
    end
  end
 
@@ -1148,8 +1431,8 @@ def pbSleepRestore(wari,vari=nil)
 				 if pkmn.sleep > 100
 				 pkmn.sleep= 100  
 				 end
-				 pkmn.food=pkmn.food-(wari*2)
-				 pkmn.water=pkmn.water-(wari*2)
+				 pkmn.food=pkmn.food-(wari*1.25)
+				 pkmn.water=pkmn.water-(wari*1.25)
 				 end
 #       Daycare     #
   deposited = DayCare.count
@@ -1246,7 +1529,9 @@ pkmn.water+=100
 return true
 when :FRESHWATER
 pkmn.water+=100
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 
 return true
 when :ATKCURRY
@@ -1281,14 +1566,18 @@ pkmn.food+=100
 return true
 when :SODAPOP
 pkmn.water-=100
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
-$bag.add(:GLASSBOTTLE,1)
 
 return true
 when :LEMONADE
 pkmn.water+=100
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
-$bag.add(:GLASSBOTTLE,1)
 
 return true
 when :HONEY
@@ -1297,7 +1586,9 @@ pkmn.food+=60
 return true
 when :MOOMOOMILK
 pkmn.water+=100
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 
 return true
 when :CSLOWPOKETAIL
@@ -1366,7 +1657,9 @@ pkmn.food+=100
 return true
 when :SITRUSJUICE
 pkmn.water+=100
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 
 return true
 when :BERRYMASH
@@ -1406,9 +1699,11 @@ $bag.remove(item)
 
 case GameData::Item.get(item).id
 when :WATER
-increaseFood(10)
-damagePlayer(7.0)
-$bag.add(:GLASSBOTTLE,1)
+increaseWater(10)
+damagePlayer(10.0)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 
 
 return true
@@ -1533,13 +1828,17 @@ increaseFood(1)
 increaseHealth(1.0)
 return true
 when :BERRYJUICE
-increaseFood(4)
-increaseWater(2.0)
-$bag.add(:BOWL,1)
+increaseFood(2.0)
+increaseWater(4.0)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 when :FRESHWATER
 increaseWater(20.0)
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 #You can add more if you want
 when :ATKCURRY
@@ -1596,13 +1895,17 @@ when :SODAPOP
 increaseFood(11)
 increaseSaturation(30)
 increaseSleep(25)
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 when :LEMONADE
 increaseFood(11)
 increaseSaturation(10)
 increaseSleep(7)
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 when :HONEY
 increaseSaturation(20)
@@ -1610,7 +1913,9 @@ return true
 when :MOOMOOMILK
 increaseSaturation(10)
 increaseWater(15)
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 when :CSLOWPOKETAIL
 increaseFood(20)
@@ -1674,7 +1979,7 @@ increaseFood(1)
 increaseSaturation(6)
 return true
 when :BREAD
-increaseWater(10)
+increaseFood(10)
 increaseSaturation(10)
 return true
 when :TEA
@@ -1694,7 +1999,9 @@ when :SITRUSJUICE
 increaseFood(6)
 increaseHealth(25)
 increaseSaturation(20)
-$bag.add(:GLASSBOTTLE,1)
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 return true
 when :BERRYMASH
 increaseFood(1)
@@ -2001,59 +2308,6 @@ def damagePlayer(amount,iframes=false)
   iframes=5 if iframes==true
   puts "#{$player.name}: #{$player.playerhealth}/#{$player.playermaxhealth2} - #{amount}"
 end
-
-
-MenuHandlers.add(:options_menu, :survivalmode, {
-  "name"        => _INTL("Survival Mode"),
-  "parent"      => :gameplay_menu2,
-  "order"       => 37,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("On"), _INTL("Off")],
-  "condition"   => proc { next $player },
-  "description" => _INTL("Choose whether or not you play in Survival Mode."),
-  "get_proc"    => proc { next $PokemonSystem.survivalmode },
-  "set_proc"    => proc { |value, scene| $PokemonSystem.survivalmode = value }
-})
-
-MenuHandlers.add(:options_menu, :temperature, {
-  "name"        => _INTL("Ambient Temperature"),
-  "parent"      => :gameplay_menu2,
-  "order"       => 39,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("On"), _INTL("Off")],
-  "description" => _INTL("Choose whether or not Survival Mode has Temperature Mechanics."),
-  "condition"   => proc { next $PokemonSystem.survivalmode == 0 && $player},
-  "get_proc"    => proc { next $PokemonSystem.temperature },
-  "set_proc"    => proc { |value, scene| $PokemonSystem.temperature = value }
-})
-
-MenuHandlers.add(:options_menu, :nuzlockemode, {
-  "name"        => _INTL("Nuzlocke Mode"),
-  "parent"      => :gameplay_menu2,
-  "order"       => 40,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("On"), _INTL("Off")],
-  "condition"   => proc { next $player },
-  "description" => _INTL("Choose whether or not you play in Nuzlocke Mode."),
-  "get_proc"    => proc { next $PokemonSystem.nuzlockemode },
-  "set_proc"    => proc { |value, scene| $PokemonSystem.nuzlockemode = value 
-  if $PokemonSystem.nuzlockemode == 0
-    if Nuzlocke.definedrules? == true
-      if Nuzlocke.on? == false
-    scene.sprites["textbox"].text = ("Nuzlocke has been turned on.")
-      Nuzlocke.toggle(true)
-      end
-    else 
-    scene.sprites["textbox"].text = ("Nuzlocke has been started.")
-      Nuzlocke.start
-    end
-  else
-    if Nuzlocke.on? 
-      Nuzlocke.toggle(false)
-    scene.sprites["textbox"].text = ("Nuzlocke has been turned off.")
-    end
-  end}
-})
 
 
 def togglescaling

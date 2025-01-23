@@ -1519,14 +1519,14 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
 		end
 		$PokemonGlobal.battlingSpawnedPokemon = true
 		if poke.status==:PARALYSIS||poke.status==:SLEEP||poke.status==:FROZEN
-        pbMessage("\\ts[]" + (_INTL"#{pkmn.name} got a quick hit on #{poke.name}!\\wtnp[10]"))
+        sideDisplay(_INTL("#{pkmn.name} got a quick hit on #{poke.name}!\\wtnp[10]"))
         damage = getDamager(poke,1,:TACKLE,false)
         poke.hp-= damage
 		end
 	  
 		if poke.fainted?
         event.removeThisEventfromMap
-        pbPlayerEXP(poke)
+        pbPlayerEXP(poke,pbOverworldCombat.get_allied_pokemon)
         pbHeldItemDropOW(poke,true)
 		else
         pbSingleOrDoubleWildBattle( $game_map.map_id, event.x, event.y, poke )
@@ -1579,6 +1579,20 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
 ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_poke_ball? }, proc { |item|
     next if $player.is_it_this_class?(:RANGER,false)
 	next if $game_temp.in_throwing==true
+	if nuzlocke_has?(:NOOVCATCHING)
+	  sideDisplay(_INTL("Overworld Catching is disabled!"))
+	next
+	end
+	if nuzlocke_has?(:ONEROUTE)
+      static = data.include?(:STATIC) && !$nuzx_static_enc
+      shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
+      map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
+	  if !map.nil? && !static && !shiny
+	  sideDisplay(_INTL("Your enabled challenges say you cannot catch a wild Pokemon on this map!!"))  
+	   next
+	  end
+	next
+	end
 	amt=1
 	do_it = false
     do_it,amt,start_end = throwing_range_logic(do_it, amt)
@@ -1644,10 +1658,7 @@ ItemHandlers::UseFromBox.add(:BAIT, proc { |item|
      if event.is_a?(Game_PokeEvent)
    pkmn = event.pokemon
    pbSEPlay("Battle ball hit")
-  if event.ov_battle.nil?
-	event.ov_battle=OverworldCombat.new(event)			    
-  end
-	thefight = event.ov_battle
+	thefight = pbOverworldCombat
 	thefight.player_action(event,item,dir)
 	next true
 	elsif terrain.land_wild_encounters
@@ -1724,10 +1735,7 @@ ItemHandlers::UseFromBox.add(:STONE, proc { |item|
      if event.is_a?(Game_PokeEvent)
    pkmn = event.pokemon
    pbSEPlay("Battle ball hit")
-  if event.ov_battle.nil?
-	event.ov_battle=OverworldCombat.new(event)			    
-  end
-	thefight = event.ov_battle
+	thefight = pbOverworldCombat
 	thefight.player_action(event,item,dir)
 	next true
 	end
@@ -1787,10 +1795,7 @@ ItemHandlers::UseFromBox.add(:MACHETE, proc { |item|
    event = $game_map.events[id]
      if event.is_a?(Game_PokeEvent)
    pkmn = event.pokemon
-  if event.ov_battle.nil?
-	event.ov_battle=OverworldCombat.new(event)			    
-  end
-	thefight = event.ov_battle
+	thefight = pbOverworldCombat
 	thefight.player_action(event,item,dir)
 	next true
 	 elsif facingEvent
@@ -1842,10 +1847,7 @@ ItemHandlers::UseFromBox.add(:IRONPICKAXE,proc{|item|
    event = $game_map.events[id]
      if event.is_a?(Game_PokeEvent)
    pkmn = event.pokemon
-  if event.ov_battle.nil?
-	event.ov_battle=OverworldCombat.new(event)			    
-  end
-	thefight = event.ov_battle
+	thefight = pbOverworldCombat
 	thefight.player_action(event,item,dir)
 	next true
   elsif facingEvent

@@ -226,63 +226,8 @@ class Pokemon
   def dynamax_calc;    return (1.5 + (dynamax_lvl.to_f * 0.05));  end
   def dynamax_boost;   return (dynamax?) ? dynamax_calc : 1;      end
   
-  def calcHP(base, level, iv, ev)
-    return 1 if base == 1
-    return ((((base * 2 + iv + (ev / 4)) * level / 100).floor + level + 10) * dynamax_boost).ceil
-  end
-  
-  def calc_stats
-    # Forces an ineligible Pokemon to un-Dynamax.
-    if should_force_revert?
-      @reverted = true if dynamax?
-      @dynamax = false
-      @gmax_factor = false
-    end
-    base_stats = self.baseStats
-    this_level = self.level
-    this_IV    = self.calcIV
-    nature_mod = {}
-    GameData::Stat.each_main { |s| nature_mod[s.id] = 100 }
-    this_nature = self.nature_for_stats
-    if this_nature
-      this_nature.stat_changes.each { |change| nature_mod[change[0]] += change[1] }
-    end
-    stats = {}
-    GameData::Stat.each_main do |s|
-      if s.id == :HP
-        stats[s.id] = calcHP(base_stats[s.id], this_level, this_IV[s.id], @ev[s.id])
-      else
-        stats[s.id] = calcStat(base_stats[s.id], this_level, this_IV[s.id], @ev[s.id], nature_mod[s.id])
-      end
-    end
-    # Dynamax HP calcs
-    old_hp_diff = @totalhp - @hp # For Eternatus
-    if dynamax? && !reverted?
-      @totalhp = stats[:HP]
-      self.hp  = (@hp * dynamax_calc).ceil
-      self.hp  = [@totalhp - old_hp_diff, 1].max if canEmax?
-    elsif reverted? && !dynamax?
-      @totalhp = stats[:HP]
-      self.hp  = (@hp / dynamax_calc).round
-      self.hp  = [@totalhp - old_hp_diff, 1].max if canEmax?
-    else
-      hp_difference = stats[:HP] - @totalhp
-      @totalhp = stats[:HP]
-      self.hp = [@hp + hp_difference, 1].max if @hp > 0 || hp_difference > 0
-    end
-    @attack  = stats[:ATTACK]
-    @defense = stats[:DEFENSE]
-    @spatk   = stats[:SPECIAL_ATTACK]
-    @spdef   = stats[:SPECIAL_DEFENSE]
-    @speed   = stats[:SPEED]
-    # Resets remaining Dynamax attributes for ineligible Pokemon.
-    if should_force_revert?
-      @dynamax_lvl = 0
-      @reverted = false
-      @dynamax_able = false
-    end
-  end
-  
+
+
   def calc_lair_evs
     GameData::Stat.each_main { |s| @ev[s.id] = 0 }
     rand_ev = rand(6)

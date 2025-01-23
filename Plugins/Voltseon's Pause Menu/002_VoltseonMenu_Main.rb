@@ -289,6 +289,10 @@ end
 # Overriding the default Pause Menu Screen calls
 #-------------------------------------------------------------------------------
 class Scene_Map
+
+  def viewport
+    return Spriteset_Map.viewport
+  end
   def call_menu
     $game_temp.menu_calling = false
     $game_temp.in_menu = true

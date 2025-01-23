@@ -519,7 +519,20 @@ end
     when 5    then move_forward
     end
   end
+  
+  
 
+  def turn_toward_event(target)
+    sx = @x + (@width / 2.0) - (target.x + (target.width / 2.0))
+    sy = @y - (@height / 2.0) - (target.y - (target.height / 2.0))
+    return if sx == 0 && sy == 0
+    if sx.abs > sy.abs
+      (sx > 0) ? turn_left : turn_right
+    else
+      (sy > 0) ? turn_up : turn_down
+    end
+  end
+  
 end
 class Sprite_Character < RPG::Sprite
   attr_accessor :nux

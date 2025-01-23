@@ -626,6 +626,7 @@ end
 def pailInteraction
 current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 return false if $PokemonGlobal.ball_hud_enabled==false
+return false if current_selection.nil?
 return false if current_selection.is_a?(Pokemon)
 return false if !GameData::BerryPlant::WATERING_CANS.include?(current_selection.id)
 ItemHandlers.triggerUseFromBox(current_selection)
@@ -668,6 +669,7 @@ def pbBerryPlant
     this_event.turn_up   # Stop the event turning towards the player
 	theyield = berry_plant.berry_yield
 	if theyield>0
+	 puts theyield
     berry_plant.reset if pbPickBerry(berry, theyield, true, berry_plant.mutated_berry_info)
 	else
      pbMessage(_INTL("There were no berries on the bush!"))
@@ -840,6 +842,7 @@ end
 
 def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   
+	 puts qty
   qty *= 2 if $player.activeCharm?(:BERRYCHARM)
   interp = pbMapInterpreter
   this_event = interp.get_self
@@ -956,7 +959,7 @@ if true
     message = "\\me[Berry get]\\PN "
     message += "knocked down the" if show_log == true
     message += "picked the" if show_log == false
-	 message += " #{qty}" if qty > 1 
+	 message += " #{qty}" if qty > 1 && !(berry == :ACORN || berry == :APPLE)
     message += " \\c[1]#{berry_name}\\c[0]#{berry_name_extra}"
 	 message += ", and also picked the #{mut_berry_name}#{berry_name_extra2}" if (!mutation_info.nil? && show_log == false) && mut_berry_qty == 1
 	 message += ", and also picked the #{mut_berry_qty} #{mut_berry_name}  #{berry_name_extra2}" if (!mutation_info.nil? && show_log == false) && mut_berry_qty > 1
@@ -1271,6 +1274,7 @@ class BerryPlantData
     data = GameData::BerryPlant.get(@berry_id)
     min_yield = data.minimum_yield
 	max_yield = data.max_yield 
+	 puts min_yield
 	 case @mulch_id
       when :PRODUCEMULCH
         min_yield+=(rand(2)+2)
@@ -1298,13 +1302,19 @@ class BerryPlantData
 	 
 	 
 	 get_penalties
+	 puts @yield_penalty
      ret =  [(max_yield * (5 + @yield_penalty) / 5), max_yield].max
+	 puts ret
 	 @exposed_to_preferred_weather=false if @exposed_to_preferred_weather.nil?
      ret += Settings::BERRY_PREFERRED_WEATHER_YIELD if @exposed_to_preferred_weather
      ret += 2 if @mulch_id == :RICHMULCH
 	 if ret > max_yield
 	   ret = max_yield
 	 end 
+	 if ret < min_yield
+	   ret = min_yield
+	 end 
+	 puts ret
     return ret
 	
   end

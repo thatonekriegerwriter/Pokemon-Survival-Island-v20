@@ -23,8 +23,8 @@ MENU_FILE_PATH = "Graphics/Pictures/Voltseon's Pause Menu/"
 # need to be loaded
 MENU_ENTRIES = [
 	"MenuEntryPokemon", "MenuEntryPokedex", "MenuEntryBag", "MenuEntryTips",
-	"MenuEntryTrainer", "MenuEntryCraft", "MenuEntryVentures", "MenuEntrySave","MenuEntryPokegear" , "MenuEntryExitBugContest",
-	"MenuEntryDebug", "MenuEntryOptions", "MenuEntryBadge", "MenuEntryAchievements","MenuEntryMystery", "MenuEntryQuit"
+	"MenuEntryTrainer", "MenuEntryCraft", "MenuEntryVentures", "MenuEntrySave","MenuEntryPokegear",
+	"MenuEntryDebug", "MenuEntryOptions", "MenuEntryBadge", "MenuEntryMystery", "MenuEntryQuit"
 ]
 
 # An array of aLL the Menu Component Classes from 004_VoltseonMenu_Components

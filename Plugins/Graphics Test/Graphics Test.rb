@@ -1,45 +1,98 @@
 module BorderSettings
- OFFSETX = 0
- OFFSETY = 0
- SCREENPOSX = OFFSETX/2
- SCREENPOSY = OFFSETY/2
+ #OFFSETX = 100
+ #OFFSETY = 100
+ #SCREENPOSX = OFFSETX/2
+ #SCREENPOSY = OFFSETY/2
  
- BORDERSENABLED = false
+ BORDERSENABLED = true
  SELECTEDBORDER = 0 
  
- BORDERS = [
- ["Graphics/Pictures/Borders/GBA",-28,-28]
- 
- 
- 
- 
- 
- 
- 
- ]
+ BORDERS = [["Graphics/Pictures/Borders/empty",0,0, 0, 0],
+ ["Graphics/Pictures/Borders/GBA",-28,-28, 100, 100],
+ ["Graphics/Pictures/Borders/GBC",-28,-28, 100, 100],
+ ["Graphics/Pictures/Borders/GB",-28,-28, 100, 100],
+ ["Graphics/Pictures/Borders/Mini",-28,-28, 100, 100],
+ ["Graphics/Pictures/Borders/custom",-28,-28, 100, 100]]
 
 end
+class PokemonSystem
+  attr_accessor :cur_border
+  attr_accessor :borders
+  attr_accessor :offsetx
+  attr_accessor :offsety
+   
+  def cur_border
+   @cur_border = 0 if @cur_border.nil?
+   return @cur_border
+  end
+  def borders
+   @borders = Settings::BORDERS 
+   return @borders
+  end
+   
+   def offsetx
+    return $PokemonSystem.borders[$PokemonSystem.cur_border][3]
+   end
+   def offsety
+    return $PokemonSystem.borders[$PokemonSystem.cur_border][4]
+   end
+   def screenposx
+    offset = (offsety/$PokemonSystem.borders[$PokemonSystem.cur_border][5])+$PokemonSystem.borders[$PokemonSystem.cur_border][7]
+	 #puts "screenposx: #{offset}"
+    return offset
+   end
+   def screenposy
+    offset = (offsety/$PokemonSystem.borders[$PokemonSystem.cur_border][6])+$PokemonSystem.borders[$PokemonSystem.cur_border][8]
+	 #puts "screenposy: #{offset}"
+    return offset
+   end
+end
+
+
+#module Graphics
+#  if !self.respond_to?("width")
+#    def self.width; return 640; end
+#  end
+#  if !self.respond_to?("height")
+#    def self.height; return 480; end
+#  end
+#end
+
+#module Graphics
+#    def self.width
+#  	  return 640
+#    end
+#    def self.height
+#	  return 480
+#    end
+#end
+
 # I'm sorry.
 module Graphics
   # I'm sorry, again.
-if BorderSettings::OFFSETX!=0
   def self.width
-    Settings::SCREEN_WIDTH
+    width = 640
+    #return Settings::SCREEN_WIDTH if BorderSettings::OFFSETX!=0
+    width = Settings::SCREEN_WIDTH 
+	return width
   end
-end
   # I'm really sorry.
-if BorderSettings::OFFSETY!=0
   def self.height
-    Settings::SCREEN_HEIGHT
+    height = 480
+   
+    #return Settings::SCREEN_HEIGHT if BorderSettings::OFFSETY!=0
+    height = Settings::SCREEN_HEIGHT 
+	return height
   end
-end
 end
 
 class Viewport
+  attr_accessor :x 
+  attr_accessor :y
  alias :viewportinitold :initialize
   def initialize(x, y, width, height)
-   x+=BorderSettings::SCREENPOSX
-   y+=BorderSettings::SCREENPOSY
+   x+=$PokemonSystem.screenposx
+   y+=$PokemonSystem.screenposy
    viewportinitold(x, y, width, height)
   end
 end
@@ -48,8 +101,8 @@ class LocationWindow
   def initialize(name)
     @window = Window_AdvancedTextPokemon.new(name)
     @window.resizeToFit(name, Graphics.width)
-    @window.x        = 0-BorderSettings::SCREENPOSX
-    @window.y        = 0-BorderSettings::SCREENPOSY
+    @window.x        = 0-$PokemonSystem.screenposx
+    @window.y        = 0-$PokemonSystem.screenposy
     @window.viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
     @window.viewport.z = 99999
     @currentmap = $game_map.map_id
@@ -64,7 +117,7 @@ class LocationWindow
       return
     end
     if @frames > Graphics.frame_rate * 2
-      @window.y -= 4+BorderSettings::SCREENPOSY
+      @window.y -= 4+$PokemonSystem.screenposy
       @window.dispose if @window.y + @window.height < 0
     else
       @window.y += 4 if @window.y < 0
@@ -74,11 +127,11 @@ class LocationWindow
 end
 class Window_AdvancedTextPokemon < SpriteWindow_Base
   def x=(value)
-    super(value + BorderSettings::SCREENPOSX)
+    super(value + $PokemonSystem.screenposx)
   end
 
   def y=(value)
-    super(value + BorderSettings::SCREENPOSY)
+    super(value + $PokemonSystem.screenposy)
   end
 
 
@@ -86,7 +139,7 @@ end
 
 def pbSetResizeFactor(factor)
   if !$ResizeInitialized
-    Graphics.resize_screen(Settings::SCREEN_WIDTH + BorderSettings::OFFSETX, Settings::SCREEN_HEIGHT + BorderSettings::OFFSETY)
+    Graphics.resize_screen(Settings::SCREEN_WIDTH + $PokemonSystem.offsetx, Settings::SCREEN_HEIGHT + $PokemonSystem.offsety)
     $ResizeInitialized = true
   end
   if factor < 0 || factor == 5
@@ -97,6 +150,18 @@ def pbSetResizeFactor(factor)
     Graphics.center
   end
 end
+
+def pbForceResizeFactor
+    Graphics.resize_screen(Settings::SCREEN_WIDTH + $PokemonSystem.offsetx, Settings::SCREEN_HEIGHT + $PokemonSystem.offsety)
+  if $PokemonSystem.screensize < 0 || $PokemonSystem.screensize == 5
+    Graphics.fullscreen = true if !Graphics.fullscreen
+  else
+    Graphics.fullscreen = false if Graphics.fullscreen
+    Graphics.scale = ($PokemonSystem.screensize + 1) * 0.5
+    Graphics.center
+  end
+end
+
 
 def pbConnectionsEditor
   pbCriticalCode {
@@ -143,14 +208,17 @@ class Border
   @@instanceArray = []
   @@tonePerStatus = nil
   attr_reader :lastRefreshFrame
-  def initialize(viewport)
-    @viewport = viewport
+  def initialize
+    @viewport = Viewport.new(0-$PokemonSystem.screenposx, 0-$PokemonSystem.screenposy, Settings::SCREEN_WIDTH*4, Settings::SCREEN_HEIGHT*4)
+	 @viewport.z = 900000
 	@sprites = {}
     @@instanceArray.compact! 
     @@instanceArray.push(self)
   end
 
   def showHUD?
+    return false if $PokemonSystem.borders[$PokemonSystem.cur_border].nil?
+    return false if $PokemonSystem.borders[$PokemonSystem.cur_border].empty?
     return true
   end 
   def hasSprites?
@@ -177,12 +245,22 @@ class Border
   
   def createBorder
     @sprites["border"]=IconSprite.new(0,0,@viewport)
-    @sprites["border"].setBitmap(BorderSettings::BORDERS[BorderSettings::SELECTEDBORDER][0])
-    @sprites["border"].x=BorderSettings::BORDERS[BorderSettings::SELECTEDBORDER][1]
-    @sprites["border"].y=BorderSettings::BORDERS[BorderSettings::SELECTEDBORDER][2]
+    @sprites["border"].setBitmap($PokemonSystem.borders[$PokemonSystem.cur_border][0])
+    @sprites["border"].x=$PokemonSystem.borders[$PokemonSystem.cur_border][1]
+    @sprites["border"].y=$PokemonSystem.borders[$PokemonSystem.cur_border][2]
     @sprites["border"].visible = true
   end
   def refreshBorder
+  
+  def refreshBorder
+    if @currentbitmap!=$PokemonSystem.borders[$PokemonSystem.cur_border][0]
+      @sprites["border"].setBitmap($PokemonSystem.borders[$PokemonSystem.cur_border][0])
+	   @currentbitmap = $PokemonSystem.borders[$PokemonSystem.cur_border][0]
+      @sprites["border"].x=$PokemonSystem.borders[$PokemonSystem.cur_border][1]
+      @sprites["border"].y=$PokemonSystem.borders[$PokemonSystem.cur_border][2]
+	
+	end
+  end
   end
  
 
@@ -247,26 +325,15 @@ class Border
  
 end
 
-
-
-
-
 class Spriteset_Map
 
   alias :updateOldOmen :update
   def update
     updateOldOmen
-    @@viewport1.rect.set(BorderSettings::SCREENPOSX, BorderSettings::SCREENPOSY, Graphics.width, Graphics.height)
+    @@viewport1.rect.set($PokemonSystem.screenposx, $PokemonSystem.screenposy, Graphics.width, Graphics.height)
     @@viewport1.update
-	if BorderSettings::BORDERSENABLED==true
-	if !@border
-	 viewport = Viewport.new(0-BorderSettings::SCREENPOSX, 0-BorderSettings::SCREENPOSY, Settings::SCREEN_WIDTH*4, Settings::SCREEN_HEIGHT*4)
-	 viewport.z = 900000
-    @border = Border.new(viewport) 
+	
 	end
-    @border.tryUpdate
-	end
-  end
 
 
 
@@ -278,8 +345,8 @@ end
 def pbCaveEntranceEx(exiting)
   # Create bitmap
   sprite = BitmapSprite.new(Graphics.width, Graphics.height)
-  sprite.x +=BorderSettings::SCREENPOSX
-  sprite.y +=BorderSettings::SCREENPOSY
+  sprite.x +=$PokemonSystem.screenposx
+  sprite.y +=$PokemonSystem.screenposy
   sprite.z = 100000
   # Define values used for the animation
   totalFrames = (Graphics.frame_rate * 0.4).floor

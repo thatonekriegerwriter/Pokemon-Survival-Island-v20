@@ -351,8 +351,8 @@ class Adventure_Scene
 		    pbUpdateChangingGraphics
 			Graphics.update
 			pkmn = @adventureparty[pos]
-			text == "Call Back" if pkmn.location != $game_map.map_id
-			text == "Add to Party" if pkmn.location != $game_map.map_id
+			text = "Call Back" if pkmn.location != $game_map.map_id
+			text = "Add to Party" if pkmn.location == $game_map.map_id
 			answer=pbMessage("What do you want to do?", [text,"Summary","Adventuring Type", "Cancel"],-1,nil,0)
 			if answer == 0
 			  if text == "Call Back"

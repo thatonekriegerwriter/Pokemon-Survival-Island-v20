@@ -186,6 +186,8 @@ if true
  @sprites["header#{i}"]=Window_UnformattedTextPokemon.new("")
  pbPrepareWindow(@sprites["header#{i}"])
  @sprites["header#{i}"].viewport=@viewport
+ @sprites["header#{i}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sprites["header#{i}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sprites["header#{i}"].windowskin=nil
  @sprites["header#{i}"].x = 211 if i == 0
  @sprites["header#{i}"].x = 211+((@sprites["notebooktab0"].width-9)*i) if i != 0
@@ -237,7 +239,7 @@ def pagechange(dir)
   case dir
    when "left"
       if @depth==-1
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
  @selection = -1
 		  resetvariables
 	     if @cur_page>0
@@ -248,7 +250,7 @@ def pagechange(dir)
       end
    when "right"
       if @depth==-1
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
  @selection = -1
 		  resetvariables
 	     if @cur_page<3
@@ -259,7 +261,7 @@ def pagechange(dir)
       end
    when "up"
        if @depth==0 || @depth==1
-           pbSEPlay("page2")
+           pbSEPlay("page2",50)
 	    if @selection-1<0
 	    @selection=@selection_length
 		else
@@ -270,7 +272,7 @@ def pagechange(dir)
 	    
    when "down"
        if @depth==0 || @depth==1
-           pbSEPlay("page2")
+           pbSEPlay("page2",50)
 	    if @selection+1>@selection_length
 	    @selection=0
 		
@@ -289,7 +291,7 @@ def pagechange(dir)
 		 
 		 
 		 else
-           pbSEPlay("page2")
+           pbSEPlay("page2",50)
 	    @depth+=1 if @depth+1 <4
 		 @selection=0 if @selection==-1 && @depth==0
 		 
@@ -297,7 +299,7 @@ def pagechange(dir)
 		 
 		 end
    when "back"
-          pbSEPlay("page")
+          pbSEPlay("page",50)
   	    @depth-=1
 		 @selection=-1 if @depth==-1
 		
@@ -311,7 +313,7 @@ def page4
       if Input.trigger?(Input::LEFT) #SELECTING POSITION
 	   if @selection!=-1 && @depth==1
 	   elsif @selection!=-1 && @depth==2
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
        enc_array, currKey = getEncData
 		  if @selection2-1>=0
 		  @selection2-=1
@@ -323,7 +325,7 @@ def page4
         thespecies = enc_array[@selection2]
         species_data = GameData::Species.get(thespecies)
 	   if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form)
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
 		  if @selection4-1>=0
 		  @selection4-=1
 		  else
@@ -341,7 +343,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
       elsif Input.trigger?(Input::RIGHT)
 	   if @selection!=-1 && @depth==1
 	   elsif @selection!=-1 && @depth==2
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
        enc_array, currKey = getEncData
 		  if @selection2+1 < enc_array.length
 		  @selection2+=1 
@@ -354,7 +356,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
         thespecies = enc_array[@selection2]
         species_data = GameData::Species.get(thespecies)
 	   if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form)
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
 		  if @selection4+1 < 4
 		  @selection4+=1 
          else
@@ -372,7 +374,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 	  end
 	  if Input.triggerex?(:Q)
 	   if @selection!=-1 && @depth==2
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
         @index -= 1 if @index-1>-1
 		 @index = @eLength if @index==0
 		 @selection2=0
@@ -383,7 +385,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
       elsif Input.triggerex?(:E)
 	   if @selection!=-1 && @depth==2
 	  
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
         @index += 1 if @index+1<=@eLength
 		 @index = 0 if @index==@eLength
 		 @selection2=0
@@ -399,7 +401,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
       if Input.trigger?(Input::UP) || Input.repeat?(Input::UP)
 	   if @selection!=-1 && @depth>2 && @depth<2
 	   elsif @selection!=-1 && @depth>=3 && @selection4==3	
-          pbSEPlay("page2") if @startend[0]-1>-1
+          pbSEPlay("page2",50) if @startend[0]-1>-1
 		  destroy_pkmn_icons3 if @startend[0]-1>-1
          @startend[0]-=1 if @startend[0]-1>-1
          @startend[1]-=1 if @startend[1]-1>7
@@ -412,7 +414,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 
 
 		  if @selection2-5>=0
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
 		  @selection2-=5
          elsif @selection2-5 < 0
 		 
@@ -434,7 +436,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
           if @selection2>@display_length
 		   @selection2=@display_length
 		   else
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
 		  end 
 		  
 		  
@@ -446,13 +448,13 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 
 
 	   elsif @selection!=-1 && @depth==1
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
 	   	    if @selection3-1<0
 	    @selection3=@selection_length
 		
 		
 		else
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
 	    @selection3-=1
 	   
 	   end
@@ -469,7 +471,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
         enc_array, currKey = getEncData
         thespecies = enc_array[@selection2]
         species_data = GameData::Species.get(thespecies)
-          pbSEPlay("page2") if @startend[0]+1<species_data.moves.length-9
+          pbSEPlay("page2",50) if @startend[0]+1<species_data.moves.length-9
 		  destroy_pkmn_icons3 if @startend[0]+1<species_data.moves.length-9
          @startend[0]+=1 if @startend[0]+1<species_data.moves.length-9
          @startend[1]+=1 if @startend[1]+1<species_data.moves.length-1
@@ -482,7 +484,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 	   length = @display_length-1
 		  if @selection2+5 <= length
 		  @selection2+=5 
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
          elsif @selection2+5 > length
 			if @selection2-10<0
 			 @selection2 = @selection2-10+5
@@ -492,7 +494,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
           if @selection2<0
 		   @selection2=0
 		   else
-          pbSEPlay("page3")
+          pbSEPlay("page3",50)
 		  end 
 		  else
 		  @selection2=0
@@ -501,7 +503,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 
 
 	   elsif @selection!=-1 && @depth==1
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
 	   
 	   	if @selection3+1>@selection_length
 	    @selection3=0
@@ -621,7 +623,7 @@ def page2
 	   if (@depth == 1 || @depth == 2) && @selection!=-1
 	     
 	   
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
 	   	    if @selection3-1<0 && @startend[0]-1<0
 	        @selection3=@selection_length
            @startend[0]=@crafting_data[@selection].length-10
@@ -629,7 +631,7 @@ def page2
 		
 		
 		  else
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
        @startend[0]-=1 if @startend[0]-1>-1  && @selection!=-1 && (@depth==1 || @depth==2) && @selection3+@startend[0]==@startend[0]
 
 	   @selection3=0 if @selection3+@startend[0]==@startend[0]
@@ -653,7 +655,7 @@ def page2
        elsif Input.trigger?(Input::DOWN) || Input.repeat?(Input::DOWN)
 	   if @depth == 1 || @depth == 2  && @selection!=-1
 	   
-          pbSEPlay("page2")
+          pbSEPlay("page2",50)
 	   
 	   	if @selection3+1>@selection_length
 	    @selection3=0
@@ -929,7 +931,7 @@ def pbSelectMenu
     overlay.clear
     pbSetSystemFont(overlay)
     pbDrawImagePositions(overlay,@imagepos)
-    pbSEPlay("page")
+    pbSEPlay("page",50)
  
     while true
     $PokemonGlobal.addNewFrameCount 
@@ -1202,6 +1204,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["playerclassname"])
     @playericons["playerclassname"].viewport=@viewport
     @playericons["playerclassname"].windowskin=nil
+    @playericons["playerclassname"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["playerclassname"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["playerclassname"].width=240
     @playericons["playerclassname"].height=90
     @playericons["playerclassname"].x = 390
@@ -1218,6 +1222,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["playername1"])
     @playericons["playername1"].viewport=@viewport
     @playericons["playername1"].windowskin=nil
+    @playericons["playername1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["playername1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["playername1"].width=240
     @playericons["playername1"].height=90
     @playericons["playername1"].x = 20
@@ -1234,6 +1240,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["playername"])
     @playericons["playername"].viewport=@viewport
     @playericons["playername"].windowskin=nil
+    @playericons["playername"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["playername"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["playername"].width=240
     @playericons["playername"].height=90
     @playericons["playername"].x = 35
@@ -1294,6 +1302,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["starbar_bar"])
     @playericons["starbar_bar"].viewport=@viewport
     @playericons["starbar_bar"].windowskin=nil
+    @playericons["starbar_bar"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["starbar_bar"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["starbar_bar"].width=240
     @playericons["starbar_bar"].height=90
     @playericons["starbar_bar"].z=98
@@ -1309,6 +1319,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["starbar_num"])
     @playericons["starbar_num"].viewport=@viewport
     @playericons["starbar_num"].windowskin=nil
+    @playericons["starbar_num"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["starbar_num"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["starbar_num"].width=240
     @playericons["starbar_num"].height=90
     @playericons["starbar_num"].z=98
@@ -1374,6 +1386,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["health_bar"])
     @playericons["health_bar"].viewport=@viewport
     @playericons["health_bar"].windowskin=nil
+    @playericons["health_bar"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["health_bar"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["health_bar"].width=240
     @playericons["health_bar"].height=90
     @playericons["health_bar"].z=98
@@ -1389,6 +1403,8 @@ class PlayerNotebook
     pbPrepareWindow(@playericons["health_num"])
     @playericons["health_num"].viewport=@viewport
     @playericons["health_num"].windowskin=nil
+    @playericons["health_num"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @playericons["health_num"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @playericons["health_num"].width=240
     @playericons["health_num"].height=90
     @playericons["health_num"].z=98
@@ -1433,6 +1449,8 @@ def create_species
    @pkmnicons2["dex_icon"].y = 100
    @pkmnicons2["dex_icon"].z = 50
    @pkmnicons2["pkmn_name"]=Window_UnformattedTextPokemon.new("") 
+    @pkmnicons2["pkmn_name"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @pkmnicons2["pkmn_name"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  pbPrepareWindow(@pkmnicons2["pkmn_name"])
  @pkmnicons2["pkmn_name"].viewport=@viewport
  @pkmnicons2["pkmn_name"].windowskin=nil
@@ -1490,6 +1508,8 @@ end
  pbPrepareWindow(@pkmnicons2["thedexentry"])
  @pkmnicons2["thedexentry"].viewport=@viewport
  @pkmnicons2["thedexentry"].windowskin=nil
+    @pkmnicons2["thedexentry"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @pkmnicons2["thedexentry"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @pkmnicons2["thedexentry"].x = @pkmnicons2["dex_icon"].x-82
 
  @pkmnicons2["thedexentry"].y = 195
@@ -1524,6 +1544,8 @@ create_species
  pbPrepareWindow(@pkmnicons2["taskheader"])
  @pkmnicons2["taskheader"].viewport=@viewport
  @pkmnicons2["taskheader"].windowskin=nil
+    @pkmnicons2["taskheader"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @pkmnicons2["taskheader"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @pkmnicons2["taskheader"].x = @pkmnicons2["dex_icon"].x+100
  @pkmnicons2["taskheader"].y = 40
  @pkmnicons2["taskheader"].width=120
@@ -1654,6 +1676,8 @@ def create_text(spritetype,name,x,y,text)
  pbPrepareWindow(spritetype[name])
  spritetype[name].viewport=@viewport
  spritetype[name].windowskin=nil
+ spritetype[name].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ spritetype[name].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  spritetype[name].x = x
  spritetype[name].y = y
  spritetype[name].width=120
@@ -1677,6 +1701,8 @@ def display_task(pokemon_task,i,thespecies)
  pbPrepareWindow(@pkmnicons2["task#{i}"])
  @pkmnicons2["task#{i}"].viewport=@viewport
  @pkmnicons2["task#{i}"].windowskin=nil
+ @pkmnicons2["task#{i}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @pkmnicons2["task#{i}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @pkmnicons2["task#{i}"].x = @pkmnicons2["dex_icon"].x+110
  @pkmnicons2["task#{i}"].y = 75+(i*70)
  @pkmnicons2["task#{i}"].width=120
@@ -1736,6 +1762,8 @@ def create_map_text
  pbPrepareWindow(@sidebar_text["selection_map#{count}"])
  @sidebar_text["selection_map#{count}"].viewport=@viewport
  @sidebar_text["selection_map#{count}"].windowskin=nil
+ @sidebar_text["selection_map#{count}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["selection_map#{count}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["selection_map#{count}"].width=240
  @sidebar_text["selection_map#{count}"].height=90
  @sidebar_text["selection_map#{count}"].x = 0
@@ -1756,6 +1784,8 @@ def create_map_text
  pbPrepareWindow(@sidebar_text["selection_map-1"])
  @sidebar_text["selection_map-1"].viewport=@viewport
  @sidebar_text["selection_map-1"].windowskin=nil
+ @sidebar_text["selection_map-1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["selection_map-1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["selection_map-1"].width=240
  @sidebar_text["selection_map-1"].height=90
  @sidebar_text["selection_map-1"].x = 0
@@ -1781,6 +1811,8 @@ def create_submap_text(map_set)
  pbPrepareWindow(@sidebar_text["selection_map#{count}"])
  @sidebar_text["selection_map#{count}"].viewport=@viewport
  @sidebar_text["selection_map#{count}"].windowskin=nil
+ @sidebar_text["selection_map#{count}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["selection_map#{count}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["selection_map#{count}"].width=240
  @sidebar_text["selection_map#{count}"].height=90
  @sidebar_text["selection_map#{count}"].x = 0
@@ -1884,6 +1916,8 @@ def load_new_encounter_data(mapid,force=false)
  pbPrepareWindow(@pkmnicons["EncounterType"])
  @pkmnicons["EncounterType"].viewport=@viewport
  @pkmnicons["EncounterType"].windowskin=nil
+ @pkmnicons["EncounterType"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @pkmnicons["EncounterType"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @pkmnicons["EncounterType"].width=240
  @pkmnicons["EncounterType"].height=90
  @pkmnicons["EncounterType"].x = @rightmost-200
@@ -2020,6 +2054,8 @@ def create_notes_text
  pbPrepareWindow(@sidebar_text["cook-1"])
  @sidebar_text["cook-1"].viewport=@viewport
  @sidebar_text["cook-1"].windowskin=nil
+ @sidebar_text["cook-1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["cook-1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["cook-1"].width=240
  @sidebar_text["cook-1"].height=90
  @sidebar_text["cook-1"].x = 0
@@ -2036,6 +2072,8 @@ def create_notes_text
  pbPrepareWindow(@sidebar_text["cook#{count}"])
  @sidebar_text["cook#{count}"].viewport=@viewport
  @sidebar_text["cook#{count}"].windowskin=nil
+ @sidebar_text["cook#{count}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["cook#{count}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["cook#{count}"].width=240
  @sidebar_text["cook#{count}"].height=90
  @sidebar_text["cook#{count}"].x = 0
@@ -2082,6 +2120,8 @@ def create_note_content
  pbPrepareWindow(@notetext["cook-1"])
  @notetext["cook-1"].viewport=@viewport
  @notetext["cook-1"].windowskin=nil
+ @notetext["cook-1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @notetext["cook-1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @notetext["cook-1"].width=240
  @notetext["cook-1"].height=90
  @notetext["cook-1"].x = 190
@@ -2114,6 +2154,8 @@ def create_note_content
  pbPrepareWindow(@notetext["cook-2"])
  @notetext["cook-2"].viewport=@viewport
  @notetext["cook-2"].windowskin=nil
+ @notetext["cook-2"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @notetext["cook-2"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @notetext["cook-2"].width=240
  @notetext["cook-2"].height=90
  @notetext["cook-2"].x = 190
@@ -2194,6 +2236,8 @@ def create_crafting_text
  pbPrepareWindow(@sidebar_text["craft#{count}"])
  @sidebar_text["craft#{count}"].viewport=@viewport
  @sidebar_text["craft#{count}"].windowskin=nil
+ @sidebar_text["craft#{count}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["craft#{count}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["craft#{count}"].width=240
  @sidebar_text["craft#{count}"].height=90
  @sidebar_text["craft#{count}"].x = 0
@@ -2226,6 +2270,8 @@ def create_craft_type_text(text_set)
  pbPrepareWindow(@sidebar_text["selection_craft#{count}"])
  @sidebar_text["selection_craft#{count}"].viewport=@viewport
  @sidebar_text["selection_craft#{count}"].windowskin=nil
+ @sidebar_text["selection_craft#{count}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @sidebar_text["selection_craft#{count}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @sidebar_text["selection_craft#{count}"].width=240
  @sidebar_text["selection_craft#{count}"].height=90
  @sidebar_text["selection_craft#{count}"].x = 0
@@ -2295,6 +2341,8 @@ if !$recipe_book.has?(recipe[0]) && recipe[recipe.length-1].is_a?(FalseClass)
  pbPrepareWindow(@recipeicons["EncounterType"])
  @recipeicons["EncounterType"].viewport=@viewport
  @recipeicons["EncounterType"].windowskin=nil
+ @recipeicons["EncounterType"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @recipeicons["EncounterType"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @recipeicons["EncounterType"].width=240
  @recipeicons["EncounterType"].height=90
  @recipeicons["EncounterType"].x = @rightmost-200
@@ -2354,6 +2402,8 @@ else
  pbPrepareWindow(@recipeicons["item#{i}"])
  @recipeicons["item#{i}"].viewport=@viewport
  @recipeicons["item#{i}"].windowskin=nil
+ @recipeicons["item#{i}"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @recipeicons["item#{i}"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @recipeicons["item#{i}"].width=240
  @recipeicons["item#{i}"].height=90
  @recipeicons["item#{i}"].x = fx-16 + (rate*(i+1))
@@ -2365,6 +2415,8 @@ else
  pbPrepareWindow(@recipeicons["EncounterType"])
  @recipeicons["EncounterType"].viewport=@viewport
  @recipeicons["EncounterType"].windowskin=nil
+ @recipeicons["EncounterType"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+ @recipeicons["EncounterType"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
  @recipeicons["EncounterType"].width=240
  @recipeicons["EncounterType"].height=90
  @recipeicons["EncounterType"].x = @rightmost-220

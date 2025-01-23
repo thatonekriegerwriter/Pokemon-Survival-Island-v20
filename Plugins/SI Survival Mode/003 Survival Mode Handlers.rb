@@ -92,9 +92,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    next if $PokemonSystem.survivalmode == 1
    next if $game_temp.in_menu
    
-   pbStartOver if $player.playermaxhealth2<=0
-   pbRespawnAtBed if $player.playerhealth<=0
-   next if $player.playerhealth<=0
+   pbStartOver 
+   next if $player.playerhealth<=0 || $player.playermaxhealth2<=0
   
    waterchance = rand(100) <= 10
    foodchance = rand(100) <= 10
@@ -181,16 +180,27 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
   EventHandlers.add(:on_frame_update, :agestepspkmn,
   proc {
   if $PokemonSystem.survivalmode==0 && Nuzlocke.on? && pbIsWeekday(0)
-  $player.pokemon_party.each do |pkmn|
+   indexes = []
+    data = Nuzlocke.rules; data = [] if data.nil?
+  $player.party.each_with_index do |pkmn, index|
 	pkmn.changeAge
 	pkmn.changeLifespan("age",pkmn)
     if pkmn.lifespan == 0 
       pkmn.permaFaint=true
       pbMessage(_INTL("{1} has died!"))
       pkmn.hp = 0
+	  if data.include?(:PERMADEATH)
+	    indexes << index
+	  end
 	  next
     end
   end
+	  if data.include?(:PERMADEATH)
+   indexes.each do |index|
+     $player.party.delete_at(index)
+   
+   end
+	  end
   end
 
   }
@@ -283,7 +293,9 @@ EventHandlers.add(:on_step_taken, :kill_party,
 	end
     next if duris
     flashed = false
-    $player.party.each do |pkmn|
+   indexes = []
+    data = Nuzlocke.rules; data = [] if data.nil?
+    $player.party.each.each_with_index do |pkmn, index|
 	  next if !pkmn.fainted?
 	  next if pkmn.dead?
       if !flashed
@@ -298,12 +310,23 @@ EventHandlers.add(:on_step_taken, :kill_party,
         pkmn.changeHappiness("faint",pkmn)
         pkmn.changeHappiness("powder",pkmn)
         pkmn.changeLoyalty("faint",pkmn)
+        pkmn.hp = 0
         pkmn.permaFaint=true
         pbMessage(_INTL("{1} died...", pkmn.name))
+	  if data.include?(:PERMADEATH)
+	    indexes << index
+	  end
       end
 
 
     end
+
+	  if data.include?(:PERMADEATH)
+   indexes.each do |index|
+     $player.party.delete_at(index)
+   
+   end
+	  end
   }
 )
 

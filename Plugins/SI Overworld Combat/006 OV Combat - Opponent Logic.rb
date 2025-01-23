@@ -9,8 +9,7 @@ def wild_should_attack?(opponent)
  return false if opponent.attacked_last_call==true
  return false if opponent.battle_timer>0
  return true if $game_temp.bossfight==true
- puts "hi"
- attack_chance = rand(100)
+ attack_chance = rand(90)+10
  rate = 36
  rate*=1.5 if opponent.pokemon.is_aggressive?
  
@@ -41,25 +40,30 @@ attacker.cannot_move=true if defined?(attacker.cannot_move)
 loop do
   update_package
    should = pbShouldAttack?(attacker,target)
+   previousmove=false
+   attempts=0
+	puts "#{attacker.pokemon.name} reconsiders the opportunity? #{should}" if attacker.battle_timer<1
   if should
    
     move = chooseMove(attacker,target,distance)
 
-	 if move!=false && !move.nil?
+	 if move!=false && !move.nil? && move!=previousmove
 	   break if attacker.is_a?(Game_PokeEvent) && attacker.battle_timer>0 && type!=:SURROUNDING
 	   next if attacker.attacking==true if defined?(attacker.attacking)
 	   next if attacker.attacking==true if defined?(attacker.attacking)
      if move.category == 0
 	   next if attacker.attacking==true if defined?(attacker.attacking)
+	    puts "#{attacker.pokemon.name} can move to attack? #{distance<=sight_line(attacker) && distance>1}" if attacker.battle_timer<1
 	  if distance==1 
          attacker.attacking=true if defined?(attacker.cannot_move)
 	   result = move_physical_close(attacker,target,move)
-	  elsif $game_temp.bossfight=true
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_physical_close(attacker,target,move)
-	  else
+	  elsif distance<=sight_line(attacker) && distance>1
+	     
          attacker.attacking=true if defined?(attacker.cannot_move)
 	   result = move_physical(attacker,target,move)
+	  elsif $game_temp.bossfight==true
+         attacker.attacking=true if defined?(attacker.cannot_move)
+	   result = move_physical_close(attacker,target,move)
 	  end
 	 elsif move.category == 1
          attacker.attacking=true if defined?(attacker.cannot_move)
@@ -69,9 +73,15 @@ loop do
          attacker.attacking=true if defined?(attacker.cannot_move)
 	   result = move_other(attacker,target,move)
 	 end
-     end
-       attacker.attacking==false if defined?(attacker.attacking)
+    
+     attacker.attacking==false if defined?(attacker.attacking)
      break
+	elsif attempts>2
+	 break
+    else
+	  previousmove = move
+	  attempts+=1
+    end
   else
    break
   end
@@ -103,18 +113,25 @@ def ov_combat_loop(opponent)
     return if $game_temp.message_window_showing == true && $PokemonGlobal.alternate_control_mode==false
 	theresult = false
 	duris = wild_should_attack?(opponent)
+	puts "#{opponent.pokemon.name} has an opportunity? #{duris}" if opponent.battle_timer<1
 	if duris
 	 addEnemy(opponent.id,opponent)
 	 opponent.dont_attack = true
  	 get_overworld_pokemon
  	 target,distance = get_distance(opponent)
+	 puts "#{opponent.pokemon.name} is #{distance} tiles away from #{target.pokemon.name}" if distance>0
 	 
+    if target.nil?
+ 	 opponent.dont_attack = false
+ 	 return 
+	 end
+     #opponent.move_type_toward_event(target)
 	 
-    
-	 return if distance>opponent.counter
- 	 return if target.nil?
-	 
-     opponent.move_type_toward_event(target)
+     opponent.turn_toward_event(target)
+    if distance<1
+ 	 opponent.dont_attack = false
+ 	 return 
+	 end
 	 @backattack,@sideattack,@baddir = getdirissues(opponent,@controlled)
  	 theresult = opponentChoice(opponent,target,distance)
  	 opponent.battle_timer=opponent.get_battle_timer if opponent.battle_timer==0

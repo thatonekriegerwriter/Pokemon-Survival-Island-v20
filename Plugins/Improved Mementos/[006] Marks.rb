@@ -147,8 +147,8 @@ end
 # Generates Gourmand Mark on party Pokemon while picking or purchasing berries.
 #-------------------------------------------------------------------------------
 alias mark_pbPickBerry pbPickBerry
-def pbPickBerry(berry, qty = 1)
-  ret = mark_pbPickBerry(berry, qty)
+def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
+  ret = mark_pbPickBerry(berry, qty, replant, mutation_info)
   if ret
     odds = ($bag.has?(:MARKCHARM)) ? 4 : 2
     $player.able_party.each do |pkmn|

@@ -17,6 +17,33 @@ def new_set_enemy_level(encounter)
   return level
 end
 
+def pbPersonalLevelCap(pkmn)
+ return 20 if pkmn.shadowPokemon?
+ level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL
+ level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
+ obtainlevel = pkmn.obtain_level
+ level = pkmn.level
+ caplevel = level
+ encounter = [pkmn,obtainlevel,level]
+ puts pkmn.obtain_map
+ obtainmap = $map_factory.maps[pkmn.obtain_map]
+  difficulty = $PokemonSystem.difficulty+1
+  bosses = $game_variables[234].to_i
+  rates = get_new_rate(bosses)
+   telling = 0
+    loop do
+  caplevel = handle_game_map_levels(level, rates, bosses,encounter,difficulty, obtainmap)
+     if caplevel > level 
+	    break
+	 end 
+	 if telling>5
+	   caplevel+=level_cap
+	   break
+	 end
+      telling+=1
+    end
+  return caplevel
+end
 def calculate_level(encounter, difficulty, bosses)
   return rand(encounter[2] * difficulty) - rand(encounter[3]) + pbBalancedLevel($player.party)
 end
@@ -59,10 +86,11 @@ def get_new_rate(bosses)
  return bosses*2,bosses*4,bosses*6
 end
 
-def handle_game_map_levels(level, rates, bosses,encounter, difficulty)
+def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
+  map = $game_map if map.nil?
 	maps = [33,34,35,109,26,218,233]
   $PokemonGlobal.bossesRefightAmt == {} if $PokemonGlobal.bossesRefightAmt.nil?
-  case $game_map.name
+  case map.name
   when "Temperate Coast", "Temperate Inland", "Temperate Shore", "Temperate Plains"
             #adjust_level(level, reroll_level,                           min_level,     max_level)
 			
@@ -71,7 +99,6 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty)
 	amt0 += rand(7)+4 if $game_switches[76]=false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 10+amt0,amt)
-	puts level
 	
 	
 	
@@ -128,7 +155,7 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty)
 	
 	
   when "Temperate Marsh"
-    if  maps.include?($game_map.map_id)
+    if  maps.include?(map.map_id)
     amt = 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
 	amt0 = 0
 	amt0 += rand(7)+4 if $game_switches[77]=false

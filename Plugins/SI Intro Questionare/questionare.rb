@@ -442,6 +442,7 @@ class PokemonIntroScene
       end
     else 
       Nuzlocke.start
+      Nuzlocke.toggle(true)
     end
 
 end
@@ -638,7 +639,7 @@ end
 		 end
 		 pbChangePlayer(index2)
 		 break
-      elsif @sprites["cmdwindow"].active == false && @sprites["entry"].text!="" && !$player.playerclass.nil? && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5) && Input.mouse_y.between?(@sprites["finishbutton"].y,@sprites["finishbutton"].y+@sprites["finishbutton"].height))
+      elsif @sprites["cmdwindow"].active == false && @sprites["entry"].text!="" && !$player.playerclass.nil? && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5+$PokemonSystem.screenposx,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["finishbutton"].y+$PokemonSystem.screenposy,@sprites["finishbutton"].y+@sprites["finishbutton"].height+$PokemonSystem.screenposy))
 		  pbPlayDecisionSE
          $player.name = @sprites["entry"].text
 		 if @index==9
@@ -652,9 +653,9 @@ end
 		 end
 		 pbChangePlayer(index2)
 		 break
-      elsif Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5) && Input.mouse_y.between?(@sprites["finishbutton"].y,@sprites["finishbutton"].y+@sprites["finishbutton"].height))
+      elsif Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5+$PokemonSystem.screenposx,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["finishbutton"].y+$PokemonSystem.screenposy,@sprites["finishbutton"].y+@sprites["finishbutton"].height+$PokemonSystem.screenposy))
        pbPlayBuzzerSE
-      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["charaleft"].x-5,@sprites["charaleft"].x+@sprites["charaleft"].width+5) && Input.mouse_y.between?(@sprites["charaleft"].y,@sprites["charaleft"].y+@sprites["charaleft"].height))
+      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["charaleft"].x-5+$PokemonSystem.screenposx,@sprites["charaleft"].x+@sprites["charaleft"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["charaleft"].y+$PokemonSystem.screenposy,@sprites["charaleft"].y+@sprites["charaleft"].height+$PokemonSystem.screenposy))
 
         @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/b"))
 		 if @index-1>=0
@@ -664,7 +665,7 @@ end
 		  pbWait(5)
 		  end
         @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/a"))
-      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["chararight"].x-5,@sprites["chararight"].x+@sprites["chararight"].width+5) && Input.mouse_y.between?(@sprites["chararight"].y,@sprites["chararight"].y+@sprites["chararight"].height))
+      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["chararight"].x-5+$PokemonSystem.screenposx,@sprites["chararight"].x+@sprites["chararight"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["chararight"].y+$PokemonSystem.screenposy,@sprites["chararight"].y+@sprites["chararight"].height+$PokemonSystem.screenposy))
 
         @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/d"))
 		if @index+1<=8
@@ -674,13 +675,13 @@ end
 		  pbWait(5)
 		 end
         @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/c"))
-      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["entry"].x-5,@sprites["entry"].x+@sprites["entry"].width+5) && Input.mouse_y.between?(@sprites["entry"].y-38,@sprites["entry"].y+@sprites["entry"].height-38))
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["entry"].x-5+$PokemonSystem.screenposx,@sprites["entry"].x+@sprites["entry"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["entry"].y-38+$PokemonSystem.screenposy,@sprites["entry"].y+@sprites["entry"].height-38+$PokemonSystem.screenposy))
       Input.text_input = true
       @sprites["entry"].active = true
       elsif @sprites["entry"].active == true && Input.text_input == true && Input.trigger?(Input::MOUSERIGHT)
 	   Input.text_input = false 
       @sprites["entry"].active = false
-      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width,Graphics.width) && Input.mouse_y.between?(@sprites["subject"].y-20,@sprites["subject"].y-20+@sprites["cmdwindow"].height))
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width+$PokemonSystem.screenposx,Graphics.width+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["subject"].y-20+$PokemonSystem.screenposy,@sprites["subject"].y-20+@sprites["cmdwindow"].height+$PokemonSystem.screenposy))
       @sprites["cmdwindow"].index = 0
       @sprites["cmdwindow"].active = true
       @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex]
@@ -780,11 +781,11 @@ end
 	  
 	  
 	  
-	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(@sprites["entry"].x-5,@sprites["entry"].x+@sprites["entry"].width+5) && Input.mouse_y.between?(@sprites["entry"].y-38,@sprites["entry"].y+@sprites["entry"].height-38)) 
+	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(@sprites["entry"].x-5+$PokemonSystem.screenposx,@sprites["entry"].x+@sprites["entry"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["entry"].y-38+$PokemonSystem.screenposy,@sprites["entry"].y+@sprites["entry"].height-38+$PokemonSystem.screenposy)) 
       Input.text_input = false 
       @sprites["entry"].active = false
 	  end
-	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width,Graphics.width) && Input.mouse_y.between?(@sprites["subject"].y-20,@sprites["subject"].y-20+@sprites["cmdwindow"].height))
+	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width+$PokemonSystem.screenposx,Graphics.width+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["subject"].y-20+$PokemonSystem.screenposy,@sprites["subject"].y-20+@sprites["cmdwindow"].height+$PokemonSystem.screenposy))
       @sprites["cmdwindow"].index = -1
       @sprites["cmdwindow"].active = false
       @sprites["textbox"].visible = false

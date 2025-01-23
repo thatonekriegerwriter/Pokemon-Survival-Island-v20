@@ -331,6 +331,10 @@ def add_rule(rule)
 end
 
 
+def reset_rules
+ @battle_rules = []
+end
+
 def physics_update
 
 end
@@ -349,13 +353,27 @@ def get_player_and_allies
   end
   return potato
 end
+def get_allies
+  potato = []
+  @participants[:ALLIES].each_value do |value|
+     potato << value
+  end
+  return potato
+end
+def get_allied_pokemon
+  potato = []
+  get_allies.each do |event|
+     potato << event.pokemon
+  end
+
+end
 def controlled_pokemon?
   return @participants[:PLAYER].pokemon.is_a?(Pokemon)
 end
 
 def get_distance(unit)
  distances = []
-    targets = get_player_and_allies
+    targets = get_player_and_allies + unit.angry_at
 	targets.compact!
 	 targets.each do |event|
 	 distances << pbDetectTargetPokemon(unit,event)
@@ -390,7 +408,7 @@ end
 	 $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false && event.is_a?(Game_PokeEvent)
      event.removeThisEventfromMap
 	 if @youarealreadydead==false
-     pbPlayerEXP(pkmn) 
+     pbPlayerEXP(pkmn,get_allied_pokemon) 
      pbHeldItemDropOW(pkmn,true)
      if $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
          pbBGMFade(0.8)
@@ -534,7 +552,7 @@ EventHandlers.add(:on_step_taken, :overworldpkmnpoison,
 		  if pkmn.fainted? && event.is_a?(Game_PokeEvent)
 		  $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false
         event.removeThisEventfromMap
-        pbPlayerEXP(pkmn)
+        pbPlayerEXP(pkmn,pbOverworldCombat.get_allied_pokemon)
         pbHeldItemDropOW(pkmn,true)
 		  end
 		  

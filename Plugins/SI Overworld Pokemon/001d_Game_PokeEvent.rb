@@ -123,50 +123,13 @@ class Game_PokeEvent < Game_Event
      return [@battle_timer]
    end
 
-def follow_target(leader, instant = false, leaderIsTrueLeader = true)
-    maps_connected = $map_factory.areConnected?(leader.map.map_id, self.map.map_id)
-    target = nil
-    # Get the target tile that self wants to move to
-    if maps_connected
-      behind_direction = 10 - leader.direction
-      target = $map_factory.getFacingTile(behind_direction, leader)
-      if target && $map_factory.getTerrainTag(target[0], target[1], target[2]).ledge
-        # Get the tile above the ledge (where the leader jumped from)
-        target = $map_factory.getFacingTileFromPos(target[0], target[1], target[2], behind_direction)
-      end
-      target = [leader.map.map_id, leader.x, leader.y] if !target
-    else
-      # Map transfer to an unconnected map
-      target = [leader.map.map_id, leader.x, leader.y]
-    end
-    # Move self to the target
-    if self.map.map_id != target[0]
-      vector = $map_factory.getRelativePos(target[0], 0, 0, self.map.map_id, @x, @y)
-      @map = $map_factory.getMap(target[0])
-      # NOTE: Can't use moveto because vector is outside the boundaries of the
-      #       map, and moveto doesn't allow setting invalid coordinates.
-      @x = vector[0]
-      @y = vector[1]
-      @real_x = @x * Game_Map::REAL_RES_X
-      @real_y = @y * Game_Map::REAL_RES_Y
-    end
- 
 
-     if instant || !maps_connected
-      moveto(target[1], target[2])
-    else
-      fancy_moveto(target[1], target[2], leader)
-    end
-  end
-   
- 
    def get_battle_timer
     return @battle_timer + rand(Graphics.frame_rate)+Graphics.frame_rate
    end
   
   alias original_update update
   def update
-  
 
     if !$game_temp.in_menu
 
@@ -330,6 +293,7 @@ def pkmnmovement2
       removeThisEventfromMap
     else
       @remaining_steps-=1 if @remaining_steps>0
+      @remaining_steps=40 if @remaining_steps>40
     end
    end
 
@@ -337,8 +301,8 @@ def pkmnmovement2
 
  
   def remaining_steps
-	sideDisplay("#{@pokemon.name} has #{@remaining_steps} steps left!") if @remaining_steps<11
-   
+	sideDisplay("#{@pokemon.name} has #{@remaining_steps} steps left!") if @remaining_steps<11 && $PokemonGlobal.cur_challenge!=false
+   @remaining_steps=40 if @remaining_steps>40
    return @remaining_steps
   end
   
@@ -358,7 +322,7 @@ def pkmnmovement2
           end
         end
       end
-		$ExtraEvents.removethisEvent(:POKEMON,@id)
+		$ExtraEvents.removethisEvent(:POKEMON,extra_events_id)
       $game_map.events.delete(@id)
     else
       if $map_factory
@@ -373,6 +337,7 @@ def pkmnmovement2
                 end
               end
             end
+		    $ExtraEvents.removethisEvent(:POKEMON,extra_events_id)
             map.events.delete(@id)
             break
           end
@@ -407,6 +372,8 @@ def pkmnmovement2
     end
     return nil
   end
+
+
 
 end
 

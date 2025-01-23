@@ -15,8 +15,6 @@ end
 class Crafts_Scene
 #################################
 ## Configuration
-  craftNAMEBASECOLOR=Color.new(88,88,80)
-  craftNAMESHADOWCOLOR=Color.new(168,184,184)
 #################################
   
   def update
@@ -171,8 +169,9 @@ class Crafts_Scene
     @sprites["craftResult"].y=294
     @sprites["craftResult"].width=Graphics.width-48
     @sprites["craftResult"].height=Graphics.height
-    @sprites["craftResult"].baseColor=Color.new(0,0,0)
-    @sprites["craftResult"].shadowColor=Color.new(160,160,160)
+	colors = getDefaultTextColors(@sprites["craftResult"].windowskin)
+    @sprites["craftResult"].baseColor=colors[0]
+    @sprites["craftResult"].shadowColor=colors[1]
     @sprites["craftResult"].visible=true
     @sprites["craftResult"].viewport=@viewport
     #@sprites["craftResult"].windowskin=nil
@@ -208,9 +207,7 @@ class Crafts_Scene
 	 @items << :NO
 	 @quants << 0
 	end 
-   @sprites["craftResult"].text=_INTL("No items selected.")
    @quant=1
-
   end
   
 
@@ -224,7 +221,7 @@ class Crafts_Scene
     overlay.clear
     pbSetSystemFont(overlay)
     pbDrawImagePositions(overlay,@imagepos)
-	
+	coal = nil
 if @type==:FURNACE
 pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
@@ -232,7 +229,7 @@ screen = PokemonBagScreen.new(scene,$PokemonBag)
 $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
 coal = $coal.id
 }
-	 if coal
+	 if !coal.nil?
 	 if coal == :CHARCOAL
   	   $value=3
 	 elsif coal == :COAL
@@ -328,10 +325,28 @@ end
       end
 	  
 
+     oranges = "" if oranges.nil?
+     if @sprites["craftResult"].text!=oranges && @potato<60
+           @potato+=1
+	 #elsif oranges == @sprites["craftResult"].text && oranges != "" 
+	 #  puts "fuck2"
+	 else
+        oranges = ""
+		 @items.each_with_index do |wha,index|
+		  next if wha==:NO
+		 oranges += " + " if index > 0 && index < @ramt
+		 oranges += " = " if index == @ramt
+		  if wha.is_a? Array
+        oranges += "#{GameData::Item.get(wha[0]).name}"
+		  else
+        oranges += "#{GameData::Item.get(wha).name}"
+		  
+		  end
+         end
+        @sprites["craftResult"].text=oranges
+		 oranges = ""
+    end
 
-
-	  
-	if @alternatecontrolmode==false
 	  
       if Input.trigger?(Input::LEFT) #SELECTING POSITION
         pbSEPlay("GUI sel cursor")
@@ -379,24 +394,7 @@ end
       end
  
 		 
-        oranges = "" if oranges.nil?
-        if @sprites["craftResult"].text!=oranges && @potato<60
-           @potato+=1
-		else
-        oranges = ""
-		 @items.each_with_index do |wha,index|
-		 oranges += " + " if index > 0 && index < @ramt && wha!=:NO
-		 oranges += " = " if index == @ramt && wha!=:NO
-		  if wha.is_a? Array
-        oranges += "#{GameData::Item.get(wha[0]).name}" if wha!=:NO
-		  else
-        oranges += "#{GameData::Item.get(wha).name}" if wha!=:NO
-		  
-		  end
-        @sprites["craftResult"].text=oranges
-			 pbWait(6)
-        end
-        end
+
 
       if Input.trigger?(Input::USE)
 	    if @selection==@ramt 
@@ -406,21 +404,21 @@ end
 			  if pbCheckRecipe(@items[0...-1])
 			    if $player.is_it_this_class?(:RANGER,false) && GameData::Item&.try_get(item).is_poke_ball?
                   @sprites["craftResult"].text=_INTL("You are a Ranger! You don't need POKeBALLs!")
-				   pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 				else
 			    if pbGetAllowedAmounts
 			    if pbCheckPrices 
                 pbSEPlay("GUI save choice")
 				  craft_item
-				  pbWait(6)
-				  reset_items
 			    end
 				end
                end 
 			  end
            else
              @sprites["craftResult"].text=_INTL("You must first select an item!")
-				  pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 			end
 		   
 		elsif @type==:FURNACE && @selection == 0
@@ -515,6 +513,7 @@ coal = $coal.id
               @quants[@ramt]=1
 			  end
 		       set_remove_quant
+
            end
 
 		
@@ -531,7 +530,7 @@ coal = $coal.id
 
 
 
-     if Input.triggerex?(0x2E)
+     if Input.triggerex?(0x52)
          if @selection==@ramt
 		   reset_items
 		  else
@@ -588,24 +587,26 @@ coal = $coal.id
       end     
 
 
-   end
 
     end
   end
 
 
   def craft_item
+        finalitem = nil
+		 bottleindex = nil
         @items.each_with_index do |item,index|
 		  if index == @items.length-1
 		   if item.is_a? Array
-           $bag.add(item[0],@quants[@ramt]*@quant)
-		   
+		      finalitem = item[0]
 		   else
-           $bag.add(item,@quants[@ramt]*@quant)
-             @sprites["craftResult"].text=_INTL("You crafted #{item}!")
-				  pbWait(6)
+		      finalitem = item
+             @sprites["craftResult"].text=_INTL("You crafted #{@quants[@ramt]*@quant} #{GameData::Item.get(item).name}(s)!")
 		   end
 		  else
+		    if item == :BOWL || item == :GLASSBOTTLE || item == :WATERBOTTLE
+			 bottleindex = index
+			end
 		    removeamt = get_remove_amt(item)*@quant
            $bag.remove(item,removeamt)
 		  end
@@ -613,7 +614,14 @@ coal = $coal.id
 		 end 
   
   
-  
+           item = ItemData.new(finalitem)
+		    item.set_bottle(@itemsdata[bottleindex]) if !bottleindex.nil?
+		    $bag.add(item,@quants[@ramt]*@quant)
+           @sprites["craftResult"].text=_INTL("You crafted #{@quants[@ramt]*@quant} #{GameData::Item.get(item).name}(s)!")
+			  pbWait(60)
+             pbItemSummaryScreen(item)
+			  pbWait(20)
+             @sprites["craftResult"].text=_INTL("")
   
   end
 
@@ -710,7 +718,8 @@ end
 		     else
 			   
              @sprites["craftResult"].text=_INTL("You don't have that Recipe!")
-				  pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 			   next
 			 end
            else
@@ -723,22 +732,24 @@ end
 		 
       end
 
-      if recipesthatmatch.length>1
-      @alternatecontrolmode=true
+      if recipesthatmatch.length>1 && false
       @sprites["craftResult"].text=_INTL("There is multiple recipes that match the result!")
-	  pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
       index = 0
 	  loop do
 	    if Input.trigger?(Input::LEFT)
 		    index-=1 if index-1>=0
 			index=recipesthatmatch.length if index-1<0
            @sprites["craftResult"].text=_INTL("#{recipesthatmatch[index]}!")
-		   pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 		 elsif Input.trigger?(Input::RIGHT)
 		    index+=1 if index+1<=recipesthatmatch.length
 			index=0 if index+1>recipesthatmatch.length
            @sprites["craftResult"].text=_INTL("#{recipesthatmatch[index]}!")
-		   pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 		 elsif Input.trigger?(Input::USE)
 	       @currentArray=recipesthatmatch[index]
           @alternatecontrolmode=false
@@ -820,13 +831,15 @@ end
 		    if $bag.quantity(item[0])<(item[1]*@quant)
 			  
              @sprites["craftResult"].text=_INTL("You don't have enough #{item[0]}!")
-			 pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 		      return false
 			end
 		   else
 		    if $bag.quantity(item)<@quant
              @sprites["craftResult"].text=_INTL("You don't have enough #{item}!")
-			 pbWait(6)
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
 		      return false
 			end
 		   

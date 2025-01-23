@@ -25,6 +25,15 @@ class PokemonSystem
   attr_accessor :currentList
   attr_accessor :cheats
   attr_accessor :hardcore
+  attr_accessor :hardcore2
+  attr_accessor :hardcore3
+  attr_accessor :hardcore4
+  attr_accessor :hardcore5
+  attr_accessor :hardcore6
+  attr_accessor :hardcore7
+  attr_accessor :hardcore8
+  attr_accessor :hardcore9
+  attr_accessor :hardcore10
 
   def initialize
     @textspeed     = 1     # Text speed (0=slow, 1=normal, 2=fast)
@@ -41,7 +50,7 @@ class PokemonSystem
     @nuzlockemode = 0     # Default Nuzlocke Mode (0=on, 1=off)
     @difficulty   = 1     # Default Nuzlocke Mode (0=on, 1=off)
     @difficultymodifier = 40     # Default Nuzlocke Mode (0=on, 1=off)
-    @temperature = 1     # Default Temperature Mode (0=on, 1=off)	 
+    @temperature = 0     # Default Temperature Mode (0=on, 1=off)	 
     @temperaturemeasurement = 0     # Default Temperature Mode (0=on, 1=off)
     @cheats = 1     # Default Temperature Mode (0=on, 1=off)
     @runstyle      = 0     # Default movement speed (0=walk, 1=run)
@@ -50,7 +59,25 @@ class PokemonSystem
     @textinput     = 1     # Text input mode (0=cursor, 1=keyboard)
     @playermode     = 1     # Text input mode (0=cursor, 1=keyboard)
     @hardcore     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore2     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore3     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore4     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore5     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore6     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore7     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore8     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore9     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @hardcore10     = 1     # Text input mode (0=cursor, 1=keyboard)
     @currentList = :main
+  end
+  
+  def difficulty
+    @difficulty   = 1 if @difficulty.nil?
+	return @difficulty
+  end
+  def difficultymodifier
+    @difficultymodifier = 40 if @difficultymodifier.nil?
+	return @difficultymodifier
   end
 end
 
@@ -74,7 +101,7 @@ end
 #===============================================================================
 class EnumOption
   include PropertyMixin
-  attr_reader :values
+  attr_accessor :values
   attr_reader :name
 
   def initialize(name, parent, values, get_proc, set_proc)
@@ -102,7 +129,8 @@ end
 
 class AltOption
   include PropertyMixin
-  attr_reader :values
+  attr_accessor :values
+  attr_reader :name
 
   def initialize(name, parent, values, get_proc, set_proc)
     @name     = name
@@ -126,9 +154,12 @@ end
 
 class SelectOption
   include PropertyMixin
+  attr_reader :name
+  attr_accessor :values
 
   def initialize(name, parent, values, get_proc, set_proc)
     @name     = name
+    @values     = values
   end
   
   def next(current)
@@ -148,9 +179,12 @@ class NumberOption
   include PropertyMixin
   attr_reader :lowest_value
   attr_reader :highest_value
+  attr_reader :name
+  attr_accessor :values
 
   def initialize(name, parent, range, get_proc, set_proc)
     @name = name
+	@values = []
     case range
     when Range
       @lowest_value  = range.begin
@@ -188,9 +222,12 @@ class SliderOption
   include PropertyMixin
   attr_reader :lowest_value
   attr_reader :highest_value
+  attr_reader :name
+  attr_accessor :values
 
   def initialize(name, parent, range, get_proc, set_proc)
     @name          = name
+	@values = []
     @lowest_value  = range[0]
     @highest_value = range[1]
     @interval      = range[2]
@@ -221,6 +258,7 @@ end
 #===============================================================================
 class Window_PokemonOption < Window_DrawableCommand
   attr_reader :value_changed
+  attr_accessor :options
 
   SEL_NAME_BASE_COLOR    = Color.new(192, 120, 0)
   SEL_NAME_SHADOW_COLOR  = Color.new(248, 176, 80)
@@ -240,7 +278,10 @@ class Window_PokemonOption < Window_DrawableCommand
   def set_options(options)
     @options = options
   end 
-
+  
+  def set_index(pos)
+   self.index=pos
+  end 
 
 
   def [](i)
@@ -304,10 +345,23 @@ class Window_PokemonOption < Window_DrawableCommand
         end
 	   elsif @options[index].values.length == 0
       else
-	    if optionname != "Hardcore Mode"
-        pbDrawShadowText(self.contents, rect.x + optionwidth, rect.y, optionwidth, rect.height,
-                         optionname, self.baseColor, self.shadowColor)
-		end
+        totalwidth = 0
+        @options[index].values.each do |value|
+          totalwidth += self.contents.text_size(value).width
+        end
+        spacing = (rect.width - rect.x - optionwidth  - totalwidth) / (@options[index].values.length)
+        spacing = 0 if spacing < 0
+        xpos = optionwidth + rect.x
+        ivalue = 0
+        @options[index].values.each do |value|
+          pbDrawShadowText(self.contents, xpos, rect.y, optionwidth, rect.height, value,
+                           (ivalue == self[index]) ? SEL_VALUE_BASE_COLOR : self.baseColor,
+                           (ivalue == self[index]) ? SEL_VALUE_SHADOW_COLOR : self.shadowColor)
+          xpos += self.contents.text_size(value).width
+          xpos += spacing
+          ivalue += 1
+        end
+
       end
     when AltOption
 	
@@ -409,11 +463,12 @@ class Window_PokemonOption < Window_DrawableCommand
         self[self.index] = @options[self.index].next(self[self.index])
         dorefresh = true
         @value_changed = true
-	  elsif Input.trigger?(Input::USE)
+	  elsif Input.trigger?(Input::USE) && false
 	    currentoption = @options[self.index]
 		if currentoption.is_a? EnumOption
 		  if currentoption.values.length == 1
-		    pbHardcoreMode if currentoption.name == "Hardcore Mode"
+		    currentoption.set(currentoption, self)
+		    #pbHardcoreMode if currentoption.name == "Hardcore Mode"
 		  end
 		end
       end
@@ -428,7 +483,26 @@ end
 class PokemonOption_Scene
   attr_reader :sprites
   attr_reader :in_load_screen
-
+  attr_accessor :options
+  attr_accessor :viewport
+  attr_accessor :sprites
+  def get_unique_parameters(hash,name)
+     return hash["parameters"]	if $PokemonGlobal.nil?
+  	 return [_INTL("Enabled")] if $PokemonGlobal.hardcore == true && name == "Hardcore Mode"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:PERMADEATH) && name == "Nuzlocke Mode"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:ONEROUTE) && name == "One Catch per Map"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:NICKNAMES) && name == "Forced Nicknames"
+  	 return [_INTL("Disabled")] if !nuzlocke_has?(:DUPSCLAUSE) && name == "Dups Clause"
+  	 return [_INTL("Disabled")] if !nuzlocke_has?(:STATIC) && name == "Static Encounters"
+  	 return [_INTL("Disabled")] if !nuzlocke_has?(:SHINY) && name == "Shiny Encounters"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:AFULLEIGHTHOURS) && name == "A Full Eight Hours"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:NOOVCATCHING) && name == "No Overworld Capture"
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:NOSTATUES) && name == "No Statues" 
+  	 return [_INTL("Enabled")] if nuzlocke_has?(:SURVIVALMODE) && name == "Survival Mode (Pokemon)" 
+	 
+	 
+    return hash["parameters"]	
+  end
   def pbStartScene(in_load_screen = false)
     @in_load_screen = in_load_screen
 	$PokemonSystem.currentList = :main
@@ -440,9 +514,8 @@ class PokemonOption_Scene
 	    hash["parent"] = :main
 	  end
 	  if hash["parent"] == $PokemonSystem.currentList
-      @options.push(
-        hash["type"].new(name,hash["parent"], hash["parameters"], hash["get_proc"], hash["set_proc"])
-      )
+      para = get_unique_parameters(hash,name)
+      @options.push(hash["type"].new(name,hash["parent"], para, hash["get_proc"], hash["set_proc"]))
       @hashes.push(hash)
 	  end
     end
@@ -576,7 +649,7 @@ class PokemonOption_Scene
           pbChangeSelection
           index = @sprites["option"].index
         end
-        @options[index].set(@sprites["option"][index], self) if @sprites["option"].value_changed
+        @options[index].set(@sprites["option"][index], self) if @sprites["option"].value_changed && !(@options[index].is_a?(EnumOption) &&  @options[index].values.length == 1)
         if Input.trigger?(Input::BACK)
 	
 
@@ -594,7 +667,9 @@ class PokemonOption_Scene
           break
 		 elsif $PokemonSystem.currentList != :main
 		    $PokemonSystem.currentList = :main
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		 end
 
 
@@ -610,25 +685,42 @@ class PokemonOption_Scene
 		   break
 		   elsif $PokemonSystem.currentList != :main
 		    $PokemonSystem.currentList = :main
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		   end
 		  else
 		  if @options[index].name == "Battle Gameplay Options..."
 			$PokemonSystem.currentList = :gameplay_menu
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		  elsif @options[index].name == "Overworld Gameplay Options..."
 			$PokemonSystem.currentList = :gameplay_menu2
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		  elsif @options[index].name == "User Interface Options..."
 			$PokemonSystem.currentList = :ui_menu
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		  elsif @options[index].name == "Music Options..."
 			$PokemonSystem.currentList = :music_menu
-			pbUpdate2
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
+		  elsif @options[index].name == "Challenge Options..."
+			$PokemonSystem.currentList = :challenges_menu
+			@sprites["option"].set_index(0)
+			pbSceneControls
+          @sprites["option"].refresh
 		  elsif @options[index].name == "Controls Options..."
 		    pbFadeOutIn(99999) {
 	  	      open_set_controls_ui
 	        }
+		  elsif  @options[index].is_a?(EnumOption) &&  @options[index].values.length == 1
+            @options[index].set(@sprites["option"][index], self)
 		  elsif @sprites["option"].index == @options.length
 		   break
 		  end
@@ -655,7 +747,34 @@ class PokemonOption_Scene
     pbUpdateSpriteHash(@sprites)
   end
   
-  def pbUpdate2
+  def refresh_options
+    @options = []
+    @hashes = []
+  
+    MenuHandlers.each_available(:options_menu) do |option, hash, name|
+	  if hash["parent"].nil?
+	    hash["parent"] = :main
+	  end
+	  if hash["parent"] == $PokemonSystem.currentList
+      para = get_unique_parameters(hash,name)
+      @options.push(hash["type"].new(name,hash["parent"], para, hash["get_proc"], hash["set_proc"]))
+      @hashes.push(hash)
+	  end
+    end
+  
+  
+	@sprites["option"].set_options(@options)
+	
+	
+    @options.length.times do |i|
+	 @sprites["option"].setValueNoRefresh(i, @options[i].get || 0)
+	end
+	
+    @sprites["option"].refresh
+    pbChangeSelection
+  end
+  
+  def pbSceneControls
     @options = []
     @hashes = []
     MenuHandlers.each_available(:options_menu) do |option, hash, name|
@@ -663,9 +782,8 @@ class PokemonOption_Scene
 	    hash["parent"] = :main
 	  end
 	  if hash["parent"] == $PokemonSystem.currentList
-      @options.push(
-        hash["type"].new(name,hash["parent"], hash["parameters"], hash["get_proc"], hash["set_proc"])
-      )
+      para = get_unique_parameters(hash,name)
+      @options.push(hash["type"].new(name,hash["parent"], para, hash["get_proc"], hash["set_proc"]))
       @hashes.push(hash)
 	  end
     end
@@ -684,6 +802,10 @@ class PokemonOption_Scene
 	  option = _INTL("UI Options")
     when :music_menu
 	  option = _INTL("Music Options")
+    when :challenges_menu
+	  option = _INTL("Challenges...")
+	 else
+	  option = _INTL("Options")
 	end
     @sprites["title"].text = option
     pbSetSystemFont(@sprites["textbox"].contents)
@@ -833,13 +955,6 @@ class PokemonGlobalMetadata
   end
 end
 
-def pbHardcoreMode
-     return false if $PokemonGlobal.hardcore == true
-      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable Hardcore Mode? This can only be reversed by starting a new save."))
-          $PokemonGlobal.hardcore = true
-      end
-end
-
 
 MenuHandlers.add(:options_menu, :movement_style, {
   "name"        => _INTL("Double Tap to Run"),
@@ -852,6 +967,25 @@ MenuHandlers.add(:options_menu, :movement_style, {
   "get_proc"    => proc { next $PokemonSystem.runstyle },
   "set_proc"    => proc { |value, _scene| $PokemonSystem.runstyle = value }
 })
+
+
+
+MenuHandlers.add(:options_menu, :screen_size, {
+  "name"        => _INTL("Screen Size"),
+  "parent"      => :main,
+  "order"       => 28,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("S"), _INTL("M"), _INTL("L"), _INTL("XL") , _INTL("XXL"), _INTL("Full")],
+  "description" => _INTL("Choose the size of the game window."),
+  "get_proc"    => proc { next [$PokemonSystem.screensize, 5].min },
+  "set_proc"    => proc { |value, _scene|
+    next if $PokemonSystem.screensize == value
+    $PokemonSystem.screensize = value
+    pbSetResizeFactor($PokemonSystem.screensize)
+  }
+})
+
+
 
 MenuHandlers.add(:options_menu, :controls_menu, {
   "name"        => _INTL("Controls Options..."),
@@ -893,13 +1027,77 @@ MenuHandlers.add(:options_menu, :music_menu, {
   "name"        => _INTL("Music Options..."),
   "parent"      => :main,
   "type"        => SelectOption,
-  "order"       => 32,
+  "order"       => 33,
   "description" => _INTL("View Options Related to the Music..."),
 })
+MenuHandlers.add(:options_menu, :challenges_menu, {
+  "name"        => _INTL("Challenge Options..."),
+  "parent"      => :main,
+  "type"        => SelectOption,
+  "condition"   => proc { 
+  next $player
+  next Nuzlocke.definedrules? == false
+  next Nuzlocke.on? == false },
+  "order"       => 37,
+  "description" => _INTL("View Options that change the nature of the game..."),
+  #"description" => _INTL("View Options that change the nature of the game...\nFor each enabled option, experience gain is increased."),
+})
 
+if false
 
+MenuHandlers.add(:options_menu, :survivalmode, {
+  "name"        => _INTL("Survival Mode"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 37,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("Choose whether or not you play in Survival Mode."),
+  "get_proc"    => proc { next $PokemonSystem.survivalmode },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.survivalmode = value }
+})
 
+MenuHandlers.add(:options_menu, :temperature, {
+  "name"        => _INTL("Ambient Temperature"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 39,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether or not Survival Mode has Temperature Mechanics."),
+  "condition"   => proc { next $PokemonSystem.survivalmode == 0 && $player},
+  "get_proc"    => proc { next $PokemonSystem.temperature },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.temperature = value }
+})
 
+MenuHandlers.add(:options_menu, :nuzlockemode, {
+  "name"        => _INTL("Nuzlocke Mode"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 40,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("Choose whether or not you play in Nuzlocke Mode."),
+  "get_proc"    => proc { next $PokemonSystem.nuzlockemode },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.nuzlockemode = value 
+  if $PokemonSystem.nuzlockemode == 0
+    if Nuzlocke.definedrules? == true
+      if Nuzlocke.on? == false
+    scene.sprites["textbox"].text = ("Nuzlocke has been turned on.")
+      Nuzlocke.toggle(true)
+      end
+    else 
+    scene.sprites["textbox"].text = ("Nuzlocke has been started.")
+      Nuzlocke.start
+    end
+  else
+    if Nuzlocke.on? 
+      Nuzlocke.toggle(false)
+    scene.sprites["textbox"].text = ("Nuzlocke has been turned off.")
+    end
+  end}
+})
+
+end
 
 
 #Main
@@ -962,31 +1160,561 @@ MenuHandlers.add(:options_menu, :text_speed, {
   }
 })
 
+
+def pbHardcoreMode
+     return false if $PokemonGlobal.hardcore == true
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'Hardcore Mode'? This can only be reversed by starting a new save."))
+          $PokemonGlobal.hardcore = true
+      end
+end
+
+
 MenuHandlers.add(:options_menu, :hardcore, {
   "name"        => _INTL("Hardcore Mode"),
-  "parent"      => :main,
+  "parent"      => :challenges_menu,
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Press USE to Enable Hardcore Mode. Once Enabled, you cannot disable unless you start a new save, or die."),
+  "description" => _INTL("Enables 'Hardcore Mode'. You only have one life, and one save. Upon dying, your save is deleted."),
   "condition"   => proc { 
   next $player
-  next $PokemonGlobal
-  next $PokemonGlobal.hardcore == false },
+  next $PokemonGlobal },
   "get_proc"    => proc { next $PokemonSystem.hardcore },
   "set_proc"    => proc { |value, scene|
-     value = 1 if $PokemonGlobal.hardcore==false
+     value = 0 if $PokemonGlobal.hardcore==false
+     value = 1 if $PokemonGlobal.hardcore==true
     next if scene.in_load_screen 
-    next if value == $PokemonSystem.hardcore
 	if value == 0
     pbHardcoreMode
+	 if $PokemonGlobal.hardcore==true
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Hardcore Mode"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Hardcore Mode' is already enabled, and cannot be disabled."
 	end
   }
 })
 
+
+def pbNuzlockeMode
+     return false if nuzlocke_has?(:PERMADEATH)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'Nuzlocke Mode'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:PERMADEATH)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :permadeath, {
+  "name"        => _INTL("Nuzlocke Mode"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'Nuzlocke Mode'. When your Pokemon dies, it will be removed from your party with no recovery."),
+  "condition"   => proc { 
+  next $player
+  next $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore2 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if !nuzlocke_has?(:PERMADEATH)
+     value = 1 if nuzlocke_has?(:PERMADEATH)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbNuzlockeMode
+	 if nuzlocke_has?(:PERMADEATH)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Nuzlocke Mode"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Nuzlocke Mode' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+def pbOneRoute
+     return false if nuzlocke_has?(:ONEROUTE)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'One Catch per Map'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:ONEROUTE)
+         pbAddNuzlockeRule(:DUPSCLAUSE)
+         pbAddNuzlockeRule(:STATIC)
+         pbAddNuzlockeRule(:SHINY)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :one_route, {
+  "name"        => _INTL("One Catch per Map"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'One Catch per Map'. You can only capture one encounter per map. [NOT FINISHED]"),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore3 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if !nuzlocke_has?(:ONEROUTE)
+     value = 1 if nuzlocke_has?(:ONEROUTE)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbOneRoute
+	 if nuzlocke_has?(:ONEROUTE)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="One Catch per Map"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+	 puts $PokemonGlobal.nuzlockeRules.to_s
+    scene.sprites["textbox"].text           = "'One Catch per Map' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+def pbDupsClause
+     return false if !nuzlocke_has?(:DUPSCLAUSE)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to disable 'Dups Clause'? This can only be reversed by starting a new save."))
+         pbDeleteNuzlockeRule(:DUPSCLAUSE)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :dups_clause, {
+  "name"        => _INTL("Dups Clause"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Disable")],
+  "description" => _INTL("Disables 'Dups Clause'. 'Dups Clause' does not count duplicates of already caught species to the encounter limit."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal && nuzlocke_has?(:ONEROUTE)},
+  "get_proc"    => proc { next $PokemonSystem.hardcore3 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:DUPSCLAUSE)
+     value = 1 if !nuzlocke_has?(:DUPSCLAUSE)
+    next if scene.in_load_screen 
+  next nuzlocke_has?(:ONEROUTE)
+	if value == 0
+	 pbDupsClause
+	 if !nuzlocke_has?(:DUPSCLAUSE)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Dups Clause"
+	     option.values=[_INTL("Disabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Dups Clause' is already disabled, and cannot be enabled."
+	end
+  }
+})
+
+
+
+
+def pbStaticClause
+     return false if !nuzlocke_has?(:STATIC)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to disable 'Static Encounters'? This can only be reversed by starting a new save."))
+         pbDeleteNuzlockeRule(:STATIC)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :static_clause, {
+  "name"        => _INTL("Static Encounters"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Disable")],
+  "description" => _INTL("Disables 'Static Encounters'. 'Static Encounters' are not currently counting to your encounter limit."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal && nuzlocke_has?(:ONEROUTE)},
+  "get_proc"    => proc { next $PokemonSystem.hardcore4 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:STATIC)
+     value = 1 if !nuzlocke_has?(:STATIC)
+    next if scene.in_load_screen 
+  next nuzlocke_has?(:ONEROUTE)
+	if value == 0
+	 pbStaticClause
+	 if !nuzlocke_has?(:STATIC)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Static Encounters"
+	     option.values=[_INTL("Disabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Static Encounters' is already disabled, and cannot be enabled."
+	end
+  }
+})
+
+
+
+
+
+def pbShinyClause
+     return false if !nuzlocke_has?(:SHINY)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to disable 'Shiny Encounters'? This can only be reversed by starting a new save."))
+         pbDeleteNuzlockeRule(:SHINY)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :shiny_clause, {
+  "name"        => _INTL("Shiny Encounters"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Disable")],
+  "description" => _INTL("Disables 'Shiny Encounters'. 'Shiny Encounters' are not currently counting to your encounter limit."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal && nuzlocke_has?(:ONEROUTE)},
+  "get_proc"    => proc { next $PokemonSystem.hardcore5 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:SHINY)
+     value = 1 if !nuzlocke_has?(:SHINY)
+    next if scene.in_load_screen 
+    next nuzlocke_has?(:ONEROUTE)
+	if value == 0
+	 pbShinyClause
+	 if !nuzlocke_has?(:SHINY)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Shiny Encounters"
+	     option.values=[_INTL("Disabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Shiny Encounters' is already disabled, and cannot be enabled."
+	end
+  }
+})
+
+
+
+
+
+def pbNicknameClause
+     return false if !nuzlocke_has?(:NICKNAMES)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'Forced Nicknames'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:NICKNAMES)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :nicknameforcing, {
+  "name"        => _INTL("Forced Nicknames"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'Forced Nicknames'. 'Forced Nicknames' forces you to give a Pokemon a name more than 2 characters."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore6 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:NICKNAMES)
+     value = 1 if !nuzlocke_has?(:NICKNAMES)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbShinyClause
+	 if !nuzlocke_has?(:NICKNAMES)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Forced Nicknames"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Forced Nicknames' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+
+
+def pbSleepClause
+     return false if !nuzlocke_has?(:AFULLEIGHTHOURS)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'A Full Eight Hours'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:AFULLEIGHTHOURS)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :sleepforcing, {
+  "name"        => _INTL("A Full Eight Hours"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'A Full Eight Hours'. 'A Full Eight Hours' forces you to sleep 8 hours every time you go to bed."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore7 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:AFULLEIGHTHOURS)
+     value = 1 if !nuzlocke_has?(:AFULLEIGHTHOURS)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbSleepClause
+	 if !nuzlocke_has?(:AFULLEIGHTHOURS)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="A Full Eight Hours"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'A Full Eight Hours' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+def pbOverworldClause
+     return false if !nuzlocke_has?(:NOOVCATCHING)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'No Overworld Capture'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:NOOVCATCHING)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :nocatchforcing, {
+  "name"        => _INTL("No Overworld Capture"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'No Overworld Capture'. 'No Overworld Capture' forces you to capture Pokemon in turn based combat."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore8 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:NOOVCATCHING)
+     value = 1 if !nuzlocke_has?(:NOOVCATCHING)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbOverworldClause
+	 if !nuzlocke_has?(:NOOVCATCHING)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="No Overworld Capture"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'No Overworld Capture' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+def pbStatuesClause
+     return false if !nuzlocke_has?(:NOSTATUES)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'No Statues'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:NOSTATUES)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :nostatueforcing, {
+  "name"        => _INTL("No Statues"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("Enables 'No Statues'. 'No Statues' removes all statues from being accessable."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore9 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:NOSTATUES)
+     value = 1 if !nuzlocke_has?(:NOSTATUES)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbStatuesClause
+	 if !nuzlocke_has?(:NOSTATUES)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="No Statues"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'No Statues' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+def pbSurvivalClause
+     return false if !nuzlocke_has?(:SURVIVALMODE)
+      if pbConfirmMessageSerious(_INTL("Are you sure you want to enable 'Survival Mode (Pokemon)'? This can only be reversed by starting a new save."))
+         pbAddNuzlockeRule(:SURVIVALMODE)
+         Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules)
+      end
+end
+
+
+MenuHandlers.add(:options_menu, :pkmnfoodandwater, {
+  "name"        => _INTL("Survival Mode (Pokemon)"),
+  "parent"      => :challenges_menu,
+  "order"       => 50,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("Enable")],
+  "description" => _INTL("[INCOMPLETE] Enables 'Survival Mode (Pokemon)'. 'Survival Mode (Pokemon)' causes Pokemon to have Food, Water, and Sleep stats like the player."),
+  "condition"   => proc { 
+  next $player && $PokemonGlobal},
+  "get_proc"    => proc { next $PokemonSystem.hardcore10 },
+  "set_proc"    => proc { |value, scene|
+     value = 0 if nuzlocke_has?(:SURVIVALMODE)
+     value = 1 if !nuzlocke_has?(:SURVIVALMODE)
+    next if scene.in_load_screen 
+	if value == 0
+	 pbSurvivalClause
+	 if !nuzlocke_has?(:SURVIVALMODE)
+	 options = scene.options
+	 options.each do |option|
+	   if option.name =="Survival Mode (Pokemon)"
+	     option.values=[_INTL("Enabled")]
+	   end
+	 
+	 end
+	scene.sprites["option"].set_options(options)
+    scene.sprites["option"].refresh
+	scene.refresh_options
+	 else
+	  value = 0
+	 end
+    else 
+    scene.sprites["textbox"].text           = "'Survival Mode (Pokemon)' is already enabled, and cannot be disabled."
+	end
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MenuHandlers.add(:options_menu, :tension_screen, {
   "name"        => _INTL("Tension Screen"),
-  "parent"      => :main,
+  "parent"      => :ui_menu,
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
@@ -1000,9 +1728,10 @@ MenuHandlers.add(:options_menu, :tension_screen, {
 )
 
 
+
 MenuHandlers.add(:options_menu, :simple_title, {
   "name"        => _INTL("Simple Title Screen"),
-  "parent"      => :main,
+  "parent"      => :ui_menu,
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Off"), _INTL("On")],
@@ -1013,23 +1742,16 @@ MenuHandlers.add(:options_menu, :simple_title, {
   }
 )
 
-
-MenuHandlers.add(:options_menu, :screen_size, {
-  "name"        => _INTL("Screen Size"),
-  "parent"      => :main,
-  "order"       => 120,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("S"), _INTL("M"), _INTL("L"), _INTL("XL") , _INTL("XXL"), _INTL("Full")],
-  "description" => _INTL("Choose the size of the game window."),
-  "get_proc"    => proc { next [$PokemonSystem.screensize, 5].min },
-  "set_proc"    => proc { |value, _scene|
-    next if $PokemonSystem.screensize == value
-    $PokemonSystem.screensize = value
-    pbSetResizeFactor($PokemonSystem.screensize)
-  }
-})
-
-
+  MenuHandlers.add(:options_menu, :disable_fogs, {
+    "name"        => _INTL("Reduced Lighting Effects"),
+    "parent"      => :ui_menu,
+    "order"       => 80,
+    "type"        => EnumOption,
+    "parameters"  => [_INTL("Off"), _INTL("On")],
+    "description" => _INTL("Reduces lighting effects in certain areas of the game in order to aid visibility."),
+    "get_proc"    => proc { next $PokemonSystem.disable_fogs },
+    "set_proc"    => proc { |value, _sceme| $PokemonSystem.disable_fogs = value }
+  })
 
 
 
@@ -1087,18 +1809,7 @@ MenuHandlers.add(:options_menu, :give_nicknames, {
 
 #UI Stuff
 
-MenuHandlers.add(:options_menu, :text_input, {
-  "name"        => _INTL("Text Entry"),
-  "parent"      => :ui_menu,
-  "order"       => 42,
-  "type"        => EnumOption,
-  "parameters"  => [_INTL("Cursor"), _INTL("Keyboard")],
-  "description" => _INTL("Choose how you want to enter text."),
-  "get_proc"    => proc { next $PokemonSystem.textinput },
-  "set_proc"    => proc { |value, _scene| 
-   next if value == $PokemonSystem.textinput
-  $PokemonSystem.textinput = value }
-})
+
 
 
 MenuHandlers.add(:options_menu, :speech_frame, {
@@ -1152,7 +1863,6 @@ MenuHandlers.add(:options_menu, :wbattle_music, {
     $game_temp.memorized_bgm_position = (Audio.bgm_pos rescue 0)
   end
    testbgm = pbGetWildBGM 
-   puts testbgm
    scene.sprites["textbox"].text = (testbgm) if testbgm
    if testbgm == $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
       $game_system.bgm_pause
@@ -1184,7 +1894,6 @@ MenuHandlers.add(:options_menu, :bossbattle_music, {
     $game_temp.memorized_bgm_position = (Audio.bgm_pos rescue 0)
   end
    testbgm = pbGetBossBattleBGM 
-   puts testbgm
    scene.sprites["textbox"].text = (testbgm) if testbgm
    bgm = pbStringToAudioFile(testbgm) if testbgm
    pbBGMPlay(bgm) if testbgm }
@@ -1206,7 +1915,6 @@ MenuHandlers.add(:options_menu, :surf_music, {
     $game_temp.memorized_bgm_position = (Audio.bgm_pos rescue 0)
   end
    testbgm = pbGetSurfBGM 
-   puts testbgm
    scene.sprites["textbox"].text = (testbgm) if testbgm
    if testbgm == $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
       $game_system.bgm_pause
@@ -1261,7 +1969,6 @@ MenuHandlers.add(:options_menu, :lowbattle_music, {
     $game_temp.memorized_bgm_position = (Audio.bgm_pos rescue 0)
   end
    testbgm = pbGetBeepGM 
-   puts testbgm
    scene.sprites["textbox"].text = (testbgm) if testbgm
    if testbgm == $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
       $game_system.bgm_pause
@@ -1277,6 +1984,40 @@ MenuHandlers.add(:options_menu, :lowbattle_music, {
 }})
 
 
+module Settings
+ BORDERS = [["Graphics/Pictures/Borders/empty",0,0, 0, 0, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBA",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBC",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GB",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/Mini",-28,-28, 120, 120, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/Cube",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBA2",-50,0, 300, 100, 1, 4, 26, 4],
+ ["Graphics/Pictures/Borders/TV",-50,0, 300, 100, 1, 4, 26, 4],
+ ["Graphics/Pictures/Borders/custom",-50,0, 300, 100, 1, 4, 26, 4]]
+end
+
+MenuHandlers.add(:options_menu, :borders, {
+  "name"        => _INTL("Borders"),
+  "parent"      => :ui_menu,
+  "order"       => 90,
+  "type"        => NumberOption,
+  "parameters"  => 1..Settings::BORDERS.length,
+  "description" => _INTL("Choose a Border."),
+  "get_proc"    => proc { next $PokemonSystem.cur_border },
+  "set_proc"    => proc { |value, scene|
+    $PokemonSystem.cur_border = value
+	pbForceResizeFactor
+	scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
+	$scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
+	 amtx = 0
+	 amty = 0
+	 amtx = $PokemonSystem.screenposx-$PokemonSystem.screenposx if $PokemonSystem.screenposx!=0
+	 amty = $PokemonSystem.screenposy-$PokemonSystem.screenposy if $PokemonSystem.screenposy!=0
+	scene.sprites["textbox"].x=0+amtx
+	scene.sprites["textbox"].y=288+amty
+	
+  }
+})
 
 #For the Menu, an area to set Nuzlocke settings
 #and maybe Survival Settings?

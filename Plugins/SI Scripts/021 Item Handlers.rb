@@ -86,45 +86,55 @@ ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
   next 2
 })
 
-ItemHandlers::UseInField.add(:WATERBOTTLE,proc { |item|
+ItemHandlers::UseInField.add(:WATERBOTTLE,proc { |item2|
 if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
+     message=(_INTL("Store water in your Canteen?"))
     if pbConfirmMessage(message)
-      message=(_INTL("Do you want to use all your bottles?"))
-    if pbConfirmMessage(message)
-       $bag.add(:WATER,$bag.quantity(:WATERBOTTLE))
-	else
-       $bag.add(:WATER,1)
-	end
-	end
-	next true
-   else
-    pbMessage(_INTL("That is not water."))
-	next false
-end
-})
-ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |item|
-if $game_player.pbFacingTerrainTag.can_surf
-     message=(_INTL("Want to pick up water?"))
-    if pbConfirmMessage(message)
-      message=(_INTL("Do you want to use all your bottles?"))
-    if pbConfirmMessage(message)
-       $bag.add(:WATER,$bag.quantity(:GLASSBOTTLE))
-	else
-       $PokemonBag.add(:WATER,1)
-	end
+	
+	    item = ItemData.new(:WATER)
+        item2.decrease_durability(1)
+		 item.set_bottle(item2)
+       $bag.add(item,1)
 
 	end
 	next true
    else
-    pbMessage(_INTL("That is not water."))
+end
+	next false
+})
+
+ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |item2|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Store water in your Bottle?"))
+	    item = ItemData.new(:WATER)
+        item2.decrease_durability(1)
+		 item.set_bottle(item2)
+       $bag.add(item,1)
+
+	next true
+end
+	next false
+})
+
+
+ItemHandlers::UseInField.add(:BOWL,proc { |item2|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Drink some unpurified water?"))
+    if pbConfirmMessage(message)
+        item2.decrease_durability(1)
+        increaseWater(10)
+        damagePlayer(10.0)
+	end
 	next false
 end
+	next false
 })
+
 ItemHandlers::UseInField.add(:IRONAXE,proc { |item|
 if $game_player.pbFacingTerrainTag.can_knockdown
      message=(_INTL("Want to knock down some branches?"))
     if pbConfirmMessage(message)
+       item.decrease_durability(1)
        $bag.add(:ACORN,(rand(6)))
 	end
 	next true

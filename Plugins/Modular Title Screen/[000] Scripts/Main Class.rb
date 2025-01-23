@@ -5,6 +5,7 @@
 # handles the logic of constructing and animating the title screen visuals
 class ModularTitleScreen
   attr_reader :sprites2
+  attr_accessor :viewport
 
 
   TEXTCOLOR             = Color.new(232, 232, 232)
@@ -220,8 +221,8 @@ class ModularTitleScreen
     @sprites2["craftResult"].height=Graphics.height
 	@sprites2["craftResult"].resizeToFit("")
    # @sprites2["craftResult"].ox = @sprites2["craftResult"].width/2
-    @sprites2["craftResult"].x = (@viewport.rect.width/2)-70
-    @sprites2["craftResult"].y = (@viewport.rect.height*0.85)-25
+    @sprites2["craftResult"].x = (@viewport.rect.width/2)-85
+    @sprites2["craftResult"].y = (@viewport.rect.height*0.85)-34
     @sprites2["craftResult"].baseColor=Color.new(232, 232, 232)
     @sprites2["craftResult"].shadowColor=Color.new(136, 136, 136)
     @sprites2["craftResult"].viewport=@viewport
@@ -368,13 +369,13 @@ class ModularTitleScreen
     @sprites2["choicebox"].y = @sprites2["selectionbox2"].y+30
     @sprites2["choicebox"].z = 1007
     @sprites2["choicebox"].visible = false
-	createtextboxesplease("info",@sprites2["choicebox"].x-54,128)
+	createtextboxesplease("info",@sprites2["choicebox"].x-54,120)
 	createtextboxesplease("veryeasy",@sprites2["choicebox"].x-54,159)
-	createtextboxesplease("easy",@sprites2["choicebox"].x-54,189)
-	createtextboxesplease("normal",@sprites2["choicebox"].x-54,219)
-	createtextboxesplease("hard",@sprites2["choicebox"].x-54,249)
-	createtextboxesplease("veryhard",@sprites2["choicebox"].x-54,279)
-	createtextboxesplease("return",@sprites2["choicebox"].x-54,309)
+	createtextboxesplease("easy",@sprites2["choicebox"].x-54,186)
+	createtextboxesplease("normal",@sprites2["choicebox"].x-54,213)
+	createtextboxesplease("hard",@sprites2["choicebox"].x-54,240)
+	createtextboxesplease("veryhard",@sprites2["choicebox"].x-54,267)
+	createtextboxesplease("return",@sprites2["choicebox"].x-54,294)
    @sprites2["info"].z=1008
    @sprites2["veryeasy"].z=1008
    @sprites2["easy"].z=1008
@@ -439,9 +440,6 @@ class ModularTitleScreen
    @sprites2["easy"].visible=true
    @sprites2["normal"].visible=true if commands.length > 2
    set_text("veryeasy",commands[0])
-   puts commands[0]
-   puts commands[1]
-   puts commands[2]
    set_text("info","Difficulty:") if commands[0] == 'Very Easy'
    set_text("info","Options:") if commands[0] == 'Play'
    set_text("easy",commands[1])
@@ -462,7 +460,7 @@ class ModularTitleScreen
   def move_selector_arrow(selection)
     selection = 0 if selection.nil?
     theoptions = [@sprites2["veryeasy"],@sprites2["easy"],@sprites2["normal"],@sprites2["hard"],@sprites2["veryhard"],@sprites2["return"]]
-    @sprites2["arrowr3"].y = theoptions[selection].y+26
+    @sprites2["arrowr3"].y = theoptions[selection].y+30
   end
 
   def displayboxdisplaymeasavefile(file=nil,header=nil,selected_file=nil)

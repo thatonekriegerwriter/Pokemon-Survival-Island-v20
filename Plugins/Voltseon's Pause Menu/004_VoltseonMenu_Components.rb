@@ -299,12 +299,12 @@ class SurvivalHud < Component
     @sprites["overlay"].bitmap.clear
     pbSetSystemFont(@sprites["overlay"].bitmap)
     pbSetSystemFont(@sprites["overlay2"].bitmap)
-    pbDrawTextPositions(@sprites["overlay2"].bitmap,[[@regionname,0, 45,99,@baseColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay2"].bitmap,[[@regionname,0, 45,99-3,@baseColor,@shadowColor]])
 #	if $DEBUG
 #    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text,Graphics.width/2 - 8, 5,1,@hungerColor,@shadowColor],[text2,Graphics.width/2 - 8,27,1,@thirstColor,@shadowColor],[text3,Graphics.width/2 - 8,49,1,@sleepColor,@shadowColor],[text4,(Graphics.width/2)-70 - 8,49,1,@sleepColor,@shadowColor]])
 #    else
-    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text5,Graphics.width/2 - 62, 65,1,@baseColor,@shadowColor],
-	[text4,Graphics.width/2 - 77, 87,1,@baseColor,@shadowColor],[text,x, 110,1,@hungerColor,@shadowColor],[text2,x,140,1,@thirstColor,@shadowColor],[text3,x,170,1,@sleepColor,@shadowColor]])
+    pbDrawTextPositions(@sprites["overlay"].bitmap,[[text5,Graphics.width/2 - 62, 65-3,1,@baseColor,@shadowColor],
+	[text4,Graphics.width/2 - 77, 87-3,1,@baseColor,@shadowColor],[text,x, 110-3,1,@hungerColor,@shadowColor],[text2,x,140-3,1,@thirstColor,@shadowColor],[text3,x,170-5,1,@sleepColor,@shadowColor]])
 
 #	end
   end

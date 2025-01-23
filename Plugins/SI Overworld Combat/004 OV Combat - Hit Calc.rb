@@ -31,6 +31,19 @@ class Game_Map
     end
   end
 
+
+  def check_event_and_adjacents2(attacker, target)
+     eventslist = []
+	 eventslist << $game_player
+	 eventslist = eventslist + self.events.values
+    eventslist.each do |event|
+	   if event.at_coordinate_or_beside?(attacker, event.x, event.y)
+      return true if event == target && event==$game_player
+      return true if event == target
+	  end
+    end
+   return false
+  end
 end
 class OverworldCombat 
 def who_am_i_hitting(attacker,target=nil,alwayshit=false)
@@ -185,7 +198,7 @@ def pbShouldAttack?(attacker,target)
   return false if attacker.pokemon.status == :PARALYSIS
   return false if attacker.pokemon.status == :FROZEN
   potato2 = true
-  amt = rand(100)
+  amt = rand(60)
   potato2 = amt<getRate1(attacker,target)
   return potato2
 

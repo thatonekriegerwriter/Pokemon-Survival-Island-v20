@@ -395,7 +395,7 @@ class HUD
 	@bar_image = RPG::Cache.picture("Hud/overlay_hp")
 	@bar_image2 = RPG::Cache.picture("Hud/overlay_hp2")
     @yposition = DRAW_AT_BOTTOM ? Graphics.height-64 : 0
-	@yposition += BorderSettings::SCREENPOSY
+	@yposition += $PokemonSystem.screenposy
     @old_index=nil
     @old_map=nil
     @@instanceArray.compact! 
@@ -419,13 +419,13 @@ class HUD
   end
 
   def createSprites
-    createHPBar(55+BorderSettings::SCREENPOSX , @yposition+30, 90, 8)
-    createSTABar(65+BorderSettings::SCREENPOSX , @yposition+50, 90, 8)
-    #createSTABar(120+BorderSettings::SCREENPOSX , @yposition+45, 70, 11)
-    #createHPBar(40+BorderSettings::SCREENPOSX , @yposition+45, 70, 11)
-    createBox(440+BorderSettings::SCREENPOSX , @yposition+45, 70, 11)
-	createSelection(440+BorderSettings::SCREENPOSX , @yposition+45, 70, 11)
-	createHPLevel(80+BorderSettings::SCREENPOSX , 10)
+    createHPBar(55+$PokemonSystem.screenposx , @yposition+30, 90, 8)
+    createSTABar(65+$PokemonSystem.screenposx , @yposition+50, 90, 8)
+    #createSTABar(120+$PokemonSystem.screenposx , @yposition+45, 70, 11)
+    #createHPBar(40+$PokemonSystem.screenposx , @yposition+45, 70, 11)
+    createBox(440+$PokemonSystem.screenposx , @yposition+45, 70, 11)
+	createSelection(440+$PokemonSystem.screenposx , @yposition+45, 70, 11)
+	createHPLevel(80+$PokemonSystem.screenposx , 10)
   end
   
 
@@ -680,9 +680,9 @@ class HUD
   def refresh
     refreshSTABar if $PokemonGlobal.bars_visible==true
     refreshHPBar if $PokemonGlobal.bars_visible==true
-	refreshHPLevel(80+BorderSettings::SCREENPOSX , 10) if $game_temp.lockontarget!=false
+	refreshHPLevel(80+$PokemonSystem.screenposx , 10) if $game_temp.lockontarget!=false
 	refreshSelection
-	refreshBox(440+BorderSettings::SCREENPOSX , @yposition+45) if $PokemonGlobal.ball_hud_enabled==true
+	refreshBox(440+$PokemonSystem.screenposx , @yposition+45) if $PokemonGlobal.ball_hud_enabled==true
   end
 
 
@@ -1046,7 +1046,12 @@ class HUD
        broseph.type.moves.each_with_index do |move,index|
         @sprites4["selection#{index}"].visible = true
         @sprites4["item_sel#{index}"].text=""
-        @sprites4["item_sel#{index}"].text="#{index+1}. #{move.name} (#{move.pp}/#{move.total_pp})"
+		  movename = move.name
+		  if movename.length>7
+		   movename = movename.slice(0, 7)
+		   movename = "#{movename...}"
+		  end
+        @sprites4["item_sel#{index}"].text="#{index+1}. #{movename} (#{move.pp}/#{move.total_pp})"
         @sprites4["item_sel#{index}"].baseColor=get_type_color(move.type)
         @sprites4["item_sel#{index}"].shadowColor=get_shadow_color(move.type)
         @sprites4["item_sel#{index}"].visible = true
@@ -1410,6 +1415,9 @@ module Graphics
 	$mouse = MouseVisual.new if $mouse.nil?
     $mouse.update if $mouse && !$mouse.disposed?
     $mouse = nil if $mouse&.disposed?
+	
+    $border = Border.new if !$border
+    $border.tryUpdate
   end
 
 
@@ -1425,7 +1433,7 @@ end
 class MouseVisual
   
   def initialize
-    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport = Viewport.new(0-$PokemonSystem.screenposx, 0-$PokemonSystem.screenposy, Settings::SCREEN_WIDTH*4, Settings::SCREEN_HEIGHT*4)
 	@viewport.z = 999999999
 	@mouse = nil
     @disposed = false
@@ -1554,6 +1562,7 @@ class Spriteset_Map
   end
   def update
     updateOldFL
+	pbCreateParticleEngine(@viewport1, @map)
 	$selection_arrows = SelectionBaseDisplay.new(@viewport1) if !$selection_arrows
 	$styler = MouseTrail.new(@viewport1) if !$styler
 	$selection_displayer = SelectionDisplay.new(@viewport1) if !$selection_displayer
@@ -1566,6 +1575,7 @@ class Spriteset_Map
     $tensionbars.update
     $hud.update
     $sidedisplay.update
+    $particle_engine.update if $particle_engine
   end
 end
 class IconSprite < Sprite
@@ -2073,7 +2083,7 @@ class MouseTrail
 					   pbSEPlay(sound_filename)
 					   @styler_health+=@recovery
 					  if pkmn.hits>=target_hits
-                     pbPlayerEXP(pkmn)
+                     pbPlayerEXP(pkmn,pbOverworldCombat.get_allied_pokemon)
 		              pkmn.poke_ball = :POKEBALLC
 		              pkmn.calc_stats
 					   if $game_map.map_id!=11

@@ -650,7 +650,7 @@ class MiningGameScene
               @sprites["tool"].y = 254 - (144 * newmode)
 		   end
         end
-        if Input.mouse_x.between?(0,13*32) && Input.mouse_y.between?(64,64+10*32) #Mouse is on board
+        if Input.mouse_x.between?(0+$PokemonSystem.screenposx,13*32+$PokemonSystem.screenposx) && Input.mouse_y.between?(64+$PokemonSystem.screenposy,64+10*32+$PokemonSystem.screenposy) #Mouse is on board
           x = Input.mouse_x/32
           y = (Input.mouse_y-64)/32
           newpos = x + y*13
@@ -698,8 +698,8 @@ class MiningGameScene
 		pbMessage(_INTL("You don't have either a Hammer or a Pickaxe!")) if !hasPickaxe? && !hasHammer?
         break if !hasPickaxe? && !hasHammer?
           pbHit if Input.trigger?(Input::MOUSELEFT)
-        elsif Input.mouse_x.between?(428,508) #mouse is by tool icons
-          if Input.mouse_y.between?(98,216) #mouse is by hammer
+        elsif Input.mouse_x.between?(428+$PokemonSystem.screenposx,508+$PokemonSystem.screenposy) #mouse is by tool icons
+          if Input.mouse_y.between?(98+$PokemonSystem.screenposx,216+$PokemonSystem.screenposy) #mouse is by hammer
             if Input.trigger?(Input::MOUSELEFT) && hasHammer?
               pbSEPlay("Mining tool change")
               newmode = 1
@@ -707,7 +707,7 @@ class MiningGameScene
               @sprites["tool"].src_rect.set(newmode * 68, 0, 68, 100)
               @sprites["tool"].y = 254 - (144 * newmode)
             end
-          elsif Input.mouse_y.between?(242,360) #mouse is by pick
+          elsif Input.mouse_y.between?(242+$PokemonSystem.screenposx,360+$PokemonSystem.screenposy) #mouse is by pick
             if Input.trigger?(Input::MOUSELEFT) && hasPickaxe?
               pbSEPlay("Mining tool change")
               newmode = 0
@@ -745,7 +745,7 @@ class MiningGameScene
         @sprites["tool"].src_rect.set(newmode * 68, 0, 68, 100)
         @sprites["tool"].y = 254 - (144 * newmode)
 		   end
-      elsif Input.trigger?(Input::USE) || ( !(Input.mouse_x.between?(0,13*32) && Input.mouse_y.between?(64,64+10*32)) && Input.trigger?(Input::MOUSELEFT) )   # Hit
+      elsif Input.trigger?(Input::USE) || ( !(Input.mouse_x.between?(0+$PokemonSystem.screenposx,13*32+$PokemonSystem.screenposx) && Input.mouse_y.between?(64+$PokemonSystem.screenposy,64+10*32+$PokemonSystem.screenposy)) && Input.trigger?(Input::MOUSELEFT) )   # Hit
 	  # mode: 0=pick, 1=hammer
 		if hasPickaxe? 
 		 pick = GameData::Item.get(getPickaxe)

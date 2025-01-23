@@ -184,22 +184,22 @@ class PokemonSummary_Scene
     end
     pbDrawImagePositions(overlay, imagepos)
     textpos = [
-      [_INTL("Type:"),            xpos + 104, ypos + 12,  0, whtBase, whtShadow],
-      [_INTL("ID No.:"),          xpos + 104, ypos + 44,  0, whtBase, whtShadow],
-      [_INTL("#{idnum}"),         xpos + 234, ypos + 44,  2, blkBase, blkShadow],
-      [_INTL("Rank:"),            xpos + 104, ypos + 76,  0, whtBase, whtShadow],
-      [_INTL("Name:"),            xpos + 145, ypos + 116, 2, whtBase, whtShadow],
-      [_INTL("#{name}"),          xpos + 145, ypos + 148, 2, blkBase, blkShadow],
-      [_INTL("Title Conferred:"), xpos + 145, ypos + 190, 2, whtBase, whtShadow],
-      [_INTL("#{title}"),         xpos + 145, ypos + 222, 2, blkBase, blkShadow],
-      [_INTL("Change memento:"),  xpos + 212, ypos + 268, 1, whtBase, whtShadow]
+      [_INTL("Type:"),            xpos + 104, ypos + 2,  0, whtBase, whtShadow],
+      [_INTL("ID No.:"),          xpos + 104, ypos + 34,  0, whtBase, whtShadow],
+      [_INTL("#{idnum}"),         xpos + 234, ypos + 34,  2, blkBase, blkShadow],
+      [_INTL("Rank:"),            xpos + 104, ypos + 66,  0, whtBase, whtShadow],
+      [_INTL("Name:"),            xpos + 145, ypos + 106, 2, whtBase, whtShadow],
+      [_INTL("#{name}"),          xpos + 145, ypos + 138, 2, blkBase, blkShadow],
+      [_INTL("Title Conferred:"), xpos + 145, ypos + 180, 2, whtBase, whtShadow],
+      [_INTL("#{title}"),         xpos + 145, ypos + 212, 2, blkBase, blkShadow],
+      [_INTL("Change memento:"),  xpos + 212, ypos + 258, 1, whtBase, whtShadow]
     ]
     if memento_data
       typeX = (memento_data.is_ribbon?) ? 213 : 228
-      textpos.push([_INTL("#{type}"), xpos + typeX, ypos + 12, 0, blkBase, blkShadow])
-      textpos.push([_INTL("#{rank}"), xpos + 240, ypos + 76, 1, blkBase, blkShadow]) if rank > 4
+      textpos.push([_INTL("#{type}"), xpos + typeX, ypos + 2, 0, blkBase, blkShadow])
+      textpos.push([_INTL("#{rank}"), xpos + 240, ypos + 66, 1, blkBase, blkShadow]) if rank > 4
     else
-      textpos.push([_INTL("#{type}"), xpos + 232, ypos + 12, 2, blkBase, blkShadow])
+      textpos.push([_INTL("#{type}"), xpos + 232, ypos + 2, 2, blkBase, blkShadow])
     end
     pbDrawTextPositions(overlay, textpos)
   end
@@ -237,9 +237,9 @@ class PokemonSummary_Scene
     @sprites["mementos"].dispose if @sprites["mementos"]
     @sprites["mementos"] = MementoSprite.new(filter, @ribbonOffset, @viewport, @pokemon.memento)
     textpos = [
-      [_INTL("#{count}"), 210, 12, 1, nameBase, nameShadow],
-      [name, Graphics.width / 2, 224, 2, nameBase, nameShadow],
-      [_INTL("Title Conferred:"), 10, 260, 0, base, shadow],
+      [_INTL("#{count}"), 210, 2, 1, nameBase, nameShadow],
+      [name, Graphics.width / 2, 214, 2, nameBase, nameShadow],
+      [_INTL("Title Conferred:"), 10, 220, 0, base, shadow],
       [title, 346, 260, 2, base, shadow]
     ]
     if memento_data

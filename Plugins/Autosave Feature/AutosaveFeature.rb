@@ -74,6 +74,7 @@ def pbAutosave(scene = nil)
   return if $PokemonGlobal.hardcore==true
   return if SaveData::TESTING_MODE==false
   if !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
+    sideDisplay("Now Saving...",true)
     $scene.spriteset.addUserSprite(SideDisplayUI.new)
 	Game.auto_save
   end
@@ -204,9 +205,9 @@ end
 
 
 
-def sideDisplay(text,onlyme=false)
+def sideDisplay(text,onlyme=false,looptimeadjustment=0,flashing=true)
 return false if !$scene
-$sidedisplay.set_text(text)
+$sidedisplay.set_text(text,onlyme,looptimeadjustment,flashing)
 return true
 end
 
@@ -220,15 +221,19 @@ class SideDisplayUI
     @bitmapsprite.visible = true
     @frame = 0
     @looptime = 0
+    @looptimetarget = 3
     @i = 1
 	@x = x
 	@y = y 
 	@z = z
+    @flashing = true
     @value = false
     @currentmap = $game_map.map_id
   end
-  
-  def set_text(text,onlyme=false)
+  def add_looptime(amt)
+    @looptimetarget+=amt
+  end
+  def set_text(text,onlyme,looptimet,flashing)
     @currentmap = $game_map.map_id
 	 clear_text if onlyme==true
 	  
@@ -236,6 +241,8 @@ class SideDisplayUI
         @frame = 0
         @looptime = 0
         @i = 1
+        @looptimetarget = 3 + looptimet
+        @flashing = flashing
 	 refresh
 	 show
   end
@@ -249,7 +256,6 @@ class SideDisplayUI
    @bitmap.clear
 	text2 = []
 	loops = 0
-	puts @text
 	@text.each do |i|
 	    y1 = @y+(loops*21)
 	  text2 << [i,@x,y1,@z,Color.new(248,248,248),Color.new(97,97,97)]
@@ -271,14 +277,14 @@ class SideDisplayUI
     end
 	return if @bitmapsprite.visible == false
 	return if cleared?
-	if @text.length>4 && @looptime<3 && @value==false
+	if @text.length>4 && @looptime<@looptimetarget && @value==false
 	    @frame = 16
 	    @looptime = 2
 		@value = true
 	end
 	
     if @frame > Graphics.frame_rate / 2
-      if @looptime == 3
+      if @looptime == @looptimetarget
 	    clear_text
         hide
         refresh
@@ -292,7 +298,7 @@ class SideDisplayUI
       end
     else
       @frame += 1
-      @bitmapsprite.opacity += 10 * @i
+      @bitmapsprite.opacity += 10 * @i if @looptime >= (2.0 / 3.0) * @looptimetarget && @flashing==true
     end
   end
   

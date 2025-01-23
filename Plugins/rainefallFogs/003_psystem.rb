@@ -24,13 +24,6 @@ if RfSettings::ADD_FOGS_TO_SETTINGS
     end
   end
 
-  MenuHandlers.add(:options_menu, :disable_fogs, {
-    "name"        => _INTL("Reduced Lighting Effects"),
-    "order"       => 80,
-    "type"        => EnumOption,
-    "parameters"  => [_INTL("Off"), _INTL("On")],
-    "description" => _INTL("Reduces lighting effects in certain areas of the game in order to aid visibility."),
-    "get_proc"    => proc { next $PokemonSystem.disable_fogs },
-    "set_proc"    => proc { |value, _sceme| $PokemonSystem.disable_fogs = value }
-  })
+
 end
+

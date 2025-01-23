@@ -8,6 +8,7 @@ $bag.add(item)
 end
 
 
+
 class Pokemon
   attr_accessor :hidden_modifiers
 
@@ -39,6 +40,8 @@ class ItemData
   attr_accessor :berry_stats
   attr_accessor :pokeball_stats
   attr_accessor :capture_styler_stats
+  attr_accessor :stored_items
+  attr_accessor :bottle
 
 
   def initialize(id,durability=false,water=false)
@@ -49,7 +52,7 @@ class ItemData
     @durability  = durability
 	@durability = 100 if durability==false && ((GameData::Item.get(@id).is_tool? && @id != :STONE) || (GameData::Item.get(@id).is_foodwater? && GameData::Item.get(@id).has_flag?("NoSpoiling")) || GameData::Item.get(@id).is_berry?)
     @water      = water
-    @water      = 0 if water==false && GameData::BerryPlant::WATERING_CANS.include?(@id)
+    @water      = 0 if water==false && (GameData::BerryPlant::WATERING_CANS.include?(@id) || @id == :WATERBOTTLE || @id == :GLASSBOTTLE)
     @damage_bonus      = 0
     @crate_storage      = []
     @modifiers  = []
@@ -70,11 +73,19 @@ class ItemData
 	  @pokeball_stats["Catch Rate"] = get_catch_rate_multi(@id)
 	
 	end
+
+    @stored_items  = []
+    @bottle  = nil
   end
 
-
-
-
+   def stored_items
+    @stored_items  = [] if @stored_items.nil?
+    return @stored_items
+   end
+   def bottle
+    @bottle  = nil if @bottle.nil?
+    return @bottle
+   end
 
     def get_catch_rate_multi(id)
 	  return 1 if id==:POKEBALLC
@@ -130,13 +141,23 @@ class ItemData
 	  return @pokeball_stats["Quality"]
 	  end
 	end
-   
-
+    
+    def bottle_type
+      return @bottle
+    end	
+    
+	def set_bottle(bottle)
+	  puts bottle.id
+	  @bottle = bottle
+	end
+	
+	
     def modifiers #A System chiefly used by POKeBALL's to decide it's more prominent effects.
      @modifiers = [] if @modifiers.nil?
 	 return @modifiers
 	end	 
-	 
+	
+	
 	def name
 	  return GameData::Item.get(@id).name
 	end
@@ -833,6 +854,8 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["ItemText"])
     @sprites["ItemText"].viewport=@viewport
     @sprites["ItemText"].windowskin=nil
+    @sprites["ItemText"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["ItemText"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["ItemText"].resizeToFit(item_name)
     @sprites["ItemText"].x = 40
     @sprites["ItemText"].y = 33
@@ -841,6 +864,8 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["ItemTextDesc"])
     @sprites["ItemTextDesc"].viewport=@viewport
     @sprites["ItemTextDesc"].windowskin=nil
+    @sprites["ItemTextDesc"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["ItemTextDesc"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["ItemTextDesc"].width=180
     @sprites["ItemTextDesc"].height=500
     @sprites["ItemTextDesc"].x = 0
@@ -891,11 +916,13 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["Durability"])
     @sprites["Durability"].viewport=@viewport
     @sprites["Durability"].windowskin=nil
+    @sprites["Durability"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Durability"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Durability"].width=180
     @sprites["Durability"].height=100
     @sprites["Durability"].zoom_x = 0.80
     @sprites["Durability"].zoom_y = 0.80
-    @sprites["Durability"].x = x+14
+    @sprites["Durability"].x = x
     @sprites["Durability"].y = y-28
     @sprites["Durability"].resizeToFit("Durability:")
 	text = "∞" if @item.durability==false
@@ -904,12 +931,14 @@ class PokemonItemSummary_Scene
     @sprites["Durability1"]=Window_UnformattedTextPokemon.new(text)
     pbPrepareWindow(@sprites["Durability1"])
     @sprites["Durability1"].viewport=@viewport
+    @sprites["Durability1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Durability1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Durability1"].windowskin=nil
     @sprites["Durability1"].width=180
     @sprites["Durability1"].height=100
     @sprites["Durability1"].zoom_x = 0.80
     @sprites["Durability1"].zoom_y = 0.80
-    @sprites["Durability1"].x = x+100
+    @sprites["Durability1"].x = x+86
     @sprites["Durability1"].y = y-28
     @sprites["Durability1"].resizeToFit(text)
     end
@@ -969,6 +998,8 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["Water1"])
     @sprites["Water1"].viewport=@viewport
     @sprites["Water1"].windowskin=nil
+    @sprites["Water1"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Water1"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Water1"].width=180
     @sprites["Water1"].height=100
     @sprites["Water1"].zoom_x = 0.80
@@ -983,6 +1014,8 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["Flags"])
     @sprites["Flags"].viewport=@viewport
     @sprites["Flags"].windowskin=nil
+    @sprites["Flags"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Flags"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Flags"].width=180
     @sprites["Flags"].height=100
     @sprites["Flags"].x = 200
@@ -993,6 +1026,8 @@ class PokemonItemSummary_Scene
     @sprites["Flags2"]=Window_UnformattedTextPokemon.new(theflags)
     pbPrepareWindow(@sprites["Flags"])
     @sprites["Flags2"].viewport=@viewport
+    @sprites["Flags2"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Flags2"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Flags2"].windowskin=nil
     @sprites["Flags2"].width=180
     @sprites["Flags2"].height=300
@@ -1005,6 +1040,8 @@ class PokemonItemSummary_Scene
     @sprites["Modifiers"]=Window_UnformattedTextPokemon.new("Modifiers (#{@item.modifiers.length}/3): ")
     pbPrepareWindow(@sprites["Modifiers"])
     @sprites["Modifiers"].viewport=@viewport
+    @sprites["Modifiers"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Modifiers"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Modifiers"].windowskin=nil
     @sprites["Modifiers"].width=180
     @sprites["Modifiers"].height=100
@@ -1022,6 +1059,8 @@ class PokemonItemSummary_Scene
     @sprites["Modifiers2"].windowskin=nil
     @sprites["Modifiers2"].width=180
     @sprites["Modifiers2"].height=300
+    @sprites["Modifiers2"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Modifiers2"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Modifiers2"].x = 360
     @sprites["Modifiers2"].y = 168
     @sprites["Modifiers2"].y -= 100 if !@sprites["durabilitybarborder"].visible && !@sprites["waterbarborder"].visible

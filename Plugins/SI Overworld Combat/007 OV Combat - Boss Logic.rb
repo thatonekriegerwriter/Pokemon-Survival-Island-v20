@@ -24,11 +24,11 @@ class OverworldCombat #Bosses
 def bossfight(event,boss)
 return if status_checks(event)
 	 event.remaining_steps=9999
-add_rule("No Player Damage")
 add_rule("Catchless")
-add_rule("Only-One-Mon")
  case boss
    when "Jorm" || 'Jorm'
+    add_rule("No Player Basics")
+    add_rule("Only-One-Mon")
     boss_jorm(event,boss)
  end
 
@@ -70,8 +70,12 @@ def boss_jorm(event,boss)
 	  $game_switches[302]=true #Latis + Lugia
 	  $game_variables[255]+=1  #Abilities
 	  $game_switches[76]=true #EARTHQUAKES
-	  @bossesArrayTimer = {} if @bossesArrayTimer.nil?
-	  @bossesArrayTimer["Temperate Shore"] = 12400
+	  reset_rules
+      $player.able_party.each do |pkmn|
+        pbDoLevelUps(pkmn)
+      end
+	  $PokemonGlobal.bossesArrayTimer = {} if @bossesArrayTimer.nil?
+	  $PokemonGlobal.bossesArrayTimer["Temperate Shore"] = 12400
       event.removeThisEventfromMap
    else
    case choice

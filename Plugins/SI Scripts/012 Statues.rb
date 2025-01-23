@@ -35,6 +35,130 @@ end
 	  end
    end
 
+def pbDoLevelUps(pkmn, messages=false)
+    expFinal = pkmn.stored_exp + pkmn.exp
+    growth_rate = pkmn.growth_rate
+    curLevel = pkmn.level
+    newLevel = growth_rate.level_from_exp(expFinal)
+	learnedmoves = []
+	level_cap = pkmn.level_cap
+	if level_cap.nil?
+    level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
+	end
+	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
+	if pkmn.level == 20 && pkmn.shadowPokemon?
+      pbMessage(_INTL("{1} cannot go beyond this level because it is a Shadow Pokemon.", pkmn.name, curLevel)) if messages
+    elsif newLevel > level_cap
+    elsif newLevel <= curLevel
+	
+      pbMessage(_INTL("{1} has not gained enough experience to level up.", pkmn.name, curLevel)) if messages
+	  return false
+	else
+	
+    loop do   # For each level gained in turn...
+      # EXP Bar animation
+      levelMinExp = growth_rate.minimum_exp_for_level(curLevel)
+      levelMaxExp = growth_rate.minimum_exp_for_level(curLevel + 1)
+      tempExp2 = (levelMaxExp < expFinal) ? levelMaxExp : expFinal
+      pkmn.exp = tempExp2
+      tempExp1 = tempExp2
+      curLevel += 1
+      if curLevel > newLevel
+        # Gained all the Exp now, end the animation
+        pkmn.calc_stats
+        break
+      end
+      # Levelled up
+      oldTotalHP = pkmn.totalhp
+      oldAttack  = pkmn.attack
+      oldDefense = pkmn.defense
+      oldSpAtk   = pkmn.spatk
+      oldSpDef   = pkmn.spdef
+      oldSpeed   = pkmn.speed
+      pkmn.changeHappiness("levelup",pkmn)
+      pkmn.changeLoyalty("levelup",pkmn)
+      if pkmn.shadowPokemon?
+         potato = pkmn.level
+         if potato == 12
+          if rand(100) <= 5
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 13
+          if rand(100) <= 10
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 14
+          if rand(100) <= 15
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 15
+          if rand(100) <= 20
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 16
+          if rand(100) <= 25
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 17
+          if rand(100) <= 30
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 18
+          if rand(100) <= 35
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato == 19
+          if rand(100) <= 40
+          pkmn.nature=:HATEFUL
+          end
+         elsif potato >= 20
+          if rand(100) <= 50
+          pkmn.nature=:HATEFUL
+          end
+         else
+       end
+      end
+      pkmn.calc_stats
+	  
+      moveList = pkmn.getMoveList
+      moveList.each { |m| learnedmoves << m[1] if m[0] == curLevel }
+   end
+      pbMessage(_INTL("{1} grew to Lv. {2}!", pkmn.name, curLevel))
+      # Learn all moves learned at this level
+	  learnedmoves.each do |move|
+	    pbLearnMove(pkmn, move)
+	  end
+      newspecies=pkmn.check_evolution_on_level_up
+          old_item=pkmn.item
+          if newspecies
+            pbFadeOutInWithMusic(99999){
+            evo=PokemonEvolutionScene.new
+            evo.pbStartScreen(pkmn,newspecies)
+            evo.pbEvolution
+            evo.pbEndScreen
+          }
+          end
+
+  pkmn.stored_exp = 0
+    return true
+     end
+
+
+
+
+end
+def pbCanLevelUp?
+    results = [] 
+      $player.able_party.each do |pkmn|
+           results << pkmn.stored_exp>0
+      end
+	 
+	  if results.all? { |result| result == false }
+        pbMessage(_INTL("Your Pokemon have not experienced enough to grow like this."))
+		 return false
+	  end
+		 return true
+end
 
 def howmanystatues()
  return $PokemonGlobal.active_statues.length
@@ -272,12 +396,14 @@ command = 0
 
     pbDisposeMessageWindow(msgwindow)
 	   commands = []
+      cmd_level_up     = -1
       cmd_move_statues     = -1
       cmd_present_pokemon     = -1
       cmd_change_class     = -1
       cmd_evolve     = -1
       cmd_rest     = -1
       cmd_quit     = -1
+      commands[cmd_level_up = commands.length] = _INTL('Level Up') if $player.party.length>0
       commands[cmd_move_statues = commands.length] = _INTL('Move Between Statues') if $PokemonGlobal.active_statues.length>1
       commands[cmd_present_pokemon = commands.length] = _INTL('Learn Move') if $player.party.length>0
       commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.playerclass.id==:ACTOR
@@ -289,7 +415,42 @@ command = 0
     pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
     commands2 = pbShowCommands(msgwindow,commands,-1)
 	pbDisposeMessageWindow(msgwindow)
-	if cmd_move_statues >= 0 && commands2 == cmd_move_statues
+	if cmd_level_up >= 0 && commands2 == cmd_level_up
+	
+	  if true
+	
+	
+	pbDisposeMessageWindow(msgwindow)
+	  if pbCanLevelUp?
+	 if statue.power-10>=0
+	   statue.power-=10
+
+	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+      pbMessage(_INTL("The Star Pieces crumble to dust."))
+      statue.star_pieces = [0,0]
+	  elsif statue.power<=0
+	  this_event.turn_down
+     end  
+
+      $player.able_party.each do |pkmn|
+        pbDoLevelUps(pkmn)
+      end
+    else
+     pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
+	  this_event.turn_down
+
+	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+      pbMessage(_INTL("The Star Pieces crumble to dust."))
+      statue.star_pieces = [0,0]
+     end
+    end
+     end
+      end
+
+
+	
+	
+	elsif cmd_move_statues >= 0 && commands2 == cmd_move_statues
 	if true
 	pbDisposeMessageWindow(msgwindow)
 	 if statue.star_pieces == [1,1] && statue.power>100
@@ -313,6 +474,7 @@ command = 0
     end
    end
 	elsif cmd_present_pokemon >= 0 && commands2 == cmd_present_pokemon
+	
 	  if true
 	
 	
@@ -340,8 +502,8 @@ command = 0
 		   pbMessage(_INTL("As you lift #{pkmn.name} to the Statue, you can feel memories and possible memories flow from #{pkmn.name}."))
           pbMessage(_INTL("its likely this can teach it something."))
           pbRelearnMoveScreen(pkmn) 
-        end
 	     pbMessage(_INTL("Nothing is different about it physically, but something feels different."))
+        end
         end
     else
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
@@ -354,6 +516,8 @@ command = 0
     end
 
       end
+
+
 	elsif cmd_change_class >= 0 && commands2 == cmd_change_class
       if true
    	  cmd12 = []
@@ -430,6 +594,7 @@ command = 0
 	    pbMessage(_INTL("You get the best rest you can in the Wilderness."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 		       pbSleepRestore(4)
+              $ExtraEvents.clearOverworldPokemonMemory
 				$game_variables[29] += (3600*8)
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 	

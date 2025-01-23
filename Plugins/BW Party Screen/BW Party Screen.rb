@@ -21,7 +21,7 @@ class PokemonPartyConfirmCancelSprite < Sprite
     pbSetSystemFont(@overlaysprite.bitmap)
     @yoffset = 8
 # Changed color of text
-    textpos = [[text, 56, (narrowbox) ? 8 : 12, 2, Color.new(255,255,255), Color.new(132,132,132)]]
+    textpos = [[text, 56, (narrowbox) ? 0 : 2, 2, Color.new(255,255,255), Color.new(132,132,132)]]
     pbDrawTextPositions(@overlaysprite.bitmap, textpos)
     self.x = x
     self.y = y
@@ -432,7 +432,7 @@ class PokemonPartyPanel < Sprite
   def draw_name
     # Draw Pokémon name
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[@pokemon.name, 96, 22, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
+                        [[@pokemon.name, 96, 19, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
   end
 
   def draw_level
@@ -443,16 +443,16 @@ class PokemonPartyPanel < Sprite
                          [["Graphics/Pictures/Party/overlay_lv", 20, 72, 0, 0, 22, 14]])
                        else
     pbDrawImagePositions(@overlaysprite.bitmap,
-                         [["Graphics/Pictures/Party/overlay_lv", 20, 70, 0, 0, 22, 14]])
+                         [["Graphics/Pictures/Party/overlay_lv", 20, 62, 0, 0, 22, 14]])
           end
     # Draw Level number
     pbSetSmallFont(@overlaysprite.bitmap)
       if PARTY_B2W2_STYLE
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[@pokemon.level.to_s, 42, 70, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
+                        [[@pokemon.level.to_s, 42, 67, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
                       else
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[@pokemon.level.to_s, 42, 68, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
+                        [[@pokemon.level.to_s, 42, 52, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
         end
     pbSetSystemFont(@overlaysprite.bitmap)
   end
@@ -464,7 +464,7 @@ class PokemonPartyPanel < Sprite
     base_color   = (@pokemon.male?) ? Color.new(0, 239, 255) : Color.new(231, 57, 57)
     shadow_color = (@pokemon.male?) ? Color.new(0, 107, 99) : Color.new(115, 33, 49)
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[gender_text, 228, 22, 0, base_color, shadow_color]])
+                        [[gender_text, 228, 18, 0, base_color, shadow_color]])
   end
 
   def draw_hp
@@ -472,7 +472,7 @@ class PokemonPartyPanel < Sprite
     # Draw HP numbers
     hp_text = sprintf("% 3d /% 3d", @pokemon.hp, @pokemon.totalhp)
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[hp_text, 226, 66, 1, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
+                        [[hp_text, 226, 56, 1, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
     # Draw HP bar
     if @pokemon.able?
       w = @pokemon.hp * HP_BAR_WIDTH / @pokemon.totalhp.to_f
@@ -516,7 +516,7 @@ class PokemonPartyPanel < Sprite
   def draw_annotation
     return if !@text || @text.length == 0
     pbDrawTextPositions(@overlaysprite.bitmap,
-                        [[@text, 96, 52, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
+                        [[@text, 96, 49, 0, TEXT_BASE_COLOR, TEXT_SHADOW_COLOR]])
   end
 
   def refresh

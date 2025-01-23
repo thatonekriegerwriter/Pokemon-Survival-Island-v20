@@ -312,7 +312,10 @@ class Scene_Map
 	  target.start if  !target.is_a?(Integer)  && !target.is_a?(Array) &&  !target.nil?
   end
   def lock_on_target_behavior
-	   
+	   if Input.press?(Input::LOCKON) && $game_temp.position_calling == false
+	     $game_temp.lockontarget=false
+		 pbCameraReset
+	   else
         $game_temp.lockontarget=false if $game_temp.lockontarget.pokemon.hp<1
 	    return if $game_temp.lockontarget==false
 		  event = $game_player if $game_temp.current_pkmn_controlled==false
@@ -355,7 +358,7 @@ class Scene_Map
 	   end
 	   pbTurnTowardEvent(event,$game_temp.lockontarget)
 	   pbCameraToEvent($game_temp.lockontarget.id)
-	
+	  end
   end
   def behavior_type
       if $game_temp.position_calling == true #Input Logic for Placing Overworld Objects
@@ -813,6 +816,7 @@ class Scene_Map
 	  end
 	end
   end
+  
   def pokemon_controls
     return if $game_temp.current_pkmn_controlled == false
     return if $game_temp.position_calling == true
@@ -850,8 +854,7 @@ class Scene_Map
 	   facingEvent, distance = get_target_player(event)
 	   if !facingEvent.nil? 
 		 if !facingEvent.is_a? Integer
-			facingEvent.ov_battle=OverworldCombat.new(facingEvent) if facingEvent.ov_battle.nil?
-			thefight = facingEvent.ov_battle
+			thefight = pbOverworldCombat
 			thefight.player_pokemonattack(event,facingEvent,pkmn.moves[$PokemonGlobal.hud_selector], distance)
 		 end
 	   end
@@ -875,6 +878,10 @@ class Scene_Map
     end
   end
   def ball_hud_controls
+    if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].nil?
+	 $PokemonGlobal.ball_hud_index+=1
+     $PokemonGlobal.ball_hud_index=0 if $PokemonGlobal.ball_hud_index>=$PokemonGlobal.ball_order.length
+	end
     return if $PokemonGlobal.ball_hud_enabled == false
     return if $game_temp.current_pkmn_controlled == true
     return if $game_temp.position_calling == true
@@ -1093,7 +1100,7 @@ end
 def pbDetectTargetPokemon(source,target=$game_player)
   potato=false
   carrot=0
-  3.times do |i|
+  sight_line(source).times do |i|
   start_coord=[source.x,source.y]
   landing_coord=[source.x,source.y]
   case source.direction

@@ -115,7 +115,7 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
 	end 
 	mapId = $game_map.map_id
 	$ExtraEvents.objects.each_key do |i|
-	  if $ExtraEvents.objects[i][0]==mapId
+	  if $ExtraEvents.objects[i].map_id==mapId
     spawnMap = $map_factory.getMap(mapId)
 	    spawnMap.recreateEvent(i,$ExtraEvents.objects)
 	  end
@@ -127,8 +127,8 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
 	#  end
     #end
 	$ExtraEvents.special.each_key do |i|
-	  if $ExtraEvents.special[i][0]==mapId
-	    if $ExtraEvents.special[i][1].name != "PlayerPkmn"
+	  if $ExtraEvents.special[i].map_id==mapId
+	    if $ExtraEvents.special[i].pokemon.name != "PlayerPkmn"
         spawnMap = $map_factory.getMap(mapId)
 	    spawnMap.recreateEvent(i,$ExtraEvents.special)
 		end
@@ -137,6 +137,7 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
   
 
 })
+ 
 
 EventHandlers.add(:on_enter_map, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
@@ -149,7 +150,7 @@ EventHandlers.add(:on_enter_map, :populateextraevents, proc{
 	end 
 	mapId = $game_map.map_id
 	$ExtraEvents.objects.each_key do |i|
-	  if $ExtraEvents.objects[i][0]==mapId
+	  if $ExtraEvents.objects[i].map_id==mapId
     spawnMap = $map_factory.getMap(mapId)
 	    spawnMap.recreateEvent(i,$ExtraEvents.objects)
 	  end
@@ -161,7 +162,7 @@ EventHandlers.add(:on_enter_map, :populateextraevents, proc{
 	#  end
     #end
 	$ExtraEvents.special.each_key do |i|
-	  if $ExtraEvents.special[i][0]==mapId
+	  if $ExtraEvents.special[i].map_id==mapId
 	    if $ExtraEvents.special[i][1].name != "PlayerPkmn"
         spawnMap = $map_factory.getMap(mapId)
 	    spawnMap.recreateEvent(i,$ExtraEvents.special)

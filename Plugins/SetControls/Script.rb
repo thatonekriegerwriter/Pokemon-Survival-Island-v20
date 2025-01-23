@@ -253,7 +253,7 @@ module Input
         when Input::AUX2 # S, Page Down
           return $PokemonSystem.game_control_code("Aux 2")
         when Input::SPECIAL # F, F5, Tab
-          return $PokemonSystem.game_control_code("Ready Menu")
+          return $PokemonSystem.game_control_code("Display Moves")
           # AUX1 and AUX2 unused
         when Input::JUMPUP # A, Q, Page Up
           return $PokemonSystem.game_control_code("Scroll Up")

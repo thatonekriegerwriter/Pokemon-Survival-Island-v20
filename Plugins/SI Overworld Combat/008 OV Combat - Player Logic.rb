@@ -111,7 +111,7 @@ end
    
 	hit = doesithitfam(event,item)
 	event.times_not_attacking+=1 if hit
-	punch(event) if item=="Punch" && hit && !@battle_rules.include?("No Player Damage")
+	punch(event) if item=="Punch" && hit && !@battle_rules.include?("No Player Damage") && !@battle_rules.include?("No Player Basics")
 	if !item_data.nil?
    stone_and_bait(event,item) if (item_data.id == :BAIT || item_data.id == :STONE)
     dartly_actions(event,item) if item_data.is_dart? && hit
@@ -190,7 +190,7 @@ end
 
   def stone_and_bait(event,item)
      pkmn = event.pokemon
-	 if !@battle_rules.include?("No Player Damage")
+	 if !@battle_rules.include?("No Player Damage") && !@battle_rules.include?("No Player Basics")
      case GameData::Item.get(item).id
      when :STONE
 	   move = Pokemon::Move.new(:ROCKTHROW)

@@ -376,12 +376,12 @@ class VoltseonsPauseMenu < Component
     shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme].is_a?(Color) ? MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] : Color.new(48,48,48)
     middle = @displayIndexes.length/2
 	textpos = []
-	textpos << [@entries[@currentSelection].name,Graphics.width/2,20,2,baseColor,shadowColor]
+	textpos << [@entries[@currentSelection]&.name,Graphics.width/2,20,2,baseColor,shadowColor]
     for i in 0...@displayIndexes.length
       @sprites["icon#{i}"].setBitmap(@entries[@displayIndexes[i]].icon)
       @sprites["icon#{i}"].zoom_x = 1
       @sprites["icon#{i}"].zoom_y = 1
-	  textpos << [@entries[@displayIndexes[i]].text,(@sprites["icon#{i}"].x-30),155,99,baseColor,shadowColor] 
+	  textpos << [@entries[@displayIndexes[i]].text,(@sprites["icon#{i}"].x-30),152,99,baseColor,shadowColor] 
     end
     @sprites["icon#{middle}"].zoom_x = ACTIVE_SCALE
     @sprites["icon#{middle}"].zoom_y = ACTIVE_SCALE

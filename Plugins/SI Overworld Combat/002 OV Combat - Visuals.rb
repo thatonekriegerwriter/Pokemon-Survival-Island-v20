@@ -374,6 +374,7 @@ end
 
 
 def set_bgm
+  return false
       testbgm = pbGetWildBGM + "_alt"
    duris = is_near_combat
        if duris
@@ -560,7 +561,7 @@ class OWBallThrowSprite
 
 		if @pkmn.fainted?
         @event.removeThisEventfromMap
-        pbPlayerEXP(@pkmn)
+        pbPlayerEXP(@pkmn,pbOverworldCombat.get_allied_pokemon)
         pbHeldItemDropOW(@pkmn,true)
         @phase = 5
 		else 
@@ -580,11 +581,18 @@ class OWBallThrowSprite
 	  end
     when 2
       @frames+=1
+	  @phase = 3 if @pkmn.level<10 && $player.pokemon_party.length<1
       @phase=(@catch ? 3 : 4) if @frames>=BALL_CATCH_WAIT_FRAMES
     when 3
 	   pbSEPlay("Battle catch click")
 	  sideDisplay("The capture was a success!")
-        pbPlayerEXP(@pkmn)
+	  if nuzlocke_has?(:ONEROUTE)
+      static = data.include?(:STATIC) && !$nuzx_static_enc
+      shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
+      map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
+        $PokemonGlobal.nuzlockeData[$game_map.map_id] = true unless static || shiny
+       end
+        pbPlayerEXP(@pkmn,pbOverworldCombat.get_allied_pokemon)
 		@pkmn = @event.pokemon if !@pkmn.is_a?(Pokemon)
 		@pkmn.poke_ball = @ball_used
 		 @pkmn.calc_stats

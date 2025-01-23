@@ -1,0 +1,96 @@
+#-------------------------------
+[PARASITES]
+Name=Parasites
+Cause=Parasites are caused by consumption of uncooked meat, and some types of attacks.
+Symptoms=You will be hungier more often. Your FOD meter will increase faster.
+Cure=Parasites will fade with time, it is more likely to fade the healthier you are.
+CureItem=NO
+Flags=
+#-------------------------------
+[CHOLERA]
+Name=Cholera
+Cause=Cholera is caused by drinking from unsafe water sources.
+Symptoms=You will be thirstier more often. Your H20 meter will increase faster.
+Cure=Cholera will fade with time, it is more likely to fade the healthier you are.
+CureItem=NO
+Flags=
+#-------------------------------
+[FATIGUE]
+Name=Fatigue
+Cause=A Prolonged amount of time without Sleep, or overexerting oneself while Sleep is low.
+Symptoms=Your SLP meter will increase much faster. You get tired much easier.
+Cure=Keep your SLP meter above 90 for a prolonged amount of time.
+CureItem=NO
+Flags=
+#-------------------------------
+[INFECTION]
+Name=Infection
+Cause=Getting damaged always has a risk of Infection, but it is higher from attacks from Pokemon. There is a higher chance to be infected the less healthy you are.
+Symptoms=Your Max HP is halved for the duration of the disease. Rapidly decreases healthiness as well.
+Cure=It is likely to fade when your overall health is higher.
+CureItem=NO
+Flags=
+#-------------------------------
+[INSOMNIA]
+Name=Insomnia
+Cause=You can get this from being quite unhealthy.
+Symptoms=You will get tired more frequently. 
+Cure=It is likely to fade when your overall health is higher.
+CureItem=NO
+Flags=
+#-------------------------------
+[LETHARGY]
+Name=Lethargy
+Cause=You can get this from being quite unhealthy.
+Symptoms=Your Stamina regenerates slower.
+Cure=It is likely to fade when your overall health is higher.
+CureItem=NO
+Flags=
+#-------------------------------
+[WEAKNESS]
+Name=Weakness
+Cause=Having Multiple Illnesses while being quite unhealthy.
+Symptoms=You recieve more damage, and do less damage.
+Cure=It is likely to fade when your overall health is higher, and you have no other Illnesses.
+CureItem=NO
+Flags=
+#-------------------------------
+[BLINDNESS]
+Name=Blindness
+Cause=A quick flash of light.
+Symptoms=Being unable to see.
+Cure=It will pass quickly.
+CureItem=NO
+Flags=
+#-------------------------------
+[POISONED]
+Name=Poisoned
+Cause=Poisoning is caused by POISON type attacks, drinking from unsafe water sources, or eating uncooked meals.
+Symptoms=You will lose HP every 2 steps until you pass out. Rapidly decreases healthiness as well.
+Cure=Bed Rest, Pecha Berry
+CureItem=PECHABERRY
+Flags=
+#-------------------------------
+[FEVER]
+Name=Fever
+Cause=Fever is caused by overexertion with another illness.
+Symptoms=You may periodically pass out and find yourself back at your Bed.
+Cure=Bed Rest, Pecha Berry
+CureItem=ASPEARBERRY
+Flags=
+#-------------------------------
+[BROKENBONE]
+Name=Broken Bone
+Cause=Broken Bones can be caused by taking damage, or by jumping ledges at low healthiness.
+Symptoms=You cannot sprint.
+Cure=Bed Rest, Splint
+CureItem=SPLINT
+Flags=
+#-------------------------------
+[OPENWOUND]
+Name=Open Wound
+Cause=Taking severe damage
+Symptoms=Your maximum HP begins decreasing every 4 steps. Rapidly decreases healthiness as well.
+Cure=Bed Rest, Bandage
+CureItem=BANDAGE
+Flags=

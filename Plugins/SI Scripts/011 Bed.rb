@@ -212,9 +212,13 @@ command = 0
       commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
       commands[cmdPickUp  = commands.length] = _INTL("Pick Up")
       commands[commands.length]              = _INTL("Cancel")
-      command = pbShowCommands(nil, commands)
+      msgwindow = pbCreateMessageWindow(nil,nil)
+      pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
+      command = pbShowCommands(msgwindow, commands, -1)
+      pbDisposeMessageWindow(msgwindow)
       if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
           if pbConfirmMessage(_INTL("Do you want to head to bed?"))
+		   if !nuzlocke_has?(:AFULLEIGHTHOURS)
              params = ChooseNumberParams.new
              params.setMaxDigits(2)
              params.setRange(0,24)
@@ -222,6 +226,10 @@ command = 0
              pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?"))
 		     hours = pbChooseNumber(msgwindow,params)
              pbDisposeMessageWindow(msgwindow)
+			else
+			 hours = 8
+			end
+
 			  if hours == 0
 			    pbMessage(_INTL("You decide not to sleep.",hours))
 				 break
@@ -236,6 +244,7 @@ command = 0
 			  
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 	            pbMEPlay("Pokemon Healing")
+				
 				party = $player.party
                  for i in 0...party.length
                  pkmn = party[i]
@@ -248,6 +257,7 @@ command = 0
 				$game_variables[29] += (3600*hours)
 				pbSleepRestore(hours)
 			   increaseHealthAndTotalHP((3.125*hours))
+              $ExtraEvents.clearOverworldPokemonMemory
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100.0
 			        pbMessage(_INTL("You feel well rested!"))
@@ -280,6 +290,7 @@ command = 0
                  pkmn.heal_PP
 				 end
 				 pbSleepRestore(hours)
+              $ExtraEvents.clearOverworldPokemonMemory
 			   increaseHealthAndTotalHP((1.5*hours))
 			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up feeling great!"))

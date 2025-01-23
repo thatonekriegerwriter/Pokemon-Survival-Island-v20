@@ -7662,7 +7662,7 @@ Name = Bowl
 NamePlural = Bowl
 Pocket = 1
 Price = 0
-Flags = Fling_10
+Flags = Fling_10,Tool
 Description = 
 #-------------------------------
 [WOODENPLANKS]

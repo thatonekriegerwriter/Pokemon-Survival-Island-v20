@@ -26,7 +26,7 @@ class Game_OVEvent < Game_Event
           end
         end
       end
-		$ExtraEvents.removethisEvent(:OBJECT,@id)
+		$ExtraEvents.removethisEvent(:OBJECT,extra_events_id)
       $game_map.events.delete(@id)
     else
       if $map_factory
@@ -62,40 +62,84 @@ class Game_Map
   def setup(map_id)
     original_setup(map_id)
     $ExtraEvents.objects.each_key do |i|
+	    if $ExtraEvents.objects[i].is_a?(Array)
+		  $ExtraEvents.objects[i] = StoredEvent.new($ExtraEvents.objects[i][0],$ExtraEvents.objects[i][1],$ExtraEvents.objects[i][3])
+		
+		end
 	    mapId = $ExtraEvents.objects[i].map_id
 		 next if mapId != @map_id
 		key_id = (@events.keys.max || -1) + 1
 	    event = $ExtraEvents.objects[i].event
-		event.id = key_id
 	    type = $ExtraEvents.objects[i].type
-      @events[key_id]          = Game_OVEvent.new(type, @map_id, event, self)
+		 loop do
+		 if !@events[key_id]
+		event.id = key_id
+      @events[key_id]          = Game_OVEvent.new(type, @map_id, event, self) 
+	    break
+	    else
+		  key_id+=1
+		end
+	    end
     end
+	tempspawnspokemon = []
     $ExtraEvents.pokemon.each_key do |i|
 	    mapId = $ExtraEvents.pokemon[i].map_id
 		 next if mapId != @map_id
+	   result = rand(3)==0 
+	     if result
 		key_id = (@events.keys.max || -1) + 1
 	    event = $ExtraEvents.pokemon[i].event
-		event.id = key_id
 	    pokemon = $ExtraEvents.pokemon[i].pokemon
-        @events[key_id]          = Game_PokeEvent.new(@map_id, event, pokemon, self)
+		 tempspawnspokemon << i
+		 loop do
+		 if !@events[key_id]
+		event.id = key_id
+		#(map_id, event, pokemon, map=nil)
+      @events[key_id]          = Game_PokeEvent.new(@map_id, event, pokemon, self) 
+	    break
+	    else
+		  key_id+=1
+		end
+	    end
+
+		end
     end
+	tempspawnspokemon.each do |i|
+	  $ExtraEvents.pokemon.delete(i)
+	end
     $ExtraEvents.special.each_key do |i|
 	    mapId = $ExtraEvents.special[i].map_id
 		 next if mapId != @map_id
 		key_id = (@events.keys.max || -1) + 1
 	    event = $ExtraEvents.special[i].event
-		event.id = key_id
 	    pokemon = $ExtraEvents.special[i].pokemon
-      @events[key_id]          = Game_PokeEventA.new(pokemon, @map_id, event, self)
+		
+		 loop do
+		 if !@events[key_id]
+		event.id = key_id
+      @events[key_id]          = Game_PokeEventA.new(pokemon, @map_id, event, self) 
+	    break
+	    else
+		  key_id+=1
+		end
+	    end
+
     end
     $ExtraEvents.misc.each_key do |i|
 	    mapId = $ExtraEvents.misc[i].map_id
 		 next if mapId != @map_id
 		key_id = (@events.keys.max || -1) + 1
 	    event = $ExtraEvents.misc[i].event
-		event.id = key_id
 	    type = $ExtraEvents.misc[i].type
+		 loop do
+		 if !@events[key_id]
+		event.id = key_id
       @events[key_id]          = Game_OVEvent.new(type, @map_id, event, self)
+	    break
+	    else
+		  key_id+=1
+		end
+	    end
     end
 	
   end
@@ -189,7 +233,9 @@ class Game_Map
     gameEvent = Game_OVEvent.new(true_object, @map_id, event, self)
     gameEvent.id = key_id
     gameEvent.direction = direction if !direction.nil?
-    $ExtraEvents.objects[key_id] = [mapId,event,true_object,x,y]
+    #$ExtraEvents.objects[key_id] = [mapId,event,true_object,x,y]
+	
+	$ExtraEvents.objects[key_id] = StoredEvent.new(mapId,event,true_object)
 	@events[key_id] = gameEvent
     #--- updating the sprites --------------------------------------------------------
 	

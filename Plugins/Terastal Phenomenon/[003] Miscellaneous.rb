@@ -42,17 +42,6 @@ end
 #-------------------------------------------------------------------------------
 # Used to display Tera Types in the Summary/Storage.
 #-------------------------------------------------------------------------------
-class PokemonSummary_Scene
-  alias tera_drawPageOne drawPageOne
-  def drawPageOne
-    tera_drawPageOne
-    if Settings::SUMMARY_TERA_TYPES
-      overlay = @sprites["overlay"].bitmap
-      coords = (PluginManager.installed?("BW Summary Screen")) ? [122, 129] : [330, 143]
-      pbDisplayTeraType(@pokemon, overlay, coords[0], coords[1])
-    end
-  end
-end
 
 def pbDisplayTeraType(pokemon, overlay, xpos, ypos)
   type_number = GameData::Type.get(pokemon.tera_type).icon_position

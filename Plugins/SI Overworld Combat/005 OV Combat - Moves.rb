@@ -91,11 +91,24 @@ end
 
 def move_physical(attacker,target,move,type=:DEFAULT)
       puts "1.#{move.name}"
+	  attacker.cannot_move=false if defined?(attacker.cannot_move)
       turning_prep(attacker,target)
-	  pbMovePokeEventTowardsPlayer(attacker,target)
+	  amt = sight_line(attacker)
+	  amt.times do |i|
+	  attacker.move_to_another_event(target)
+      attacker.turn_toward_event(target)
+	  end 
+	  moving = true
+     start_coord,landing_coord = getLandingCoords(amt,attacker)
+     startx = start_coord[0]
+      starty = start_coord[1]
+	  moving = $game_map.check_event_and_adjacents2(attacker, target)
+	    puts "#{attacker.pokemon.name} is trying to move and the result? #{moving}" if attacker.battle_timer<1
+	  if moving
+	  attacker.cannot_move=true if defined?(attacker.cannot_move)
 	  if outSpeeds?(attacker,target) #Player Outspeeds
 		if (nutarget = who_am_i_hitting(attacker,target,false))
-	       sideDisplay("#{attacker.pokemon.name} is rearing back!!")
+	       sideDisplay("#{attacker.pokemon.name} is rearing back!!") if !target.is_a?(Game_PokeEvent)
 		   return false if nutarget==false
 	   start_glow(attacker)
 		   if nutarget.is_a?(Array)
@@ -110,10 +123,11 @@ def move_physical(attacker,target,move,type=:DEFAULT)
 		  return
 		end
 	  else
-	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!")
+	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!") if !target.is_a?(Game_PokeEvent)
 	    pbSEPlay("phenomenon_grass")
 		if (nutarget = who_am_i_hitting(attacker,target,true))
 		   return false if nutarget==false
+		   return false if target==nutarget
 	   start_glow(attacker)
 		   if nutarget.is_a?(Array)
 		     nutarget.each do |target2|
@@ -130,17 +144,22 @@ def move_physical(attacker,target,move,type=:DEFAULT)
 		  return
 		end
      end
-
+      end
 end
 
 
 def move_physical_close(attacker,target,move,type=:DEFAULT)
       puts "2.#{move.name}"
       turning_prep(attacker,target)
+     start_coord,landing_coord = getLandingCoords(1,attacker)
+     startx = start_coord[0]
+      starty = start_coord[1]
+	  moving = $game_map.check_event_and_adjacents2(attacker, target)
+	  if moving
 	  if outSpeeds?(attacker,target) #Player Outspeeds
 		if (nutarget = who_am_i_hitting(attacker,target,false))
 		   return false if nutarget==false
-	   start_glow(attacker)
+	      start_glow(attacker)
 		   if nutarget.is_a?(Array)
 		     nutarget.each do |target2|
 			   update_package if type!=:DEFAULT
@@ -153,11 +172,12 @@ def move_physical_close(attacker,target,move,type=:DEFAULT)
 		  return
 		end
 	  else
-	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!")
+	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!") if !target.is_a?(Game_PokeEvent)
 	    pbSEPlay("phenomenon_grass")
 		if (nutarget = who_am_i_hitting(attacker,target,true))
 		   return false if nutarget==false
-	   start_glow(attacker)
+		   return false if target==nutarget
+	       start_glow(attacker)
 		   if nutarget.is_a?(Array)
 		     nutarget.each do |target2|
 			   update_package if type!=:DEFAULT
@@ -173,7 +193,7 @@ def move_physical_close(attacker,target,move,type=:DEFAULT)
 		  return
 		end
      end
-
+     end
 end
 
 
@@ -185,7 +205,7 @@ def move_special(attacker,target,move,type=:DEFAULT)
 		if (nutarget = who_am_i_hitting(attacker,target,false))
 		   return false if nutarget==false
 	   start_glow(attacker)
-	      sideDisplay("#{attacker.pokemon.name} is gathering energy!")
+	      sideDisplay("#{attacker.pokemon.name} is gathering energy!") if !target.is_a?(Game_PokeEvent)
 		   if nutarget.is_a?(Array)
 		     nutarget.each do |target2|
 			   update_package if type!=:DEFAULT
@@ -198,10 +218,11 @@ def move_special(attacker,target,move,type=:DEFAULT)
 		  return
 		end
 	  else
-	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!")
+	    sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!") if !target.is_a?(Game_PokeEvent)
 	    pbSEPlay("phenomenon_grass")
 		if (nutarget = who_am_i_hitting(attacker,target,true))
 		   return false if nutarget==false
+		   return false if target==nutarget
 	   start_glow(attacker)
 	      sideDisplay("#{attacker.pokemon.name} is gathering energy!")
 		   if nutarget.is_a?(Array)
@@ -225,7 +246,7 @@ end
 
 def move_other(attacker,target,move,type=:DEFAULT)
       turning_prep(attacker,target)
-	  sideDisplay("#{attacker.pokemon.name} focused!")
+	  sideDisplay("#{attacker.pokemon.name} focused!")if !target.is_a?(Game_PokeEvent)
 	  #pbMessage("\\ts[]" + (_INTL"#{attacker.pokemon.name} focused!\\wtnp[10]"))
       return false
 end
@@ -247,6 +268,7 @@ def offensive_turn_finishing(attacker,target,move,evasionbonus=0)
 	  move.pp = 0 if move.pp<0
 	    
        is_hitting(attacker,target,move)
+   @currentlyinbattle = false
 	   return true
     #else
 	#  sideDisplay("#{attacker.pokemon.name} missed!")
@@ -258,7 +280,6 @@ def offensive_turn_finishing(attacker,target,move,evasionbonus=0)
    
    
    
-   @currentlyinbattle = false
 
 end
 
@@ -270,8 +291,8 @@ end
 
  def is_hitting(attacker,target,move) 
     
-   sideDisplay("#{attacker.pokemon.name} used #{move.name}!")
-     puts "#{attacker.pokemon.name} used #{move.name}! (Accuracy: #{move.accuracy}, Base Power: #{move.base_damage}"
+   sideDisplay("#{attacker.pokemon.name} used #{move.name}!") if !target.is_a?(Game_PokeEvent)
+     puts "#{attacker.pokemon.name} used #{move.name} - #{move.category}! (Accuracy: #{move.accuracy}, Base Power: #{move.base_damage})"
 	  multiplier = 1
 	  multiplier = 1.5 if @backattack
 	  multiplier = 1.25 if @sideattack

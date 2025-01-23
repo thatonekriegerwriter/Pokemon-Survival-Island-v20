@@ -14,7 +14,8 @@ GAMEOVERSWITCH = 80
 alias :_old_FL_pbStartOver :pbStartOver
 def pbStartOver(gameover=false)
     $game_temp.in_menu = false if $game_temp.in_menu==true
-    pbLoadRpgxpScene(Scene_Gameover.new)
+    pbLoadRpgxpScene(Scene_Gameover.new)if $player.playermaxhealth2<=0
+    pbRespawnAtBed if $player.playerhealth<=0
     return
   _old_FL_pbStartOver(gameover)
 end
@@ -33,7 +34,7 @@ end
   end
   $stats.blacked_out_count += 1
   $player.decrease_current_total_hp
-  if $PokemonGlobal.pokecenterMapId && $PokemonGlobal.pokecenterMapId >= 0 && is_dead==false
+  if $PokemonGlobal.pokecenterMapId && $PokemonGlobal.pokecenterMapId >= 0 && $player.is_dead==false
     mapname = GameData::MapMetadata&.try_get($PokemonGlobal.pokecenterMapId).name
 	if mapname.include?("(Folder)")
     mapname = "Dreamyard"
@@ -138,8 +139,13 @@ class Scene_Gameover
     @sprite = Sprite.new
 	chance = rand(1000)
 	if chance!=0
+	if $PokemonGlobal.hardcore == true
 	@box2 = Window_AdvancedTextPokemon.new("<ac>You have perished.")
 	@box = Window_AdvancedTextPokemon.new("<ac>The darkness of the afterlife is all that awaits you now. May you find more peace in that world than you found in this one.")
+   else
+	@box2 = Window_AdvancedTextPokemon.new("<ac>Rest in peace, #{$player.name}.")
+	@box = Window_AdvancedTextPokemon.new("<ac>Reload your safe and try again.")
+   end
     @box.x = (Graphics.width/2)-255
 	@box.y = Graphics.height/2-50
 	@box.z = 999

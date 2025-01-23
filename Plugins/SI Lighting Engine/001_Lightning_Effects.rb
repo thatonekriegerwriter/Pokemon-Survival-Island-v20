@@ -39,17 +39,32 @@ EventHandlers.add(:on_new_spriteset_map, :add_light_effects,
   }
 )
 
+
 def pbCreateParticleEngine(viewport=Spriteset_Map.viewport,map=$game_map,spriteset=nil)
    return if !$particle_engine.nil?
    return if !$scene.is_a?(Scene_Map)
    if spriteset.nil?
     spriteset = $scene.spriteset(map.map_id)
    end
+   return if spriteset.nil?
 	$particle_engine = Particle_Engine.new(viewport, map)
     spriteset.addUserSprite($particle_engine)
 
 end
 
+EventHandlers.add(:on_map_or_spriteset_change, :reset_particle_engine_state,
+  proc { |scene, map_changed|
+    next if !scene || !scene.spriteset || !$particle_engine
+     $particle_engine.reset
+  }
+)
+EventHandlers.add(:on_leave_map, :change_particle_engine_state,
+  proc { |new_map_id, new_map|
+    next if new_map_id == 0 || !$particle_engine
+     $particle_engine.remove_particles
+
+  }
+)
 
 def isaaparticle(event)
    return ["fire"] if event.name.include?("naturaltorch") 
@@ -58,6 +73,7 @@ def isaaparticle(event)
 end
 
 class Particle_Engine
+  attr_accessor :firsttime
   def initialize(viewport = nil, map = nil)
     @map       = (map) ? map : $game_map
     @viewport  = viewport
@@ -84,7 +100,23 @@ class Particle_Engine
       "starteleport" => Particle_Engine::StarTeleport
     }
   end
-
+  
+  def reset
+    dispose
+    @firsttime = true
+    @effect    = []
+    @map = $game_map if @map!=$game_map
+  end
+  
+  def remove_particles
+    @effect.each do |particle|
+      next if particle.nil?
+      particle.dispose
+    end
+  
+  
+  end
+  
   def dispose
     return if disposed?
     @effect.each do |particle|
@@ -123,7 +155,6 @@ class Particle_Engine
     end
     type = type[0] if type.is_a? Array
     type = type.downcase
-
     cls = @effects[type]
     if cls.nil?
       particle&.dispose
@@ -144,10 +175,13 @@ class Particle_Engine
   def update
     if @firsttime
       @firsttime = false
+	  @map = $game_map if !@map
       @map.events.each_value do |event|
-        remove_effect(event)
+	   next if !event.has_particle? && !event.should_have_particle?
+       remove_effect(event)
         add_effect(event)
-      end
+      
+	  end
     end
     @effect.each_with_index do |particle, i|
       next if particle.nil?
@@ -371,13 +405,29 @@ class ParticleSprite
 
 end
 
+class ParticleEffect
+  attr_accessor :x, :y, :z
+
+  def initialize
+    @x = 0
+    @y = 0
+    @z = 0
+  end
+
+  def update;  end
+  def dispose; end
+end
+
+
 class ParticleEffect_Event < ParticleEffect
   attr_accessor :event
+  attr_accessor :visible
 
   def initialize(event, viewport = nil)
     @event     = event
     @viewport  = viewport
     @particles = []
+    @visible = true
     @bitmaps   = {}
   end
 
@@ -387,6 +437,8 @@ class ParticleEffect_Event < ParticleEffect
     @ytop, @ybottom, @xleft, @xright,
     @xgravity, @ygravity, @xoffset, @yoffset,
     @opacityvar, @originalopacity = params
+	#@xoffset +=$PokemonSystem.screenposx
+	#@yoffset +=$PokemonSystem.screenposy
   end
 
   def loadBitmap(filename, hue)
@@ -475,7 +527,7 @@ class ParticleEffect_Event < ParticleEffect
     end
     particleZ = selfZ + @zoffset
     @maxparticless.times do |i|
-	 
+	    next if @particles[i].nil?
 	   @particles[i].visible=true if @event.pe_pause==false
 	   @particles[i].visible=false if @event.pe_pause==true
       @particles[i].z = particleZ
@@ -859,7 +911,20 @@ class Game_Event < Game_Character
   attr_accessor :currentcustomsprite
   attr_accessor :has_a_particle
   attr_accessor :has_a_light
-
+   
+   def has_particle?
+   
+     return @has_a_particle[0]
+   end
+   def should_have_particle?
+      return true if @event.name[/^playertorch$/i] 
+	  return true if @event.name[/^naturaltorch\((\d+),(\d+)\)/i]
+	  return true if @event.name[/^naturaltorch$/i] 
+	  return true if @event.name[/^playertorch\((\d+),(\d+)\)/i] 
+	  return true if (@has_a_particle[0]==true && !@has_a_particle[1].nil?)
+	  return false
+   end
+   
    def initialize(map_id, event, map = nil)
     @pe_refresh = false
     @pe_pause = false

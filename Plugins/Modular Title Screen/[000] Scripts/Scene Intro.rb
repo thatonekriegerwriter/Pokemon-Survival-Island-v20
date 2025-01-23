@@ -10,6 +10,9 @@
 #  A lot of time and effort went into making this an extensive and comprehensive
 #  resource. So please be kind enough to give credit when using it.
 #===============================================================================
+
+
+
 class MainMenuSounds
  attr_accessor :memorized_bgm
  attr_accessor :memorized_bgm_position
@@ -64,6 +67,7 @@ def pbPlayVideo(movie,volume,cancelable)
 end
 
 class Scene_Intro
+    attr_accessor :viewport
   #-----------------------------------------------------------------------------
   # load the title screen
   #-----------------------------------------------------------------------------
@@ -90,6 +94,7 @@ class Scene_Intro
     self.cyclePics
     # loads the modular title screen
     @screen = ModularTitleScreen.new
+	@viewport = @screen.viewport
     # Plays defined title screen BGM
     # Plays the title screen intro (is skippable)
     @screen.intro
@@ -117,6 +122,7 @@ class Scene_Intro
       @screen.update
       Graphics.update
       Input.update
+	  
       @demo_timer += 1
       if Input.trigger?(Input::USE)
         ret = 2

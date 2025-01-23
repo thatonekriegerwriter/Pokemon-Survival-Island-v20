@@ -14,6 +14,11 @@ class PokemonSystem
     initialize_caps
     @level_caps = 0 #Level caps set to on by default
   end
+  
+  def level_caps
+    @level_caps = 0 if @level_caps.nil?
+    return @level_caps
+  end
 end
 
 class Game_System
@@ -26,11 +31,12 @@ class Game_System
 end
 
 #Define all your levels caps in this array. Every time you run Level_Cap.update, it will move to the next level cap in the array.
-LEVEL_CAP = [13,24,35,46,57,68]
+
 #LEVEL_CAP = [Temperate,Mountain,Ice,Water]
 
 
 module Level_Cap
+  LEVEL_CAP = [13,24,35,46,57,68]
   def self.update
     $game_system.level_cap += 1
     $game_system.level_cap = LEVEL_CAP.size-1 if $game_system.level_cap >= LEVEL_CAP.size
@@ -46,7 +52,7 @@ class PokemonPauseMenu_Scene
   def pbStartScene
     if !VOLTSEON_PAUSE_MENU_USED
       if $game_switches[NavNums::Dispose] == false
-        cap = LEVEL_CAP[$game_system.level_cap]
+        cap = get_level_cap(pkmn)
         @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
         @viewport.z = 99999
         @sprites = {}
@@ -176,11 +182,17 @@ class PokemonPauseMenu
   end
 end
 
+def get_level_cap(pkmn)
+  return pkmn.level_cap if pkmn.level_cap>0
+  return Level_Cap::LEVEL_CAP[$game_system.level_cap]
+
+end
+
 ItemHandlers::UseOnPokemonMaximum.add(:RARECANDY, proc { |item, pkmn|
   if $PokemonSystem.level_caps == 1
     next GameData::GrowthRate.max_level - pkmn.level
   else
-    next LEVEL_CAP[$game_system.level_cap] - pkmn.level
+    next get_level_cap(pkmn) - pkmn.level
   end
 })
 
@@ -207,7 +219,7 @@ ItemHandlers::UseOnPokemon.add(:RARECANDY, proc { |item, qty, pkmn, scene|
       next true
     end
   else
-    if pkmn.level >= LEVEL_CAP[$game_system.level_cap]
+    if pkmn.level >= get_level_cap(pkmn)
       new_species = pkmn.check_evolution_on_level_up
       if !Settings::RARE_CANDY_USABLE_AT_MAX_LEVEL || !new_species
         scene.pbDisplay(_INTL("It won't have any effect."))

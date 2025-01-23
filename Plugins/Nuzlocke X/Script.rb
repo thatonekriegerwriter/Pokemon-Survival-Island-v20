@@ -136,7 +136,7 @@ module Nuzlocke
   #-----------------------------------------------------------------------------
   def self.selection
     # list of all possible rules
-    modifiers = [:NOREVIVE, :PERMADEATH, :ONEROUTE, :DUPSCLAUSE, :STATIC, :SHINY]
+    modifiers = [:NOREVIVE, :PERMADEATH, :ONEROUTE, :DUPSCLAUSE, :STATIC, :SHINY, :NICKNAMES, :AFULLEIGHTHOURS, :NOOVCATCHING, :NOSTATUES, :SURVIVALMODE]
     # list of rule descriptions
     desc = [
       _INTL("Cannot revive fainted battlers"),
@@ -144,10 +144,14 @@ module Nuzlocke
       _INTL("One encounter per map"),
       _INTL("Disregard duplicate species (line)"),
       _INTL("Exclude static from encounter limit"),
-      _INTL("Exclude shiny from encounter limit")
+      _INTL("Exclude shiny from encounter limit"),
+      _INTL("You must give Pokemon nicknames."),
+      _INTL("You must sleep at least eight hours."),
+      _INTL("No Overworld Catching."),
+      _INTL("You must sleep at least eight hours.")
     ]
     # default
-    added = [:NOREVIVE]; cmd = 0
+    added = [:NOREVIVE]
     ## creates help text message window
     #msgwindow = pbCreateMessageWindow(nil, "choice 1")
     #msgwindow.text = _INTL("Select the Nuzlocke Rules you wish to apply.")
@@ -179,15 +183,15 @@ module Nuzlocke
     # disposes of message window
     #pbDisposeMessageWindow(msgwindow)
     # adds nuzlocke rules
-    $PokemonGlobal.nuzlockeRules = added
-    @@rules = added
+    $PokemonGlobal.nuzlockeRules = [:NOREVIVE]
+    @@rules = [:NOREVIVE]
     # shows message
     #msg = _INTL("Your selected Nuzlocke rules have been applied.")
     #msg = _INTL("No Nuzlocke rules have been applied.") if added.length < 1
     #msg = _INTL("Your selection has been cancelled.") if cmd < 0
     #pbMessage(msg)
     #Input.update
-    return added.length > 0
+    return true
   end
   #-----------------------------------------------------------------------------
   #  clear the randomizer content
@@ -221,7 +225,7 @@ class Pokemon
   alias hpset_nuzlocke_x hp= unless self.method_defined?(:hpset_nuzlocke_x)
   def hp=(val)
     data = Nuzlocke.rules; data = [] if data.nil?
-    self.permaFaint = true if Nuzlocke.on? && (data.include?(:NOREVIVE) || data.include?(:PEMADEATH)) && val <= 0
+    self.permaFaint = true if Nuzlocke.on? && (data.include?(:NOREVIVE) || data.include?(:PERMADEATH)) && val <= 0
     hpset_nuzlocke_x((self.permaFaint && Nuzlocke.on?) ? 0 : val)
   end
   #-----------------------------------------------------------------------------
@@ -241,7 +245,7 @@ class Battle::Battler
   alias hpset_nuzlocke_x hp= unless self.method_defined?(:hpset_nuzlocke_x)
   def hp=(val)
     data = Nuzlocke.rules; data = [] if data.nil?
-    @pokemon.permaFaint = true if Nuzlocke.on? && (data.include?(:NOREVIVE) || data.include?(:PEMADEATH)) && val <= 0
+    @pokemon.permaFaint = true if Nuzlocke.on? && (data.include?(:NOREVIVE) || data.include?(:PERMADEATH)) && val <= 0
     hpset_nuzlocke_x((@pokemon.permaFaint && Nuzlocke.on?) ? 0 : val)
   end
   #-----------------------------------------------------------------------------
@@ -290,13 +294,14 @@ class Battle
     if Nuzlocke.on? && data.include?(:PERMADEATH)
       for i in 0...$player.party.length
         k = $player.party.length - 1 - i
-        if $player.party[k].hp <= 0
+        if $player.party[k].lifespan <= 0
           $PokemonBag.pbStoreItem($player.party[k].item, 1) if $player.party[k].item
           $player.party.delete_at(k)
           $PokemonTemp.evolutionLevels.delete_at(k)
         end
       end
     end
+ 
     return ret
   end
   #-----------------------------------------------------------------------------
@@ -349,16 +354,7 @@ end
 #===============================================================================
 #  losing the nuzlocke
 #===============================================================================
-alias pbStartOver_nuzlocke_x pbStartOver unless defined?(pbStartOver_nuzlocke_x)
-def pbStartOver(*args)
-  if Nuzlocke.on?
-    pbMessage(_INTL("\\w[]\\wm\\c[8]\\l[3]All your Pokémon have fainted. You have lost the Nuzlocke challenge! The challenge will now be turned off."))
-    Nuzlocke.toggle(false)
-    $PokemonGlobal.isNuzlocke = false
-    pbStartOver_nuzlocke_x(*args)
-  end
-  return pbStartOver_nuzlocke_x(*args)
-end
+
 #===============================================================================
 #  additional entry to Global Metadata for randomized data storage
 #===============================================================================
@@ -367,6 +363,31 @@ class PokemonGlobalMetadata
   attr_accessor :nuzlockeData
   attr_accessor :isNuzlocke
   attr_accessor :nuzlockeRules
+  
+  def nuzlockeRules
+   if @nuzlockeRules.nil?
+   Nuzlocke.start
+   @nuzlockeRules = [:NOREVIVE]
+   Nuzlocke.set_rules($PokemonGlobal.nuzlockeRules) 
+  end
+   return @nuzlockeRules
+  end
+end
+
+def pbAddNuzlockeRule(rule)
+  $PokemonGlobal.nuzlockeRules << rule
+end
+
+def pbDeleteNuzlockeRule(rule)
+  $PokemonGlobal.nuzlockeRules.delete(rule)
+end
+
+def nuzlocke_has?(rule)
+ return $PokemonGlobal.nuzlockeRules.include?(rule)
+end
+
+def nuzlocke_lacks?(rule)
+ return !$PokemonGlobal.nuzlockeRules.include?(rule)
 end
 #===============================================================================
 #  starts nuzlocke only after obtaining a Pokeball

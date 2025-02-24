@@ -56,8 +56,10 @@ class PCItemStorage
   attr_reader :items
   attr_accessor :name
   attr_accessor :active
+  attr_accessor :maxsize
+  attr_accessor :maxperslot
 
-  MAX_SIZE     = 20   # Number of different slots in storage
+  MAX_SIZE    = 48   # Number of different slots in storage
   MAX_PER_SLOT = 99   # Max. number of items per slot
 
   def initialize(maxsize=MAX_SIZE,maxperslot=MAX_PER_SLOT)
@@ -65,6 +67,10 @@ class PCItemStorage
     @items = []
 	@active = false
 	@name = ""
+	@maxsize = maxsize
+	@maxperslot = maxperslot
+	@originalsize = maxsize
+	@originalperslot = maxperslot
     @name = "Item#{$PokemonGlobal.itemStorageSystems.keys.length}"
 	$PokemonGlobal.itemStorageSystems[@name] = self
   end
@@ -74,8 +80,21 @@ class PCItemStorage
   def changeName(name)
     $PokemonGlobal.itemStorageSystems[name] = $PokemonGlobal.itemStorageSystems.delete(@name)
   end
-  
-  
+  def maxsize
+   if @maxsize.nil?
+   @maxsize = MAX_SIZE
+   @originalsize = MAX_SIZE
+   end
+  end
+  def maxperslot
+   @maxperslot = MAX_PER_SLOT if @maxperslot.nil?
+  end
+  def add_max_size(amt)
+   @maxsize+=amt
+  end
+  def remove_max_size(amt)
+   @maxsize-=amt if @maxsize-amt>=@originalsize
+  end
   def [](i)
     return @items[i]
   end
@@ -119,15 +138,25 @@ class PCItemStorage
   end
 
   def can_add?(item, qty = 1, durability = false, water = false)
+   @maxperslot = MAX_PER_SLOT if @maxperslot.nil?
+   if @maxsize.nil?
+   @maxsize = MAX_SIZE
+   @originalsize = MAX_SIZE
+   end
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    return ItemStorageHelper.can_add?(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
+    return ItemStorageHelper.can_add?(@items, @maxsize, @maxperslot, item, qty)
   end
 
   def add(item, qty = 1, durability=false, water=false)
+   @maxperslot = MAX_PER_SLOT if @maxperslot.nil?
+   if @maxsize.nil?
+   @maxsize = MAX_SIZE
+   @originalsize = MAX_SIZE
+   end
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    return ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
+    return ItemStorageHelper.add(@items, @maxsize, @maxperslot, item, qty)
   end
 
   def remove(item, qty = 1, durability=false, water=false)

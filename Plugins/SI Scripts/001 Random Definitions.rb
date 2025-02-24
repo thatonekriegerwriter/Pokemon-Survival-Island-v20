@@ -1,26 +1,193 @@
+
+def pbAbsoluteDistance(x1, y1, x2, y2)
+  return (x2 - x1).abs + (y2 - y1).abs
+end
+
+def am_i_looking_at_something_basic(event, distance)
+  return nil if event.nil?
+  distance.times do |i|
+  return nil if event.nil?
+  start_coord=[event.x,event.y]
+  landing_coord=[event.x,event.y]
+  case event.direction
+  when 2; landing_coord[1]+=i+1
+  when 4; landing_coord[0]-=i+1
+  when 6; landing_coord[0]+=i+1
+  when 8; landing_coord[1]-=i+1
+  end
+  
+	event2 = get_event_at(*landing_coord)
+	if !event2.nil?
+	  return event2
+	end
+  end
+
+  
+  return nil
+end
+
+def direction_to_angle(direction)
+  case direction
+  when 2  # Down
+    return 90
+  when 4  # Left
+    return 180
+  when 6  # Right
+    return 0
+  when 8  # Up
+    return 270
+  else
+    return 0  # Default to right if something unexpected happens
+  end
+end
+
+
+def am_i_looking_at_something(event, range)
+  ex, ey = event.x, event.y
+  angle =  direction_to_angle(event.direction)
+  radians = angle * Math::PI / 180
+  
+  cone_width = 45 
+  detected_event = nil
+
+  (1..range).each do |i|
+    x_offset = (i * Math.cos(radians)).round
+    y_offset = (i * Math.sin(radians)).round
+
+    (-cone_width..cone_width).step(10) do |angle_offset|
+      offset_radians = (angle + angle_offset) * Math::PI / 180
+      tx = ex + (i * Math.cos(offset_radians)).round
+      ty = ey + (i * Math.sin(offset_radians)).round
+
+      checked_event = get_event_at(tx, ty)
+
+      if !checked_event.nil?
+        detected_event = checked_event
+        break
+      end
+    end
+    break if detected_event 
+  end
+
+  return detected_event
+end
+
+
+
+
+def get_event_at(x,y)
+
+id = $game_map.check_event(x,y)
+return $game_player if id.is_a?(Game_Player)
+return nil if !id.is_a?(Integer)
+ return $game_map.events[id]
+end
+class FixedSizeArray
+
+  def initialize(size)
+    @array = []
+	@array_size = size || 5
+  end
+
+  def add(element)
+    @array.push(element)
+    @array.shift if @array.size > @array_size
+  end
+  def remove(element)
+    @array.delete(element)
+  end
+  def clear
+    @array = []
+  end
+  def to_a
+    @array
+  end
+  def empty?
+    return @array.empty?
+  end
+  def length
+    return @array.length
+  end
+  
+  
+  
+  def how_many?(object,length)
+    last_part = @array.last(length)
+    count = last_part.count(object)
+	return count
+  end
+
+  def next_position
+    return @array.size
+  end
+end
+
+
+
+
 def pbRandomEvent
-   if rand(256) <= 5
-    if $game_switches[132]==true && $game_switches[226]==true
+   chance = rand(256)
+   if chance > 5 && chance < 11
      Kernel.pbMessage(_INTL("It sounds like something crashed."))   #Comet
      $game_switches[450]=true 
      $game_switches[451]=true 
-	else
+   elsif chance <= 1
      Kernel.pbMessage(_INTL("The Sky looks beautiful tonight."))   #Comet
-	end
-=begin
-   elsif rand(100) == 6
+
+      $player.able_party.each do |pkmn|
+	       pkmn.level_cap+=1
+        endexp = pkmn.growth_rate.minimum_exp_for_level(pkmn.level + 1)
+		addexp = endexp-pkmn.exp-pkmn.stored_exp
+		pkmn.stored_exp+=addexp
+        pbDoLevelUps(pkmn)
+      end
      
-   elsif rand(100) == 7
+   elsif chance > 1 && chance < 5
      
-   elsif rand(100) == 8
+   elsif chance == 13
      
-   elsif rand(100) == 9
+   elsif chance == 14
      
-   elsif rand(100) == 10
-=end
+   elsif chance == 15
 end
 end
 
+def pbCut
+  move = :CUT
+  movefinder = $player.get_pokemon_with_move(move)
+  if !pbCheckHiddenMoveBadge(Settings::BADGE_FOR_CUT, false) || (!$DEBUG && !movefinder) || (!$bag.has?(:MACHETE)  && !movefinder) 
+    pbMessage(_INTL("This tree looks like it can be cut down."))
+    return false
+  end
+  if pbConfirmMessage(_INTL("This tree looks like it can be cut down!\nWould you like to cut it?"))
+    $stats.cut_count += 1
+    pbSEPlay("Cut", 80)
+    speciesname = (movefinder) ? movefinder.name : $player.name
+    pbMessage(_INTL("{1} used {2}!", speciesname, GameData::Move.get(move).name))
+    pbHiddenMoveAnimation(movefinder)
+    return true
+  end
+  return false
+end
+
+def pbRockSmash
+  move = :ROCKSMASH
+  movefinder = $player.get_pokemon_with_move(move)
+  if !pbCheckHiddenMoveBadge(Settings::BADGE_FOR_ROCKSMASH, false) || (!$DEBUG && !movefinder) ||  (!$bag.has?(:PICKAXE)  && !movefinder) 
+    pbMessage(_INTL("It's a rugged rock, but a Pokémon may be able to smash it."))
+    return false
+  end
+  if pbConfirmMessage(_INTL("This rock seems breakable with a hidden move.\nWould you like to use Rock Smash?"))
+    $stats.rock_smash_count += 1
+    pbSEPlay("Rock Smash", 80)
+    speciesname = (movefinder) ? movefinder.name : $player.name
+    movename = (movefinder) ? move.name : "Hammer"
+    pbMessage(_INTL("{1} used {2}!", speciesname, movename))
+    pbHiddenMoveAnimation(movefinder)
+    return true
+  end
+  return false
+end
 
 
 def pbGrassEvolutionStone

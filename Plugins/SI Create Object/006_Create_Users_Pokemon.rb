@@ -27,7 +27,7 @@ class Game_Map
 
     event.pages[0].graphic.character_name = fname
     #--- movement of the event --------------------------------
-    event.pages[0].move_speed = $game_player.move_speed
+    event.pages[0].move_speed = 3
     event.pages[0].move_frequency = 4
     event.pages[0].move_type = 3
     event.pages[0].step_anime = true
@@ -49,7 +49,8 @@ class Game_Map
     gameEvent.id = key_id
     gameEvent.type = pokemon
 	if $game_temp.preventspawns==false
-    $ExtraEvents.special[key_id] = StoredEvent.new(mapId,event,pokemon)
+    $ExtraEvents.special[[mapId,key_id]] = StoredEvent.new(mapId,event,pokemon)
+	 $ExtraEvents.special[[mapId,key_id]].eventdata = gameEvent
 	 @events[key_id] = gameEvent
 	 
     pokemon.associatedevent=key_id
@@ -109,7 +110,9 @@ class Game_Event < Game_Character
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	  parallelevents = $game_map.events.dup
+    parallelevents.each_key do |key|
+	   event = $game_map.events[key]
       next if besidethis?(self, event)==false
       next if event.jumping? || event.over_trigger?
       return event
@@ -117,8 +120,26 @@ class Game_Event < Game_Character
     return nil
   end
 
+  def pbSurroundingEvents(ignoreInterpreter = false)
+    return nil if $game_temp.preventspawns==false
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+	surrounding = []
+	  parallelevents = $game_map.events.dup
+    parallelevents.each_key do |key|
+	   event = $game_map.events[key]
+      next if besidethis?(self, event)==false
+      next if event.jumping? || event.over_trigger?
+      surrounding << key
+    end
+	 return surrounding if !surrounding.empty?
+    return nil
+  end
+
   def pbEventWithin(distance,ignoreInterpreter = false)
-    distance = distance.to_i if distance.is_a? String
 	theevents = []
     return nil if $game_temp.preventspawns==false
     return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 
@@ -126,7 +147,9 @@ class Game_Event < Game_Character
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	  parallelevents = $game_map.events.dup
+    parallelevents.each_key do |keys|
+	   event = $game_map.events[keys]
 	  next if event.name != "PlayerPkmn"
       next if get_events_in_range(self, event,distance)==false
 	  theevents << event
@@ -139,7 +162,27 @@ class Game_Event < Game_Character
     return uniqueevent
   end
 
-
+  def update
+    @to_update = should_update?(true)
+    return if !@to_update
+    @moveto_happened = false
+    last_moving = moving?
+    super
+    if !moving? && last_moving
+      $game_player.pbCheckEventTriggerFromDistance([2])
+    end
+    if @need_refresh
+      @need_refresh = false
+      refresh
+    end
+    check_event_trigger_auto
+    if @interpreter
+      unless @interpreter.running?
+        @interpreter.setup(@list, @event.id, @map_id)
+      end
+      @interpreter.update
+    end
+  end
 end
 
 
@@ -189,8 +232,11 @@ end
 def get_overworld_pokemon_length
   potato = []
  $player.party.each do |b|
-   if b.inworld==true
+   if b.inworld==true && !b.associatedevent.nil? && !$game_map[b.associatedevent].nil?
      potato << b
+	 else
+	  b.inworld=false
+	  b.associatedevent=nil
    end
  end
 
@@ -313,22 +359,31 @@ return events[rand(events.length)]
 
 	
 def pbReturnPokemon(event,message=false)
+
 key_id = event
 $game_temp.interactingwithpokemon=true
 if message==true
 if rand(2)==0
-sideDisplay(_INTL("#{$game_map.events[key_id].type.name}, come back!"))
+text= _INTL("#{$game_map.events[key_id].type.name}, come back!")
 else
-sideDisplay(_INTL("#{$game_map.events[key_id].type.name}, return!"))
+text= _INTL("#{$game_map.events[key_id].type.name}, return!")
 
 end
+
+		   sideDisplay(text,false,3,false)
+			text.length.times do |i|
+				Graphics.update
+				Input.update
+				$scene.miniupdate
+             DialogueSound.play_sound_effect(i, text)
+			end
 end
 pbSEPlay("Battle recall")
 
 pbRemoveFollowerPokemon(key_id) if $game_temp.following_ov_pokemon[key_id] && $game_temp.following_ov_pokemon[key_id][1]==$game_map.events[key_id].pokemon
 pbDeselectThisPokemon($game_map.events[key_id].pokemon)
 $game_map.events[key_id].pokemon.set_in_world(false,$game_map.events[key_id])
-deletefromSISData(key_id)
+deletefromSISData(key_id,$game_map.map_id)
 $game_map.events[key_id].removeThisEventfromMap
 $game_temp.preventspawns=false
 $game_temp.interactingwithpokemon=false

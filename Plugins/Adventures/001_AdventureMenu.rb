@@ -353,17 +353,38 @@ class Adventure_Scene
 			pkmn = @adventureparty[pos]
 			text = "Call Back" if pkmn.location != $game_map.map_id
 			text = "Add to Party" if pkmn.location == $game_map.map_id
-			answer=pbMessage("What do you want to do?", [text,"Summary","Adventuring Type", "Cancel"],-1,nil,0)
+			answer=pbMessage("What do you want to do?", [text,"Summary","Item","Adventuring Type", "Cancel"],-1,nil,0)
 			if answer == 0
 			  if text == "Call Back"
-			     pkmn.called_back_map=$game_map.map_id
+			     #pkmn.called_back_map=$game_map.map_id
+			     pkmn.location=$game_map.map_id
 			  else
 			    
 				pbMoveToParty(pos)
 			  end
 				break
+			elsif answer == 1
+				pbSummary2(@adventureparty,pos)
 			elsif answer == 2
-				pbSummary(@adventureparty,pos)
+			if @adventureparty.length > 0
+			pkmn = @adventureparty[pos]
+	       verdict = ""
+			pkmn.inventory.each_with_index do |item,index|
+			  next if item[0].nil?
+			 if index==0
+			  verdict+="#{GameData::Item.get(item[0]).name}"
+			 elsif index == @pokemon.inventory.length
+			 else
+			  verdict+=", #{GameData::Item.get(item[0]).name}"
+			 end
+	
+			end
+			  if verdict == ""
+			pbMessage(_INTL("#{pkmn.name} does not have anything!"))
+			  else
+			pbMessage(_INTL("#{verdict}"))
+             end
+          end
 			elsif answer == 3
 			answer2 = []
 			if @adventureparty.length > 0
@@ -414,13 +435,14 @@ class Adventure_Scene
 				pbMoveToAdventure(pos)
 				break
 			elsif answer == 1
-				pbSummary(@party,pos)
+				pbSummary2(@party,pos)
 			elsif answer == 2 #Item
 			if @party.length > 0
 			pkmn = @party[pos]
 			items = []
 			items[items.length] = "Give"
 			items[items.length] = "Take"
+			items[items.length] = "List"
 			items[items.length] = "Cancel"
 			if pkmn.item.nil?
 			commands=pbMessage(_INTL("They are not holding anything!"), items,-1,nil,0)
@@ -448,6 +470,25 @@ class Adventure_Scene
 			else
 			pbMessage(_INTL("They are not holding an item!"))
 			end
+			elsif commands == 2
+	verdict = ""
+			pkmn.inventory.each_with_index do |item,index|
+			  next if item[0].nil?
+			 if index==0
+			  verdict+="#{GameData::Item.get(item[0]).name}"
+			 elsif index == @pokemon.inventory.length
+			 else
+			  verdict+=", #{GameData::Item.get(item[0]).name}"
+			 end
+	
+			end
+			  if verdict == ""
+			pbMessage(_INTL("#{pkmn.name} does not have anything!"))
+			  else
+			pbMessage(_INTL("#{verdict}"))
+             end
+
+
 			else
 			end
 
@@ -725,7 +766,7 @@ class Adventure_Scene
 		end
 	end
 
-	def pbSummary(list,id)
+	def pbSummary2(list,id)
 		oldsprites = pbFadeOutAndHide(@sprites)
 		scene = PokemonSummary_Scene.new
 		screen = PokemonSummaryScreen.new(scene)

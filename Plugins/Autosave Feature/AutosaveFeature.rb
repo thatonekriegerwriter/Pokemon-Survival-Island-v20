@@ -32,6 +32,16 @@ class Game_Temp
   end
 end
 
+
+class PokemonGlobalMetadata
+  attr_accessor :lastSave
+  def lastSave
+    @lastSave = pbGetTimeNow.to_i if !@lastSave
+    return @lastSave
+  end
+end
+
+
 class PokemonSystem
   attr_accessor :autosave
   def autosave
@@ -72,11 +82,12 @@ def pbAutosave(scene = nil)
   return if $PokemonGlobal.cur_challenge!=false
   return if $PokemonSystem.autosave!=0
   return if $PokemonGlobal.hardcore==true
+  return if $game_temp.in_temple==true
   return if SaveData::TESTING_MODE==false
   if !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
     sideDisplay("Now Saving...",true)
-    $scene.spriteset.addUserSprite(SideDisplayUI.new)
-	Game.auto_save
+	 Game.auto_save
+    $PokemonGlobal.lastSave = pbGetTimeNow.to_i
   end
 end
 
@@ -85,11 +96,9 @@ EventHandlers.add(:on_enter_map, :autosave,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     next if $game_map.map_id==3
     next if $PokemonGlobal.hardcore==true
-	next true
     map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
     old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
     if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
-      pbAutosave
       $game_temp.changeUnConnectedMap = true 
     end
   }
@@ -100,6 +109,7 @@ EventHandlers.add(:on_enter_map, :autosave,
     proc { |scene, map_changed|
       next if !scene || !scene.spriteset
       next if $game_map.map_id==3
+	   next if pbGetTimeNow.to_i<$PokemonGlobal.lastSave+3600
       if pbCanAutosave? && map_changed && $game_temp.changeUnConnectedMap==true
         pbAutosave(scene)
       end
@@ -114,13 +124,18 @@ EventHandlers.add(:on_wild_battle_end, :autosave_catchpkm,
   }
 )
 
-def sideDisplay2(text)
+EventHandlers.add(:on_wild_ovbattle_end, :autosave_catchpkm,
+  proc { |species, level, decision|
+    pbAutosave if pbCanAutosave? && decision==4
+  }
+)
+def sideDisplayOriginal(text)
 return false if !$scene
-$scene.spriteset.addUserSprite(SideDisplayUI.new(text)) 
+$scene.spriteset.addUserSprite(SideDisplayUIOriginal.new(text)) 
 return true
 end
 
-class SideDisplayUI2
+class SideDisplayUIOriginal
   attr_accessor :text
   def initialize(text="Now Saving...",x=10,y=1,z=99999)
     $scene.spriteset.usersprites.each do |sprite| 
@@ -215,9 +230,10 @@ class SideDisplayUI
   attr_accessor :text
   def initialize(viewport,x=10,y=1,z=999999)
     @bitmapsprite = BitmapSprite.new(Graphics.width,Graphics.height,viewport)
+	@bitmapsprite.z = 999999
     @bitmap = @bitmapsprite.bitmap
     pbSetSmallFont(@bitmap)
-	 @text = []
+	 @text = FixedSizeArray.new(7)
     @bitmapsprite.visible = true
     @frame = 0
     @looptime = 0
@@ -237,11 +253,12 @@ class SideDisplayUI
     @currentmap = $game_map.map_id
 	 clear_text if onlyme==true
 	  
-	 @text << text
+	@text = FixedSizeArray.new(7) if !@text.is_a?(FixedSizeArray)
+	 @text.add(text)
         @frame = 0
         @looptime = 0
         @i = 1
-        @looptimetarget = 3 + looptimet
+        @looptimetarget = 6 + looptimet
         @flashing = flashing
 	 refresh
 	 show
@@ -256,7 +273,8 @@ class SideDisplayUI
    @bitmap.clear
 	text2 = []
 	loops = 0
-	@text.each do |i|
+	@text = FixedSizeArray.new(7) if !@text.is_a?(FixedSizeArray)
+	@text.to_a.each do |i|
 	    y1 = @y+(loops*21)
 	  text2 << [i,@x,y1,@z,Color.new(248,248,248),Color.new(97,97,97)]
 	  loops+=1
@@ -266,7 +284,28 @@ class SideDisplayUI
   end
   
   def update
+    
     if @currentmap != $game_map.map_id
+	   clear_text
+      hide
+      refresh
+        @frame = 0
+        @looptime = 0
+        @i = 1
+	  return
+    end
+    
+    if $game_temp.in_menu==true
+	   clear_text
+      hide
+      refresh
+        @frame = 0
+        @looptime = 0
+        @i = 1
+	  return
+    end
+    
+    if $game_temp.in_battle==true
 	   clear_text
       hide
       refresh
@@ -304,7 +343,7 @@ class SideDisplayUI
   
   def clear_text
    @bitmapsprite.visible = false
-   @text = []
+   @text.clear
   end
   def cleared?
     return @text.empty?

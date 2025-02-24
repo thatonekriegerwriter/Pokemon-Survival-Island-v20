@@ -47,15 +47,27 @@ SaveData.register(:weather_system) do
   new_game_value { WeatherSystem.new }
 end
 
-def pbFindZone
+def pbFindZone(zone=$game_map.map_id)
   $WeatherSystem.currentZone = nil
   $WeatherSystem.zoneMaps.length.times do |i|
-    if $WeatherSystem.zoneMaps[i].include?($game_map.map_id)
+    if $WeatherSystem.zoneMaps[i].include?(zone)
       $WeatherSystem.currentZone = i
       break
     end
   end
 end
+
+
+def pbGetZone(zone=$game_map.map_id)
+  $WeatherSystem.currentZone = nil
+  $WeatherSystem.zoneMaps.length.times do |i|
+    if $WeatherSystem.zoneMaps[i].include?(zone)
+      return i
+      break
+    end
+  end
+end
+
 
 def pbCheckValidWeather(weather, zone)
     maps = WeatherConfig::MAPS_SUBSTITUTE[weather]
@@ -73,12 +85,7 @@ def pbValidSecondWeather(zone, main)
 end
 
 def pbGetStartTime
-  if !WeatherConfig::USE_REAL_TIME && PluginManager.installed?("Unreal Time System")
-    startTime = pbGetTimeNow
-  else
-    startTime = Time.now
-  end
-  return startTime
+  return pbGetTimeNow
 end
 
 def pbGetEndTime(startTime)
@@ -104,7 +111,7 @@ def pbGetEndTime(startTime)
   end
   hours = rand(WeatherConfig::CHANGE_TIME_MIN...WeatherConfig::CHANGE_TIME_MAX)
   elapse = hours * 60 * 60
-  endTime = startTime + elapse
+  endTime = midnight
   return endTime
 end
 

@@ -39,13 +39,12 @@ end
   def capturecalc(event,ball,dir)
     pkmn = event.pokemon
     catch_rate = pkmn.species_data.catch_rate if !catch_rate
+	
       if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
-      catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
-    else
-      catch_rate /= 10
-    end
-	a = pkmn.totalhp
-    b = pkmn.hp
+         catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
+      else
+         catch_rate /= 10
+      end
     x = (((3 * pkmn.totalhp) - (2 * pkmn.hp)) * catch_rate.to_f) / (3 * pkmn.totalhp)
     # Calculation modifiers
     if pkmn.status == :SLEEP || pkmn.status == :FROZEN
@@ -93,6 +92,8 @@ end
       numShakes += 1 if rand(65_536) < y
     end
 	numShakes+=1 if event.direction == [2,4,6,8][dir]
+	puts numShakes
+	puts "Catchless" if @battle_rules.include?("Catchless")
 	return 0 if @battle_rules.include?("Catchless")
     return numShakes
   end
@@ -103,6 +104,9 @@ end
 
   def player_action(event,item,dir)
    if $player.weapon_cooldown<=0
+   $game_temp.weapon_selection_end=60 if $game_temp.weapon_selection_end!=-1
+   $PokemonGlobal.set_item_hud(:WEAPONS,true) if cur_item_hud!=:WEAPONS
+   $game_temp.lockontarget=event if $PokemonSystem.autotarget == 0
    pbSEPlay("smeck") if item=="Punch"
    if item.is_a?(Symbol) || item.is_a?(ItemData)
     pbSEPlay("Sword") if GameData::Item.get(item).id==:MACHETE
@@ -118,7 +122,7 @@ end
     weaponly_actions(event,item) if item_data.is_weapon? && hit && item_data.id != :BAIT && item_data.id != :STONE
     snatcher(event) if item==:SNATCHER && hit
 	end
-
+     event.remaining_steps+=10 if hit
 
     if !hit && !item_data.nil? && (item_data.id != :BAIT && item_data.id != :STONE)
 	  
@@ -137,7 +141,7 @@ end
 	end
 
     @turn+=1
-    status_checks(event)
+	$hud.createaChargeBar($game_player) if $player.attack_opportunity>=0
 	return
   else
 	sideDisplay("You are too winded from your last attack still!")
@@ -149,8 +153,7 @@ end
   def capture_calcs(target,ball,dir)
      pkmn = target.pokemon
      catch_rate=capturecalc(target,ball,dir)
-	 randcatch = rand(9)+2
-	  return randcatch<=catch_rate
+	  return catch_rate>=4
   end
   
   
@@ -260,9 +263,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #SLASH - Power 70, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=100
-	   no_moving(30)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=20
+	   no_moving(5)
      when :STONEPICKAXE
 	   move = Pokemon::Move.new(:ROCKSMASH)
 	   baseDmg = move.base_damage
@@ -278,25 +281,27 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=80
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=40
+	   no_moving(2)
      when :IRONPICKAXE
 	   move = Pokemon::Move.new(:ROCKSMASH)
 	   baseDmg = move.base_damage
        damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	   value = Effectiveness.calculate(:NORMAL, pkmn.types)
+	  pkmn.types.each do |type|
+	   value = Effectiveness.calculate(:NORMAL, type)
 	   damage *= 2 if Effectiveness.super_effective?(value)
 	   damage /= 2 if Effectiveness.not_very_effective?(value)
 	   damage /= 2 if Effectiveness.resistant?(value)
 	   damage *= 0 if Effectiveness.ineffective?(value)
 	   damage *= 1 if Effectiveness.normal?(value)
 	   damage *= 1 if Effectiveness.normal?(value)
+	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=80
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=40
+	   no_moving(2)
      when :STONEAXE
 	   move = Pokemon::Move.new(:STONEAXE)
 	   baseDmg = move.base_damage
@@ -312,9 +317,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #STONEAXE - Power 80, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=160
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=80
+	   no_moving(2)
      when :IRONAXE
 	   move = Pokemon::Move.new(:STONEAXE)
 	   baseDmg = move.base_damage
@@ -330,9 +335,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #STONEAXE - Power 80, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=160
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=80
+	   no_moving(2)
      when :STONEHAMMER
 	   move = Pokemon::Move.new(:ROCKSMASH)
 	   baseDmg = move.base_damage
@@ -348,9 +353,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=80
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=40
+	   no_moving(2)
      when :IRONHAMMER
 	   move = Pokemon::Move.new(:ROCKSMASH)
 	   baseDmg = move.base_damage
@@ -366,9 +371,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=80
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=40
+	   no_moving(2)
      when :POLE
 	   move = Pokemon::Move.new(:BONECLUB)
 	   baseDmg = move.base_damage
@@ -384,9 +389,9 @@ end
 	   end
 	   damage += $player.equipmentatkbuff.to_i
 	   machete(event,damage) #BONECLUB - Power 65
-      event.battle_timer = 3
-	   $player.weapon_cooldown+=90
-	   no_moving(15)
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=45
+	   no_moving(1)
 	 
 	 
 	 
@@ -410,7 +415,7 @@ end
 		pbSEPlay("Battle damage normal")
 	  end
       
-	   damage = damage.floor
+	   injury = injury.floor
 	  start_attacked_glow(event,$game_player)
       damagePokemon(event,injury.to_i)
 	  if pkmn.status==:SLEEP

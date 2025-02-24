@@ -1,31 +1,94 @@
 
+def pbHPItem(pkmn, restoreHP, scene)
+  if !pkmn.able? || pkmn.hp == pkmn.totalhp
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    return false
+  end
+  hpGain = pbItemRestoreHP(pkmn, restoreHP)
+  scene.pbRefresh
+  scene.pbDisplay(_INTL("{1}'s HP was restored by {2} points.", pkmn.name, hpGain))
+  return true
+end
+def pbItemRestoreHP(pkmn, restoreHP)
+  newHP = pkmn.hp + restoreHP
+  newHP = pkmn.totalhp if newHP > pkmn.totalhp
+  hpGain = newHP - pkmn.hp
+  pkmn.hp = newHP
+  return hpGain
+end
+
+ItemHandlers::UseOnPokemon.add(:POTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 20, scene)
+})
+
+ItemHandlers::UseOnPokemon.copy(:POTION, :BERRYJUICE, :SWEETHEART)
+ItemHandlers::UseOnPokemon.copy(:POTION, :RAGECANDYBAR) if !Settings::RAGE_CANDY_BAR_CURES_STATUS_PROBLEMS
+
+ItemHandlers::UseOnPokemon.add(:SUPERPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 60, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:HYPERPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 120, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:MAXPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, pkmn.totalhp - pkmn.hp, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:FRESHWATER, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 30, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:SODAPOP, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 60, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:LEMONADE, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 80, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:WEAKPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 10, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:MOOMOOMILK, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 50, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:ORANBERRY, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 10, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:SITRUSBERRY, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, pkmn.totalhp / 4, scene)
+})
+
+
+
 ItemHandlers::UseOnPokemon.add(:SUSPO,proc { |item,pkmn,scene|
-       chance = rand(255)
-       if pkmn.permaFaint==true 
-         if pkmn.happiness <= 75
-		 if 5 > chance
+       chance = rand(4)
+        if pkmn.happiness >= 75
+		 if 0 == chance
           pkmn.species = pkmn.species_data.get_baby_species
+          pkmn.exp           = 0
           pkmn.calc_stats
           pkmn.name           = _INTL("Egg")
           pkmn.steps_to_hatch = pkmn.species_data.hatch_steps
           pkmn.food  = 100
           pkmn.water  = 100
           pkmn.age  = 1
-          pkmn.lifespan  = 50
-		  pkmn.permaFaint = false
+          pkmn.lifespan  = 100
+		  pkmn.permaFaint = false if pkmn.permaFaint==true 
           next true
 		 else
-          next true
          scene.pbDisplay(_INTL("It was indigested, but had no effect."))
+          next true
 		 end
-         else
+        else
          scene.pbDisplay(_INTL("It doesn't like you enough to reincarnate."))
          next false
-         end
-       else
-         scene.pbDisplay(_INTL("It won't have any effect."))
-         next false
-         end
+        end
 })
 
 
@@ -95,23 +158,29 @@ if $game_player.pbFacingTerrainTag.can_surf
         item2.decrease_durability(1)
 		 item.set_bottle(item2)
        $bag.add(item,1)
+       $bag.remove(item2,1)
 
 	end
-	next true
+	next false
    else
 end
 	next false
 })
 
 ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |item2|
+  puts $game_player.pbFacingTerrainTag.can_surf
 if $game_player.pbFacingTerrainTag.can_surf
      message=(_INTL("Store water in your Bottle?"))
+    if pbConfirmMessage(message)
 	    item = ItemData.new(:WATER)
         item2.decrease_durability(1)
 		 item.set_bottle(item2)
        $bag.add(item,1)
+       $bag.remove(item2,1)
+	next false
+	end
 
-	next true
+	next false
 end
 	next false
 })
@@ -124,6 +193,7 @@ if $game_player.pbFacingTerrainTag.can_surf
         item2.decrease_durability(1)
         increaseWater(10)
         damagePlayer(10.0)
+	next true
 	end
 	next false
 end

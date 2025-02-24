@@ -36,6 +36,11 @@ end
    end
 
 def pbDoLevelUps(pkmn, messages=false)
+	if pkmn.level == 20 && pkmn.shadowPokemon?
+      pbMessage(_INTL("{1} cannot go beyond this level because it is a Shadow Pokemon.", pkmn.name, curLevel)) if messages
+	   return
+	end
+	  potato1 = pkmn.exp.dup
     expFinal = pkmn.stored_exp + pkmn.exp
     growth_rate = pkmn.growth_rate
     curLevel = pkmn.level
@@ -46,10 +51,16 @@ def pbDoLevelUps(pkmn, messages=false)
     level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
 	end
 	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
-	if pkmn.level == 20 && pkmn.shadowPokemon?
-      pbMessage(_INTL("{1} cannot go beyond this level because it is a Shadow Pokemon.", pkmn.name, curLevel)) if messages
-    elsif newLevel > level_cap
-    elsif newLevel <= curLevel
+	if curLevel>=level_cap
+     pkmn.stored_exp = 0
+	  if curLevel>level_cap
+     levelMinExp = growth_rate.minimum_exp_for_level(level_cap)
+	  pkmn.exp = levelMinExp
+	  end
+    return
+	end
+	newLevel = level_cap  if newLevel > level_cap
+   if newLevel <= curLevel
 	
       pbMessage(_INTL("{1} has not gained enough experience to level up.", pkmn.name, curLevel)) if messages
 	  return false
@@ -61,6 +72,7 @@ def pbDoLevelUps(pkmn, messages=false)
       levelMaxExp = growth_rate.minimum_exp_for_level(curLevel + 1)
       tempExp2 = (levelMaxExp < expFinal) ? levelMaxExp : expFinal
       pkmn.exp = tempExp2
+	   pkmn.stored_exp -= tempExp2
       tempExp1 = tempExp2
       curLevel += 1
       if curLevel > newLevel
@@ -122,8 +134,13 @@ def pbDoLevelUps(pkmn, messages=false)
 	  
       moveList = pkmn.getMoveList
       moveList.each { |m| learnedmoves << m[1] if m[0] == curLevel }
+      if curLevel+1 > level_cap
+        pkmn.calc_stats
+        # Gained all the Exp now, end the animation
+        break
+      end
    end
-      pbMessage(_INTL("{1} grew to Lv. {2}!", pkmn.name, curLevel))
+      pbMessage(_INTL("{1} grew to Lv. {2}!", pkmn.name, pkmn.level))
       # Learn all moves learned at this level
 	  learnedmoves.each do |move|
 	    pbLearnMove(pkmn, move)
@@ -139,7 +156,8 @@ def pbDoLevelUps(pkmn, messages=false)
           }
           end
 
-  pkmn.stored_exp = 0
+    pkmn.stored_exp+=potato1 if pkmn.level!=pkmn.level_cap
+    pkmn.stored_exp=0 if pkmn.stored_exp<0 || pkmn.level==pkmn.level_cap
     return true
      end
 
@@ -150,7 +168,7 @@ end
 def pbCanLevelUp?
     results = [] 
       $player.able_party.each do |pkmn|
-           results << pkmn.stored_exp>0
+           results << (pkmn.stored_exp > 0)
       end
 	 
 	  if results.all? { |result| result == false }
@@ -165,7 +183,6 @@ def howmanystatues()
 end
 
 
-
 class StatueData
     attr_accessor :event
     attr_accessor :star_pieces
@@ -174,8 +191,11 @@ class StatueData
     attr_accessor :charging
     attr_accessor :time_last_updated
     attr_accessor :time_recharging
+    attr_accessor :time_recharging2
     attr_accessor :evo_stones
     attr_accessor :broken
+    attr_accessor :version
+    attr_accessor :solved
 
 	
   def initialize(event = nil)
@@ -185,9 +205,33 @@ class StatueData
     @power = 100
     @charging = false
     @evo_stones = []
-    @time_last_updated = pbGetTimeNow
+    @power_at_charge_start = @power
+    @time_last_updated = pbGetTimeNow.to_i
     @time_recharging = 0
+    @time_recharging2 = 0
     @broken = false
+	@version = 1
+	if !event.nil? && event.name[/^AncientStone\((\d+)\)/i]
+      @version = $~[1].to_i
+	end
+	@solved = false
+  end
+  def power_at_charge_start 
+	@power_at_charge_start = @power if @power_at_charge_start.nil?
+    return @power_at_charge_start
+  end
+  def solved 
+	@solved = false if @solved.nil?
+    return @solved
+  end
+  def version 
+     if !@event.nil?
+	  if @event.name[/^AncientStone\((\d+)\)/i]
+      @version = $~[1].to_i
+	  end
+	 end  
+	@version = 1 if @version.nil?
+    return @version
   end
   def evo_stones
     @evo_stones = [] if @evo_stones.nil?
@@ -201,25 +245,34 @@ class StatueData
     @charging = false
     @time_last_updated = pbGetTimeNow
     @time_recharging = 0
+    @broken = false
   end
 
   def update
+   $ExtraEvents.berry_plants[[@event.map_id,@event.id]] = StoredEvent.new(@event.map_id,@event,:STATUE) if $ExtraEvents.berry_plants[[@event.map_id,@event.id]].nil?
     return if @health==0
-    return if @charging==false
 	 return if @broken == true && @power>=100
     time_now = pbGetTimeNow
-    time_delta = time_now.to_i - @time_last_updated
-    return if time_delta <= 0
-    @time_recharging += time_delta
-	 tps = 1
+    time_delta = time_now.to_i - @time_last_updated.to_i
+	 tps = 0.5 if @charging==true
+	 tps = 1 if @charging==false
 	 tps = 2 if @broken == true
-	time_per_stage = tps * 3600
-	return if @time_recharging < time_per_stage
-	amt = 1 + (@time_recharging / time_per_stage)
-    @time_last_updated = time_now
-	@time_recharging-=time_per_stage
-	@return if @power+5>175
-	 @power +=5
+    return if time_delta < (tps * 3600)
+	   @time_last_updated = time_now
+	  time = time_delta/3600
+	  time = [time,1].max
+    if @charging==true
+	  if @power+(10*time)>175
+	   @power=175
+      return 
+	  end
+	   @power +=(10*time)
+	 else
+    puts @power
+	  @power +=(5*time) if @power<100
+    puts @power
+	 
+	 end
 	 if @power>=100 && @broken == true
 	    @power=100
 	 end
@@ -227,6 +280,47 @@ class StatueData
 	   @power=175
 	 end
   end
+
+  def puzzle
+    case @version
+        when 1
+		  @solved = true
+        when 2
+	    pbMessage(_INTL("The Statue seems to want you have at least one POKeMON before it will activate."))
+		  if $player.able_party.length>=1
+	        pbMessage(_INTL("The Statue glows brighter, before a compulsion to touch the Statue begins."))
+		    @solved = true
+		  else
+		     pbMessage(_INTL("Return with one POKeMON."))
+		  end
+        when 3
+	    pbMessage(_INTL("The Statue seems to want you have at tools for mining before it will activate."))
+		  if $bag.has?(:IRONPICKAXE) && $bag.has?(:IRONHAMMER)
+	        pbMessage(_INTL("The Statue glows brighter, before a compulsion to touch the Statue begins."))
+		    @solved = true
+		  else
+		     pbMessage(_INTL("Return with Mining Tools."))
+		  end
+        when 4
+        when 5
+        when 6
+        when 7
+		  @solved = true
+        when 8
+        when 9
+        when 10
+        when 11
+        when 12
+  
+  
+  
+  
+  
+    end
+  end 
+
+
+
 end
 
 def pbTeleportToLocation(loc1=nil,loc2=nil,loc3=nil)
@@ -251,7 +345,50 @@ def pbTeleportToLocation(loc1=nil,loc2=nil,loc3=nil)
   pbEraseEscapePoint
   return true
 end
-
+ class EnergyWindow
+    attr_accessor :variable
+    attr_accessor :displayextra
+    attr_accessor :visible
+   def initialize(msgwindow,variable,text)
+     @variable = variable
+     @visible = true
+     @displayextra = false
+	  @primefocus = text
+     @energywindow = Window_AdvancedTextPokemon.new(_INTL(""))  
+     @energywindow.resizeToFit(@energywindow.text,Graphics.width)
+     @energywindow.width=160 if @energywindow.width<=160 
+     if msgwindow.y==0
+       @energywindow.y=Graphics.height-@energywindow.height
+     else
+       @energywindow.y=0
+     end
+     @energywindow.viewport=msgwindow.viewport
+     @energywindow.z=msgwindow.z   
+   end
+   def visible=(uwu)
+    @visible=uwu
+   end
+   def update
+    if @visible==true
+    healthString=_INTL("{1}/20",@variable.health.to_s_formatted) if (Input.press?(Input::CTRL) && $DEBUG || @displayextra == true) && @variable.respond_to?("health")
+    moneyString=_INTL("{1}/100",@variable.power.to_s_formatted)
+	 text = _INTL("#{@primefocus}: <ar>{1}</ar>",moneyString)
+	 text = _INTL("Health: <ar>{2}</ar>#{@primefocus}: <ar>{1}</ar>",moneyString,healthString) if (Input.press?(Input::CTRL) && $DEBUG || @displayextra == true) && @variable.respond_to?("health")
+	 @energywindow.setTextToFit(text, Graphics.width)
+	 else
+	 @energywindow.setTextToFit("")
+	 
+	 end
+   end
+   
+   def dispose
+     @energywindow.dispose
+   end
+ end
+def pbDisplayStatueWindow(msgwindow,statue)
+  powerwindow = EnergyWindow.new(msgwindow,statue,"Energy")
+  return powerwindow
+end
 
 def pbReturnTradablePokemon(ableProc = nil, allowIneligible = false)
   chosen = 0
@@ -276,7 +413,19 @@ def pbTeleportStatues1
 	interp = pbMapInterpreter
     this_event = interp.get_self
     statue = interp.getVariable
+    if !statue || statue.is_a?(Array)
+       statue = StatueData.new(this_event)
+       interp.setVariable(statue)
+	   statue.reset
+    end
+
+   $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]] = StoredEvent.new(this_event.map_id,this_event,:STATUE) if $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]].nil?	
+	
     if statue
+    statue.solved = true if statue.version == 1 || statue.version == 7
+    
+	if statue.solved == true
+	
 	if statue.broken==true
 	 if statue.power>=100 && statue.charging==false
 	    statue.power=0
@@ -295,19 +444,23 @@ def pbTeleportStatues1
     elsif statue.charging==true
 	 pbMessage(_INTL("The Spirit Statue has been building its spiritual energy. It has charged to #{statue.power}%."))
 	 if pbConfirmMessage(_INTL("Touch Statue?"))
+	   pbMessage(_INTL("It doesn't seem to react at first, before..."))
+	   if statue.power_at_charge_start >= statue.power+25
 	   pbMEPlay("Pokemon Healing")
        $player.heal_party
        $player.heal_self
+	   end
 	   statue.charging = false
 	   $PokemonGlobal.active_statues << $game_map.map_id
+	   this_event.turn_left
+	   pbWait(2)
+	   pbTeleportStatues2
      pbSetSelfSwitch(this_event.id, "A", true)  
 	 
 	 end
 
 	else
-      pbSetSelfSwitch(this_event.id, "A", true)  
-	end
-	else
+	
      pbMessage(_INTL("This is a Spirit Statue. Once activated, the spirit inside will aid you with some of its power."))
 	 if pbConfirmMessage(_INTL("Touch Statue?"))
 	   $PokemonGlobal.active_statues << $game_map.map_id
@@ -321,6 +474,34 @@ def pbTeleportStatues1
 	   pbUnlockPlayerClass if $player.playerclass.id==:ACTOR
        pbSetSelfSwitch(this_event.id, "A", true)  
 	 end
+
+	end
+
+    else
+     pbMessage(_INTL("This is a Spirit Statue. Once activated, the spirit inside will aid you with some of its power."))
+	  pbMessage(_INTL("The Statue glows dimly, seeming to want something of you."))
+	  statue.puzzle
+	  if statue.solved == true
+	 if pbConfirmMessage(_INTL("Touch Statue?"))
+	   $PokemonGlobal.active_statues << $game_map.map_id
+	   pbMessage(_INTL("It doesn't seem to react at first, before..."))
+	   pbMEPlay("Pokemon Healing")
+       $player.heal_party
+       $player.heal_self
+	   this_event.turn_left
+	   pbWait(2)
+	   pbTeleportStatues2
+	   pbUnlockPlayerClass if $player.playerclass.id==:ACTOR
+       pbSetSelfSwitch(this_event.id, "A", true)  
+	 end
+
+	  
+	  
+	  
+	  end
+	end
+
+
     end
 end
 
@@ -336,6 +517,7 @@ command = 0
        interp.setVariable(statue)
 	   statue.reset
     end
+   $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]] = StoredEvent.new(this_event.map_id,this_event,:STATUE) if $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]].nil?	
 	if $game_temp.carried_evo_stones.length>0
 	  $game_temp.carried_evo_stones.each do |stone|
 	    statue.evo_stones << stone
@@ -372,19 +554,21 @@ command = 0
 
   loop do
   
-  
+	$PokemonGlobal.addNewFrameCount
   
   
     msgwindow = pbCreateMessageWindow(nil,nil)
     pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-    command = pbShowCommands(msgwindow,
+	statuewindow = pbDisplayStatueWindow(msgwindow,statue)
+	#statuewindow.update
+	 
+    command = pbShowCommandsssss(statuewindow,statue,msgwindow,
                     [_INTL("Use Statue"),
                     _INTL("Save Game"),
                     _INTL("Place Star Pieces"),
                     _INTL("Return its Power"),
                     _INTL("Exit")],-1)
-	pbDisposeMessageWindow(msgwindow)
-	
+	#statuewindow.update
 	
 	
 	
@@ -395,6 +579,8 @@ command = 0
 
 
     pbDisposeMessageWindow(msgwindow)
+	   statuewindow.dispose if statuewindow
+	  statuewindow = pbDisplayStatueWindow(msgwindow,statue)
 	   commands = []
       cmd_level_up     = -1
       cmd_move_statues     = -1
@@ -413,9 +599,10 @@ command = 0
 	  
     msgwindow = pbCreateMessageWindow(nil,nil)
     pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-    commands2 = pbShowCommands(msgwindow,commands,-1)
+    commands2 = pbShowCommandsssss(statuewindow,statue,msgwindow,commands,-1)
 	pbDisposeMessageWindow(msgwindow)
 	if cmd_level_up >= 0 && commands2 == cmd_level_up
+	   statuewindow.dispose if statuewindow
 	
 	  if true
 	
@@ -451,6 +638,7 @@ command = 0
 	
 	
 	elsif cmd_move_statues >= 0 && commands2 == cmd_move_statues
+	   statuewindow.dispose if statuewindow
 	if true
 	pbDisposeMessageWindow(msgwindow)
 	 if statue.star_pieces == [1,1] && statue.power>100
@@ -474,13 +662,14 @@ command = 0
     end
    end
 	elsif cmd_present_pokemon >= 0 && commands2 == cmd_present_pokemon
+	   statuewindow.dispose if statuewindow
 	
 	  if true
 	
 	
 	pbDisposeMessageWindow(msgwindow)
-	 if statue.power-10>=0
-	   statue.power-=10
+	 if statue.power-50>=0
+	   statue.power-=50
 
 	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
@@ -489,8 +678,7 @@ command = 0
 	  this_event.turn_down
      end  
        pkmn = pbReturnTradablePokemon(proc { |pkmn|
-    next pkmn.egg?
-	next pkmn.shadowPokemon?
+    next !MoveRelearnerScreen.pbGetRelearnableMoves(pkmn).empty?
        })
 
 
@@ -499,8 +687,9 @@ command = 0
         if MoveRelearnerScreen.pbGetRelearnableMoves(pkmn).empty?
           pbMessage(_INTL("The Statue seems to not be reacting to #{pkmn.name} right now."))
         else
-		   pbMessage(_INTL("As you lift #{pkmn.name} to the Statue, you can feel memories and possible memories flow from #{pkmn.name}."))
-          pbMessage(_INTL("its likely this can teach it something."))
+		   pbMessage(_INTL("As you lift #{pkmn.name} to the Statue, you can feel memories and possiblities flow from within #{pkmn.name}."))
+         
+          pbMessage(_INTL("The Statue can definitely teach #{pkmn.name} a move."))
           pbRelearnMoveScreen(pkmn) 
 	     pbMessage(_INTL("Nothing is different about it physically, but something feels different."))
         end
@@ -519,6 +708,7 @@ command = 0
 
 
 	elsif cmd_change_class >= 0 && commands2 == cmd_change_class
+	   statuewindow.dispose if statuewindow
       if true
    	  cmd12 = []
 	 pbMessageDisplay(msgwindow,_INTL("What do you want to change your acted class to?\\wtnp[1]"))
@@ -561,6 +751,7 @@ command = 0
 	   end
 	  end
 	elsif cmd_evolve >= 0 && commands2 == cmd_evolve	
+	   statuewindow.dispose if statuewindow
 	  if statue.evo_stones.length<1
 	   pbMessage(_INTL("You don't have any specialized stones."))
 	  else 
@@ -589,7 +780,8 @@ command = 0
 	   end
 	
 	  end
-	elsif cmd_rest >= 0 && commands2 == cmd_rest     
+	elsif cmd_rest >= 0 && commands2 == cmd_rest  
+	   statuewindow.dispose if statuewindow   
     if PBDayNight.isNight?(pbGetTimeNow)
 	    pbMessage(_INTL("You get the best rest you can in the Wilderness."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
@@ -602,14 +794,17 @@ command = 0
 	 break
 	end
 	elsif cmd_quit >= 0 && commands2 == cmd_quit
+	   statuewindow.dispose if statuewindow
 	   break
 	elsif Input.trigger?(Input::BACK)
+	   statuewindow.dispose if statuewindow
 	   break
 	end
 	end
 	when 1  # Save Game
 	if true
     pbDisposeMessageWindow(msgwindow)
+	   statuewindow.dispose if statuewindow
 	if statue.power-5<1
      pbMessage(_INTL("The Statue doesn't have enough energy to store your memories!"))
 	  this_event.turn_down
@@ -642,6 +837,7 @@ command = 0
 	when 2 #Place Star Pieces
 	 if true
     pbDisposeMessageWindow(msgwindow)
+	statuewindow.dispose if statuewindow
 	if $bag.has?(:STARPIECE, 2) && (statue.star_pieces != [0,1] || statue.star_pieces != [1,0]  || statue.star_pieces != [1,1]) 
      pbMessage(_INTL("The Star Pieces in your bag seem like they would fit in its eyes."))
 	 if pbConfirmMessage(_INTL("Do you wish to place Star Pieces in its eyes?"))
@@ -727,20 +923,24 @@ command = 0
 	when 3  # Return its Power
 	 if true
      pbDisposeMessageWindow(msgwindow)
+	   statuewindow.dispose if statuewindow
      pbMessage(_INTL("You feel some energy leave your body."))
+	 statue.power_at_charge_start = statue.power
       statue.charging = true
 	  
 	 $PokemonGlobal.active_statues.delete($game_map.map_id)
       pbSetSelfSwitch(this_event.id, "A", false)  
+      break
 
 
 
     end
     else
 	  pbDisposeMessageWindow(msgwindow)
+	   statuewindow.dispose if statuewindow
       break
     end
-end
+  end
 
 
 
@@ -799,7 +999,7 @@ def pbTeleportStatues3(home=false)
 command = 0
   loop do
     msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
+    pbMessageDisplay(msgwindow,_INTL("It seems with the statue in it's current state, you can only save.\\wtnp[1]"))
     command = pbShowCommands(msgwindow,
                     [_INTL("Save Game"),
                     _INTL("Exit")],-1)

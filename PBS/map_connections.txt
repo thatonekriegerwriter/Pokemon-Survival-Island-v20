@@ -60,10 +60,6 @@
 300,East,50,5,West,0
 # Abandoned Cabin (103) - Temperate Shore (5)
 103,West,0,5,East,150
-# Temperate Plains (6) - Temperate Plains (349)
-6,North,0,349,South,0
-# Temperate Plains (6) - Temperate Plains (350)
-6,East,0,350,West,43
 # Temperate Shore (7) - Temperate Ocean (48)
 7,West,100,48,East,0
 # Temperate Shore (7) - Temperate Shore (64)
@@ -166,7 +162,7 @@
 34,South,0,13,North,150
 # Temperate Marsh (35) - Temperate Shore (13)
 35,South,0,13,North,100
-# Southern Beach (53) - Temperate Shore (13)
+# Temperate Shore (53) - Temperate Shore (13)
 53,West,1,13,East,0
 # Temperate Ocean (59) - Temperate Shore (13)
 59,North,0,13,South,0
@@ -200,7 +196,7 @@
 35,North,0,16,South,100
 # Temperate Highlands (30) - Temperate Highlands (16)
 30,South,0,16,North,0
-# Southern Beach (53) - Temperate Highlands (16)
+# Temperate Shore (53) - Temperate Highlands (16)
 53,West,0,16,East,99
 # Temperate Ocean (61) - Temperate Highlands (16)
 61,West,0,16,East,199
@@ -300,7 +296,7 @@
 33,West,100,26,East,0
 # Southern Beach (234) - Temperate Marsh (26)
 234,North,0,26,South,0
-# Southern Beach (53) - Temperate Marsh (26)
+# Temperate Shore (53) - Temperate Marsh (26)
 53,East,1,26,West,0
 # Temperate Ocean (61) - Temperate Marsh (26)
 61,East,0,26,West,99
@@ -322,7 +318,7 @@
 33,West,0,28,East,0
 # Temperate Highlands (30) - Temperate Highlands (28)
 30,South,100,28,North,0
-# Southern Beach (53) - Temperate Highlands (28)
+# Temperate Shore (53) - Temperate Highlands (28)
 53,East,0,28,West,99
 # Temperate Ocean (61) - Temperate Highlands (28)
 61,East,0,28,West,199
@@ -342,7 +338,7 @@
 218,West,0,29,East,150
 # Temperate Marsh (33) - Temperate Highlands (29)
 33,West,0,29,East,50
-# Southern Beach (53) - Temperate Highlands (29)
+# Temperate Shore (53) - Temperate Highlands (29)
 53,East,0,29,West,149
 # Temperate Ocean (61) - Temperate Highlands (29)
 61,East,0,29,West,249
@@ -360,7 +356,7 @@
 30,South,200,109,North,0
 # Temperate Highlands (30) - Temperate Marsh (33)
 30,South,150,33,North,0
-# Southern Beach (53) - Temperate Highlands (30)
+# Temperate Shore (53) - Temperate Highlands (30)
 53,West,0,30,East,149
 # Temperate Ocean (61) - Temperate Highlands (30)
 61,West,0,30,East,249
@@ -402,7 +398,7 @@
 300,North,300,34,South,0
 # Temperate Marsh (35) - Temperate Marsh (218)
 35,East,50,218,West,0
-# Southern Beach (53) - Temperate Marsh (35)
+# Temperate Shore (53) - Temperate Marsh (35)
 53,East,0,35,West,49
 # Temperate Ocean (61) - Temperate Marsh (35)
 61,East,0,35,West,149
@@ -416,6 +412,8 @@
 236,West,0,35,East,148
 # Temperate Ocean (300) - Temperate Marsh (35)
 300,North,250,35,South,0
+# Temperate Marsh (84) - Temperate Marsh (36)
+84,North,0,36,South,0
 # Temperate Ocean (38) - Temperate Ocean (48)
 38,East,0,48,West,0
 # Temperate Ocean (38) - Temperate Shore (64)
@@ -474,6 +472,26 @@
 101,West,0,42,East,50
 # Abandoned Cabin (103) - Southern Ocean (42)
 103,North,0,42,South,0
+# Temperate Ocean (43) - Temperate Marsh (110)
+43,North,0,110,South,202
+# Oil Tanker (137) - Temperate Ocean (43)
+137,West,0,43,East,150
+# Tropical Coast (161) - Temperate Ocean (43)
+161,East,0,43,West,50
+# Temperate Marsh (140) - Temperate Ocean (43)
+140,South,128,43,North,0
+# Tropical Coast (134) - Temperate Ocean (43)
+134,East,0,43,West,0
+# Tropical Coast (160) - Temperate Ocean (43)
+160,East,0,43,West,100
+# Temperate Ocean (392) - Temperate Ocean (43)
+392,North,50,43,South,0
+# Temperate Ocean (387) - Temperate Ocean (43)
+387,North,200,43,South,0
+# Temperate Ocean (385) - Temperate Ocean (43)
+385,West,0,43,East,0
+# Temperate Ocean (396) - Temperate Ocean (43)
+396,West,0,43,East,200
 # Chilled Plains (44) - Temperate Ocean (59)
 44,East,150,59,West,0
 # Chilled Plains (44) - S.S Glittering Wreck (102)
@@ -484,14 +502,6 @@
 68,South,0,44,North,20
 # S.S Glittering Wreck (101) - Chilled Plains (44)
 101,West,0,44,East,300
-# Temperate Plains (45) - Temperate Plains (54)
-45,North,11,54,South,0
-# Temperate Plains (47) - Temperate Plains (45)
-47,West,0,45,East,0
-# MAP046 (46) - Temperate Plains (54)
-46,South,0,54,North,0
-# Temperate Plains (47) - Temperate Plains (54)
-47,North,0,54,South,39
 # Temperate Shore (64) - Temperate Ocean (48)
 64,West,50,48,East,0
 # Temperate Ocean (59) - Temperate Ocean (48)
@@ -510,19 +520,19 @@
 300,East,100,48,West,0
 # Abandoned Cabin (103) - Temperate Ocean (48)
 103,West,0,48,East,100
-# Southern Beach (53) - Southern Beach (234)
+# Temperate Shore (53) - Southern Beach (234)
 53,East,50,234,West,0
-# Temperate Ocean (59) - Southern Beach (53)
+# Temperate Ocean (59) - Temperate Shore (53)
 59,East,0,53,West,51
-# S.S Glittering Wreck (102) - Southern Beach (53)
+# S.S Glittering Wreck (102) - Temperate Shore (53)
 102,East,0,53,West,151
-# Temperate Ocean (58) - Southern Beach (53)
+# Temperate Ocean (58) - Temperate Shore (53)
 58,East,0,53,West,101
-# Temperate Ocean (60) - Southern Beach (53)
+# Temperate Ocean (60) - Temperate Shore (53)
 60,North,0,53,South,0
-# Temperate Marsh (233) - Southern Beach (53)
+# Temperate Marsh (233) - Temperate Shore (53)
 233,North,0,53,South,100
-# Temperate Ocean (235) - Southern Beach (53)
+# Temperate Ocean (235) - Temperate Shore (53)
 235,West,0,53,East,99
 # Temperate Ocean (57) - Temperate Shore (64)
 57,North,0,64,South,0
@@ -664,8 +674,14 @@
 83,West,0,85,East,50
 # Frigid Highlands (239) - Winter Zone (83)
 239,South,0,83,North,0
+# Temperate Marsh (86) - Temperate Marsh (84)
+86,North,0,84,South,0
 # Frigid Highlands (239) - Frigid Highlands (85)
 239,West,0,85,East,0
+# Temperate Marsh (110) - Temperate Marsh (86)
+110,North,0,86,South,20
+# Temperate Marsh (140) - Temperate Marsh (86)
+140,North,0,86,South,94
 # S.S Glittering Wreck (101) - S.S Glittering Wreck (102)
 101,North,0,102,South,0
 # Abandoned Cabin (103) - S.S Glittering Wreck (102)
@@ -676,6 +692,142 @@
 233,East,0,109,West,149
 # Temperate Ocean (236) - Temperate Marsh (109)
 236,East,0,109,West,198
+# Tropical Coast (131) - Temperate Marsh (110)
+131,North,0,110,South,2
+# Tropical Coast (132) - Temperate Marsh (110)
+132,North,0,110,South,52
+# Temperate Marsh (140) - Temperate Marsh (110)
+140,West,0,110,East,0
+# Tropical Coast (133) - Temperate Marsh (110)
+133,North,0,110,South,102
+# Tropical Coast (134) - Temperate Marsh (110)
+134,North,0,110,South,152
+# Temperate Ocean (385) - Temperate Marsh (110)
+385,North,0,110,South,302
+# Temperate Ocean (397) - Temperate Marsh (110)
+397,North,0,110,South,352
+# Tropical Coast (111) - Oil Tanker (137)
+111,South,300,137,North,0
+# Tropical Coast (130) - Tropical Coast (111)
+130,South,0,111,North,0
+# Tropical Coast (161) - Tropical Coast (111)
+161,South,0,111,North,150
+# Tropical Coast (132) - Tropical Coast (111)
+132,West,100,111,East,0
+# Tropical Coast (138) - Tropical Coast (111)
+138,West,50,111,East,0
+# Tropical Coast (142) - Tropical Coast (111)
+142,South,0,111,North,100
+# Temperate Ocean (392) - Tropical Coast (111)
+392,North,0,111,South,150
+# Tropical Coast (158) - Tropical Coast (111)
+158,West,0,111,East,0
+# Temperate Ocean (387) - Tropical Coast (111)
+387,North,0,111,South,0
+# Tropical Coast (131) - Tropical Coast (130)
+131,South,0,130,North,0
+# Tropical Coast (132) - Tropical Coast (130)
+132,West,50,130,East,0
+# Tropical Coast (138) - Tropical Coast (130)
+138,West,0,130,East,0
+# Tropical Coast (133) - Tropical Coast (130)
+133,South,0,130,North,100
+# Tropical Coast (134) - Tropical Coast (130)
+134,South,0,130,North,150
+# Tropical Coast (159) - Tropical Coast (130)
+159,North,0,130,South,100
+# Tropical Coast (160) - Tropical Coast (130)
+160,North,0,130,South,150
+# Tropical Coast (158) - Tropical Coast (130)
+158,West,0,130,East,50
+# Tropical Coast (161) - Tropical Coast (131)
+161,North,0,131,South,150
+# Tropical Coast (132) - Tropical Coast (131)
+132,West,0,131,East,0
+# Temperate Marsh (140) - Tropical Coast (131)
+140,South,0,131,North,72
+# Tropical Coast (138) - Tropical Coast (131)
+138,West,0,131,East,50
+# Tropical Coast (142) - Tropical Coast (131)
+142,North,0,131,South,100
+# Tropical Coast (158) - Tropical Coast (131)
+158,West,0,131,East,100
+# Tropical Coast (132) - Tropical Coast (161)
+132,South,100,161,North,0
+# Temperate Marsh (140) - Tropical Coast (132)
+140,South,0,132,North,22
+# Tropical Coast (138) - Tropical Coast (132)
+138,North,0,132,South,0
+# Tropical Coast (133) - Tropical Coast (132)
+133,West,0,132,East,0
+# Tropical Coast (159) - Tropical Coast (132)
+159,West,0,132,East,100
+# Tropical Coast (142) - Tropical Coast (132)
+142,West,0,132,East,50
+# Tropical Coast (133) - Tropical Coast (161)
+133,East,50,161,West,0
+# Tropical Coast (133) - Temperate Marsh (140)
+133,North,0,140,South,28
+# Tropical Coast (133) - Tropical Coast (138)
+133,West,50,138,East,0
+# Tropical Coast (134) - Tropical Coast (133)
+134,West,0,133,East,0
+# Tropical Coast (142) - Tropical Coast (133)
+142,North,0,133,South,0
+# Tropical Coast (160) - Tropical Coast (133)
+160,West,0,133,East,100
+# Temperate Ocean (392) - Tropical Coast (133)
+392,West,0,133,East,150
+# Tropical Coast (158) - Tropical Coast (133)
+158,East,0,133,West,100
+# Tropical Coast (134) - Tropical Coast (161)
+134,South,0,161,North,0
+# Tropical Coast (134) - Temperate Marsh (140)
+134,North,0,140,South,78
+# Tropical Coast (134) - Tropical Coast (138)
+134,South,0,138,North,100
+# Tropical Coast (159) - Tropical Coast (134)
+159,East,0,134,West,100
+# Tropical Coast (142) - Tropical Coast (134)
+142,North,50,134,South,0
+# Temperate Ocean (387) - Tropical Coast (134)
+387,East,0,134,West,150
+# Tropical Coast (159) - Oil Tanker (137)
+159,South,200,137,North,0
+# Tropical Coast (160) - Oil Tanker (137)
+160,South,150,137,North,0
+# Temperate Ocean (392) - Oil Tanker (137)
+392,East,0,137,West,0
+# Tropical Coast (158) - Oil Tanker (137)
+158,South,250,137,North,0
+# Temperate Ocean (385) - Oil Tanker (137)
+385,South,0,137,North,0
+# Temperate Ocean (397) - Oil Tanker (137)
+397,West,150,137,East,0
+# Temperate Ocean (396) - Oil Tanker (137)
+396,North,0,137,South,0
+# Tropical Coast (159) - Tropical Coast (138)
+159,West,0,138,East,50
+# Tropical Coast (142) - Tropical Coast (138)
+142,West,0,138,East,0
+# Tropical Coast (160) - Tropical Coast (138)
+160,North,0,138,South,100
+# Tropical Coast (158) - Tropical Coast (138)
+158,North,0,138,South,0
+# Temperate Ocean (385) - Temperate Marsh (140)
+385,North,0,140,South,228
+# Temperate Ocean (397) - Temperate Marsh (140)
+397,North,0,140,South,278
+# Tropical Coast (142) - Tropical Coast (161)
+142,East,0,161,West,0
+# Tropical Coast (142) - Tropical Coast (159)
+142,South,0,159,North,0
+# Tropical Coast (160) - Tropical Coast (142)
+160,West,0,142,East,50
+# Temperate Ocean (392) - Tropical Coast (142)
+392,West,0,142,East,100
+# Tropical Coast (158) - Tropical Coast (142)
+158,North,50,142,South,0
 # Northern Highlands (157) - Northern Highlands (207)
 157,West,50,207,East,0
 # Northern Highlands (157) - Northern Highlands (208)
@@ -684,6 +836,30 @@
 237,South,0,157,North,0
 # Northern Highlands (313) - Northern Highlands (157)
 313,West,0,157,East,2
+# Tropical Coast (158) - Tropical Coast (161)
+158,North,100,161,South,0
+# Tropical Coast (158) - Tropical Coast (159)
+158,East,0,159,West,0
+# Tropical Coast (158) - Temperate Ocean (392)
+158,South,100,392,North,0
+# Temperate Ocean (387) - Tropical Coast (158)
+387,North,50,158,South,0
+# Tropical Coast (159) - Tropical Coast (161)
+159,North,50,161,South,0
+# Tropical Coast (160) - Tropical Coast (159)
+160,West,0,159,East,0
+# Temperate Ocean (392) - Tropical Coast (159)
+392,West,0,159,East,50
+# Temperate Ocean (387) - Tropical Coast (159)
+387,North,100,159,South,0
+# Tropical Coast (160) - Tropical Coast (161)
+160,North,0,161,South,0
+# Temperate Ocean (392) - Tropical Coast (160)
+392,North,0,160,South,0
+# Temperate Ocean (387) - Tropical Coast (160)
+387,North,150,160,South,0
+# Temperate Ocean (387) - Tropical Coast (161)
+387,East,0,161,West,100
 # Deep Forest (200) - Deep Forest (201)
 200,West,0,201,East,0
 # Deep Forest (204) - Deep Forest (200)
@@ -1296,8 +1472,6 @@
 356,West,0,338,East,50
 # Jungle (357) - Jungle (338)
 357,North,0,338,South,100
-# Temperate Plains (350) - Temperate Plains (349)
-350,West,0,349,East,0
 # Jungle (355) - Jungle (354)
 355,West,0,354,East,0
 # Jungle (356) - Jungle (354)
@@ -1310,203 +1484,33 @@
 357,North,0,355,South,0
 # Jungle (357) - Jungle (356)
 357,West,0,356,East,0
-# Temperate Marsh (84) - Temperate Marsh (36)
-84,North,0,36,South,0
-# Temperate Marsh (86) - Temperate Marsh (84)
-86,North,0,84,South,0
-# Temperate Marsh (110) - Temperate Marsh (86)
-110,North,0,86,South,20
-# Temperate Marsh (140) - Temperate Marsh (86)
-140,North,0,86,South,94
-# Temperate Ocean (43) - Temperate Marsh (110)
-43,North,0,110,South,202
-# Tropical Coast (131) - Temperate Marsh (110)
-131,North,0,110,South,2
-# Tropical Coast (132) - Temperate Marsh (110)
-132,North,0,110,South,52
-# Temperate Marsh (140) - Temperate Marsh (110)
-140,West,0,110,East,0
-# Tropical Coast (133) - Temperate Marsh (110)
-133,North,0,110,South,102
-# Tropical Coast (134) - Temperate Marsh (110)
-134,North,0,110,South,152
-# Temperate Ocean (385) - Temperate Marsh (110)
-385,North,0,110,South,302
-# Temperate Ocean (397) - Temperate Marsh (110)
-397,North,0,110,South,352
-# Oil Tanker (137) - Temperate Ocean (43)
-137,West,0,43,East,150
-# Tropical Coast (161) - Temperate Ocean (43)
-161,East,0,43,West,50
-# Temperate Marsh (140) - Temperate Ocean (43)
-140,South,128,43,North,0
-# Tropical Coast (134) - Temperate Ocean (43)
-134,East,0,43,West,0
-# Tropical Coast (160) - Temperate Ocean (43)
-160,East,0,43,West,100
-# Temperate Ocean (392) - Temperate Ocean (43)
-392,North,50,43,South,0
-# Temperate Ocean (387) - Temperate Ocean (43)
-387,North,200,43,South,0
-# Temperate Ocean (385) - Temperate Ocean (43)
-385,West,0,43,East,0
-# Temperate Ocean (396) - Temperate Ocean (43)
-396,West,0,43,East,200
-# Tropical Coast (111) - Oil Tanker (137)
-111,South,300,137,North,0
-# Tropical Coast (159) - Oil Tanker (137)
-159,South,200,137,North,0
-# Tropical Coast (160) - Oil Tanker (137)
-160,South,150,137,North,0
-# Temperate Ocean (392) - Oil Tanker (137)
-392,East,0,137,West,0
-# Tropical Coast (158) - Oil Tanker (137)
-158,South,250,137,North,0
-# Temperate Ocean (385) - Oil Tanker (137)
-385,South,0,137,North,0
-# Temperate Ocean (397) - Oil Tanker (137)
-397,West,150,137,East,0
-# Temperate Ocean (396) - Oil Tanker (137)
-396,North,0,137,South,0
-# Tropical Coast (130) - Tropical Coast (111)
-130,South,0,111,North,0
-# Tropical Coast (161) - Tropical Coast (111)
-161,South,0,111,North,150
-# Tropical Coast (132) - Tropical Coast (111)
-132,West,100,111,East,0
-# Tropical Coast (138) - Tropical Coast (111)
-138,West,50,111,East,0
-# Tropical Coast (142) - Tropical Coast (111)
-142,South,0,111,North,100
-# Temperate Ocean (392) - Tropical Coast (111)
-392,North,0,111,South,150
-# Tropical Coast (158) - Tropical Coast (111)
-158,West,0,111,East,0
-# Temperate Ocean (387) - Tropical Coast (111)
-387,North,0,111,South,0
-# Tropical Coast (131) - Tropical Coast (130)
-131,South,0,130,North,0
-# Tropical Coast (132) - Tropical Coast (130)
-132,West,50,130,East,0
-# Tropical Coast (138) - Tropical Coast (130)
-138,West,0,130,East,0
-# Tropical Coast (133) - Tropical Coast (130)
-133,South,0,130,North,100
-# Tropical Coast (134) - Tropical Coast (130)
-134,South,0,130,North,150
-# Tropical Coast (159) - Tropical Coast (130)
-159,North,0,130,South,100
-# Tropical Coast (160) - Tropical Coast (130)
-160,North,0,130,South,150
-# Tropical Coast (158) - Tropical Coast (130)
-158,West,0,130,East,50
-# Tropical Coast (161) - Tropical Coast (131)
-161,North,0,131,South,150
-# Tropical Coast (132) - Tropical Coast (131)
-132,West,0,131,East,0
-# Temperate Marsh (140) - Tropical Coast (131)
-140,South,0,131,North,72
-# Tropical Coast (138) - Tropical Coast (131)
-138,West,0,131,East,50
-# Tropical Coast (142) - Tropical Coast (131)
-142,North,0,131,South,100
-# Tropical Coast (158) - Tropical Coast (131)
-158,West,0,131,East,100
-# Tropical Coast (132) - Tropical Coast (161)
-132,South,100,161,North,0
-# Tropical Coast (133) - Tropical Coast (161)
-133,East,50,161,West,0
-# Tropical Coast (134) - Tropical Coast (161)
-134,South,0,161,North,0
-# Tropical Coast (159) - Tropical Coast (161)
-159,North,50,161,South,0
-# Tropical Coast (142) - Tropical Coast (161)
-142,East,0,161,West,0
-# Tropical Coast (160) - Tropical Coast (161)
-160,North,0,161,South,0
-# Tropical Coast (158) - Tropical Coast (161)
-158,North,100,161,South,0
-# Temperate Ocean (387) - Tropical Coast (161)
-387,East,0,161,West,100
-# Temperate Marsh (140) - Tropical Coast (132)
-140,South,0,132,North,22
-# Tropical Coast (138) - Tropical Coast (132)
-138,North,0,132,South,0
-# Tropical Coast (133) - Tropical Coast (132)
-133,West,0,132,East,0
-# Tropical Coast (159) - Tropical Coast (132)
-159,West,0,132,East,100
-# Tropical Coast (142) - Tropical Coast (132)
-142,West,0,132,East,50
-# Tropical Coast (133) - Temperate Marsh (140)
-133,North,0,140,South,28
-# Tropical Coast (134) - Temperate Marsh (140)
-134,North,0,140,South,78
-# Temperate Ocean (385) - Temperate Marsh (140)
-385,North,0,140,South,228
-# Temperate Ocean (397) - Temperate Marsh (140)
-397,North,0,140,South,278
-# Tropical Coast (133) - Tropical Coast (138)
-133,West,50,138,East,0
-# Tropical Coast (134) - Tropical Coast (138)
-134,South,0,138,North,100
-# Tropical Coast (159) - Tropical Coast (138)
-159,West,0,138,East,50
-# Tropical Coast (142) - Tropical Coast (138)
-142,West,0,138,East,0
-# Tropical Coast (160) - Tropical Coast (138)
-160,North,0,138,South,100
-# Tropical Coast (158) - Tropical Coast (138)
-158,North,0,138,South,0
-# Tropical Coast (134) - Tropical Coast (133)
-134,West,0,133,East,0
-# Tropical Coast (142) - Tropical Coast (133)
-142,North,0,133,South,0
-# Tropical Coast (160) - Tropical Coast (133)
-160,West,0,133,East,100
-# Temperate Ocean (392) - Tropical Coast (133)
-392,West,0,133,East,150
-# Tropical Coast (158) - Tropical Coast (133)
-158,East,0,133,West,100
-# Tropical Coast (159) - Tropical Coast (134)
-159,East,0,134,West,100
-# Tropical Coast (142) - Tropical Coast (134)
-142,North,50,134,South,0
-# Temperate Ocean (387) - Tropical Coast (134)
-387,East,0,134,West,150
-# Tropical Coast (142) - Tropical Coast (159)
-142,South,0,159,North,0
-# Tropical Coast (160) - Tropical Coast (159)
-160,West,0,159,East,0
-# Temperate Ocean (392) - Tropical Coast (159)
-392,West,0,159,East,50
-# Tropical Coast (158) - Tropical Coast (159)
-158,East,0,159,West,0
-# Temperate Ocean (387) - Tropical Coast (159)
-387,North,100,159,South,0
-# Tropical Coast (160) - Tropical Coast (142)
-160,West,0,142,East,50
-# Temperate Ocean (392) - Tropical Coast (142)
-392,West,0,142,East,100
-# Tropical Coast (158) - Tropical Coast (142)
-158,North,50,142,South,0
-# Temperate Ocean (392) - Tropical Coast (160)
-392,North,0,160,South,0
-# Temperate Ocean (387) - Tropical Coast (160)
-387,North,150,160,South,0
-# Tropical Coast (158) - Temperate Ocean (392)
-158,South,100,392,North,0
-# Temperate Ocean (387) - Temperate Ocean (392)
-387,East,0,392,West,0
 # Temperate Ocean (385) - Temperate Ocean (392)
 385,West,150,392,East,0
-# Temperate Ocean (396) - Temperate Ocean (392)
-396,West,0,392,East,50
-# Temperate Ocean (387) - Tropical Coast (158)
-387,North,50,158,South,0
 # Temperate Ocean (385) - Temperate Ocean (387)
 385,South,0,387,North,300
 # Temperate Ocean (397) - Temperate Ocean (385)
 397,West,0,385,East,0
+# Temperate Ocean (387) - Temperate Ocean (392)
+387,East,0,392,West,0
+# Temperate Ocean (396) - Temperate Ocean (392)
+396,West,0,392,East,50
 # Temperate Ocean (396) - Temperate Ocean (397)
 396,East,0,397,West,200
+# Temperate Plains (45) - Temperate Plains (47)
+45,East,0,47,West,0
+# Temperate Plains (54) - Temperate Plains (47)
+54,South,39,47,North,0
+# Temperate Plains (54) - Temperate Plains (45)
+54,South,0,45,North,11
+# Temperate Plains (46) - Temperate Plains (54)
+46,South,0,54,North,0
+# Temperate Plains (350) - Temperate Plains (54)
+350,North,60,54,South,0
+# Temperate Plains (349) - Temperate Plains (54)
+349,North,110,54,South,0
+# Temperate Plains (349) - Temperate Plains (350)
+349,East,0,350,West,0
+# Temperate Plains (6) - Temperate Plains (350)
+6,East,0,350,West,43
+# Temperate Plains (6) - Temperate Plains (349)
+6,North,0,349,South,7

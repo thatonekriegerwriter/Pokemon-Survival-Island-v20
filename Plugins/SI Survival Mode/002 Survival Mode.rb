@@ -13,6 +13,16 @@
 #==============================================================================#
 #Thanks Maurili and Vendily for the Original Hunger Script  
 
+  EventHandlers.add(:on_map_transfer, :season_splash,
+    proc { |_old_map_id|
+  $game_temp.preventspawns=false
+  $selection_arrows.clear_sprites
+    }
+  )
+  
+
+
+
 def pbPurify(pkmn, scene)
   return if !pkmn.shadowPokemon? || pkmn.heart_gauge != 0
   $stats.shadow_pokemon_purified += 1
@@ -133,7 +143,9 @@ class Pokemon
   attr_accessor :raw_stat_bonus
   attr_accessor :raw_shadow_bonus
   attr_accessor :raw_purified_bonus
-  attr_accessor :raw_temp_bonus
+  attr_accessor :time_last_pet
+  attr_accessor :time_last_brush
+  attr_accessor :time_last_milk
   
   
   class Move
@@ -156,8 +168,8 @@ class Pokemon
 
 
 alias _SI_Pokemon_init initialize
-def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
- _SI_Pokemon_init(species, level, owner = $player, withMoves = true, recheck_form = true)
+def initialize(*args)
+ _SI_Pokemon_init(*args)
     @hue = nil
     @happiness        = species_data.happiness || 100
     @loyalty          = species_data.loyalty || 70
@@ -189,8 +201,10 @@ def initialize(species, level, owner = $player, withMoves = true, recheck_form =
     @deselecttimer     = 0
     @stored_exp     = 0
     @level_cap_bonus     = 0
-    @level_cap_basic     = pbPersonalLevelCap(self)
-    @level_cap = @level_cap_basic
+    @level_cap_bonus     = 0
+	 @memory       = _INTL("Press [ALT] to write more.")
+    @level_cap_basic     = pbPersonalLevelCap(self).to_i
+    @level_cap = @level_cap_basic.to_i
     @overworld_targets = {}
     @raw_stat_bonus               = {}
     @raw_shadow_bonus               = {}
@@ -202,9 +216,67 @@ def initialize(species, level, owner = $player, withMoves = true, recheck_form =
       @raw_purified_bonus[s.id]       = 0
       @raw_temp_bonus[s.id]       = [0,0]
     end
+     @time_last_pet = pbGetTimeNow.to_i-3600
+     @time_last_brush = pbGetTimeNow.to_i-3600
+     @time_last_milk = pbGetTimeNow.to_i-3600
+     @focus_style = Settings::FOCUS_STYLE_DEFAULT
+    @shiny_leaf = 0
+      @hidden_modifiers = []
+    @starter          = false
+    @trainer_ace = false
+    @scale = rand(256)
+    @tera_type = GameData::Species.get(args[0]).types.sample
+    @terastallized = false
+    @mastered_moves = []
+    @dynamax_lvl  = 0
+    @dynamax      = false
+    @reverted     = false
+    @gmax_factor  = false
+    @dynamax_able = nil
+    @onAdventure  = false
+    @location      = nil
+    @collectedItems      = []
+    @encounterLog      = []
+    @adventuringTypes      = ["None"]
+    @chosenAdvType      = nil
+    @travelswithEgg      = nil
+    @travelingpartners      = nil
+    @inDungeon      = false
+    @advSteps      = 0
+    @who_fighting      = nil
+    @wait_time      = 0
+    @just_arrived      = false
+    @called_back      = false
+    @called_back_map      = nil
 
 end
+    def poke_ball
+	   @poke_ball = @poke_ball.id if @poke_ball.is_a?(ItemData)
+	  return @poke_ball
+	 end
+	def pokemon
+	  return self
+	end
+	def gender_symbol
+	  return "♂" if self.male?
+	  return "♀" if self.female?
+	  return ""
+	end
+   def time_last_pet
+   @time_last_pet = pbGetTimeNow.to_i-3600 if @time_last_pet.nil?
+   return @time_last_pet
+   end
    
+   def time_last_brush
+   @time_last_brush = pbGetTimeNow.to_i-3600 if @time_last_brush.nil?
+   return @time_last_brush
+   end
+   
+   def time_last_milk
+   @time_last_milk = pbGetTimeNow.to_i-3600 if @time_last_milk.nil?
+   return @time_last_milk
+   end
+   	
    def raw_stat_bonus
    if @raw_stat_bonus.nil?
    @raw_stat_bonus = {}
@@ -312,7 +384,10 @@ end
    def statusCount
 	return @status_turns
    end
-   
+   def status_turns
+    @status_turns = 0 if @status_turns.nil?
+	return @status_turns
+   end   
    def hits
     @hits = 0 if @hits.nil?
 	return @hits
@@ -386,7 +461,7 @@ end
 
   # @return [Integer] the specified stat of this Pokémon (not used for total HP)
   def calcStat(base, level, iv, ev, nat, modifiers, shadow, pure, temp)
-    return (((((base * 2) + iv + (ev / 4)) * level / 100).floor + 5) * nat / 100).floor + modifiers + shadow + pure + temp
+    return (((((base * 2) + iv + (ev / 2)) * level / 100).floor + 5) * nat / 100).floor + modifiers + shadow + pure + temp
   end
 
 
@@ -661,7 +736,12 @@ end
     return @moves2.length
   end
 end
+class Game_Player < Game_Character
+ def attack_opportunity
 
+  return $player.attack_opportunity
+ end
+end
 class Player < Trainer
   attr_reader :playerwater
   attr_reader :playerfood
@@ -697,8 +777,15 @@ class Player < Trainer
   attr_accessor :running
   attr_accessor :stages
   attr_accessor :effects
+  attr_accessor :potion_sickness
   
   
+  attr_accessor :time_last_watered
+  attr_accessor :time_last_food
+  attr_accessor :time_last_slept
+  attr_accessor :time_last_saturated
+  attr_accessor :time_last_stamina
+  attr_accessor :time_last_health
   
   
   
@@ -707,7 +794,42 @@ class Player < Trainer
   attr_reader :playerhealthmod #225
   attr_reader :playerwatermod  #206
   attr_reader :playerstaminamod
+  attr_reader :playermaxlevel
+   def playermaxlevel
+    @playermaxlevel = 20 if @playermaxlevel.nil?
+    return @playermaxlevel
+   end
+   
+   def time_last_watered
+    @time_last_watered = pbGetTimeNow.to_i-rand(120)+1 if @time_last_watered.nil?
+    return @time_last_watered
+   end
+   
+   def time_last_food
+    @time_last_food = pbGetTimeNow.to_i-rand(120)+1 if @time_last_food.nil?
+    return @time_last_food
+   end
+   
+   def time_last_slept
+    @time_last_slept = pbGetTimeNow.to_i-rand(240)+1 if @time_last_slept.nil?
+    return @time_last_slept
+   end
   
+   def time_last_saturated
+    @time_last_saturated = pbGetTimeNow.to_i-rand(80)+1 if @time_last_saturated.nil?
+    return @time_last_saturated
+   end
+  
+   def time_last_stamina
+    @time_last_stamina = pbGetTimeNow.to_i-rand(5)+1 if @time_last_stamina.nil?
+    return @time_last_stamina
+   end
+  
+   def time_last_health
+    @time_last_health = pbGetTimeNow.to_i-rand(5)+1 if @time_last_health.nil?
+    return @time_last_health
+   end
+   
    def attack_cooldowns
      return @weapon_cooldown, @punch_cooldown
    end
@@ -743,6 +865,9 @@ class Player < Trainer
     @playertemperature = value.clamp(0, 9999)
   end
 
+  def fainted?
+    return @playerhealth <= 0
+  end
 
   def playerbasesleep=(value)
     validate value => Float
@@ -756,7 +881,13 @@ class Player < Trainer
     validate value => Float
     @playerbasefood = value.clamp(0, 100)
   end
-
+  
+  
+  def attack_opportunity
+    return @weapon_cooldown if @weapon_cooldown>0
+    return @punch_cooldown if @punch_cooldown>0
+	return 0
+  end
 
   def playermaxwater=(value)
     validate value => Float
@@ -810,7 +941,18 @@ class Player < Trainer
     validate value => Integer
     @playerclasslevel = value.clamp(0, 100)
   end
-
+  def playershirt
+    @playershirt = ItemData.new(@playershirt) if @playershirt.is_a?(Symbol)
+	return @playershirt
+  end
+  def playerpants
+    @playerpants = ItemData.new(@playerpants) if @playerpants.is_a?(Symbol)
+	return @playerpants
+  end
+  def playershoes
+    @playershoes = ItemData.new(@playershoes) if @playershoes.is_a?(Symbol)
+	return @playershoes
+  end
   
   def playershirt=(value)
     @playershirt = value
@@ -824,12 +966,38 @@ class Player < Trainer
   def punch_cooldown=(value)
     @punch_cooldown = value
   end
+   def get_max_exp
+    @playermaxlevel = 20 if @playermaxlevel.nil?
+    return @playermaxlevel*100
+   
+   end
 
    def exp=(value)
     validate value => Integer
-    @exp = value.clamp(0, 100)
+    @exp = value.clamp(0, get_max_exp)
   end
+   
+   
+   
+    def minimum_exp_for_level(level)
+       @playermaxlevel = 20 if @playermaxlevel.nil?
+      return ArgumentError.new("Level #{level} is invalid.") if !level || level <= 0
+      level = [level, @playermaxlevel].min
+      return level*100 if level < @playermaxlevel
+	   return 100
+    end
 
+  def level_from_exp(exp)
+       @playermaxlevel = 20 if @playermaxlevel.nil?
+        max = @playermaxlevel
+      return max if exp >= get_max_exp
+      (1..max).each do |level|
+        return level if exp < minimum_exp_for_level(level)
+      end
+      return max
+  
+  
+  end
   
   def playerstateffect=(value)
     @playerstateffect = value
@@ -888,9 +1056,9 @@ class Player < Trainer
    alias _SI_Player_Init initialize
   def initialize(name, trainer_type)
     _SI_Player_Init(name, trainer_type)
-    @playerpants           = :NORMALPANTS
-    @playershirt           = :NORMALSHIRT
-    @playershoes           = :NORMALSHOES
+    @playerpants           = ItemData.new(:NORMALPANTS)
+    @playershirt           = ItemData.new(:NORMALSHIRT)
+    @playershoes           = ItemData.new(:NORMALSHOES)
     @playerwater   = 100.0   # Text speed 
     @playerfood = 100.0     # Battle effects (animations) (0=on, 1=off)
     @playerhealth  = 100.0     # Default window frame (see also Settings::MENU_WINDOWSKINS)
@@ -959,6 +1127,15 @@ class Player < Trainer
 	  end
      return false
    end
+
+
+
+  def active_party
+    return @party.find_all { |p| p && p.inworld && p.associatedevent && !p.fainted? }
+  end
+
+
+
 end
 
 
@@ -1000,7 +1177,7 @@ class Player < Trainer #SECONDARY DEFINITIONS
   
   
   def shoespeed
-    case @playershoes
+    case @playershoes.id
      when :MAKESHIFTRUNNINGSHOES
 	    return 40
      when :RUNNINGSHOES
@@ -1015,7 +1192,7 @@ class Player < Trainer #SECONDARY DEFINITIONS
   end 
   
   def equipmentatkbuff
-    case @playershoes
+    case @playershoes.id
      when :NORMALSHIRT
 	    return 0
      when :SILKSHIRT
@@ -1032,7 +1209,7 @@ class Player < Trainer #SECONDARY DEFINITIONS
   end 
   
   def equipmentdefbuff
-    case @playershoes
+    case @playershoes.id
      when :NORMALSHIRT
 	    return 0
      when :SILKSHIRT
@@ -1353,6 +1530,7 @@ class Player < Trainer #HELD ITEM
 
     def place(x,y)
     if !@held_item.nil?
+	
 	    item = @held_item
 		key_id = @held_item_object
 		direction = $game_map.events[key_id].direction
@@ -1363,7 +1541,7 @@ class Player < Trainer #HELD ITEM
            mapId = $game_map.map_id
            $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
         end
-		deletefromSIData(key_id)
+		deletefromSIData(key_id,$game_map.map_id)
         @held_item=nil
 		@held_item_object=nil
            return true
@@ -1396,7 +1574,11 @@ def pbSleepRestore(wari,vari=nil)
   if !vari.nil?
   $player.playersleep = $player.playersleep-(wari*9)
   else
-  $player.playersleep = $player.playersleep+(wari*9)
+  
+	 rain_delta = pbGetTimeNow.to_i - $player.time_last_slept
+	  time = rain_delta/3600
+	  time = [time,1].max
+  $player.playersleep = $player.playersleep+(wari*9)+(8 * time)
   end
   if $player.playersleep > 200.0
   $player.playersleep = 200.0  
@@ -1405,6 +1587,7 @@ def pbSleepRestore(wari,vari=nil)
   $player.playersleep = 0.0  
   end
 #       FoodWater     #
+ if false
  if $player.playersaturation==0
    $player.playerfood=$player.playerfood-(wari*1.25)
    $player.playerwater=$player.playerwater-(wari*1.25)
@@ -1418,7 +1601,7 @@ def pbSleepRestore(wari,vari=nil)
    $player.playersaturation=$player.playersaturation-(wari*2)
    end
  end
-
+  end
 ##########POKEMON###################
 
 				party = $player.party
@@ -1455,9 +1638,7 @@ item = screen.pbChooseItemScreen(proc { |item| (GameData::Item.get(item).is_food
 
 
 if item
-pbMessage(_INTL("You offered {1} a {2}.",pkmn.name,GameData::Item.get(item).name))
 $bag.remove(item)
-pbMessage(_INTL("{1} takes it happily!",pkmn.name,GameData::Item.get(item).name))
 case item
 when :ORANBERRY
 pkmn.food+=25
@@ -1684,7 +1865,7 @@ end
 end
 
  
- def pbEating(bag=nil,item=nil)
+ def pbEating(bag=nil,item=nil,scene=nil)
  if item.nil?
  item = 0
 pbFadeOutIn(99999){
@@ -1693,8 +1874,13 @@ screen = PokemonBagScreen.new(scene,$bag)
 item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
 }
  end
-pbSEPlay("eat")
+ idate = GameData::Item.get(item)
+  action = "eat" if !idate.is_water?
+  action = "drink" if idate.is_water?
+pbSEPlay(action) 
 $bag.remove(item)
+scene.pbDisplay(_INTL("You {2} {1}.", GameData::Item.get(item).name, action)) if !scene.nil?
+sideDisplay(_INTL("You {2} {1}.",GameData::Item.get(item).name, action)) if scene.nil?
 
 
 case GameData::Item.get(item).id
@@ -1829,7 +2015,7 @@ increaseHealth(1.0)
 return true
 when :BERRYJUICE
 increaseFood(2.0)
-increaseWater(4.0)
+increaseWater(8.0)
 object = item.bottle_type
 object.decrease_durability(1)
 $bag.add(object,1)
@@ -1912,7 +2098,7 @@ increaseSaturation(20)
 return true
 when :MOOMOOMILK
 increaseSaturation(10)
-increaseWater(15)
+increaseWater(20)
 object = item.bottle_type
 object.decrease_durability(1)
 $bag.add(object,1)
@@ -2141,28 +2327,39 @@ end
 
 
 
- def pbMedicine(bag=nil,item=nil)
+ def pbMedicine(bag=nil,item=nil,scene=nil)
 return if $player.playerhealth == $player.playermaxhealth2
-sideDisplay(_INTL("You used {1} to heal yourself.",GameData::Item.get(item).name))
+time_now = pbGetTimeNow
+time_delta = time_now.to_i - $player.potion_sickness
+if time_delta < 1800
+scene.pbDisplay(_INTL("You used {1} to heal yourself.", GameData::Item.get(item).name)) if !scene.nil?
+sideDisplay(_INTL("You used {1} to heal yourself.",GameData::Item.get(item).name)) if scene.nil?
 $bag.remove(item)
-#205 is Hunger, 207 is Saturation, 206 is Thirst, 208 is Sleep
-if GameData::Item.get(item).id == :POTION
-increaseHealth(20)
-return true
-elsif GameData::Item.get(item).id == :SUPERPOTION
-increaseHealth(40)
-return true
-elsif GameData::Item.get(item).id == :HYPERPOTION
-increaseHealth(60)
-return true
-elsif GameData::Item.get(item).id == :FULLRESTORE
-increaseHealth(100)
-$player.status = :NONE if $player.status!=:NONE
-return true
+theitem = GameData::Item.get(item).id
+case theitem
+ when :WEAKPOTION
+   increaseHealth(10)
+ when :POTION
+   increaseHealth(20)
+ when :SUPERPOTION
+   increaseHealth(40)
+ when :HYPERPOTION
+   increaseHealth(60)
+ when :FULLRESTORE
+   amt = $player.playermaxhealth2-$player.playerhealth
+   increaseHealth(amt)
+   $player.status = :NONE if $player.status!=:NONE
+   $player.healthiness = 100
+ else
+  $bag.add(item,1)
+end
+
+object = item.bottle_type
+object.decrease_durability(1)
+$bag.add(object,1)
 else
-$bag.add(item,1)
-return 0
-#full belly
+scene.pbDisplay(_INTL("You used a Potion too recently.")) if !scene.nil?
+sideDisplay(_INTL("You used a Potion too recently.")) if scene.nil?
 end
 end
 
@@ -2263,12 +2460,10 @@ def decreaseStamina(amount)
  amount/=1.5 if $player.is_it_this_class?(:TRIATHLETE)
 
 if $player.playerstamina-amount<0 && $player.playerstamina>0
-damagePlayer(1)
 pbSEPlay("normaldamage")
 $player.playerstamina=0.0
 return true
 elsif $player.playerstamina-amount<0 && $player.playerstamina<=0
-damagePlayer(amount)
 pbSEPlay("normaldamage")
 return false
 else
@@ -2290,15 +2485,16 @@ $player.playerhealth=$player.playermaxhealth2 if $player.playerhealth > $player.
 
 end
 def increaseTotalHealth(amount)
-
+  return if $player.playerfood < 0.75 * $player.playermaxfood
+  return if $player.playerwater < 0.75 * $player.playermaxwater
 $player.playermaxhealth2+=amount.to_f
 $player.playermaxhealth2=$player.playermaxhealth if $player.playermaxhealth2 > $player.playermaxhealth
 
 end
 
-def increaseHealthAndTotalHP(amt)
-  increaseTotalHealth(amt)
-  increaseHealth(amt)
+def increaseHealthAndTotalHP(hours)
+  increaseTotalHealth((hours*3.125))
+  increaseHealth((hours*4.25))
 end
 
 def damagePlayer(amount,iframes=false)

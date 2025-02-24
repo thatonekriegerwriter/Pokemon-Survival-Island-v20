@@ -114,12 +114,62 @@ class Window_InputNumberPokemon < SpriteWindow_Base
     end
   end
 end
+class Pokemon
+
+  def heal_PP_by_amt(amt = 1,move_index = -1)
+    return if egg?
+    if move_index >= 0
+      @moves[move_index].pp += amt
+    else
+      @moves.each { |m| m.pp += amt }
+    end
+  end
+
+end
+
+def is_current_pos_center?
+ 
+ center = [$PokemonGlobal.pokecenterMapId,$PokemonGlobal.pokecenterX,$PokemonGlobal.pokecenterY]
+ center2 = [$game_map.map_id,$game_player.x,$game_player.y] 
 
 
+  return false unless center[0] == center2[0]
 
 
-
-
+  if (center[1] - center2[1]).abs <= 1 && (center[2] - center2[2]).abs <= 1
+    return true
+  else
+    return false
+  end
+end
+ BED_LOOKUP_FOR_HOURS = {
+                "1" => 0,
+                "2" => 1,
+                "3" => 1,
+                "4" => 2,
+                "5" => 2,
+                "6" => 3,
+                "7" => 3,
+                "8" => 5,
+                "9" => 5,
+                "10" => 5,
+                "11" => 5,
+                "12" => 10,
+                "13" => 10,
+                "14" => 10,
+                "15" => 10,
+                "16" => 20,
+                "17" => 20,
+                "18" => 20,
+                "19" => 20,
+                "20" => 30,
+                "21" => 30,
+                "22" => 30,
+                "23" => 30,
+                "24" => :FULL
+            }
+ 
+ 
 
 
 def heal_BED(wari,pkmn)
@@ -133,25 +183,32 @@ def heal_BED(wari,pkmn)
     when 3
 	 chance = rand(19)+1
 	 else
-	 chance = rand(19)+6
-  end
-  if Nuzlocke.on?
-	 chance += rand(2)+1
+	 chance = rand(19)+4
   end
   pkmn.lifespan=100 if pkmn.lifespan.nil?
   if pkmn.permaFaint==true && wari>7
     pkmn.lifespan=-25
   return if pkmn.lifespan<=0
     pkmn.permaFaint=false
+    pkmn.lifespan=50
   end
   return if pkmn.egg?
-    newHP = pkmn.hp + ((pkmn.totalhp * wari)/8) 
+    newHP = pkmn.hp + (wari*4.25)
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)
     pkmn.hp = newHP
     pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
-    pkmn.heal_PP if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
-  @ready_to_evolve = false
+	 if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
+	 amt = BED_LOOKUP_FOR_HOURS[wari.to_s]
+	 amt = 0 if amt.nil?
+	 amt = :FULL if $player.is_it_this_class?(:NURSE,false)
+	 if amt == :FULL
+	 pkmn.heal_PP
+	 else
+    pkmn.heal_PP_by_amt(amt)
+	 end
+	end
+  #pkmn.ready_to_evolve = false
 end
 
 def breederEgg
@@ -162,8 +219,8 @@ def breederEgg
     $player.able_party.each do |pkmn2|
    compat = $PokemonGlobal.day_care.get_compatibility2(pkmn1,pkmn2)
    egg_chance = [0, 20, 50, 70][compat]
-   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0
-   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0
+   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0 && !$player.is_it_this_class?(:BREEDER)
+   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0 && !$bag.has?(:OVALCHARM)
    egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat>0
    egg_chance += 1 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat==0
    daycare.egg_generated = true if rand(100) < egg_chance
@@ -199,6 +256,7 @@ end
 
 def pbBedCore(item)
 command = 0
+	$PokemonGlobal.bars_visible=false
   loop do
       cmdSleep  = -1
       cmdNap   = -1
@@ -217,13 +275,13 @@ command = 0
       command = pbShowCommands(msgwindow, commands, -1)
       pbDisposeMessageWindow(msgwindow)
       if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
-          if pbConfirmMessage(_INTL("Do you want to head to bed?"))
+          if pbConfirmMessage(_INTL("Do you want to head to bed?\\wtnp[1]"))
 		   if !nuzlocke_has?(:AFULLEIGHTHOURS)
              params = ChooseNumberParams.new
              params.setMaxDigits(2)
              params.setRange(0,24)
              msgwindow = pbCreateMessageWindow(nil,nil)
-             pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?"))
+             pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?\\wtnp[1]"))
 		     hours = pbChooseNumber(msgwindow,params)
              pbDisposeMessageWindow(msgwindow)
 			else
@@ -234,17 +292,22 @@ command = 0
 			    pbMessage(_INTL("You decide not to sleep.",hours))
 				 break
 			  else
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for {1} hours.",hours)) if hours>1
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for an hour.")) if hours==1
+			    pbMessage(_INTL("You lay down to rest with your Pokemon for {1} hours.\\wtnp[6]",hours)) if hours>1
+			    pbMessage(_INTL("You lay down to rest with your Pokemon for an hour.\\wtnp[6]")) if hours==1
 				 
 				 
 			  end
-
-             pbSetPokemonCenter
-			  
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
-	            pbMEPlay("Pokemon Healing")
-				
+            if !is_current_pos_center?
+			  sideDisplay("Respawn Point set to #{$game_map.name}!")
+             pbSetPokemonCenter
+			 end
+			  pbShowTipCardsGrouped(:BEDTIMETIPS) if !pbSeenTipCard?(:SLEEPING1)
+				 curTime = pbGetTimeNow
+				 nuTime = Time.new($PokemonGlobal.newFrameCount+(((3600*hours))/UnrealTime::PROPORTION.to_f))
+				  if curTime.day!=nuTime.day
+				    midnight_activations_please
+				  end
 				party = $player.party
                  for i in 0...party.length
                  pkmn = party[i]
@@ -256,7 +319,8 @@ command = 0
 			    pbMessage(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
 				$game_variables[29] += (3600*hours)
 				pbSleepRestore(hours)
-			   increaseHealthAndTotalHP((3.125*hours))
+			   increaseHealthAndTotalHP(hours)
+	            pbMEPlay("Pokemon Healing")
               $ExtraEvents.clearOverworldPokemonMemory
 				pbToneChangeAll(Tone.new(0,0,0,0),20)
 				if $player.playersleep >= 100.0
@@ -277,9 +341,17 @@ command = 0
 			    pbMessage(_INTL("You lay down to take a nap."))
 				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
 			    hours = 1
+
+				 curTime = pbGetTimeNow
+				 nuTime = Time.new($PokemonGlobal.newFrameCount+(((3600*hours))/UnrealTime::PROPORTION.to_f))
+				  if curTime.day!=nuTime.day
+				    midnight_activations_please
+				  end
 				$game_variables[29] += ((3600*hours)/2).round
-              pbSetPokemonCenter
-	            pbMEPlay("Pokemon Healing")
+            if !is_current_pos_center?
+			  sideDisplay("Respawn Point set to #{$game_map.name}!")
+             pbSetPokemonCenter
+			 end
 				pbWait(40)
 				pbRandomEvent
 				chance = rand(3)
@@ -291,7 +363,8 @@ command = 0
 				 end
 				 pbSleepRestore(hours)
               $ExtraEvents.clearOverworldPokemonMemory
-			   increaseHealthAndTotalHP((1.5*hours))
+			   increaseHealthAndTotalHP(hours)
+	            pbMEPlay("Pokemon Healing")
 			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up feeling great!"))
 				 elsif chance == 1
@@ -302,7 +375,8 @@ command = 0
 				 pbToneChangeAll(Tone.new(0,0,0,0),20)
 			     pbMessage(_INTL("You wake up feeling worse than before."))
 				 end
-        	    break
+
+              break
 				end
       elsif cmdSave >= 0 && command == cmdSave   # Summary
        scene = PokemonSave_Scene.new
@@ -315,6 +389,7 @@ command = 0
       elsif cmdPickUp >= 0 && command == cmdPickUp   # Summary
           if pbConfirmMessage(_INTL("Do you want to pick up the Bed?"))
 		    pbErasePokemonCenter($game_map.map_id)
+			  sideDisplay("Respawn Point removed!")
 		    pbReceiveItem(item)
 		    this_event = pbMapInterpreter.get_self
 	  if !$map_factory
@@ -323,7 +398,7 @@ command = 0
            mapId = $game_map.map_id
            $map_factory.getMap(mapId).removeThisEventfromMap(this_event.id)
          end
-          deletefromSIData(this_event.id)
+          deletefromSIData(this_event.id,mapId)
 
 		  end
 		  break
@@ -333,12 +408,19 @@ command = 0
 	    break
       end
 end
+
+			  $PokemonGlobal.bars_visible=true
 end
 
 EventHandlers.add(:on_frame_update, :midnight_activations,
   proc {
     next if !$player
     next if !PBDayNight.isMidnight?
+	midnight_activations_please
+  }
+)
+def midnight_activations_please
+
 	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
 	$PokemonGlobal.everytwodays+=1
 	if $PokemonGlobal.everytwodays==2
@@ -346,9 +428,9 @@ EventHandlers.add(:on_frame_update, :midnight_activations,
 	  $PokemonGlobal.collection_maps = {}
 	  $PokemonGlobal.everytwodays=0
 	end
-  }
-)
 
+
+end
 
 
 def bed_plant_reset
@@ -359,12 +441,7 @@ def bed_plant_reset
           plant = pbMapInterpreter.getVariableOther(event,map)
 		   if plant
 		   if plant.timewithoutberry>(time+rand(time/2))
-		    if plant.last_berry
-            plant.berry_id           = plant.last_berry
-            plant.growth_stage       = 1
-            plant.time_last_updated   = pbGetTimeNow.to_i
-            plant.timewithoutberry   = 0
-		     end
+            plant.plant(plant.last_berry) if plant.last_berry
 		   end
 		   end
         end
@@ -384,15 +461,15 @@ end
 
 def pbBedMessageLoss
 if $player.playermaxhealth2 >=75
-    pbMessage(_INTL("{1} woke up feeling well-rested."),$player.name)
+    pbMessage(_INTL("#{$player.name} woke up feeling well-rested."),)
 elsif $player.playermaxhealth2 >=50
-    pbMessage(_INTL("{1} woke up feeling rested, if a little achey.."),$player.name)
+    pbMessage(_INTL("#{$player.name} woke up feeling rested, if a little achey.."))
 elsif $player.playermaxhealth2 >=25
-    pbMessage(_INTL("{1} woke up feeling tired, but determined."),$player.name)
+    pbMessage(_INTL("#{$player.name} woke up feeling tired, but determined."))
 elsif $player.playermaxhealth2 >=10
-    pbMessage(_INTL("{1} woke up in pain, but shrugged it off. It can't be *that* bad..."),$player.name)
+    pbMessage(_INTL("#{$player.name} woke up in pain, but shrugged it off. It can't be *that* bad..."))
 elsif $player.playermaxhealth2 <=9
-    pbMessage(_INTL("{1} really doesn't want to get out of bed."),$player.name)
+    pbMessage(_INTL("#{$player.name} really doesn't want to get out of bed."))
 end
 end
 

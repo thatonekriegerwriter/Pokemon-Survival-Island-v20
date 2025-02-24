@@ -232,7 +232,7 @@ class Battle
     isPartic    = defeatedBattler.participants.include?(idxParty)
     hasExpShare = expShare.include?(idxParty)
     level = defeatedBattler.level
-	level_cap = caughtmon.level_cap
+	level_cap = pkmn.level_cap
 	if level_cap.nil?
     level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
 	end
@@ -409,170 +409,61 @@ class Battle
 end
 
   #ADD EVS
-  def pokemonEXP(participants,caughtmon,pkmn)
-    growth_rate = pkmn.growth_rate
-      return if pkmn.egg?
-    expAll = $player.has_exp_all || $bag.has?(:EXPALL)
-      numPartic = 0
-      participants.each do |partic|
-        next unless partic.able?
-        numPartic += 1
-      end
-	
-      expShare = []
-      if !expAll
-        $player.party.each_with_index do |pkmn, i|
-          next if !pkmn.able?
-          next if !pkmn.hasItem?(:EXPSHARE)
-          expShare.push(i)
-        end
-      end
-	
-	
-    # Don't bother calculating if gainer is already at max Exp
-    if pkmn.exp >= growth_rate.maximum_exp
-      pkmn.calc_stats   # To ensure new EVs still have an effect
-      return
-    end
-
-
-    isPartic    = participants.include?(pkmn)
-    hasExpShare = expShare.include?(pkmn)
-    level = caughtmon.level
-	level_cap = caughtmon.level_cap
-	if level_cap.nil?
-    level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
-	end
-	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
-	if !growth_rate.exp_values[level_cap]
-    level_cap_gap = growth_rate.exp_values[level_cap] - pkmn.exp
-	else
-    level_cap_gap = growth_rate.exp_values[4] - pkmn.exp
-	end
-    # Main Exp calculation
-    exp = 0
-    a = level * caughtmon.base_exp
-    if expShare.length > 0 && (isPartic || hasExpShare)
-      if numPartic == 0   # No participants, all Exp goes to Exp Share holders
-        exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? expShare.length : 1)
-      elsif Settings::SPLIT_EXP_BETWEEN_GAINERS   # Gain from participating and/or Exp Share
-        exp = a / (2 * numPartic) if isPartic
-        exp += a / (2 * expShare.length) if hasExpShare
-      else   # Gain from participating and/or Exp Share (Exp not split)
-        exp = (isPartic) ? a : a / 2
-      end
-    elsif isPartic   # Participated in battle, no Exp Shares held by anyone
-      exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? numPartic : 1)
-    elsif expAll   # Didn't participate in battle, gaining Exp due to Exp All
-      # NOTE: Exp All works like the Exp Share from Gen 6+, not like the Exp All
-      #       from Gen 1, i.e. Exp isn't split between all Pokémon gaining it.
-      exp = a / 2
-	 else
-      exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? numPartic : 1)
-    end
-    return if exp <= 0
-    # Scale the gained Exp based on the gainer's level (or not)
-    if Settings::SCALED_EXP_FORMULA
-      exp /= 5
-      levelAdjust = ((2 * level) + 10.0) / (pkmn.level + level + 10.0)
-      levelAdjust = levelAdjust**5
-      levelAdjust = Math.sqrt(levelAdjust)
-      exp *= levelAdjust
-      exp = exp.floor
-      exp += 1 if isPartic || hasExpShare
-    end
-    # Foreign Pokémon gain more Exp
-    isOutsider = (pkmn.owner.id != $player.id ||
-                 (pkmn.owner.language != 0 && pkmn.owner.language != $player.language))
-    if isOutsider
-      if pkmn.owner.language != 0 && pkmn.owner.language != $player.language
-        exp = (exp * 1.7).floor
-      else
-        exp = (exp * 1.5).floor
-      end
-    end
-    # Exp. Charm increases Exp gained
-    exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
-    # Modify Exp gain based on pkmn's held item
-    i = Battle::ItemEffects.triggerExpGainModifier(pkmn.item, pkmn, exp)
-    if i < 0
-      i = Battle::ItemEffects.triggerExpGainModifier(pkmn.item, pkmn, exp)
-    end
-    exp = i if i >= 0
-    # Boost Exp gained with high affection
-    if pkmn.happiness >= 240 && !pkmn.mega?
-      exp = exp * 6 / 5
-      isOutsider = true   # To show the "boosted Exp" message
-    end
-    # Make sure Exp doesn't exceed the maximum
-	
-    expFinal = growth_rate.add_exp(pkmn.exp, exp)
-    pkmn.stored_exp += exp if exp>=0
-    expGained = expFinal - pkmn.exp
-    return if expGained <= 0
-    # "Exp gained" message
-      if isOutsider
-	     sideDisplay("\\ts[]" + (_INTL"#{pkmn.name} got a boosted #{expGained} Exp. Points!\\wtnp[10]"))
-      else
-        sideDisplay(_INTL("{1} got {2} Exp. Points!", pkmn.name, expGained))
-      end
-    curLevel = pkmn.level
-    newLevel = growth_rate.level_from_exp(expFinal)
-    if newLevel < curLevel
-      debugInfo = "Levels: #{curLevel}->#{newLevel} | Exp: #{pkmn.exp}->#{expFinal} | gain: #{expGained}"
-      raise _INTL("{1}'s new level is less than its\r\ncurrent level, which shouldn't happen.\r\n[Debug: {2}]",
-                  pkmn.name, debugInfo)
-    end
-    # Give Exp
-      
-    $stats.total_exp_gained += expGained
-	
-
- end  
   def pbPlayerEXP(caughtmon,pkmnless=[])
-    return false
+  
+    $player.playerclasslevel = 1 if $player.playerclasslevel==0
     caughtmon_level=caughtmon.level
-    pkmn = $player
-      growth_rate = GameData::GrowthRate.get(:Slow)
-	  if pkmn.exp.nil?
-	    pkmn.exp=0
-	  end
-      # Don't bother calculating if gainer is already at max Exp
-      #return if pkmn.exp>=100
+	 caughtmon2 = caughtmon
+       pkmn = $player
+	   pkmn.exp=0 if pkmn.exp.nil?
+	   
+	   
       exp=(caughtmon_level*caughtmon.base_exp)/2
-      # Scale the gained Exp based on the gainer's level (or not)
-      # Make sure Exp doesn't exceed the maximum
+	  
+	  
        exp /= 7
        exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
-      expFinal = growth_rate.add_exp(pkmn.exp, exp)
+      expFinal =  ((pkmn.exp + exp).clamp(0, $player.get_max_exp))
       expGained = expFinal-pkmn.exp
-      return if expGained<=0
+	  puts "expGained: #{expGained}"
+      if expGained>0
+	  
+	  
       curLevel = pkmn.playerclasslevel
-      newLevel = growth_rate.level_from_exp(expFinal)
-      tempExp1 = pkmn.exp
+      newLevel = $player.level_from_exp(expFinal)
+      
+	  
+	  if newLevel>curLevel
       loop do   # For each level gained in turn...
         # EXP Bar animation
-        levelMaxExp = growth_rate.minimum_exp_for_level(curLevel + 1)
+        levelMaxExp = 100
         tempExp2 = (levelMaxExp<expFinal) ? levelMaxExp : expFinal
+	     puts tempExp2
         pkmn.exp = tempExp2
-        tempExp1 = tempExp2
         curLevel += 1
 		pbSEPlay("Pkmn exp gain")
         if curLevel>newLevel
-          # Gained all the Exp now, end the animation
           break
         end
     end
+      sideDisplay(_INTL"#{pkmn.name} leveled up to #{newLevel}!") if pkmn.playerclasslevel!=newLevel
+     end
+      end
+
+
+	
 
 
 
-     pbMessage("\\ts[]" + (_INTL"#{pkmn.name} leveled up to #{newLevel}!\\wtnp[10]"))
-	 
-	 
       pkmn.playerclasslevel=newLevel
-	  pkmnless.each do |pkmn2|
-	    pokemonEVs(pkmn2, caughtmon)
-	    pokemonEXP([pkmn2],caughtmon,pkmn2)
+	  if !pkmnless.empty?
+	  pkmnless.compact!
+	  pkmnless = pkmnless.uniq { |person| person.pokemon.personalID }
+	  end
+	  puts pkmnless.to_s
+	  pkmnless.each do |pokemon_event|
+	    pokemonEVs(pokemon_event.pokemon, caughtmon2)
+	    pokemonEXP([pokemon_event.pokemon],caughtmon2,pokemon_event.pokemon)
 	  end
   end
 
@@ -580,14 +471,15 @@ end
 
   
    def pokemonEVs(pkmn, target)
+   
     evYield = target.evYield
     # Num of effort points pkmn already has
     evTotal = 0
     GameData::Stat.each_main { |s| evTotal += pkmn.ev[s.id] }
     # Modify EV yield based on pkmn's held item
-    if !Battle::ItemEffects.triggerEVGainModifier(pkmn.item, pkmn, evYield)
-      Battle::ItemEffects.triggerEVGainModifier(@initialItems[0][idxParty], pkmn, evYield)
-    end
+   # if !Battle::ItemEffects.triggerEVGainModifier(pkmn.item, pkmn, evYield)
+   #   Battle::ItemEffects.triggerEVGainModifier(@initialItems[0][idxParty], pkmn, evYield)
+  #  end
     # Double EV gain because of Pokérus
     if pkmn   # Infected or cured
       evYield.each_key { |stat| evYield[stat] *= 1.1 }
@@ -641,6 +533,143 @@ end
 
     end
   
+  def pokemonEXP(participants,caughtmon,pkmn)
+    growth_rate = pkmn.growth_rate
+      return if pkmn.egg?
+    expAll = $player.has_exp_all || $bag.has?(:EXPALL)
+      numPartic = 0
+      participants.each do |partic|
+        next unless partic.able?
+        numPartic += 1
+      end
+	
+      expShare = []
+      if !expAll
+        $player.party.each_with_index do |pkmn, i|
+          next if !pkmn.able?
+          next if !pkmn.hasItem?(:EXPSHARE)
+          expShare.push(i)
+        end
+      end
+	
+
+    # Don't bother calculating if gainer is already at level cap
+	if pkmn.level>=pkmn.level_cap
+     pkmn.stored_exp = 0
+	  if pkmn.level>pkmn.level_cap
+     levelMinExp = growth_rate.minimum_exp_for_level(pkmn.level_cap)
+	  pkmn.exp = levelMinExp
+	  end
+      pkmn.calc_stats   # To ensure new EVs still have an effect
+    return
+	end
+	
+    # Don't bother calculating if gainer is already at max Exp
+    if pkmn.exp >= growth_rate.maximum_exp
+      pkmn.calc_stats   # To ensure new EVs still have an effect
+      return
+    end
+    isPartic    = participants.include?(pkmn)
+    hasExpShare = expShare.include?(pkmn)
+    level = caughtmon.level
+	level_cap = caughtmon.level_cap
+	if level_cap.nil?
+    level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
+	end
+	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
+	if !growth_rate.exp_values[level_cap]
+    level_cap_gap = growth_rate.exp_values[level_cap] - pkmn.exp
+	else
+    level_cap_gap = growth_rate.exp_values[4] - pkmn.exp
+	end
+    # Main Exp calculation
+    exp = 0
+    a = level * caughtmon.base_exp
+    if expShare.length > 0 && (isPartic || hasExpShare)
+      if numPartic == 0   # No participants, all Exp goes to Exp Share holders
+        exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? expShare.length : 1)
+      elsif Settings::SPLIT_EXP_BETWEEN_GAINERS   # Gain from participating and/or Exp Share
+        exp = a / (2 * numPartic) if isPartic
+        exp += a / (2 * expShare.length) if hasExpShare
+      else   # Gain from participating and/or Exp Share (Exp not split)
+        exp = (isPartic) ? a : a / 2
+      end
+    elsif isPartic && numPartic>1  # Participated in battle, no Exp Shares held by anyone
+      exp = a / (Settings::SPLIT_EXP_BETWEEN_GAINERS ? numPartic : 1)
+    elsif expAll   # Didn't participate in battle, gaining Exp due to Exp All
+      # NOTE: Exp All works like the Exp Share from Gen 6+, not like the Exp All
+      #       from Gen 1, i.e. Exp isn't split between all Pokémon gaining it.
+      exp = a / 2
+	 else
+      exp = a / 1
+    end
+    return if exp <= 0
+    # Scale the gained Exp based on the gainer's level (or not)
+    if Settings::SCALED_EXP_FORMULA
+      exp /= 5
+      levelAdjust = ((2 * level) + 10.0) / (pkmn.level + level + 10.0)
+      levelAdjust = levelAdjust**5
+      levelAdjust = Math.sqrt(levelAdjust)
+      exp *= levelAdjust
+      exp = exp.floor
+      exp += 1 if isPartic || hasExpShare
+    end
+    # Foreign Pokémon gain more Exp
+    isOutsider = (pkmn.owner.id != $player.id ||
+                 (pkmn.owner.language != 0 && pkmn.owner.language != $player.language))
+    if isOutsider
+      if pkmn.owner.language != 0 && pkmn.owner.language != $player.language
+        exp = (exp * 1.7).floor
+      else
+        exp = (exp * 1.5).floor
+      end
+    end
+    # Exp. Charm increases Exp gained
+    exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
+    # Modify Exp gain based on pkmn's held item
+    i = Battle::ItemEffects.triggerExpGainModifier(pkmn.item, pkmn, exp)
+    if i < 0
+      i = Battle::ItemEffects.triggerExpGainModifier(pkmn.item, pkmn, exp)
+    end
+    exp = i if i >= 0
+    # Boost Exp gained with high affection
+    if pkmn.happiness >= 240 && !pkmn.mega?
+      exp = exp * 6 / 5
+      isOutsider = true   # To show the "boosted Exp" message
+    end
+    # Make sure Exp doesn't exceed the maximum
+	  puts $PokemonGlobal.fishing==true && $game_temp.in_safari == false
+	 if $PokemonGlobal.fishing==true && $game_temp.in_safari == false
+	 exp/=6 
+	  if exp>1000
+	    exp/=2
+	  end
+	 else
+	 
+	exp *= 1.5
+	 end
+    expFinal = growth_rate.add_exp(pkmn.exp, exp)
+	  puts pkmn.name
+	  puts "pkmn.stored_exp: #{pkmn.stored_exp}"
+	  puts "exp: #{exp}"
+    pkmn.stored_exp += exp if exp>=0
+	  puts "pkmn.stored_exp: #{pkmn.stored_exp}"
+    expGained = expFinal - pkmn.exp
+    return if expGained <= 0
+    # "Exp gained" message
+    curLevel = pkmn.level
+    newLevel = growth_rate.level_from_exp(expFinal)
+    if newLevel < curLevel
+      debugInfo = "Levels: #{curLevel}->#{newLevel} | Exp: #{pkmn.exp}->#{expFinal} | gain: #{expGained}"
+      raise _INTL("{1}'s new level is less than its\r\ncurrent level, which shouldn't happen.\r\n[Debug: {2}]",
+                  pkmn.name, debugInfo)
+    end
+    # Give Exp
+      
+    $stats.total_exp_gained += expGained
+	
+
+ end  
 
 
 
@@ -725,6 +754,10 @@ EventHandlers.add(:on_enter_map, :recreate_follower_event,
 		     next if event_id.nil?
 		     theevent = $game_temp.following_ov_pokemon[key][2]
 			 next if theevent.nil?
+          if theevent.following != get_cur_player
+		     theevent.following=nil
+			 next 
+		   end
 			 puts "Hey this is running while map interpA" if $game_system.map_interpreter.running?
 			 $game_map.recreateEvent2(theevent) if theevent.movement_type == :FOLLOW
 			 pkmn.inworld=false if theevent.movement_type != :FOLLOW
@@ -738,6 +771,8 @@ EventHandlers.add(:on_enter_map, :recreate_follower_event,
 
 EventHandlers.add(:on_map_transfer, :recreate_follower_event,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
+  
+  
     next if old_map_id == 0 || old_map_id == $game_map.map_id
     next if $game_temp.following_ov_pokemon.empty?
 	  $game_temp.following_ov_pokemon.keys.each do |key|
@@ -745,7 +780,10 @@ EventHandlers.add(:on_map_transfer, :recreate_follower_event,
 		     next if event_id.nil?
 		     theevent = $game_temp.following_ov_pokemon[key][2]
 			 next if theevent.nil?
-			 puts "Hey this is running while map interpB" if $game_system.map_interpreter.running?
+          if theevent.following != get_cur_player
+		     theevent.following=nil
+			  next 
+		   end
 			 $game_map.recreateEvent2(theevent) if theevent.movement_type == :FOLLOW
 			 pkmn.inworld=false if theevent.movement_type != :FOLLOW
 			 theevent.removeThisEventfromMap

@@ -244,16 +244,6 @@ class Pokemon
     self.calc_stats
   end
   
-  alias zud_initialize initialize  
-  def initialize(*args)
-    @dynamax_lvl  = 0
-    @dynamax      = false
-    @reverted     = false
-    @gmax_factor  = false
-    @dynamax_able = nil
-    zud_initialize(*args)
-  end
-  
   
   #-----------------------------------------------------------------------------
   # Pokemon move attributes.

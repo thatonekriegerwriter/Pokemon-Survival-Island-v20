@@ -59,6 +59,7 @@ module Input
 	EXPAND = 52
 	WHATISTHIS = 53
 	ALTERNATEMOUSEMODE = 54
+	INVENTORY = 55
 	
   @key_last_pressed = {}
   @key_press_time = {}
@@ -283,6 +284,10 @@ module Input
           return $PokemonSystem.game_control_code("Expand HUD")
         when Input::ALTERNATEMOUSEMODE # F, F5, Tab
           return $PokemonSystem.game_control_code("Selection Mouse Mode")
+        when Input::WHATISTHIS # F, F5, Tab
+          return $PokemonSystem.game_control_code("Check")
+        when Input::INVENTORY # F, F5, Tab
+          return $PokemonSystem.game_control_code("Inventory")
         else
           return nil
       end
@@ -300,13 +305,13 @@ module Keys
       ControlConfig.new("Left", "A"),
       ControlConfig.new("Right", "D"),
       ControlConfig.new("Up", "W"),
-      ControlConfig.new("Action", "Enter"),
       ControlConfig.new("Action", "Space"),
       ControlConfig.new("Action", "MouseLeft"),
       ControlConfig.new("Cancel",  "X"),
-      ControlConfig.new("Cancel", "Esc"),
       ControlConfig.new("Cancel", "MouseRight"),
-      ControlConfig.new("Menu", "E"),
+      ControlConfig.new("Inventory", "E"),
+      ControlConfig.new("Menu", "Esc"),
+      ControlConfig.new("Menu", "Enter"),
       ControlConfig.new("Menu", "Z"),
       ControlConfig.new("Running", "None"),
       ControlConfig.new("Punch", "F"),
@@ -316,14 +321,15 @@ module Keys
       ControlConfig.new("Show HUD", "R"),
       ControlConfig.new("Toggle HUD Contents", "MouseMiddle"),
       ControlConfig.new("Expand HUD", "C"),
-      ControlConfig.new("Display Moves", "G"),
+      ControlConfig.new("Display Moves", "M"),
       ControlConfig.new("Direct Group", "Alt"),
       ControlConfig.new("Lock On", "Q"),
       ControlConfig.new("Scroll Up", "Up"),
       ControlConfig.new("Scroll Down", "Down"),
       ControlConfig.new("Aux 1", "J"),
       ControlConfig.new("Aux 2", "Y"),
-      ControlConfig.new("Direct Pokemon", "~")
+      ControlConfig.new("Direct Pokemon", "~"),
+      ControlConfig.new("Check", "I")
     ]
   end 
 

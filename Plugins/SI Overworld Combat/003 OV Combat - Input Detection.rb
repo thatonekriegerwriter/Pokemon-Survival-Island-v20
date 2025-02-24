@@ -140,7 +140,8 @@ end
      if target==$game_player
        increaseHealth(amt)
 	 else
-      increaseHealth(target.pokemon,amt)
+      increaseHealth(target.pokemon,amt) if !target.is_a?(Pokemon)
+      increaseHealth(pokemon,amt) if !target.is_a?(Pokemon)
 	 end
   
   end
@@ -168,8 +169,9 @@ end
 	   target.pokemon.iframes=5
 	end
 	puts "#{target.type.name} Lv#{target.type.level}: #{target.type.hp}/#{target.type.totalhp} - #{theamt}"
-	fainted_check(target)
+	fainted_check(target) if target.is_a?(Game_PokeEvent)
  end
+
 
   def the_effect_of_stamina(attacker,target)
     return if $game_temp.bossfight==true
@@ -181,6 +183,9 @@ end
 	  sideDisplay("#{attacker.pokemon.name} knocked #{target.type.name} down!")
 	  #pbMessage("\\ts[]" + (_INTL"#{attacker.pokemon.name} knocked #{target.type.name} down!\\wtnp[10]"))
 	  if true
+	  if pbOverworldCombat.battle_rules.include?("Catchless")
+	   setBattleRule("disablepokeballs")
+	  end
 	  $game_temp.encounter_type = $game_temp.encounter_type
 	  pbStoreTempForBattle()
 	  $PokemonGlobal.battlingSpawnedPokemon = true
@@ -233,11 +238,11 @@ end
  end
  
   def advanced_shoes(target)
-   return $player.playershoes == :DASHBOOTS && $player.playerstamina<20  || target!=$game_player
+   return $player.playershoes.id == :DASHBOOTS && $player.playerstamina<20  || target!=$game_player
   end
 
   def advanced_shoes2(target)
-   return $player.playershoes == :DASHBOOTS && $player.playerstamina>19  || target!=$game_player
+   return $player.playershoes.id == :DASHBOOTS && $player.playerstamina>19  || target!=$game_player
   end
 
 end

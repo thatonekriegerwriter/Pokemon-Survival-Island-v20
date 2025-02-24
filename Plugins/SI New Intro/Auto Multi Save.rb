@@ -44,10 +44,12 @@ module UILoad
 end
 
 EventHandlers.add(:on_player_step_taken, :auto_save, proc {
-  $player.autosave_steps = 0 if !$player.autosave_steps
+  $player.autosave_steps = 0 if $player.autosave_steps.nil?
   next if $PokemonGlobal.sliding
   next if !pbCanAutosave?
   next if $game_map.map_id==3
+  next if $game_temp.in_temple==true
+  next if pbGetTimeNow.to_i<$PokemonGlobal.lastSave+3600
   $player.autosave_steps += 1
   if $player.autosave_steps >= 200
     pbAutosave

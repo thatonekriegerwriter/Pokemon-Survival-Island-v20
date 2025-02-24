@@ -2,6 +2,7 @@
 class Pokemon
 
   def changeHappiness(method,wari=self)
+    return if method == "damaged"
     pkmn = wari
 	if pkmn.starter.nil?
 	 pkmn.starter = false
@@ -1373,6 +1374,7 @@ else
   # Changes the happiness of this Pokémon depending on what happened to change it.
   # @param method [String] the happiness changing method (e.g. 'walking')
   def changeLoyalty(method,wari=self)
+    return if method == "damaged"
     gain = 0
     bonus = 0
     pkmn = wari

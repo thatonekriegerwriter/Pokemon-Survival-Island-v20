@@ -113,6 +113,7 @@ class SurvivalHud < Component
     map_data = pbLoadTownMapData
     map_metadata = $game_map.metadata
     playerpos = (map_metadata) ? map_metadata.town_map_position : nil
+	if !playerpos.nil?
     mapindex = playerpos[0]
     map     = map_data[playerpos[0]]
 	 @regionname = map[0]
@@ -129,6 +130,7 @@ class SurvivalHud < Component
     @sprites["map"].y = ((Graphics.height - @sprites["map"].bitmap.height) / 2)+30
     @sprites["map"].z = -10
     #[@regionname,((Graphics.width - @sprites["map"].bitmap.width) / 2)-60, 55,99,@baseColor,@shadowColor],
+	end
   end
  
   def createBars(viewport)
@@ -465,7 +467,7 @@ class DateAndTimeHud < Component
     @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
   end
 
-  def shouldDraw?; return (!$PokemonBag.pbHasItem?(:CLOCK) || !$PokemonBag.pbHasItem?(:CALENDAR)); end
+  def shouldDraw?; return true; end
 
   def update
     super

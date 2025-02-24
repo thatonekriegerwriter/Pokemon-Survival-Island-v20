@@ -135,9 +135,12 @@ end
 def forcetheupdate
     pbFillUpdaterConfig if (GameVersion::POKE_UPDATER_CONFIG).empty?
     potato = GameVersion::POKE_UPDATER_CONFIG['VERSION_PASTEBIN']
+	data = nil
 	return false if potato.empty? || potato.nil?
+    begin
 	data = pbDownloadData(potato)
-	rescue MKXPError
+	rescue
+  end
   	forceit = false
 	if data
 		lines = data.split("\n")
@@ -156,7 +159,11 @@ def getUpdate
     pbFillUpdaterConfig if (GameVersion::POKE_UPDATER_CONFIG).empty?
     potato = GameVersion::POKE_UPDATER_CONFIG['VERSION_PASTEBIN']
 	return false if potato.empty? || potato.nil?
+	data = nil
+    begin
 	data = pbDownloadData(potato)
+  rescue
+  end
   	newVersion = nil
 	currentVersion = GameVersion::POKE_UPDATER_CONFIG['CURRENT_GAME_VERSION'].gsub!(/(?!^[.0-9]*$)/, '')
 	if data
@@ -175,8 +182,12 @@ def getUpdate
 end
 
 def pbValidateVersion(url, update=false, from_update_button=false)
+	
+	data = nil
+    begin
 	data = pbDownloadData(url)
-	rescue MKXPError
+  rescue
+  end
   	newVersion = nil
 	if data
 		# check that the pastebin has the GAME_VERSION value
@@ -261,7 +272,11 @@ def do_the_update
    else
     potato = GameVersion::POKE_UPDATER_CONFIG['VERSION_PASTEBIN']
 	return false if potato.empty? || potato.nil?
+	data = nil
+    begin
 	data = pbDownloadData(potato)
+  rescue
+  end
   	url = nil
 	if data
 		lines = data.split("\n")

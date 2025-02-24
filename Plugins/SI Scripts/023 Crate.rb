@@ -191,7 +191,7 @@ def pbTrainerCrate(storage)
   pbSEPlay("Voltorb Flip mark")
 end
 
-def pbStorageCrateMenu
+def pbStorageCrateMenu(storage)
   command = 0
   loop do
     command = pbMessage(_INTL("What do you want to do?"),[
@@ -200,7 +200,7 @@ def pbStorageCrateMenu
        _INTL("Close Crate")
        ],-1,nil,command)
     case command
-    when 0 then pbStorageCrateStorage
+    when 0 then pbStorageCrateStorage(storage)
     when 1 then pbPCSave
     else        break
     end
@@ -213,7 +213,7 @@ def pbStoragePC
   pbSEPlay("Voltorb Flip mark")
 end
 
-def pbStorageCrateStorage
+def pbStorageCrateStorage(storage)
     pbMessage(_INTL("\\se[Voltorb Flip Tile]You open up your Storage Crate."))
     command = 0
     loop do
@@ -229,19 +229,19 @@ def pbStorageCrateStorage
       )
       if command>=0 && command<3
         if command==1   # Withdraw
-          if $PokemonStorage.party_full?
+          if storage.party_full?
             pbMessage(_INTL("Your party is full!"))
             next
           end
         elsif command==2   # Deposit
           count=0
-          for p in $PokemonStorage.party
+          for p in storage.party
             count += 1 if p && !p.egg? && p.hp>0
           end
         end
         pbFadeOutIn {
           scene = PokemonStorageScene.new
-          screen = PokemonStorageScreen.new(scene,$PokemonStorage)
+          screen = PokemonStorageScreen.new(scene,storage)
           screen.pbStartScreen(command)
         }
       else

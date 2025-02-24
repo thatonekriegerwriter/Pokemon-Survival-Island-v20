@@ -83,7 +83,6 @@ def pbStartScene
  @notetext={}
  @playericons={}
  end
-$value="???"
 $coal=:COAL
 @notessection = $PokemonGlobal.notebook + getAllTips
  if true
@@ -579,8 +578,8 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 		if @selection4!=-1 && @cur_page==4 && @depth==3
        enc_array, currKey = getEncData if !@pkmnicons2.empty?
        thespecies = enc_array[@selection2]
-	    entry = pbFreeTextNoWindow(GameData::Species.get(thespecies).the_dex_entry,false,256,Graphics.width,false)
-	    GameData::Species.get(thespecies).set_dex_entry(entry)
+	    entry = pbFreeTextNoWindow(pbPokedexEntry(thespecies),false,256,Graphics.width,false)
+		pbSetPokedexEntry(thespecies,entry)
 		end 
 	  
 	  
@@ -885,7 +884,7 @@ def pageblank
 
 	  end
 
-      if Input.trigger?(Input::UP)
+      if Input.trigger?(Input::UP) 
 	   if false
 	   else
 	   pagechange("up")
@@ -1075,8 +1074,8 @@ def update
     enc_array, currKey = getEncData if !@pkmnicons2.empty?
     thespecies = enc_array[@selection2] if !@pkmnicons2.empty?
 	if !@pkmnicons2.empty?
-	@pkmnicons2["thedexentry"].text = GameData::Species.get(thespecies).the_dex_entry 
-   @pkmnicons2["thedexentry"].resizeToFit(GameData::Species.get(thespecies).the_dex_entry)
+	@pkmnicons2["thedexentry"].text = pbPokedexEntry(thespecies)
+   @pkmnicons2["thedexentry"].resizeToFit(pbPokedexEntry(thespecies))
    end
     end
 	
@@ -1516,8 +1515,8 @@ end
  @pkmnicons2["thedexentry"].z = 99
  @pkmnicons2["thedexentry"].width=60
  @pkmnicons2["thedexentry"].height=90
- @pkmnicons2["thedexentry"].text = GameData::Species.get(thespecies).the_dex_entry
- @pkmnicons2["thedexentry"].resizeToFit(GameData::Species.get(thespecies).the_dex_entry)
+ @pkmnicons2["thedexentry"].text = pbPokedexEntry(thespecies)
+ @pkmnicons2["thedexentry"].resizeToFit(pbPokedexEntry(thespecies))
 
 
 end
@@ -2432,38 +2431,6 @@ else
 end
 end
 
-end
-
-class RecipeBook
-  attr_accessor :recipes
-
-def initialize
-   @recipes = []
-end
-
-def add(recipe)
-  if !has?(recipe)
-    @recipes << recipe
-  end
-end
-
-def has?(recipe)
- if @recipes.include?(recipe)
-  return true
- else
-  return false
- end
-end
-
-end
-
-SaveData.register(:recipe_book) do
-  ensure_class :RecipeBook 
-  save_value { $recipe_book  }
-  load_value { |value| $recipe_book = value }
-  new_game_value {
-    RecipeBook.new
-  }
 end
 
 

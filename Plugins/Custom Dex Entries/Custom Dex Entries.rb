@@ -4,23 +4,39 @@ end
 
 
 def customEntry?(species)
-  if $Trainer.entries && ![nil," ",""].include?($Trainer.entries[species])
+  if $player.entries && ![nil," ",""].include?($player.entries[species])
     return true
   else
     return false
   end
 end
+ def pbDexEntryMenu(thespecies,viewport=nil)
+ 
+	    entry = pbFreeTextNoWindow(pbPokedexEntry(thespecies),false,256,Graphics.width,false,viewport)
+		 if !entry.nil? && !entry!=""
+		pbSetPokedexEntry(thespecies,entry)
+		  return true
+		 else
+		  return false
+		 end
+  
+ end
 
+def pbSetPokedexEntry(species,text)
+ $player.entries[species] = text
 
-def entry(species,var)
+end
+
+def pbPokedexEntry(species)
   if customEntry?(species)
-      $game_variables[var] = $Trainer.entries[species]
+      return $player.entries[species]
     else
-      $game_variables[var] = GameData::Species.get(species).pokedex_entry
+      return GameData::Species.get(species).pokedex_entry
   end
 
 end
 
+if false
 class PokemonPokedexInfo_Scene
 
   def drawPageInfo
@@ -70,14 +86,14 @@ class PokemonPokedexInfo_Scene
       end
       # Draw the Pokédex entry text
       entry = species_data.pokedex_entry
-      if !$Trainer.entries
-        $Trainer.entries = {}
+      if !$player.entries
+        $player.entries = {}
         GameData::Species.each do |sp|
-          $Trainer.entries[sp.id]         = ""
+          $player.entries[sp.id]         = ""
         end
       end
-      if ![nil," ",""].include?($Trainer.entries[@species])
-          entry = $Trainer.entries[@species]
+      if ![nil," ",""].include?($player.entries[@species])
+          entry = $player.entries[@species]
         end
       drawTextEx(overlay, 40, 246, Graphics.width - (40 * 2), 4,   # overlay, x, y, width, num lines
                  entry, base, shadow)
@@ -139,15 +155,15 @@ class PokemonPokedexInfo_Scene
             dorefresh = true
           end
         end
-      elsif Input.trigger?(Input::ALT) && $Trainer.owned?(@species)
+      elsif Input.trigger?(Input::ALT) && $player.owned?(@species)
         if @page==1
-          if !$Trainer.entries
-            $Trainer.entries = {}
+          if !$player.entries
+            $player.entries = {}
             GameData::Species.each do |sp|
-              $Trainer.entries[sp.id]         = ""
+              $player.entries[sp.id]         = ""
             end
           end
-          $Trainer.entries[@species]=pbMessageFreeText(_INTL("New PokéDex entry?"),"",false,170,Graphics.width)
+          $player.entries[@species]=pbMessageFreeText(_INTL("New PokéDex entry?"),"",false,170,Graphics.width)
           dorefresh = true
           drawPageInfo
         end
@@ -198,5 +214,7 @@ class PokemonPokedexInfo_Scene
   end
 
 
+
+end
 
 end

@@ -325,7 +325,7 @@
     // audio, this should be set to as many available tracks as the game needs.
     // Maximum: 16.
     //
-       "BGMTrackCount": 5,
+       "BGMTrackCount": 16,
 
 
 

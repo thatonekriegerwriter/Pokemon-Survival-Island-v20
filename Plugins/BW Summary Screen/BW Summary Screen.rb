@@ -1073,7 +1073,7 @@ end
           imagepos.push(["Graphics/Pictures/types", 32, yPos + 8, 0, type_number * 28, 64, 28])
           textpos.push([move.name, 100, yPos + 2, 0, moveBase, moveShadow])
           if move.total_pp > 0
-            textpos.push([_INTL("PP"), 126, yPos + 44, 0, moveBase, moveShadow])
+            textpos.push([_INTL("PP"), 126, yPos + 34, 0, moveBase, moveShadow])
             ppfraction = 0
             if move.pp == 0
             ppfraction = 3
@@ -1085,8 +1085,8 @@ end
             textpos.push([sprintf("%d/%d", move.pp, move.total_pp), 244, yPos + 34, 1, ppBase[ppfraction], ppShadow[ppfraction]])
           end
         else
-          textpos.push(["-", 100, yPos - 10, 0, moveBase, moveShadow])
-          textpos.push(["--", 226, yPos + 34, 1, moveBase, moveShadow])
+          textpos.push(["-", 100, yPos - 0, 0, moveBase, moveShadow])
+          textpos.push(["--", 226, yPos + 44, 1, moveBase, moveShadow])
         end
         yPos += 64
       end

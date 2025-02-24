@@ -1,5 +1,0 @@
-Name = Pokemon Memories
-Version = 1
-Essentials = 20
-Credits = TechSkylander1518
-Link = https://reliccastle.com/resources/541/

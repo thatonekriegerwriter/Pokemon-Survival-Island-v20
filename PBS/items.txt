@@ -300,7 +300,7 @@ NamePlural = Star Pieces
 Pocket = 1
 Price = 12000
 Flags = Fling_30
-Description = A shard of a pretty gem that sparkles in a red color. It can be sold at a high price to shops.
+Description = A shard of a pretty gem that sparkles in a red color. It is exceedingly valuable to most species.
 #-------------------------------
 [COMETSHARD]
 Name = Comet Shard
@@ -1995,6 +1995,16 @@ Pocket = 1
 Price = 10000
 SellPrice = 0
 Description = A shiny blue orb that is said to have a legend tied to it. It's known to be connected with the Hoenn region.
+#-------------------------------
+[WEAKPOTION]
+Name = Weak Potion
+NamePlural = Weak Potions
+Pocket = 2
+Price = 100
+FieldUse = OnPokemon
+BattleUse = OnPokemon
+Flags = Fling_30,Medicine
+Description = A spray-type medicine for treating wounds. It can be used to restore 10 HP to a single Pokémon.
 #-------------------------------
 [POTION]
 Name = Potion
@@ -4166,7 +4176,7 @@ NamePlural = Pickaxes
 Pocket = 7
 Price = 0
 Flags = Tool,HMItem,Overworld,Weapon,Durable
-Description = A pickaxe made of iron, lets you go mining in the Mountains.
+Description = A pickaxe made of iron that can be used for breaking rocks.
 #-------------------------------
 [SHOVEL]
 Name = Shovel
@@ -4174,7 +4184,15 @@ NamePlural = Shovels
 Pocket = 7
 Price = 0
 Flags = Tool,HMItem,Overworld,Weapon,Durable
-Description = A shovel made of iron, lets you go mining in the Mountains.
+Description = A shovel made of iron that can be used for digging up dirt.
+#-------------------------------
+[HOE]
+Name = Hoe
+NamePlural = Hoes
+Pocket = 7
+Price = 0
+Flags = Tool,HMItem,Overworld,Weapon,Durable
+Description = A hoe made of iron that let's you till ground to plant berries.
 #-------------------------------
 [BAIT]
 Name = Bait
@@ -4353,7 +4371,7 @@ Name = Iron Canteen
 NamePlural = Iron Canteen
 Pocket = 7
 Price = 0
-Flags = KeyItem,Tool
+Flags = KeyItem,Tool,Overworld
 Consumable = false
 Description = 
 #-------------------------------
@@ -7502,12 +7520,20 @@ Name = Glass Bottle
 NamePlural = Glass Bottle
 Pocket = 7
 Price = 5
-FieldUse = Direct
+FieldUse = Direct,Tool,Overworld
 Description = 
 #-------------------------------
 [GLASS]
 Name = Glass
 NamePlural = Glass
+Pocket = 1
+Price = 5
+Flags = 
+Description = 
+#-------------------------------
+[CHARREDGLASS]
+Name = Charred Glass
+NamePlural = Charred Glass
 Pocket = 1
 Price = 5
 Flags = 
@@ -8122,7 +8148,7 @@ Name = Sitrus Juice
 NamePlural = Sitrus Juice
 Pocket = 6
 Price = 5
-Flags = FoodWater
+Flags = FoodWater,Water
 Description = 
 #-------------------------------
 [BERRYMASH]
@@ -8154,7 +8180,7 @@ Name = Tea
 NamePlural = Tea
 Pocket = 6
 Price = 5
-Flags = FoodWater
+Flags = FoodWater,Water
 Description = 
 #-------------------------------
 [WATER]
@@ -8162,7 +8188,7 @@ Name = Water
 NamePlural = Water
 Pocket = 6
 Price = 5
-Flags = FoodWater,NoSpoiling
+Flags = FoodWater,NoSpoiling,Water
 Description = 
 #-------------------------------
 [CARROTCAKE]
@@ -8422,7 +8448,7 @@ Pocket = 6
 Price = 100
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30,FoodWater
+Flags = Fling_30,FoodWater,Water
 Description = A 100% pure juice made of Berries. It restores the HP of one Pokémon by just 20 points.
 #-------------------------------
 [SWEETHEART]
@@ -8442,7 +8468,7 @@ Pocket = 6
 Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30,FoodWater,NoSpoiling
+Flags = Fling_30,FoodWater,NoSpoiling,Water
 Description = Water with high mineral content. It can be used to restore 30 HP to a single Pokémon.
 #-------------------------------
 [SODAPOP]
@@ -8452,7 +8478,7 @@ Pocket = 6
 Price = 300
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30,FoodWater
+Flags = Fling_30,FoodWater,Water
 Description = A highly carbonated soda drink. It can be used to restore 50 HP to a single Pokémon.
 #-------------------------------
 [LEMONADE]
@@ -8463,7 +8489,7 @@ Price = 350
 SellPrice = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30,FoodWater
+Flags = Fling_30,FoodWater,Water
 Description = A very sweet and refreshing drink. It can be used to restore 70 HP to a single Pokémon.
 #-------------------------------
 [MOOMOOMILK]
@@ -8473,8 +8499,8 @@ Pocket = 6
 Price = 600
 FieldUse = OnPokemon
 BattleUse = OnPokemon
-Flags = Fling_30,FoodWater
-Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 100 points.
+Flags = Fling_30,FoodWater,Water
+Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 20 points.
 #-------------------------------
 [PEWTERCRUNCHIES]
 Name = Pewter Crunchies
@@ -9932,11 +9958,43 @@ Price = 0
 Flags = Fling_10,PlacingItem,Overworld
 Description = An Electric Device for the Storage and Transmission of Power.
 #-------------------------------
+[TORCH]
+Name = Torch
+NamePlural = Torches
+Pocket = 1
+Price = 0
+Flags = Fling_10,PlacingItem,Overworld
+Description = A torch that generates light, and makes it less likely for Pokemon to spawn.
+#-------------------------------
+[ELECTRICLIGHT]
+Name = Electric Light
+NamePlural = Electric Lights
+Pocket = 1
+Price = 0
+Flags = Fling_10,PlacingItem,Overworld
+Description = A torch that generates light, and makes it less likely for Pokemon to spawn.
+#-------------------------------
 [SOOTSACK]
 Name = Soot Sack
 NamePlural = Soot Sacks
 Pocket = 1
 Price = 0
 Flags = KeyItem
-Consumable = false
 Description = A sack used to gather and hold volcanic ash.
+#-------------------------------
+[SPLINT]
+Name = Splint
+NamePlural = Splints
+Pocket = 1
+Price = 0
+Flags = 
+Description = A sack used to gather and hold volcanic ash.
+#-------------------------------
+[BANDAGE]
+Name = Bandage
+NamePlural = Bandages
+Pocket = 1
+Price = 0
+Flags = 
+Description = A sack used to gather and hold volcanic ash.
+

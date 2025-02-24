@@ -4,11 +4,6 @@
 class Pokemon
   attr_accessor :mastered_moves
   
-  alias styles_initialize initialize
-  def initialize(*args)
-    styles_initialize(*args)
-    @mastered_moves = []
-  end
   
   #-----------------------------------------------------------------------------
   # Returns an array of every move this Pokemon has mastered.

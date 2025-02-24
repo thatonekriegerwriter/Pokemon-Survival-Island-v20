@@ -7,18 +7,138 @@ pbItemSummaryScreen(item)
 $bag.add(item)
 end
 
+# @return [Integer] 0 = item wasn't used; 1 = item used; 2 = close Bag to use in field
+def pbUseItem(bag, item, bagscene = nil)
+  itm = GameData::Item.get(item)
+  useType = itm.field_use
+  if useType == 1   # Item is usable on a Pokémon
+    if $player.pokemon_count == 0
+      pbMessage(_INTL("There is no Pokémon."))
+      return 0
+    end
+    ret = false
+    annot = nil
+    if itm.is_evolution_stone?
+      annot = []
+      $player.party.each do |pkmn|
+        elig = pkmn.check_evolution_on_use_item(item)
+        annot.push((elig) ? _INTL("ABLE") : _INTL("NOT ABLE"))
+      end
+    end
+    pbFadeOutIn {
+      scene = PokemonParty_Scene.new
+      screen = PokemonPartyScreen.new(scene, $player.party)
+      screen.pbStartScene(_INTL("Use on which Pokémon?"), false, annot)
+      loop do
+        scene.pbSetHelpText(_INTL("Use on which Pokémon?"))
+        chosen = screen.pbChoosePokemon
+        if chosen < 0
+          ret = false
+          break
+        end
+        pkmn = $player.party[chosen]
+        next if !pbCheckUseOnPokemon(item, pkmn, screen)
+        qty = 1
+        max_at_once = ItemHandlers.triggerUseOnPokemonMaximum(item, pkmn)
+        max_at_once = [max_at_once, $bag.quantity(item)].min
+        if max_at_once > 1
+          qty = screen.scene.pbChooseNumber(
+            _INTL("How many {1} do you want to use?", GameData::Item.get(item).name), max_at_once
+          )
+          screen.scene.pbSetHelpText("") if screen.is_a?(PokemonPartyScreen)
+        end
+        next if qty <= 0
+        ret = ItemHandlers.triggerUseOnPokemon(item, qty, pkmn, screen)
+        next unless ret && itm.consumed_after_use?
+        bag.remove(item, qty)
+        next if bag.has?(item, 1, true)
+        pbMessage(_INTL("You used your last {1}.", itm.name)) { screen.pbUpdate }
+        break
+      end
+      screen.pbEndScene
+      bagscene&.pbRefresh
+    }
+    return (ret) ? 1 : 0
+  elsif useType == 2 || itm.is_machine?   # Item is usable from Bag or teaches a move
+    intret = ItemHandlers.triggerUseFromBag(item)
+    if intret >= 0
+      bag.remove(item) if intret == 1 && itm.consumed_after_use?
+      return intret
+    end
+    pbMessage(_INTL("Can't use that here."))
+    return 0
+  end
+  pbMessage(_INTL("Can't use that here."))
+  return 0
+end
+
+
+def pbUseItemOnPokemon(item, pkmn, scene)
+  itm = GameData::Item.get(item)
+  # TM or HM
+  if itm.is_machine?
+    machine = itm.move
+    return false if !machine
+    movename = GameData::Move.get(machine).name
+    if pkmn.shadowPokemon?
+      pbMessage(_INTL("Shadow Pokémon can't be taught any moves.")) { scene.pbUpdate }
+    elsif !pkmn.compatible_with_move?(machine)
+      pbMessage(_INTL("{1} can't learn {2}.", pkmn.name, movename)) { scene.pbUpdate }
+    else
+      pbMessage(_INTL("\\se[PC access]You booted up {1}.\1", itm.name)) { scene.pbUpdate }
+      if pbConfirmMessage(_INTL("Do you want to teach {1} to {2}?", movename, pkmn.name)) { scene.pbUpdate }
+        if pbLearnMove(pkmn, machine, false, true) { scene.pbUpdate }
+          $bag.remove(item) if itm.consumed_after_use?
+          return true
+        end
+      end
+    end
+    return false
+  end
+  # Other item
+  qty = 1
+  max_at_once = ItemHandlers.triggerUseOnPokemonMaximum(item, pkmn)
+  max_at_once = [max_at_once, $bag.quantity(item)].min
+  if max_at_once > 1
+    qty = scene.scene.pbChooseNumber(
+      _INTL("How many {1} do you want to use?", itm.name), max_at_once
+    )
+    scene.scene.pbSetHelpText("") if scene.is_a?(PokemonPartyScreen)
+  end
+  return false if qty <= 0
+  ret = ItemHandlers.triggerUseOnPokemon(item, qty, pkmn, scene)
+  scene.pbClearAnnotations
+  scene.pbHardRefresh
+  if ret && itm.consumed_after_use?
+    $bag.remove(item, qty)
+    if !$bag.has?(item, 1, true)
+      pbMessage(_INTL("You used your last {1}.", itm.name)) { scene.pbUpdate }
+    end
+  end
+  return ret
+end
 
 
 class Pokemon
   attr_accessor :hidden_modifiers
+  attr_accessor :called_back_map
 
-    alias _SI_Pokemon_init2 initialize
-   def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
-    _SI_Pokemon_init2(species, level, owner = $player, withMoves = true, recheck_form = true)
-      @hidden_modifiers = []
-  
+
+  def exp_fraction
+    lvl = self.level
+    return 0.0 if lvl >= GameData::GrowthRate.max_level
+    g_rate = growth_rate
+    start_exp = g_rate.minimum_exp_for_level(lvl)
+    end_exp   = g_rate.minimum_exp_for_level(lvl + 1)
+	@stored_exp = 0 if @stored_exp.nil?
+    return ((@exp + @stored_exp) - start_exp).to_f / (end_exp - start_exp)
+  end
+
+
+   def called_back_map
+    @called_back_map  = $game_map.map_id if @called_back_map.nil?
+    return @called_back_map
    end
-
    def hidden_modifiers
     @hidden_modifiers = [] if @hidden_modifiers.nil?
     return @hidden_modifiers
@@ -30,6 +150,7 @@ class ItemData
   attr_accessor :id
   attr_accessor :display_name
   attr_accessor :durability
+  attr_accessor :max_durability
   attr_accessor :water
   attr_accessor :flags
   attr_accessor :modifiers
@@ -42,7 +163,16 @@ class ItemData
   attr_accessor :capture_styler_stats
   attr_accessor :stored_items
   attr_accessor :bottle
-
+   
+   def hp
+    return @durability.to_i if @durability!=false
+    return 100 if @durability==false
+   end
+   
+   def totalhp
+    return @max_durability.to_i if @durability!=false
+    return 100 if @durability==false
+   end
 
   def initialize(id,durability=false,water=false)
     @id         = id
@@ -51,6 +181,7 @@ class ItemData
     @flags      = []
     @durability  = durability
 	@durability = 100 if durability==false && ((GameData::Item.get(@id).is_tool? && @id != :STONE) || (GameData::Item.get(@id).is_foodwater? && GameData::Item.get(@id).has_flag?("NoSpoiling")) || GameData::Item.get(@id).is_berry?)
+    @max_durability  = @durability
     @water      = water
     @water      = 0 if water==false && (GameData::BerryPlant::WATERING_CANS.include?(@id) || @id == :WATERBOTTLE || @id == :GLASSBOTTLE)
     @damage_bonus      = 0
@@ -86,7 +217,6 @@ class ItemData
     @bottle  = nil if @bottle.nil?
     return @bottle
    end
-
     def get_catch_rate_multi(id)
 	  return 1 if id==:POKEBALLC
 	  return 1.5 if id==:GREATBALLC
@@ -147,9 +277,17 @@ class ItemData
     end	
     
 	def set_bottle(bottle)
-	  puts bottle.id
 	  @bottle = bottle
 	end
+	
+	
+    def max_durability #A System chiefly used by POKeBALL's to decide it's more prominent effects.
+	if @max_durability.nil?
+     @max_durability = 100 
+	 @durability = @max_durability
+	 end
+	 return @max_durability
+	end	 
 	
 	
     def modifiers #A System chiefly used by POKeBALL's to decide it's more prominent effects.
@@ -162,6 +300,10 @@ class ItemData
 	  return GameData::Item.get(@id).name
 	end
 
+	def description
+	  return GameData::Item.get(@id).description
+	end
+	
    def berry_stats
     @berry_stats = berry_stats_defs if @berry_stats.nil?
     return @berry_stats
@@ -176,7 +318,17 @@ class ItemData
     @food_water_stats = food_water_defs if @food_water_stats.nil?
     return @food_water_stats
    end
-
+   
+   def stack_size
+	 return data.stack_size if defined?(data.stack_size)
+	 return 3 if (data.is_weapon? && !data.is_dart? && @id!=:STONE && @id!=:BAIT) || @id==:WATERBOTTLE || GameData::BerryPlant::WATERING_CANS.include?(@id) || (data.is_foodwater? && !data.is_berry?)
+	 return 3 if data.is_medicine?
+	 return 6 if data.is_dart? || @id==:GLASSBOTTLE
+	 return 12 if data.is_pokeball?
+	 return 24 if data.is_berry? && !data.is_apricorn?
+     return 36
+     return Settings::BAG_MAX_PER_SLOT	 
+   end
 
 
    def damage_bonus
@@ -278,6 +430,7 @@ class ItemData
 
 
     def decrease_durability(amt)
+	 return false if @durability==false
      @durability-=amt
 	 if @durability<=0
 	 $bag.remove(self,1)
@@ -293,7 +446,7 @@ class ItemData
 	
     def increase_durability(amt)
      @durability+=amt
-	 @durability=100 if @durability>100
+	 @durability=@max_durability if @durability>@max_durability
     end
 	
 	def flags_add(flag)
@@ -303,8 +456,10 @@ class ItemData
 	def flags_remove(flag)
 	  @flags.remove(flag)
 	end
-
-
+   def data
+    return GameData::Item.get(@id)
+   end
+ 
 
 	def view_flags
 	 flags = []
@@ -335,7 +490,8 @@ class ItemData
 	end
 
    def identical(item)
-     return @id==item.id && @flags==item.flags && @durability==item.durability && @water==item.water && @modifiers==item.modifiers
+     return @id==item if item.is_a?(Symbol)
+     return @id==item.id && @flags==item.flags && @durability==item.durability && @water==item.water && @modifiers==item.modifiers if item.is_a?(ItemData)
    end
 end
 
@@ -418,6 +574,7 @@ module GameData
 	
 	
     def is_foodwater?;       return has_flag?("FoodWater"); end   # Does NOT include Red Orb/Blue Orb
+    def is_water?;       return has_flag?("Water"); end   # Does NOT include Red Orb/Blue Orb
     def is_medicine?;        return has_flag?("Medicine"); end
     def is_offitem?;         return has_flag?("OffItem"); end   # Does NOT include Red Orb/Blue Orb
     def is_tool?;            return has_flag?("Tool"); end
@@ -432,6 +589,7 @@ module GameData
     def is_hmitem?;            return has_flag?("HMItem"); end
     def is_placeitem?;            return has_flag?("PlacingItem"); end
     def is_pokeball?;            return has_flag?("PokeBall"); end
+    def is_apricorn?;            return has_flag?("Apricorn"); end
   
       TOOLS = [:IRONPICKAXE,:SHOVEL,:MACHETE,:IRONAXE,:IRONHAMMER,:POLE,:OLDROD,:GOODROD,:SUPERROD,:RAFT,:PARAGLIDER]
 
@@ -486,7 +644,6 @@ module ItemStorageHelper
   
   def self.hasflagamt(items)
     ret = 0
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
     items.each_with_index do |item_slot, i|
       next if !item_slot ||!GameData::Item.get(item_slot[0].id).is_pokeball?
       ret = item_slot[1]
@@ -496,10 +653,9 @@ module ItemStorageHelper
 
   def self.whatpkballs(items)
     ret = []
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
     items.each_with_index do |item_slot, i|
       next if !item_slot ||!GameData::Item.get(item_slot[0].id).is_pokeball?
-      ret = item_slot[1]
+      ret = item_slot
     end
     return ret
   end
@@ -509,8 +665,15 @@ module ItemStorageHelper
   # Returns the quantity of item in items
   def self.quantity(items, item)
     ret = 0
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
 	item = get_item_data(item) if item.is_a?(Symbol)
+    items.each_with_index do |item_slot, index| 
+	  ret += item_slot[1] if item_slot && item_slot[0].identical(item)
+	 end
+    return ret
+  end
+  
+  def self.quantity_of_sym(items, item)
+    ret = 0
     items.each_with_index do |item_slot, index| 
 	  ret += item_slot[1] if item_slot && item_slot[0].identical(item)
 	 end
@@ -518,7 +681,6 @@ module ItemStorageHelper
   end
 
   def self.can_add?(items, max_slots, max_per_slot, item, qty)
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
 	item = get_item_data(item) if item.is_a?(Symbol)
     raise "Invalid value for qty: #{qty}" if qty < 0
     return true if qty == 0
@@ -561,7 +723,6 @@ module ItemStorageHelper
 
   
     def self.get_index(items, max_slots, max_per_slot, item, qty)
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
 	item = get_item_data(item) if item.is_a?(Symbol)
     raise "Invalid value for qty: #{qty}" if qty < 0
     return true if qty == 0
@@ -578,7 +739,6 @@ module ItemStorageHelper
   
   # Deletes an item (items array, max. size per slot, item, no. of items to delete)
   def self.remove(items, item, qty)
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
 	item = get_item_data(item) if item.is_a?(Symbol)
 	if GameData::Item.get(item).id==:CAPTURESTYLUS && $player.is_it_this_class?(:RANGER)
 	 pbMessage(_INTL("You can't throw away a Capture Styler!"))
@@ -629,11 +789,45 @@ class PokemonBag
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
-	  if itm.is_tool? || itm.id == :PORTABLECAMP
+	  if itm.is_tool?  || item.name.to_s.include?("Bottle")
       items << item
 	  end
 	end
 	end
+	 items = items.uniq { |item| item.id }
+    return items
+  end
+  def isWeaponinInventory
+    items = []
+	$bag.pockets.each do |pocket| 
+	next if pocket.nil?
+	pocket.each do |i| 
+	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
+	  item = i[0] 
+      itm = GameData::Item.get(item)
+	  if itm.is_weapon? || itm.is_pokeball?
+      items << item
+	  end
+	end
+	end
+	 items = items.uniq { |item| item.id }
+    return items
+  end
+  def isBattleIteminInventory
+    items = []
+	$bag.pockets.each do |pocket| 
+	next if pocket.nil?
+	pocket.each do |i| 
+	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
+	  item = i[0] 
+      itm = GameData::Item.get(item)
+	  if (itm.is_berry? && itm.name.include?("Berry")) || itm.is_foodwater? || itm.name.include?("Potion") || itm.id==:REVIVALHERB || itm.is_dart? || itm.id==:HEALPOWDER || itm.id==:ENERGYPOWDER || itm.id==:ENERGYROOT || itm.is_pokeball?
+      items << item
+	  end
+
+	end
+	end
+	 items = items.uniq { |item| item.id }
     return items
   end
   def isPlacableinInventory
@@ -644,11 +838,12 @@ class PokemonBag
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
-	  if itm.is_placeitem? && itm.id!=:PORTABLECAMP
+	  if itm.is_placeitem?
       items << item
 	  end
 	end
 	end
+	 items = items.uniq { |item| item.id }
     return items
   end
   def amtwithFlag?
@@ -667,16 +862,27 @@ class PokemonBag
 
 
   def quantity(item, durability = false, water = false)
-    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
-	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
+    item_data = GameData::Item.try_get(item)
     return 0 if !item_data
     pocket = item_data.pocket
     return ItemStorageHelper.quantity(@pockets[pocket], item)
   end
 
-  def has?(item, qty = 1, durability = false, water = false)
-    return quantity(item, durability, water) >= qty
+
+  def quantity_sym(item, durability = false, water = false)
+    item = GameData::Item.get(item).id if item.is_a? ItemData
+    item_data = GameData::Item.try_get(item)
+    return 0 if !item_data
+    pocket = item_data.pocket
+    return ItemStorageHelper.quantity_of_sym(@pockets[pocket], item)
+  end
+
+  def has?(item, qty = 1, sym=false,durability = false, water = false)
+    if sym==true && item.is_a?(ItemData)
+	   item = item.id
+	 end
+    return quantity_sym(item, durability, water) >= qty && item.is_a?(Symbol)
+    return quantity(item, durability, water) >= qty && item.is_a?(ItemData)
   end
   
   
@@ -685,26 +891,26 @@ class PokemonBag
   def can_add?(item, qty = 1, durability = false, water = false)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
+    item_data = GameData::Item.try_get(item)
     return false if !item_data
     pocket = item_data.pocket
     max_size = max_pocket_size(pocket)
     max_size = @pockets[pocket].length + 1 if max_size < 0   # Infinite size
     return ItemStorageHelper.can_add?(
-      @pockets[pocket], max_size, Settings::BAG_MAX_PER_SLOT, item_data.id, qty
+      @pockets[pocket], max_size, item.stack_size, item, qty
     )
   end
 
   def add(item, qty = 1, durability = false, water = false)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
+    item_data = GameData::Item.try_get(item)
     return false if !item_data
     pocket = item_data.pocket
     max_size = max_pocket_size(pocket)
     max_size = @pockets[pocket].length + 1 if max_size < 0   # Infinite size
     ret = ItemStorageHelper.add(@pockets[pocket],
-                                max_size, Settings::BAG_MAX_PER_SLOT, item, qty)
+                                max_size, item.stack_size, item, qty)
     if ret && Settings::BAG_POCKET_AUTO_SORT[pocket - 1]
       @pockets[pocket].sort! { |a, b| GameData::Item.keys.index(a[0]) <=> GameData::Item.keys.index(b[0]) }
     end
@@ -722,7 +928,7 @@ class PokemonBag
   def remove(item, qty = 1, durability = false, water = false)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
+    item_data = GameData::Item.try_get(item)
 	return true if ($player.is_it_this_class?(:COLLECTOR) && rand(100)<=20)
     return false if !item_data
     pocket = item_data.pocket
@@ -765,28 +971,17 @@ class PokemonBag
 
   # Returns whether item has been registered for quick access in the Ready Menu.
   def registered?(item)
-    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
-	 item = ItemStorageHelper.get_item_data(item_id) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
-    return false if !item_data
-    return @registered_items.include?(item_data.id)
+    return $PokemonGlobal.hud_favorites.include?(item)
   end
 
   # Registers the item in the Ready Menu.
   def register(item)
-    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
-	 item = ItemStorageHelper.get_item_data(item_id) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
-    return if !item_data
-    @registered_items.push(item_data.id) if !@registered_items.include?(item_data.id)
+    $PokemonGlobal.hud_favorites.push(item) if !@registered_items.include?(item)
   end
 
   # Unregisters the item from the Ready Menu.
   def unregister(item)
-    item_id = GameData::Item.get(item).id if !item.is_a? ItemData
-	 item = ItemStorageHelper.get_item_data(item_id) if !item.is_a? ItemData
-    item_data = GameData::Item.try_get(item.id)
-    @registered_items.delete(item_data.id) if item_data
+    $PokemonGlobal.hud_favorites.delete(item)
   end
 
 
@@ -983,6 +1178,8 @@ class PokemonItemSummary_Scene
     pbPrepareWindow(@sprites["Water"])
     @sprites["Water"].viewport=@viewport
     @sprites["Water"].windowskin=nil
+    @sprites["Water"].baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    @sprites["Water"].shadowColor=MessageConfig::DARK_TEXT_SHADOW_COLOR
     @sprites["Water"].width=180
     @sprites["Water"].height=100
     @sprites["Water"].zoom_x = 0.80

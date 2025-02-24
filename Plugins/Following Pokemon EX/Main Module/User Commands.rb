@@ -76,12 +76,6 @@ module FollowingPkmn
   def self.talk
     return false if !FollowingPkmn.can_talk?(true)
     return false if !$game_temp || $game_temp.in_battle || $game_temp.in_menu
-    facing = pbFacingTile
-    if !FollowingPkmn.active? || !$game_map.passable?(facing[1], facing[2], $game_player.direction, $game_player)
-      $game_player.straighten
-      EventHandlers.trigger(:on_player_interact)
-      return false
-    end
     event = FollowingPkmn.get_event
     pbTurnTowardEvent(event, $game_player)
     first_pkmn = FollowingPkmn.get_pokemon

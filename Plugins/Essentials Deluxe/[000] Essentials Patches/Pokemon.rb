@@ -23,13 +23,6 @@ class Pokemon
     return form_stats || base_stats
   end
   
-  alias dx_initialize initialize  
-  def initialize(*args)
-    dx_initialize(*args)
-    @trainer_ace = false
-    @scale = rand(256)
-  end
-  
   # Compatibility across multiple plugins.
   def dynamax?;   return false; end
   def gmax?;      return false; end

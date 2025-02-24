@@ -2,11 +2,11 @@
 
 #Call Crafts.craftWindow
 module Crafts  
-  def self.craftWindow(type,panels)
+  def self.craftWindow(type,panels, data)
 #  $DiscordRPC.details = "Cooking a Tasty Meal!"
 #  $DiscordRPC.update
   craftScene=Crafts_Scene.new
-  craftScene.pbStartScene(type,panels)
+  craftScene.pbStartScene(type, panels, data)
   craft=craftScene.pbSelectcraft
   craftScene.pbEndScene
  end
@@ -26,7 +26,7 @@ class Crafts_Scene
     window.letterbyletter=false
   end
   
-  def pbStartScene(type,amt)
+  def pbStartScene(type, amt, displaydata)
     @viewport=Viewport.new(0,0,Graphics.width,Graphics.height)
     @viewport.z=99999
     @sprites={}
@@ -34,6 +34,7 @@ class Crafts_Scene
 	@amt = amt+1
 	@ramt = amt
 	@type = type
+	@event_data = displaydata
 	@potato = 0
     @selection=0
     @quant=1
@@ -42,8 +43,8 @@ class Crafts_Scene
 	@items=[]
    @itemsdata=[{},{},{},{}]
 	@quants=[]
-	 $value=0
-	 $coal=0
+    @fuel_amt=@event_data.fuel
+	$coal=0
 	
 	
 	
@@ -66,7 +67,12 @@ class Crafts_Scene
     @sprites["background"].setBitmap(bitmap)
     @sprites["background"].z = 0 
     @sprites["headerstrip"]=IconSprite.new(0,0,@viewport)
-    @sprites["headerstrip"].setBitmap("Graphics/Pictures/craftingMenu/HeaderStrip")
+	if pbResolveBitmap("Graphics/Pictures/craftingMenu/HeaderStrip#{@type.to_s}")
+	  bitmawfwap = "Graphics/Pictures/craftingMenu/HeaderStrip#{type.to_s}"
+	else
+	  bitmawfwap = "Graphics/Pictures/craftingMenu/HeaderStrip"
+	end
+    @sprites["headerstrip"].setBitmap(bitmawfwap)
     @sprites["headerstrip"].z = 1
     @sprites["overlay"]=BitmapSprite.new(Graphics.width,Graphics.height,@viewport)
     @sprites["overlay"].z = 99 
@@ -85,7 +91,7 @@ class Crafts_Scene
 	  when 5
 	   fx = 32
 	 end
-	
+	  fyy = 40
 	 @amt.times do |i|
 	  
 	 @items << :NO
@@ -93,11 +99,30 @@ class Crafts_Scene
     @sprites["quant#{i}"]=Window_UnformattedTextPokemon.new("")
     pbPrepareWindow(@sprites["quant#{i}"])
 	 if i == @ramt
-    @sprites["quant#{i}"].x=fx+6+(64*(i+1))
-	 else
-    @sprites["quant#{i}"].x=fx+6+(64*i)
-	 end 
+    @sprites["quant#{i}"].x=fx+6+(64*(i+1)) if @type!=:GRINDER
+    @sprites["quant#{i}"].x=(128+6+(10+64*(2+1)))  if @type==:GRINDER
     @sprites["quant#{i}"].y=180
+	 else
+	 
+	 
+	  if @type==:FURNACE
+         @sprites["quant#{i}"].x=fx+6+(32)
+	     puts i
+	    case i
+		 when 0
+          @sprites["quant#{i}"].y=180+fyy
+		 when 1
+          @sprites["quant#{i}"].y=180-fyy
+		  else
+          @sprites["quant#{i}"].y=180
+		 end
+	  else
+    @sprites["quant#{i}"].x=fx+6+(64*i)
+    @sprites["quant#{i}"].y=180
+	  end
+
+
+	 end 
     @sprites["quant#{i}"].width=Graphics.width-48
     @sprites["quant#{i}"].height=Graphics.height
     @sprites["quant#{i}"].baseColor=Color.new(240,240,240)
@@ -111,11 +136,27 @@ class Crafts_Scene
     @sprites["craft#{i}"]=Window_UnformattedTextPokemon.new("")
     pbPrepareWindow(@sprites["craft#{i}"])
 	 if i == @ramt
-    @sprites["craft#{i}"].x=fx-8+(64*(i+1))
-	 else
-    @sprites["craft#{i}"].x=fx-8+(64*i)
-	 end 
+    @sprites["craft#{i}"].x=fx-8+(64*(i+1)) if @type!=:GRINDER
+    @sprites["craft#{i}"].x=(128-8+(10+64*(2+1))) if @type==:GRINDER
     @sprites["craft#{i}"].y=200
+	 else
+	  
+	  if @type==:FURNACE
+	    case i
+		 when 0
+          ty=200+fyy
+		 when 1
+          ty=200-fyy
+		 else
+          ty=200
+		 end
+    @sprites["craft#{i}"].x=fx-8+(32)
+    @sprites["craft#{i}"].y=ty
+	  else
+    @sprites["craft#{i}"].x=fx-8+(64*i)
+    @sprites["craft#{i}"].y=200
+	  end
+	 end 
     @sprites["craft#{i}"].width=Graphics.width-48
     @sprites["craft#{i}"].height=Graphics.height
     @sprites["craft#{i}"].baseColor=Color.new(0,0,0)
@@ -128,16 +169,33 @@ class Crafts_Scene
 	
 	
 	 if i == @ramt
-    @icons["item#{i}"]=IconSprite.new(fx+(64*(i+1)),168,@viewport)
+    @icons["item#{i}"]=IconSprite.new(fx+(64*(i+1)),168,@viewport) if @type!=:GRINDER
+    @icons["item#{i}"]=IconSprite.new(128+(10+64*(2+1)),168,@viewport) if @type==:GRINDER
 	 else
+	 
+	  if @type==:FURNACE
+	     puts i
+	    case i
+		 when 0
+          ty=168+fyy
+		 when 1
+          ty=168-fyy
+		 else
+          ty=168
+		 end
+      @icons["item#{i}"]=IconSprite.new(fx+(32),ty,@viewport)
+	  else
     @icons["item#{i}"]=IconSprite.new(fx+(64*i),168,@viewport)
+	  end
+
 	 end 
     @icons["item#{i}"].setBitmap(GameData::Item.icon_filename(@items[i]))
     @icons["item#{i}"].z = 2 
 	
 	
 	
-    @icons["box#{i}"]=IconSprite.new(@icons["item#{i}"].x,168,@viewport)
+
+    @icons["box#{i}"]=IconSprite.new(@icons["item#{i}"].x,@icons["item#{i}"].y,@viewport)
     @icons["box#{i}"].setBitmap("Graphics/Pictures/craftingMenu/bgBox")
     @icons["box#{i}"].z= 1
 	
@@ -146,8 +204,13 @@ class Crafts_Scene
 	
 	
 	
-    @icons["resulte"]=IconSprite.new((@icons["item#{@amt-1}"].x)-54,180,@viewport)
-    @icons["resulte"].setBitmap("Graphics/Pictures/craftingMenu/Result Box")
+    @icons["resulte"]=IconSprite.new((@icons["item#{@amt-1}"].x)-54,@sprites["quant#{@amt-1}"].y,@viewport)
+	if pbResolveBitmap("Graphics/Pictures/craftingMenu/ResultBox#{@type.to_s}")
+	  bitmaprggrsg = "Graphics/Pictures/craftingMenu/ResultBox#{type.to_s}"
+	else
+	  bitmapsgrrgs = "Graphics/Pictures/craftingMenu/ResultBox"
+	end
+    @icons["resulte"].setBitmap(bitmaprggrsg)
 	
 	
 	#if @amt<5
@@ -155,7 +218,7 @@ class Crafts_Scene
 	#else
     #@selectX=100-((@amt-4)*60)
 	#end
-    @selectY=168
+    @selectY=@icons["item0"].y
 	
     @icons["selector"]=IconSprite.new(@selectX,@selectY,@viewport)
     @icons["selector"].setBitmap("Graphics/Pictures/craftingMenu/craftSelect")
@@ -174,7 +237,22 @@ class Crafts_Scene
     @sprites["craftResult"].shadowColor=colors[1]
     @sprites["craftResult"].visible=true
     @sprites["craftResult"].viewport=@viewport
-    #@sprites["craftResult"].windowskin=nil
+	   amt = ""
+	   amt = "Fuel:
+	 #{@event_data.fuel.to_s}" if @type == :FURNACE
+	   amt = "Stamina:
+	 #{$player.playerstamina}/#{$player.playermaxstamina}" if @type == :GRINDER
+    @sprites["fuel"]=Window_UnformattedTextPokemon.new(amt)
+	
+    pbPrepareWindow(@sprites["fuel"])
+    @sprites["fuel"].x=5
+    @sprites["fuel"].y=35
+    @sprites["fuel"].resizeToFit(@event_data.fuel.to_s,Graphics.width)
+	colors = getDefaultTextColors(@sprites["fuel"].windowskin)
+    @sprites["fuel"].baseColor=colors[0]
+    @sprites["fuel"].shadowColor=colors[1]
+    @sprites["fuel"].visible=false
+    @sprites["fuel"].viewport=@viewport
 	
 	
     pbDeactivateWindows(@sprites)
@@ -187,7 +265,6 @@ class Crafts_Scene
 
 
   def pbEndScene
-	 $value=0
 	 $coal=0
     pbFadeOutAndHide(@icons)
     pbDisposeSpriteHash(@icons)
@@ -211,10 +288,22 @@ class Crafts_Scene
   end
   
 
-
-
-
-
+  def get_clicked_on
+	  @amt.times do |i|
+       icon_x = @icons["box#{i}"].x+ $PokemonSystem.screenposx
+       icon_y = @icons["box#{i}"].y + $PokemonSystem.screenposy
+       if Input.mouse_x.between?(icon_x, icon_x + @icons["box#{i}"].width) && Input.mouse_y.between?(icon_y, icon_y + @icons["box#{i}"].height)
+    # The mouse click is on this icon, do something here
+	      @selectX=@icons["item#{i}"].x
+	      @selectY=@icons["item#{i}"].y
+          @icons["selector"].x=@selectX
+          @icons["selector"].y=@selectY
+	       return i
+           puts "Clicked on icon #{i}"
+        end
+	  end
+	  return nil
+  end
 # Script that manages button inputs  
   def pbSelectcraft
     overlay=@sprites["overlay"].bitmap
@@ -222,67 +311,23 @@ class Crafts_Scene
     pbSetSystemFont(overlay)
     pbDrawImagePositions(overlay,@imagepos)
 	coal = nil
-if @type==:FURNACE
-pbFadeOutIn(99999){
-scene = PokemonBag_Scene.new
-screen = PokemonBagScreen.new(scene,$PokemonBag)
-$coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
-coal = $coal.id
-}
-	 if !coal.nil?
-	 if coal == :CHARCOAL
-  	   $value=3
-	 elsif coal == :COAL
-  	   $value=2
-	 elsif coal == :ACORN
-  	   $value=10
-	 elsif coal == :WOODENLOG
-  	   $value=5
-	 elsif coal == :WOODENPLANKS
-  	   $value=8
-	 elsif coal == :HEATROCK
-  	   $value=1
-	 elsif coal == :FIRESTONE
-  	   $value=1
-	 end
- end
-
-	if coal.nil?
-      @sprites["craftResult"].windowskin=nil
-	  @sprites["craftResult"].text=""
-	  
-	  @amt.times do |i|
-       @sprites["craft#{i}"].text=""
-       @sprites["quant#{i}"].text=""
-      end
-	 pbFadeOutAndHide(@icons)
-	 pbFadeOutAndHide(@sprites)
-	     @sprites.each_key do |key|
-          @sprites[key].visible=false
-          @sprites.delete(key)
-        end
-	     @icons.each_key do |key|
-          @icons[key].visible=false
-          @icons.delete(key)
-        end
-	  return -1
-	else
-           @items[0]=coal
-	
-	end
-
-end	
-	
-	
 	
     while true
     Graphics.update
+	$PokemonGlobal.addNewFrameCount
       Input.update
       self.update
+	  stamina_management_for_ov if @items.empty? && rand(2)==0
       @icons["selector"].x=@selectX
       @icons["selector"].y=@selectY
-      
-	  
+	   amt = ""
+	   amt = "Fuel:
+	 #{@event_data.fuel.to_s}" if @type == :FURNACE
+	   amt = "Stamina:
+	 #{$player.playerstamina}/#{$player.playermaxstamina}" if @type == :GRINDER
+      @sprites["fuel"].text=amt
+      @sprites["fuel"].resizeToFit(amt,Graphics.width)
+      @sprites["fuel"].visible=true if @type==:FURNACE || @type == :GRINDER
 	  #puts @items.to_s
 	  @amt.times do |i|
 	    if @items[i].is_a? Array
@@ -347,6 +392,7 @@ end
 		 oranges = ""
     end
 
+	    @selection = get_clicked_on if !get_clicked_on.nil?
 	  
       if Input.trigger?(Input::LEFT) #SELECTING POSITION
         pbSEPlay("GUI sel cursor")
@@ -356,6 +402,7 @@ end
           @selection-=1
         end
         @selectX=@icons["item#{@selection}"].x
+        @selectY=@icons["item#{@selection}"].y
 		
 		
 		
@@ -369,12 +416,13 @@ end
           @selection+=1
         end
         @selectX=@icons["item#{@selection}"].x
+        @selectY=@icons["item#{@selection}"].y
       end
 	  
 	  
 	  
 	  
-      if Input.trigger?(Input::UP) || Input.repeat?(Input::UP)  #INCREASING QUANTITY
+      if Input.trigger?(Input::UP) || Input.repeat?(Input::UP) || Input.repeat?(Input::JUMPUP) || Input.trigger?(Input::JUMPUP) || Input.scroll_v==1#A #INCREASING QUANTITY
         pbSEPlay("GUI sel cursor")
         if @quant>99
           @quant=1
@@ -383,7 +431,7 @@ end
         end
 	    set_remove_quant
       end
-      if Input.trigger?(Input::DOWN) || Input.repeat?(Input::DOWN) #DECREASING QUANTITY
+      if Input.trigger?(Input::DOWN) || Input.repeat?(Input::DOWN) || Input.repeat?(Input::JUMPDOWN) || Input.trigger?(Input::JUMPDOWN) || Input.scroll_v==-1#A#DECREASING QUANTITY
         pbSEPlay("GUI sel cursor")
         if @quant==1
           @quant=100
@@ -427,69 +475,36 @@ pbFadeOutIn(99999){
 scene = PokemonBag_Scene.new
 screen = PokemonBagScreen.new(scene,$PokemonBag)
 $coal = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_coal? })
-coal = $coal.id
+coal = $coal
 }
 	 if coal
+	  coal = coal.id
 	 if coal == :CHARCOAL
-  	   $value=3
+  	   @event_data.fuel+=4
 	 elsif coal == :COAL
-  	   $value=2
+  	   @event_data.fuel+=8
 	 elsif coal == :ACORN
-  	   $value=6
+  	   @event_data.fuel+=0.5
 	 elsif coal == :WOODENLOG
-  	   $value=4
+  	   @event_data.fuel+=2
+	 elsif coal == :WOODENSTICKS
+  	   @event_data.fuel+=0.5
 	 elsif coal == :WOODENPLANKS
-  	   $value=6
+  	   @event_data.fuel+=1
 	 elsif coal == :HEATROCK
-  	   $value=1
+  	   @event_data.fuel+=16
 	 elsif coal == :FIRESTONE
-  	   $value=1
+  	   @event_data.fuel+=32
 	 end
+     $bag.remove(coal,1)
  end
-
-	if $coal.nil?
-      @sprites["craftResult"].windowskin=nil
-	  @sprites["craftResult"].text=""
-	  
-	  @amt.times do |i|
-       @sprites["craft#{i}"].text=""
-       @sprites["quant#{i}"].text=""
-      end
-	 pbFadeOutAndHide(@icons)
-	 pbFadeOutAndHide(@sprites)
-	     @sprites.each_key do |key|
-          @sprites[key].visible=false
-          @sprites.delete(key)
-        end
-	     @icons.each_key do |key|
-          @icons[key].visible=false
-          @icons.delete(key)
-        end
-	  return -1
-	else
-           @items[0]=$coal
-			@quants[@selection]=@quant
-		    crafts = CraftsList.getcrafts(@type)		
-           if pbCheckRecipe(@items[0...-1])
-			   if @items[@items.length-1].is_a? Array
-              @items[@items.length-1]=crafts[@currentArray][0]
-			  else
-              @items[@items.length-1]=crafts[@currentArray][0]
-              @quants[@ramt]=1
-			  end
-		       set_remove_quant
-           end
-
-		
-		
-	
-	end
-		 
+	 
+		    @quant = 1
 		else  
 		  
 		    @items[@ramt]=:NO
            item=pbChooseItem
-		   
+		    @quant = 1
 		    if item.nil?
 		      @items[@selection] = :NO 
              @itemsdata[@selection] = {}
@@ -604,7 +619,7 @@ coal = $coal.id
              @sprites["craftResult"].text=_INTL("You crafted #{@quants[@ramt]*@quant} #{GameData::Item.get(item).name}(s)!")
 		   end
 		  else
-		    if item == :BOWL || item == :GLASSBOTTLE || item == :WATERBOTTLE
+		    if item == :BOWL || item == :GLASSBOTTLE || item == :WATERBOTTLE || item == :WATER || item == :FRESHWATER
 			 bottleindex = index
 			end
 		    removeamt = get_remove_amt(item)*@quant
@@ -615,7 +630,16 @@ coal = $coal.id
   
   
            item = ItemData.new(finalitem)
-		    item.set_bottle(@itemsdata[bottleindex]) if !bottleindex.nil?
+		    item.max_durability = 10 if finalitem == :WHITEFLUTE || finalitem == :BLACKFLUTE
+		    item.max_durability = 25 if finalitem == :BOWL || finalitem == :GLASSBOTTLE || finalitem == :WATERBOTTLE
+			 if !bottleindex.nil?
+			  bottle = @itemsdata[bottleindex] if @itemsdata[bottleindex].bottle.nil?
+			  bottle = @itemsdata[bottleindex].bottle if !@itemsdata[bottleindex].bottle.nil?
+		    item.set_bottle(bottle)
+			
+			end
+			@event_data.fuel-=(@quants[@ramt-1]*@quant) if @type==:FURNACE
+			$player.playerstamina-=((@quants[@ramt-1]*@quant)*2) if @type==:GRINDER
 		    $bag.add(item,@quants[@ramt]*@quant)
            @sprites["craftResult"].text=_INTL("You crafted #{@quants[@ramt]*@quant} #{GameData::Item.get(item).name}(s)!")
 			  pbWait(60)
@@ -827,23 +851,48 @@ end
 		   next if index == 0
 		   next if item.is_a? TrueClass
 		   next if item.is_a? FalseClass
+		    theitem = nil
+			 quant = 1
 		   if item.is_a? Array
-		    if $bag.quantity(item[0])<(item[1]*@quant)
-			  
-             @sprites["craftResult"].text=_INTL("You don't have enough #{item[0]}!")
-			  pbWait(80)
-             @sprites["craftResult"].text=_INTL("")
-		      return false
-			end
+		    theitem = item[0]
+			 quant = item[1]
 		   else
-		    if $bag.quantity(item)<@quant
-             @sprites["craftResult"].text=_INTL("You don't have enough #{item}!")
+		    theitem = item
+			 quant = 2
+		   end
+
+           itemName = GameData::Item.get(theitem).name
+		   	if $bag.quantity(theitem)<(quant*@quant)
+             @sprites["craftResult"].text=_INTL("You don't have enough #{itemName}!")
 			  pbWait(80)
              @sprites["craftResult"].text=_INTL("")
 		      return false
 			end
-		   
-		   end
+		   	if @type==:FURNACE && @event_data.fuel==0
+             @sprites["craftResult"].text=_INTL("The Furnace does not have enough fuel!")
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
+		      return false
+			end
+		   	if @type==:FURNACE && @event_data.fuel<(quant*@quant)
+             @sprites["craftResult"].text=_INTL("The Furnace does not have enough fuel for that many items!")
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
+		      return false
+			end
+		   	if @type==:GRINDER && $player.playerstamina==0
+             @sprites["craftResult"].text=_INTL("You are too tired to grind down more items!")
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
+		      return false
+			end
+		   	if @type==:GRINDER && $player.playerstamina<((quant*@quant)*2)
+             @sprites["craftResult"].text=_INTL("You are too tired to grind down that many items!")
+			  pbWait(80)
+             @sprites["craftResult"].text=_INTL("")
+		      return false
+			end
+
 		  end
 		  
 		  

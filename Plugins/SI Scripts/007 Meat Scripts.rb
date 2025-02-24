@@ -67,7 +67,7 @@
     end
     if pkmn.species != :SLOWPOKE
 		$bag.add(food_item,amt)
-		itemAnim(:RAREBONE,1) if !$game_temp.in_battle
+		itemAnim(food_item.id,amt) if !$game_temp.in_battle
 	end
     if rand(12)==0
 		$bag.add(:RAREBONE,1)

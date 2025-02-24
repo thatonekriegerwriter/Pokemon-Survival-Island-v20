@@ -37,16 +37,20 @@ def pbExportAllTheMaps
  @ravine=[81]
  @map_types = [@temperate_forest,@temperate_highlands,@temperate_marsh,@deep_marsh,@frigid_highlands,@deep_caves,@tropical_coast,@ssglittering,@temperate_ocean,@deep_forest,@northern_highlands,@western_shores,@western_temperate,
  @western_caves,@western_jungle,@oil_tanker,@ravine] 
+	puts "======================================================="
  @map_types.each do |sub_type|
   sub_type.each do |map_id|
-  MarinMapExporter.new(map_id, [])
+  MarinMapExporter.new(map_id, [:events])
   end
  end
+ 
+	puts "FINISHED ENTIRELY."
 end
 
 def pbExportMap(id = nil, options = [])
   MarinMapExporter.new(id, options)
 end
+
 
 def pbExportAMap
   vp = Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -110,9 +114,18 @@ MenuHandlers.add(:debug_menu, :exportmap, {
   "effect"      => proc { |sprites, viewport| pbExportAMap }
 })
 
+MenuHandlers.add(:debug_menu, :exportmap2, {
+  "name"        => "Export all Map",
+  "parent"      => :field_menu,
+  "description" => "Choose a map to export it as a PNG.",
+  "effect"      => proc { |sprites, viewport| pbExportAllTheMaps }
+})
+
 class MarinMapExporter
   def initialize(id = nil, options = [])
     @id = id || $game_map.map_id
+	return if pbLoadMapInfos[id].nil?
+	puts "BEGINNING EXPORT OF #{pbLoadMapInfos[@id].name.upcase} (#{@id})" 
     @options = options
     @data = load_data("Data/Map#{@id.to_digits}.rxdata")
     @tiles = @data.data
@@ -163,7 +176,10 @@ class MarinMapExporter
       @result.blt($game_player.x * 32 + 16 - bmp.width / 8, ($game_player.y + 1) * 32 - bmp.height / 4,
           bmp, Rect.new(0, bmp.height / 4 * (dir / 2 - 1), bmp.width / 4, bmp.height / 4))
     end
-    @result.save_to_png("Graphics/Pictures/EncounterUI/#{@id}.png")
+	puts "FINISHING EXPORT OF #{pbLoadMapInfos[@id].name.upcase} (#{@id})"
+    @result.save_to_png("maps/#{@id}.png")
+	puts "FINISHED EXPORT OF #{pbLoadMapInfos[@id].name.upcase} (#{@id})" 
+	puts "=======================================================" 
     Input.update
   end
   

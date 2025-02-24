@@ -1606,7 +1606,6 @@ MenuHandlers.add(:party_menu_item, :move, {
 MenuHandlers.add(:party_menu, :tend, {
   "name"      => _INTL("Tend"),
   "order"     => 39,
-  "condition" => proc { |screen, party, party_idx| next $PokemonSystem.playermode == 1 },
   "effect"    => proc { |screen, party, party_idx|    # Get all commands
     command_list = []
     commands = []
@@ -1624,31 +1623,90 @@ MenuHandlers.add(:party_menu, :tend, {
 
 
 
+
+MenuHandlers.add(:party_menu_tend, :milk, {
+  "name"      => _INTL("Milk"),
+  "order"     => 9,
+  "condition" => proc { |screen, party, party_idx| next party[party_idx].species == :MILTANK && !party[party_idx].dead?},
+  "effect"    => proc { |screen, party, party_idx|
+    pkmn = party[party_idx]
+    time_delta = pbGetTimeNow.to_i - pkmn.time_last_milk
+	if time_delta < 3600*4
+      pbMessage(_INTL("{1} has been milked recently.",pkmn.name))
+	next 0 
+	end
+	 if pkmn.species != :MILTANK
+      pbMessage(_INTL("You cannot milk a {1}.",pkmn.species))
+    elsif !$bag.has?(:WATERBOTTLE) && !$bag.has?(:GLASSBOTTLE)
+      pbMessage(_INTL("You do not have something to put Milk in."))
+	 else 
+	  item2 = nil
+    pbFadeOutIn {
+      scene = PokemonBag_Scene.new
+      screen = PokemonBagScreen.new(scene, $bag)
+	  item2 = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).id == :GLASSBOTTLE || GameData::Item.get(item).id == :WATERBOTTLE })
+    }
+	 return if item2.nil?
+	 return if item2==false
+	 message = (_INTL("I AM ERROR")) 
+     message=(_INTL("Store Milk in your Bottle?")) if item2.id == :GLASSBOTTLE
+     message=(_INTL("Store Milk in your Canteen?")) if item2.id == :WATERBOTTLE
+	   if pbConfirmMessage(message)
+	    item = ItemData.new(:MOOMOOMILK)
+        item2.decrease_durability(1)
+		 item.set_bottle(item2)
+       $bag.add(item,1)
+       $bag.remove(item2,1)
+      pbMessage(_INTL("You got some milk.",pkmn.species))
+	  pkmn.time_last_milk = pbGetTimeNow.to_i
+      end
+	end
+  }
+})
+
+
 MenuHandlers.add(:party_menu_tend, :pet, {
   "name"      => _INTL("Pet"),
   "order"     => 10,
+  "condition" => proc { |screen, party, party_idx| next !party[party_idx].dead?},
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
+    time_delta = pbGetTimeNow.to_i - pkmn.time_last_pet
+	if time_delta < 3600
+      pbMessage(_INTL("{1} has been pet recently. You shouldn't spoil them.",pkmn.name))
+	next 0 
+	end
       pkmn.changeHappiness("groom",pkmn)
       pbMessage(_INTL("You pet {1}!",pkmn.name))
       pkmn.cute += 5
+	  pkmn.time_last_pet = pbGetTimeNow.to_i
   }
 })
 
 MenuHandlers.add(:party_menu_tend, :groom, {
   "name"      => _INTL("Groom"),
   "order"     => 15,
+  "condition" => proc { |screen, party, party_idx| next !party[party_idx].dead?},
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
+    time_delta = pbGetTimeNow.to_i - pkmn.time_last_brush
+	if time_delta < 3600
+      pbMessage(_INTL("{1} has been brushed recently. You shouldn't spoil them.",pkmn.name))
+	next 0 
+	end
       pkmn.changeLoyalty("groom",pkmn)
       pbMessage(_INTL("You brush {1}!",pkmn.name))
       pkmn.beauty += 5
+	  pkmn.time_last_brush = pbGetTimeNow.to_i
   }
 })
+
+
 
 MenuHandlers.add(:party_menu_tend, :nickname, {
   "name"      => _INTL("Nickname"),
   "order"     => 16,
+  "condition" => proc { |screen, party, party_idx| next !party[party_idx].dead?},
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
       species = pkmn.speciesName
@@ -1668,10 +1726,10 @@ MenuHandlers.add(:party_menu_tend, :nickname, {
 	  end
   }
 })
-
 MenuHandlers.add(:party_menu_tend, :feed, {
   "name"      => _INTL("Feed"),
   "order"     => 20,
+  "condition" => proc { |screen, party, party_idx| next !party[party_idx].dead?},
   "effect"    => proc { |screen, party, party_idx|
     pkmn = party[party_idx]
     pbEatingPkmn(pkmn)
@@ -1681,7 +1739,7 @@ MenuHandlers.add(:party_menu_tend, :feed, {
 MenuHandlers.add(:party_menu_tend, :nap, {
   "name"      => _INTL("Let Nap"),
   "order"     => 30,
-  "condition" => proc { |screen, party, party_idx| next party[party_idx].status == :NONE},
+  "condition" => proc { |screen, party, party_idx| next party[party_idx].status == :NONE && !party[party_idx].dead?},
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
       newHP = pkmn.hp + rand(51)
@@ -1698,7 +1756,7 @@ MenuHandlers.add(:party_menu_tend, :nap, {
 MenuHandlers.add(:party_menu_tend, :wake, {
   "name"      => _INTL("Wake Up"),
   "order"     => 35,
-  "condition" => proc { |screen, party, party_idx| next party[party_idx].status == :SLEEP},
+  "condition" => proc { |screen, party, party_idx| next party[party_idx].status == :SLEEP && !party[party_idx].dead? },
   "effect"    => proc { |screen, party, party_idx|
       pkmn = party[party_idx]
       chance = rand(100)
@@ -1745,6 +1803,23 @@ MenuHandlers.add(:party_menu_tend, :evolve, {
     }
   }
 })
+
+
+
+
+MenuHandlers.add(:party_menu_tend, :slaughter, {
+  "name"      => _INTL("Slaughter"),
+  "order"     => 35,
+  "condition" => proc { |screen, party, party_idx| next !(party[party_idx].egg? || party[party_idx].shadowPokemon?) && party[party_idx].dead?},
+  "effect"    => proc { |screen, party, party_idx|
+      pkmn = party[party_idx]
+    if pbConfirmMessage(_INTL("Are you sure you want to prepare your #{pkmn.name} for food?"))
+	 pbCookMeat(pkmn)
+	end
+  }
+})
+
+
 
 
 #===============================================================================

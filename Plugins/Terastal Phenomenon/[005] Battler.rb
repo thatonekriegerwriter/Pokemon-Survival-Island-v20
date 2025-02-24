@@ -147,10 +147,4 @@ class Pokemon
     end
   end
   
-  alias tera_initialize initialize  
-  def initialize(*args)
-    @tera_type = GameData::Species.get(args[0]).types.sample
-    @terastallized = false
-    tera_initialize(*args)
-  end
 end

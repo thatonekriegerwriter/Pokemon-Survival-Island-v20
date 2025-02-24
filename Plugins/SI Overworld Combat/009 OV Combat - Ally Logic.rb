@@ -3,9 +3,13 @@ class OverworldCombat
   
 def check_battle_obedience(event,directing=false)
   pkmn = event.pokemon
-  return true if event.is_a?(Game_PokeEvent)
+ 
+
   return disobeying(pkmn,directing) if rand(100)+1<= pkmn.calculate_disobedience_chance(pkmn.loyalty,pkmn.happiness)
 
+
+  disobedient |= !pbHyperModeObedience(choice[2])
+  return true if !disobedient
 end  
 
   
@@ -56,267 +60,84 @@ end
 
 
 def player_pokemonattack(user,target,move,distance)
-   return if move.category == 2
-	 if user.attack_opportunity>0
+   if move.pp == 0
+	  sideDisplay("#{move.name} does not have enough PP!")
+   return 
+   end
+   #return if !check_battle_obedience(event)
+   if user.attack_opportunity>0
 	  sideDisplay("#{user.pokemon.name} is too winded to use #{move.name}!")
 	  return 
-	 end
-	 puts user.id
-	 puts user
-	 puts user.pokemon.name
-   if addAlly(user.id,user)
-   pokemon = user
-   target = target
+   end
+    addAlly(user.id,user) if !hasAlly?(user.id,user)
+    pokemon = user
+    target = target
 	pokemon.add_target(target.id,target)
    accuracy   = move.accuracy
    accbonus = 0
+   user_target = move.category == 2 && move.target == :User
    will_hit = rand(100) < (accuracy+accbonus)
-   @backattack,@sideattack,@baddir = getdirissues(target.direction,user.direction)
-   return if move.pp == 0
-   start_glow(user) if will_hit
-   
-   
-   
-	  return if user.attack_opportunity>0
-     if move.category == 0 && distance==1
-	 
-	 
-	    #pbMessage("\\ts[]" + (_INTL"#{pokemon.name} used #{move.name}!\\wtnp[10]"))
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  return if user.attack_opportunity>0
-       is_hitting(user,target,move)
-	    
-	    if target.is_a?(Game_PokeEvent)
-		target.angry_at << user if !target.angry_at.include?(user)
-		target.battle_timer-=5 if target.battle_timer>0
-		target.battle_timer=0 if target.battle_timer<0
-		end
-    else
-	      sideDisplay("#{pokemon.pokemon.name} missed!")
+   will_hit = true if user_target
+   start_glow(user) if will_hit && !user_target
+   if !will_hit
+      sideDisplay("#{pokemon.pokemon.name} missed!")
       pbSEPlay("Miss")
-	  #pbMessage("\\ts[]" + (_INTL"#{pokemon.name} missed!\\wtnp[10]"))
-    end
-
-
-	 
-	 
-	 
-	 
-	 
-	 
-     
-	 elsif move.category == 0 && distance>1
-	 
-	 
-	  sideDisplay("#{pokemon.pokemon.name} is too far away to use #{move.name}!")
-	 
-	 
-	 
-	 
-	 
-	    
-	 elsif move.category == 1
-	 
-	  sideDisplay("#{pokemon.pokemon.name} is gathering energy!!")
-	 
-	 
-	 
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  return if user.attack_opportunity>0
-       is_hitting(user,target,move)
-	   
-	    if target.is_a?(Game_PokeEvent)
-		target.angry_at << user if !target.angry_at.include?(user)
-		target.battle_timer-=5 if target.battle_timer>0
-		target.battle_timer=0 if target.battle_timer<0
-		end
-    else
-	  sideDisplay("#{pokemon.pokemon.name} missed!")
-      pbSEPlay("Miss")
-    end
-
-
-	 
-	 
-	 elsif move.category == 2
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  if doesStatus?(move)
-	  sideDisplay("#{pokemon.pokemon.name} used #{move.name}!")
-	  if will_hit==true
-	  if target.status_turns.nil?
-		 target.status_turns=0
-		end
-		target.status_turns-=1 if  target.status_turns>0
-		if target.status_turns==0
-		 target.status=:NONE
-		end
-	 returneffects = applyStatus(pokemon,target,move,pokemon.pokemon,target.pokemon,0) if rand(100) < 26
-	  end
-	  else
-	  sideDisplay("#{move.name} has not been implemented!")
-	  return
-	  end
-	 end
-	 end
-
-
-
-   elsif hasAlly?(user.id,user)
-   
-   
-   pokemon = user
-   target = target
-   accuracy   = move.accuracy
-   accbonus = 0
-   will_hit = rand(100) < (accuracy+accbonus)
-   @backattack,@sideattack,@baddir = getdirissues(target,user)
-   
-   
-   
-   
-   
-	  return if user.attack_opportunity>0
-     if move.category == 0 && distance==1
-	 
-	 
-	 
-	 
-	 
-	    #pbMessage("\\ts[]" + (_INTL"#{pokemon.name} used #{move.name}!\\wtnp[10]"))
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-	 
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  #return if move.pp == 0
-	  return if user.attack_opportunity>0
-       is_hitting(user,target,move)
-	    
-	    if target.is_a?(Game_PokeEvent)
-		target.angry_at << user if !target.angry_at.include?(user)
-		target.battle_timer-=5 if target.battle_timer>0
-		target.battle_timer=0 if target.battle_timer<0
-		end
-    else
-	  sideDisplay("#{pokemon.pokemon.name} missed!")
-      pbSEPlay("Miss")
-	  #pbMessage("\\ts[]" + (_INTL"#{pokemon.name} missed!\\wtnp[10]"))
-    end
-
-
-	 
-	 
-	 
-	 
-	 
-	 
-     
-	 elsif move.category == 0 && distance>1
-	 
-	 
-	  sideDisplay("#{pokemon.pokemon.name} is too far away to use #{move.name}!")
-	  user.attack_opportunity=0
-	  return
-	 
-	    #pbMessage("\\ts[]" + (_INTL"#{pokemon.name} is too far away to use #{move.name}!\\wtnp[10]"))
-	 
-	 
-	 
-	 
-	    
-	 elsif move.category == 1
-	 
-	 
-	 
-	  sideDisplay("#{pokemon.pokemon.name} is gathering energy!")
-
-	 
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  return if user.attack_opportunity>0
-       is_hitting(user,target,move)
-	   
-	    if target.is_a?(Game_PokeEvent)
-		target.angry_at << user if !target.angry_at.include?(user)
-		target.battle_timer-=5 if target.battle_timer>0
-		target.battle_timer=0 if target.battle_timer<0
-		end
-    else
-	  sideDisplay("#{pokemon.pokemon.name} missed!")
-      pbSEPlay("Miss")
-    end
-
-
-	 
-	 
-	 elsif move.category == 2
-    if will_hit==true
-	  move.pp -= 1
-	  move.pp = 0 if move.pp<0
-	  if doesStatus?(move)
-	  if will_hit==true
-	  if target.status_turns.nil?
-		 target.status_turns=0
-		end
-		target.status_turns-=1 if  target.status_turns>0
-		if target.status_turns==0
-		 target.status=:NONE
-		end
-	 returneffects = applyStatus(pokemon,target,move,pokemon,target,0) if rand(100) < 26
-	  end
-	  else
-	  sideDisplay("#{move.name} has not been implemented!")
-	  user.attack_opportunity=0
-	  return
-	  end
-	 end
-	 end
-
-
-
-   else
-   
-   
-   
-   
-   
-     raise _INTL("Could not add \"{1}\".", user.pokemon.name)
-	 
-	 
-	 
+      user.attack_opportunity+=30
+      return
    end
-   user.attack_opportunity+=30
+   move.pp -= 1
+   move.pp = 0 if move.pp<0 
+   pbMessage("\\ts[]" + (_INTL"#{pokemon.name} used #{move.name} with a distance of zero!")) if move.category==0 && distance==0
+   sideDisplay("#{pokemon.pokemon.name} began rushing #{target.pokemon.name} down!") if move.category==0 && distance>1
+   sideDisplay("#{pokemon.pokemon.name} is gathering energy!") if move.category==1
+   sideDisplay("#{pokemon.pokemon.name} focused!") if move.category==2
+
+
+
    
-       target.battle_timer = 5 if target.is_a?(Game_PokeEvent)
-	   #puts "Battle Timer: #{target.battle_timer}"
-	 target.remaining_steps+=1 if target.remaining_steps
+   if move.category!=2
+   if move.category==0 and distance>1
+      moving = attack_movement(pokemon,target,3)
+	  if moving==false
+      sideDisplay("#{pokemon.pokemon.name} missed!")
+      pbSEPlay("Miss")
+      user.attack_opportunity+=30
+      return 
+	  end
+   end
+   
+   user.last_attacked = target if !user_target
+   is_hitting(user,target,move,distance)
+   if target.is_a?(Game_PokeEvent)
+	target.angry_at << user if !target.angry_at.include?(user)
+	target.battle_timer-=5 if target.battle_timer>0
+	target.battle_timer=0 if target.battle_timer<0
+	target.remaining_steps+=1 if target.remaining_steps
+   end
+   else
+  	  if doesStatus?(move)
+	    sideDisplay("#{pokemon.pokemon.name} used #{move.name}!")
+	    target.status_turns=0 if target.status_turns.nil?
+	    target.status_turns-=1 if  target.status_turns>0
+	    target.status=:NONE if target.status_turns==0
+	    returneffects = applyStatus(pokemon,target,move,pokemon.pokemon,target.pokemon,0) if rand(100) < 26
+	  else
+	    sideDisplay("#{move.name} has not been implemented!")
+	  end
+   end
+   
+   
+
+   
+   user.attack_opportunity+=30
+	$hud.createaChargeBar(user) if user.attack_opportunity>=0
+   return
 end
 
-def autobattle(attacker) 
-   
+def autobattle(attacker,target,distance) 
+
+   move = chooseMove(attacker,target,distance)
+   player_pokemonattack(attacker,target,move,distance)
 end
 
 

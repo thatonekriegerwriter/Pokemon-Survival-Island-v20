@@ -27,12 +27,7 @@ class Pokemon
     return if value && !GameData::Focus.exists?(value)
     @focus_style = (value) ? GameData::Focus.get(value).id : value
   end
-  
-  alias focus_initialize initialize
-  def initialize(*args)
-    focus_initialize(*args)
-    @focus_style = Settings::FOCUS_STYLE_DEFAULT
-  end
+
 end
 
 #===============================================================================

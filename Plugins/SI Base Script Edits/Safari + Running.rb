@@ -1,3 +1,322 @@
+class Game_Temp
+  attr_accessor :disable_intro_anim
+
+  def disable_intro_anim
+    @disable_intro_anim = false if @disable_intro_anim.nil?
+    return @disable_intro_anim
+  end
+
+end
+if false
+
+#===============================================================================
+# Shows the battle scene fading in while elements slide around into place
+#===============================================================================
+class Battle::Scene::Animation::Intro2 < Battle::Scene::Animation
+  def initialize(sprites, viewport, battle)
+    @battle = battle
+    super(sprites, viewport)
+  end
+
+  def createProcesses
+    appearTime = 20   # This is in 1/20 seconds
+    # Background
+    if @sprites["battle_bg2"]
+      makeSlideSprite("battle_bg", 0.5, appearTime)
+      makeSlideSprite("battle_bg2", 0.5, appearTime)
+    end
+    # Bases
+    makeSlideSprite("base_0", 1, appearTime, PictureOrigin::BOTTOM)
+    makeSlideSprite("base_1", -1, appearTime, PictureOrigin::CENTER)
+    # Player sprite, partner trainer sprite
+	if $PokemonGlobal.in_dungeon==true
+	
+	elsif $game_temp.disable_intro_anim==true
+
+	else
+    @battle.player.each_with_index do |_p, i|
+      makeSlideSprite("player_#{i + 1}", 1, appearTime, PictureOrigin::BOTTOM)
+    end
+	end
+    # Opposing trainer sprite(s) or wild Pokémon sprite(s)
+    if @battle.trainerBattle?
+      @battle.opponent.each_with_index do |_p, i|
+        makeSlideSprite("trainer_#{i + 1}", -1, appearTime, PictureOrigin::BOTTOM)
+      end
+    else   # Wild battle
+      @battle.pbParty(1).each_with_index do |_pkmn, i|
+        idxBattler = (2 * i) + 1
+        makeSlideSprite("pokemon_#{idxBattler}", -1, appearTime, PictureOrigin::BOTTOM)
+      end
+    end
+    # Shadows
+    @battle.battlers.length.times do |i|
+      makeSlideSprite("shadow_#{i}", (i.even?) ? 1 : -1, appearTime, PictureOrigin::CENTER)
+    end
+    # Fading blackness over whole screen
+    blackScreen = addNewSprite(0, 0, "Graphics/Battle animations/black_screen")
+    blackScreen.setZ(0, 999)
+    blackScreen.moveOpacity(0, 8, 0)
+    # Fading blackness over command bar
+    blackBar = addNewSprite(@sprites["cmdBar_bg"].x, @sprites["cmdBar_bg"].y,
+                            "Graphics/Battle animations/black_bar")
+    blackBar.setZ(0, 998)
+    blackBar.moveOpacity(appearTime * 3 / 4, appearTime / 4, 0)
+  end
+
+  def makeSlideSprite(spriteName, deltaMult, appearTime, origin = nil)
+    # If deltaMult is positive, the sprite starts off to the right and moves
+    # left (for sprites on the player's side and the background).
+    return if !@sprites[spriteName]
+    s = addSprite(@sprites[spriteName], origin)
+    s.setDelta(0, (Graphics.width * deltaMult).floor, 0)
+    s.moveDelta(0, appearTime, (-Graphics.width * deltaMult).floor, 0)
+  end
+end
+
+
+
+
+
+
+
+
+#===============================================================================
+# Shows a Pokémon being sent out on the player's side (including by a partner).
+# Includes the Poké Ball being thrown.
+#===============================================================================
+class Battle::Scene::Animation::PokeballPlayerSendOut2 < Battle::Scene::Animation
+  include Battle::Scene::Animation::BallAnimationMixin
+
+  def initialize(sprites, viewport, idxTrainer, battler, startBattle, idxOrder = 0)
+    @idxTrainer     = idxTrainer
+    @battler        = battler
+    @showingTrainer = startBattle
+    @idxOrder       = idxOrder
+    @trainer        = @battler.battle.pbGetOwnerFromBattlerIndex(@battler.index)
+    sprites["pokemon_#{battler.index}"].visible = false
+    @shadowVisible = sprites["shadow_#{battler.index}"].visible
+    sprites["shadow_#{battler.index}"].visible = false
+    super(sprites, viewport)
+  end
+
+  def createProcesses
+    batSprite = @sprites["pokemon_#{@battler.index}"]
+    shaSprite = @sprites["shadow_#{@battler.index}"]
+    traSprite = @sprites["player_#{@idxTrainer}"]
+    # Calculate the Poké Ball graphic to use
+    poke_ball = (batSprite.pkmn) ? batSprite.pkmn.poke_ball : nil
+    # Calculate the color to turn the battler sprite
+    col = getBattlerColorFromPokeBall(poke_ball)
+    col.alpha = 255
+    # Calculate start and end coordinates for battler sprite movement
+    ballPos = Battle::Scene.pbBattlerPosition(@battler.index, batSprite.sideSize)
+    battlerStartX = ballPos[0]   # Is also where the Ball needs to end
+    battlerStartY = ballPos[1]   # Is also where the Ball needs to end + 18
+    battlerEndX = batSprite.x
+    battlerEndY = batSprite.y
+
+    # Set up battler sprite
+    battler = addSprite(batSprite, PictureOrigin::BOTTOM)
+    battler.setXY(0, battlerStartX, battlerStartY)
+    battler.setZoom(0, 0)
+    battler.setColor(0, col)
+    # Battler animation
+    delay = 0
+    battlerAppear(battler, delay, battlerEndX, battlerEndY, batSprite, col)
+    if @shadowVisible
+      # Set up shadow sprite
+      shadow = addSprite(shaSprite, PictureOrigin::CENTER)
+      shadow.setOpacity(0, 0)
+      # Shadow animation
+      shadow.setVisible(delay, @shadowVisible)
+      shadow.moveOpacity(delay + 5, 10, 255)
+    end
+  end
+end
+
+
+class Battle::Scene2
+ def pbInitSprites
+    @sprites = {}
+    # The background image and each side's base graphic
+    pbCreateBackdropSprites
+    # Create message box graphic
+    messageBox = pbAddSprite("messageBox", 0, Graphics.height - 96,
+                             "Graphics/Pictures/Battle/overlay_message", @viewport)
+    messageBox.z = 195
+    # Create message window (displays the message)
+    msgWindow = Window_AdvancedTextPokemon.newWithSize(
+      "", 16, Graphics.height - 96 + 2, Graphics.width - 32, 96, @viewport
+    )
+    msgWindow.z              = 200
+    msgWindow.opacity        = 0
+    msgWindow.baseColor      = MESSAGE_BASE_COLOR
+    msgWindow.shadowColor    = MESSAGE_SHADOW_COLOR
+    msgWindow.letterbyletter = true
+    @sprites["messageWindow"] = msgWindow
+    # Create command window
+    @sprites["commandWindow"] = CommandMenu.new(@viewport, 200)
+    # Create fight window
+    @sprites["fightWindow"] = FightMenu.new(@viewport, 200)
+    # Create targeting window
+    @sprites["targetWindow"] = TargetMenu.new(@viewport, 200, @battle.sideSizes)
+    pbShowWindow(MESSAGE_BOX)
+    # The party lineup graphics (bar and balls) for both sides
+    2.times do |side|
+      partyBar = pbAddSprite("partyBar_#{side}", 0, 0,
+                             "Graphics/Pictures/Battle/overlay_lineup", @viewport)
+      partyBar.z       = 120
+      partyBar.mirror  = true if side == 0   # Player's lineup bar only
+      partyBar.visible = false
+      NUM_BALLS.times do |i|
+        ball = pbAddSprite("partyBall_#{side}_#{i}", 0, 0, nil, @viewport)
+        ball.z       = 121
+        ball.visible = false
+      end
+      # Ability splash bars
+      if USE_ABILITY_SPLASH
+        @sprites["abilityBar_#{side}"] = AbilitySplashBar.new(side, @viewport)
+      end
+    end
+    # Player's and partner trainer's back sprite
+    @battle.player.each_with_index do |p, i|
+	   if $PokemonGlobal.in_dungeon==true && !@battle.opposes?(i)
+	
+	  elsif $game_temp.disable_intro_anim==true && !@battle.opposes?(i)
+
+	  else
+      pbCreateTrainerBackSprite(i, p.trainer_type, @battle.player.length)
+	  end
+    end
+    # Opposing trainer(s) sprites
+    if @battle.trainerBattle?
+      @battle.opponent.each_with_index do |p, i|
+        pbCreateTrainerFrontSprite(i, p.trainer_type, @battle.opponent.length)
+      end
+    end
+    # Data boxes and Pokémon sprites
+    @battle.battlers.each_with_index do |b, i|
+      next if !b
+      @sprites["dataBox_#{i}"] = PokemonDataBox.new(b, @battle.pbSideSize(i), @viewport)
+      pbCreatePokemonSprite(i)
+    end
+    # Wild battle, so set up the Pokémon sprite(s) accordingly
+    if @battle.wildBattle?
+      @battle.pbParty(1).each_with_index do |pkmn, i|
+        index = (i * 2) + 1
+        pbChangePokemon(index, pkmn)
+        pkmnSprite = @sprites["pokemon_#{index}"]
+        pkmnSprite.tone    = Tone.new(-80, -80, -80)
+        pkmnSprite.visible = true
+      end
+    end
+  end
+  
+  def pbCreateTrainerBackSprite(idxTrainer, trainerType, numTrainers = 1)
+    if idxTrainer == 0   # Player's sprite
+      trainerFile = GameData::TrainerType.player_back_sprite_filename(trainerType)
+    else   # Partner trainer's sprite
+      trainerFile = GameData::TrainerType.back_sprite_filename(trainerType)
+    end
+    spriteX, spriteY = Battle::Scene.pbTrainerPosition(0, idxTrainer, numTrainers)
+    trainer = pbAddSprite("player_#{idxTrainer + 1}", spriteX, spriteY, trainerFile, @viewport)
+    return if trainer.nil?
+    return if !trainer.bitmap
+    # Alter position of sprite
+    trainer.z = 80 + idxTrainer
+    if trainer.bitmap.width > trainer.bitmap.height * 2
+      trainer.src_rect.x     = 0
+      trainer.src_rect.width = trainer.bitmap.width / 5
+    end
+    trainer.ox = trainer.src_rect.width / 2
+    trainer.oy = trainer.bitmap.height
+  end
+
+
+  #=============================================================================
+  # Animates a trainer's sprite and party lineup hiding (if they are visible).
+  # Animates a Pokémon being sent out into battle, then plays the shiny
+  # animation for it if relevant.
+  # sendOuts is an array; each element is itself an array: [idxBattler,pkmn]
+  #=============================================================================
+  def pbSendOutBattlers(sendOuts, startBattle = false)
+    return if sendOuts.length == 0
+    # If party balls are still appearing, wait for them to finish showing up, as
+    # the FadeAnimation will make them disappear.
+    while inPartyAnimation?
+      pbUpdate
+    end
+    @briefMessage = false
+    # Make all trainers and party lineups disappear (player-side trainers may
+    # animate throwing a Poké Ball)
+    if @battle.opposes?(sendOuts[0][0])
+      fadeAnim = Animation::TrainerFade.new(@sprites, @viewport, startBattle)
+    else
+      fadeAnim = Animation::PlayerFade.new(@sprites, @viewport, startBattle)
+    end
+    # For each battler being sent out, set the battler's sprite and create two
+    # animations (the Poké Ball moving and battler appearing from it, and its
+    # data box appearing)
+    sendOutAnims = []
+    sendOuts.each_with_index do |b, i|
+      pkmn = @battle.battlers[b[0]].effects[PBEffects::Illusion] || b[1]
+      pbChangePokemon(b[0], pkmn)
+      pbRefresh
+      if @battle.opposes?(b[0])
+        sendOutAnim = Animation::PokeballTrainerSendOut.new(
+          @sprites, @viewport, @battle.pbGetOwnerIndexFromBattlerIndex(b[0]) + 1,
+          @battle.battlers[b[0]], startBattle, i
+        )
+      else
+        sendOutAnim = Animation::PokeballPlayerSendOut.new(
+          @sprites, @viewport, @battle.pbGetOwnerIndexFromBattlerIndex(b[0]) + 1,
+          @battle.battlers[b[0]], startBattle, i
+        )
+      end
+      dataBoxAnim = Animation::DataBoxAppear.new(@sprites, @viewport, b[0])
+      mementoAnim = Animation::BattlerMemento.new(@sprites, @viewport, @battle, b[0])
+      sendOutAnims.push([sendOutAnim, mementoAnim, dataBoxAnim, false])
+    end
+    # Play all animations
+    loop do
+      fadeAnim.update
+      sendOutAnims.each do |a|
+        next if a[3]
+        a[0].update 
+        a[1].update if a[0].animDone?
+        a[2].update if a[1].animDone?
+        a[3] = true if a[2].animDone?
+      end
+      pbUpdate
+      if !inPartyAnimation? && sendOutAnims.none? { |a| !a[3] }
+        break
+      end
+    end
+    fadeAnim.dispose
+    sendOutAnims.each do |a|
+      a[0].dispose
+      a[1].dispose
+      a[1].dispose
+      a[2].dispose
+    end
+    # Play shininess animations for shiny Pokémon
+    sendOuts.each do |b|
+      next if !@battle.showAnims || !@battle.battlers[b[0]].shiny?
+      if Settings::SUPER_SHINY && @battle.battlers[b[0]].super_shiny?
+        pbCommonAnimation("SuperShiny", @battle.battlers[b[0]])
+      else
+        pbCommonAnimation("Shiny", @battle.battlers[b[0]])
+      end
+    end
+  end
+
+
+end
+
+
+end
+
 class Battle
   #=============================================================================
   # Running from battle
@@ -321,7 +640,6 @@ class PokemonEncounters
   # chance. Called when taking a step and by Rock Smash.
   
   def choose_wild_pokemon(enc_type, chance_rolls = 1)
-    puts "hi there"
     if !enc_type || !GameData::EncounterType.exists?(enc_type)
       raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
     end
@@ -689,11 +1007,12 @@ class Battle
     # Register captured Pokémon in the Pokédex, and store them
     pbRecordAndStoreCaughtPokemon
     # Collect Pay Day money in a wild battle that ended in a capture
-    pbGainMoney if @decision == 4
+  #  pbGainMoney if @decision == 4
     # Pass on Pokérus within the party
     if @internalBattle
       infected = []
       $player.party.each_with_index do |pkmn, i|
+	     next if pkmn.nil?
         infected.push(i) if pkmn.pokerusStage == 1
       end
       infected.each do |idxParty|
@@ -753,6 +1072,10 @@ class Battle::FakeBattler
   attr_reader :index
   attr_reader :pokemon
   attr_reader :owned
+  attr_accessor :statusCount
+  attr_accessor :status
+  attr_accessor :item_id
+  attr_accessor :ability_id
   attr_accessor :attackFactor
   attr_accessor :catchFactor
   attr_accessor :escapeFactor
@@ -761,6 +1084,10 @@ class Battle::FakeBattler
     @battle  = battle
     @pokemon = battle.party2[0]
     @index   = index
+    @status         = :NONE
+    @statusCount    = 0
+    @ability_id     = nil
+    @item_id        = nil
     @attackFactor   = 0
     @catchFactor   = 0
     @escapeFactor   = 0
@@ -905,6 +1232,7 @@ class Battle::Scene::SafariDataBox < Sprite
   end
 
   def refresh
+	 @battle.ballType = nil if @battle.ballType==0
     self.bitmap.clear
     self.bitmap.blt(0, 0, @databox.bitmap, Rect.new(0, 0, @databox.width, @databox.height))
     base   = Color.new(255, 255, 255)
@@ -1348,7 +1676,7 @@ def pbSafariBalls
                            proc { |item| useType = GameData::Item.get(item).is_pokeball?}, false)
     # Loop while in Bag screen
     wasTargeting = false
-	item = 0
+	item = nil
     loop do
       # Select an item
       item = itemScene.pbChooseItem
@@ -1725,7 +2053,7 @@ end
   
 
   if rand<rate
-	  if caller.shadowPokemon
+	  if caller.shadowPokemon?
         injury = rand(50)+1
         pbDisplay(_INTL("The incoming attack hits {2} for {1} Damage!", injury, pbPlayer.name))
 	  damagePlayer(injury)
@@ -2212,21 +2540,29 @@ end
 	     next if i==0
         next if @decision != 0
 	     pkmn = battler.pokemon
-		 @decision = 1 if pkmn.fainted? && pbDisplayPaused(_INTL("You've knocked out {1}! ",pkmn.name))
+		 puts @decision
+		  if pkmn.fainted?
+		   pbDisplayPaused(_INTL("You've knocked out {1}! ",pkmn.name))
+		   @decision = 1
+		  end
+		 puts @decision
 		 next if pkmn.fainted?
         enemy_turn(battler)
        end
 
+		 puts @decision
 	    if $player.playerhealth <=0
 		 pbDisplayPaused(_INTL("You've died to {1}! ",pkmn.name))
 		 @decision = 2
 		end
 
-
+		  
 
 		if @decision.is_a?(Array)
+        pbPlayerEXP(pkmn,$player.able_party) if @decision[0] == 4 || @decision[0] == 1
         break if @decision[0] > 0
 		else
+	      pbPlayerEXP(pkmn,$player.able_party) if @decision == 4 || @decision == 1
         break if @decision > 0
 		end
 		
@@ -2509,6 +2845,59 @@ class Battle::Peer
   def pbCurrentBox
     return $PokemonStorage.currentBox if !$PokemonStorage.nil?
 	return nil
+  end
+
+
+
+end
+
+
+
+class Battle::Move
+
+  def pbCalcDamage(user, target, numTargets = 1)
+    return if statusMove?
+    if target.damageState.disguise || target.damageState.iceFace
+      target.damageState.calcDamage = 1
+      return
+    end
+    stageMul = [2, 2, 2, 2, 2, 2, 2, 3, 4, 5, 6, 7, 8]
+    stageDiv = [8, 7, 6, 5, 4, 3, 2, 2, 2, 2, 2, 2, 2]
+    # Get the move's type
+    type = @calcType   # nil is treated as physical
+    # Calculate whether this hit deals critical damage
+    target.damageState.critical = pbIsCritical?(user, target)
+    # Calcuate base power of move
+    baseDmg = pbBaseDamage(@baseDamage, user, target)
+    # Calculate user's attack stat
+    atk, atkStage = pbGetAttackStats(user, target)
+    if !target.hasActiveAbility?(:UNAWARE) || @battle.moldBreaker
+      atkStage = 6 if target.damageState.critical && atkStage < 6
+      atk = (atk.to_f * stageMul[atkStage] / stageDiv[atkStage]).floor
+    end
+    # Calculate target's defense stat
+    defense, defStage = pbGetDefenseStats(user, target)
+    if !user.hasActiveAbility?(:UNAWARE)
+      defStage = 6 if target.damageState.critical && defStage > 6
+      defense = (defense.to_f * stageMul[defStage] / stageDiv[defStage]).floor
+    end
+    # Calculate all multiplier effects
+    multipliers = {
+      :base_damage_multiplier  => 1.0,
+      :attack_multiplier       => 1.0,
+      :defense_multiplier      => 1.0,
+      :final_damage_multiplier => 1.0
+    }
+    pbCalcDamageMultipliers(user, target, numTargets, type, baseDmg, multipliers)
+	multipliers[:base_damage_multiplier]*= 1.25 if !user.pbOwnedByPlayer?
+	multipliers[:final_damage_multiplier]*= 1.25 if !user.pbOwnedByPlayer?
+    # Main damage calculation
+    baseDmg = [(baseDmg * multipliers[:base_damage_multiplier]).round, 1].max
+    atk     = [(atk     * multipliers[:attack_multiplier]).round, 1].max
+    defense = [(defense * multipliers[:defense_multiplier]).round, 1].max
+    damage  = ((((2.0 * user.level / 5) + 2).floor * baseDmg * atk / defense).floor / 50).floor + 2
+    damage  = [(damage * multipliers[:final_damage_multiplier]).round, 1].max
+    target.damageState.calcDamage = damage
   end
 
 

@@ -22,11 +22,13 @@ class Game_Map
     event.pages[0].through = false #Sets movement type.
     event.pages[0].trigger = 0 #Action Button
     #--- event commands of the event -------------------------------------
-	Compiler::push_script(event.pages[0].list,sprintf("ov_mining2(#{object})"))
+    Compiler::push_script(event.pages[0].list,("object = get_own_event"))
+    Compiler::push_script(event.pages[0].list,("ov_mining2(object.type) if defined?(object.type)"))
+    Compiler::push_script(event.pages[0].list,("object.removeThisEventfromMap"))
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_Event ------------------------------------
-    gameEvent = Game_ObjectEvent.new(object, @map_id, event, self)
+    gameEvent = Game_OVEvent.new(object, @map_id, event, self)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.type = object
@@ -61,17 +63,17 @@ end
 
 def getObjectImage2(object)
 	case object #CAULDRON, CraftingStation, 
-	when :TUMBLESTONE
+	when :TUMBLEROCK
 	 image = "Legends_Tumblestone"
 	when :STONE
+	 image = "Object rock"
+	when :IRONORE
 	 image = "Legends_Tumblestone"
-	when :IRON2
+	when :GOLDORE
 	 image = "Legends_Tumblestone"
-	when :GOLD2
+	when :SILVERORE
 	 image = "Legends_Tumblestone"
-	when :SILVER2
-	 image = "Legends_Tumblestone"
-	when :COPPER2
+	when :COPPERORE
 	 image = "Legends_Tumblestone"
 	when :COAL
 	 image = "Legends_Tumblestone"

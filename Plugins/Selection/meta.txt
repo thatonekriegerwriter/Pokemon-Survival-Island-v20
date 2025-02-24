@@ -1,5 +1,0 @@
-Name = Selection
-Version = 1
-Essentials = 20.1
-Credits = Kotaro
-Link = https://reliccastle.com/resources/906/

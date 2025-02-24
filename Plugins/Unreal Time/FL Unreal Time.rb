@@ -62,7 +62,7 @@ module UnrealTime
   # So if it is 100, one second in real time will be 100 seconds in game.
   # If it is 60, one second in real time will be one minute in game.
   #PROPORTION=900
-  PROPORTION=60
+  PROPORTION=30
 
   # Starting on Essentials v17, the map tone only try to refresh tone each 30 
   # real time seconds. 
@@ -129,7 +129,7 @@ module UnrealTime
   # Does the same thing as EXTRA_SECONDS variable.
   def self.add_seconds(seconds)
     raise "Method doesn't work when TIME_STOPS is false!" if !TIME_STOPS
-    $PokemonGlobal.newFrameCount+=(seconds*Graphics.frame_rate)/PROPORTION.to_f
+    $PokemonGlobal.newFrameCount+=seconds/PROPORTION.to_f
     PBDayNight.sheduleToneRefresh
   end
 
@@ -197,10 +197,8 @@ def pbGetTimeNow
   start_time=UnrealTime.initial_date
   if UnrealTime::TIME_STOPS
     time_played=$PokemonGlobal.newFrameCount
-  else
-    time_played=Graphics.frame_count
   end
-  time_played=(time_played*UnrealTime::PROPORTION)/Graphics.frame_rate
+  time_played=(time_played*UnrealTime::PROPORTION)
   time_jumped=0
   if UnrealTime::EXTRA_SECONDS>-1 
     time_jumped+=pbGet(UnrealTime::EXTRA_SECONDS)
@@ -285,14 +283,17 @@ if UnrealTime::ENABLED
     attr_accessor :extraYears 
     
     def addNewFrameCount
-      return if (UnrealTime::SWITCH_STOPS>0 && 
-        $game_switches[UnrealTime::SWITCH_STOPS])		
+      return if (UnrealTime::SWITCH_STOPS>0 && $game_switches[UnrealTime::SWITCH_STOPS])		
+	    if $game_temp.just_update_anyways==false
+	   return if $game_temp.in_menu==true && !($DEBUG && Input.press?(Input::CTRL))
+	   return if $game_temp.message_window_showing==true && $PokemonGlobal.alternate_control_mode==false
+	     end
         deposited = pbDayCareDeposited
-       if deposited==2 && day_care.egg_generated==0
+       if deposited==2 && day_care.egg_generated==0 && rand(10)==0
         day_care.step_counter = 0 if !day_care.egg_generated
-        day_care.step_counter += 1
+        day_care.step_counter += Graphics.delta
 	   end
-      self.newFrameCount+=1
+      self.newFrameCount+=Graphics.delta
     end
     
     def newFrameCount
@@ -308,20 +309,8 @@ if UnrealTime::ENABLED
 
   if UnrealTime::TIME_STOPS  
     class Scene_Map
-      alias :updateold :update
-      def update
-        $PokemonGlobal.addNewFrameCount
-        updateold
-      end
     
-      if UnrealTime::TALK_PASS  
-        alias :miniupdateold :miniupdate
-        def miniupdate
-          $PokemonGlobal.addNewFrameCount 
-          miniupdateold
-        end
-      end
-    end  
+
   
     if UnrealTime::BATTLE_PASS
       class Battle::Scene
@@ -333,7 +322,48 @@ if UnrealTime::ENABLED
       end
     end
   end
+  end
 end
+
+
+
+
+def pbProgressTime(hours)
+  UnrealTime.add_seconds(hours*3600)
+end
+
+def pbSetTime(minutes=pbGetTimeNow.min,hours=pbGetTimeNow.hour,days=pbGetTimeNow.day,months=pbGetTimeNow.month,years=pbGetTimeNow.year)
+  timeNow = pbGetTimeNow.to_i
+  timeThen = (Time.new(years, months, days, hours, minutes)).to_i
+  timeCouldHaveBeen = timeThen - timeNow
+  UnrealTime.add_seconds(timeCouldHaveBeen)
+end
+
+def pbSetMinute(min)
+  pbSetTime(min)
+end
+
+def pbSetHour(hour)
+  pbSetTime(pbGetTimeNow.min,hour)
+end
+
+
+def pbSetDay(day)
+  pbSetTime(pbGetTimeNow.min,pbGetTimeNow.hour,day)
+end
+
+def pbSetMonth(mon)
+  pbSetTime(pbGetTimeNow.min,pbGetTimeNow.hour,pbGetTimeNow.day,mon)
+end
+
+def pbSetYear(year)
+  pbSetTime(pbGetTimeNow.min,pbGetTimeNow.hour,pbGetTimeNow.day,pbGetTimeNow.month,year)
+end
+
+
+
+
+
 
 def setNewTime(hour,min=0,sec=0) # Hour is 0..23
   timeNow = pbGetTimeNow
@@ -357,8 +387,6 @@ def setDay(day) # Hour is 0..23
   secondsAdded +=secInDay if secondsAdded<0
   $game_variables[UnrealTime::EXTRA_SECONDS]+=secondsAdded
 end
-
-
 
 def setNewTimeWithinDay(hour,min=0,sec=0) # Hour is 0..23
   timeNow = pbGetTimeNow

@@ -60,6 +60,11 @@ def adjust_level(level, reroll_level, min_level, max_level)
     level = min_level + rand(11)
     level = reroll_level if reroll_level > min_level && reroll_level < max_level
   end
+  if $PokemonGlobal.blackFluteUsed==true
+        level = [level + rand(1..4), GameData::GrowthRate.max_level].min
+  elsif $PokemonGlobal.whiteFluteUsed==true
+        level = [level - rand(1..4), 1].max
+  end 
   return level
 end
 
@@ -239,10 +244,95 @@ end
 
 
 class PokemonEncounters
-
+  def encounter_triggered?(enc_type, repel_active = false, triggered_by_step = true)
+    if !enc_type || !GameData::EncounterType.exists?(enc_type)
+      raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
+    end
+	
+	maps = [58,4,24,85]
+    return if maps.include?($game_map.map_id) && $PokemonGlobal.blackFluteUsed == true
+    return false if $game_system.encounter_disabled
+    return false if !$player
+    return false if $DEBUG && Input.press?(Input::CTRL)
+    # Check if enc_type has a defined step chance/encounter table
+    return false if !@step_chances[enc_type] || @step_chances[enc_type] == 0
+    return false if !has_encounter_type?(enc_type)
+    # Poké Radar encounters always happen, ignoring the minimum step period and
+    # trigger probabilities
+    return true if pbPokeRadarOnShakingGrass
+    # Get base encounter chance and minimum steps grace period
+    encounter_chance = @step_chances[enc_type].to_f
+    min_steps_needed = (8 - (encounter_chance / 10)).clamp(0, 8).to_f
+    # Apply modifiers to the encounter chance and the minimum steps amount
+    #EDIT
+    stainfluance = $player.playerstamina/$player.playermaxstamina
+    encounter_chance *= 5
+    min_steps_needed /= 3
+    encounter_chance /= stainfluance
+    min_steps_needed *= stainfluance
+    if triggered_by_step
+      encounter_chance += @chance_accumulator / 200
+      encounter_chance *= 0.8 if $PokemonGlobal.bicycle
+    end
+      encounter_chance /= 2 if $PokemonGlobal.blackFluteUsed
+      min_steps_needed *= 2 if $PokemonGlobal.blackFluteUsed
+      encounter_chance *= 1.5 if $PokemonGlobal.whiteFluteUsed
+      min_steps_needed /= 2 if $PokemonGlobal.whiteFluteUsed
+      encounter_chance /= 3 if $player.playerclass.id == :RUNNER
+    first_pkmn = $player.first_pokemon
+    if first_pkmn
+      case first_pkmn.item_id
+      when :CLEANSETAG
+        encounter_chance *= 2.0 / 3
+        min_steps_needed *= 4 / 3.0
+      when :PUREINCENSE
+        encounter_chance *= 2.0 / 3
+        min_steps_needed *= 4 / 3.0
+      else   # Ignore ability effects if an item effect applies
+        case first_pkmn.ability_id
+        when :STENCH, :WHITESMOKE, :QUICKFEET
+          encounter_chance /= 2
+          min_steps_needed *= 2
+        when :INFILTRATOR
+          if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SNOWCLOAK
+          if GameData::Weather.get($game_screen.weather_type).category == :Hail
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SANDVEIL
+          if GameData::Weather.get($game_screen.weather_type).category == :Sandstorm
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SWARM
+          encounter_chance *= 1.5
+          min_steps_needed /= 2
+        when :ILLUMINATE, :ARENATRAP, :NOGUARD
+          encounter_chance *= 2
+          min_steps_needed /= 2
+        end
+      end
+    end
+    # Wild encounters are much less likely to happen for the first few steps
+    # after a previous wild encounter
+    if triggered_by_step && @step_count > min_steps_needed
+      return true if rand(100) <= encounter_chance * 5 / (@step_chances[enc_type] + (@chance_accumulator / 200))
+    end
+    # Decide whether the wild encounter should actually happen
+    return true if rand(50) < encounter_chance
+    # If encounter didn't happen, make the next step more likely to produce one
+    if triggered_by_step
+      @chance_accumulator += @step_chances[enc_type]
+      @chance_accumulator = 0 if repel_active
+    end
+    return false
+  end
 
   def choose_wild_pokemon(enc_type, chance_rolls = 1)
-    puts "hi there"
     if !enc_type || !GameData::EncounterType.exists?(enc_type)
       raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
     end
@@ -531,7 +621,7 @@ MenuHandlers.add(:options_menu, :difficulty, {
   "parent"      => :gameplay_menu,
   "order"       => 35,
   "type"        => EnumOption,
-  "condition"   => proc { next $player },
+  "condition"   => proc { next $player && false },
   "parameters"  => [_INTL("Easy"), _INTL("Normal"), _INTL("Hard"), _INTL("Very Hard")],
   "description" => _INTL("Choose the Difficulty of the Game."),
   "get_proc"    => proc { next $PokemonSystem.difficulty },

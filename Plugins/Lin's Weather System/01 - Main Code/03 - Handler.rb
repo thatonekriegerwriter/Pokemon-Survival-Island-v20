@@ -14,7 +14,7 @@ EventHandlers.add(:on_enter_map, :change_weather,
     i = $WeatherSystem.currentZone
     $game_screen.weather(:None,0,0) if $WeatherSystem.currentZone == nil
     next if $WeatherSystem.currentZone == nil
-    pbUpdateWeather(i) if !WeatherConfig::FORCE_UPDATE
+    pbUpdateWeather(i)
     weather = $WeatherSystem.actualWeather[i].mainWeather
     weather = pbCheckValidWeather(weather, i)
     weather = :None if PBDayNight.isNight? && weather == :Sun

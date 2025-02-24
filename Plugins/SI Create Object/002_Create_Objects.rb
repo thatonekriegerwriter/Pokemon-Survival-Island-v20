@@ -10,11 +10,19 @@ def get_own_event
     return statue
  end
 
-def deletefromSIData(id)
-  $ExtraEvents.removethisEvent(:OBJECT,id)
+ def get_other_data(id)
+	interp = pbMapInterpreter
+    berryplant_data = interp.getVariableOther(id)
+    return berryplant_data
+ end
+
+
+
+def deletefromSIData(id,mapid=$game_map.map_id)
+  $ExtraEvents.removethisEvent(:OBJECT,id,mapid)
 end
-def deletefromSISData(id)
-  $ExtraEvents.removethisEvent(:SPECIAL,id)
+def deletefromSISData(id,mapid)
+  $ExtraEvents.removethisEvent(:SPECIAL,id,mapid)
 end
 
 
@@ -38,7 +46,7 @@ def getObjectImage(object)
 	 image = "PokeballStationUp"
 	when :FURNACE || :ELECTRICFURNACE || :MACHINEBOX 
 	 image = "FurnaceUp"
-	when :GRINDER || :ELECTRICGRINDER
+	when :GRINDER || :ELECTRICGRINDER || :TORCH
 	 image = "Furnace"
 	when :CAULDRON
 	 image = "Cauldron"
@@ -64,6 +72,8 @@ def getObjectImage(object)
 	 image = "FurnaceUp"
     when :BEDROLL
 	 image = "bed"
+    when "OvPot"
+	 image = "pot"
     when "Egg"
 	 image = "egg"
     when "CampsiteDoor"
@@ -84,16 +94,31 @@ end
 def pbPlaceObject(x,y,object,aat=false,direction=nil)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
-  if pbObjectIsPossible(x,y)
+    update_variable = nil
+  if !$player.held_item_object.nil? && !$player.held_item.nil?
+    if $player.held_item.is_a?(ItemData)
+	   localMeter = pbMapInterpreter.getVariableOther($player.held_item_object)
+	   if !localMeter.nil?
+	      	update_variable = localMeter.dup 
+			pbMapInterpreter.deleteVariableOther($player.held_item_object)
+	   end
+    end
+  end
+
+  if object=="OvPot" || pbObjectIsPossible(x,y)
   if !$map_factory
-    event = $game_map.generateEvent(x,y,object,aat,false,direction)
+    key_id = $game_map.generateEvent(x,y,object,aat,false,direction)
   else
     mapId = $game_map.map_id
     spawnMap = $map_factory.getMap(mapId)
-    event = spawnMap.generateEvent(x,y,object,aat,false,direction)
+    key_id = spawnMap.generateEvent(x,y,object,aat,false,direction)
   end
-  if !event.nil?
-  $player.held_item_object = event
+  if !key_id.nil?
+  $player.held_item_object = key_id
+  end
+  if !update_variable.nil?
+	   pbMapInterpreter.setVariableOther(update_variable,$player.held_item_object)
+	   localMeter2 = pbMapInterpreter.getVariableOther($player.held_item_object)
   end
   return true
   else
@@ -107,13 +132,36 @@ end
 def pbHoldingObject(x,y,object,aat=false)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
+  
+  
+    update_variable = nil
+    puts !$player.held_item_object.nil? && !$player.held_item.nil?
+    puts $player.held_item.is_a?(ItemData)
+  if !$player.held_item_object.nil? && !$player.held_item.nil?
+    if $player.held_item.is_a?(ItemData)
+	   localMeter = pbMapInterpreter.getVariableOther($player.held_item_object)
+        puts localMeter.fuel.to_s
+	   if !localMeter.nil?
+	      	update_variable = localMeter.dup 
+        puts update_variable.fuel.to_s
+			pbMapInterpreter.deleteVariableOther($player.held_item_object)
+	   end
+    end
+  end
+  
+  
   if pbObjectIsPossible(x,y)
   if !$map_factory
-    $game_map.generateEvent(x,y,object,aat,true)
+    key_id = $game_map.generateEvent(x,y,object,aat,true)
   else
     mapId = $game_map.map_id
     spawnMap = $map_factory.getMap(mapId)
-    spawnMap.generateEvent(x,y,object,aat,true)
+    key_id = spawnMap.generateEvent(x,y,object,aat,true)
+  end
+  if !update_variable.nil?
+	   pbMapInterpreter.setVariableOther(update_variable,$player.held_item_object)
+	   localMeter2 = pbMapInterpreter.getVariableOther($player.held_item_object)
+        puts localMeter2.fuel.to_s
   end
   return true
   else
@@ -121,17 +169,20 @@ def pbHoldingObject(x,y,object,aat=false)
   #$bag.add(object)
   return false
   end 
+  
+  
+  
+  
+  
  # Play the pokemon cry of encounter
 end
 
 def pbObjectIsPossible(x,y)
-   puts "STARTING?!?!"
   if !$game_map.valid?(x,y) #check if the tile is on the map
     return false
   else
     tile_terrain_tag = $game_map.terrain_tag(x,y)
   end
-   puts "a1"
   for event in $game_map.events.values
     next if event==$game_map.events[$player.held_item_object]
     if event.x==x && event.y==y
@@ -150,7 +201,6 @@ def pbObjectIsPossible(x,y)
     
 	end
   end
-   puts "a2"
 
   return false if !tile_terrain_tag
   #check if it's a valid grass, water or cave etc. tile
@@ -161,12 +211,10 @@ def pbObjectIsPossible(x,y)
   return false if tile_terrain_tag.id == :Rock
   return false if tile_terrain_tag.can_surf
    potato = !$game_map.passableStrict?(x, y, 0) && !is_bedroll?
-   puts potato
   return false if potato
   return true
 end
 def is_bedroll_or_camp?
- puts (($player.held_item == :BEDROLL || $player.held_item == :PORTABLECAMP ) && $game_player.direction==8)
  return (($player.held_item == :BEDROLL || $player.held_item == :PORTABLECAMP ) && $game_player.direction==8)
 end
 def is_bedroll?
@@ -176,6 +224,9 @@ def pickMeUp(event,type)
 key_id = event
 $player.held_item=type
 $player.held_item_object=event
+if !$game_map.events[key_id].nil?
+
+
 if GameData::Item.get(type).id == :BEDROLL
 pbMoveRoute($game_map.events[key_id], [PBMoveRoute::Graphic,"Packed.png",0,$game_map.events[key_id].direction,0])
 end
@@ -202,7 +253,7 @@ end
 
 if !campdoor.nil?
 $game_map.events[campdoor].removeThisEventfromMap(campdoor)
-deletefromSIData(campdoor)
+deletefromSIData(campdoor,$game_map.map_id)
 end
 
 end
@@ -212,13 +263,12 @@ end
 pbMoveRoute2($game_map.events[key_id], [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,
 PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
 
-
 if GameData::Item.get(type).id != :PORTABLECAMP
 $game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
 elsif type.id == :PORTABLECAMP
 $game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
 end
-
+end
 
 $game_temp.position_calling = true
 $game_system.save_disabled = true

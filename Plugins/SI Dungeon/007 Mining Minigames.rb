@@ -889,11 +889,10 @@ def ov_mining(type)
  if hasPickaxe?
   image = nil
   pbMessage(_INTL("You hack away at it with a Pickaxe."))
-   amt = 1
+   amt = rand(4)+1
   case type 
-   when :TUMBLESTONE
+   when :TUMBLEROCK
      image = "Legends_Tumblestone"
-	  amt = rand(4)+1
    when :STONE
      image = "Legends_Tumblestone"
    
@@ -940,9 +939,9 @@ def ov_mining2(type)
  if hasPickaxe?
   image = nil
   pbMessage(_INTL("You hack away at it with a Pickaxe."))
-   amt = 1 
+   amt = rand(4)+1
   case type 
-   when :TUMBLESTONE
+   when :TUMBLEROCK
      image = "Legends_Tumblestone"
 	  amt = rand(4)+1
    when :STONE

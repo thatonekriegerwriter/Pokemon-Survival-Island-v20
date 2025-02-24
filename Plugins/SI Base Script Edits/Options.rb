@@ -34,6 +34,9 @@ class PokemonSystem
   attr_accessor :hardcore8
   attr_accessor :hardcore9
   attr_accessor :hardcore10
+  attr_accessor :autotarget
+  attr_accessor :journey
+  attr_accessor :entries
 
   def initialize
     @textspeed     = 1     # Text speed (0=slow, 1=normal, 2=fast)
@@ -68,7 +71,24 @@ class PokemonSystem
     @hardcore8     = 1     # Text input mode (0=cursor, 1=keyboard)
     @hardcore9     = 1     # Text input mode (0=cursor, 1=keyboard)
     @hardcore10     = 1     # Text input mode (0=cursor, 1=keyboard)
+    @autotarget = 0     # Default Temperature Mode (0=on, 1=off)
+    @journey = 0     # Default Temperature Mode (0=on, 1=off)
+    @entries = 0     # Default Temperature Mode (0=on, 1=off)
     @currentList = :main
+  end
+  
+  def entries
+    @entries   = 0 if @entries.nil?
+	return @entries
+  end
+  
+  def journey
+    @journey   = 0 if @journey.nil?
+	return @journey
+  end
+  def autotarget
+    @autotarget   = 0 if @autotarget.nil?
+	return @autotarget
   end
   
   def difficulty
@@ -950,7 +970,7 @@ class PokemonGlobalMetadata
   attr_writer :hardcore #$PokemonGlobal.hardcore = true
 
   def hardcore
-    @hardcore = false if !@hardcore
+    @hardcore = false if @hardcore.nil?
     return @hardcore
   end
 end
@@ -1041,6 +1061,29 @@ MenuHandlers.add(:options_menu, :challenges_menu, {
   "order"       => 37,
   "description" => _INTL("View Options that change the nature of the game..."),
   #"description" => _INTL("View Options that change the nature of the game...\nFor each enabled option, experience gain is increased."),
+})
+
+MenuHandlers.add(:options_menu, :autotarget, {
+  "name"        => _INTL("Auto-Target"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 37,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("If you automatically target a POKeMON when attacking them."),
+  "get_proc"    => proc { next $PokemonSystem.autotarget },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.autotarget = value }
+})
+
+MenuHandlers.add(:options_menu, :name_request, {
+  "name"        => _INTL("Custom Entries"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 39,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether or not you are offered to make a custom dex entry."),
+  "get_proc"    => proc { next $PokemonSystem.entries },
+  "set_proc"    => proc { |value, scene| $PokemonSystem.entries = value }
 })
 
 if false
@@ -2018,6 +2061,20 @@ MenuHandlers.add(:options_menu, :borders, {
 	
   }
 })
+
+MenuHandlers.add(:options_menu, :journey, {
+  "name"        => _INTL("Journey"),
+  "parent"      => :ui_menu,
+  "order"       => 90,
+  "order"       => 80,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether you see a reminder of what you have done so far on startup."),
+  "get_proc"    => proc { next $PokemonSystem.journey },
+  "set_proc"    => proc { |value, _scene| $PokemonSystem.journey = value }
+	
+  }
+)
 
 #For the Menu, an area to set Nuzlocke settings
 #and maybe Survival Settings?

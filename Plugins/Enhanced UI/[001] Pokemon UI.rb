@@ -424,15 +424,12 @@ if Settings::SUMMARY_MODERN_QoL
       case @page
       when 4
         commands[cmdCheckMoves = commands.length] = _INTL("Check Moves") if !@pokemon.moves.empty?
-        commands[cmdLearnMoves = commands.length] = _INTL("Remember Moves") if @pokemon.can_relearn_move?
         commands[cmdForgetMove = commands.length] = _INTL("Forget Move") if @pokemon.moves.length > 1
-        commands[cmdTeachTMs   = commands.length] = _INTL("Use TM's")
       else
         if !@pokemon.egg?
           commands[cmdGiveItem = commands.length] = _INTL("Give item")
           commands[cmdTakeItem = commands.length] = _INTL("Take item") if @pokemon.hasItem?
           commands[cmdNickname = commands.length] = _INTL("Nickname") if !@pokemon.foreign?
-          commands[cmdFeed  = commands.length]    = _INTL("Feed")
           commands[cmdPokedex  = commands.length] = _INTL("View Pokédex") if $player.has_pokedex
           commands[cmdJournal  = commands.length] = _INTL("View Journal") if PluginManager.installed?("Pokémon Birthsigns") && @pokemon.hasBirthsign?(true)
         end
@@ -452,9 +449,6 @@ if Settings::SUMMARY_MODERN_QoL
         end
       elsif cmdTakeItem >= 0 && command == cmdTakeItem
         dorefresh = pbTakeItemFromPokemon(@pokemon, self)
-      elsif cmdFeed >= 0 && command == cmdFeed
-        pbEatingPkmn(@pokemon)
-        dorefresh = true
       elsif cmdNickname >= 0 && command == cmdNickname
         nickname = pbEnterPokemonName(_INTL("{1}'s nickname?", @pokemon.name), 0, Pokemon::MAX_NAME_SIZE, "", @pokemon, true)
         @pokemon.name = nickname
@@ -567,12 +561,7 @@ class Pokemon
     value = (value < 0) ? 0 : (value > 6) ? 6 : value
     @shiny_leaf = (value)
   end
-  
-  alias enhanced_initialize initialize  
-  def initialize(*args)
-    @shiny_leaf = 0
-    enhanced_initialize(*args)
-  end
+
 end
 
 #-------------------------------------------------------------------------------

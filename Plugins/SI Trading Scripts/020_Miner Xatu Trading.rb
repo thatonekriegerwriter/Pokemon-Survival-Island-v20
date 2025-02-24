@@ -162,6 +162,8 @@ RECIPE3=[
 [:TM12,1,[:STARPIECE,2],nil, true],
 [:TM99,1,[:STARPIECE,2],nil, true]
 ]
+
+
 RECIPE4=[
 [:POTION,1,[:STARPIECE,1],nil, true],
 [:SUPERPOTION,1,[:STARPIECE,5],nil, true],
@@ -173,6 +175,7 @@ RECIPE4=[
 [:POKEDOLL,1,[:STARPIECE,1],nil, true],
 [:SNOWMAIL,1,[:STARPIECE,1],nil, true]
 ]
+
 RECIPE5=[
 [:YELLOWAPRICORN,1,[:STARPIECE,1],nil, true],
 [:LEPPABERRY,1,[:RAREBONE,1],nil, true],

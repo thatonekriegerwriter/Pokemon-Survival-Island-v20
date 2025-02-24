@@ -71,6 +71,7 @@ class PokemonGlobalMetadata
 	
 	def cur_challenge
 	 @cur_challenge = false if @cur_challenge.nil?
+	 @cur_challenge = false if @cur_challenge.is_a?(TrueClass)
 	 return @cur_challenge
 	end
 end

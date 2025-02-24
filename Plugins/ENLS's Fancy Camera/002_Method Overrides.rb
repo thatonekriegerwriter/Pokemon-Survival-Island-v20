@@ -30,52 +30,6 @@ class Game_Player < Game_Character
     end
   end
 
-  def set_movement_type(type)
-    meta = GameData::PlayerMetadata.get($player&.character_ID || 1)
-    new_charset = nil
-    case type
-    when :fishing
-      new_charset = pbGetPlayerCharset(meta.fish_charset)
-    when :surf_fishing
-      new_charset = pbGetPlayerCharset(meta.surf_fish_charset)
-    when :diving, :diving_fast, :diving_jumping, :diving_stopped
-      self.move_speed = 3 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.dive_charset)
-    when :surfing, :surfing_fast, :surfing_jumping, :surfing_stopped
-      if !@move_route_forcing
-        pbCameraSpeed(1.4) if FancyCamera::INCREASE_WHEN_RUNNING
-        self.move_speed = (type == :surfing_jumping) ? 3 : 4
-      end
-      new_charset = pbGetPlayerCharset(meta.surf_charset)
-    when :descending_waterfall, :ascending_waterfall
-      self.move_speed = 2 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.surf_charset)
-    when :cycling, :cycling_fast, :cycling_jumping, :cycling_stopped
-      if !@move_route_forcing
-        pbCameraSpeed(1.7) if FancyCamera::INCREASE_WHEN_RUNNING
-        self.move_speed = (type == :cycling_jumping) ? 3 : 5
-      end
-      new_charset = pbGetPlayerCharset(meta.cycle_charset)
-    when :running
-      pbCameraSpeed(1.4) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 4 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.run_charset)
-    when :ice_sliding
-      pbCameraSpeed(1.4) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 4 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.walk_charset)
-    else   # :walking, :jumping, :walking_stopped
-      pbCameraSpeed(1) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 3 if !@move_route_forcing
-      new_charset = pbGetPlayerCharset(meta.walk_charset)
-    end
-    if @bumping
-      pbCameraSpeed(1) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 3
-    end
-    @character_name = new_charset if new_charset
-  end
-
   def moveto(x, y, center = false)
     super
     center(x, y) if center
@@ -140,6 +94,9 @@ end
 class Scene_Map
   def transfer_player(cancel_swimming = true)
     $game_temp.player_transferring = false
+	$game_temp.preventspawns=false
+   $PokemonGlobal.set_item_hud(:TOOL,true) if cur_item_hud==:WEAPONS
+	 old_map_id = $game_map.map_id
     pbCancelVehicles($game_temp.player_new_map_id, cancel_swimming)
     autofade($game_temp.player_new_map_id)
     pbBridgeOff
@@ -156,6 +113,7 @@ class Scene_Map
     end
     $game_player.straighten
     $game_temp.followers.map_transfer_followers
+    EventHandlers.trigger(:on_map_transfer, old_map_id)
     $game_map.update
     disposeSpritesets
     RPG::Cache.clear

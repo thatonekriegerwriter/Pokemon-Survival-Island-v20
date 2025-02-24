@@ -1,23 +1,24 @@
+﻿# See the documentation on the wiki to learn how to edit this file.
 #-------------------------------
-[001]
+[001]   # INTRO
 Name = INTRO
 Bicycle = true
 BattleBack = Indoor
 #-------------------------------
-[002]
+[002]   # Cave
 Name = Cave
 ShowArea = true
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[003]
+[003]   # Test Map
 Name = S.S. Glittering
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[004]
+[004]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
@@ -25,14 +26,14 @@ HealingSpot = 4,21,12
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[005]
+[005]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[006]
+[006]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
@@ -40,14 +41,14 @@ MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = Forest
 #-------------------------------
-[007]
+[007]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[008]
+[008]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
@@ -55,14 +56,14 @@ MapPosition = 0,0,0
 DiveMap = 9
 BattleBack = Forest
 #-------------------------------
-[009]
+[009]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[010]
+[010]   # Temperate Base
 Name = Temperate Base
 Bicycle = true
 MapPosition = 0,0,0
@@ -70,35 +71,39 @@ SnapEdges = true
 WildBattleBGM = Forest
 BaseMap = true
 #-------------------------------
-[011]
+[011]   # Challenge Map
 Name = Memory
 Outdoor = true
 ShowArea = true
 Weather = Rain,0
 MapPosition = 0,0,0
 #-------------------------------
-[012]
+[012]   # Stone Temple
 Name = Stone Temple
 ShowArea = true
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[013]
+[013]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[014]
+[014]   # Stone Temple Cave
 Name = Stone Temple Cave
 ShowArea = true
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[016]
+[015]   # Cave
+Name = Cave
+Outdoor = false
+#-------------------------------
+[016]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
@@ -106,14 +111,18 @@ HealingSpot = 16,22,28
 MapPosition = 0,0,0
 BattleBack = Mountain
 #-------------------------------
-[017]
+[017]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Mountain
 #-------------------------------
-[019]
+[018]   # Cave
+Name = Cave
+Outdoor = false
+#-------------------------------
+[019]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
@@ -121,14 +130,14 @@ MapPosition = 0,0,0
 SafariMap = true
 BattleBack = Mountain
 #-------------------------------
-[020]
+[020]   # Mountain Base
 Name = Rocky Base
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
 BaseMap = true
 #-------------------------------
-[022]
+[022]   # Cave
 Name = Cave
 ShowArea = true
 Bicycle = true
@@ -136,169 +145,170 @@ MapPosition = 0,0,0
 DarkMap = true
 BattleBack = Cave
 #-------------------------------
-[024]
+[024]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = mountain
 #-------------------------------
-[025]
+[025]   # Transition Room
 Name = Transition Room
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[026]
+[026]   # Temperate Marsh
 Name = Test Map
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[028]
+[028]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Mountain
 #-------------------------------
-[029]
+[029]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Mountain
 #-------------------------------
-[030]
+[030]   # Temperate Highlands
 Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Mountain
 #-------------------------------
-[031]
+[031]   # Mountain Interior
 Name = Mountain Interior
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = LavaCave_bg
 #-------------------------------
-[032]
+[032]   # Magma Temple
 Name = Magma Temple
 BattleBack = ruins
 #-------------------------------
-[033]
+[033]   # Temperate Marsh
 Name = Temperate Marsh
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[034]
+[034]   # Temperate Marsh
 Name = Temperate Marsh
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[035]
+[035]   # Temperate Marsh
 Name = Temperate Marsh
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[036]
+[036]   # Temperate Marsh
 Name = Temperate Marsh
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[037]
+[037]   # Water Temple
 Name = Water Temple
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 Flags = PowerSpot
 #-------------------------------
-[038]
+[038]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[039]
+[039]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[040]
+[040]   # Swamp Base
 Name = Forested Base
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 BaseMap = true
 #-------------------------------
-[041]
+[041]   # Base Path
 Name = Base Path
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 BaseMap = true
 #-------------------------------
-[042]
+[042]   # Southern Ocean
 Name = Southern Ocean
 Outdoor = true
 MapPosition = 0,0,0
 DiveMap = 114
 BattleBack = Water
 #-------------------------------
-[043]
+[043]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[044]
+[044]   # Chilled Plains
 Name = Temperate Inland
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = snow
 #-------------------------------
-[045]
+[045]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[046]
+[046]   # MAP046
 Name = MAP046
 ShowArea = true
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[047]
+[047]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[048]
+[048]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[053]
+[053]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[054]
+[054]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = field
 #-------------------------------
-[056]
+[056]   # Home Interior
 Name = Home Interior
 Bicycle = true
 HealingSpot = 55,24,11
@@ -308,19 +318,19 @@ BattleBack = Indoor
 BaseMap = true
 Flags = PowerSpot
 #-------------------------------
-[057]
+[057]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[058]
+[058]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[059]
+[059]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
@@ -328,32 +338,32 @@ DiveMap = 66
 BattleBack = Water
 Flags = PowerSpot
 #-------------------------------
-[060]
+[060]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[061]
+[061]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 Flags = PowerSpot
 #-------------------------------
-[062]
+[062]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[063]
+[063]   # Xatu's Cave
 Name = Xatu's Cave
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[064]
+[064]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 Weather = Rain,20
@@ -361,26 +371,26 @@ MapPosition = 0,0,0
 BattleBack = Forest
 Flags = PowerSpot
 #-------------------------------
-[065]
+[065]   # Ravine (Folder)
 Name = Ravine
 Outdoor = true
 Weather = Rain,20
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[068]
+[068]   # Chilled Plains
 Name = Temperate Inland
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = snow
 #-------------------------------
-[071]
+[071]   # Ice Cave
 Name = Ice Cave
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[072]
+[072]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 ShowArea = true
@@ -388,1042 +398,1064 @@ Weather = Blizzard,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[073]
+[073]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 Weather = Snow,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[074]
+[074]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 Weather = Blizzard,20
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[076]
+[076]   # Cave
 Name = Cave
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[077]
+[077]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[078]
+[078]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[079]
+[079]   # Winter Zone (Folder)
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[080]
+[080]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[081]
+[081]   # Ravine
 Name = MAP081
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[082]
+[082]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[083]
+[083]   # Winter Zone
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[084]
+[084]   # Temperate Marsh
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[085]
+[085]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[086]
+[086]   # Temperate Marsh
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Snow
 #-------------------------------
-[087]
+[087]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[088]
+[088]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[089]
+[089]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[090]
+[090]   # Xatu Mart
 Name = Xatu Mart
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[091]
+[091]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[092]
+[092]   # Xatu Inn
 Name = Xatu Inn
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[093]
+[093]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[094]
+[094]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[095]
+[095]   # Reviver Xatu Home
 Name = Reviver Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[096]
+[096]   # Xatu Home
 Name = Xatu Home
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Indoor
 #-------------------------------
-[097]
+[097]   # Cave
 Name = Cave
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
 BaseMap = true
 #-------------------------------
-[098]
+[098]   # Ice Temple
 Name = Ice Temple
 Bicycle = true
 MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = ruins
 #-------------------------------
-[099]
+[099]   # Ice Temple
 Name = Ice Temple
 Bicycle = true
 MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = ruins
 #-------------------------------
-[100]
+[100]   # Ice Temple
 Name = Ice Temple
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = ruins
 #-------------------------------
-[101]
+[101]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[102]
+[102]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[103]
+[103]   # Abandoned Cabin
 Name = Red and Blue's Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[104]
+[104]   # Southern Ocean
 Name = Southern Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[105]
+[105]   # Swamp Zone (Folder)
 Name = Temperate Marsh
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[106]
+[106]   # Temperate Area (Folder)
 Name = Temperate Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[107]
+[107]   # Mountain Area (Folder)
 Name = Mountain Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[108]
+[108]   # Temperate Ocean (Folder)
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[109]
+[109]   # Temperate Marsh
 Name = Temperate Marsh
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[110]
+[110]   # Temperate Marsh
 Name = Temperate Marsh
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Swamp
 #-------------------------------
-[111]
+[111]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[112]
+[112]   # Deep Caves
 Name = Deep Caves
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Deep
 #-------------------------------
-[113]
+[113]   # Humid Area (Folder)
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[114]
+[114]   # Southern Ocean U
 Name = Southern Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[115]
+[115]   # Your Cabin
 Name = Your Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[116]
+[116]   # Abandoned Cabin
 Name = William's Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[117]
+[117]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[118]
+[118]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[119]
+[119]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[120]
+[120]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[121]
+[121]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[122]
+[122]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[123]
+[123]   # Abandoned Cabin
 Name = Abandoned Cabin
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[124]
+[124]   # S.S. Glittering
 Name = S.S. Glittering
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[125]
+[125]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[126]
+[126]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[127]
+[127]   # S.S Glittering Wreck
 Name = S.S Glittering Wreck
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[128]
+[128]   # Kitchen
 Name = Kitchen
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[129]
+[129]   # Captain's Quarters
 Name = Captain's Quarters
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[130]
+[130]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[131]
+[131]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[132]
+[132]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[133]
+[133]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[134]
+[134]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[136]
+[136]   # Temperate Ocean
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[137]
+[137]   # Oil Tanker
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[138]
+[138]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[139]
+[139]   # Xatu's Cave
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[140]
+[140]   # Temperate Marsh
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[141]
+[141]   # Oil Tanker
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[142]
+[142]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[143]
+[143]   # Oil Tanker
 Name = Tropical Coast
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[144]
+[144]   # Temperate Caves
 Name = Temperate Caves
 Bicycle = true
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[145]
+[145]   # Temperate Caves
 Name = Temperate Caves
 Bicycle = true
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[156]
+[156]   # Temperate Caves
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Water
 #-------------------------------
-[157]
+[157]   # Northern Highlands
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[158]
+[158]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[159]
+[159]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[160]
+[160]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[161]
+[161]   # Tropical Coast
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[162]
+[162]   # Red's Cabin
 Name = Red's Cabin
 Bicycle = true
 MapPosition = 0,0,0
 #-------------------------------
-[163]
+[163]   # Deep Caves
 Name = Deep Caves
 Bicycle = true
 MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = Deep
 #-------------------------------
-[165]
+[165]   # Prologue (Folder)
 Name = Prologue
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[196]
+[196]   # Other (Folder)
 Name = Other.
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[197]
+[197]   # Deep Caves
 Name = Deep Caves
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Deep
 #-------------------------------
-[198]
+[198]   # Forest Area (Folder)
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[199]
+[199]   # Northern Area (Folder)
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[200]
+[200]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[201]
+[201]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[202]
+[202]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[203]
+[203]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[204]
+[204]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[205]
+[205]   # Western Shores
 Name = Temperate Shore
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = water
 #-------------------------------
-[206]
+[206]   # Forest Zone
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[207]
+[207]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[208]
+[208]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[209]
+[209]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[210]
+[210]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[211]
+[211]   # Deep Caves
 Name = Deep Caves
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Deep
 #-------------------------------
-[213]
+[213]   # Ice Cave
 Name = Ice Cave
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[214]
+[214]   # Temple Prime
 Name = Temple Prime
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Ruins
 #-------------------------------
-[217]
+[217]   # Cave
 Name = Cave
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[218]
+[218]   # Temperate Marsh
 Name = Temperate Inland
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[233]
+[233]   # Temperate Marsh
 Name = Tent
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[234]
+[234]   # Southern Beach
 Name = Tent
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[235]
+[235]   # Temperate Ocean
 Name = Tent
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[236]
+[236]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[237]
+[237]   # Northern Highlands
 Name = Northern Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[238]
+[238]   # Northern Highlands
 Name = Northern Area
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[239]
+[239]   # Frigid Highlands
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[243]
+[243]   # Temperate Ocean
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[244]
+[244]   # Deep Forest
 Name = Temperate Forest
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Forest
 #-------------------------------
-[247]
+[247]   # Sky (Folder)
 Name = Sky
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[248]
+[248]   # Temperate Skies
 Name = Temperate Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[249]
+[249]   # Temperate Skies
 Name = Temperate Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[250]
+[250]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[251]
+[251]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[252]
+[252]   # Temperate Skies
 Name = Temperate Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[253]
+[253]   # Ocean Skies
 Name = Ocean Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[254]
+[254]   # Ocean Skies
 Name = Ocean Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[255]
+[255]   # Temperate Skies
 Name = Temperate Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[256]
+[256]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[257]
+[257]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[258]
+[258]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[259]
+[259]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[260]
+[260]   # Temperate Skies
 Name = Temperate Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[261]
+[261]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[262]
+[262]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[263]
+[263]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[264]
+[264]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[265]
+[265]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[266]
+[266]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[271]
+[271]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[272]
+[272]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[273]
+[273]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[274]
+[274]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[275]
+[275]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[276]
+[276]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[277]
+[277]   # Shore Skies
+Name = Shore Skies
 #-------------------------------
-[278]
+[278]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[279]
+[279]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[280]
+[280]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[281]
+[281]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[282]
+[282]   # Passage
 Name = Passage
 MapPosition = 0,0,0
 SnapEdges = true
 BattleBack = Cave
 #-------------------------------
-[283]
+[283]   # Mountain Skies
 Name = Mountain Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[290]
+[290]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[291]
+[291]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[293]
+[293]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[294]
+[294]   # Shore Skies
 Name = Shore Skies
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Sky
 #-------------------------------
-[295]
+[295]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[296]
+[296]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[297]
+[297]   # Dungeons
 Name = Dungeons
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[298]
+[298]   # Bee Forest (Folder)
 Name = Bee Forest
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[300]
+[300]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[302]
+[302]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[307]
+[307]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[308]
+[308]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[309]
+[309]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[310]
+[310]   # Western Shores
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
 #-------------------------------
-[311]
+[311]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[312]
+[312]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[313]
+[313]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[314]
+[314]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[315]
+[315]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[316]
+[316]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[317]
+[317]   # Northern Highlands
 Name = Tropical Highlands
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Mesa
 #-------------------------------
-[318]
+[318]   # Western Temperate
 Name = Western Temperate
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[319]
+[319]   # Western Temperate
 Name = Western Temperate
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[320]
+[320]   # Western Temperate
 Name = Western Temperate
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[322]
+[322]   # Temperate Caves
 Name = Temperate Caves
 Bicycle = true
 MapPosition = 0,0,0
 Dungeon = true
 BattleBack = Cave
 #-------------------------------
-[323]
+[323]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[325]
+[325]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[326]
+[326]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[327]
+[327]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[328]
+[328]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[329]
+[329]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[330]
+[330]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[331]
+[331]   # Western Temperate
+Name = Western Temperate
 #-------------------------------
-[332]
+[332]   # Cave
+Name = Cave
 #-------------------------------
-[336]
+[336]   # Temperate Caves
 Name = Temperate Caves
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
-[337]
+[337]   # Jungle (Folder)
+Name = Jungle (Folder)
 #-------------------------------
-[338]
+[338]   # Jungle
+Name = Jungle
 #-------------------------------
-[339]
+[339]   # MAP339
+Name = MAP339
 #-------------------------------
-[340]
+[340]   # MAP340
+Name = MAP340
 #-------------------------------
-[341]
+[341]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[342]
+[342]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[343]
+[343]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[344]
+[344]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[345]
+[345]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[346]
+[346]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[347]
+[347]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[348]
+[348]   # Deep Swamp Dungeon
+Name = Deep Swamp Dungeon
 #-------------------------------
-[349]
+[349]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[350]
+[350]   # Temperate Plains
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
 #-------------------------------
-[351]
+[351]   # Home Interior
 Name = Home Interior
 Bicycle = true
 MapPosition = 0,0,0
@@ -1431,7 +1463,7 @@ SnapEdges = true
 BattleBack = Indoor
 BaseMap = true
 #-------------------------------
-[352]
+[352]   # Home Interior
 Name = Home Interior
 Bicycle = true
 MapPosition = 0,0,0
@@ -1439,44 +1471,65 @@ SnapEdges = true
 BattleBack = Indoor
 BaseMap = true
 #-------------------------------
-[354]
+[354]   # Jungle
+Name = Jungle
 #-------------------------------
-[355]
+[355]   # Jungle
+Name = Jungle
 #-------------------------------
-[356]
+[356]   # Jungle
+Name = Jungle
 #-------------------------------
-[357]
+[357]   # Jungle
+Name = Jungle
 #-------------------------------
-[358]
+[358]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[359]
+[359]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[360]
+[360]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[361]
+[361]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[362]
+[362]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[363]
+[363]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[364]
+[364]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[365]
+[365]   # Deep Caves Dungeon
+Name = Deep Caves Dungeon
 #-------------------------------
-[366]
+[366]   # MAP366
+Name = MAP366
 #-------------------------------
-[367]
+[367]   # MAP367
+Name = MAP367
 #-------------------------------
-[368]
+[368]   # Cave
+Name = Cave
 #-------------------------------
-[385]
+[385]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[387]
+[387]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[392]
+[392]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[396]
+[396]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[397]
+[397]   # Temperate Ocean
+Name = Temperate Ocean
 #-------------------------------
-[398]
+[398]   # Tent
+Name = Tent

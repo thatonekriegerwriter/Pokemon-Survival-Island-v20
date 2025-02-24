@@ -16,7 +16,9 @@ module DialogueSound
 #                                      displayed before the sound is played.
 #                                      This makes it sound more natural.
                                       
-  @letter_count = 0                  
+  @letter_count = 0                          
+  @playing = nil  
+  @previous_position = 0              
 
   # Adjust sound interval based on player's text speed
   def self.set_sound_interval
@@ -33,6 +35,17 @@ module DialogueSound
     end
   end
 
+  def self.custom_sound_interval(num)
+      @sound_interval = num
+  end
+  
+  def self.sound_interval
+    return @sound_interval
+  end
+  
+  def self.sound_interval_default
+    return 2
+  end
   # Reset letter count for a new message
   def self.reset
     @letter_count = 0
@@ -44,7 +57,6 @@ module DialogueSound
   def self.play_sound_effect(current_position, char)
     return unless @sound_enabled          # Check if sound is enabled or not
     return if char.strip.empty?           # Ignore spaces and blank characters
-
     if current_position > @previous_position
       if @letter_count % @sound_interval == 0
         pbSEPlay(@sound_effect_name)
@@ -52,13 +64,30 @@ module DialogueSound
       @letter_count += 1
       @previous_position = current_position
     end
+          # Ignore spaces and blank characters
   end
-
+  
+  def self.playing(text)
+     @playing = text
+    
+  end
+  def self.is_playing?
+    return !@playing.nil?
+  end
   # Script commands to control sound effect and toggle
   def self.set_sound_effect(name)
     @sound_effect_name = name
   end
-
+  
+  def self.sound_effect_name
+    return @sound_effect_name
+  end
+  
+  def self.default_sound_effect
+    return "boopSINE" 
+  
+  end
+  
   def self.enable_sound
     @sound_enabled = true
   end

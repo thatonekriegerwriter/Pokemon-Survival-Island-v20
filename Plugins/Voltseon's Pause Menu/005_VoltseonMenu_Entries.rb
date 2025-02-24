@@ -64,7 +64,7 @@ class MenuEntryBag < MenuEntry
   def initialize
     @icon = "menuBag"
     @name = "Bag"
-    @text = "B"
+    @text = "E"
   end
 
   def selected(menu)

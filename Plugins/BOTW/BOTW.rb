@@ -31,6 +31,8 @@ class UISprite < SpriteWrapper
     self.bitmap = bitmap
     self.x = x
     self.y = y
+	self.zoom_x*=0.75
+	self.zoom_y*=0.75
     @scroll = false
     @timer = 0
   end
@@ -139,14 +141,14 @@ def itemAnim(item,qty=1)
   shadow = Color.new(72,80,88)
  
   if qty > 1
-    textpos = [[_INTL("{1} x{2}",item.name_plural,qty),5,15,false,base,shadow]]
+    textpos = [[_INTL("{1} x{2}",item.name_plural,qty),5,20,false,base,shadow]]
   else
-    textpos = [[_INTL("{1}",item.name),5,15,false,base,shadow]]
+    textpos = [[_INTL("{1}",item.name),5,20,false,base,shadow]]
   end
   pbDrawTextPositions(bitmap,textpos)
-  bitmap.blt(274,5,Bitmap.new(GameData::Item.icon_filename(item.id)),Rect.new(0,0,48,48))
+  bitmap.blt(bitmap.width - 50,5,Bitmap.new(GameData::Item.icon_filename(item.id)),Rect.new(0,0,48,48))
   pbSEPlay(ITEMGETSE)
-  $scene.addSprite(-bitmap.width,200,bitmap)
+  $scene.addSprite(-bitmap.width,100,bitmap)
 end
 
 def pkmnAnim(pkmn,party=false)

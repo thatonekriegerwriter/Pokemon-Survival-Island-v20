@@ -138,13 +138,16 @@ end
 
 def start_glow(attacker,bonus=0)
  sprite=nil
+  $game_temp.preventspawns=true
  $scene.spriteset.character_sprites.each do |character_sprite|
   if character_sprite.character == attacker
     sprite = character_sprite
   end
  end
  
+  $game_temp.preventspawns=false
  return if sprite.nil?
+  $game_temp.preventspawns=true
 fadeTime = Graphics.frame_rate * 4 / 10
 toneDiff = (255.0 / fadeTime).ceil
 if Settings::TIME_SHADING && $game_map.metadata&.outdoor_map
@@ -198,12 +201,14 @@ end
   sprite.tone.set(((index+bonus) * toneDiff) + basetone.red, ((index+bonus) * toneDiff) + basetone.green, basetone.blue, basetone.gray)
 end
 
- #start_ov_sprite_movement(attacker,sprite)
+  $game_temp.preventspawns=false
+ start_ov_sprite_movement(attacker,sprite)
 
 end
 
 
 def start_attacked_glow(attacked,attacker,bonus=0)
+  $game_temp.preventspawns=true
  pbTurnTowardEvent(attacked,attacker)
  sprite=nil
  $scene.spriteset.character_sprites.each do |character_sprite|
@@ -212,7 +217,9 @@ def start_attacked_glow(attacked,attacker,bonus=0)
   end
  end
  
+  $game_temp.preventspawns=false
  return if sprite.nil?
+  $game_temp.preventspawns=true
 fadeTime = Graphics.frame_rate * 4 / 10
 toneDiff = (255.0 / fadeTime).ceil
 if Settings::TIME_SHADING && $game_map.metadata&.outdoor_map
@@ -266,7 +273,8 @@ end
   sprite.tone.set(((index+bonus) * toneDiff) + basetone.red, basetone.green, basetone.blue, basetone.gray)
 end
 
- #start_ov_sprite_movement(attacker,sprite)
+  $game_temp.preventspawns=false
+ start_ov_sprite_movement(attacker,sprite)
 
 end
 
@@ -275,11 +283,14 @@ end
 def start_ov_sprite_movement(attacker,sprite=nil)
  dir = attacker.direction
   if sprite.nil?
+  $game_temp.preventspawns=true
  $scene.spriteset.character_sprites.each do |character_sprite|
   if character_sprite.character == attacker
     sprite = character_sprite
   end
  end
+
+  $game_temp.preventspawns=false
   end
 (1..21).each_with_index do |number,index|
    update_package
@@ -405,7 +416,18 @@ def set_bgm
 end
 
 
+def return_normal_bgm
+      testbgm = pbGetWildBGM + "_alt"
+     if $game_temp.memorized_bgm && $game_system.is_a?(Game_System) && testbgm==$game_system.getPlayingBGM&.name
+        $game_system.bgm_pause
+       $game_system.bgm_position = $game_temp.memorized_bgm_position
+       $game_system.bgm_resume($game_temp.memorized_bgm)
+		$game_temp.memorized_bgm = nil
+		$game_temp.memorized_bgm_position = nil
+	 end  
 
+
+end
 
 
 def turning_prep(attacker,target)
@@ -552,6 +574,7 @@ class OWBallThrowSprite
 		pbSEPlay("Battle ball hit")
         @event=@map.events[event_id]
 		@pkmn = @event.pokemon #pbMapInterpreter.execute_script(script)
+		 @pkmn.status_turns=0 if @pkmn.status_turns.nil?
 		if  @pkmn.status_turns>0
 		@pkmn.status_turns-=1 
 		@pkmn.status=:NONE if @pkmn.status_turns==0
@@ -560,8 +583,10 @@ class OWBallThrowSprite
 
 
 		if @pkmn.fainted?
+		  
+        EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 1)
         @event.removeThisEventfromMap
-        pbPlayerEXP(@pkmn,pbOverworldCombat.get_allied_pokemon)
+        pbPlayerEXP(@pkmn,$player.able_party)
         pbHeldItemDropOW(@pkmn,true)
         @phase = 5
 		else 
@@ -581,7 +606,7 @@ class OWBallThrowSprite
 	  end
     when 2
       @frames+=1
-	  @phase = 3 if @pkmn.level<10 && $player.pokemon_party.length<1
+	  @phase = 3 if @pkmn.level<10 && $player.pokemon_party.length<1 && $Adventure.pokemon_party.length<1
       @phase=(@catch ? 3 : 4) if @frames>=BALL_CATCH_WAIT_FRAMES
     when 3
 	   pbSEPlay("Battle catch click")
@@ -592,7 +617,7 @@ class OWBallThrowSprite
       map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
         $PokemonGlobal.nuzlockeData[$game_map.map_id] = true unless static || shiny
        end
-        pbPlayerEXP(@pkmn,pbOverworldCombat.get_allied_pokemon)
+        pbPlayerEXP(@pkmn,$player.able_party)
 		@pkmn = @event.pokemon if !@pkmn.is_a?(Pokemon)
 		@pkmn.poke_ball = @ball_used
 		 @pkmn.calc_stats
@@ -600,6 +625,8 @@ class OWBallThrowSprite
         pbHeldItemDropOW(@pkmn)
         pkmnAnim(@pkmn)
         pbAddPokemonSilent(@pkmn)
+		  
+        EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 4)
         OverworldPBEffects.onCatch(@ball_used,@pkmn)
         @event.removeThisEventfromMap
         @phase=5
@@ -1259,6 +1286,7 @@ class OWItemUseSprite
 	  
 	  
 	 when :SHOVEL
+	  return
 	 facing = $game_player.pbFacingTile($game_player.direction, $game_player)
 	 coords = [facing[1],facing[2]]
     terrain = $game_map.terrain_tag(facing[1], facing[2], true)
@@ -1270,7 +1298,7 @@ class OWItemUseSprite
 	  if !facingEvent.nil? && facingEvent.name[/berryplant/i]
 	     berry_plant = facingEvent.getVariable
 		  if berry_plant
-		  berry = berry_plant.berry_id
+		  berry = berry_plant.berry_obj
     if berry_plant.growing? && berry_plant.growth_stage == 1
         if pbConfirmMessage(_INTL("You may be able to dig up the berry. Dig up the {1}?", GameData::Item.get(berry).name))
             berry_plant.reset
@@ -1291,7 +1319,6 @@ class OWItemUseSprite
 	 if !$PokemonGlobal.collection_maps[$game_map.map_id].include?(coords)
 	  pbSEPlay("shovel")
       pbCollectionMain2
-      pbItemBall(:SOFTSAND)
 	  $PokemonGlobal.collection_maps[$game_map.map_id] << coords
 	 else
 	  pbSEPlay("shovelhittingrock")
@@ -1301,9 +1328,6 @@ class OWItemUseSprite
 
      else
 	  end
-	 
-	  
-	  
 	 when :OLDROD
   itm = GameData::Item.get(:OLDROD)
       self.dispose
@@ -1502,31 +1526,9 @@ end
 
 
 def pbThrowPokemon
-
-
-
-
-   if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld.nil?
-  $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].set_in_world(false)
-    end
-	
-	
-	
-	
+  $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].set_in_world(false) if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld.nil?
   return if $game_temp.preventspawns == true
-  
-  
-  
-  
-  
-  
-  
   if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld==true
-  
-  
-  
-  
-  
   
   if true
    $game_temp.preventspawns=true
@@ -1550,7 +1552,7 @@ def pbThrowPokemon
    
    
   else
-  
+   if true
   active_ball=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].poke_ball
 	can_do = reduceStaminaBasedOnItem(active_ball)
     return false if can_do==false
@@ -1578,8 +1580,8 @@ def pbThrowPokemon
   $scene.spriteset.addUserSprite(OWPokemonReleaseSprite.new([start_coord,landing_coord],pokemon,$game_map,Spriteset_Map.viewport))
   
   
+   end
   end
-
 
 
 

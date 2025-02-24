@@ -58,7 +58,7 @@ class PokemonGlobalMetadata
   end
   def setup_positioning_controls_window
   
-	    @positioning_controls_window = Window_UnformattedTextPokemon.newWithSize("", 0, 0, 240, 64)
+	    @positioning_controls_window = Window_AdvancedTextPokemon.newWithSize("", 0, 0, 240, 64)
         @positioning_controls_window.resizeToFit("",@positioning_controls_window.width)
         @positioning_controls_window.x = Graphics.width-@positioning_controls_window.width
         @positioning_controls_window.z = 99999
@@ -76,7 +76,7 @@ class PokemonGlobalMetadata
   end
 
   def bars_visible
-    @bars_visible = true if !@bars_visible
+    @bars_visible = true if @bars_visible.nil?
     return @bars_visible
   end
 
@@ -392,6 +392,8 @@ class HUD
     @sprites3={}
 	@sprites4={}
 	@sprites5={}
+   @show = true if @show.nil?
+	@pokemon_charge_bars={}
 	@bar_image = RPG::Cache.picture("Hud/overlay_hp")
 	@bar_image2 = RPG::Cache.picture("Hud/overlay_hp2")
     @yposition = DRAW_AT_BOTTOM ? Graphics.height-64 : 0
@@ -403,9 +405,19 @@ class HUD
   end
 
   def showHUD?
-    return (
-      $player && !$game_temp.in_menu && ($game_map.map_id != 1 && $game_map.map_id != 25)
+   @show = true if @show.nil?
+    ret = (
+      $player && !$game_temp.in_menu && @show == true &&($game_map.map_id != 1 && $game_map.map_id != 25)
     )
+	 return ret
+  end
+  
+  def hideHUD
+  @show = false
+  end
+  
+  def showHUD
+    @show = true
   end
   end
 
@@ -425,26 +437,87 @@ class HUD
     #createHPBar(40+$PokemonSystem.screenposx , @yposition+45, 70, 11)
     createBox(440+$PokemonSystem.screenposx , @yposition+45, 70, 11)
 	createSelection(440+$PokemonSystem.screenposx , @yposition+45, 70, 11)
-	createHPLevel(80+$PokemonSystem.screenposx , 10)
+	createHPLevel(80, 10)
   end
   
+  def removeaChargeBar(event)
+    potato = event.id if event.is_a?(Game_PokeEventA)
+    potato = event if event.is_a?(Integer)
+	potato = -1 if event.is_a?(Game_Player)
+   if !@pokemon_charge_bars[potato].nil?
+   
+    @pokemon_charge_bars[potato]["hpbarborderevent"].visible=false
+    @pokemon_charge_bars[potato]["hpbarfillevent"].visible=false
+	
+    pbDisposeSprite(@pokemon_charge_bars[potato], "hpbarborderevent")
+    pbDisposeSprite(@pokemon_charge_bars[potato], "hpbarfillevent")
+	 @pokemon_charge_bars.delete(potato) 
+   
+   end
+  
+  
+  end
+  
+  def createaChargeBar(event)
+    potato = event.id if !event.is_a?(Game_Player)
+	potato = -1 if event.is_a?(Game_Player)
+   if !@pokemon_charge_bars[potato].nil?
+   
+    @pokemon_charge_bars[potato]["hpbarborderevent"].visible=false
+    @pokemon_charge_bars[potato]["hpbarfillevent"].visible=false
+	
+    pbDisposeSprite(@pokemon_charge_bars[potato], "hpbarborderevent")
+    pbDisposeSprite(@pokemon_charge_bars[potato], "hpbarfillevent")
+	 @pokemon_charge_bars.delete(potato) 
+   
+   end
+    @pokemon_charge_bars[potato] = {}
+    x      = ScreenPosHelper.pbScreenX(event)
+    y      = ScreenPosHelper.pbScreenY(event)
+	 x -= -22
+	 y -= 35
+	 width = 9
+	 height = 35
+    fillWidth = width-4
+    fillHeight = height-4
+    @pokemon_charge_bars[potato]["hpbarborderevent"] = BitmapSprite.new(width,height,@viewport1)
+    @pokemon_charge_bars[potato]["hpbarborderevent"].x = x
+    @pokemon_charge_bars[potato]["hpbarborderevent"].y = y
+
+    @pokemon_charge_bars[potato]["hpbarborderevent"].bitmap.fill_rect(
+      Rect.new(0,0,width,height), Color.new(32,32,32)
+    )
+    @pokemon_charge_bars[potato]["hpbarborderevent"].bitmap.fill_rect(
+      (width-fillWidth)/2, (height-fillHeight)/2,
+      fillWidth, fillHeight, Color.new(96,96,96)
+    )
+    @pokemon_charge_bars[potato]["hpbarborderevent"].visible = false
+    @pokemon_charge_bars[potato]["hpbarfillevent"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
+    @pokemon_charge_bars[potato]["hpbarfillevent"].x = x+2
+    @pokemon_charge_bars[potato]["hpbarfillevent"].y = y+2
+    @pokemon_charge_bars[potato]["event"] = event
+    @pokemon_charge_bars[potato]["rounds"] = 0.0
+  
+  end
 
   def createSelection(x, y, width, height)
       5.times do |i| 
         @sprites4["selection#{i}"]=IconSprite.new(x-30,100+(i*32),@viewport)
         @sprites4["selection#{i}"].setBitmap("Graphics/Pictures/ov_selection_box")
         @sprites4["selection#{i}"].z=9
+        @sprites4["selection#{i}"].opacity = 127
         @sprites4["selection#{i}"].visible=false
 		 if i==4
-	       @sprites4["item_sel#{i}"] = Window_UnformattedTextPokemon.newWithSize("5. Interact", x-46,86+(i*32), 270, 64)
+	       @sprites4["item_sel#{i}"] = Window_AdvancedTextPokemon.newWithSize(_INTL("<o=#{@sprites4["selection#{i}"].opacity}>5. Interact"), x-46,86+(i*32), 270, 64)
 		 else
-	       @sprites4["item_sel#{i}"] = Window_UnformattedTextPokemon.newWithSize("", x-46,86+(i*32), 270, 64)
+	       @sprites4["item_sel#{i}"] = Window_AdvancedTextPokemon.newWithSize("", x-46,86+(i*32), 270, 64)
 		 end
+	     @sprites4["item_sel#{i}"].opacity = @sprites4["selection#{i}"].opacity
         @sprites4["item_sel#{i}"].visible = false
         @sprites4["item_sel#{i}"].z=10
         @sprites4["item_sel#{i}"].windowskin  = nil
       end
-      @sprites4["pause"] = Window_UnformattedTextPokemon.newWithSize("PAUSE", Graphics.width/2-40,Graphics.height/2-70, 270, 64)
+      @sprites4["pause"] = Window_AdvancedTextPokemon.newWithSize("PAUSE", Graphics.width/2-40,Graphics.height/2-70, 270, 64)
       @sprites4["pause"].visible = false
       @sprites4["pause"].windowskin  = nil
       @sprites4["pause"].z=99
@@ -458,15 +531,12 @@ class HUD
   def createHPLevel(width, height)
     fillWidth = width-4
     fillHeight = height-4
-    @sprites3["hpbarborderevent"] = BitmapSprite.new(width,height,@viewport1)
-    @sprites3["hpbarborderevent"].x = 25
-    @sprites3["hpbarborderevent"].y = 40
-	x=25
+	x=Graphics.width + $PokemonSystem.screenposx - 110
 	y=40
-   # @sprites3["bar"]=IconSprite.new((@sprites3["hpbarborder#{event.id}"].x-1),(@sprites3["hpbarborder#{event.id}"].y-8),@viewport1)
-   # @sprites3["bar"].setBitmap(BG_PATH)
-   # @sprites3["bar"].visible = false
-   # @sprites3["bar"].z = 9
+    @sprites3["hpbarborderevent"] = BitmapSprite.new(width,height,@viewport1)
+    @sprites3["hpbarborderevent"].x = x
+    @sprites3["hpbarborderevent"].y = y
+
     @sprites3["hpbarborderevent"].bitmap.fill_rect(
       Rect.new(0,0,width,height), Color.new(32,32,32)
     )
@@ -475,11 +545,13 @@ class HUD
       fillWidth, fillHeight, Color.new(96,96,96)
     )
     @sprites3["hpbarborderevent"].visible = false
-    @sprites3["hpbarborderevent"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
-    @sprites3["hpbarborderevent"].x = x+2
-    @sprites3["hpbarborderevent"].y = y+2
+    @sprites3["hpbarfillevent"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
+    @sprites3["hpbarfillevent"].x = x+2
+    @sprites3["hpbarfillevent"].y = y+2
+    @sprites3["hpbarfillevent"].z = @sprites3["hpbarborderevent"].z+1
     text = ""
-	@sprites3["namewindowevent"] = Window_UnformattedTextPokemon.newWithSize(text, 10, 1, 270, 64)
+    @sprites3["hpbarfillevent"].visible = false
+	@sprites3["namewindowevent"] = Window_AdvancedTextPokemon.newWithSize(text, x-30, -5, 270, 64)
     @sprites3["namewindowevent"].visible = false
 	@sprites3["namewindowevent"].windowskin  = nil
 end
@@ -489,7 +561,7 @@ end
        # @sprites5["ball_icon2"].z=9
        # @sprites5["ball_icon2"].visible=false
 		#keyname = get_keyname("Control Pokemon")
-	   # @sprites5["ball_icon2window"] = Window_UnformattedTextPokemon.newWithSize("#{keyname}", 46, 25, 270, 64)
+	   # @sprites5["ball_icon2window"] = Window_AdvancedTextPokemon.newWithSize("#{keyname}", 46, 25, 270, 64)
         #@sprites5["ball_icon2window"].visible = false
 	   # @sprites5["ball_icon2window"].windowskin  = nil
        # @sprites5["ball_icon2window"].z=9
@@ -508,6 +580,9 @@ end
      @sprites2["pkmn_icon"].x=x-7
      @sprites2["pkmn_icon"].y=288-4
      @sprites2["pkmn_icon"].z=9
+     @sprites2["other_icon"]=IconSprite.new(x,228+70,nil,@viewport)
+     @sprites2["other_icon"].z=9
+	 
      @sprites2["overlay"]=BitmapSprite.new(48,48,@viewport)
      @sprites2["overlay"].x=x
      @sprites2["overlay"].y=288
@@ -522,44 +597,42 @@ end
        @sprites2["ball_icon"].item=:NO
      end
 
-     @sprites2["namewindow"] = Window_UnformattedTextPokemon.newWithSize("", x-24, 250, 270, 64)
+     @sprites2["namewindow"] = Window_AdvancedTextPokemon.newWithSize("", x-24, 250, 270, 64)
      @sprites2["namewindow"].visible = true
      @sprites2["namewindow"].windowskin  = nil
-     @sprites2["amt"] = Window_UnformattedTextPokemon.newWithSize("", x-24+46, 256+56, 270+1, 200)
+     @sprites2["amt"] = Window_AdvancedTextPokemon.newWithSize("", x-24+46, 256+56, 270+1, 200)
      @sprites2["amt"].visible = true
      @sprites2["amt"].windowskin  = nil
-     @sprites2["durawindow"] = Window_UnformattedTextPokemon.new("")
+     @sprites2["durawindow"] = Window_AdvancedTextPokemon.new("")
      @sprites2["durawindow"].visible = true
      @sprites2["durawindow"].windowskin  = nil
      @sprites2["durawindow"].zoom_x  = 0.75
      @sprites2["durawindow"].zoom_y  = 0.75
-     @sprites2["durawindow"].x  = x-24+144
-     @sprites2["durawindow"].y  = 240+190
+     @sprites2["durawindow"].x  = x-24+144-15
+     @sprites2["durawindow"].y  = 240+190-2
      @sprites2["durawindow"].baseColor  = Color.new(255,192,66)
      @sprites2["durawindow"].shadowColor=get_shadow_color(:FIRE)
-     @sprites2["waterwindow"] = Window_UnformattedTextPokemon.new("")
+     @sprites2["waterwindow"] = Window_AdvancedTextPokemon.new("")
      @sprites2["waterwindow"].visible = true
      @sprites2["waterwindow"].windowskin  = nil
      @sprites2["waterwindow"].zoom_x  = 0.75
      @sprites2["waterwindow"].zoom_y  = 0.75
-     @sprites2["waterwindow"].x  = x-24+209
-     @sprites2["waterwindow"].y  = 240+190
-     @sprites2["waterwindow"].baseColor  = Color.new(0, 84, 119)
-     @sprites2["durawindow"].shadowColor=get_shadow_color(:FIRE)
+     @sprites2["waterwindow"].x  = x-24+209-6
+     @sprites2["waterwindow"].y  = 240+190-54
+     @sprites2["waterwindow"].baseColor  = get_type_color("Poop")
+     @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
      @sprites2["status_effect"]=IconSprite.new(x+1,289,@viewport)
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
      @sprites2["status_effect"].z=10
-	  
-	    6.times do |i|
-     @sprites2["secondary_boxes#{i}"]=IconSprite.new(0,0,@viewport)
-     @sprites2["secondary_boxes#{i}"].visible=false
-     @sprites2["secondary_boxes#{i}"].setBitmap("Graphics/Pictures/Hud/catchuiblank")
-     @sprites2["secondary_boxes#{i}"].zoom_x=0.65
-     @sprites2["secondary_boxes#{i}"].zoom_y=0.65
-     @sprites2["secondary_boxes#{i}"].x=x-56- (46*i)
-     @sprites2["secondary_boxes#{i}"].y=Graphics.height-78
-     @sprites2["secondary_boxes#{i}"].z=8
-     #@sprites2["secondary_boxes#{i}"].opacity = (300/(i+1)).to_i
+     createSubboxes(x, y, width, height)
+     overlay=@sprites2["overlay"].bitmap
+     overlay.clear
+		 
+     hideBallHUD if $PokemonGlobal.ball_hud_enabled==false
+  end
+  
+   def get_subbox_bonus(i)
+   
         case i
 		 when 6
 		  bonus = -4
@@ -578,41 +651,103 @@ end
 		 else
 		  bonus = 0
         end
-     @sprites2["durawindow_small#{i}"] = Window_UnformattedTextPokemon.new("")
+     return bonus
+   end
+  
+  def createSubboxes(x, y, width, height)
+  
+     @sprites2["extendedBG"]=IconSprite.new(x-70 - (46*5),Graphics.height-80,@viewport)
+     @sprites2["extendedBG"].setBitmap("")
+     @sprites2["extendedBG"].visible=false
+     @sprites2["title_window"] = Window_AdvancedTextPokemon.new("")
+     @sprites2["title_window"].windowskin  = nil
+     @sprites2["title_window"].x  = x-76 - (46*5)
+     @sprites2["title_window"].y  = Graphics.height-120
+     @sprites2["title_window"].z=9
+   6.times do |i|
+		bonus = get_subbox_bonus(i)
+     @sprites2["secondary_boxes#{i}"]=IconSprite.new(0,0,@viewport)
+     @sprites2["secondary_boxes#{i}"].visible=false
+     @sprites2["secondary_boxes#{i}"].setBitmap("Graphics/Pictures/Hud/catchuiblank")
+     @sprites2["secondary_boxes#{i}"].zoom_x=0.50
+     @sprites2["secondary_boxes#{i}"].zoom_y=0.50
+	   boxes_xvalue = x-56- (46*i)
+	 
+     @sprites2["secondary_boxes#{i}"].x=boxes_xvalue
+     @sprites2["secondary_boxes#{i}"].y=Graphics.height-66
+     @sprites2["secondary_boxes#{i}"].z=8
+     #@sprites2["secondary_boxes#{i}"].opacity = (300/(i+1)).to_i
+     @sprites2["durawindow_small#{i}"] = Window_AdvancedTextPokemon.new("")
      @sprites2["durawindow_small#{i}"].visible = false
      @sprites2["durawindow_small#{i}"].windowskin  = nil
-     @sprites2["durawindow_small#{i}"].zoom_x  = 0.65
-     @sprites2["durawindow_small#{i}"].zoom_y  = 0.65
-     @sprites2["durawindow_small#{i}"].x  = x + bonus + 142 - (70*i)
-     @sprites2["durawindow_small#{i}"].y  = Graphics.height + 120
+     @sprites2["durawindow_small#{i}"].zoom_x  = 0.50
+     @sprites2["durawindow_small#{i}"].zoom_y  = 0.50
+     @sprites2["aquawindow_small#{i}"] = Window_AdvancedTextPokemon.new("")
+     @sprites2["aquawindow_small#{i}"].visible = false
+     @sprites2["aquawindow_small#{i}"].windowskin  = nil
+     @sprites2["aquawindow_small#{i}"].zoom_x  = 0.50
+     @sprites2["aquawindow_small#{i}"].zoom_y  = 0.50
+	   if i == 0
+	    duris1 = x + bonus + 320 - (95*i) - (@sprites2["durawindow_small#{i}"].width / 4)
+	   else 
+	   
+	    duris1 = x + bonus + 320 - (90*i) - (@sprites2["durawindow_small#{i}"].width / 4)
+	   end
+     @sprites2["durawindow_small#{i}"].x  = duris1
+     @sprites2["durawindow_small#{i}"].y  = Graphics.height + 276
+     @sprites2["aquawindow_small#{i}"].x  = duris1+46
+     @sprites2["aquawindow_small#{i}"].y  = Graphics.height + 246
      #@sprites2["durawindow_small#{i}"].opacity = (300/(i+1)).to_i
 
-     @sprites2["namewindow_small#{i}"] = Window_UnformattedTextPokemon.newWithSize("", x-24, 250, 270, 64)
+     @sprites2["namewindow_small#{i}"] = Window_AdvancedTextPokemon.newWithSize("", x-24, 250, 270, 64)
      @sprites2["namewindow_small#{i}"].visible = false
      @sprites2["namewindow_small#{i}"].windowskin  = nil
-     @sprites2["namewindow_small#{i}"].zoom_x  = 0.65
-     @sprites2["namewindow_small#{i}"].zoom_y  = 0.65
-     @sprites2["namewindow_small#{i}"].x  = x + bonus + 146 - (70*i)
-     @sprites2["namewindow_small#{i}"].y  = Graphics.height + 55
+     @sprites2["namewindow_small#{i}"].zoom_x  = 0.50
+     @sprites2["namewindow_small#{i}"].zoom_y  = 0.50
+	   if i == 0
+	    duris = x + bonus + 373 - (95*i) - (@sprites2["namewindow_small#{i}"].width / 4)
+	   else 
+	   
+	    duris = x + bonus + 373 - (90*i) - (@sprites2["namewindow_small#{i}"].width / 4)
+	   end
+     @sprites2["namewindow_small#{i}"].x  = duris
+     @sprites2["namewindow_small#{i}"].y  = Graphics.height + 210
      #@sprites2["namewindow_small#{i}"].opacity = (300/(i+1)).to_i
 
-	 @sprites2["pkmn_icon_small#{i}"]=PokemonIconSprite.new(nil, @viewport)
-     @sprites2["pkmn_icon_small#{i}"].zoom_x  = 0.65
-     @sprites2["pkmn_icon_small#{i}"].zoom_y  = 0.65
-     @sprites2["pkmn_icon_small#{i}"].x=x-56- (46*i)
-     @sprites2["pkmn_icon_small#{i}"].y=Graphics.height-78
+	  @sprites2["pkmn_icon_small#{i}"]=PokemonIconSprite.new(nil, @viewport)
+     @sprites2["pkmn_icon_small#{i}"].zoom_x  = 0.50
+     @sprites2["pkmn_icon_small#{i}"].zoom_y  = 0.50
+     @sprites2["pkmn_icon_small#{i}"].x=boxes_xvalue + (@sprites2["pkmn_icon_small#{i}"].width/2)
+     @sprites2["pkmn_icon_small#{i}"].y=Graphics.height-66
      @sprites2["pkmn_icon_small#{i}"].z=9
      #@sprites2["pkmn_icon_small#{i}"].opacity = (300/(i+1)).to_i
      @sprites2["pkmn_icon_small#{i}"].visible = false
-	    end
 	 
-     overlay=@sprites2["overlay"].bitmap
-     overlay.clear
-		 
-     hideBallHUD if $PokemonGlobal.ball_hud_enabled==false
+     @sprites2["ball_icon_small#{i}"]=ItemIconSprite.new(x+24,288+34,nil,@viewport)
+     @sprites2["ball_icon_small#{i}"].blankzero = true
+     @sprites2["ball_icon_small#{i}"].zoom_x  = 0.50
+     @sprites2["ball_icon_small#{i}"].zoom_y  = 0.50
+     @sprites2["ball_icon_small#{i}"].x=boxes_xvalue + @sprites2["ball_icon_small#{i}"].width + 17
+     @sprites2["ball_icon_small#{i}"].y=Graphics.height-49
+     @sprites2["ball_icon_small#{i}"].z=9
+     #@sprites2["ball_icon_small#{i}"].opacity = (300/(i+1)).to_i
+     @sprites2["ball_icon_small#{i}"].visible = false
+	 
+     @sprites2["other_icon_small#{i}"]=IconSprite.new(x+24,288+34,nil,@viewport)
+     @sprites2["other_icon_small#{i}"].zoom_x  = 0.50
+     @sprites2["other_icon_small#{i}"].zoom_y  = 0.50
+     @sprites2["other_icon_small#{i}"].x=boxes_xvalue + @sprites2["other_icon_small#{i}"].width + 5
+     @sprites2["other_icon_small#{i}"].y=Graphics.height-61
+     @sprites2["other_icon_small#{i}"].z=9
+     #@sprites2["ball_icon_small#{i}"].opacity = (300/(i+1)).to_i
+     @sprites2["other_icon_small#{i}"].visible = false
+	end
+	 
+  
+  
+  
+  
   end
-
-
 end
 
 
@@ -648,6 +783,8 @@ class HUD
   @sprites2.each_key do |key|
      next if key.include?("secondary_boxes")
      next if key.include?("pkmn_icon_small")
+     next if key.include?("other_icon_small")
+     next if key.include?("ball_icon_small")
      next if key.include?("namewindow_small")
      next if key.include?("durawindow_small")
     @sprites2[key].visible=true
@@ -674,17 +811,151 @@ class HUD
 
 end
 
+def pbGetMeTheDeetsJimmy
+ return if $game_temp.lockontarget==false
+ event = $game_temp.lockontarget
+      event_name = event.name.sub(/\..*/, '')
+	  text = ""
+	  text = "One of many Statues that can be found around the Island. They have various uses from Saving, to Teleporting, to leveling up Pokemon."  if event_name.downcase.include?("ancientstone")
+	  text = "Your backpack. You should probably grab it."  if event_name.downcase == "backpack"
+	  #text = "It is a rock."  if text.downcase == "a rock"
+      text = GameData::Item.get(:ACORN).description if event_name.downcase == "tree"
+	  text = event.variable.berry_obj.description  if event_name.downcase == "berryplant" && event.variable && event.variable.berry_obj
+	  text = "A plot for farming berries and other plants."  if event_name.downcase == "berryplant"
+	   if defined?(event.pokemon) && event.pokemon.is_a?(Pokemon)
+	    thespecies = GameData::Species.get_species_form(event.pokemon.species, event.pokemon.form)
+		if (!customEntry?(thespecies) && $PokemonSystem.entries==0) || Input.trigger?(Input::SHIFT)
+	     commands=[]
+        commands.push(_INTL("Yes"))
+        commands.push(_INTL("No"))
+        commands.push(_INTL("Don't ask me this again.")) if $PokemonSystem.entries==0
+        msgwindow = pbCreateMessageWindow(nil,nil)
+        pbMessageDisplay(msgwindow,_INTL("Would you like to give this Pokemon a custom dex entry?\\wtnp[1]"))
+        commandMail = pbShowCommandsssss(nil,nil,msgwindow,commands, -1)
+	     pbDisposeMessageWindow(msgwindow)
+        if commands[commandMail]==_INTL("Yes")
+		
+	   vp = Viewport.new(0-$PokemonSystem.screenposx, 0-$PokemonSystem.screenposy, Settings::SCREEN_WIDTH*4, Settings::SCREEN_HEIGHT*4)
+	    vp.z = 9999999
+     potato=IconSprite.new(0,0,vp)
+     potato.setBitmap("Graphics/Pictures/loadslotsbg")
+     potato.z=-100000
+     base=SpriteWindow_Base.new((Settings::SCREEN_WIDTH/2)-64,(Settings::SCREEN_HEIGHT/2)-64,128,128)
+	  base.viewport = vp
+     base.z=10
+     species = PokemonSprite.new(vp)
+     species.setPokemonBitmapSpecies(event.pokemon,thespecies)
+	  species.viewport = vp
+     species.x=Settings::SCREEN_WIDTH/2
+     species.y=Settings::SCREEN_HEIGHT/2
+     species.z=11
+		      pbDexEntryMenu(thespecies,vp)
+	   potato.dispose
+	   base.dispose
+	   species.dispose
+	   vp.dispose
+		  elsif commands[commandMail]==_INTL("Don't ask me this again.")
+		    $PokemonSystem.entries=1
+		  else
+		  end
+		end
+	   text = pbPokedexEntry(thespecies)
+	  end
+      text = GameData::Item.get(event.pokemon).description if defined?(event.pokemon) && (event.pokemon.is_a?(Symbol) || event.pokemon.is_a?(ItemData))
+      text = GameData::Item.get(:TORCH).description if event_name.include?("naturaltorch") || event_name.include?("playertorch")
+      text = GameData::Item.get(:ARGOSTBERRY).description if event_name.include?("Argost Berry")
+	  text = "You see: #{event_name}." if text == "" || text.nil?
+
+
+ pbMessage(text)
+
+end
+
 
 class HUD
   
   def refresh
     refreshSTABar if $PokemonGlobal.bars_visible==true
     refreshHPBar if $PokemonGlobal.bars_visible==true
-	refreshHPLevel(80+$PokemonSystem.screenposx , 10) if $game_temp.lockontarget!=false
+	refreshHPLevel(80+$PokemonSystem.screenposx , 10)
 	refreshSelection
 	refreshBox(440+$PokemonSystem.screenposx , @yposition+45) if $PokemonGlobal.ball_hud_enabled==true
+	refreshChargeBars
   end
-
+  
+  def fillamtlookup(value,maxvalue,event_id)
+   return 0 if value==maxvalue
+   return @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.height if value == 0
+   return (@pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.height * (maxvalue - value) / maxvalue)
+  end
+  
+  
+  def refreshChargeBars
+     @pokemon_charge_bars.each_key do |event_id|
+	  event = @pokemon_charge_bars[event_id]["event"]
+    x      = ScreenPosHelper.pbScreenX(event)
+    y      = ScreenPosHelper.pbScreenY(event)
+	 x -= -22
+	 y -= 35
+	 width = 9
+	 height = 35
+	if event.attack_opportunity==0
+	 if @pokemon_charge_bars[event_id]["rounds"]>=10.0
+    @pokemon_charge_bars[event_id]["hpbarborderevent"].visible=false
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].visible=false
+	
+    pbDisposeSprite(@pokemon_charge_bars[event_id], "hpbarborderevent")
+    pbDisposeSprite(@pokemon_charge_bars[event_id], "hpbarfillevent")
+	 @pokemon_charge_bars.delete(event_id) 
+	  next
+	  else
+	    @pokemon_charge_bars[event_id]["rounds"]+=0.1
+	  end
+	end
+    fillWidth = width-4
+    fillHeight = height-4
+    totalhp = 30
+    hp = event.attack_opportunity
+    @pokemon_charge_bars[event_id]["hpbarborderevent"].visible = hp!=nil
+    @pokemon_charge_bars[event_id]["hpbarborderevent"].x = x
+    @pokemon_charge_bars[event_id]["hpbarborderevent"].y = y
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].x = x+2
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].y = y+2
+	
+	
+	
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].visible = @pokemon_charge_bars[event_id]["hpbarborderevent"].visible
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.clear
+	
+	
+    fillAmount = fillamtlookup(hp,totalhp,event_id)
+    # Always show a bit of HP when alive
+    return if fillAmount < 0
+	
+    hpColors = hpBarCurrentColors22(hp, totalhp - hp)
+    shadowHeight = 0
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.fill_rect(
+      Rect.new(0,0,fillAmount,shadowHeight), hpColors[1]
+    )
+    @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.fill_rect(
+      Rect.new(
+        0, @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.height - fillAmount + shadowHeight,
+        @pokemon_charge_bars[event_id]["hpbarfillevent"].bitmap.width, fillAmount
+      ), hpColors[0]
+    )
+ 
+	 
+	 end
+  end
+  
+  def hpBarCurrentColors22(hp, totalhp)
+    if hp<=(totalhp/4.0)
+      return HP_BAR_GREEN
+    elsif hp<=(totalhp/2.0)
+      return HP_BAR_YELLOW
+    end
+    return HP_BAR_RED
+  end
 
   def get_type_color(type)
        case type
@@ -772,6 +1043,11 @@ class HUD
        end
   end 
   
+  def durable?(current_selection)
+    return current_selection.is_a?(ItemData) && current_selection.durability!=false && !GameData::Item.get(current_selection).is_foodwater? && !GameData::Item.get(current_selection).is_berry? && !GameData::Item&.try_get(current_selection).is_poke_ball? && current_selection.id!=:STONE
+  
+  end
+  
   def refreshBox(x,y)
     cur_qty = 0
     getCurrentItemOrder
@@ -781,7 +1057,10 @@ class HUD
 	#  @sprites2["ball_icon"].item=:NO
 	# name = "Multi Sel"
     current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+     @sprites2["waterwindow"].baseColor  = get_type_color("Poop")
+     @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
 	if current_selection.is_a?(Pokemon)
+	  if true 
 	  object = nil
 	  @sprites2["pkmn_icon"].pokemon=nil if @sprites2["pkmn_icon"].pokemon!=current_selection
 	  name = GameData::Species.try_get(current_selection.species).real_name
@@ -790,6 +1069,9 @@ class HUD
 	  name = "#{name} (#{formname.slice(0, 1)})" if !formname.nil? 
 	  @sprites2["pkmn_icon"].pokemon=current_selection
 	  @sprites2["ball_icon"].item=nil
+	  @sprites2["other_icon"].name=nil
+	  
+	  
 	   text = ""
 	   if current_selection.egg?
 	   text34 = ""
@@ -828,8 +1110,11 @@ class HUD
 	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
 	  $PokemonGlobal.selected_pokemon[0] = 0 if current_selection.egg?
 	  end
-
+     end
 	elsif current_selection.is_a?(String)
+     @sprites2["waterwindow"].baseColor  = get_type_color("Poop")
+     @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
+	  if true
 	  object = nil
 	
 	  if $PokemonGlobal.selected_pokemon[0] != 0
@@ -840,8 +1125,14 @@ class HUD
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
 	  name = current_selection
 	  name = name.slice(0, 10) if name.length > 10
-	  @sprites2["ball_icon"].item=:NO
+	  @sprites2["ball_icon"].item=nil
 	  @sprites2["pkmn_icon"].pokemon=nil
+	  imagepath = "Graphics/UI/OV HUD/#{current_selection}"
+	    image = nil
+	  if pbResolveBitmap(imagepath)
+	   image = imagepath
+	  end
+	  @sprites2["other_icon"].name=image
      @sprites2["durawindow"].baseColor  = Color.new(255,182,66)
 	  text4 = ""    
 	  @sprites2["durawindow"].text = text4
@@ -851,9 +1142,12 @@ class HUD
 	  @sprites2["waterwindow"].text = text5
       @sprites2["waterwindow"].resizeToFit(text5)
 	
-	
-	elsif current_selection == :MULTISELECT
+	  end
+	elsif current_selection == :MULTISELECT || current_selection == :NO || current_selection == :NONE || current_selection == :RADIAL || current_selection == :BATTLE  || current_selection == :TOOL || current_selection == :WEAPONS || current_selection == :FAVORITES || current_selection == :PLACE || current_selection == :PKMN || current_selection.is_a?(Pokemon::Move)
+	  if true
 	  object = nil
+     @sprites2["waterwindow"].baseColor  = get_type_color("Poop")
+     @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
 	
 	  if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
@@ -861,25 +1155,60 @@ class HUD
 	  end
 	  
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
-	  name = "Multi Sel"
+	  name = "None"
+	  name = "Multi Sel" if current_selection == :MULTISELECT
+	  name = "Consumable" if current_selection == :BATTLE
+	  name = "Tools" if current_selection == :TOOL
+	  name = "Weapons" if current_selection == :WEAPONS
+	  name = "Pokemon" if current_selection == :PKMN
+	  name = "Placeable" if current_selection == :PLACE
+	  name = "Favorites" if current_selection == :FAVORITES
+	  name = "Home" if current_selection == :RADIAL
+	  name = GameData::Move.get(current_selection.id).real_name if current_selection.is_a?(Pokemon::Move)
 	  name = name.slice(0, 10) if name.length > 10
-	  @sprites2["ball_icon"].item=:NO
+	  imagepath = "Graphics/UI/OV HUD/#{name}" if !current_selection.is_a?(Pokemon::Move)
+	  imagepath = "Graphics/UI/OV HUD/#{current_selection.id}" if current_selection.is_a?(Pokemon::Move)
+	    image = nil
+	  if pbResolveBitmap(imagepath)
+	   image = imagepath
+	  end
+	   if current_selection.is_a?(Pokemon::Move) && image.nil?
+	   imagepath = "Graphics/UI/OV HUD/#{current_selection.type}"
+	   if pbResolveBitmap(imagepath)
+	    image = imagepath
+	   end
+	   end
+	  @sprites2["ball_icon"].item=nil if current_selection != :BATTLE && current_selection != :TOOL && current_selection != :WEAPONS 
+	  @sprites2["ball_icon"].item=:POTION if current_selection == :BATTLE
+	  @sprites2["ball_icon"].item=:BLUEFLUTE if current_selection == :TOOL
+	  @sprites2["ball_icon"].item=:BLACKBELT if current_selection == :WEAPONS
+     @sprites2["other_icon"].name=image  if current_selection != :BATTLE && current_selection != :TOOL && current_selection != :WEAPONS 
 	  @sprites2["pkmn_icon"].pokemon=nil
      @sprites2["durawindow"].baseColor  = Color.new(255,182,66)
 	  text4 = ""    
+	  text4 = "#{current_selection.pp}/#{current_selection.total_pp}" if current_selection.is_a?(Pokemon::Move)
 	  @sprites2["durawindow"].text = text4
       @sprites2["durawindow"].resizeToFit(text4)
 
 	  text5 = ""   
+	  if !$PokemonGlobal.cur_stored_pokemon.nil?
+	   if current_selection.is_a?(Pokemon::Move)
+	     moves =  $PokemonGlobal.cur_stored_pokemon.moves+$PokemonGlobal.cur_stored_pokemon.moves2
+		  index = moves.index(current_selection)
+	     text5 = "#{index+1}"
+	   end
+	  end
 	  @sprites2["waterwindow"].text = text5
       @sprites2["waterwindow"].resizeToFit(text5)
 
 
 
-
+      end
 	elsif current_selection.is_a?(ItemData)
+	  if true
 	
-	
+     @sprites2["waterwindow"].baseColor  = Color.new(0, 84, 119)
+     @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
 	  if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
 	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
@@ -892,9 +1221,10 @@ class HUD
 	  name = name.slice(0, 10) if name.length > 10
 	  @sprites2["ball_icon"].item=current_selection
 	  @sprites2["pkmn_icon"].pokemon=nil
+	  @sprites2["other_icon"].name=nil
      @sprites2["durawindow"].baseColor  = Color.new(255,182,66)
 	  text4 = ""    
-	  text4 = "#{current_selection.durability}/100" if current_selection.is_a?(ItemData) && current_selection.durability!=false && !GameData::Item.get(current_selection).is_foodwater? && !GameData::Item.get(current_selection).is_berry? && !GameData::Item&.try_get(current_selection).is_poke_ball? && current_selection.id!=:STONE
+	  text4 = "#{current_selection.durability}/#{current_selection.max_durability}" if durable?(current_selection)
 	  @sprites2["durawindow"].text = text4
       @sprites2["durawindow"].resizeToFit(text4)
 
@@ -904,7 +1234,7 @@ class HUD
       @sprites2["waterwindow"].resizeToFit(text5)
 	  
 	  
-	  
+	   end
 	else
 	 if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
@@ -913,7 +1243,7 @@ class HUD
     	return
 	end
    
-	cur_qty=$bag.quantity(current_selection) if current_selection.is_a?(ItemData) || (current_selection.is_a?(Symbol) && current_selection!=:MULTISELECT)
+	cur_qty=$bag.quantity(current_selection) if current_selection.is_a?(ItemData) || (current_selection.is_a?(Symbol) && current_selection!=:MULTISELECT && current_selection!=:RADIAL && current_selection!=:NO && current_selection!=:NONE && current_selection!=:BATTLE && current_selection != :TOOL && current_selection != :WEAPONS && current_selection != :FAVORITES && current_selection != :PLACE && current_selection != :PKMN && !currentSelection.is_a?(Pokemon::Move))
 	if cur_qty > 0
 		case cur_qty.to_s.length
 		  when 1
@@ -929,88 +1259,218 @@ class HUD
 	if !cur_qty.nil?
 	@sprites2["amt"].text = "x#{cur_qty}" if cur_qty>0 && @sprites2["namewindow"].text!="x#{cur_qty}"
 	@sprites2["amt"].text = "" if cur_qty==0 && @sprites2["namewindow"].text!=""
+	else
+	@sprites2["amt"].text = ""
 	end
 
 
 
 
-
-
-	    6.times do |i|
-   if $PokemonGlobal.set_extended_hud==true
-      target = (i + 1 + $PokemonGlobal.ball_hud_index) % $PokemonGlobal.ball_order.length 
-	  target -= $PokemonGlobal.ball_hud_index if target>$PokemonGlobal.ball_order.length
-      altselect = $PokemonGlobal.ball_order[target]
-	  next if altselect.nil?
-	  
-     next if i==5 && $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==altselect
-      #next if @sprites2["pkmn_icon_small#{i}"].visible == false && @sprites2["secondary_boxes#{i}"].visible == false && @sprites2["durawindow_small#{i}"].visible == false && @sprites2["namewindow_small#{i}"].visible == false
-          text1 = ""
-		   text2 = ""
-		   
-	  if altselect.is_a?(Pokemon)
-       @sprites2["pkmn_icon_small#{i}"].pokemon=altselect
-	     name = GameData::Species.try_get(altselect.species).real_name
-	     name = name.slice(0, 10) if name.length > 10
-	     formname = altselect.species_data.form_name
-	     text1 = "#{name}" if formname.nil? 
-	     text1 = "#{name} (#{formname.slice(0, 1)})" if !formname.nil? 
-	     text1 = altselect.name if altselect.egg?
-	     text1 = "???" if altselect.egg?
-		 text2 = "#{altselect.hp}/#{altselect.totalhp}" if !altselect.egg?
-	  elsif altselect == :MULTISELECT
-       @sprites2["pkmn_icon_small#{i}"].pokemon=nil
-	     text1 = "Multi Sel" if formname.nil? 
-	  end
-	  
-       @sprites2["durawindow_small#{i}"].text = text2
-       @sprites2["namewindow_small#{i}"].text = text1
-      @sprites2["durawindow_small#{i}"].resizeToFit(text2)
-      @sprites2["namewindow_small#{i}"].resizeToFit(text1)
-     @sprites2["pkmn_icon_small#{i}"].visible = true
-     @sprites2["secondary_boxes#{i}"].visible = true
-     @sprites2["durawindow_small#{i}"].visible = true
-     @sprites2["namewindow_small#{i}"].visible = true
-     if altselect.is_a?(Pokemon)
-    @sprites2["durawindow_small#{i}"].baseColor = Color.new(24,198,33)  
-    @sprites2["durawindow_small#{i}"].baseColor = Color.new(239,173,0) if altselect.hp <= (altselect.totalhp / 2).floor 
-    @sprites2["durawindow_small#{i}"].baseColor = Color.new(255,74,57) if altselect.hp <= (altselect.totalhp / 4).floor
-     end
-   else
-    
-      #next if @sprites2["pkmn_icon_small#{i}"].visible == true && @sprites2["secondary_boxes#{i}"].visible == true && @sprites2["durawindow_small#{i}"].visible == true && @sprites2["namewindow_small#{i}"].visible == true
-
-     @sprites2["pkmn_icon_small#{i}"].visible = false
-     @sprites2["secondary_boxes#{i}"].visible = false
-     @sprites2["durawindow_small#{i}"].visible = false
-     @sprites2["namewindow_small#{i}"].visible = false
-
-       @sprites2["durawindow_small#{i}"].baseColor = Color.new(255,182,66)  # Default (green)
-       @sprites2["pkmn_icon_small#{i}"].item=nil if defined?(@sprites2["pkmn_icon_small#{i}"].item)
-       @sprites2["pkmn_icon_small#{i}"].pokemon=nil if defined?(@sprites2["pkmn_icon_small#{i}"].pokemon)
-       @sprites2["durawindow_small#{i}"].text = ""
-       @sprites2["namewindow_small#{i}"].text = ""
-      @sprites2["durawindow_small#{i}"].resizeToFit("")
-      @sprites2["namewindow_small#{i}"].resizeToFit("")
-   
-   end
-       end
-
-
-
-
+   refresh_extended_hud_hide
+   refresh_extended_hud_display if $PokemonGlobal.set_extended_hud==true
 	return if $old_ball==name && $old_qty==cur_qty
-	
-
 	$old_ball = name
 	$old_qty = cur_qty
-	
-	
 	overlay=@sprites2["overlay"].bitmap
 	overlay.clear
 	
    end
 
+
+def get_text_for_title_window
+  if !$PokemonGlobal.cur_stored_pokemon.nil?
+     return "#{$PokemonGlobal.cur_stored_pokemon.name} - (#{$PokemonGlobal.cur_stored_pokemon.hp}/#{$PokemonGlobal.cur_stored_pokemon.totalhp})"
+  elsif $game_temp.radial_enabled==true
+     return "Home"
+  elsif $game_temp.favorites_enabled==true
+     return "Favorites"
+  elsif $PokemonGlobal.alt_control_move==true
+     return "Multi Sel"
+  elsif $PokemonGlobal.ball_hud_type==:PKMN
+     return "Pokemon"
+  elsif $PokemonGlobal.ball_hud_type==:ITEM
+      case $PokemonGlobal.ball_hud_item_type
+		   when :PLACE
+             return "Placeable"
+		   when :TOOL
+             return "Tools"
+		   when :WEAPONS
+             return "Weapons"
+		   when :BATTLE
+             return "Consumable"
+       end
+
+  end
+end
+
+def refresh_extended_hud_display
+  
+     @sprites2["extendedBG"].setBitmap("Graphics/UI/OV HUD/extendedbg")
+     @sprites2["extendedBG"].visible=true
+	 @sprites2["title_window"].text=get_text_for_title_window
+	 @sprites2["title_window"].resizeToFit(get_text_for_title_window)
+ amt = $PokemonGlobal.ball_order.length-1
+ amt = 6 if $PokemonGlobal.ball_order.length>6
+ amt.times do |i|
+   target = (i + 1 + $PokemonGlobal.ball_hud_index) % $PokemonGlobal.ball_order.length 
+   target -= $PokemonGlobal.ball_hud_index if target>$PokemonGlobal.ball_order.length
+   currentSelection = $PokemonGlobal.ball_order[target]
+   next if currentSelection.nil?
+   next if i==5 && $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==currentSelection
+  #next if @sprites2["pkmn_icon_small#{i}"].visible == false && @sprites2["secondary_boxes#{i}"].visible == false && @sprites2["durawindow_small#{i}"].visible == false && @sprites2["namewindow_small#{i}"].visible == false
+    text1 = ""
+	text2 = ""
+	  text3 = ""
+		   
+	  if currentSelection.is_a?(Pokemon)
+       @sprites2["pkmn_icon_small#{i}"].pokemon=currentSelection
+	   @sprites2["ball_icon_small#{i}"].item=nil
+       @sprites2["other_icon_small#{i}"].name=nil
+	   
+	   name = GameData::Species.try_get(currentSelection.species).real_name
+	   name = name.slice(0, 10) if name.length > 10
+	   formname = currentSelection.species_data.form_name
+	   text1 = "#{name}" if formname.nil? 
+	   text1 = "#{name} (#{formname.slice(0, 1)})" if !formname.nil? 
+	   text1 = "???" if currentSelection.egg?
+		text2 = "#{currentSelection.hp}/#{currentSelection.totalhp}" if !currentSelection.egg?
+	  elsif currentSelection == :MULTISELECT || currentSelection.is_a?(String) || currentSelection == :NO || currentSelection == :NONE || currentSelection == :BATTLE || currentSelection == :TOOL || currentSelection == :WEAPONS || currentSelection == :FAVORITES || currentSelection == :PLACE || currentSelection == :PKMN || currentSelection == :RADIAL || currentSelection.is_a?(Pokemon::Move)
+	  
+	  
+	  text2 = ""
+	  text1 = "None"
+	  text1 = "Multi Sel" if currentSelection == :MULTISELECT
+	  text1 = "Consumable" if currentSelection == :BATTLE
+	  text1 = "Tools" if currentSelection == :TOOL
+	  text1 = "Weapons" if currentSelection == :WEAPONS
+	  text1 = "Pokemon" if currentSelection == :PKMN
+	  text1 = "Placeable" if currentSelection == :PLACE
+	  text1 = "Favorites" if currentSelection == :FAVORITES
+	  text1 = "Home" if currentSelection == :RADIAL
+	  text1 = currentSelection if currentSelection.is_a?(String)
+	  text1 = GameData::Move.get(currentSelection.id).real_name if currentSelection.is_a?(Pokemon::Move)
+	  text2 = "#{currentSelection.pp}/#{currentSelection.total_pp}" if currentSelection.is_a?(Pokemon::Move)
+	  
+	  if !$PokemonGlobal.cur_stored_pokemon.nil?
+	   if currentSelection.is_a?(Pokemon::Move)
+	     moves =  $PokemonGlobal.cur_stored_pokemon.moves+$PokemonGlobal.cur_stored_pokemon.moves2
+		  index = moves.index(currentSelection)
+	     text3 = "#{index+1}"
+	   end
+	  end
+	  
+	   imagepath = "Graphics/UI/OV HUD/#{text1}" if !currentSelection.is_a?(Pokemon::Move)
+	   imagepath = "Graphics/UI/OV HUD/#{currentSelection.id}" if currentSelection.is_a?(Pokemon::Move)
+	    image = nil
+	   if pbResolveBitmap(imagepath)
+	    image = imagepath
+	   end
+	   if currentSelection.is_a?(Pokemon::Move) && image.nil?
+	   imagepath = "Graphics/UI/OV HUD/#{currentSelection.type}"
+	   if pbResolveBitmap(imagepath)
+	    image = imagepath
+	   end
+	   end
+       @sprites2["pkmn_icon_small#{i}"].pokemon=nil
+       @sprites2["ball_icon_small#{i}"].item=nil if currentSelection != :BATTLE
+	    @sprites2["ball_icon_small#{i}"].item=:POTION if currentSelection == :BATTLE
+	   @sprites2["ball_icon_small#{i}"].item=:BLUEFLUTE if currentSelection == :TOOL
+	   @sprites2["ball_icon_small#{i}"].item=:BLACKBELT if currentSelection == :WEAPONS
+       @sprites2["other_icon_small#{i}"].name=image  if currentSelection != :BATTLE && currentSelection != :TOOL && currentSelection != :WEAPONS 
+       @sprites2["other_icon_small#{i}"].name=nil  if currentSelection == :BATTLE
+       @sprites2["other_icon_small#{i}"].name=nil  if currentSelection == :TOOL
+       @sprites2["other_icon_small#{i}"].name=nil  if currentSelection == :WEAPONS
+		 
+	  text1 = text1.slice(0, 10) if text1.length > 10
+	 elsif currentSelection.is_a?(ItemData)
+       @sprites2["pkmn_icon_small#{i}"].pokemon=nil
+	   @sprites2["ball_icon_small#{i}"].item=currentSelection.id
+       @sprites2["other_icon_small#{i}"].name=nil
+	   name = currentSelection.name
+	   name = name.slice(0, 10) if name.length > 10
+	   text1 = name
+	   text2 = "#{currentSelection.durability}/#{currentSelection.max_durability}" if durable?(currentSelection)
+		 
+		 
+		 
+	  end
+
+
+
+
+
+
+
+
+       @sprites2["aquawindow_small#{i}"].text = text3
+       @sprites2["durawindow_small#{i}"].text = text2
+       @sprites2["namewindow_small#{i}"].text = text1
+      @sprites2["aquawindow_small#{i}"].resizeToFit(text3)
+      @sprites2["durawindow_small#{i}"].resizeToFit(text2)
+      @sprites2["namewindow_small#{i}"].resizeToFit(text1)
+     @sprites2["pkmn_icon_small#{i}"].visible = true
+     @sprites2["other_icon_small#{i}"].visible = true
+     @sprites2["ball_icon_small#{i}"].visible = true
+     @sprites2["secondary_boxes#{i}"].visible = true
+     @sprites2["durawindow_small#{i}"].visible = true
+     @sprites2["namewindow_small#{i}"].visible = true
+     if currentSelection.is_a?(Pokemon)
+    @sprites2["durawindow_small#{i}"].baseColor = Color.new(24,198,33)  
+    @sprites2["durawindow_small#{i}"].baseColor = Color.new(239,173,0) if currentSelection.hp <= (currentSelection.totalhp / 2).floor 
+    @sprites2["durawindow_small#{i}"].baseColor = Color.new(255,74,57) if currentSelection.hp <= (currentSelection.totalhp / 4).floor
+     end
+
+ 
+ 
+ 
+ 
+ end
+end
+   
+def refresh_extended_hud_hide
+ 6.times do |i|
+     @sprites2["pkmn_icon_small#{i}"].visible = false
+     @sprites2["other_icon_small#{i}"].visible = false
+     @sprites2["ball_icon_small#{i}"].visible = false
+     @sprites2["secondary_boxes#{i}"].visible = false
+     @sprites2["durawindow_small#{i}"].visible = false
+     @sprites2["namewindow_small#{i}"].visible = false
+     @sprites2["aquawindow_small#{i}"].visible = false
+     @sprites2["durawindow_small#{i}"].baseColor = Color.new(255,182,66)  # Default (green)
+     @sprites2["ball_icon_small#{i}"].item=nil
+     @sprites2["pkmn_icon_small#{i}"].pokemon=nil
+     @sprites2["other_icon_small#{i}"].name=nil
+     @sprites2["durawindow_small#{i}"].text = ""
+     @sprites2["namewindow_small#{i}"].text = ""
+     @sprites2["durawindow_small#{i}"].resizeToFit("")
+     @sprites2["namewindow_small#{i}"].resizeToFit("")
+     @sprites2["aquawindow_small#{i}"].text = ""
+     @sprites2["aquawindow_small#{i}"].resizeToFit("")
+	 @sprites2["title_window"].text= ""
+     @sprites2["title_window"].resizeToFit("")
+ 
+ 
+ 
+ 
+ end
+     @sprites2["extendedBG"].setBitmap("")
+     @sprites2["extendedBG"].visible=false
+end
+  
+  def disallowed_values
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:MULTISELECT
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:NONE
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:NO
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:BATTLE
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:TOOL
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:WEAPONS
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:FAVORITES
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:RADIAL
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:PLACE
+   return true if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:PKMN
+   return false
+  end
+  
   def is_broseph?
     broseph = nil
    return false if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(String)
@@ -1018,7 +1478,7 @@ class HUD
         broseph = $game_temp.current_pkmn_controlled
 	  
 	  else
-	      if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]!=:MULTISELECT
+	      if !disallowed_values
             id = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]&.associatedevent
 		   end
 		 id = $PokemonGlobal.stored_ball_order&.associatedevent if $PokemonGlobal.stored_ball_order && id.nil?
@@ -1028,15 +1488,19 @@ class HUD
   end
 
   def refreshSelection
+   return false
    return if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(String)
    return if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(ItemData)
-    if $PokemonGlobal.display_moves==false
+   return if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon::Move)
+   return if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:NO
+   return if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]==:NONE
+    if $PokemonGlobal.display_moves==true
       if $game_temp.current_pkmn_controlled!=false
         broseph = $game_temp.current_pkmn_controlled
 	  
 	  else
-	      if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]!=:MULTISELECT
-        id = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]&.associatedevent
+	      if !disallowed_values
+            id = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]&.associatedevent
 		   end
 		 id = $PokemonGlobal.stored_ball_order&.associatedevent if $PokemonGlobal.stored_ball_order && id.nil?
         broseph = $game_map.events[id] if !id.nil?
@@ -1051,7 +1515,7 @@ class HUD
 		   movename = movename.slice(0, 7)
 		   movename = "#{movename...}"
 		  end
-        @sprites4["item_sel#{index}"].text="#{index+1}. #{movename} (#{move.pp}/#{move.total_pp})"
+        @sprites4["item_sel#{index}"].text=_INTL("<o=#{@sprites4["selection#{index}"].opacity}>#{index+1}. #{movename} (#{move.pp}/#{move.total_pp})")
         @sprites4["item_sel#{index}"].baseColor=get_type_color(move.type)
         @sprites4["item_sel#{index}"].shadowColor=get_shadow_color(move.type)
         @sprites4["item_sel#{index}"].visible = true
@@ -1117,16 +1581,31 @@ class HUD
 
 
   def refreshHPLevel(width, height)
+   if $game_temp.lockontarget==false
+   @sprites3["namewindowevent"].visible = false 
+    @sprites3["hpbarborderevent"].visible = false
+    @sprites3["hpbarfillevent"].visible = false
+    return 
+   end
    event = $game_temp.lockontarget
-   
-   if $bag.has?(:HPDETECTOR)
-    
-    text = "#{event.pokemon.name}"
+    totalhp = event.pokemon.totalhp if defined?(event.pokemon) && totalhp.nil?
+    hp = event.pokemon.hp if defined?(event.pokemon) && hp.nil?
+	totalhp = 100 if totalhp.nil?
+	hp = 100 if hp.nil?
+	 text = event.name.sub(/\..*/, '')
+	  text = event.variable.berry_obj.name  if text.downcase == "berryplant" && event.variable && event.variable.berry_obj
+	  text = "Farming Plot"  if text.downcase == "berryplant"
+	  text = "Torch"  if text.include?("naturaltorch")
+	  text = "Torch"  if text.include?("playertorch")
+	  text = "A Rock."  if text.include?("A Rock")
+	  text = "Ancient Statue"  if text.downcase.include?("ancientstone")
+    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol})" if defined?(event.pokemon)
+    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol}) Lv #{event.pokemon.level}" if defined?(event.pokemon) && $bag.has?(:LVLDETECTOR)
 	@sprites3["namewindowevent"].text  = text
+	@sprites3["namewindowevent"].setTextToFit(text)
+   @sprites3["namewindowevent"].visible = true 
     fillWidth = width-4
     fillHeight = height-4
-    totalhp = event.pokemon.totalhp
-    hp = event.pokemon.hp
     @sprites3["hpbarborderevent"].visible = hp!=nil
     #@sprites3["bar"].visible = @sprites3["hpbarborderevent"].visible
 	
@@ -1136,7 +1615,7 @@ class HUD
     @sprites3["hpbarfillevent"].bitmap.clear
 	
 	
-    fillAmount = (hp==0 || totalhp==0) ? 0 : (event.pokemon.hp*@sprites3["hpbarfillevent"].bitmap.width/totalhp)
+    fillAmount = (hp==0 || totalhp==0) ? 0 : (hp*@sprites3["hpbarfillevent"].bitmap.width/totalhp)
     # Always show a bit of HP when alive
     return if fillAmount <= 0
 	
@@ -1151,11 +1630,8 @@ class HUD
         @sprites3["hpbarfillevent"].bitmap.height-shadowHeight
       ), hpColors[0]
     )
-   end
-   if $bag.has?(:LVLDETECTOR)
-    text = "#{event.pokemon.name} Lv #{event.pokemon.level}"
-   end
-   @sprites3["namewindowevent"].visible = true if $bag.has?(:HPDETECTOR) || $bag.has?(:LVLDETECTOR)
+   
+
    
 
 
@@ -1306,7 +1782,7 @@ class HUD
     if showHUD?
       update(force) if @lastRefreshFrame != Graphics.frame_count
     else
-      #dispose if hasSprites?
+      dispose if hasSprites?
     end
   end
 
@@ -1324,14 +1800,14 @@ class HUD
     else
       create
     end
-    if $PokemonGlobal.ball_hud_enabled==false || $game_temp.current_pkmn_controlled!=false
+    if $PokemonGlobal.ball_hud_enabled==false || $game_temp.current_pkmn_controlled!=false || $game_temp.in_menu || $game_temp.message_window_showing|| @show==false
         hideBallHUD
         getCurrentItemOrder
     else
         revealBallHUD
         getCurrentItemOrder
     end
-    if $PokemonGlobal.bars_visible==false || $game_temp.in_menu
+    if $PokemonGlobal.bars_visible==false || $game_temp.in_menu || $game_temp.message_window_showing || @show==false
         hideMainHUD
     else
         revealMainHUD
@@ -1342,9 +1818,9 @@ class HUD
 	#  revealSelectionHUD
 	#end
     if $game_temp.lockontarget==false
-	  hideHPHUD
+	#  hideHPHUD
 	else
-	  revealHPHUD
+	#  revealHPHUD
 	end
     
     pbUpdateSpriteHash(@sprites)
@@ -1352,6 +1828,7 @@ class HUD
     pbUpdateSpriteHash(@sprites3)
     pbUpdateSpriteHash(@sprites4)
     pbUpdateSpriteHash(@sprites5)
+    pbUpdateSpriteHash(@pokemon_charge_bars)
     @lastRefreshFrame = Graphics.frame_count
     self.class.tryUpdateAll if self.class.shouldUpdateAll?
   else 
@@ -1363,6 +1840,9 @@ class HUD
     pbDisposeSpriteHash(@sprites)
     pbDisposeSpriteHash(@sprites2)
     pbDisposeSpriteHash(@sprites3)
+    pbDisposeSpriteHash(@sprites4)
+    pbDisposeSpriteHash(@sprites5)
+    pbUpdateSpriteHash(@pokemon_charge_bars)
   end
 
   def hasSprites?
@@ -1480,15 +1960,10 @@ class MouseVisual
   def change_mode
     return if $player.able_party.length < 1
     if @mode == :DEFAULT
-	  @mode = :FOLLOW
-	  image_per_mode
-	  sideDisplay("Mouse Mode: Pointer")
-	  $selection_displayer.prior_mode(:FOLLOW)
-    elsif @mode == :FOLLOW
-	  @mode = :SQUARE
-	  image_per_mode
-	  sideDisplay("Mouse Mode: Selection")
-	  $selection_displayer.prior_mode(:SQUARE)
+	    @mode = :SQUARE
+	    image_per_mode
+	    sideDisplay("Mouse Mode: Selection")
+	    $selection_displayer.prior_mode(:SQUARE)
     elsif @mode == :SQUARE
 	  @mode = :DEFAULT
 	  image_per_mode
@@ -1500,10 +1975,12 @@ class MouseVisual
   
     if @mode == :DEFAULT
 	  @mouse.setBitmap("Graphics/UI/Cursor/cursor1.png")
+    elsif @mode == :SELECTION
+	  @mouse.setBitmap("Graphics/UI/Cursor/cursor4.png")
     elsif @mode == :SQUARE
 	  @mouse.setBitmap("Graphics/UI/Cursor/cursor2.png")
 	else
-	 if !($PokemonGlobal.selected_pokemon.length<2 && $PokemonGlobal.selected_pokemon[0]==0 && @mode == :FOLLOW)
+	 if !($PokemonGlobal.selected_pokemon_cleaned.length<1 && @mode == :FOLLOW)
 	  @mouse.setBitmap("Graphics/UI/Cursor/cursor3.png")
 	 end
 	end
@@ -1529,7 +2006,8 @@ class MouseVisual
    @mouse.x = Input.mouse_x + 9
    @mouse.y = Input.mouse_y + 9
     if !$PokemonGlobal.nil?
-	if $PokemonGlobal.selected_pokemon.length<2 && $PokemonGlobal.selected_pokemon[0]==0 && @mode == :FOLLOW
+	filtered_pokemon = $PokemonGlobal.selected_pokemon_cleaned
+	if filtered_pokemon.length<1 && @mode == :FOLLOW
    set_mode(:DEFAULT) 
     end
     end
@@ -1539,6 +2017,118 @@ class MouseVisual
 
 end
 
+
+class OverworldGrid
+  DISPLAY_TILE_WIDTH      = Game_Map::TILE_WIDTH rescue 32
+  DISPLAY_TILE_HEIGHT     = Game_Map::TILE_HEIGHT rescue 32
+  SOURCE_TILE_WIDTH       = 32
+  SOURCE_TILE_HEIGHT      = 32
+  ZOOM_X                  = DISPLAY_TILE_WIDTH / SOURCE_TILE_WIDTH
+  ZOOM_Y                  = DISPLAY_TILE_HEIGHT / SOURCE_TILE_HEIGHT
+  def initialize(viewport)
+    @viewport = viewport
+    @sprites = {}
+    @disposed = false
+    @disabled = false
+    @tiles_horizontal_count = (Graphics.width.to_f / Game_Map::TILE_WIDTH).ceil + 1
+    @tiles_vertical_count   = (Graphics.height.to_f / Game_Map::TILE_HEIGHT).ceil + 1
+  end
+  
+
+  
+  def disposed?
+   return @disposed
+  end
+  
+  def update
+    return if $DEBUG==false
+    return #if !Input.press?(Input::CTRL)
+    return if $game_player.moving?
+    return if @disposed
+    return if @disabled
+	 draw_grid if $mouse.current_mode == :FOLLOW
+    pbDisposeSpriteHash(@sprites) if $mouse.current_mode != :FOLLOW
+  end
+  def draw_grid
+      map = $game_map
+      map_display_x = (map.display_x.to_f / Game_Map::X_SUBPIXELS).round
+      map_display_x = ((map_display_x + (Graphics.width / 2)) * ZOOM_X) - (Graphics.width / 2) if ZOOM_X != 1
+      map_display_y = (map.display_y.to_f / Game_Map::Y_SUBPIXELS).round
+      map_display_y = ((map_display_y + (Graphics.height / 2)) * ZOOM_Y) - (Graphics.height / 2) if ZOOM_Y != 1
+      map_display_x_tile = map_display_x / Game_Map::TILE_WIDTH
+      map_display_y_tile = map_display_y / Game_Map::TILE_HEIGHT
+      start_x = [-map_display_x_tile, 0].max
+      start_y = [-map_display_y_tile, 0].max
+      end_x = @tiles_horizontal_count - 1
+      end_x = [end_x, map.width - map_display_x_tile - 1].min
+      end_y = @tiles_vertical_count - 1
+      end_y = [end_y, map.height - map_display_y_tile - 1].min
+      return if start_x > end_x || start_y > end_y || end_x < 0 || end_y < 0
+    color = Color.new(-255, -255, -255, 128)
+      # Update all tile sprites representing this map
+      (start_x..end_x).each do |i|
+        tile_x = i + map_display_x_tile
+        (start_y..end_y).each do |j|
+          tile_y = j + map_display_y_tile
+		  screen_x,screen_y = get_screen_from_tile_pos(tile_x,tile_y)
+        # Draw a rectangle for the grid cell
+        next if sprite_at_position?(screen_x.to_i, screen_y.to_i)
+        #next if is_not_full?(screen_x.to_i, screen_y.to_i)
+		  
+        draw_rect(screen_x.to_i, screen_y.to_i, tile_x, tile_y, Game_Map::TILE_WIDTH, Game_Map::TILE_HEIGHT, color)
+        end
+      end
+
+
+  end
+  def is_not_full?(screen_x, screen_y)
+  
+   x,y = get_tile_from_screen_pos2(screen_x, screen_y)
+    return false if x.is_a?(Float) || y.is_a?(Float)
+    return true
+  end
+def sprite_at_position?(x, y)
+  @sprites.values.each do |sprite|
+    if x >= sprite.x && x < sprite.x + sprite.width &&
+       y >= sprite.y && y < sprite.y + sprite.height
+      return true
+    end
+  end
+  return false
+end
+
+  def draw_rect(x, y, tilex, tiley, width, height, color)
+    # Draw a filled rectangle at the given coordinates
+	if @sprites["#{tilex}#{tiley}"].nil?
+	  puts "#{tilex}#{tiley}"
+     @sprites["#{tilex}#{tiley}2"] = Window_AdvancedTextPokemon.new("#{tilex},#{tiley}")
+     @sprites["#{tilex}#{tiley}2"].windowskin  = nil
+     @sprites["#{tilex}#{tiley}2"].zoom_x  = 0.5
+     @sprites["#{tilex}#{tiley}2"].zoom_y  = 0.5
+     @sprites["#{tilex}#{tiley}2"].x  = x*2
+     @sprites["#{tilex}#{tiley}2"].y  = y*2
+    @sprites["#{tilex}#{tiley}"] = Sprite.new(@viewport)
+    @sprites["#{tilex}#{tiley}"].bitmap = Bitmap.new("Graphics/UI/OV HUD/bitmap.png")
+    @sprites["#{tilex}#{tiley}"].x = x
+    @sprites["#{tilex}#{tiley}"].y = y
+    @sprites["#{tilex}#{tiley}"].z = $game_player.screen_z-2
+    @sprites["#{tilex}#{tiley}"].visible = true
+	end
+  end
+
+def get_tile_from_screen_pos2(screen_x,screen_y)
+   x = (((screen_x * Game_Map::X_SUBPIXELS) + $game_map.display_x)/Game_Map::REAL_RES_X)
+   y = (((screen_y * Game_Map::Y_SUBPIXELS) + $game_map.display_y)/Game_Map::REAL_RES_Y)
+   return x,y
+ end
+
+def get_screen_from_tile_pos(x, y)
+   screen_x = ((x * Game_Map::REAL_RES_X - $game_map.display_x) / Game_Map::X_SUBPIXELS).to_f
+   screen_y = ((y * Game_Map::REAL_RES_Y - $game_map.display_y) / Game_Map::Y_SUBPIXELS).to_f
+   return screen_x, screen_y
+end
+
+end
 
 
 
@@ -1551,6 +2141,7 @@ class Spriteset_Map
   alias :disposeOldFL :dispose
   alias :updateOldFL :update
 
+  
   def initialize(map=nil)
     $player = $Trainer if !$player # For compatibility with v20 and older
     initializeOldFL(map)
@@ -1562,6 +2153,7 @@ class Spriteset_Map
   end
   def update
     updateOldFL
+	#$ov_grid = OverworldGrid.new(@viewport1) if !$ov_grid
 	pbCreateParticleEngine(@viewport1, @map)
 	$selection_arrows = SelectionBaseDisplay.new(@viewport1) if !$selection_arrows
 	$styler = MouseTrail.new(@viewport1) if !$styler
@@ -1573,9 +2165,11 @@ class Spriteset_Map
     $selection_displayer.update
     $selection_arrows.update
     $tensionbars.update
-    $hud.update
+    $hud.tryUpdate
     $sidedisplay.update
-    $particle_engine.update if $particle_engine
+	#$ov_grid.update
+    #$particle_engine.tryUpdate if $particle_engine
+	$particle_engine.update if $particle_engine
   end
 end
 class IconSprite < Sprite
@@ -1592,11 +2186,13 @@ class SelectionBaseDisplay
   def initialize(viewport)
     @viewport = viewport
 	@sprites = {}
+	@sprites2 = nil
     @disposed = false
   end
  
   def dispose
 	pbDisposeSpriteHash(@sprites)
+	pbDisposeSpriteHash(@sprites2)
 	@disposed=true
   end
   
@@ -1604,11 +2200,17 @@ class SelectionBaseDisplay
    @sprites.each_key do |i|
 	@sprites.visible=false
    end
+   @sprites2.each_key do |i|
+	@sprites2.visible=false
+   end
   end
   
   def show
    @sprites.each_key do |i|
 	@sprites.visible=true
+   end
+   @sprites2.each_key do |i|
+	@sprites2.visible=true
    end
   end
   
@@ -1623,13 +2225,86 @@ class SelectionBaseDisplay
 	    @sprites[sprite].dispose
 		@sprites.delete(sprite)
 		end
-     end
+		end
   end
-
+  
+  def create_consistant_sizes(width,height)
+     case [width,height]
+	  when [256,256]
+	    return 128,128
+	  when [128,128]
+	    return 128,128
+	  when [32,32]
+	    return 128,128
+      else
+	    return 128,128
+      end
+  end
+  
+  def get_graphic_size(event)
+         
+	     graphic = event.pages[0].graphic.character_name if defined?(event.pages)
+	     graphic = event.event.pages[0].graphic.character_name if defined?(event.event)
+		 
+         fname = pbResolveBitmap("Graphics/Characters/#{graphic}")
+		 if fname
+        potato = Bitmap.new(fname) 
+        return potato.width,potato.height
+		else
+        return 32,32
+		
+		end
+  end 
+  
+  def clear_lock_on
+    return if @sprites2.nil?
+    $game_temp.lockontarget=false
+	 @sprites2.visible=false
+	 @sprites2.dispose
+	 @sprites2 = nil
+  
+  end
+  def clear_sprites
+    clear_lock_on
+   @sprites.each_key do |sprite|
+     remove_sprite(sprite)
+   end
+	
+  end
   def update
     return if @disposed
-	 $PokemonGlobal.selected_pokemon.each do |pkmn|
+	 if $game_temp.lockontarget!=false
+	   event = $game_temp.lockontarget
+	   if !event.nil? 
+	   event_id = event.id
+	   
+	   if @sprites2.nil?
+	    @sprites2 = IconSprite.new(@viewport)
+		@sprites2.setBitmap("Graphics/UI/Cursor/selectede.png")
+	   end
+       if !@sprites2.disposed?
+	    width,height = get_graphic_size(event)
+	    width,height = create_consistant_sizes(width,height)
+       @sprites2.x = ScreenPosHelper.pbScreenX(event) - 17
+       @sprites2.y = ScreenPosHelper.pbScreenY(event) - (height/2) - 6
+       @sprites2.z = ScreenPosHelper.pbScreenZ(event) + 1
+	   end
+
+
+	   
+	   end
+     elsif !@sprites2.nil?
+	   clear_lock_on 
+	 end
+
+	 
+	   filtered_pokemon = $PokemonGlobal.selected_pokemon_cleaned
+
+	 filtered_pokemon.each do |pkmn|
 	   next if pkmn==0
+	   next if !defined?(pkmn.associatedevent)
+	   next if pkmn.is_a?(Symbol)
+	   next if pkmn.associatedevent.nil?
 	   event_id = pkmn.associatedevent
 	   if event_id.nil? && pkmn.in_world==true
 	    event_id = getOverworldPokemonfromPokemon(pkmn)
@@ -1637,29 +2312,36 @@ class SelectionBaseDisplay
 	   end
 	   next if event_id.nil?
 	   event = $game_map.events[event_id]
+	   if event.is_a?(Game_PokeEventA)
 	   if !event.nil?
-	   if @sprites["Arrow#{event_id}"].nil?
-	    @sprites["Arrow#{event_id}"] = IconSprite.new(@viewport)
-		@sprites["Arrow#{event_id}"].setBitmap("Graphics/UI/Cursor/selected2.png")
+	   if @sprites["Arrow#{event_id}#{event.pokemon.name}"].nil?
+	    @sprites["Arrow#{event_id}#{event.pokemon.name}"] = IconSprite.new(@viewport)
+		@sprites["Arrow#{event_id}#{event.pokemon.name}"].setBitmap("Graphics/UI/Cursor/selected2.png")
 	   end
-         if !@sprites["Arrow#{event_id}"].disposed?
-       @sprites["Arrow#{event_id}"].x = ScreenPosHelper.pbScreenX(event) - 17
-       @sprites["Arrow#{event_id}"].y = ScreenPosHelper.pbScreenY(event) - 60
-       @sprites["Arrow#{event_id}"].z = ScreenPosHelper.pbScreenZ(event) + 1
+         if !@sprites["Arrow#{event_id}#{event.pokemon.name}"].disposed?
+	    width,height = get_graphic_size(event)
+	    width,height = create_consistant_sizes(width,height)
+       @sprites["Arrow#{event_id}#{event.pokemon.name}"].x = ScreenPosHelper.pbScreenX(event) - 17
+       @sprites["Arrow#{event_id}#{event.pokemon.name}"].y = ScreenPosHelper.pbScreenY(event) - (height/2) - 6
+       @sprites["Arrow#{event_id}#{event.pokemon.name}"].z = ScreenPosHelper.pbScreenZ(event) + 1
 	     end
+
+
 	   else
 	   
-	   if !@sprites["Arrow#{event_id}"].nil? && !@sprites["Arrow#{event_id}"].disposed?
-	    @sprites["Arrow#{event_id}"].visible=false
-	    @sprites["Arrow#{event_id}"].dispose
-		@sprites.delete("Arrow#{event_id}")
+	   if !@sprites["Arrow#{event_id}#{pkmn.name}"].nil? && !@sprites["Arrow#{event_id}#{pkmn.name}"].disposed?
+	    @sprites["Arrow#{event_id}#{pkmn.name}"].visible=false
+	    @sprites["Arrow#{event_id}#{pkmn.name}"].dispose
+		@sprites.delete("Arrow#{event_id}#{pkmn.name}")
 	   end
 
 	   end
+	   else
 	   
+	   end
 	   
 	 end
-   if $PokemonGlobal.selected_pokemon.length < @sprites.length
+   if filtered_pokemon.length < @sprites.length
      $player.party.each do |pkmn|
 	    next if pkmn.in_world==false
 	   event_id = pkmn.associatedevent
@@ -1667,29 +2349,45 @@ class SelectionBaseDisplay
 	    event_id = getOverworldPokemonfromPokemon(pkmn)
 	   end
 	   next if event_id.nil?
-	 	if !@sprites["Arrow#{event_id}"].nil? && !@sprites["Arrow#{event_id}"].disposed?
-	    @sprites["Arrow#{event_id}"].visible=false
-	    @sprites["Arrow#{event_id}"].dispose
-		@sprites.delete("Arrow#{event_id}")
+	   event = $game_map.events[event_id]
+	   if !event.nil?
+	   if @sprites["Arrow#{event_id}#{pkmn.name}"].nil?
+	    @sprites["Arrow#{event_id}#{pkmn.name}"] = IconSprite.new(@viewport)
+		@sprites["Arrow#{event_id}#{pkmn.name}"].setBitmap("Graphics/UI/Cursor/selected2.png")
 	   end
-	 
+         if !@sprites["Arrow#{event_id}#{pkmn.name}"].disposed?
+	    width,height = get_graphic_size(event)
+	    width,height = create_consistant_sizes(width,height)
+       @sprites["Arrow#{event_id}#{pkmn.name}"].x = ScreenPosHelper.pbScreenX(event) - 17
+       @sprites["Arrow#{event_id}#{pkmn.name}"].y = ScreenPosHelper.pbScreenY(event) - (height/2) - 6
+       @sprites["Arrow#{event_id}#{pkmn.name}"].z = ScreenPosHelper.pbScreenZ(event) + 1
+	   pbSelectThisPokemon(pkmn) if !$PokemonGlobal.selected_pokemon.include?(pkmn)
+	     end
+	   else
+		 
+	 	if !@sprites["Arrow#{event_id}#{pkmn.name}"].nil? && !@sprites["Arrow#{event_id}#{pkmn.name}"].disposed?
+	    @sprites["Arrow#{event_id}#{pkmn.name}"].visible=false
+	    @sprites["Arrow#{event_id}#{pkmn.name}"].dispose
+		@sprites.delete("Arrow#{event_id}#{pkmn.name}")
+	   end
+	  end
 	 
 	 end
    
    
    end
 	    
-   if Input.time?(Input::MOUSELEFT) >= 0.65 && Input.mouse_in_window? 
+   if Input.time?(Input::MOUSELEFT) >= 0.50 && Input.mouse_in_window? 
 	  event_id2=$game_map.check_event(*get_tile_mouse_on)
       if event_id2.is_a?(Integer)
 	     if $game_map.events[event_id2].is_a?(Game_PokeEventA)
 	    if $game_map.events[event_id2].name=="PlayerPkmn" && $PokemonGlobal.selected_pokemon.include?($game_map.events[event_id2].pokemon) && $game_map.events[event_id2].pokemon.deselecttimer == 0
 		  $PokemonGlobal.selected_pokemon.delete($game_map.events[event_id2].pokemon)
 		  
-	   if !@sprites["Arrow#{event_id2}"].nil? && !@sprites["Arrow#{event_id2}"].disposed?
-	    @sprites["Arrow#{event_id2}"].visible=false
-	    @sprites["Arrow#{event_id2}"].dispose
-		@sprites.delete("Arrow#{event_id2}")
+	   if !@sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].nil? && !@sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].disposed?
+	    @sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].visible=false
+	    @sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].dispose
+		@sprites.delete("Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}")
 	   end
        else
 	    $game_map.events[event_id2].pokemon.deselecttimer -= 1 if $game_map.events[event_id2].pokemon.deselecttimer>0
@@ -1697,7 +2395,7 @@ class SelectionBaseDisplay
 
         end
 	  end
-		  end
+	end
   end
 
 
@@ -2083,7 +2781,7 @@ class MouseTrail
 					   pbSEPlay(sound_filename)
 					   @styler_health+=@recovery
 					  if pkmn.hits>=target_hits
-                     pbPlayerEXP(pkmn,pbOverworldCombat.get_allied_pokemon)
+                     pbPlayerEXP(pkmn,$player.able_party)
 		              pkmn.poke_ball = :POKEBALLC
 		              pkmn.calc_stats
 					   if $game_map.map_id!=11
@@ -2302,8 +3000,8 @@ class SelectionDisplay
     @prior_mode = mode
   end
   def check_events_in_square
-    x1,y1 = get_tile_from_screen_pos(@mouse_start_x, @mouse_start_y)
-    x2,y2 = get_tile_from_screen_pos(@mouse_end_x, @mouse_end_y)
+    x1,y1 = get_tile_from_screen_pos2(@mouse_start_x, @mouse_start_y)
+    x2,y2 = get_tile_from_screen_pos2(@mouse_end_x, @mouse_end_y)
   
     start_x = [x1, x2].min
     start_y = [y1, y2].min
@@ -2334,11 +3032,10 @@ class SelectionDisplay
   def update
     return if @disposed
      bonus = 2 
-	 if Input.press?(Input::ALTERNATEMOUSEMODE) && $mouse.current_mode!=:SQUARE
-	  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:SQUARE
-	 
-	  $mouse.set_mode(:SQUARE)
-	 elsif Input.release?(Input::ALTERNATEMOUSEMODE) && @drawing==false && @prior_mode!=:SQUARE
+	 if Input.press?(Input::ALTERNATEMOUSEMODE) && $mouse.current_mode!=:FOLLOW
+	  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:FOLLOW
+	  $mouse.set_mode(:FOLLOW)
+	 elsif Input.release?(Input::ALTERNATEMOUSEMODE) && @drawing==false && @prior_mode!=:FOLLOW
 	  $mouse.set_mode(@prior_mode)
 	 end
     if ((Input.time?(Input::MOUSELEFT) >= 1 && $mouse.current_mode!=:FOLLOW) || Input.trigger?(Input::MOUSELEFT) && $mouse.current_mode==:SQUARE  ) && @drawing==false && !($game_map.check_event(*get_tile_mouse_on)).is_a?(Integer)
@@ -2380,9 +3077,10 @@ def pbTogglePokemonSelection(pkmn)
   end
 end
 def pbSelectThisPokemon(pkmn, forced=false)
+  return false if !pkmn.is_a?(Pokemon)
   return false if $PokemonGlobal.selected_pokemon.include?(pkmn) && $PokemonGlobal.selected_pokemon.index(pkmn)!=0 && forced==false
   return false if $PokemonGlobal.selected_pokemon.count(pkmn) > 1 && forced==false
-  $PokemonGlobal.selected_pokemon << pkmn
+  $PokemonGlobal.selected_pokemon[$PokemonGlobal.selected_pokemon.length] = pkmn
   return true
 end
 
@@ -2422,78 +3120,265 @@ EventHandlers.add(:on_leave_map, :selection_save,
 
 
 
+def set_item_box_index
+	if !$PokemonGlobal.cur_stored_pokemon.nil?
+	      $PokemonGlobal.ball_hud_moves_index=$PokemonGlobal.ball_hud_index
+   elsif $PokemonGlobal.ball_hud_type==:PKMN
+	      $PokemonGlobal.ball_hud_pkmn_index=$PokemonGlobal.ball_hud_index
+	elsif $PokemonGlobal.ball_hud_type==:ITEM
+	    case $PokemonGlobal.ball_hud_item_type
+		   when :PLACE
+	       $PokemonGlobal.ball_hud_place_index=$PokemonGlobal.ball_hud_index
+		   when :TOOL
+	         $PokemonGlobal.ball_hud_item_index=$PokemonGlobal.ball_hud_index
+		   when :WEAPONS
+	         $PokemonGlobal.ball_hud_weapon_index=$PokemonGlobal.ball_hud_index
+		   when :BATTLE
+	         $PokemonGlobal.ball_hud_battle_index=$PokemonGlobal.ball_hud_index
+		end
+  else 
+    
+  end 
 
-def getCurrentItemOrder(update_index=false)
-	 
-	
-	if $PokemonGlobal.alt_control_move==true
-	 $PokemonGlobal.stored_ball_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) || $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] == :MULTISELECT
-      itms = ["Follow","Search (E)","Search (I)","Recall","Wander","Wait"]
-	   
-	  $PokemonGlobal.ball_order = itms.reverse
-	  if update_index==true
-	   $PokemonGlobal.ball_hud_index=0
-     end
-	 return 
-	end
-	if $PokemonGlobal.ball_hud_type==:PKMN
+
+end
+
+
+def get_pkmn_box(update_index,othersays=nil)
 	 $PokemonGlobal.stored_ball_order = nil
-	 if $player.party.length < 1
-	  $PokemonGlobal.ball_hud_type=:ITEM 
-	 else
-      potentional=$player.party.find_all { |p| p && !p.dead? && !p.fainted? }
-	  if potentional.length==0
-	  $PokemonGlobal.ball_hud_type=:ITEM 
-	  elsif $PokemonGlobal.selected_pokemon.length>1
-	   potentional << :MULTISELECT
+
+	 potentional=$player.party.find_all { |p| p && !p.dead? && !p.fainted? } #&& !p.egg?
+	  
+	  potentional << :MULTISELECT if $PokemonGlobal.get_selected_pokemon.length>1
+	   
+     item = :RADIAL
+	 potentional.unshift(item)
+       item = :NONE
+	  potentional.unshift(item)
+     item = :BATTLE
+	 potentional.unshift(item)
 	  $PokemonGlobal.ball_order = potentional
-	  else
-	  $PokemonGlobal.ball_order = potentional
-	  end
-	  if update_index==true
-	   $PokemonGlobal.ball_hud_pkmn_index=0 if $player.party.length < $PokemonGlobal.ball_hud_pkmn_index
+	  if update_index==true && potentional.length > 0
+	   $PokemonGlobal.ball_hud_pkmn_index=potentional.length-1 if potentional.length < $PokemonGlobal.ball_hud_pkmn_index
 	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_pkmn_index
      end
-	 end
-	end
-	
-	
-	
-	
-	
-   if $PokemonGlobal.ball_hud_type==:ITEM 
-	 $PokemonGlobal.stored_ball_order = nil
-	if $game_map.metadata&.base_map
-     basicitems=$bag.isPlacableinInventory
-	 $PokemonGlobal.ball_hud_item_type=:PLACE
-	 $PokemonGlobal.ball_hud_item_type_old=$PokemonGlobal.ball_hud_item_type if $PokemonGlobal.ball_hud_place_index!=$PokemonGlobal.ball_hud_item_type
-	 if update_index==true
-	 $PokemonGlobal.ball_hud_place_index=0 if basicitems.length < $PokemonGlobal.ball_hud_place_index
-	 $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_place_index
-	 end
-	else
-     basicitems=$bag.isToolinInventory
-	 $PokemonGlobal.ball_hud_item_type=:TOOL
-	 $PokemonGlobal.ball_hud_item_type_old=$PokemonGlobal.ball_hud_item_type if $PokemonGlobal.ball_hud_item_type_old!=$PokemonGlobal.ball_hud_item_type
-	 if update_index==true
-	 $PokemonGlobal.ball_hud_item_index=0 if basicitems.length < $PokemonGlobal.ball_hud_item_index
-	 $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_item_index
-	 end
-	end
-    if basicitems.length < 1
-	 $PokemonGlobal.ball_hud_type=:PKMN
-	 return 
-	end 
-     item = ItemData.new(:NOTEBOOK)
-	  basicitems.unshift(item)
-    $PokemonGlobal.ball_order=basicitems
-	 return
-   end
+
 
 
 
 end
 
+
+
+
+def get_item_box(update_index,othersays=nil)
+    curItem = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+	 $PokemonGlobal.stored_ball_order = nil
+	 if $game_temp.lockontarget==false && cur_item_hud==:WEAPONS && $game_temp.weapon_selection_end>0
+	   $game_temp.weapon_selection_end-=1
+	 elsif $game_temp.weapon_selection_end==0 && cur_item_hud==:WEAPONS
+	  $PokemonGlobal.set_item_hud(:TOOL) 
+	  update_index=true
+	 end
+	 if $game_temp.lockontarget!=false && cur_item_hud!=:WEAPONS
+	  $PokemonGlobal.set_item_hud(:WEAPONS) 
+	 update_index=true
+	 elsif cur_item_hud.nil?
+	  $PokemonGlobal.set_item_hud(:TOOL) 
+	  update_index=true
+	 end
+     basicitems=$bag.isPlacableinInventory if cur_item_hud==:PLACE
+     basicitems=$bag.isWeaponinInventory if cur_item_hud==:WEAPONS
+     basicitems=$bag.isToolinInventory if cur_item_hud==:TOOL
+     basicitems=$bag.isBattleIteminInventory if cur_item_hud==:BATTLE
+
+	
+	 if cur_item_hud!=:WEAPONS && cur_item_hud!=:BATTLE
+     item = ItemData.new(:NOTEBOOK)
+	  basicitems.unshift(item)
+	  end
+	
+	 if cur_item_hud==:WEAPONS || cur_item_hud==:TOOL
+     item = :BATTLE
+	  basicitems.unshift(item)
+	  end
+	 if cur_item_hud==:BATTLE
+     item = :TOOL if $game_temp.lockontarget==false
+     item = :WEAPONS if $game_temp.lockontarget!=false
+	  basicitems.unshift(item)
+     item = :PKMN
+	  basicitems.unshift(item)
+	  end
+     item = :RADIAL
+	 basicitems.unshift(item)
+     item = :NONE
+	 basicitems.unshift(item)
+	 
+	 if (cur_item_hud==:WEAPONS || cur_item_hud==:BATTLE) && update_index==true && basicitems.length > 0 
+	   index = basicitems.index(curItem)
+	   $PokemonGlobal.ball_hud_weapon_index = index if index
+	 
+	 end
+	 
+    $PokemonGlobal.ball_order=basicitems
+	 if update_index==true && basicitems.length > 0 
+	 if cur_item_hud==:PLACE
+	   $PokemonGlobal.ball_hud_place_index=0 if basicitems.length < $PokemonGlobal.ball_hud_place_index
+	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_place_index
+	 end
+	 if cur_item_hud==:TOOL
+	   $PokemonGlobal.ball_hud_item_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_item_index
+	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_item_index
+	 end
+	 if cur_item_hud==:WEAPONS
+	   $PokemonGlobal.ball_hud_weapon_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_weapon_index
+	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_weapon_index
+	 end
+	 if cur_item_hud==:BATTLE
+	   $PokemonGlobal.ball_hud_battle_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_weapon_index
+	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_battle_index
+	 end
+     end
+	 
+
+
+
+
+	
+
+	
+	
+
+end
+
+def get_multiselect(update_index)
+	 $PokemonGlobal.stored_ball_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) || $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] == :MULTISELECT
+      itms = [:NONE,"Follow","Wait","Use Item","Hunt","Search","Recall","Wander",:RADIAL]
+	   
+	  $PokemonGlobal.ball_order = itms
+	  if update_index==true
+	   $PokemonGlobal.ball_hud_index=0
+     end
+
+
+
+end
+
+def get_moves(update_index)
+	 $PokemonGlobal.stored_ball_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) || $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] == :MULTISELECT
+    itms = [:NONE]
+	 duriscannon = $PokemonGlobal.cur_stored_pokemon
+	       duriscannon.moves.each do |move|
+	         itms << move
+	     
+	       end
+	       duriscannon.moves2.each do |move|
+	         itms << move
+	     
+	       end
+	itms2 = ["Interact","Follow","Wait","Use Item","Hunt","Search","Recall","Wander",:RADIAL]
+     itmsf = itms + itms2
+	  $PokemonGlobal.ball_order = itmsf
+	  if update_index==true
+	   $PokemonGlobal.ball_hud_moves_index=0 if itmsf.length < $PokemonGlobal.ball_hud_moves_index
+	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_moves_index
+     end
+
+
+end
+
+def get_favorites(update_index)
+	 $PokemonGlobal.stored_ball_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) || $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] == :MULTISELECT
+ 
+     potato = [:NONE]
+     potato2 = [:RADIAL]
+
+     itms = potato + $PokemonGlobal.hud_favorites + potato2
+	  $PokemonGlobal.ball_order = itms
+	  if update_index==true
+	   $PokemonGlobal.ball_hud_index=0
+     end
+
+
+
+end
+
+
+def get_radial(update_index)
+	 $PokemonGlobal.stored_ball_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) || $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index] == :MULTISELECT
+      itms = [:NONE,:FAVORITES,:PKMN,:TOOL,:WEAPONS,:BATTLE,:PLACE]
+	   
+	  $PokemonGlobal.ball_order = itms
+	  if update_index==true
+	   $PokemonGlobal.ball_hud_index=0
+     end
+
+
+
+end
+
+
+
+def getCurrentItemOrder(update_index=false)
+ # puts $PokemonGlobal.ball_hud_type
+ # puts $PokemonGlobal.ball_hud_index
+ # puts $PokemonGlobal.ball_hud_pkmn_index
+ # puts $PokemonGlobal.ball_hud_item_index
+	if !$PokemonGlobal.cur_stored_pokemon.nil?
+	  if $PokemonGlobal.cur_stored_pokemon.fainted?
+		  $PokemonGlobal.cur_stored_pokemon=nil
+	  end
+	end
+  $PokemonGlobal.ball_order = [] if $PokemonGlobal.ball_order.nil?
+   get_moves(update_index) if $game_temp.favorites_enabled==false && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && !$PokemonGlobal.cur_stored_pokemon.nil?
+   get_favorites(update_index) if $game_temp.favorites_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?
+   get_multiselect(update_index) if $PokemonGlobal.alt_control_move==true && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?
+   get_radial(update_index) if $game_temp.radial_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?
+   get_pkmn_box(update_index) if $PokemonGlobal.ball_hud_type==:PKMN && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?
+   get_item_box(update_index) if $PokemonGlobal.ball_hud_type==:ITEM && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?
+  $PokemonGlobal.ball_order = [] if $PokemonGlobal.ball_order.nil?
+end
+
+def cur_item_hud
+ return $PokemonGlobal.ball_hud_item_type
+end
+
+def cur_ball_hud
+ return $PokemonGlobal.ball_hud_type
+end
+
+def play_speech_parallel(text,message=true,name="boopSINE",num=DialogueSound.sound_interval)
+    DialogueSound.playing(text) 
+    DialogueSound.set_sound_effect(name) if name!=DialogueSound.default_sound_effect
+    DialogueSound.custom_sound_interval(num) if num!=DialogueSound.sound_interval_default
+    sideDisplay(text,false,3,false) if message==true
+	 text.length.times do |i|
+      DialogueSound.play_sound_effect(i, text)
+	 end
+
+
+    DialogueSound.playing(nil) 
+    DialogueSound.set_sound_effect(DialogueSound.default_sound_effect) if DialogueSound.sound_effect_name!=DialogueSound.default_sound_effect
+    DialogueSound.custom_sound_interval(DialogueSound.sound_interval_default) if DialogueSound.sound_interval!=DialogueSound.sound_interval_default
+
+end
+
+def play_speech(text,message=true,name="boopSINE",num=DialogueSound.sound_interval)
+    DialogueSound.set_sound_effect(name) if name!=DialogueSound.default_sound_effect
+    DialogueSound.custom_sound_interval(num) if num!=DialogueSound.sound_interval_default
+    sideDisplay(text,false,3,false) if message==true
+	 text.length.times do |i|
+		Graphics.update
+		Input.update
+		  $scene.miniupdate 
+      DialogueSound.play_sound_effect(i, text)
+	 end
+
+
+    DialogueSound.set_sound_effect(DialogueSound.default_sound_effect) if DialogueSound.sound_effect_name!=DialogueSound.default_sound_effect
+    DialogueSound.custom_sound_interval(DialogueSound.sound_interval_default) if DialogueSound.sound_interval!=DialogueSound.sound_interval_default
+
+end
 
 
 class PokemonGlobalMetadata
@@ -2503,8 +3388,11 @@ class PokemonGlobalMetadata
   attr_writer :ball_hud_type
   attr_writer :ball_hud_item_type
   attr_writer :ball_hud_item_type_old
+  attr_writer :ball_hud_moves_index
   attr_writer :ball_hud_pkmn_index
   attr_writer :ball_hud_item_index
+  attr_writer :ball_hud_weapon_index
+  attr_writer :ball_hud_battle_index
   attr_writer :ball_hud_place_index
   attr_writer :ball_hud_pkmn_index_old
   attr_writer :ball_hud_item_index_old
@@ -2514,7 +3402,14 @@ class PokemonGlobalMetadata
   attr_writer :hud_storage_for_alt
   attr_writer :junk_ass_multiselect_counter
   attr_writer :display_moves
-
+  attr_accessor :hud_favorites
+  attr_accessor :cur_stored_pokemon
+  
+  def hud_favorites
+    @hud_favorites = [] if @hud_favorites.nil?
+   
+   return @hud_favorites
+  end
   def ball_hud_enabled
     @ball_hud_enabled = false if !@ball_hud_enabled
     return @ball_hud_enabled
@@ -2523,6 +3418,22 @@ class PokemonGlobalMetadata
     @stored_ball_order = nil if !@stored_ball_order
     return @stored_ball_order
   end
+  def ball_hud_weapon_index
+    @ball_hud_weapon_index = 0 if @ball_hud_weapon_index.nil?
+   
+   return @ball_hud_weapon_index
+  end
+  def ball_hud_battle_index
+    @ball_hud_battle_index = 0 if @ball_hud_battle_index.nil?
+   
+   return @ball_hud_battle_index
+  end
+  def ball_hud_moves_index
+    @ball_hud_moves_index = 0 if @ball_hud_moves_index.nil?
+   
+   return @ball_hud_moves_index
+  end
+
 
   def junk_ass_multiselect_counter
     @junk_ass_multiselect_counter = 0 if @junk_ass_multiselect_counter.nil?
@@ -2544,7 +3455,7 @@ class PokemonGlobalMetadata
   end
 
   def set_extended_hud
-    @set_extended_hud = false if @set_extended_hud.nil?
+    @set_extended_hud = true if @set_extended_hud.nil?
     return @set_extended_hud
   end
 
@@ -2554,18 +3465,43 @@ class PokemonGlobalMetadata
   end
 
 
+  def cur_stored_pokemon
+    return @cur_stored_pokemon
+  end
+
   def selected_pokemon
     @selected_pokemon = [0] if @selected_pokemon.nil?
     return @selected_pokemon
   end
+  
+  def reset_selected_pokemon
+    @selected_pokemon = [0]
+  end
+  
+  def selected_pokemon_cleaned
+     potato = []
+     selected_pokemon.reject do |pkmn|
+           pkmn == 0 ||
+           !defined?(pkmn.associatedevent) ||
+            pkmn.is_a?(Symbol) ||
+           pkmn.associatedevent.nil?||
+           potato.include?(pkmn)
+      end.each do |pkmn|
+  potato << pkmn unless potato.include?(pkmn)
+end
+	return potato
+  end
+
+def get_selected_pokemon
+  return selected_pokemon_cleaned
+end
 
 def get_selected_pokemon_length
-  length = @selected_pokemon.length
-  length -= 1 if @selected_pokemon[0]==0
+  length = selected_pokemon_cleaned.length
   return length
 end
 def get_single_selected_pokemon
-  postarity = @selected_pokemon.dup
+  postarity = selected_pokemon_cleaned
   postarity.delete(0) if postarity[0]==0
   return nil if postarity.length>1
   return postarity[0]
@@ -2585,22 +3521,85 @@ end
     return @ball_hud_item_type_old || :PKMN
   end
   
-  def ball_hud_item_type_toggle
-    if @ball_hud_item_type==:PLACE
-	  @ball_hud_item_type=:TOOL
-	 else
-	  @ball_hud_item_type=:PLACE
-	 end
+  def ball_hud_item_type_force
+    if $game_map.metadata&.base_map
+	           set_item_hud(:PLACE)
+	else
+	           set_item_hud(:TOOL)
+	end
+  
   end
   
-  def ball_hud_type_toggle
+  def set_item_hud(type,update=false)
+    set_item_box_index if $PokemonGlobal.alt_control_move==false && update==true
+      @ball_hud_item_type_old=@ball_hud_item_type
+	  @ball_hud_item_type=type
+	getCurrentItemOrder(true) if $PokemonGlobal.alt_control_move==false && update==true
+  end
+  
+  def set_weapon_permanent
+    set_item_box_index
+      @ball_hud_item_type_old=@ball_hud_item_type
+	  @ball_hud_item_type=:WEAPONS
+	  $game_temp.weapon_selection_end=-1
+	getCurrentItemOrder(true)
+    
+  end
+  
+  def restore_item_hud
+	  @ball_hud_item_type=@ball_hud_item_type_old
+  end
+  
+  
+  def ball_hud_item_type_toggle
+	    case @ball_hud_item_type
+		   when :PLACE
+	           set_item_hud(:TOOL)
+		   when :TOOL
+	           set_item_hud(:WEAPONS)
+		   when :WEAPONS
+	           set_item_hud(:BATTLE)
+		   when :BATTLE
+	           set_item_hud(:PLACE)
+		
+		end
+  end
+  
+  def ball_hud_type_toggle(update=false)
+    set_item_box_index if $PokemonGlobal.alt_control_move==false && update==true
     if @ball_hud_type==:PKMN
+	  $PokemonGlobal.set_item_hud(:TOOL,true) if cur_item_hud==:WEAPONS
 	  @ball_hud_type=:ITEM
 	 else
+	  $PokemonGlobal.set_item_hud(:TOOL,true) if cur_item_hud==:WEAPONS
 	  @ball_hud_type=:PKMN
 	 end
   end
-
+  
+  def set_ball_hud_type(type,update=false,pkmn=nil)
+	  pkmn = $PokemonGlobal.cur_stored_pokemon if pkmn.nil? && !$PokemonGlobal.cur_stored_pokemon.nil?
+	  $game_temp.favorites_enabled=false
+	  $game_temp.radial_enabled=false
+	  $PokemonGlobal.alt_control_move=false
+	  $PokemonGlobal.cur_stored_pokemon=nil
+	  return if type==@ball_hud_type
+    set_item_box_index if $PokemonGlobal.alt_control_move==false && update==true
+	if type==:FAVORITES
+	 $game_temp.favorites_enabled=true
+	elsif type==:RADIAL
+	 $game_temp.radial_enabled=true
+	elsif type==:MULTISELECT
+	  $PokemonGlobal.alt_control_move=true
+	elsif type==:MOVES && !pkmn.nil?
+	 $PokemonGlobal.cur_stored_pokemon=pkmn
+	else
+     @ball_hud_type=type
+	end
+	pbSEPlay("GUI sel decision", 60) 
+	getCurrentItemOrder(true) if update==true
+  end
+  
+  
   def ball_hud_pkmn_index
     return @ball_hud_pkmn_index || 0
   end
@@ -2621,4 +3620,18 @@ end
   end
 end
 
+def pbCanRegisterItem?(item)
+  return true
+end
 
+def favorite_item(item)
+return $bag.register(item)
+end
+
+def unfavorite_item(item)
+return $bag.unregister(item)
+end
+
+def item_favorited?(item)
+return $bag.registered?(item)
+end

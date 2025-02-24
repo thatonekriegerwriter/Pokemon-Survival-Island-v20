@@ -60,11 +60,11 @@ class Battle::Scene::PokemonDataBox < Sprite
 	  pbBGSPlay(lowhealthbgs)
 	  end
       if @battler.hp<=@battler.totalhp/4 && @battler.hp>0 && lowhealthbgm
-        if $game_system.playing_bgm.name!=lowhealthbgm
+        if $game_system.playing_bgm && $game_system.playing_bgm.name!=lowhealthbgm
           $game_temp.battle_theme = $game_system.playing_bgm.name
           pbBGMPlay(lowhealthbgm)
         end
-      elsif $game_system.playing_bgm.name==lowhealthbgm
+      elsif $game_system.playing_bgm && $game_system.playing_bgm.name==lowhealthbgm
         low = 0
         @battler.battle.battlers.each_with_index do |b,i|
           next if !b || (b.index%2)==1

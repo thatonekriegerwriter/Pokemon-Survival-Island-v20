@@ -1,17 +1,4 @@
-  EventHandlers.add(:on_frame_update, :foodstepsplayer,
-  proc {
-  if $PokemonSystem.survivalmode==0
-  if $PokemonGlobal.in_dungeon==false
-  $PokemonGlobal.playerfoodSteps = 0 if !$PokemonGlobal.playerfoodSteps
-  $PokemonGlobal.playerfoodSteps += 1
-  if $PokemonGlobal.playerfoodSteps>=100
-    decreaseFood(1) if rand(90) == 1 && $player.playersaturation == 0
-    $PokemonGlobal.playerfoodSteps = 0
-  end
-  end
-  end
-  }
-)
+
 
   EventHandlers.add(:on_frame_update, :iframes,
   proc {
@@ -19,39 +6,13 @@
     $player.iframes-=1
   end
   $player.party.each do |pkmn|
-    if pkmn.iframes>0
-      pkmn.iframes-=1
+    next if pkmn.nil?
+    if pkmn&.iframes>0
+      pkmn&.iframes-=1
     end
   end
   }
 )
-
-
-  EventHandlers.add(:on_frame_update, :sleepstepsplayer,
-  proc {
-  if  $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $PokemonGlobal.in_dungeon==false
-  $PokemonGlobal.playersleepSteps = 0
-  $PokemonGlobal.playersleepSteps += 1
-  if $PokemonGlobal.playersleepSteps>=100
-    decreaseSleep(3) if rand(256) <= 75
-    $PokemonGlobal.playersleepSteps = 0
-  end
-  end
-  }
-)
-  EventHandlers.add(:on_frame_update, :waterstepsplayer,
-  proc {
-  if $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $PokemonGlobal.in_dungeon==false
-  $PokemonGlobal.playerwaterSteps = 0 if !$PokemonGlobal.playerwaterSteps
-  $PokemonGlobal.playerwaterSteps += 1
-  if $PokemonGlobal.playerwaterSteps>=100
-    decreaseWater(1) if rand(90) == 1 && $player.playersaturation == 0
-    $PokemonGlobal.playerwaterSteps = 0
-  end
-  end
-  }
-)
-
 
 
 EventHandlers.add(:on_player_step_taken, :nurse_healing,
@@ -69,18 +30,132 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 )
 
 
-  EventHandlers.add(:on_frame_update, :saturationstepsplayer,
+  EventHandlers.add(:on_frame_update, :sleepstepsplayer,
   proc {
-  if  $PokemonSystem.survivalmode==0 && !$game_temp.in_menu && $PokemonGlobal.in_dungeon==false && $PokemonSystem.nuzlockemode==0
-  $PokemonGlobal.playersaturationSteps = 0 if !$PokemonGlobal.playersaturationSteps
-  $PokemonGlobal.playersaturationSteps += 1
-  if $PokemonGlobal.playersaturationSteps>=100
-    decreaseSaturation(1) if rand(256) <= 75
-    $PokemonGlobal.playersaturationSteps = 0
-  end
-  end
+  next if $PokemonGlobal.in_dungeon==true
+  next if $player.playersleep == 0
+  
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_slept
+	 tps = 0.25
+	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
+	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
+	 tps = 4 if $game_temp.in_temple==true
+	# puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_slept} < #{(tps * 240)} and is #{rain_delta < (tps * 240)}"
+    next if rain_delta < (tps * 3600)
+	  time = rain_delta/3600
+     puts "Decrease Sleep"
+	  time = [time,1].max
+    decreaseSleep(8 * time)
+    $player.time_last_slept = time_now.to_i+rand(1800)+1
+
+  
+  
   }
 )
+
+  EventHandlers.add(:on_frame_update, :foodstepsplayer,
+  proc {
+  next if $PokemonGlobal.in_dungeon==true
+  next if $player.playersaturation > 0
+  next if $player.playerfood == 0
+  
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_food
+	 tps = 0.25
+	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
+	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
+	 tps = 4 if $game_temp.in_temple==true
+	 
+	 #puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_food} < #{(tps * 120)} and is #{rain_delta < (tps * 120)}"
+    next if rain_delta < (tps * 1800)
+	  time = rain_delta/3600
+    puts "Decrease Food"
+	  time = [time,1].max
+    decreaseFood(6 * time)
+    $player.time_last_food = time_now.to_i+rand(900)+1
+  }
+)
+
+  EventHandlers.add(:on_frame_update, :waterstepsplayer,
+  proc {
+  next if $PokemonGlobal.in_dungeon==true
+  next if $player.playersaturation > 0
+  next if $player.playerwater == 0
+  
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_watered
+	 tps = 0.25
+	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
+	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
+	 tps = 4 if $game_temp.in_temple==true
+	# puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_watered} < #{(tps * 120)} and is #{rain_delta < (tps * 120)}"
+    next if rain_delta < (tps * 1800)
+	  time = rain_delta/3600
+     puts "Decrease Water"
+	  time = [time,1].max
+    decreaseWater(6 * time)
+    $player.time_last_watered = time_now.to_i+rand(900)+1
+  
+  }
+)
+
+
+
+  EventHandlers.add(:on_frame_update, :saturationstepsplayer,
+  proc {
+  next if $PokemonGlobal.in_dungeon==true
+  next if $player.playersaturation == 0
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_saturated
+	 tps = 0.25
+	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
+	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
+	 tps = 4 if $game_temp.in_temple==true
+	 #puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_saturated} < #{(tps * 80)} and is #{rain_delta < (tps * 80)}"
+    next if rain_delta < (tps * 1200)
+	  time = rain_delta/3600
+     puts "Decrease Saturation"
+	  time = [time,1].max
+    decreaseSaturation(3 * time)
+    $player.time_last_saturated = time_now.to_i+rand(600)+1
+  
+  
+  }
+)
+
+
+  EventHandlers.add(:on_frame_update, :stamina,
+  proc {
+  next if $PokemonGlobal.in_dungeon==true
+    the_stamina_functions
+	 
+    if drain_stamina
+	 pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
+	  next 
+	 end
+	 
+	 pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
+    next if $player.playerstamina == $player.playermaxstamina
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_stamina
+	 if $player.playerstamina >= $player.playermaxstamina
+	   $player.playerstamina=$player.playermaxstamina
+	 next
+	 end
+    next if rain_delta < 10
+	 
+	 
+	 
+    restore_stamina
+    $player.time_last_stamina = time_now.to_i
+  }
+)
+
+
+
+
+
 
   EventHandlers.add(:on_frame_update, :healthplayer,
   proc {
@@ -89,34 +164,77 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	  next
    end
    next if $PokemonGlobal.in_dungeon==true
-   next if $PokemonSystem.survivalmode == 1
    next if $game_temp.in_menu
+   #next if $game_temp.dead
    
    pbStartOver 
    next if $player.playerhealth<=0 || $player.playermaxhealth2<=0
   
-   waterchance = rand(100) <= 10
-   foodchance = rand(100) <= 10
-   sleepchance = rand(100) <= 10
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_health
+    next if rain_delta < 150
+   waterchance = rand(50)+1 <= 10
+   foodchance = rand(50)+1 <= 10
+   sleepchance = rand(50)+1 <= 10
    damaged = 0
-   damaged += 1 if $player.playerwater < 1 && waterchance
-   damaged += 1 if $player.playersleep < 1 && sleepchance
-   damaged += 1 if $player.playerfood < 1 && foodchance
+    if $player.playerwater < 1 && waterchance
+	 pbSEPlay("Drink")
+	 pbSEPlay("")
+   damaged += 1
+   end
+    if $player.playersleep < 1 && sleepchance
+	 pbSEPlay("Yawn")
+   damaged += 1
+   end
+    if $player.playerfood < 1 && foodchance
+	 pbSEPlay("Eat")
+   damaged += 1
+    end
+   $player.time_last_health=time_now.to_i
     next if damaged==0
-   damagePlayer(3*damaged) 
+   damagePlayer(3*(damaged+2)) 
    pbSEPlay("normaldamage")
   }
 )
 
+def restore_stamina
+ return if $player.running == true
+ return if $game_temp.in_menu
+  prereqs = !$player.acting && $player.held_item.nil?
+  if prereqs
+	 if $game_player.moved_this_frame==false && $game_player.moved_last_frame==false
+	     if rand(2) == 1
+         puts "Increase Stamina - No Moving+"
+	      $player.playerstamina+=1
+		  end
+    elsif $game_player.moved_this_frame==false
+	     if rand(10) == 1
+         puts "Increase Stamina - No Moving"
+	      $player.playerstamina+=3
+		  end
+	 elsif rand(60) == 1
+       puts "Increase Stamina - While Moving"
+      $player.playerstamina+=6
+	 end
 
-  EventHandlers.add(:on_frame_update, :stamina,
-  proc {
-  if $PokemonGlobal.in_dungeon==false
-  
-  
-  
-  
-	
+
+
+  end
+end
+
+def drain_stamina
+	   duris = rand(30) == 1
+if $game_player.moved_this_frame && !$game_temp.in_menu && $player.running
+	return decreaseStamina(4) if duris && ($player.playershoes.id == :NORMALSHOES || $player.playershoes.id == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
+	return decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	return decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	return decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
+end
+return false
+end
+
+def the_stamina_functions
+
     $player.playerstamina = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
     $player.playermaxstamina = $player.playermaxstamina.to_f if $player.playermaxstamina.is_a? Integer
 	$player.playerstaminamod = $player.playerstaminamod.to_f if $player.playerstaminamod.is_a? Integer
@@ -126,43 +244,33 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	
 	$player.playerstaminamod = 0.0 if $player.playerstaminamod.nil?
 
+end
+
+def stamina_management_for_ov
+
+  if $PokemonGlobal.in_dungeon==false
+  
+  
+  
+  
+	
 
 
-		pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
+
+
 
 	   duris = rand(30) == 1
    
 	
 	if $game_player.can_run_unforced? && !$game_temp.in_menu && $player.running
 	
-	   decreaseStamina(4) if duris && ($player.playershoes == :NORMALSHOES || $player.playershoes == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
-	   decreaseStamina(3) if duris && $player.playershoes == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
-	   decreaseStamina(2) if duris && $player.playershoes == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(4) if duris && ($player.playershoes.id == :NORMALSHOES || $player.playershoes.id == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
+	   decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
 	   decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
 	   
 	   
 	else
-	  prereqs = !$player.acting && $player.held_item.nil?
-	  if  prereqs
-      if !$game_player.moving? && !$game_player.can_run_unforced? && (!Input.press?(Input::LEFT) || !Input.press?(Input::UP) || !Input.press?(Input::RIGHT) || !Input.press?(Input::DOWN))
-      
-	   if $player.playerstamina < 1
-	   $player.playerstamina+=3 if rand(60) == 1
-	   else
-	   $player.playerstamina+=1 if rand(30) == 1
-	   end
-	  
-	  elsif !$game_player.can_run_unforced? && (Input.press?(Input::LEFT) || Input.press?(Input::UP) || Input.press?(Input::RIGHT) || Input.press?(Input::DOWN))
-
-	   $player.playerstamina+=1 if rand(140) == 1
-	  end
-
-
-
-
-
-
-	  end
 	end
 
 
@@ -171,9 +279,11 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	   $player.playerstamina = $player.playermaxstamina if $player.playerstamina > $player.playermaxstamina
 
   end
-  }
-)
 
+
+
+
+end
 
 
 
@@ -304,6 +414,7 @@ EventHandlers.add(:on_step_taken, :kill_party,
         flashed = true
       end
       pkmn.lifespan -= 3
+	  pbShowTipCard(:CRITICALCONDITION) if !pbSeenTipCard?(:CRITICALCONDITION)
 	  puts "#{pkmn.name}'s lifespan is now #{pkmn.lifespan} wellness."
       if pkmn.lifespan <= 0
 	     pbSEPlay("DeathDQ")

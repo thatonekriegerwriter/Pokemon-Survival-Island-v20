@@ -106,25 +106,6 @@ class Pokemon
   attr_accessor :just_arrived #has another with it.
   attr_accessor :called_back #has another with it.
 
-  alias :initold :initialize
-  def initialize(*args)
-    initold(*args)
-    @onAdventure  = false
-    @location      = nil
-    @collectedItems      = []
-    @encounterLog      = []
-    @adventuringTypes      = ["None"]
-    @chosenAdvType      = nil
-    @travelswithEgg      = nil
-    @travelingpartners      = nil
-    @inDungeon      = false
-    @advSteps      = 0
-    @who_fighting      = nil
-    @wait_time      = 0
-    @just_arrived      = false
-    @called_back      = false
-    @called_back_map      = nil
-  end
   
   def travelingpartners
    @travelingpartners = [] if @travelingpartners.nil?
@@ -1510,6 +1491,17 @@ class Adventure
 	def party_full?
 		return @party.length >= Settings::MAX_PARTY_SIZE
 	end
+  def pokemon_party
+    return @party.find_all { |p| p && !p.egg? }
+  end
+
+  def able_party
+    return @party.find_all { |p| p && !p.egg? && !p.fainted? }
+  end
+
+  def party_count
+    return @party.length
+  end
 	def able_pokemon_count
 		ret = 0
 		@party.each { |p| ret += 1 if p && !p.egg? && !p.fainted? }

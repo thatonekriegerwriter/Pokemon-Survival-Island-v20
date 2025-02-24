@@ -85,24 +85,10 @@ class Window_PokemonBag < Window_DrawableCommand
       textpos.push(
         [@adapter.getDisplayName(item), rect.x, rect.y + 2, false, baseColor, shadowColor]
       )
-      if GameData::Item.get(item).is_important?
-        if @bag.registered?(item)
-          pbDrawImagePositions(
-            self.contents,
-            [["Graphics/Pictures/Bag/icon_register", rect.x + rect.width - 72, rect.y + 8, 0, 0, -1, 24]]
-          )
-        elsif pbCanRegisterItem?(item)
-          pbDrawImagePositions(
-            self.contents,
-            [["Graphics/Pictures/Bag/icon_register", rect.x + rect.width - 72, rect.y + 8, 0, 24, -1, 24]]
-          )
-        end
-      else
         qty = (@filterlist) ? thispocket[@filterlist[@pocket][index]][1] : thispocket[index][1]
         qtytext = _ISPRINTF("x{1: 3d}", qty)
         xQty    = rect.x + rect.width - self.contents.text_size(qtytext).width - 16
         textpos.push([qtytext, xQty, rect.y + 2, false, baseColor, shadowColor])
-      end
     end
     pbDrawTextPositions(self.contents, textpos)
   end
@@ -748,9 +734,19 @@ class PokemonBagScreen
       commands[cmdRead = commands.length] = _INTL("Read") if itm.is_mail?
       commands[cmdEquip = commands.length]       = _INTL("Equip") if itm.is_tool? && $player.equipped_item.nil?
       commands[cmdunEquip = commands.length]       = _INTL("Unequip") if itm.is_tool? && $player.equipped_item==itm 
-      commands[cmdEat = commands.length]       = _INTL("Eat") if itm.is_foodwater? || itm.is_berry?
+	  
+	  
+	   if itm.is_foodwater? || itm.is_berry?
+	    if itm.is_water?
+      commands[cmdEat = commands.length]       = _INTL("Drink")
+		else
+      commands[cmdEat = commands.length]       = _INTL("Eat")
+	    end
+	   end
+	  
+	  
       commands[cmdMedicate = commands.length]       = _INTL("Use (Self)") if itm.is_medicine?
-      if ItemHandlers.hasOutHandler(item) || (itm.is_machine? && $player.party.length > 0)
+      if ItemHandlers.hasOutHandler(item) || (itm.is_machine? && $player.party.length > 0) || itm.field_use == 1
         if ItemHandlers.hasUseText(item)
           commands[cmdUse = commands.length]    = ItemHandlers.getUseText(item)
         else
@@ -761,9 +757,9 @@ class PokemonBagScreen
       commands[cmdGive = commands.length]       = _INTL("Give") if $player.pokemon_party.length > 0 && itm.can_hold?
       commands[cmdToss = commands.length]       = _INTL("Toss") if !itm.is_important? || $DEBUG
       if @bag.registered?(item)
-        commands[cmdRegister = commands.length] = _INTL("Deselect")
+        commands[cmdRegister = commands.length] = _INTL("Unfavorite")
       elsif pbCanRegisterItem?(item)
-        commands[cmdRegister = commands.length] = _INTL("Register")
+        commands[cmdRegister = commands.length] = _INTL("Favorite")
       end
       commands[cmdDebug = commands.length]      = _INTL("Debug") if $DEBUG
       commands[commands.length]                 = _INTL("Cancel")
@@ -775,7 +771,7 @@ class PokemonBagScreen
           pbDisplayMail(Mail.new(item, "", ""))
         }
       elsif cmdEat >=0 && command==cmdEat   # Eat
-        ret = pbEating(@bag,item)
+        ret = pbEating(@bag,item,@scene)
         break if ret==2   # End screen
         @scene.pbRefresh
         next
@@ -794,7 +790,7 @@ class PokemonBagScreen
         @scene.pbRefresh
         next
       elsif cmdMedicate>=0 && command==cmdMedicate   # Medicate
-        ret = pbMedicine(@bag,item)
+        ret = pbMedicine(@bag,item,@scene)
 		decreaseStamina(1)
         # ret: 0=Item wasn't used; 1=Item used; 2=Close Bag to use in field
         break if ret==2   # End screen
@@ -865,10 +861,10 @@ class PokemonBagScreen
             qty = @bag.quantity(item)
             itemplural = itm.name_plural
             params = ChooseNumberParams.new
-            params.setRange(0, Settings::BAG_MAX_PER_SLOT)
+            params.setRange(0, item.stack_size)
             params.setDefaultValue(qty)
             newqty = pbMessageChooseNumber(
-              _INTL("Choose new quantity of {1} (max. #{Settings::BAG_MAX_PER_SLOT}).", itemplural), params
+              _INTL("Choose new quantity of {1} (max. #{item.stack_size}).", itemplural), params
             ) { @scene.pbUpdate }
             if newqty > qty
               @bag.add(item, newqty - qty)

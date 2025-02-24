@@ -13,6 +13,7 @@ def pbShowCommands(msgwindow,commands=nil,cmdIfCancel=0,defaultCmd=0)
     Input.update
     cmdwindow.update
     msgwindow.update if msgwindow
+	 $PokemonGlobal.addNewFrameCount
 	 $scene.mouse_detection if $PokemonGlobal.alternate_control_mode==true
     yield if block_given?
     if Input.trigger?(Input::B)
@@ -68,6 +69,7 @@ def pbShowCommandsWithHelp(msgwindow,commands,help,cmdIfCancel=0,defaultCmd=0)
   oldlbl=msgwin.letterbyletter
   msgwin.letterbyletter=false
   if commands
+   
     cmdwindow=Window_CommandPokemonEx.new(commands)
     cmdwindow.z=99999
     cmdwindow.visible=true
@@ -83,6 +85,7 @@ def pbShowCommandsWithHelp(msgwindow,commands,help,cmdIfCancel=0,defaultCmd=0)
       Input.update
       oldindex=cmdwindow.index
       cmdwindow.update
+	   $PokemonGlobal.addNewFrameCount
 	   $scene.mouse_detection if $PokemonGlobal.alternate_control_mode==true
       if oldindex!=cmdwindow.index
         msgwin.text=help[cmdwindow.index]
@@ -139,6 +142,92 @@ def pbShowCommandsWithHelp(msgwindow,commands,help,cmdIfCancel=0,defaultCmd=0)
   end
   msgwin.letterbyletter=oldlbl
   msgwin.dispose if !msgwindow
+  return ret
+end
+
+class Game_Temp
+  attr_accessor :just_update_anyways
+
+  def just_update_anyways
+    @just_update_anyways = false if !@just_update_anyways
+    return @just_update_anyways
+  end
+end
+
+
+def pbShowCommandsssss(statuewindow,statue,msgwindow,commands=nil,cmdIfCancel=0,defaultCmd=0)
+  return 0 if !commands
+  cmdwindow=Window_CommandPokemonEx.new(commands)
+  cmdwindow.z=99999
+  cmdwindow.visible=true
+  cmdwindow.resizeToFit(cmdwindow.commands)
+  pbPositionNearMsgWindow(cmdwindow,msgwindow,:right)
+  cmdwindow.index=defaultCmd
+  command=0
+   $game_temp.just_update_anyways=true
+  if !$PokemonGlobal.nil?
+  loop do
+    Graphics.update
+    Input.update
+    cmdwindow.update
+	 if statue==$scene
+	 else
+    statue.update if statue
+	 end
+	 if statuewindow==$scene
+	 else
+    statuewindow.update if statuewindow
+	 end
+    msgwindow.update if msgwindow
+	$PokemonGlobal.addNewFrameCount
+	 $scene.mouse_detection if $PokemonGlobal.alternate_control_mode==true
+    yield if block_given?
+    if Input.trigger?(Input::B)
+      if cmdIfCancel>0
+        command=cmdIfCancel-1
+        break
+      elsif cmdIfCancel<0
+        command=cmdIfCancel
+        break
+      end
+    end
+    if Input.trigger?(Input::C) 
+	  if (Input.trigger?(Input::MOUSELEFT) && $mouse.current_mode!=:DEFAULT )
+	  else
+      command=cmdwindow.index
+      break
+	  end
+    end
+    pbUpdateSceneMap
+  end
+  else
+    loop do
+    Graphics.update
+    Input.update
+    cmdwindow.update
+    msgwindow.update if msgwindow
+    yield if block_given?
+    if Input.trigger?(Input::B)
+      if cmdIfCancel>0
+        command=cmdIfCancel-1
+        break
+      elsif cmdIfCancel<0
+        command=cmdIfCancel
+        break
+      end
+    end
+    if Input.trigger?(Input::C)
+      command=cmdwindow.index
+      break
+    end
+    pbUpdateSceneMap
+  end
+  end
+ 
+   $game_temp.just_update_anyways=false 
+ ret=command
+  cmdwindow.dispose
+  Input.update
   return ret
 end
 
@@ -332,16 +421,50 @@ attr_accessor   :objects
 attr_accessor   :pokemon
 attr_accessor   :special
 attr_accessor   :misc
+attr_accessor   :berry_plants
 
 def initialize
     @objects   = {}
     @pokemon   = {}
     @special   = {}
     @misc = {}
+    @berry_plants = {}
 end
+  def berry_plants
+    @berry_plants = {} if @berry_plants.nil?
+	return @berry_plants
+  end 
   def clearOverworldPokemonMemory
     @pokemon   = {}
   end
+  
+  def update_objects_remotely
+    @berry_plants = {} if @berry_plants.nil?
+    @objects.each_key do |i|
+	   storedevent = @objects[i]
+	   next if storedevent.type==:BERRYPLANT
+	   next if storedevent.map_id==$game_map.map_id
+	   event = storedevent.event
+	   map_id = storedevent.map_id
+	   event_id = event.id
+	   data = pbMapInterpreter.getVariableOther(event_id,map_id)
+	   data.update if data
+	end
+	@berry_plants.each_key do |i|
+	   storedevent = @berry_plants[i]
+	   next if storedevent.map_id==$game_map.map_id && storedevent.type!=:STATUE
+	   event = storedevent.event
+	   map_id = storedevent.map_id
+	   event_id = event.id
+	   data = pbMapInterpreter.getVariableOther(event_id,map_id)
+	   data.update if data
+	end
+
+  end
+  
+
+  
+  
   def addMovedEvent(type,key_id,x=nil,y=nil,direction=nil) 
    #THIS IS PASSING KEY ID YOU NEED TO PASS EVENT.
      case type
@@ -365,21 +488,31 @@ end
      end
   end
 
-  def removethisEvent(type,key_id)
+  def removethisEvent(type,key_id,map_id)
      case type
       when :OBJECT
-	   $ExtraEvents.objects.delete(key_id) if $ExtraEvents.objects.has_key?(key_id)
+	   $ExtraEvents.objects.delete([map_id,key_id]) if $ExtraEvents.objects.has_key?([map_id,key_id])
       when :POKEMON
-	   $ExtraEvents.pokemon.delete(key_id) if $ExtraEvents.pokemon.has_key?(key_id)
+	   $ExtraEvents.pokemon.delete([map_id,key_id]) if $ExtraEvents.pokemon.has_key?([map_id,key_id])
       when :SPECIAL
-	   $ExtraEvents.special.delete(key_id) if $ExtraEvents.special.has_key?(key_id)
+	   $ExtraEvents.special.delete([map_id,key_id]) if $ExtraEvents.special.has_key?([map_id,key_id])
       when :MISC
-	   $ExtraEvents.misc.delete(key_id) if $ExtraEvents.misc.has_key?(key_id)
+	   $ExtraEvents.misc.delete([map_id,key_id]) if $ExtraEvents.misc.has_key?([map_id,key_id])
      end
   end
 
 end
-
+MenuHandlers.add(:debug_menu, :clear_stored_data, {
+  "name"        => _INTL("Clear extra events data!"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Kill the player."),
+  "effect"      => proc {
+	   $ExtraEvents.objects = {}
+	   $ExtraEvents.pokemon = {}
+	   $ExtraEvents.special = {}
+	   $ExtraEvents.misc = {}
+  }
+})
 
 class StoredEvent
   attr_accessor :map_id
@@ -387,6 +520,7 @@ class StoredEvent
   attr_accessor :type
   attr_accessor :x
   attr_accessor :y
+  attr_accessor :eventdata
   
   def initialize(map_id,event,type)
    @event    = event
@@ -394,6 +528,7 @@ class StoredEvent
    @type     = type
    @x = x
    @y = y
+   @eventdata = nil
   end
   
   def pokemon
@@ -438,37 +573,28 @@ class Game_PokeEventA < Game_Event
   attr_accessor :recieving_handshake
   attr_accessor :making_an_egg
   attr_accessor :attack_opportunity
+  attr_accessor :autoattack_opportunity
   attr_accessor :attack_cooldown
   attr_accessor :fucking_timer
   attr_accessor :currently_moving
+  attr_accessor :last_attacked
   attr_accessor :youarealreadydead # contains the map_id
+  attr_accessor :pathing 
   
   def initialize(type, map_id, event, map=nil)
-    super(map_id, event, map)
-    @type  = type
-    @visible                  = true
-    @invisible_after_transfer = false
+   super(map_id, event, map)
+   @type  = type
+   @visible                  = true
+   @invisible_after_transfer = false
 	@event = event
 	@steps_taken  = 0
 	@movement_timer = 0
 	@movement_type = :WANDER
-	if alreadyfollowing==false
-	@following = $game_player
-	@movement_type = :MOVEBEHINDPLAYER 
-	end
 	@still_timer = 0
 	@random_attacking = true
-	if @type.is_a?(Pokemon)
-	@random_attacking = @type.random_attacking if !@type.random_attacking.nil?
-	end
+	@last_attacked = false
 	@attack_mode = :COMMAND
-	if @type.is_a?(Pokemon)
-	@attack_mode = @type.attack_mode if !@type.attack_mode.nil?
-	end
-	@autobattle = true
-	if @type.is_a?(Pokemon)
-	@autobattle = @type.autobattle if !@type.autobattle.nil?
-	end
+	@autobattle = false
 	@playercoords = [0,0]
 	@fighting = nil
 	@sending_handshake = []
@@ -477,144 +603,64 @@ class Game_PokeEventA < Game_Event
 	@making_an_egg = false
 	@fucking_timer = 0
 	@attack_opportunity = 0
+	@autoattack_opportunity = 0
 	@currently_moving = false
+	@attacking = false
 	@youarealreadydead  = false
-  end
-  
-  def type=(value)
-    @type = value
-  end
-
-   def attack_cooldowns
-     return [@attack_opportunity]
-   end
-
-
-  def add_target(event_id,object)
-    return if event_id.nil?
-    return if object.nil?
-    if @targets[event_id]
-	  if @targets[event_id]!=object
-	    @targets[event_id]=object
-	  end
-    else
-	    @targets[event_id]=object
-	 end
-  end
-  def remove_target(event_id)
-    return if event_id.nil?
-    return if object.nil?
-    if @targets[event_id]
-	  @targets[event_id].delete
-	 end
-  end
-  
-  def pokemon
-   return @type if @type.is_a?(Pokemon)
-   return nil
-  end
-    def pbFacingEvent(ignoreInterpreter = false)
-    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
-    # Check the tile in front of the player for events
-    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
-    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-    return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
-      next if !event.at_coordinate?(new_x, new_y)
-      next if event.jumping? || event.over_trigger?
-      return event
-    end
-    # If the tile in front is a counter, check one tile beyond that for events
-    if $game_map.counter?(new_x, new_y)
-      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
-      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
-        next if !event.at_coordinate?(new_x, new_y)
-        next if event.jumping? || event.over_trigger?
-        return event
-      end
-    end
-    return nil
-  end
-  # self.map_id bzw. @map_id
-  
-   def stages
-    return @type.stages
-   end
-   def effects
-    return @type.effects
-   end
-  
-  def decrease_attack_opportunity(amt)
-  
-    @attack_opportunity-=amt if @attack_opportunity>0
-	if @attack_opportunity<=0
-    @attack_opportunity=0 
-	pbSEPlay("Vs flash")
-	sideDisplay("#{@type.name} can attack again.")
+	@target = nil
+	@target2 = nil
+	@pathing = []
+	
+	if @type.is_a?(Pokemon)
+	@random_attacking = @type.random_attacking if !@type.random_attacking.nil?
+	@attack_mode = @type.attack_mode if !@type.attack_mode.nil?
+	@autobattle = @type.autobattle if !@type.autobattle.nil?
+	@type.associatedevent=@id if @type.associatedevent.nil? || @type.associatedevent!= @id
 	end
-  
+	
+	
+	
   end
 
 def pkmnmovement
-   
-    event = self
-    pokemon = self.pokemon
-	if pokemon.fainted?
-	 removeThisEventfromMap
-	end
-	 if pokemon.associatedevent.nil? || pokemon.associatedevent!= @id
-	   pokemon.associatedevent=@id
-	 end
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	$game_temp.interactingwithpokemon=false if $game_temp.interactingwithpokemon.nil?
-	$game_temp.auto_move=false if $game_temp.auto_move.nil?
+	@pathing = [] if @pathing.nil?
+    event,pokemon,maps = setup_actions
 	
-	pbRemoveFollowerPokemon(@id) if $game_temp.following_ov_pokemon[@id] && $game_temp.following_ov_pokemon[@id][1]==@type && @movement_type != :FOLLOW 
-	$game_temp.following_ov_pokemon[@id]=[@id,@type,self] if !$game_temp.following_ov_pokemon[@id] && @movement_type == :FOLLOW 
-	
-	
-	
-   event.move_frequency=4 if @movement_type != :FOLLOW 
-   event.following = nil if @movement_type != :FOLLOW && @movement_type != :MOVEBEHINDPLAYER
-   event.move_frequency=6 if @movement_type == :FOLLOW 
-
-
-
- 
-
-
-	if !@fighting.nil?
-	
-	
-	 if @movement_timer<=0
+    $game_temp.preventspawns=true
+	 @target = get_target if @target.nil?
+   # $game_temp.preventspawns=false
+	if @target && @target.is_a?(Game_PokeEvent)
+	  @attacking = false if @attacking.nil?
+	 if @autoattack_opportunity<=0
+	   if @attacking==false
+		  @autoattack_opportunity += 90
+	     @attacking=true
 		  thefight = $PokemonGlobal.ov_combat
-		  thefight.autobattle(self) 
-		  @movement_timer = 120
-	      if @fighting.pokemon.fainted?
-		    @fighting=nil
+		  distance = get_event_distance(@target,3)
+		  if !distance.nil?
+		  thefight.autobattle(self,@target,distance) 
+		  @target = nil if @target.pokemon.fainted?
 		  end
+	     @attacking=false
+		end
 	 else
-	   @movement_timer-=1
-	
+	   @autoattack_opportunity-=1
 	 end
 
-
-	else
-	
-	if true
+	end
+    $game_temp.preventspawns=false
 	  
 
 
 
 
+   if false
+  if !@target.nil? && rand(100)<16 && @movement_type == :WANDER && @random_attacking==true
 
 
-   $game_temp.preventspawns=true
-  pkmn = event.pbSurroundingEvent
-  if !pkmn.nil? && rand(100)<16 && @movement_type == :WANDER && @random_attacking==true
-  if besidethis?(event,pkmn) && pkmn.name[/vanishingEncounter/]
-       pbTurnTowardEvent(event, pkmn)
+
+  if besidethis?(event,@target) && @target.name[/vanishingEncounter/]
+       pbTurnTowardEvent(event, @target)
 	 if @attack_mode == :COMMAND
 	  if true
        pbStoreTempForBattle()
@@ -628,11 +674,11 @@ def pkmnmovement
       $PokemonGlobal.roamEncounter = nil
     end
 	  $PokemonGlobal.battlingSpawnedPokemon = true
-	  pbSingleOrDoubleWildBattle( $game_map.map_id, pkmn.x, pkmn.y, pkmn.pokemon )
+	  pbSingleOrDoubleWildBattle( $game_map.map_id, @target.x, @target.y, @target.pokemon )
 	  $PokemonGlobal.battlingSpawnedPokemon = false
-	  pkmn.removeThisEventfromMap
+	  @target.removeThisEventfromMap
 	  pbResetTempAfterBattle()
-   $game_temp.preventspawns=false
+      $game_temp.preventspawns=false
       end
      elsif @autobattle==true
 	   	event, distance = get_target_player(self)
@@ -647,14 +693,28 @@ def pkmnmovement
 	 end
 	end
 	end
+
+
+
   end
-  $game_temp.preventspawns=false
- return if $game_temp.interactingwithpokemon==true && $game_temp.auto_move==true
-  end
+   end
+
+
+
+  return if $game_temp.interactingwithpokemon==true && $game_temp.auto_move==true 
+ making_an_egg(event,pokemon,maps)
+ live_movement(event,pokemon,maps)
+ 
+ 
  
 
- 
- 
+
+
+
+
+   end
+
+def making_an_egg(event,pokemon,maps)
   @making_an_egg=false if @movement_type!=:MAKINGANEGG && @making_an_egg==true
  
  
@@ -708,6 +768,11 @@ def pkmnmovement
  end
  end
  
+end
+def live_movement(event,pokemon,maps)
+ 
+ 
+ 
  
  
  if effects[PBEffects::Confusion]>0
@@ -740,7 +805,7 @@ def pkmnmovement
    end 
    if daycare.egg_generated == true
         egg = EggGenerator.generate(@sending_handshake[0],@sending_handshake[3])
-        raise _INTL("Couldn't generate the egg.") if egg.nil
+        raise _INTL("Couldn't generate the egg.") if egg.nil?
         if !$map_factory
            event = $game_map.generateEvent(@sending_handshake[0].x+1,@sending_handshake[0].y+1,egg,false,false,2)
        else
@@ -786,6 +851,8 @@ def pkmnmovement
 	 end
 	 end
          follow_leader(@following) 
+		 
+       look_at_location(@event.id,@following.x,@following.y)
 	 @playercoords = [@following.x,@following.y]
 	end
   when :WANDER
@@ -809,44 +876,60 @@ def pkmnmovement
 	end
     end
   when :POINTER
-     if true
-	  $game_temp.preventspawns=true
-      if move_with_maps(map_id,*get_tile_with_direction)
-	  @movement_type = :STILL
-	  @still_timer=-1
-      end
-	 $game_temp.preventspawns=false
-	end
+   #  if true
+	#  $game_temp.preventspawns=true
+  #    if move_with_maps(map_id,*get_tile_with_direction)
+	#  @movement_type = :STILL
+	#  @still_timer=-1
+  #    end
+	# $game_temp.preventspawns=false
+	#end
   when :FINDENEMY
     if true
      return if maps.include?($game_map.map_id)
-     return if $game_temp.preventspawns==true
      $game_temp.preventspawns=true
-     pkmn = getRandomOverworldOtherPokemon(event)
-     if !pkmn.nil?
-	 if pbMoveTowardCoordinates(self,pkmn.x,pkmn.y)
-       if pkmn.name[/vanishingEncounter/] && @random_attacking==true 
-	    if @attack_mode == :COMMAND && @autobattle==true && event.pbSurroundingEvent == pkmn
-           pbStoreTempForBattle()
-           if $PokemonGlobal.roamEncounter!=nil # i.e. $PokemonGlobal.roamEncounter = [i,species,poke[1],poke[4]]
-                 parameter1 = $PokemonGlobal.roamEncounter[0].to_s
-                 parameter2 = $PokemonGlobal.roamEncounter[1].to_s
-                 parameter3 = $PokemonGlobal.roamEncounter[2].to_s
-                 $PokemonGlobal.roamEncounter[3] != nil ? (parameter4 = '"'+$PokemonGlobal.roamEncounter[3].to_s+'"') : (parameter4 = "nil")
-                 $PokemonGlobal.roamEncounter = ["+parameter1+",:"+parameter2+","+parameter3+","+parameter4+"]
-           else
-                 $PokemonGlobal.roamEncounter = nil
-           end
-           $PokemonGlobal.battlingSpawnedPokemon = true
-           pbSingleOrDoubleWildBattle( $game_map.map_id, pkmn.x, pkmn.y, pkmn.pokemon )
-           $PokemonGlobal.battlingSpawnedPokemon = false
-           pkmn.removeThisEventfromMap
-           pbResetTempAfterBattle()
-              $game_temp.preventspawns=false
-		 elsif @autobattle==true
-	     end
-	   end
+     @target2 = getRandomOverworldOtherPokemon(event) if @target2.nil?
+     if !@target2.nil?
+	 if self.move_with_maps(self.map_id, @target2.x,@target2.y)
+				 loops = 0
+				 if [self.x, self.y]!=[@target2.x,@target2.y]
+			     while !within_one_tile?(self.x, self.y, @target2.x,@target2.y)
+	              Input.update
+                  Graphics.update
+				    $scene.miniupdate
+					
+				   if !self.moving?
+				    loops += 1 
+				   end
+				  break if within_one_tile?(self.x, self.y, @target2.x,@target2.y)
+				  break if loops>=60 && !self.moving?
+				 end
+               if within_one_tile?(self.x, self.y, @target2.x,@target2.y)
+				 if @target2.is_a?(Game_PokeEvent)
+                  look_at_location(self.id,nuevent.x,nuevent.y)
+				      self.add_target(event_in_question,nuevent) 
+                  self.following = nuevent
+				     self.movement_type = :FOLLOW
+				 elsif @target2.is_a?(Game_Player)
+				 else
+                 self.move_toward_the_coordinate(@target2.x,@target2.y) 
+			     end
+              end
+              end
      end
+	 if @attack_opportunity<=0
+		  thefight = $PokemonGlobal.ov_combat
+		  distance = get_event_distance(@target2,3)
+		  if !distance.nil?
+		  thefight.autobattle(self,@target2,distance) 
+		  @attack_opportunity += 90
+		  @target2 = nil if @target2.pokemon.fainted?
+		  end
+	 else
+	   @attack_opportunity-=1
+	 end
+
+
 	 end
      $game_temp.preventspawns=false
       
@@ -864,25 +947,14 @@ def pkmnmovement
   end
  end
  
+
  
  
- 
- 
- 
- 
-  end
-   end
 
 
-  alias original_increase_steps64 increase_steps
-  def increase_steps
-   if self.is_a?(Game_PokeEventA) || self.is_a?(Game_PokeEvent)
-    
-    @steps_taken  += 1
-	
-  end
-  end
 
+
+end
 
 def pokemonchoices(theself=nil)
 
@@ -1050,6 +1122,76 @@ end
 end
 
 
+def setup_actions
+    event = self
+    pokemon = self.pokemon
+    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
+    @autoattack_opportunity = @attack_opportunity if @autoattack_opportunity.nil?
+	 removeThisEventfromMap if pokemon.fainted?
+	 pokemon.associatedevent=@id if pokemon.associatedevent.nil? || pokemon.associatedevent!= @id
+	
+	
+	
+	
+	pbRemoveFollowerPokemon(@id) if $game_temp.following_ov_pokemon[@id] && $game_temp.following_ov_pokemon[@id][1]==@type && @movement_type != :FOLLOW 
+	$game_temp.following_ov_pokemon[@id]=[@id,@type,self] if !$game_temp.following_ov_pokemon[@id] && @movement_type == :FOLLOW 
+   event.following = nil if @movement_type != :FOLLOW && @movement_type != :MOVEBEHINDPLAYER
+   
+   if !event.following.nil? && @movement_type == :FOLLOW 
+   event.move_frequency=following.move_frequency
+   event.move_speed=event.following.move_speed+0.25 
+   elsif @movement_type != :FOLLOW 
+   event.move_speed=3 
+   event.move_frequency=4
+   end
+   
+   
+   
+   
+
+
+ return event,pokemon,maps
+end
+		   # pbGetTargetDistance(self).each do |target|
+			#   value = target[0]
+			# end
+#pbGetTargetDistance(self,3)
+#rate = $PokemonGlobal.ov_combat.getRate2(self,value)
+#active << 
+  def get_event_distance(event,amt=3)
+    distance = (self.x - event.x).abs + (self.y - event.y).abs
+    return distance if distance<=amt
+	return nil
+  end
+
+	     #         Input.update
+       #           Graphics.update
+		#		    $scene.miniupdate
+def get_target
+     surrounding = self.pbSurroundingEvents
+	    active = []
+	   if !surrounding.nil?
+	    surrounding.each do |i|
+         if @targets.keys.include?(i)
+		     theevent = $game_map.events[i]
+            if get_events_in_range(self,theevent,3)
+			    rate = $PokemonGlobal.ov_combat.getRate2(self,theevent)
+				 active << [theevent,rate]
+			   end
+		   end
+	    end
+       rate2= active.max_by { |item| item[1] }
+	     if !rate2.nil?
+       highest_rate = rate2[1]
+       highest_rate_items = active.select { |item| item[1] == highest_rate }
+        ret = highest_rate_items[rand(highest_rate_items.length)][0]
+	     end
+	   end
+   # ret = self.pbSurroundingEvent if ret.nil?
+  return ret 
+end
+
+
 
   def removeThisEventfromMap
     @type.associatedevent=nil
@@ -1060,7 +1202,9 @@ end
 	  pbSEPlay("faint")
 	  
 	end
-	  $selection_arrows.remove_sprite("Arrow#{@id}")
+	 pbOverworldCombat.removeAlly(@id)
+	  $selection_arrows.remove_sprite("Arrow#{@id}#{@type.name}")
+	  $hud.removeaChargeBar(@id)
     @type.inworld=false
 	pbDeselectThisPokemon(@type)
     if $game_map.events.has_key?(@id) and $game_map.events[@id]==self
@@ -1074,7 +1218,7 @@ end
           end
         end
       end
-		$ExtraEvents.removethisEvent(:SPECIAL,extra_events_id)
+		$ExtraEvents.removethisEvent(:SPECIAL,@id,$game_map.map_id)
       $game_map.events.delete(@id)
     else
       if $map_factory
@@ -1089,6 +1233,7 @@ end
                 end
               end
             end
+	  	     $ExtraEvents.removethisEvent(:SPECIAL,@id,map.map_id)
             map.events.delete(@id)
             break
           end
@@ -1098,6 +1243,111 @@ end
       end
     end
   end
+
+
+  alias original_increase_steps64 increase_steps
+  def increase_steps
+   if self.is_a?(Game_PokeEventA) || self.is_a?(Game_PokeEvent)
+    
+    @steps_taken  += 1
+	
+  end
+  end
+
+
+
+  
+  def type=(value)
+    @type = value
+  end
+  
+  def last_attacked
+   @last_attacked = false if @last_attacked.nil?
+   return @last_attacked
+  end 
+  
+   def attack_cooldowns
+     return [@attack_opportunity]
+   end
+
+
+  def add_target(event_id,object)
+    return if event_id.nil?
+    return if object.nil?
+    if @targets[event_id]
+	  if @targets[event_id]!=object
+	    @targets[event_id]=object
+	  end
+    else
+	    @targets[event_id]=object
+	 end
+  end
+  def remove_target(event_id)
+    return if event_id.nil?
+    return if object.nil?
+    if @targets[event_id]
+	  @targets[event_id].delete
+	 end
+  end
+  
+  def pokemon
+   return @type if @type.is_a?(Pokemon)
+   return nil
+  end
+    def pbFacingEvent(ignoreInterpreter = false)
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+    $game_map.events.each_value do |event|
+      next if !event.at_coordinate?(new_x, new_y)
+      next if event.jumping? || event.over_trigger?
+      return event
+    end
+    # If the tile in front is a counter, check one tile beyond that for events
+    if $game_map.counter?(new_x, new_y)
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+      $game_map.events.each_value do |event|
+        next if !event.at_coordinate?(new_x, new_y)
+        next if event.jumping? || event.over_trigger?
+        return event
+      end
+    end
+    return nil
+  end
+  # self.map_id bzw. @map_id
+  
+   def stages
+    return @type.stages
+   end
+   def effects
+    return @type.effects
+   end
+  
+  def decrease_attack_opportunity(amt)
+  
+    @attack_opportunity-=amt if @attack_opportunity>0
+	if @attack_opportunity<=0
+    @attack_opportunity=0 
+	pbSEPlay("Vs flash")
+	sideDisplay("#{@type.name} can attack again.")
+	end
+  
+  end
+
+
+
+
+
+
+
+
+
+
+
+
 
   def pbTriggerOverworldMon(user=$game_temp.current_pkmn_controlled)
     return if $game_system.map_interpreter.running?
@@ -1202,7 +1452,29 @@ end
   end
 
 
-
+  def pbFacingEvent4(ignoreInterpreter = false)
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+    $game_map.events.each_value do |event|
+      next if !event.at_coordinate?(new_x, new_y)
+      next if event.jumping?
+      return event
+    end
+    # If the tile in front is a counter, check one tile beyond that for events
+    if $game_map.counter?(new_x, new_y)
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+      $game_map.events.each_value do |event|
+        next if !event.at_coordinate?(new_x, new_y)
+        next if event.jumping? || event.over_trigger?
+        return event
+      end
+    end
+    return nil
+  end
 
 
 def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
@@ -1234,9 +1506,11 @@ def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
     end
  
 
-     if instant || !maps_connected
+    if instant || !maps_connected
+	   puts "periwsh"
       moveto(target[1], target[2])
     else
+	   puts "periwsh2"
       fancy_moveto(target[1], target[2], leader)
     end
   end
@@ -1254,7 +1528,8 @@ def move_with_maps(mapA,x,y,dir=nil)
       @real_x = @x * Game_Map::REAL_RES_X
       @real_y = @y * Game_Map::REAL_RES_Y
     end
-    move_to_location(self,target[1], target[2])
+    if move_to_location(self,target[1], target[2])
+	end
    # if !pbMoveTowardCoordinates(self,target[1],target[2])
 	#  fancy_moveto(target[1], target[2])
 	#end
@@ -1353,6 +1628,7 @@ def alreadyfollowing
 	  next if pkmn.associatedevent.nil?
 	     event_id = pkmn.associatedevent
 		 next if event_id.nil?
+		 next if $game_map.events[event_id]
 	      next if $game_map.events[event_id].following != $game_temp.current_pkmn_controlled && $game_map.events[event_id].following != $game_player
 	   if $game_map.events[event_id].movement_type==:FOLLOW
 	 		  return true

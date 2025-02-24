@@ -27,13 +27,57 @@ class Game_Temp
   attr_accessor :saved_bgms
   attr_accessor :saved_bgm_poses
   attr_accessor :disable_running
+  attr_accessor :dead
+  attr_accessor :relock_prevention
+  attr_accessor :currently_throwing_pkmn
+  attr_accessor :weapon_selection_end
+  attr_accessor :radial_enabled
+  attr_accessor :favorites_enabled
+  attr_accessor :currently_selecting
+  
+  def weapon_selection_end
+    @weapon_selection_end = 0 if !@weapon_selection_end
+    return @weapon_selection_end
+  end
+  
+  def currently_selecting
+    @currently_selecting = false if @currently_selecting.nil?
+    return @currently_selecting
+  end
+  
+  
+  
+  def radial_enabled
+    @radial_enabled = false if @radial_enabled.nil?
+    return @radial_enabled
+  end
+  
+  
+  def favorites_enabled
+    @favorites_enabled = false if @favorites_enabled.nil?
+    return @favorites_enabled
+  end
+  
+  
   def saved_bgms
     @saved_bgms = [] if !@saved_bgms
     return @saved_bgms
   end
+  def relock_prevention
+    @relock_prevention = 0 if @relock_prevention.nil?
+    return @relock_prevention
+  end
   def disable_running
     @disable_running = false if !@disable_running
     return @disable_running
+  end
+  def dead
+    @dead = false if !@dead
+    return @dead
+  end
+  def currently_throwing_pkmn
+    @currently_throwing_pkmn = false if !@currently_throwing_pkmn
+    return @currently_throwing_pkmn
   end
   def saved_bgm_poses
     @saved_bgm_poses = {} if !@saved_bgm_poses

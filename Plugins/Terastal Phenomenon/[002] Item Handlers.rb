@@ -21,6 +21,7 @@ end
 #-------------------------------------------------------------------------------
 # Using Tera Shards from the Bag.
 #-------------------------------------------------------------------------------
+if false
 alias tera_pbUseItem pbUseItem
 def pbUseItem(bag, item, bagscene = nil)
   itm = GameData::Item.get(item)
@@ -112,7 +113,7 @@ def pbUseItemOnPokemon(item, pkmn, scene)
     return tera_pbUseItemOnPokemon(item, pkmn, scene)
   end
 end
-
+end
 
 #-------------------------------------------------------------------------------
 # Tera Shards - Changes a Pokemon's Tera Type.

@@ -1,7 +1,7 @@
 #-------------------------------
 [PARASITES]
 Name=Parasites
-Cause=Parasites are caused by consumption of uncooked meat, and some types of attacks.
+Cause=Parasites are caused by consumption of uncooked meat.
 Symptoms=You will be hungier more often. Your FOD meter will increase faster.
 Cure=Parasites will fade with time, it is more likely to fade the healthier you are.
 CureItem=NO

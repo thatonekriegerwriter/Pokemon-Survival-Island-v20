@@ -20,7 +20,7 @@ maps= [54]
 
 EventHandlers.add(:on_wild_pokemon_created, :level_depends_on_party2,
   proc { |pkmn|
-
+next
 if maps.include?($game_map.map_id) && GameData::EncounterType.get($PokemonTemp.encounterType).type == :land
 if $game_variables[4974]=="ADALYNN"||$game_variables[4974]=="Adalynn"||$game_variables[4974]=="adalynn"
   pkmn = e[0]

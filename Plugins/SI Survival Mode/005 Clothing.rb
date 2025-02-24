@@ -20,8 +20,8 @@ def pbCrateClothes
 end
 
 def pbClothingEffect(clothing)
-		  $player.playerhealthmod=0
-        case clothing
+		  $player.playerhealthmod=0.0
+        case clothing.id
 		when :NORMALSHOES
 		  #YOU GET NOTHING, GOOD DAY SIR.
 		when :MAKESHIFTRUNNINGSHOES
@@ -39,13 +39,13 @@ def pbClothingEffect(clothing)
 		when :LEATHERJACKET
 		  #I D F K
 		when :IRONARMOR
-		  $player.playerhealthmod+=25
+		  $player.playerhealthmod+=25.0
 		when :NORMALPANTS
 		  #YOU GET NOTHING, GOOD DAY SIR.
 		when :SPOOKYPANTS
 		  #If you die you dont?
 		when :PROTECTIVEPANTS
-		  $player.playerhealthmod+=15
+		  $player.playerhealthmod+=15.0
 		end
 end
 
@@ -99,8 +99,8 @@ class WardrobeScene
 
 
   def pbDrawTest
-    baseColor   = Color.new(72, 72, 72)
-    shadowColor = Color.new(160, 160, 160)
+    baseColor   = MessageConfig::LIGHT_TEXT_MAIN_COLOR
+    shadowColor = MessageConfig::LIGHT_TEXT_SHADOW_COLOR
     textPositions = [
      [_INTL("Wardrobe"), 220, 10, 0, baseColor, shadowColor],
       [$player.name, 330, 64, 1, baseColor, shadowColor],
@@ -137,44 +137,78 @@ class WardrobeScene
 	  else
 	  case @position 
 	   when 0
-       cmd2 = pbMessage(_INTL("Do you want to put another top on?"),[_INTL("Yes"), _INTL("No")])
+       cmd2 = pbMessage(_INTL("Do you want to put another top on?"),[_INTL("Yes"), _INTL("No"), _INTL("Take off current top.")])
        if cmd2 == 0
-	    $bag.add(GameData::Item.get($player.playershirt).id,1) if $player.playershirt != 0
+	     if $player.playershirt!=0
+	    $bag.add($player.playershirt,1) if $player.playershirt != 0
         $player.playershirt = 0
+		pbClothingEffect(0)
         pbFadeOutIn {
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playershirt = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_shirt? })}
 		$bag.remove($player.playershirt,1)
 		pbClothingEffect($player.playershirt)
+		 else
+		  pbMessage(_INTL("You aren't wearing a top!"))
+		 end
+		elsif cmd2 == 2
+	    $bag.add($player.playershirt,1) if $player.playershirt != 0
+		pbClothingEffect(0)
+        $player.playershirt = 0
        end
 	   when 1
-       cmd2 = pbMessage(_INTL("Do you want to put different bottoms on?"),[_INTL("Yes"), _INTL("No")])
+       cmd2 = pbMessage(_INTL("Do you want to put different bottoms on?"),[_INTL("Yes"), _INTL("No"), _INTL("Take off current bottoms.")])
        if cmd2 == 0
-	    $bag.add(GameData::Item.get($player.playerpants).id,1) if $player.playerpants != 0
+	     if $player.playershirt!=0
+	    $bag.add($player.playerpants,1) if $player.playerpants != 0
         $player.playerpants = 0
+		pbClothingEffect(0)
         pbFadeOutIn {
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playerpants = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_pants? })}
 		$bag.remove($player.playerpants,1)
 		pbClothingEffect($player.playerpants)
+		 else
+		  pbMessage(_INTL("You aren't wearing bottoms!"))
+		 
+		 end
+		elsif cmd2 == 2
+		pbClothingEffect(0)
+	    $bag.add($player.playerpants,1) if $player.playerpants != 0
+        $player.playerpants = 0
        end
 	   when 2
-       cmd2 = pbMessage(_INTL("Do you want to put different shoes on?"),[_INTL("Yes"), _INTL("No")])
+       cmd2 = pbMessage(_INTL("Do you want to put different shoes on?"),[_INTL("Yes"), _INTL("No"), _INTL("Take off current shoes.")])
        if cmd2 == 0
-	    $bag.add(GameData::Item.get($player.playershoes).id,1) if $player.playershoes != 0
+	     if $player.playershirt!=0
+	    $bag.add($player.playershoes,1) if $player.playershoes != 0
         $player.playershoes = 0
+		pbClothingEffect(0)
         pbFadeOutIn {
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playershoes = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_shoes? })}
 		$bag.remove($player.playershoes,1)
+		
 		pbClothingEffect($player.playershoes)
+		 else
+		  pbMessage(_INTL("You aren't wearing shoes!"))
+		 
+		 end
+		elsif cmd2 == 2
+		pbClothingEffect(0)
+	    $bag.add($player.playershoes,1) if $player.playershoes != 0
+        $player.playershoes = 0
        end
 	  end
       end
-	  end
+	 end
+	 
+	 
+	 
+	 
       if Input.trigger?(Input::UP)
 	  if (@position - 1) < 0
 	  @position = 2
@@ -239,7 +273,7 @@ end
 
   EventHandlers.add(:on_frame_update, :spookieshouseofpoopies,
   proc {
-  if  $PokemonSystem.survivalmode==0 && $player.playerhealth == 0 && $player.playershoes == :SPOOKYPANTS && $player.playerstamina != 0
+  if  $PokemonSystem.survivalmode==0 && $player.playerhealth == 0 && $player.playerpants.id == :SPOOKYPANTS && $player.playerstamina != 0
      $player.playerhealth = 1
      $player.playerstamina = 0
      $player.playerfood = 0

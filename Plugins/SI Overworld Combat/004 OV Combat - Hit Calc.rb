@@ -46,7 +46,7 @@ class Game_Map
   end
 end
 class OverworldCombat 
-def who_am_i_hitting(attacker,target=nil,alwayshit=false)
+def who_am_i_hitting(attacker,target=nil,immune=nil)
   amt = sight_line(attacker)
   start_coord,landing_coord = getLandingCoords(amt,attacker)
   startx = start_coord[0]
@@ -54,13 +54,12 @@ def who_am_i_hitting(attacker,target=nil,alwayshit=false)
     event = nil
 	targets = who_am_i_hitting2(attacker)
     return false if attacker.is_a?(Game_PokeEvent) && attacker.battle_timer>0
-	 if !target.nil?
-     if alwayshit==true && !targets.include?(target)
-	   targets << target
-	 end
-	 end
+
 	 if targets.dup.each_with_index do |atarget, index|
 	  if atarget.pokemon.iframes>0
+	    targets.delete_at(index)
+	  end
+	  if immune==atarget
 	    targets.delete_at(index)
 	  end
 	 end
@@ -243,10 +242,11 @@ end
 
 
 
-def outSpeeds?(attacker,target)
+def outSpeeds?(attacker,target, move)
   targetspeed = target.pokemon.speed
   targetspeed = (target.pokemon.speed*1.8).to_i if target == $game_player && is_assassin?
-  attackerspeed = attacker.pokemon.speed
+  attackerspeed = attacker.pokemon.speed + move.accuracy
+  targetspeed -= rand((target.pokemon.speed/2).to_i)
   return true if targetspeed>=attackerspeed
   return false
 end
@@ -404,7 +404,8 @@ end
 
 def getDamager(event,target,move,multiplier=0)
   #pbCalcDamage
-	  baseDmg = move.base_damage
+	 baseDmg = get_base_damage(event.pokemon,move)
+     puts "#{event.pokemon.name} used #{move.name} - #{move.category}! (Accuracy: #{move.accuracy}, Base Power: #{baseDmg})"
      atk, atkStage = getAttackStats(event.pokemon, target.pokemon, move)
     defense, defStage = getDefenseStats(event.pokemon, target.pokemon, move)
     multipliers = {
@@ -429,9 +430,6 @@ def getDamager(event,target,move,multiplier=0)
     damage  = [(damage * multipliers[:final_damage_multiplier]).round, 1].max
 	damage += (multiplier*5)
 	result = damage.floor
-	 if result > 100
-	  result=100
-	 end
      return result
 end
 
@@ -470,7 +468,7 @@ def getRate1(event,target)
 	  event.pokemon.types.each do |i|
 		 value = Effectiveness.calculate(i, *target.pokemon.types)
          rate*=2 if Effectiveness.super_effective?(value)
-         rate*=2 if Effectiveness.not_very_effective?(value)
+         rate/=2 if Effectiveness.not_very_effective?(value)
 	   end
 	    end
 	  rate+=10 if event.pokemon.is_aggressive?
@@ -492,8 +490,31 @@ def getRate1(event,target)
 	  return rate
 end
 
+def getRate2(event,target)
+         rate=35
+	if defined?(target.pokemon.types)
+	  event.pokemon.types.each do |i|
+		value = Effectiveness.calculate(i, *target.pokemon.types)
+       rate*=2 if Effectiveness.super_effective?(value)
+       rate/=2 if Effectiveness.not_very_effective?(value)
+	   end
+	end
+	if defined?(target.pokemon.is_aggressive?)
+	  rate+=10 if target.pokemon.is_aggressive?
+	end
+		 rate+=rand(10)+1
+		 
+
+
+
+
+	  return rate
+end
+
+  
   
   def status_checks(event)
+    return nil if !defined?(event.pokemon)
     pkmn = event.pokemon
   	if pkmn.status_turns.nil?
 		 pkmn.status_turns=0

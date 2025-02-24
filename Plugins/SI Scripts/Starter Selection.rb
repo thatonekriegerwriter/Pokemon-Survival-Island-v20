@@ -351,16 +351,6 @@ def pbStarterSelectionDemo(level,verify=true)
 end
 end
 
-class Pokemon
-  attr_accessor :starter
-
-alias _SI_Starter_init initialize
-def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
- _SI_Starter_init(species, level, owner = $player, withMoves = true, recheck_form = true)
-    @starter          = false
-end
-end
-
 
 
 def pbLegendaryStarter?(starter)

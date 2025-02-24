@@ -104,7 +104,7 @@ def move_to_location(event = nil, desired_x = 0, desired_y = 0, wait_for_complet
   else
     moveroute = calc_path(event,[desired_x, desired_y])
   end
-  # Performs the moveroute
+  
   pbAStarMoveRoute(event,moveroute,wait_for_completion) if !moveroute.is_a?(TrueClass) && !moveroute.is_a?(FalseClass)
   return true if (event.x == desired_x && event.y == desired_y)
   return false
@@ -362,17 +362,17 @@ def look_at_location(event,x,y)
   # Turn the event based on the other event's location (Y-Axis is prioritized if both distances are the same)
   if distance_x <= distance_y
     # Prioritize Y
-    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Down])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Up])
-    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Right])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Left])
+    if event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnDown])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnUp])
+    elsif event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnRight])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnLeft])
     end
   else
     # Prioritize X
-    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Right])
-    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::Turn_Left])
-    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Down])
-    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::Turn_Up])
+    if event.x<destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnRight])
+    elsif event.x>destination[0]; pbMoveRoute(event,[PBMoveRoute::TurnLeft])
+    elsif event.y<destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnDown])
+    elsif event.y>destination[1]; pbMoveRoute(event,[PBMoveRoute::TurnUp])
     end
   end
 end
@@ -490,7 +490,10 @@ puts commands_duplicate.to_s
   route.list.clear
   i = 0
   while i<commands.length
-   
+    Graphics.update
+	 Input.update
+	 $scene.miniupdate
+	  puts "Kill me"
     event.decrease_attack_opportunity(6) if event.attack_opportunity>0 if event.is_a?(Game_PokeEventA)
     case commands[i]
     when PBMoveRoute::Wait, PBMoveRoute::SwitchOn, PBMoveRoute::SwitchOff,
@@ -518,7 +521,7 @@ puts commands_duplicate.to_s
   route.list.push(RPG::MoveCommand.new(0))
   if event
     event.force_move_route(route)
-    pbMapInterpreter.command_210 if waitComplete
+    #pbMapInterpreter.command_210 if waitComplete
   end
   return route
 end

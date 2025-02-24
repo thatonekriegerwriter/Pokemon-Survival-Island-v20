@@ -538,7 +538,7 @@ Flavor = 30,10,30,10,30
 #-------------------------------
 [ENIGMABERRY]
 HoursPerStage = 24
-DryingPerHour = 7
+DryingPerHour = 25
 Yield = 2,2
 Season = 0
 Climate = Temperate
@@ -610,7 +610,7 @@ Flavor = 40,10,0,0,0
 #-------------------------------
 [YELLOWAPRICORN]
 HoursPerStage = 3
-DryingPerHour = 15
+DryingPerHour = 10
 Yield = 3,5
 Season = 1
 Climate = Temperate
@@ -637,7 +637,7 @@ Flavor = 0,0,0,40,10
 #-------------------------------
 [PINKAPRICORN]
 HoursPerStage = 8
-DryingPerHour = 8
+DryingPerHour = 10
 Yield = 3,5
 Season = 2
 Climate = Temperate
@@ -646,7 +646,7 @@ Flavor = 10,0,0,0,40
 #-------------------------------
 [WHITEAPRICORN]
 HoursPerStage = 8
-DryingPerHour = 8
+DryingPerHour = 14
 Yield = 3,5
 Season = 2
 Climate = Temperate Highlands
@@ -655,7 +655,7 @@ Flavor = 10,10,10,10,10
 #-------------------------------
 [BLACKAPRICORN]
 HoursPerStage = 15
-DryingPerHour = 8
+DryingPerHour = 16
 Yield = 3,5
 Season = 2
 Climate = Highlands
@@ -664,7 +664,7 @@ Flavor = 40,40,40,40,40
 #-------------------------------
 [PURPLEAPRICORN]
 HoursPerStage = 15
-DryingPerHour = 12
+DryingPerHour = 20
 Yield = 2,2
 Season = 3
 Climate = Skies

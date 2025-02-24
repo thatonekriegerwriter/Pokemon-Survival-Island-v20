@@ -67,15 +67,18 @@ def pbCollectionMain
 end
 
 def pbCollectionMain2
-  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,
+  vbItems=[:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:IRONORE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:SHOALSALT,:SHOALSALT,:PEARL,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,
   :HEALTHFEATHER,:MUSCLEFEATHER,:RESISTFEATHER,:GENIUSFEATHER,:SWIFTFEATHER]
-  chanceCollect=rand(26)  #Encounters 2/10 of the time
-  if  chanceCollect==0 ||  chanceCollect==2
+  chanceCollect=rand(2)  #Encounters 2/10 of the time
+  if  chanceCollect==0
     vbItem = vbItems[rand(vbItems.length)]
 		  amt = 1
 	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
     pbItemBall(vbItem,amt)
   else
+		  amt = 1
+	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
+   pbItemBall(:SOFTSAND,amt)
   end
 end
 #==============================================================================#
@@ -110,7 +113,6 @@ def pbMeteorMain
   chanceCollect=rand(6)  #Encounters 2/10 of the time
   if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
     vbItem = vbItems[rand(24)]
-	puts vbItem
 	if rand(21)==5
 	pbItemBall(:IRON2,(rand(200)))
 	end

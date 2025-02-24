@@ -20,12 +20,13 @@ EventHandlers.add(:on_leave_tile, :update_sprite_position,
     pbMoveRoute2($game_map.events[key_id], [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,
 	PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
 	
-	
+	 if !$game_map.events[key_id].nil?
 	if type != :PORTABLECAMP
       $game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
    elsif type == :PORTABLECAMP
       $game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
    end
+    end
   }
 )
 
@@ -55,7 +56,7 @@ EventHandlers.add(:on_leave_map, :update_sprite_position2,
     next
 	$game_map.events.each do |id,event|
 	if event.name == "PlayerPkmn"
-	deletefromSISData(event.id)
+	deletefromSISData(event.id,$game_map,map_id)
 	pbReturnPokemon(event.id)
 	end
 	end
@@ -107,34 +108,55 @@ EventHandlers.add(:on_leave_tile, :spawn_queued_events,
 EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
     next if $scene.to_s.include?("#<Scene_Intro")
-	next
-
 
     if $ExtraEvents.objects.nil?
 	$ExtraEvents.objects = {}
 	end 
 	mapId = $game_map.map_id
+	
 	$ExtraEvents.objects.each_key do |i|
 	  if $ExtraEvents.objects[i].map_id==mapId
-    spawnMap = $map_factory.getMap(mapId)
-	    spawnMap.recreateEvent(i,$ExtraEvents.objects)
+       spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.objects[i],$ExtraEvents.objects)
 	  end
     end
-	#$ExtraEvents.pokemon.each_key do |i|
-	 # if $ExtraEvents.pokemon[i][0]==mapId
-    #spawnMap = $map_factory.getMap(mapId)
-	#    spawnMap.recreateEvent(i,$ExtraEvents.pokemon)
-	#  end
-    #end
+		tempspawnspokemon = []
+	$ExtraEvents.pokemon.each_key do |i|
+	  if $ExtraEvents.pokemon[i].map_id==mapId
+	  if $game_temp.in_temple==false
+	   result = rand(3)==0 
+	   if result
+        spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.pokemon[i],$ExtraEvents.pokemon)
+		else
+		 tempspawnspokemon << i
+		end
+	  
+	  else
+        spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.pokemon[i],$ExtraEvents.pokemon)
+	  end
+	  end
+    end
+
+	tempspawnspokemon.each do |i|
+	  $ExtraEvents.pokemon.delete(i)
+	end
 	$ExtraEvents.special.each_key do |i|
 	  if $ExtraEvents.special[i].map_id==mapId
 	    if $ExtraEvents.special[i].pokemon.name != "PlayerPkmn"
         spawnMap = $map_factory.getMap(mapId)
-	    spawnMap.recreateEvent(i,$ExtraEvents.special)
+	    spawnMap.recreateEvent($ExtraEvents.special[i],$ExtraEvents.special)
 		end
 	  end
     end
   
+	$ExtraEvents.misc.each_key do |i|
+	  if $ExtraEvents.misc[i].map_id==mapId
+       spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.misc[i],$ExtraEvents.misc)
+	  end
+    end
 
 })
  
@@ -142,34 +164,41 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
 EventHandlers.add(:on_enter_map, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
     next if $scene.to_s.include?("#<Scene_Intro")
-	next
-
-
+    next
     if $ExtraEvents.objects.nil?
 	$ExtraEvents.objects = {}
 	end 
 	mapId = $game_map.map_id
+	
 	$ExtraEvents.objects.each_key do |i|
 	  if $ExtraEvents.objects[i].map_id==mapId
-    spawnMap = $map_factory.getMap(mapId)
-	    spawnMap.recreateEvent(i,$ExtraEvents.objects)
+       spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.objects[i],$ExtraEvents.objects)
 	  end
     end
-	#$ExtraEvents.pokemon.each_key do |i|
-	 # if $ExtraEvents.pokemon[i][0]==mapId
-    #spawnMap = $map_factory.getMap(mapId)
-	#    spawnMap.recreateEvent(i,$ExtraEvents.pokemon)
-	#  end
-    #end
-	$ExtraEvents.special.each_key do |i|
-	  if $ExtraEvents.special[i].map_id==mapId
-	    if $ExtraEvents.special[i][1].name != "PlayerPkmn"
+		tempspawnspokemon = []
+	$ExtraEvents.pokemon.each_key do |i|
+	  if $ExtraEvents.pokemon[i].map_id==mapId
+	   result = rand(3)==0 
+	   if result
         spawnMap = $map_factory.getMap(mapId)
-	    spawnMap.recreateEvent(i,$ExtraEvents.special)
+	    spawnMap.recreateEvent($ExtraEvents.pokemon[i],$ExtraEvents.pokemon)
+		else
+		 tempspawnspokemon << i
 		end
 	  end
+	  
     end
-  
+
+	tempspawnspokemon.each do |i|
+	  $ExtraEvents.pokemon.delete(i)
+	end
+	$ExtraEvents.misc.each_key do |i|
+	  if $ExtraEvents.misc[i].map_id==mapId
+       spawnMap = $map_factory.getMap(mapId)
+	    spawnMap.recreateEvent($ExtraEvents.misc[i],$ExtraEvents.misc)
+	  end
+    end
 
 })
 

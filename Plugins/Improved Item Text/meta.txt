@@ -1,6 +1,0 @@
-Name = Improved Item Text
-Version = 1.0.2
-Essentials = 20.1
-Credits = Maruno,Lucidious89
-Link = https://www.pokecommunity.com/showthread.php?t
-Requires = Essentials Deluxe,1.2.7

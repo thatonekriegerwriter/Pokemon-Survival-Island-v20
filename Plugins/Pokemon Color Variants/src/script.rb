@@ -83,12 +83,6 @@ class Pokemon
   def hue?
     return !(@hue == 0 || @hue == nil)
   end
-
-  alias pokemon_color_variants_initialize initialize
-  def initialize(species, level, owner = $player, withMoves = true, recheck_form = true)
-    pokemon_color_variants_initialize(species,level,owner,withMoves,recheck_form)
-    @hue = nil
-  end
 end
 
 #==============================================================================

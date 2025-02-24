@@ -57,6 +57,9 @@ module ShowSeasonBW2
   end
     $mouse.show if $mouse && !$mouse.disposed?
 end
+
+
+
 module Game
 
   def self.load(save_data)
@@ -64,6 +67,8 @@ module Game
     SaveData.load_all_values(save_data)
     $game_temp.last_uptime_refreshed_play_time = System.uptime
     $stats.play_sessions += 1
+	 pbBGMFade(0.8)
+    ShowHistory.pbHistory_Screen if $PokemonGlobal.history.length>0 && $PokemonSystem.journey==0
     self.load_map
     pbAutoplayOnSave
     $game_map.update

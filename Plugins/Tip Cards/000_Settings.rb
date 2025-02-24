@@ -62,6 +62,10 @@ module Settings
             :BASICSCOMBAT => {
                 :Title => _INTL("Turn Based Combat (Player)"),
                 :Tips => [:SCOMBAT0,:SCOMBAT1, :SCOMBAT2, :SCOMBAT3]
+            },
+            :BEDTIMETIPS => {
+                :Title => _INTL("Bedtime"),
+                :Tips => [:SLEEPING1,:SLEEPING2, :SLEEPING3, :SLEEPING4]
             }
         }
 
@@ -189,7 +193,34 @@ class PokemonGlobalMetadata
                 :Text => _INTL("Every choice has a cost."),
                 :Background => "help_bg"
             },
+            :SLEEPING1 => {
+                :Title => _INTL("Sleeping"),
+                :Text => _INTL("You can sleep up to 24 hours, during this time, while you are sleeping, your SLP stat will increase, and your other Survival Stats will go down."),
+                :Background => "help_bg"
+            },
+            :SLEEPING2 => {
+                :Title => _INTL("Sleeping"),
+                :Text => _INTL("Your Pokemon and yourself will be healed some based on amount of time slept. At least a full 8 hours is optimal, and has a chance for extra effects like PP restoration, and a full heal."),
+                :Background => "help_bg"
+            },
+            :SLEEPING3 => {
+                :Title => _INTL("Sleeping"),
+                :Text => _INTL("While you are sleeping, there is a random chance for events to occur on the overworld while you sleep. You might wake up to things different from how you left them."),
+                :Background => "help_bg"
+            },
+            :SLEEPING4 => {
+                :Title => _INTL("Sleeping"),
+                :Text => _INTL("When you sleep in a bed, your spawnpoint is set there. If you pick back up your bed to move it, make sure to sleep in it before risking anything. If you do not rest in a bed, you will not respawn there."),
+                :Background => "help_bg"
+            },
+            :CRITICALCONDITION => {
+                :Title => _INTL("Critical Condition"),
+                :Text => _INTL("One of your Pokemon is in Critical Condition, during this time, it's Lifespan will slowly drain from it's body until it passes away. It can still fight, and have it's HP restored, but it's Lifespan will decrease. When it's Lifespan reaches zero, it will pass away. This can be staved off by items like Revival Herbs, or completely fixed by sleeping a full 8 hours."),
+                :Background => "help_bg"
+            },
 
+#pbShowTipCard(:CRITICALCONDITION)
+#pbShowTipCardsGrouped(:BEDTIMETIPS)
             :COMBAT1 => {
                 :Title => _INTL("Combat Controls 1"),
                 :Text => _INTL("When a Pokemon approaches you and attacks, you need to dodge in a direction, for the tutorial, this will be shown visually."),
@@ -278,6 +309,17 @@ class PokemonGlobalMetadata
                 :YAdjustment => -50,
                 :Background => "help_bg"
             },
+            :HOE => {
+                :Title => _INTL("Tilling"),
+                :Text => _INTL("When using a Hoe, you can till the ground to create tilled ground to farm berries on. Unlike naturally occuring berry spots, these need to be placed in optimal positions for berries to actually grow."),
+                :Image => "safaricontrols2",
+                :ImagePosition => :Top2,
+                :ImageZoom => 0.90,
+                :AdjustImageX => 25,
+                :AdjustImageY => 20,
+                :YAdjustment => -50,
+                :Background => "help_bg"
+            },
             :POKEMONAGING => {
                 :Title => _INTL("Lifespan"),
                 :Text => _INTL("One of your POKeMON aged! Every time a POKeMON ages, their lifespan goes down, when their Lifespan reaches zero, they die."),
@@ -296,6 +338,16 @@ class PokemonGlobalMetadata
                 :ImagePosition => :Top2,
                 :AdjustImageY => 20,
                 :YAdjustment => -43,
+                :Background => "help_bg"
+            },
+            :BERRYPLANTS1 => {
+                :Title => _INTL("Farming"),
+                :Text => _INTL("When in combat, you and your POKeMON can be attacked by enemies. When health is lost, it can be restored by sleeping. If a POKeMON is knocked out, it will begin dying. You must sleep at least 8 hours to prevent its death."),
+                :Background => "help_bg"
+            },
+            :BERRYPLANTS2 => {
+                :Title => _INTL("Farming"),
+                :Text => _INTL("When in combat, you and your POKeMON can be attacked by enemies. When health is lost, it can be restored by sleeping. If a POKeMON is knocked out, it will begin dying. You must sleep at least 8 hours to prevent its death."),
                 :Background => "help_bg"
             }
 

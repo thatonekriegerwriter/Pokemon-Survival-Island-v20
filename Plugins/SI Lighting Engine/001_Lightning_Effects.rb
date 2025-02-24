@@ -29,6 +29,12 @@ EventHandlers.add(:on_new_spriteset_map, :add_light_effects,
         spriteset.addUserSprite(LightEffect_DayNight.new(map.events[i], viewport, map, sizex, sizey))
       elsif map.events[i].name[/^playertorch$/i]
         spriteset.addUserSprite(LightEffect_DayNight.new(map.events[i], viewport, map))
+      elsif map.events[i].name[/^AncientStone\((\d+)\)/i]
+        spriteset.addUserSprite(LightEffect_DayNight.new(map.events[i], viewport, map, 3, 3))
+      elsif map.events[i].is_a?(Game_PokeEvent) && map.events[i].pokemon.types.include?(:FIRE)
+        spriteset.addUserSprite(LightEffect_DayNight.new(map.events[i], viewport, map, 3, 3))
+      elsif (map.events[i].is_a?(Game_PokeEvent) || map.events[i].is_a?(Game_PokeEventA) ) && map.events[i].pokemon.types.include?(:FIRE)
+        spriteset.addUserSprite(LightEffect_DayNight.new(map.events[i], viewport, map, 3, 3))
 	  elsif !map.events[i].currentcustomsprite.nil? && map.events[i].has_a_light[0]==true && !map.events[i].has_a_light[1].nil?
         sizex = map.events[i].has_a_light[1][0]
         sizey = map.events[i].has_a_light[1][1]
@@ -79,6 +85,7 @@ class Particle_Engine
     @viewport  = viewport
     @effect    = []
     @disposed  = false
+    @lastRefreshFrame = Graphics.frame_count
     @firsttime = true
     @effects   = {
       # PinkMan's Effects
@@ -193,12 +200,25 @@ class Particle_Engine
         particle = realloc_effect(event, particle)
         @effect[i] = particle
       end
-      particle&.update
+      particle&.update#tryUpdate
     end
   end
 
 
+  def showHUD?
+    return (
+      $player && $scene.is_a?(Scene_Map)
+    )
+  end
 
+  def tryUpdate
+      update if @lastRefreshFrame != Graphics.frame_count
+  end
+
+  def hasSprites?
+    return !@effect.empty?
+  end
+  
 end
 
 
@@ -226,10 +246,13 @@ def get_light_size(event)
       elsif event.name[/^playertorch\((\d+),(\d+)\)/i]
         sizex = $~[1].to_i
         sizey = $~[2].to_i
+      elsif event.name[/^AncientStone\((\d+)\)/i]
+        sizex = 3
+        sizey = 3
+      elsif (event.is_a?(Game_PokeEvent) || event.is_a?(Game_PokeEventA) ) && event.pokemon.types.include?(:FIRE)
+        sizex = 3
+        sizey = 3
       end
-
-
-
 
 	    return sizex,sizey
 end
@@ -426,10 +449,33 @@ class ParticleEffect_Event < ParticleEffect
   def initialize(event, viewport = nil)
     @event     = event
     @viewport  = viewport
+	@time_last_updated = Graphics.frame_count.to_i
     @particles = []
+    @lastRefreshFrame = Graphics.frame_count
     @visible = true
     @bitmaps   = {}
   end
+
+
+  def showHUD?
+    return (
+      $player && $scene.is_a?(Scene_Map)
+    )
+  end
+
+  def tryUpdate
+    if showHUD?
+      update if @lastRefreshFrame != Graphics.frame_count
+    else
+      dispose if hasSprites?
+    end
+  end
+
+  def hasSprites?
+    return !@particles.empty?
+  end
+
+
 
   def setParameters(params)
     @randomhue, @leftright, @fade,
@@ -495,6 +541,10 @@ class ParticleEffect_Event < ParticleEffect
        @viewport.rect.y >= Graphics.height)
       return
     end
+	 time_now = Graphics.frame_count
+    time_delta = time_now.to_i - @time_last_updated
+    return if time_delta <= 0
+	 @time_last_updated = time_now.to_i
     #delta_t = Graphics.delta
     selfX = self.x
     selfY = self.y
@@ -852,29 +902,31 @@ end
 class LightEffect_DayNight < LightEffect
   attr_accessor :sizex
   attr_accessor :sizey
-  def initialize(event, viewport = nil, map = nil, sizex = 1, sizey = 1)
+  def initialize(event, viewport = nil, map = nil, sizex = 1, sizey = 1, light_effect = "LE")
     filename = nil
     super(event, viewport, map, filename)
     @light.ox = @light.bitmap.width / 2
     @light.oy = @light.bitmap.height / 2
 	@sizex = sizex
 	@sizey = sizey
+	@basic_light_effect = light_effect
   end
     
   def update
     return if !@light || !@event
     super
+	@basic_light_effect = "LE" if @basic_light_effect.nil?
 	@light.visible = false if @event.pe_pause==true
 	@light.visible = true if @event.pe_pause==false
 	return if @event.pe_pause==true
-	if @light.name!="Graphics/Pictures/LE#{@sizex}" 
+	if @light.name!="Graphics/Pictures/#{@basic_light_effect}#{@sizex}" 
 	  size = @sizex
 	  if @sizex > 3
 	   size=3
 	  end
  
-	 if pbResolveBitmap("Graphics/Pictures/LE#{size}")
-      @light.setBitmap("Graphics/Pictures/LE#{size}")
+	 if pbResolveBitmap("Graphics/Pictures/#{@basic_light_effect}#{size}")
+      @light.setBitmap("Graphics/Pictures/#{@basic_light_effect}#{size}")
 	 end
 	end
     shade = PBDayNight.getShade

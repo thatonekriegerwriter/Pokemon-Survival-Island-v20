@@ -11,7 +11,7 @@ module GameData
       "Cause" => [:cause, "q"],
       "Symptoms" => [:symptoms, "q"],
       "Cure" => [:cure, "q"],
-      "CureItem" => [:cureitem, "s"],
+      "CureItem" => [:cureitem, "e", :Item],
       "Flags"         => [:flags,       "*s"]
     }
 
@@ -25,7 +25,7 @@ module GameData
       @cause             = hash[:cause] || "???"
       @symptoms          = hash[:symptoms] || "???"
       @cure             = hash[:cure] || "???"
-      @cureitem             = hash[:cureitem] || "NO"
+      @cureitem          = hash[:cureitem] || :NO
       @flags            = hash[:flags]       || []
     end
 	

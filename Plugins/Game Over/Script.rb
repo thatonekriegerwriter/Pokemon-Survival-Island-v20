@@ -14,30 +14,35 @@ GAMEOVERSWITCH = 80
 alias :_old_FL_pbStartOver :pbStartOver
 def pbStartOver(gameover=false)
     $game_temp.in_menu = false if $game_temp.in_menu==true
-    pbLoadRpgxpScene(Scene_Gameover.new)if $player.playermaxhealth2<=0
-    pbRespawnAtBed if $player.playerhealth<=0
+    $game_temp.dead = true
+    pbLoadRpgxpScene(Scene_Gameover.new) if $player.playermaxhealth2<=0 && $game_temp.in_temple==false
+    
+    pbFadeOutIn { pbRespawnItself } if $player.playerhealth<=0 && $game_temp.in_temple==false
+    pbLoadRpgxpScene(Scene_Gameover.new) if $game_temp.in_temple==true && $player.playerhealth<=0
     return
   _old_FL_pbStartOver(gameover)
 end
 
-def pbRespawnAtBed
-    $game_temp.in_menu = false if $game_temp.in_menu==true
-    pbBGMFade(1.0)
-    pbBGSFade(1.0)
+def pbRespawnAtBed 
+ 
     pbFadeOutIn { pbRespawnItself }
+    $game_temp.lockontarget=false
 end
 
  def pbRespawnItself
+    pbBGMFade(1.0)
+    pbBGSFade(1.0)
   if pbInBugContest?
     pbBugContestStartOver
     return
   end
   $stats.blacked_out_count += 1
   $player.decrease_current_total_hp
+  $player.playerhealth = $player.playermaxhealth2
   if $PokemonGlobal.pokecenterMapId && $PokemonGlobal.pokecenterMapId >= 0 && $player.is_dead==false
     mapname = GameData::MapMetadata&.try_get($PokemonGlobal.pokecenterMapId).name
 	if mapname.include?("(Folder)")
-    mapname = "Dreamyard"
+    mapname = "The Dreamyard"
 	end
     pbMessage(_INTL("\\w[]\\wm\\c[8]\\l[3]You started blacking out, you manage to collapse back in #{mapname}."))
     pbCancelVehicles
@@ -48,9 +53,13 @@ end
     pbDismountBike
     $scene.transfer_player if $scene.is_a?(Scene_Map)
     $game_map.refresh
+    $game_temp.dead = false
+  $player.playerfood = $player.playermaxfood
+  $player.playerwater = $player.playermaxwater
+  $player.playersleep = $player.playermaxsleep
 	 pbBedMessageLoss
  else
-    pbStartOver
+    pbLoadRpgxpScene(Scene_Gameover.new)
  end
  
  
@@ -136,6 +145,10 @@ class Scene_Gameover
   #--------------------------------------------------------------------------
   def main
     # Make game over graphic
+    $game_temp.lockontarget=false
+    pbBGMFade(1.0)
+    pbBGSFade(1.0)
+    $game_temp.dead = false
     @sprite = Sprite.new
 	chance = rand(1000)
 	if chance!=0
@@ -144,9 +157,9 @@ class Scene_Gameover
 	@box = Window_AdvancedTextPokemon.new("<ac>The darkness of the afterlife is all that awaits you now. May you find more peace in that world than you found in this one.")
    else
 	@box2 = Window_AdvancedTextPokemon.new("<ac>Rest in peace, #{$player.name}.")
-	@box = Window_AdvancedTextPokemon.new("<ac>Reload your safe and try again.")
+	@box = Window_AdvancedTextPokemon.new("<ac>Reload your save and try again.")
    end
-    @box.x = (Graphics.width/2)-255
+    @box.x = (Graphics.width/2)-125
 	@box.y = Graphics.height/2-50
 	@box.z = 999
 	@box.windowskin = nil

@@ -306,7 +306,7 @@ end
 def removeAlly(key)
   return getParticipantLength(:ALLIES)==0
    if getParticipant(:ALLIES).include?(key)
-	  @participants[:ALLIES][key] = value
+	  @participants[:ALLIES].delete(key)
 	  return true
    end
 
@@ -329,10 +329,22 @@ def add_rule(rule)
  @battle_rules << rule
  end
 end
-
+def remove_rule(rule)
+ if @battle_rules.include?(rule)
+ @battle_rules.delete(rule)
+ end
+end
 
 def reset_rules
  @battle_rules = []
+end
+
+def pbEndOverworldBattle
+  return_normal_bgm
+  
+ return if $game_temp.in_temple==true
+ return if @participants[:ENEMIES].keys.length>0
+   reset_rules
 end
 
 def physics_update
@@ -375,14 +387,18 @@ def get_distance(unit)
  distances = []
     targets = get_player_and_allies + unit.angry_at
 	targets.compact!
+	targets.uniq!
 	 targets.each do |event|
-	 distances << pbDetectTargetPokemon(unit,event)
+	  amt = pbDetectTargetPokemon(unit,event)
+	 distances << amt
 	 end
-     minimum = distances.min
+     minimum = distances.min if distances.min>0
+     minimum = 1 if distances.min==0
      max_index = distances.index(minimum)
-     target = targets[max_index]
-     distance = distances[max_index]
-
+	 if !max_index.nil?
+     target = targets[max_index] if max_index
+     distance = distances[max_index] if max_index
+      end
  
   return target,distance
 end
@@ -406,22 +422,10 @@ end
     pkmn = event.pokemon
     if pkmn.fainted?
 	 $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false && event.is_a?(Game_PokeEvent)
+     EventHandlers.trigger(:on_wild_ovbattle_end, pkmn, pkmn.level, 1)
      event.removeThisEventfromMap
-	 if @youarealreadydead==false
-     pbPlayerEXP(pkmn,get_allied_pokemon) 
+     pbPlayerEXP(pkmn,$player.able_party) 
      pbHeldItemDropOW(pkmn,true)
-     if $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
-         pbBGMFade(0.8)
-        $game_system.bgm_pause
-       $game_system.bgm_position = $game_temp.memorized_bgm_position
-       $game_system.bgm_resume($game_temp.memorized_bgm)
-		$game_temp.memorized_bgm = nil
-		$game_temp.memorized_bgm_position = nil
-	 end
-	 
-     @youarealreadydead=true
-	 
-	 end
 	 return true
 	else
 	 return false
@@ -552,7 +556,7 @@ EventHandlers.add(:on_step_taken, :overworldpkmnpoison,
 		  if pkmn.fainted? && event.is_a?(Game_PokeEvent)
 		  $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false
         event.removeThisEventfromMap
-        pbPlayerEXP(pkmn,pbOverworldCombat.get_allied_pokemon)
+        pbPlayerEXP(pkmn,$player.able_party)
         pbHeldItemDropOW(pkmn,true)
 		  end
 		  

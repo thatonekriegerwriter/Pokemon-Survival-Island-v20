@@ -13,6 +13,66 @@ EventHandlers.add(:on_player_change_direction, :trigger_encounter,
   }
 )
 
+class PokemonGlobalMetadata
+  attr_accessor :blackFluteUsed
+  attr_accessor :whiteFluteUsed
+  attr_accessor :fluteTimer
+
+  alias original_initialize23 initialize
+  def initialize
+    @blackFluteUsed = false
+    @whiteFluteUsed = false
+    @fluteTimer = pbGetTimeNow.to_i-3600
+    original_initialize23
+  end
+  
+  def blackFluteUsed
+    @blackFluteUsed = false if @blackFluteUsed.nil?
+	return @blackFluteUsed
+  end
+  
+  def whiteFluteUsed
+    @whiteFluteUsed = false if @whiteFluteUsed.nil?
+	return @whiteFluteUsed
+  end
+  
+  def fluteTimer
+    @fluteTimer = pbGetTimeNow.to_i-3600 if @fluteTimer.nil?
+	return @fluteTimer
+  end
+end
+
+
+ItemHandlers::UseInField.add(:BLACKFLUTE, proc { |item|
+  pbUseItemMessage(item)
+  
+    time_delta = pbGetTimeNow.to_i - @fluteTimer
+  if time_delta < 3600
+  pbMessage(_INTL("Wild Pokémon will be repelled."))
+  $PokemonGlobal.blackFluteUsed = true
+  $PokemonGlobal.whiteFluteUsed = false
+  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
+  next true
+  else
+  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
+  next false
+  end
+})
+
+ItemHandlers::UseInField.add(:WHITEFLUTE, proc { |item|
+  pbUseItemMessage(item)
+    time_delta = pbGetTimeNow.to_i - @fluteTimer
+  if time_delta < 3600
+  pbMessage(_INTL("Wild Pokémon will be lured."))
+  $PokemonGlobal.blackFluteUsed = false
+  $PokemonGlobal.whiteFluteUsed = true
+  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
+  next true
+  else
+  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
+  next false
+  end
+})
 
 
 
@@ -50,6 +110,7 @@ end
 def pbSpawnOnStepTaken(repel_active)
   return if $game_temp.in_menu
   return if $game_system.menu_disabled
+  
   
   #First we choose a tile near the player
   pos = pbChooseTileOnStepTaken
@@ -151,9 +212,10 @@ def pbPlaceEncounter(x,y,pokemon,dir=false)
   else
     mapId = $game_map.map_id
     spawnMap = $map_factory.getMap(mapId)
-    spawnMap.spawnPokeEvent(x,y,pokemon,dir)
+    ret = spawnMap.spawnPokeEvent(x,y,pokemon,dir)
   end
   pbPlayCryOnOverworld(pokemon.species, pokemon.form) if $game_switches[556]==false && rand(100)<26# Play the pokemon cry of encounter
+   return ret
 end
 
 
@@ -398,6 +460,34 @@ end
 class Game_Map
   def removeThisEventfromMap(id)
     if @events.has_key?(id)
+	   event = @events[id]
+	    if event.is_a?(Game_PokeEvent)
+        if event.pokemon.fainted?
+	      pbSEPlay("faint")
+	     end
+	     pbOverworldCombat.removeEnemy(id)
+	     $selection_arrows.clear_lock_on if $game_temp.lockontarget==event
+	     $ExtraEvents.removethisEvent(:POKEMON,id,@map_id)
+	      pbRemoveParticleEffectfromEvent(event)
+		 elsif event.is_a?(Game_PokeEventA)
+		  event.type.associatedevent=nil
+		  if event.type.inworld && event.type.fainted?
+		    sideDisplay(_INTL("{1} has fainted!",  event.type.name))
+		    event.type.changeHappiness("faintbad",event.type)
+		    event.type.changeLoyalty("faintbad",event.type)
+		    pbSEPlay("faint")
+		  end
+		  pbOverworldCombat.removeAlly(id)
+		  $selection_arrows.remove_sprite("Arrow#{id}#{event.type.name}")
+		  $hud.removeaChargeBar(id)
+		  event.type.inworld=false
+		  pbDeselectThisPokemon(event.type)
+		  pbRemoveParticleEffectfromEvent(event)
+		  $ExtraEvents.removethisEvent(:SPECIAL,id,@map_id)
+		 elsif event.is_a?(Game_OVEvent)
+		$ExtraEvents.removethisEvent(:OBJECT,id,@map_id)
+		 else
+		 end
       if defined?($scene.spritesets)
         for sprite in $scene.spritesets[@map_id].character_sprites
           if sprite.character == @events[id]
@@ -419,8 +509,8 @@ class PokemonGlobalMetadata
 
   alias original_initialize initialize
   def initialize
-    creatingSpawningPokemon = false
-    battlingSpawnedPokemon = false
+    @creatingSpawningPokemon = false
+    @battlingSpawnedPokemon = false
     original_initialize
   end
 end

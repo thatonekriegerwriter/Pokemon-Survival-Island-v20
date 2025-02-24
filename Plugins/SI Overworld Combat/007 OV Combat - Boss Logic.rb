@@ -61,17 +61,19 @@ def boss_jorm(event,boss)
 	  
 	  event.opacity = 0
       pbMessage(_INTL("You feel a faint energy fill your body, before it subsides, but you feel lighter than before."))
-	  $player.playerstaminamod += 15.0
+	  $player.playerstaminamod += 25.0
       $player.playermaxstamina = $player.playermaxstamina.to_f
       $player.playermaxstamina += $player.playerstaminamod
 	  $game_variables[234]+=1 if $game_switches[1176]==false #Beaten Bosses
 	  $game_switches[1176]=true #STONE TEMPLE BOSS.
 	  $game_switches[301]=true #Dog Trio
 	  $game_switches[302]=true #Latis + Lugia
-	  $game_variables[255]+=1  #Abilities
 	  $game_switches[76]=true #EARTHQUAKES
 	  reset_rules
       $player.able_party.each do |pkmn|
+        endexp = pkmn.growth_rate.minimum_exp_for_level(pkmn.level + 1)
+		addexp = endexp-pkmn.exp-pkmn.stored_exp
+		pkmn.stored_exp+=addexp
         pbDoLevelUps(pkmn)
       end
 	  $PokemonGlobal.bossesArrayTimer = {} if @bossesArrayTimer.nil?
@@ -113,7 +115,7 @@ def use_defined_move(attacker,move)
   for i in 0...4
     move2 = attacker.pokemon.moves2[i] if attacker.pokemon.moves2[i].id==move
   end
-	  move_physical_close(event,target,move2)
+	  move_physical_close(event,target,move2,nil,nil)
   
 end
 
@@ -166,12 +168,12 @@ def boss_attack_mid_rush(attacker,targets)
     if target.y != attacker.y+1
 	  name = target.type.name
 	  sideDisplay("#{attacker.pokemon.name} whipped at #{name}!")
-	  offensive_turn_finishing(attacker,target,move)
+	  offensive_turn_finishing(attacker,target,move,1)
 
     else
 	  name = target.type.name
 	  sideDisplay("#{attacker.pokemon.name} barreled through #{name}!")
-	  offensive_turn_finishing(attacker,target,move)
+	  offensive_turn_finishing(attacker,target,move,1)
     end
    end
 	
@@ -222,7 +224,6 @@ end
 
 
 def boss_rush(event)
-@backattack,@sideattack,@baddir = getdirissues(event,@controlled)
 curTrack = 0
 @track.each_with_index do |track,index|
  if track == [event.x,event.y]
@@ -278,14 +279,18 @@ if @change_move_direction==false
 def get_events_in(move_distance,cur_x,cur_y)
   results = []
   return results if move_distance.nil?
-
+  return results if cur_x.nil?
+  return results if cur_y.nil?
+  $game_temp.preventspawns=true
   # Checking horizontal and vertical movements
   (-move_distance..move_distance).each do |i|
     if cur_x != cur_x + i && cur_y != cur_y + i
-     event = @map.check_event(cur_x + i,cur_y + i)
+	
+     event = $game_map.check_event(cur_x + i,cur_y + i)
 	 if event.is_a?(Integer) && event!=0
 	 results << event
 	 end
+	 
 	end
   end 
   if move_distance>1
@@ -293,7 +298,7 @@ def get_events_in(move_distance,cur_x,cur_y)
   # Checking diagonal movements
   (-movedistancedia..movedistancedia).each do |i|
     if cur_x != cur_x + i && cur_y != cur_y + i
-     event = @map.check_event(cur_x + i,cur_y + i)
+     event = $game_map.check_event(cur_x + i,cur_y + i)
 	 if event.is_a?(Integer) && event!=0
 	 results << event
 	 end
@@ -302,6 +307,7 @@ def get_events_in(move_distance,cur_x,cur_y)
   end
   end
 
+  $game_temp.preventspawns=false
 
 
   return results

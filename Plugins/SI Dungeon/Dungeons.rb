@@ -45,6 +45,7 @@ EventHandlers.add(:on_wild_battle_end, :dungeonbattle,
   }
 )
 
+
 #===============================================================================
 # Code that generates a random dungeon layout, and implements it in a given map.
 #===============================================================================
@@ -76,18 +77,23 @@ EventHandlers.add(:on_game_map_setup, :random_dungeon,
 	end
     # Reposition events
 	amt = [rand(60),30].max
-	ore_type = [:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:TUMBLESTONE,:TUMBLESTONE,:TUMBLESTONE,:TUMBLESTONE,:TUMBLESTONE,:TUMBLESTONE,:IRON2,:IRON2,:IRON2,:IRON2,:IRON2,:GOLD2,:GOLD2,:SILVER2,:SILVER2,:COPPER2,:COPPER2,:COPPER2,:COPPER2,
-	:COPPER2,:COAL,:COAL,:COAL,:COAL,:COAL,:FIRESTONE,:WATERSTONE,:THUNDERSTONE,:LEAFSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:LIGHTCLAY,:LIGHTCLAY,:THUNDERSTONE,:HARDSTONE,:EVIOLITE,:EVERSTONE,:STONE,:STONE,:STONE]
+	ore_type = [:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:TUMBLEROCK,:TUMBLEROCK,:TUMBLEROCK,:TUMBLEROCK,:TUMBLEROCK,:TUMBLEROCK,:IRONORE,:IRONORE,:IRON2,:IRONORE,:IRONORE,:GOLDORE,:GOLDORE,:SILVERORE,:SILVERORE,:COPPERORE,:COPPERORE,:COPPERORE,:COPPERORE,
+	:COPPERORE,:COAL,:COAL,:COAL,:COAL,:COAL,:FIRESTONE,:WATERSTONE,:THUNDERSTONE,:LEAFSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:LIGHTCLAY,:LIGHTCLAY,:THUNDERSTONE,:HARDSTONE,:EVIOLITE,:EVERSTONE,:STONE,:STONE,:STONE]
 	amt.times do |x|
-	 ore = ore_type[ore_type.length]
-	 pbPlaceOre(x+rand(10),x+rand(10),ore)
-	
+	 ore = ore_type[rand(ore_type.length)]
+    tile = dungeon.get_random_room_tile(occupied_tiles)
+    if tile
+	 pbPlaceOre(tile[0],tile[1],ore)
+	end
 	
 	end
 
 	amt2 = [rand(10),5].max
 	amt.times do |x|
-	 pbPlaceOre(x+rand(20)+10,x+rand(20)+10,"MININGMINIGAME")
+    tile = dungeon.get_random_room_tile(occupied_tiles)
+    if tile
+	 pbPlaceOre(tile[0],tile[1],"MININGMINIGAME")
+	end
 	
 	end
     map.events.each_value do |event|
@@ -495,23 +501,23 @@ class PokemonGlobalMetadata
   attr_accessor :dungeon_y
 
   def in_dungeon
-    @in_dungeon = false if !@in_dungeon
+    @in_dungeon = false if @in_dungeon.nil?
     return @in_dungeon
   end
   def dungeon_floor
-    @dungeon_floor = 0 if !@dungeon_floor
+    @dungeon_floor = 0 if @dungeon_floor.nil?
     return @dungeon_floor
   end
   def dungeon_x
-    @dungeon_x = 0 if !@dungeon_x
+    @dungeon_x = 0 if @dungeon_x.nil?
     return @dungeon_x
   end
   def dungeon_y
-    @dungeon_y = 0 if !@dungeon_y
+    @dungeon_y = 0 if @dungeon_y.nil?
     return @dungeon_y
   end
   def dungeon_leader
-    @dungeon_leader = 0 if !@dungeon_leader
+    @dungeon_leader = 0 if @dungeon_leader.nil?
     return @dungeon_leader
   end
 end

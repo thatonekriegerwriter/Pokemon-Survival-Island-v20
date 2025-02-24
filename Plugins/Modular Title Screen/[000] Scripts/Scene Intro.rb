@@ -313,7 +313,7 @@ class Scene_Intro
       @screen.update
       Graphics.update
       Input.update
-	  pbBGMFade(0.8)
+	  #pbBGMFade(0.8)
 	  
     pbSEPlay("GUI trainer card open", 100, 100)
         pbFadeOutIn do

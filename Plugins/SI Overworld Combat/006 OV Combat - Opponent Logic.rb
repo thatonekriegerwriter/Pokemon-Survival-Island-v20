@@ -9,10 +9,10 @@ def wild_should_attack?(opponent)
  return false if opponent.attacked_last_call==true
  return false if opponent.battle_timer>0
  return true if $game_temp.bossfight==true
- attack_chance = rand(90)+10
- rate = 36
- rate*=1.5 if opponent.pokemon.is_aggressive?
- 
+ attack_chance = rand(99)+1
+ rate = 10
+ rate = 40 if opponent.pokemon.is_aggressive?
+ rate /= 1.5 if opponent.pokemon.hp == opponent.pokemon.totalhp
  return attack_chance<=rate
 end
 
@@ -36,13 +36,12 @@ def opponentChoice(attacker,target,target_x,target_y,distance,bonus=0,type=:DEFA
 result = false
 @hard_hitting =  bonus
 
-attacker.cannot_move=true if defined?(attacker.cannot_move)
 loop do
   update_package
    should = pbShouldAttack?(attacker,target)
    previousmove=false
    attempts=0
-	puts "#{attacker.pokemon.name} reconsiders the opportunity? #{should}" if attacker.battle_timer<1
+	#puts "#{attacker.pokemon.name} will attack? #{should}" if attacker.battle_timer<1
   if should
    
     move = chooseMove(attacker,target,distance)
@@ -53,7 +52,10 @@ loop do
 	   next if attacker.attacking==true if defined?(attacker.attacking)
      if move.category == 0
 	   next if attacker.attacking==true if defined?(attacker.attacking)
-	    puts "#{attacker.pokemon.name} can move to attack? #{distance<=sight_line(attacker) && distance>1}" if attacker.battle_timer<1
+	   if attacker.battle_timer<1
+	 #  puts "#{attacker.pokemon.name} need to move to attack? #{distance<=sight_line(attacker) && distance>1}" 
+	 #  puts "#{attacker.pokemon.name} can attack from this position? #{distance==1}" 
+	   end
 	  if distance==1 
          attacker.attacking=true if defined?(attacker.cannot_move)
 	   result = move_physical_close(attacker,target,move,distance,target_x,target_y)
@@ -83,13 +85,14 @@ loop do
 	  attempts+=1
     end
   else
+   
+ 	 attacker.battle_timer=attacker.get_battle_timer
    break
   end
   
 
 end
 
-attacker.cannot_move=false if defined?(attacker.cannot_move)
 return result
 end
 
@@ -109,12 +112,14 @@ end
 
 def ov_combat_loop(opponent)
     return if !defined?(opponent.pokemon)
- 	 return if status_checks(opponent)==true
+ 	 return if fainted_check(opponent)==true
  	 return if opponent.dont_attack==true
     return if $PokemonGlobal.fishing == true
     return if $game_temp.in_menu == true
     return if $game_temp.message_window_showing == true && $PokemonGlobal.alternate_control_mode==false
+    opponent.cannot_move=true if defined?(opponent.cannot_move)
 	
+	#puts "#{opponent.pokemon.name}'s timer is at #{opponent.battle_timer}."
 	
 	theresult = false
 	duris = wild_should_attack?(opponent)
@@ -125,29 +130,33 @@ def ov_combat_loop(opponent)
 	 addEnemy(opponent.id,opponent)
 	 opponent.dont_attack = true
  	 get_overworld_pokemon
- 	 target,distance = get_distance(opponent)
-	 #puts "#{opponent.pokemon.name} is #{distance} tiles away from #{target.pokemon.name}" if distance>0
-	 
-    if target.nil?
+ 	 target,distance,direction = get_distance(opponent)
+     if target.nil?
+	 #puts "#{opponent.pokemon.name} has no target."
  	 opponent.dont_attack = false
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
  	 return 
+	 else 
+	# puts "#{opponent.pokemon.name} is targeting #{target.pokemon.name}."
 	 end
 	 target_x = target.x
 	 target_y = target.y
-	 puts "#{opponent.pokemon.name} is targeting #{target.pokemon.name}."
      #opponent.move_type_toward_event(target)
 	 
      opponent.turn_toward_event(target)
+	 #puts "#{opponent.pokemon.name} is #{distance} tiles away from #{target.pokemon.name}" if distance>0
      if distance<1
  	 opponent.dont_attack = false
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
  	 return 
 	 end
+	 #puts "#{opponent.pokemon.name} attempts attack." 
  	 theresult = opponentChoice(opponent,target,target_x,target_y,distance)
- 	 opponent.battle_timer=opponent.get_battle_timer if opponent.battle_timer==0
  	 opponent.dont_attack = false
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
  	 @turn+=1
-	 
-    set_bgm 
+	 status_checks(opponent)
+     set_bgm 
 	 opponent.times_not_attacking=0
 	 
 	 
@@ -155,6 +164,7 @@ def ov_combat_loop(opponent)
 	 opponent.attacked_last_call=true
  	 opponent.battle_timer=opponent.get_battle_timer
 	 opponent.remaining_steps+=1
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
 	 end
 
 
@@ -165,6 +175,7 @@ def ov_combat_loop(opponent)
 	 
 	elsif opponent.attacked_last_call==true
 	 opponent.attacked_last_call=false
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
 	 opponent.battle_timer-=1
 	 
 	 
@@ -180,6 +191,7 @@ def ov_combat_loop(opponent)
 	 opponent.battle_timer-=opponent.times_not_attacking
 	 opponent.battle_timer= 0 if opponent.battle_timer<0
 	 opponent.times_not_attacking=0
+     opponent.cannot_move=false if defined?(attacker.cannot_move)
 
 
 

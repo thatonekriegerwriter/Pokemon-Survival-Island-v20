@@ -13,10 +13,14 @@
 class Scene_Map
   def dispose
     disposeSpritesets
-    @map_renderer.dispose
+	if @map_renderer
+    @map_renderer.dispose 
     @map_renderer = nil
+	end 
+	if @spritesetGlobal
     @spritesetGlobal.dispose
     @spritesetGlobal = nil
+	end 
   end
 
   def main

@@ -75,6 +75,7 @@ module Game
     $PokemonMap.updateMap
     $scene = Scene_Map.new
     ShowSeasonBW2.pbSeason_Screen if $season_number != pbGetSeason
+	$DynamicEvents.clear_temp!
     pbToneChangeAll(Tone.new(0,0,0,0),20)
     #$mouse.enable if $mouse && !$mouse.disposed?
   end

@@ -1,5 +1,8 @@
   def pbCookMeat(pkmn)
-   if pkmn.species==:MAGIKARP && $player.is_it_this_class?(:FISHER)
+    return if pkmn.types.include?(:GHOST)
+  
+  
+   if pkmn.species==:MAGIKARP && !$player.is_it_this_class?(:FISHER)
     if $player.party.include?(pkmn)
 		index = $player.party.index(pkmn)
 		$player.remove_pokemon_at_index(index)
@@ -8,12 +11,21 @@
 		$bag.add(ball,1)
     end
     if rand(2)==0
-		$bag.add(:RAREBONE,3)
-		itemAnim(:RAREBONE,3) if !$game_temp.in_battle
+	    geoiag= rand(2)+1
+        bone = ItemData.new(:RAREBONE)
+		if $bag.add(bone,geoiag)
+		itemAnim(bone,geoiag) if !$game_temp.in_battle
+		end
 	end
    
     return
    end
+
+
+
+
+
+
     food_item = ItemData.new(:MEAT)
      weight = pkmn.weight
 	 amt = (weight*10)
@@ -26,15 +38,8 @@
      food_item.food_water_stats["Servings"]=1
 	  amt *= 1.5 if $player.is_it_this_class?(:FISHER,false)
 	  amt = 1 if pkmn.species==:MAGIKARP && $player.is_it_this_class?(:FISHER)
-    if pkmn.species == :SLOWPOKE
-		$bag.add(food_item,amt)
-		$bag.add(:SLOWPOKETAIL,1)
-		itemAnim(food_item,amt) if !$game_temp.in_battle
-		itemAnim(:SLOWPOKETAIL,1) if !$game_temp.in_battle
-	    
-	    
-	else
-      case pkmn.type1
+	  type = pkmn.types.sample
+      case type
         when :FLYING
 		  food_item.id = :BIRDMEAT
         when :POISON
@@ -64,15 +69,24 @@
 	  
 	  
 	  end
-    end
-    if pkmn.species != :SLOWPOKE
-		$bag.add(food_item,amt)
+       if pkmn.species == :SLOWPOKE
+		if $bag.add(:SLOWPOKETAIL,1)
+		   itemAnim(:SLOWPOKETAIL,1) if !$game_temp.in_battle
+	    end
+	   end 
+	   if $bag.add(food_item,amt)
 		itemAnim(food_item.id,amt) if !$game_temp.in_battle
-	end
-    if rand(12)==0
-		$bag.add(:RAREBONE,1)
-		itemAnim(:RAREBONE,1) if !$game_temp.in_battle
-	end
+	   end
+	   if rand(12)==0
+	    geoiag = rand(2)+1
+        bone = ItemData.new(:RAREBONE)
+		if $bag.add(bone,geoiag)
+		  itemAnim(bone,geoiag) if !$game_temp.in_battle
+		end
+	  end
+
+
+
     if $player.party.include?(pkmn)
 		index = $player.party.index(pkmn)
 		$player.remove_pokemon_at_index(index)
@@ -80,6 +94,8 @@
 		ball = GameData::Item.get(pkmn.poke_ball).id if !pkmn.poke_ball.is_a?(ItemData)
 		$bag.add(ball,1)
     end
+
+
   end
 
 

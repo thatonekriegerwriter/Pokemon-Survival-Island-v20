@@ -25,6 +25,7 @@ end
 	x -= pkmn.bait_eaten
     x = x.floor
     x = 1 if x < 1
+    return 99 if $player.pokedex.owned_count<2
     return 99 if pkmn.status == :SLEEP || pkmn.status == :FROZEN
 	return 99 if $DEBUG && Input.press?(Input::CTRL)
     y = x-($player.shoespeed/2)
@@ -92,8 +93,6 @@ end
       numShakes += 1 if rand(65_536) < y
     end
 	numShakes+=1 if event.direction == [2,4,6,8][dir]
-	puts numShakes
-	puts "Catchless" if @battle_rules.include?("Catchless")
 	return 0 if @battle_rules.include?("Catchless")
     return numShakes
   end
@@ -131,13 +130,17 @@ end
       pbSEPlay("Miss")
 	   $player.punch_cooldown+=40
 	   $player.weapon_cooldown+=80
+	   no_moving(15)
 	elsif item=="Punch" && !hit
 	   
 	  sideDisplay("#{$player.name} missed!")
+      pbSEPlay("Miss")
 	   $player.punch_cooldown+=80
+	   no_moving(15)
 	elsif item=="Punch" && hit
 	  sideDisplay("#{$player.name} landed a punch on #{event.pokemon.name}!")
 	   $player.punch_cooldown+=80
+	   no_moving(15)
 	end
 
     @turn+=1
@@ -157,14 +160,17 @@ end
   end
   
   
-  def no_moving(amt)
+  def no_moving(frames)
    $game_temp.no_moving=true
-     loops=0
-    loop do
-	   break if loops>=amt
+   loops=0
+   loop do
+    break if loops >= frames
+	  
       update_package
+	  
 	  loops+=1
-    end
+   end
+	
    $game_temp.no_moving=false
   end
   
@@ -184,6 +190,23 @@ end
            when :FIREDART
        	     inflictStatus(move,user,target,:BURN, rand(4)+1) if !target.pbHasType?(:FIRE)
         end
+	   move = Pokemon::Move.new(:TACKLE)
+	   baseDmg = move.base_damage
+       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
+	  pkmn.types.each do |type|
+	   value = Effectiveness.calculate(:NORMAL, type)
+	   damage *= 2 if Effectiveness.super_effective?(value)
+	   damage /= 2 if Effectiveness.not_very_effective?(value)
+	   damage /= 2 if Effectiveness.resistant?(value)
+	   damage *= 0 if Effectiveness.ineffective?(value)
+	   damage *= 1 if Effectiveness.normal?(value)
+	   damage *= 1 if Effectiveness.normal?(value)
+	   end
+	   damage += $player.equipmentatkbuff.to_i
+	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
+      event.battle_timer = 12
+	   $player.weapon_cooldown+=40
+	   no_moving(15)
        event.angry_at << $game_player if !event.angry_at.include?($game_player)
   end
 
@@ -213,7 +236,6 @@ end
 	 
 	  start_attacked_glow(event,$game_player)
 	  makeAggressive(event) 
-	   puts "Stone Damage: #{damage}"
       damagePokemon(event,damage)
 	  if pkmn.status==:SLEEP
 	    pkmn.status=:NONE
@@ -221,7 +243,7 @@ end
       event.battle_timer = 6
 	   $player.weapon_cooldown+=80
 	  pbSEPlay("Battle damage normal")
-	   no_moving(15)
+	   no_moving(10)
 	  
 	  
 	 when :BAIT
@@ -265,7 +287,7 @@ end
 	   machete(event,damage) #SLASH - Power 70, Accuracy 100
       event.battle_timer = 12
 	   $player.weapon_cooldown+=20
-	   no_moving(5)
+	   no_moving(30)
      when :STONEPICKAXE
 	   move = Pokemon::Move.new(:ROCKSMASH)
 	   baseDmg = move.base_damage

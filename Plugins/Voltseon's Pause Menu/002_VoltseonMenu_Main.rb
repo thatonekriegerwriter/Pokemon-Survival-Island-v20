@@ -4,6 +4,7 @@
 class MenuEntry
   attr_reader :name
   attr_reader :text
+  attr_reader :effect
 
   # defined by user
   def icon; return MENU_FILE_PATH + @icon; end
@@ -26,6 +27,7 @@ class Component
   end
 
   # To be defined by user
+  def isSpecial?; return false; end
   def shouldDraw?; return false; end
   def refresh; end
 
@@ -105,7 +107,7 @@ class VoltseonsPauseMenu_Scene
   def pbHideMenu
     $mouse.show if $mouse && !$mouse.disposed?
     duration = Graphics.frame_rate/6
-    duration.times do
+    duration.times do |i|
       @sprites.each do |key,sprite|
         if key[/backshade/]
           sprite.opacity -= (255/duration)
@@ -128,6 +130,10 @@ class VoltseonsPauseMenu_Scene
           else
             sprite.y -= ((Graphics.height/2)/duration)
           end
+        
+		  if component.isSpecial? && i+1==duration
+		    sprite.visible = false 
+		  end 
         end
       end
       Graphics.update
@@ -176,7 +182,7 @@ class VoltseonsPauseMenu_Scene
       end
     end
     duration = Graphics.frame_rate/6
-    duration.times do
+    duration.times do |i|
       @sprites.each do |key,sprite|
         if key[/backshade/]
           sprite.opacity += (255/duration)
@@ -192,11 +198,16 @@ class VoltseonsPauseMenu_Scene
       @components.each do |component|
         sprites = component.sprites
         sprites.each do |_,sprite|
+		  if component.isSpecial? && i==0
+		    sprite.visible = true 
+		  end 
           if sprite.y >= (Graphics.height/2)
             sprite.y -= ((Graphics.height/2)/duration)
           else
             sprite.y += ((Graphics.height/2)/duration)
           end
+
+
         end
       end
       Graphics.update
@@ -293,6 +304,7 @@ class Scene_Map
   def viewport
     return Spriteset_Map.viewport
   end
+  
   def call_menu
     $game_temp.menu_calling = false
     $game_temp.in_menu = true

@@ -20,7 +20,6 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    next if $player.playerwater < 1
    next if $player.playersleep < 1
    next if $player.playerfood < 1
-   next if $player.playerfood < 1
    next if !$player.is_it_this_class?(:NURSE,false)
      increaseHealth(1)
 
@@ -30,10 +29,35 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 )
 
 
+  EventHandlers.add(:on_frame_update, :saturationstepsplayer,
+  proc {
+  next if $PokemonGlobal.in_dungeon==true
+  next if $player.playersaturation == 0
+   next if $game_temp.in_bed
+   next if $game_temp.in_menu
+	 time_now = pbGetTimeNow
+	 rain_delta = time_now.to_i - $player.time_last_saturated
+	 tps = 0.25
+	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
+	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
+	 tps = 4 if $game_temp.in_temple==true
+	 #puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_saturated} < #{(tps * 80)} and is #{rain_delta < (tps * 80)}"
+    next if rain_delta < (tps * 1200)
+	  time = rain_delta/3600
+     #puts "Decrease Saturation"
+	  time = [time,1].max
+    decreaseSaturation(3 * time)
+    $player.time_last_saturated = time_now.to_i+rand(600)+1
+  
+  
+  }
+)
   EventHandlers.add(:on_frame_update, :sleepstepsplayer,
   proc {
   next if $PokemonGlobal.in_dungeon==true
   next if $player.playersleep == 0
+   next if $game_temp.in_bed
+   next if $game_temp.in_menu
   
 	 time_now = pbGetTimeNow
 	 rain_delta = time_now.to_i - $player.time_last_slept
@@ -44,8 +68,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	# puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_slept} < #{(tps * 240)} and is #{rain_delta < (tps * 240)}"
     next if rain_delta < (tps * 3600)
 	  time = rain_delta/3600
-     puts "Decrease Sleep"
 	  time = [time,1].max
+    #puts "Decrease Sleep (#{$player.playersleep} -> #{$player.playersleep-(8 * time)}) - #{Time.now.strftime("%H:%M:%S.%L")}"
     decreaseSleep(8 * time)
     $player.time_last_slept = time_now.to_i+rand(1800)+1
 
@@ -59,6 +83,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
   next if $PokemonGlobal.in_dungeon==true
   next if $player.playersaturation > 0
   next if $player.playerfood == 0
+   next if $game_temp.in_bed
+   next if $game_temp.in_menu
   
 	 time_now = pbGetTimeNow
 	 rain_delta = time_now.to_i - $player.time_last_food
@@ -70,8 +96,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	 #puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_food} < #{(tps * 120)} and is #{rain_delta < (tps * 120)}"
     next if rain_delta < (tps * 1800)
 	  time = rain_delta/3600
-    puts "Decrease Food"
 	  time = [time,1].max
+    #puts "Decrease Food (#{$player.playerfood} -> #{$player.playerfood-(6 * time)}) - #{Time.now.strftime("%H:%M:%S.%L")}"
     decreaseFood(6 * time)
     $player.time_last_food = time_now.to_i+rand(900)+1
   }
@@ -82,6 +108,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
   next if $PokemonGlobal.in_dungeon==true
   next if $player.playersaturation > 0
   next if $player.playerwater == 0
+   next if $game_temp.in_bed
+   next if $game_temp.in_menu
   
 	 time_now = pbGetTimeNow
 	 rain_delta = time_now.to_i - $player.time_last_watered
@@ -92,8 +120,8 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 	# puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_watered} < #{(tps * 120)} and is #{rain_delta < (tps * 120)}"
     next if rain_delta < (tps * 1800)
 	  time = rain_delta/3600
-     puts "Decrease Water"
 	  time = [time,1].max
+    #puts "Decrease Water (#{$player.playerwater} -> #{$player.playerwater-(6 * time)}) - #{Time.now.strftime("%H:%M:%S.%L")}"
     decreaseWater(6 * time)
     $player.time_last_watered = time_now.to_i+rand(900)+1
   
@@ -102,53 +130,40 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 
 
 
-  EventHandlers.add(:on_frame_update, :saturationstepsplayer,
-  proc {
-  next if $PokemonGlobal.in_dungeon==true
-  next if $player.playersaturation == 0
+
+  
+  def player_stamina_logic
+      the_stamina_functions
+	 
+    if drain_stamina
+	 SoundManager.play_se("breath",100) if $player.playerstamina <= ($player.playermaxstamina/10)
+	  return  
+	end
+	 
+    return if $player.playerstamina == $player.playermaxstamina
 	 time_now = pbGetTimeNow
-	 rain_delta = time_now.to_i - $player.time_last_saturated
-	 tps = 0.25
-	 tps = 0.5 if $player.playerstamina >= 0.5 * $player.playermaxstamina
-	 tps = 1 if $player.playerstamina >= 0.9 * $player.playermaxstamina
-	 tps = 4 if $game_temp.in_temple==true
-	 #puts "#{rain_delta} = #{time_now.to_i} - #{$player.time_last_saturated} < #{(tps * 80)} and is #{rain_delta < (tps * 80)}"
-    next if rain_delta < (tps * 1200)
-	  time = rain_delta/3600
-     puts "Decrease Saturation"
-	  time = [time,1].max
-    decreaseSaturation(3 * time)
-    $player.time_last_saturated = time_now.to_i+rand(600)+1
+	 #rain_delta = time_now.to_i - $player.time_last_stamina
+	 if $player.playerstamina >= $player.playermaxstamina
+	   $player.playerstamina=$player.playermaxstamina
+	 return
+	 end
+	 if rand(255)<1
+    $player.time_last_stamina += 1 
+	 puts $player.time_last_stamina
+	end
+    return if $player.time_last_stamina==50
+	 SoundManager.play_se("breath",100) if $player.playerstamina <= ($player.playermaxstamina/10)
+	 
+    restore_stamina
+    $player.time_last_stamina = 0
   
   
-  }
-)
-
-
+  end 
+  
   EventHandlers.add(:on_frame_update, :stamina,
   proc {
   next if $PokemonGlobal.in_dungeon==true
-    the_stamina_functions
-	 
-    if drain_stamina
-	 pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
-	  next 
-	 end
-	 
-	 pbSEPlay("breath") if $player.playerstamina <= ($player.playermaxstamina/10)
-    next if $player.playerstamina == $player.playermaxstamina
-	 time_now = pbGetTimeNow
-	 rain_delta = time_now.to_i - $player.time_last_stamina
-	 if $player.playerstamina >= $player.playermaxstamina
-	   $player.playerstamina=$player.playermaxstamina
-	 next
-	 end
-    next if rain_delta < 10
-	 
-	 
-	 
-    restore_stamina
-    $player.time_last_stamina = time_now.to_i
+    player_stamina_logic
   }
 )
 
@@ -178,16 +193,15 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    sleepchance = rand(50)+1 <= 10
    damaged = 0
     if $player.playerwater < 1 && waterchance
-	 pbSEPlay("Drink")
-	 pbSEPlay("")
+	 SoundManager.play_se("Drink")
    damaged += 1
    end
     if $player.playersleep < 1 && sleepchance
-	 pbSEPlay("Yawn")
+	 SoundManager.play_se("Yawn")
    damaged += 1
    end
     if $player.playerfood < 1 && foodchance
-	 pbSEPlay("Eat")
+	 SoundManager.play_se("Eat")
    damaged += 1
     end
    $player.time_last_health=time_now.to_i
@@ -196,14 +210,17 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    pbSEPlay("normaldamage")
   }
 )
-
+  def run_button?
+    (Input.press?(Input::RUNNING) || Input.trigger?(Input::RUNNING)) && get_keyname("Running")!="None"
+  end 
 def restore_stamina
  return if $player.running == true
+ return if $player.running == false && run_button?
  return if $game_temp.in_menu
   prereqs = !$player.acting && $player.held_item.nil?
   if prereqs
 	 if $game_player.moved_this_frame==false && $game_player.moved_last_frame==false
-	     if rand(2) == 1
+	     if rand(5) == 1
          puts "Increase Stamina - No Moving+"
 	      $player.playerstamina+=1
 		  end
@@ -212,7 +229,7 @@ def restore_stamina
          puts "Increase Stamina - No Moving"
 	      $player.playerstamina+=3
 		  end
-	 elsif rand(60) == 1
+	 elsif rand(40) == 1 
        puts "Increase Stamina - While Moving"
       $player.playerstamina+=6
 	 end
@@ -270,7 +287,6 @@ def stamina_management_for_ov
 	   decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
 	   
 	   
-	else
 	end
 
 
@@ -362,7 +378,7 @@ EventHandlers.add(:on_step_taken, :play_water_sounds,
     next if event != $game_player
     if is_near_water($game_player.x, $game_player.y)
 	 if !$PokemonGlobal.water_playing
-	  pbSEPlay("babbling_brook")
+	  SoundManager.play_se("babbling_brook")
 	  $PokemonGlobal.water_playing=true
 	 end
 	else

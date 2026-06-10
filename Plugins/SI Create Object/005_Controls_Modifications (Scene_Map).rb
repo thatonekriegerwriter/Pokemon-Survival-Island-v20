@@ -67,6 +67,15 @@ class Game_Player < Game_Character
     # Record last direction input
       @lastdirframe = System.uptime if dir != @lastdir
     @lastdir      = dir
+    puts "========================"
+    puts "REAL_X, REAL_Y"
+    puts @real_x
+	puts @real_y
+    puts "X, Y"
+	puts @x * Game_Map::REAL_RES_X
+	puts @y * Game_Map::REAL_RES_Y
+    puts "MOVING"
+	puts moving?
   end
 
   def move_generic(dir, turn_enabled = true)
@@ -77,7 +86,7 @@ class Game_Player < Game_Character
         y_offset = (dir == 8) ? -1 : (dir == 2) ? 1 : 0
 		  if $game_map
 		   event_id = $game_map.check_event(@x + x_offset,@y + y_offset)
-		   if event_id.is_a?(Integer)
+		   if $game_map.events[event_id]
 		      event = $game_map.events[event_id]
 		     if event.name.include?("border")
 			    type = pbEventCommentInput(event, 1, "Border")
@@ -235,6 +244,7 @@ class Game_Player < Game_Character
 
 
   def update_move
+     
     if !@moved_last_frame || @stopped_last_frame   # Started a new step
       if pbTerrainTag.ice
         set_movement_type(:ice_sliding)
@@ -290,11 +300,11 @@ class Game_Player < Game_Character
       new_charset = pbGetPlayerCharset(meta.cycle_charset)
     when :running
       pbCameraSpeed(1.4) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 3.50 if !@move_route_forcing && ($player.playershoes.id == :NORMALSHOES || $player.playershoes == :SEASHOES)
+      self.move_speed = 3.50 if !@move_route_forcing && $player.playershoes && ($player.playershoes.id == :NORMALSHOES || $player.playershoes == :SEASHOES)
       self.move_speed = 3.65 if !@move_route_forcing && $player.is_it_this_class?(:TRIATHLETE,false)
-      self.move_speed = 3.65 if !@move_route_forcing && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES
+      self.move_speed = 3.65 if !@move_route_forcing && $player.playershoes && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES
       self.move_speed = 3.75 if !@move_route_forcing && $player.is_it_this_class?(:HIKER) && $game_map&.name&.downcase&.include?("mountain") && $bag.has?(:POLE)
-      self.move_speed = 3.75 if !@move_route_forcing && $player.playershoes.id == :RUNNINGSHOES
+      self.move_speed = 3.75 if !@move_route_forcing && $player.playershoes && $player.playershoes.id == :RUNNINGSHOES
       self.move_speed = 4 if !@move_route_forcing && $player.has_running_shoes
       new_charset = pbGetPlayerCharset(meta.run_charset)
     when :ice_sliding
@@ -386,6 +396,8 @@ class Scene_Map
     running_stuff
     punching_controls
     mouse_detection
+	
+   $game_temp.inv_cooldown-=1 if $game_temp.inv_cooldown>0 && $game_temp.in_inventory==false
    $game_temp.relock_prevention-=1 if $game_temp.relock_prevention>0
 	
 	
@@ -428,7 +440,8 @@ class Scene_Map
   end
   def lock_on_target_behavior
 	   if Input.press?(Input::LOCKON) && $game_temp.position_calling == false && $game_temp.currently_throwing_pkmn == false
-	  $selection_arrows.remove_sprite("Arrow#{$game_temp.lockontarget.id}")
+	   
+	  $selection_arrows.remove_sprite("Arrow#{$game_temp.lockontarget.id}#{$game_temp.lockontarget.name}")
 	     $game_temp.lockontarget=false
 		 pbCameraReset
 		 $game_temp.relock_prevention=45
@@ -1024,19 +1037,26 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
   
   
   end
+  
+  def run_button?
+    (Input.press?(Input::RUNNING) || Input.trigger?(Input::RUNNING)) && get_keyname("Running")!="None"
+  end 
+  
   def running_stuff
     return if $game_temp.current_pkmn_controlled == true
 	if $game_temp.disable_running==true
 	 $player.running=false
     elsif Input.double_tap_dir4? && $player.playerstamina>0 && $PokemonSystem.runstyle == 0
 	 $player.running=true
-	elsif (Input.press?(Input::RUNNING) || Input.trigger?(Input::RUNNING)) && ($game_player.moved_last_frame || $game_player.moved_this_frame) && get_keyname("Running")!="None" && $player.playerstamina>0
+	elsif ($game_player.moved_last_frame || $game_player.moved_this_frame) && $player.playerstamina>0 && run_button?
 	 $player.running=true
+	 $player.run_pressed=true
 	elsif $player.playerstamina<=0 && $player.running==true
 	 $player.running=false
 	elsif !$game_player.moving? && $player.running==true && !$game_player.moved_last_frame
 	 $player.running=false
 	end
+	 $player.run_pressed=false if !run_button? && $player.run_pressed==true
   end
  
   def punching_controls
@@ -1047,6 +1067,7 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
     if Input.trigger?(Input::PUNCH)
 	     if $player.punch_cooldown<=0
            event, distance = get_target_player($game_player)
+		   puts event
            if !distance.nil?
 			  if distance==1
 			   if !event.nil? 
@@ -1062,156 +1083,145 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 	     end
     end
   end
+  
+  def inventory_logic
+     if $game_temp.inv_cooldown==0
+	   
+	  $player.store_in_inv if $player.held_item? && !$player.held_item.is_a?(Pokemon)
+	  pbSEPlay("GUI menu open")
+      item = Inventory.invWindow
+	  pbSEPlay("GUI menu close")
+      pbUseKeyItemInField(item) if item
+     end 
+  
+  end 
+  
+
   def mouse_detection
-    if Input.time?(Input::MOUSELEFT) >= 0.3 && Input.mouse_in_window? && Input.time?(Input::MOUSELEFT) <= 0.65
-	     $game_temp.preventspawns=true
+    if Input.double_tap?(Input::MOUSELEFT) && Input.mouse_in_window?
 	     event_id=$game_map.check_event(*get_tile_mouse_on)
-	     if event_id.is_a?(Integer)
-	      if $game_map.events[event_id].is_a?(Game_PokeEventA)
-	       if $game_map.events[event_id].name=="PlayerPkmn" && $player.party.include?($game_map.events[event_id].pokemon)
-	        $game_map.events[event_id].pokemon.deselecttimer = 50
-	        pbSelectThisPokemon($game_map.events[event_id].pokemon)
-	       end
-	      end
+		active_directed=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+	     if event_id && $game_map.events[event_id]
+		  #if $game_map.events[event_id].is_a?(Game_PokeEventA) && active_directed!=:MULTISELECT && $game_map.events[event_id].name=="PlayerPkmn" && $player.party.include?($game_map.events[event_id].pokemon)
+		#   if !$PokemonGlobal.selected_pokemon.include?($game_map.events[event_id].pokemon) && $game_map.events[event_id].pokemon.deselecttimer==0
+		#    pbTogglePokemonSelection(pkmn)
+		#   else
+	    #    $game_map.events[event_id].pokemon.deselecttimer = 50
+	    #    pbTogglePokemonSelection(pkmn)
+		#   end
+          if Input.press?(Input::CTRL) && $DEBUG 
+		     if $DEBUG	  
+		     nuevent = $game_map.events[event_in_question]
+		      puts "You are clicking on: #{nuevent.name}" if $DEBUG
+		      puts "You are clicking on: #{nuevent.event.pages[0].move_route.list[0].code}" if event_in_question.name=="PlayerPkmn" && $DEBUG
+		     end
+		   
+		  end
 	     end
-        
-	      $game_temp.preventspawns=false
     end
 
 
-    if Input.double_tap?(Input::MOUSELEFT) && Input.mouse_in_window? 
+
+  #puts $selection_arrows.sprites
+    if Input.double_tap?(Input::TOGGLETYPE) && Input.mouse_in_window?
+		active_directed=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 		tiles = *get_tile_with_direction
 		event_in_question = $game_map.check_event(tiles[0],tiles[1])
-		nuevent = $game_map.events[event_in_question] if event_in_question.is_a?(Integer)
-		nuevent = event_in_question if event_in_question.is_a?(Game_Player)
-		active_directed=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-	  if Input.press?(Input::CTRL) 
-		   event_in_question=$game_map.check_event(*get_tile_mouse_on)
-		   if event_in_question.is_a?(Integer)
-		     nuevent = $game_map.events[event_in_question]
-		     if $DEBUG	  
-		      puts "You are clicking on: #{$game_map.events[event_in_question].name}" if $DEBUG
-		      puts "You are clicking on: #{nuevent.event.pages[0].move_route.list[0].code}" if event_in_question.name=="PlayerPkmn" && $DEBUG
-		     end
-
+		target_event = $game_map.events[event_in_question] if event_in_question.is_a?(Integer)
+		target_event = event_in_question if event_in_question.is_a?(Game_Player)
+		puts target_event && target_event.is_a?(Game_PokeEventA) && target_event.name=="PlayerPkmn" && $player.party.include?(target_event.pokemon) && active_directed!=:MULTISELECT
+		puts target_event.pokemon.deselecttimer if target_event && target_event.is_a?(Game_PokeEventA)
+		   puts $PokemonGlobal.selected_pokemon.to_s
+		if target_event.is_a?(Game_PokeEventA) && target_event.name=="PlayerPkmn" && $player.party.include?(target_event.pokemon) && active_directed!=:MULTISELECT
+		   if $PokemonGlobal.selected_pokemon.include?(target_event.pokemon) && target_event.pokemon.deselecttimer==0
+            pbDeselectThisPokemon(target_event.pokemon)
+		   elsif target_event.pokemon.deselecttimer==0 && !$PokemonGlobal.selected_pokemon.include?(target_event.pokemon)
+	        target_event.pokemon.deselecttimer = 50
+	        pbSelectThisPokemon(target_event.pokemon)
 		   end
-	  elsif active_directed!=:MULTISELECT && nuevent.is_a?(Game_PokeEventA)
-	   pbTogglePokemonSelection(nuevent.pokemon)
-	  else
-		   events = []
-		   if $PokemonGlobal.get_selected_pokemon.length>1 && active_directed==:MULTISELECT
-		      $PokemonGlobal.selected_pokemon_cleaned.each do |pkmn|
-		        next if pkmn==0
-		        events << $game_map.events[pkmn.associatedevent]
-		      end
-          elsif $PokemonGlobal.get_selected_pokemon.length==1
-		    thispokemon = $PokemonGlobal.get_single_selected_pokemon
-		      if !thispokemon.nil?
-		        events << $game_map.events[thispokemon.associatedevent]
-		      end
-            
+		else
 
-		   elsif $PokemonGlobal.ball_hud_enabled==true && active_directed.is_a?(Pokemon)
-		      associatedeveneiefg = active_directed.associatedevent
-			   return if associatedeveneiefg.nil?
-		      eventinquestion = $game_map.events[associatedeveneiefg]
-		      if !eventinquestion.nil?
-		        events << eventinquestion
-		      end
+		pokemon_list = []
+		
+        if active_directed == :MULTISELECT
+         selected = $PokemonGlobal.selected_pokemon_cleaned
+         return if selected.length <= 1
+		 pokemon_list = selected.reject { |pkmn| pkmn == 0 }.map { |pkmn| pkmn.associatedevent }
+		
+        elsif $PokemonGlobal.ball_hud_enabled && active_directed.is_a?(Pokemon)
+		 pokemon_list << active_directed.associatedevent
+        elsif (single = $PokemonGlobal.get_single_selected_pokemon)
+		 pokemon_list << single.associatedevent
+        end
+		return if pokemon_list.empty?
+        pokemon_list.each do |event_id|
+		  next if event_id.nil?
+          event = $game_map.events[event_id]
+		  next if !event.respond_to?("pokemon")
+		  pkmn = event.pokemon
+		  next if pkmn.nil?
+		  process_pokemon(tiles,event,target_event,pkmn,event_in_question)
+		end
 
-
-		   end
-
-          return if events.empty?
-
-
-		   events.each do |event|
-		      next if event.nil?
-		      next if !event.respond_to?("pokemon")
-			    pkmn = event.pokemon
-		      next if pkmn.nil?
-			  
-			  
-			   if pkmn.effects[PBEffects::Confusion]!=0
-				 sideDisplay("#{pkmn.name} is confused! It won't listen!")
-			     next
-			   end
-			   if nuevent.is_a?(Game_PokeEventA)
-			      pbTogglePokemonSelection(nuevent.pokemon)
-			      next
-			   end
-			   
-			   puts "#{event.pokemon.name} is on: X: #{event.x}, Y: #{event.y}" if $DEBUG
-			   
-
-	         if $mouse.current_mode==:FOLLOW  
-		       $game_temp.preventspawns=true
-			   
-			    if get_cur_player == nuevent
-                 event.following = get_cur_player
-                 event.movement_type = :MOVEBEHINDPLAYER 
-		          sideDisplay("#{$game_map.events[pkmn.associatedevent].type.name} is now following #{nuevent.pokemon.name}.")
-			      next
-			    end
-			   
-		      if event.move_with_maps(event.map_id, tiles[0],tiles[1])
-		        event.movement_type = :STILL
-		        event.still_timer=-1
-				 loops = 0
-				 if [event.x, event.y]!=[tiles[0],tiles[1]]
-			     while !within_one_tile?(event.x, event.y, tiles[0],tiles[1])
-	              Input.update
-                  Graphics.update
-				    self.miniupdate
-					
-				   if !event.moving?
-				    loops += 1 
-				   end
-				  break if within_one_tile?(event.x, event.y, tiles[0],tiles[1])
-				  break if loops>=60 && !event.moving?
-				 end
-               if within_one_tile?(event.x, event.y, tiles[0],tiles[1])
-				 if event_in_question.is_a?(Integer)
-                  look_at_location(event.id,nuevent.x,nuevent.y)
-				  if nuevent.is_a?(Game_PokeEvent)
-				    event.add_target(event_in_question,nuevent) 
-                 event.following = nuevent
-				    event.movement_type = :FOLLOW
-				 end
-					 nuevent.start if nuevent.name.include?("inter")
-				 elsif event_in_question==$game_player
-				 else
-                 event.move_toward_the_coordinate(tiles[0],tiles[1]) if [event.x, event.y]!=[tiles[0],tiles[1]]
-			     end
-              end
-               end
-		      end
-
-		   $game_temp.preventspawns=false 
-           end 
-		   end
-		   
-		   
-		   
-
-
-
-
-
-
-
-       end
-
-
-
-
-
-
-
-     end
+		end
+	end
 
   end
-   
+  
+  def process_pokemon(tiles,event,target_event,pkmn,event_in_question)
+		if pkmn.effects[PBEffects::Confusion]!=0
+			sideDisplay("#{pkmn.name} is confused! It won't listen!")
+			return
+		end
+		puts "#{pkmn.name} is on: X: #{event.x}, Y: #{event.y}" if $DEBUG
+		if true
+		  $game_temp.preventspawns=true
+		  if get_cur_player == target_event
+            event.following = get_cur_player
+            event.movement_type = :MOVEBEHINDPLAYER 
+		    sideDisplay("#{event.type.name} is now following #{target_event.pokemon.name}.")
+			return
+		  end
+		  if event.move_with_maps(event.map_id, tiles[0],tiles[1])
+            event.movement_type = :STILL
+            event.still_timer=-1
+            loops = 0
+            if [event.x, event.y]!=[tiles[0],tiles[1]]
+			   while !within_one_tile?(event.x, event.y, tiles[0],tiles[1])
+	             Input.update
+                 Graphics.update
+				 self.miniupdate
+				 if !event.moving?
+				  loops += 1 
+				 end
+				 break if within_one_tile?(event.x, event.y, tiles[0],tiles[1])
+				 break if loops>=60 && !event.moving?
+			   end
+               if within_one_tile?(event.x, event.y, tiles[0],tiles[1])
+	             if event_in_question.is_a?(Integer)
+                  look_at_location(event.id,target_event.x,target_event.y)
+				  if target_event.is_a?(Game_PokeEvent)
+				    event.add_target(event_in_question,target_event) 
+                    event.following = target_event
+				    event.movement_type = :FOLLOW
+				  end
+                  target_event.start if target_event.name.include?("inter")
+	             elsif event_in_question==$game_player
+	             else
+                  event.move_toward_the_coordinate(tiles[0],tiles[1]) if [event.x, event.y]!=[tiles[0],tiles[1]]
+	             end
+              end
+            end
+		  else
+            puts "It's failing"
+		  end
+
+		  $game_temp.preventspawns=false 
+        end 
+        puts event.movement_type if $DEBUG
+  end
+  
+  
   def positioning_controls
     return if $game_temp.position_calling == false
     return if $game_temp.current_pkmn_controlled == true
@@ -1241,6 +1251,12 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 	   $game_system.save_disabled = false
 	   $game_temp.position_calling = false
 	  end
+	elsif Input.trigger?(Input::INVENTORY)
+	    if !$player.held_item.is_a?(Pokemon)
+		 $bag.last_viewed_pocket=Settings.bag_pocket_names.length
+	     inventory_logic 
+		 $game_temp.position_calling = false
+		end
 	elsif Input.triggerex?(:DOWN)
 		 event.direction = 8
 	elsif Input.triggerex?(:UP)
@@ -1304,7 +1320,6 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 	  else 
 		$PokemonGlobal.hud_selector += 1
 	  end
-    elsif Input.trigger?(Input::PKMNCONTROL)
     elsif Input.trigger?(Input::USE)
 	  if $PokemonGlobal.hud_selector!=4
 	   facingEvent, distance = get_target_player(event)
@@ -1324,17 +1339,7 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 	   end
 	  end
     elsif Input.trigger?(Input::INVENTORY)
-      $game_temp.in_menu = true
-    item = nil
-    pbFadeOutIn(99999) {
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      item = screen.pbStartScreen
-    }
-      $game_temp.in_menu = false
-    if item
-      pbUseKeyItemInField(item)
-    end
+     inventory_logic
     elsif Input.trigger?(Input::ACTION)
 	  if $game_temp.menu_calling==false
 		 $game_temp.menu_calling = true
@@ -1343,7 +1348,7 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 		 $game_temp.menu_calling = false
 		 $game_temp.menu_beep = false
 	  end
-    end
+	end
   end
   def ball_hud_controls
     if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].nil?
@@ -1358,35 +1363,41 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
     if Input.trigger?(Input::USE)
       $game_temp.interact_calling = true
 	 elsif Input.trigger?(Input::TOGGLEHUD) #X
-      $PokemonGlobal.ball_hud_enabled = false
+	   if $PokemonGlobal.alt_control_move==false && $PokemonGlobal.cur_stored_pokemon.nil?
+         $PokemonGlobal.ball_hud_enabled = false
+	   else
+	    $PokemonGlobal.set_ball_hud_type($PokemonGlobal.ball_hud_type_old)
+	   end
 	 elsif Input.double_tap?(Input::TOGGLETYPE)
-	    $game_temp.radial_enabled= !$game_temp.radial_enabled
-	     pbSEPlay("GUI sel decision", 60) 
-	elsif Input.double_tap?(Input::ALTMENU) 
-	    if $PokemonGlobal.ball_hud_type==:PKMN
-       if $PokemonGlobal.selected_pokemon.length>0 && $PokemonGlobal.alt_control_move==false && $PokemonGlobal.ball_hud_enabled == true
+	#    $game_temp.radial_enabled= !$game_temp.radial_enabled
+	#     pbSEPlay("GUI sel decision", 60) 
+	#  $mouse.set_mode(:FOLLOW)
+	 elsif Input.trigger?(Input::SPECIAL)
+	  amt = $PokemonGlobal.selected_pokemon_cleaned.length
+      $PokemonGlobal.ball_hud_enabled = false if $PokemonGlobal.alt_control_move==true || !$PokemonGlobal.cur_stored_pokemon.nil?
+      if amt==1
+	    pkmn = $PokemonGlobal.selected_pokemon_cleaned[0]
+	   if $PokemonGlobal.cur_stored_pokemon!=pkmn
+	    $PokemonGlobal.set_ball_hud_type(:MOVES,true,pkmn)
+	   end
+
+	  elsif amt>1
+	   if $PokemonGlobal.alt_control_move==false
 	     pbDeselectThisPokemon($PokemonGlobal.ball_order[0]) if $PokemonGlobal.ball_order[0]!=0
 	     pbSelectThisPokemon($PokemonGlobal.ball_order[0],true) if $PokemonGlobal.ball_order[0]!=0
 	     $PokemonGlobal.set_ball_hud_type(:MULTISELECT,true) 
 	     pbSEPlay("GUI sel decision", 60) 
-       elsif $PokemonGlobal.alt_control_move==true && $PokemonGlobal.ball_hud_enabled == true
+	   
+	   
+	   else
 	     $PokemonGlobal.set_ball_hud_type(:PKMN,true) 
 	     pbSEPlay("GUI sel decision", 60) 
-       end
+	   
+	   
 	   end
-	 elsif Input.trigger?(Input::SPECIAL)
+      end
     elsif Input.trigger?(Input::INVENTORY)
-      $game_temp.in_menu = true
-    item = nil
-    pbFadeOutIn(99999) {
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      item = screen.pbStartScreen
-    }
-      $game_temp.in_menu = false
-    if item
-      pbUseKeyItemInField(item)
-    end
+      inventory_logic
 	 elsif Input.trigger?(Input::ACTION)
       unless $game_system.menu_disabled || $game_player.moving?
         $game_temp.menu_calling = true
@@ -1400,27 +1411,33 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
 	 end
 	 elsif Input.trigger?(Input::JUMPDOWN) || Input.scroll_v==-1 
       if $game_temp.in_throwing==false
+	  if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) && $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld
+	     pbDeselectThisPokemon($PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index])
+	  end 
         $PokemonGlobal.ball_hud_index-=1
         $PokemonGlobal.ball_hud_index=($PokemonGlobal.ball_order.length-1) if $PokemonGlobal.ball_hud_index<0
+
         pbSEPlay("GUI sel cursor", 60)if $PokemonGlobal.ball_order.length>1
       end
 
 	 elsif Input.trigger?(Input::JUMPUP) || Input.scroll_v==1 #D
       if $game_temp.in_throwing==false
+	  if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) && $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld
+	     pbDeselectThisPokemon($PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index])
+	  end 
         $PokemonGlobal.ball_hud_index+=1
         $PokemonGlobal.ball_hud_index=0 if $PokemonGlobal.ball_hud_index>=$PokemonGlobal.ball_order.length
         pbSEPlay("GUI sel cursor", 60) if $PokemonGlobal.ball_order.length>1
       end
-	 elsif Input.trigger?(Input::PKMNCONTROL)
 
 	 elsif Input.trigger?(Input::TOGGLETYPE)
      # $PokemonGlobal.set_extended_hud=false if $PokemonGlobal.set_extended_hud==true
-	     if $PokemonGlobal.ball_hud_type==:PKMN
-	       $PokemonGlobal.set_ball_hud_type(:ITEM,true)
-		  elsif $PokemonGlobal.ball_hud_type==:ITEM
-	       $PokemonGlobal.set_ball_hud_type(:PKMN,true)
-		  end
-	  pbSEPlay("GUI sel decision", 60) 
+	#     if $PokemonGlobal.ball_hud_type==:PKMN
+	#       $PokemonGlobal.set_ball_hud_type(:ITEM,true)
+	#	  elsif $PokemonGlobal.ball_hud_type==:ITEM
+	#       $PokemonGlobal.set_ball_hud_type(:PKMN,true)
+	#	  end
+	#  pbSEPlay("GUI sel decision", 60) 
 	 elsif  Input.press?(Input::NOTEBOOK)
 	  $game_temp.notebook_calling=true
 	 else#if
@@ -1488,33 +1505,47 @@ if facingEvent && facingEvent.name[/BerryPlant/i] && (duriscannon.pokemon.moves2
     if Input.trigger?(Input::USE)
       $game_temp.interact_calling = true
     elsif Input.trigger?(Input::INVENTORY)
-      $game_temp.in_menu = true
-    item = nil
-    pbFadeOutIn(99999) {
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      item = screen.pbStartScreen
-    }
-      $game_temp.in_menu = false
-    if item
-      pbUseKeyItemInField(item)
-    end
+       inventory_logic
     elsif Input.trigger?(Input::ACTION)
       unless $game_system.menu_disabled || $game_player.moving?
 	    $game_temp.menu_calling = true
 	    $game_temp.menu_beep = true
       end
     elsif Input.trigger?(Input::SPECIAL)
-      #unless $game_player.moving?
- 	   # $game_temp.ready_menu_calling = true
-      #end
+      if !pbSeenTipCard?(:HUD)
+	    pbShowTipCardsGrouped(:HUDSTUFF)
+      end
+	  amt = $PokemonGlobal.selected_pokemon_cleaned.length
+      if amt==1
+	    pkmn = $PokemonGlobal.selected_pokemon_cleaned[0]
+	   if $PokemonGlobal.cur_stored_pokemon!=pkmn
+	    $PokemonGlobal.set_ball_hud_type(:MOVES,true,pkmn)
+      $PokemonGlobal.ball_hud_enabled = true if $PokemonGlobal.ball_hud_enabled==false
+	   end
 
-    elsif Input.trigger?(Input::PKMNCONTROL)
+	  elsif amt>1
+	   if $PokemonGlobal.alt_control_move==false
+	     pbDeselectThisPokemon($PokemonGlobal.ball_order[0]) if $PokemonGlobal.ball_order[0]!=0
+	     pbSelectThisPokemon($PokemonGlobal.ball_order[0],true) if $PokemonGlobal.ball_order[0]!=0
+	     $PokemonGlobal.set_ball_hud_type(:MULTISELECT,true) 
+	     pbSEPlay("GUI sel decision", 60) 
+      $PokemonGlobal.ball_hud_enabled = true if $PokemonGlobal.ball_hud_enabled==false
+	   
+	   
+	   else
+	     $PokemonGlobal.set_ball_hud_type(:PKMN,true) 
+	     pbSEPlay("GUI sel decision", 60) 
+      $PokemonGlobal.ball_hud_enabled = true if $PokemonGlobal.ball_hud_enabled==false
+	   
+	   
+	   end
+      end
 
     elsif Input.trigger?(Input::TOGGLEHUD)
       if !pbSeenTipCard?(:HUD)
 	    pbShowTipCardsGrouped(:HUDSTUFF)
       end
+	    $PokemonGlobal.set_ball_hud_type($PokemonGlobal.ball_hud_type_old)
       $PokemonGlobal.ball_hud_enabled = true
 	   
 	elsif  Input.press?(Input::NOTEBOOK)
@@ -1628,12 +1659,12 @@ def pbDetectTarget(source=$game_player,lockon=false)
   when 8; landing_coord[1]-=i+1
   end
       event_id=$game_map.check_event(*landing_coord)
-	  if event_id.is_a?(Integer)
+	  if $game_map.events[event_id]
 	     
-      if event_id > 0 && $game_map.events[event_id].name[/vanishingEncounter/]
+      if $game_map.events[event_id].name[/vanishingEncounter/]
         event=$game_map.events[event_id]
 	  end
-	  if $game_switches[556]==true && event_id > 0 && $game_map.events[event_id].name[/tutorialvanishingEncounter/]
+	  if $game_switches[556]==true && event_id && $game_map.events[event_id].name[/tutorialvanishingEncounter/]
         event=$game_map.events[event_id]
         return event
 	  end
@@ -1661,7 +1692,7 @@ def pbGetTargetDistance(source=$game_player,amt=3)
   when 8; landing_coord[1]-=i+1
   end
   event_id=$game_map.check_event(*landing_coord)
-	next if !event_id.is_a?(Integer) && event_id != $game_player
+	next if !$game_map.events[event_id] && event_id != $game_player
      events << [event_id,i+1]
 end
   theevent = events.min_by { |event| event[1] }
@@ -1680,7 +1711,7 @@ def pbGetLockOnTarget(source=$game_player)
     do_it,amt,start_end = throwing_range_logic(do_it, amt)
 	if do_it==true
   event_id=$game_map.check_event(start_end[1][0],start_end[1][1])
-  if event_id.is_a?(Integer) && event_id > 0 #&& ($game_map.events[event_id].name[/vanishingEncounter/] || $game_map.events[event_id].name[/tutorialvanishingEncounter/])
+  if $game_map.events[event_id] #&& ($game_map.events[event_id].name[/vanishingEncounter/] || $game_map.events[event_id].name[/tutorialvanishingEncounter/])
      event=$game_map.events[event_id]
         secondarye = event
 		 
@@ -1702,6 +1733,30 @@ def pbGetLockOnTarget(source=$game_player)
 	end
 end
 
+def pbDetectTargetPokemonDirection(unit, direction, target)
+   raise unit if unit.is_a?(Integer)
+   amt = sight_line(unit)
+   px, py = unit.x, unit.y
+  # puts "========================"
+  # puts target.pokemon.name
+ #  puts amt
+ #  puts [px,py].to_s
+  # puts [target.x,target.y].to_s
+  (1..amt).each do |i|
+    landing_coord = case direction
+    when 2 then [px, py + i]
+    when 4 then [px - i, py]
+    when 6 then [px + i, py]
+    when 8 then [px, py - i]
+    end
+ #  puts "====LANDING COORDS===="
+ #  puts [landing_coord[0],landing_coord[1]].to_s
+    return i if target.x == landing_coord[0] && target.y == landing_coord[1]
+  end
+
+  return nil
+end
+
 
 def pbDetectTargetPokemon(source,target=$game_player)
   potato=false
@@ -1718,9 +1773,9 @@ def pbDetectTargetPokemon(source,target=$game_player)
   end
    if !target.nil?
 	if target.x==landing_coord[0] && target.y==landing_coord[1]
-   carrot=i+1
+      carrot=i+1
 	end
-	end
+   end
   end
 
 
@@ -1885,7 +1940,7 @@ def direct_pokemon_movement_main
 		     direct_pokemon_sub($game_map.events[event_id],$game_map.events[$PokemonGlobal.selected_pokemon[index-1].associatedevent])
 			  end
 		  end
-    else
+    elsif !active_directed.nil?
 	        event_id = active_directed.associatedevent
 			return if event_id.nil?
 		    direct_pokemon_sub($game_map.events[event_id])

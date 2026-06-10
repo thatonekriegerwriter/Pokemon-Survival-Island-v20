@@ -38,16 +38,24 @@ def caniusethis(object,event)
 end
 def getObjectImage(object)
 	case object #CAULDRON, CraftingStation, 
-	when :CRAFTINGBENCH  || :ELECTRICPRESS  || :SEWINGMACHINE
+	when :CRAFTINGBENCH  || :ELECTRICPRESS  || :SEWINGMACHINE 
 	 image = "CraftingStation"
 	when :UPGRADEDCRAFTINGBENCH
 	 image = "CraftingStation"
+	when :RESEARCHTABLE
+	 image = "craftingStations/ResearchTable"
 	when :APRICORNCRAFTING || :APRICORNMACHINE
 	 image = "PokeballStationUp"
-	when :FURNACE || :ELECTRICFURNACE || :MACHINEBOX 
+	when :FURNACE || :ELECTRICFURNACE
 	 image = "FurnaceUp"
+	when :MACHINEBOX 
+	 image = "craftingStations/MachineBox"
 	when :GRINDER || :ELECTRICGRINDER || :TORCH
 	 image = "Furnace"
+	when :GARBAGEBIN
+	 image = "craftingStations/GarbageBin"
+	when :WARDINGTOTEM
+	 image = "craftingStations/WardingTotem"
 	when :CAULDRON
 	 image = "Cauldron"
 	when :SPRINKLER
@@ -58,8 +66,12 @@ def getObjectImage(object)
 	 image = "Tent"
 	when :PKMNCRATE
 	 image = "cratedown"
-	when :ITEMCRATE || :ICEBOX || :ELECTRICICEBOX
+	when :ITEMCRATE
 	 image = "crateidown"
+	when :ICEBOX || :ELECTRICICEBOX
+	 image = "craftingStations/IceBoxClosed"
+	when :ADVENTUREFLAG
+	 image = "craftingStations/AdventureFlag"
 	when :COALGENERATOR
 	 image = "FurnaceUp"
 	when :SOLARGENERATOR
@@ -79,8 +91,8 @@ def getObjectImage(object)
     when "CampsiteDoor"
 	 image = nil
 	else
-	 image = nil
-	puts "ERROR"
+	 image = "CraftingStation"
+	 puts "002_Create_Objects line 83"
 	end
 
  return image
@@ -92,134 +104,57 @@ def pbResetPlacing
 end
 
 def pbPlaceObject(x,y,object,aat=false,direction=nil)
-  # place event with random movement with overworld sprite
-  # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
-    update_variable = nil
-  if !$player.held_item_object.nil? && !$player.held_item.nil?
-    if $player.held_item.is_a?(ItemData)
-	   localMeter = pbMapInterpreter.getVariableOther($player.held_item_object)
-	   if !localMeter.nil?
-	      	update_variable = localMeter.dup 
-			pbMapInterpreter.deleteVariableOther($player.held_item_object)
-	   end
-    end
-  end
-
-  if object=="OvPot" || pbObjectIsPossible(x,y)
-  if !$map_factory
-    key_id = $game_map.generateEvent(x,y,object,aat,false,direction)
-  else
-    mapId = $game_map.map_id
-    spawnMap = $map_factory.getMap(mapId)
-    key_id = spawnMap.generateEvent(x,y,object,aat,false,direction)
-  end
-  if !key_id.nil?
-  $player.held_item_object = key_id
-  end
-  if !update_variable.nil?
-	   pbMapInterpreter.setVariableOther(update_variable,$player.held_item_object)
-	   localMeter2 = pbMapInterpreter.getVariableOther($player.held_item_object)
-  end
-  return true
-  else
-  pbMessage(_INTL("You cannot place that there!"))
-  #$bag.add(object)
-  return false
+  if !(object=="OvPot" || pbObjectIsPossible(x,y))
+    sideDisplay(_INTL("You cannot place that there!"))
+    return false
   end 
- # Play the pokemon cry of encounter
+    key_id = $DynamicEvents.generateEvent(x,y,object,aat,false,direction)
+    return true
 end
 
 def pbHoldingObject(x,y,object,aat=false)
-  # place event with random movement with overworld sprite
-  # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
-  
-  
-    update_variable = nil
-    puts !$player.held_item_object.nil? && !$player.held_item.nil?
-    puts $player.held_item.is_a?(ItemData)
-  if !$player.held_item_object.nil? && !$player.held_item.nil?
-    if $player.held_item.is_a?(ItemData)
-	   localMeter = pbMapInterpreter.getVariableOther($player.held_item_object)
-        puts localMeter.fuel.to_s
-	   if !localMeter.nil?
-	      	update_variable = localMeter.dup 
-        puts update_variable.fuel.to_s
-			pbMapInterpreter.deleteVariableOther($player.held_item_object)
-	   end
-    end
-  end
-  
-  
-  if pbObjectIsPossible(x,y)
-  if !$map_factory
-    key_id = $game_map.generateEvent(x,y,object,aat,true)
-  else
-    mapId = $game_map.map_id
-    spawnMap = $map_factory.getMap(mapId)
-    key_id = spawnMap.generateEvent(x,y,object,aat,true)
-  end
-  if !update_variable.nil?
-	   pbMapInterpreter.setVariableOther(update_variable,$player.held_item_object)
-	   localMeter2 = pbMapInterpreter.getVariableOther($player.held_item_object)
-        puts localMeter2.fuel.to_s
-  end
-  return true
-  else
-  pbMessage(_INTL("You cannot place that there!"))
-  #$bag.add(object)
-  return false
+  if !pbObjectIsPossible(x,y)
+    sideDisplay(_INTL("You cannot place that there!"))
+    return false
   end 
-  
-  
-  
-  
-  
- # Play the pokemon cry of encounter
+    $player.held_item_object = $DynamicEvents.generateEvent(x,y,object,aat,true)
+    return true
 end
 
 def pbObjectIsPossible(x,y)
-  if !$game_map.valid?(x,y) #check if the tile is on the map
-    return false
-  else
-    tile_terrain_tag = $game_map.terrain_tag(x,y)
-  end
+  return false if !$game_map.valid?(x,y)
+  puts $game_map.events.values.to_s
+   
   for event in $game_map.events.values
+    next if $player.held_item_object.nil?
     next if event==$game_map.events[$player.held_item_object]
     if event.x==x && event.y==y
-	
-	 if !$player.held_item_object.nil?
-	 
-	 if event.x != $game_map.events[$player.held_item_object].x && event.y != $game_map.events[$player.held_item_object].y
-      next
-	 elsif is_bedroll?
-	 else 
+	  next if event.x != $game_map.events[$player.held_item_object].x && event.y != $game_map.events[$player.held_item_object].y
       return false
-	 end
-	 else
-      return false
-	 end
-    
-	end
+    end 
   end
 
+  tile_terrain_tag = $game_map.terrain_tag(x,y)
   return false if !tile_terrain_tag
-  #check if it's a valid grass, water or cave etc. tile
   return false if tile_terrain_tag.ice
   return false if tile_terrain_tag.ledge
   return false if tile_terrain_tag.waterfall
   return false if tile_terrain_tag.waterfall_crest
   return false if tile_terrain_tag.id == :Rock
   return false if tile_terrain_tag.can_surf
-   potato = !$game_map.passableStrict?(x, y, 0) && !is_bedroll?
-  return false if potato
+  return false if !$game_map.passableStrict?(x, y, 0) && !is_bedroll?
   return true
 end
+
+
 def is_bedroll_or_camp?
- return (($player.held_item == :BEDROLL || $player.held_item == :PORTABLECAMP ) && $game_player.direction==8)
+ return ((GameData::Item.get($player.held_item).id == :BEDROLL || GameData::Item.get($player.held_item).id == :PORTABLECAMP ) && $game_player.direction==8)
 end
 def is_bedroll?
- return ($player.held_item == :BEDROLL && ($game_map.events[$player.held_item_object].direction==4||$game_map.events[$player.held_item_object].direction==6))
+ return (GameData::Item.get($player.held_item).id == :BEDROLL && ($game_map.events[$player.held_item_object].direction==4||$game_map.events[$player.held_item_object].direction==6))
 end
+
+
 def pickMeUp(event,type)
 key_id = event
 $player.held_item=type
@@ -230,6 +165,7 @@ if !$game_map.events[key_id].nil?
 if GameData::Item.get(type).id == :BEDROLL
 pbMoveRoute($game_map.events[key_id], [PBMoveRoute::Graphic,"Packed.png",0,$game_map.events[key_id].direction,0])
 end
+
 if GameData::Item.get(type).id == :PORTABLECAMP
 
 
@@ -343,6 +279,7 @@ else
     
    
    if $player.place(x,y)
+   
    if GameData::Item.get(item).id == :PORTABLECAMP
     pbPlaceObject(x+1,y,"CampsiteDoor")
    end

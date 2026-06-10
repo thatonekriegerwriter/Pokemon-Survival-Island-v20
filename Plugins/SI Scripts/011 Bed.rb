@@ -1,4 +1,346 @@
 
+class Game_Temp
+  attr_accessor :in_bed
+  def in_bed
+    @in_bed = false if @in_bed.nil?
+	return @in_bed
+  end 
+end 
+
+def pbBedCore(item)
+  BedCore.sleep
+end 
+
+module BedCore
+def self.sleep
+	#  pbFadeOutIn(99999) {
+	$game_temp.in_bed=true
+   scene = PBSleepScene.new
+   scene.pbStartScene
+   scene.pbChoose
+   scene.pbEndScene
+	$game_temp.in_bed=false
+   #}
+
+end 
+
+
+end 
+
+class PBSleepScene
+  MAX_HOURS = 24
+
+  def pbStartScene(type=:SLEEP,x=0,y=0)
+    @hours = nuzlocke_has?(:AFULLEIGHTHOURS) ? 8 : 12 
+	text = type==:SLEEP ? "How long would you like to sleep?" : "How long would you like to wait?"
+    @scene = PBSliderScene.new(
+     min: 1,
+     max: 25,
+     start: @hours,
+     ticks: (1..24).to_a,
+     title: text
+    )
+    @scene.pbStartScene(x,y)
+	  pbShowTipCardsGrouped(:BEDTIMETIPS) if !pbSeenTipCard?(:SLEEPING1)
+  # default position
+
+  end
+  
+  def increment_sleep(hours=1)
+	$game_variables[29] += (3600*hours)
+	pbSleepRestore(hours)
+	time_now = pbGetTimeNow
+    $player.time_last_watered = time_now.to_i+rand(900)+1
+    $player.time_last_food = time_now.to_i+rand(900)+1
+    $player.time_last_slept = time_now.to_i+rand(1800)+1
+    $player.time_last_saturated = time_now.to_i+rand(600)+1
+	increaseHealthAndTotalHP(hours)
+    
+  end 
+  
+  def perform_sleep(value)
+      pbSetPokemonCenter if !is_current_pos_center?
+	  countdownSlider(value)
+	  pbRandomEvent
+	  sideDisplay(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
+      $ExtraEvents.clearOverworldPokemonMemory
+	  party = $player.party
+	  for i in 0...party.length
+	    next if party[i].nil?
+        pkmn = party[i]
+		heal_BED(@hours,pkmn)
+	  end
+	  pbMEPlay("Pokemon Healing")
+	  if $player.playersleep >= 100.0
+		sideDisplay(_INTL("You feel well rested!"))
+	  elsif $player.playersleep >= 75.0
+		sideDisplay(_INTL("You feel a little groggy, but are raring to go!"))
+	  elsif $player.playersleep >= 50.0
+		sideDisplay(_INTL("Your brain feels fuzzy."))
+	  elsif $player.playersleep >= 25.0
+		sideDisplay(_INTL("You want to go back to bed."))
+	  else
+		sideDisplay(_INTL("You really need to sleep."))
+	  end  
+
+  end 
+  
+
+
+  def pbChoose
+    value = @scene.pbChoose
+	if value
+	  @hours = value
+	  perform_sleep(value)
+	end 
+  end
+
+  def countdownSlider(value)
+    frames_per_decrement = 45  # e.g., 30 frames = 0.5 seconds at 60fps
+    frame_counter = 0
+  
+      loop do 
+       Graphics.update
+       Input.update
+       frame_counter += 1
+       if frame_counter >= frames_per_decrement
+         frame_counter = 0
+         value -= 1
+		 increment_sleep(1)
+         @scene.value = value
+         @scene.refresh
+		 break if value==0
+       end
+	  end 
+  
+  end 
+
+
+
+
+
+  def pbEndScene
+    @scene.pbEndScene
+  end
+
+end 
+
+class PBSliderScene
+  attr_accessor :value
+SLIDER_WIDTH  = 280
+SLIDER_HEIGHT = 8
+
+  def initialize(
+    min: 1,
+    max: 24,
+    start: 12,
+    ticks: nil,
+    title: "Select Value"
+  )
+    @min   = min
+    @max   = max
+    @value = start.clamp(min, max-1)
+    @ticks = ticks || (min..max).to_a
+    @title = title
+  end
+def pbStartScene(x,y,background=true)
+  @viewport = Viewport.new(0,0,Graphics.width,Graphics.height)
+  @x = x
+  @y = y
+  @viewport.z = 99999
+  @sprites = {}
+
+  createBackground if background
+  createSlider
+  createArrow
+  createText
+  refresh
+end
+
+def createBackground
+  @sprites["bg"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
+  @sprites["bg"].bitmap.fill_rect(
+    0,0,Graphics.width,Graphics.height,
+    Color.new(0,0,0,180)
+  )
+  @sprites["bg_sprite"] = IconSprite.new(@x + 100,@y + 100,@viewport)
+  @sprites["bg_sprite"].setBitmap("Graphics/Pictures/craftingMenu/waitbg")
+end
+
+def createSlider
+  @sprites["bar"] = BitmapSprite.new(SLIDER_WIDTH, SLIDER_HEIGHT, @viewport)
+  @sprites["bar"].x = @x + 8 + ((Graphics.width - SLIDER_WIDTH) / 2)
+  @sprites["bar"].y = @y + 150
+end
+
+def drawSlider
+  bmp = @sprites["bar"].bitmap
+  bmp.clear
+
+  bmp.fill_rect(0,0,SLIDER_WIDTH,SLIDER_HEIGHT,Color.new(80,80,80))
+
+  #fill = value_ratio * SLIDER_WIDTH
+  #bmp.fill_rect(0,0,fill,SLIDER_HEIGHT,Color.new(255,255,255))
+
+  @ticks.each_with_index do |t,i|
+    next if i == 0
+    ratio = (t - @min).to_f / (@max - @min)
+    x = (ratio * SLIDER_WIDTH).to_i
+    bmp.fill_rect(x, -4, 2, 16, Color.new(200,200,200))
+  end
+end
+
+def createArrow
+  @sprites["arrow"] = IconSprite.new(0,0,@viewport)
+  @sprites["arrow"].setBitmap("Graphics/Pictures/craftingMenu/arrow")
+  @sprites["arrow"].y = @y + 140
+end
+
+def positionArrow
+  bar = @sprites["bar"]
+  @sprites["arrow"].x = bar.x + (value_ratio * SLIDER_WIDTH).to_i - 1
+end
+
+def createText
+  @sprites["text"] = BitmapSprite.new(Graphics.width,Graphics.height,@viewport)
+  @sprites["text"].y = 0
+end
+def get_future_sleep(current_sleep=$player.playersleep, last_sleep_time=$player.time_last_slept)
+  simulated_time = pbGetTime(@value).to_i
+  rain_delta = simulated_time - last_sleep_time
+
+  time = rain_delta / 3600
+  time = [time, 1].max
+
+  future_sleep = current_sleep + (@value * 9) + (8 * time)
+  future_sleep = [future_sleep,200].min
+  future_sleep
+
+end 
+def get_future_food_water(water=$player.playerwater,food=$player.playerfood, saturation=$player.playersaturation)
+  if saturation == 0
+    food  -= (@value * 3.25)
+    water -= (@value * 3.25)
+  else
+    if saturation - (@value * 1.25) < 0.0
+      potato = (saturation - @value) * 1.25
+      saturation = 0.0
+      food  -= (potato * 3.25)
+      water -= (potato * 3.25)
+    else
+      saturation -= (@value * 1.25)
+    end
+  end
+
+  food       = [food, 0].max
+  water      = [water, 0].max
+  saturation = [saturation, 0].max
+
+  return water, food, saturation>0
+end
+  def CurrentColors(value, maxvalue)
+    if value<(maxvalue/4.0)
+      return Color.new(255,55,55)
+    elsif value<=(maxvalue/4.0)
+      return Color.new(255,125,55)
+    elsif value<=(maxvalue/2.0)
+      return Color.new(255,255,55)
+    end
+    return Color.new(55,255,55)
+  end
+  def CurrentColorsAlt(value, maxvalue)
+      return Color.new(152,208,248)
+  end
+
+def drawText
+  bmp = @sprites["text"].bitmap
+  bmp.clear
+  pbSetSystemFont(bmp)
+  bmp.font.size = 14 
+  #bmp.refresh
+  bonus = $bag.has?(:CLOCK) ? " (#{pbGetTime(@value).strftime("%I:%M %p")})" : ""
+  h20_value, fod_value, saturated = get_future_food_water
+  slp_value = get_future_sleep
+  
+  subtraction = 26
+  if saturated
+    h20colors = CurrentColorsAlt(h20_value, $player.playermaxwater)
+	fodcolors = CurrentColorsAlt(fod_value, $player.playermaxfood)
+  else 
+    h20colors = CurrentColors(h20_value, $player.playermaxwater)
+	fodcolors = CurrentColors(fod_value, $player.playermaxfood)
+  end
+	slpcolors = CurrentColors(slp_value, $player.playermaxsleep)
+  h20_value = "█"
+  fod_value = "█"
+  slp_value = "█"
+  text = [
+    [@title, @x + 260, @y + 120, 2, Color.white, nil],
+    ["#{@value} hours#{bonus}", @x + 260, @y + 170, 2, Color.new(200,200,200), nil],
+	
+	
+    ["H20: ", @x + 220 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
+    ["#{h20_value}", @x + 240 - subtraction, @y + 186, 0, h20colors, nil],
+    ["  FOD: ", @x + 260 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
+    ["#{fod_value}", @x + 288 - subtraction, @y + 186, 0, fodcolors, nil],
+    ["  SLP: ", @x + 308 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
+    ["#{slp_value}", @x + 336 - subtraction, @y + 186, 0, slpcolors, nil]
+  ]
+  
+  
+  if $bag.has?(:CALENDAR)
+  bonus2 = $bag.has?(:CLOCK) ? ", #{pbGetTimeNow.strftime("%I:%M %p")}" : ""
+  text << ["#{pbGetTimeNow.strftime("%A")}, #{pbGetTimeNow.strftime("%m.%d.%y")}#{bonus2}", @x + 260, @y + 200, 2, Color.new(200,200,200), nil]
+  end
+  pbDrawTextPositions(bmp, text)
+end
+
+def pbChoose(nuzlocke=nuzlocke_has?(:AFULLEIGHTHOURS))
+  loop do
+    Graphics.update
+    Input.update
+    updateInput if !nuzlocke
+    refresh
+
+    return @value if Input.trigger?(Input::USE) #&& !Input.trigger?(Input::MOUSELEFT)
+    return nil    if Input.trigger?(Input::BACK)
+  end
+end
+
+def updateInput
+  delta = 0
+
+  delta -= 1 if Input.repeat?(Input::LEFT) || Input.scroll_v==-1
+  delta += 1 if Input.repeat?(Input::RIGHT) || Input.scroll_v==1
+  
+
+  return unless delta != 0
+
+  @value += delta
+  @value = @value.clamp(@min, @max-1)
+
+end
+
+
+
+def value_ratio
+  (@value - @min).to_f / (@max - @min)
+end
+
+def refresh
+  drawSlider
+  positionArrow
+  drawText
+end
+
+def pbEndScene
+  pbDisposeSpriteHash(@sprites)
+  @viewport.dispose
+end
+
+end 
+
+
 class Window_InputNumberPokemon < SpriteWindow_Base
   attr_reader :sign
 
@@ -187,10 +529,10 @@ def heal_BED(wari,pkmn)
   end
   pkmn.lifespan=100 if pkmn.lifespan.nil?
   if pkmn.permaFaint==true && wari>7
-    pkmn.lifespan=-25
-  return if pkmn.lifespan<=0
+    pkmn.lifespan=-15
+    return if pkmn.lifespan<=0
     pkmn.permaFaint=false
-    pkmn.lifespan=50
+    #pkmn.lifespan=50
   end
   return if pkmn.egg?
     newHP = pkmn.hp + (wari*4.25)
@@ -198,6 +540,8 @@ def heal_BED(wari,pkmn)
     newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)
     pkmn.hp = newHP
     pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
+	
+	
 	 if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
 	 amt = BED_LOOKUP_FOR_HOURS[wari.to_s]
 	 amt = 0 if amt.nil?
@@ -254,7 +598,7 @@ def pbErasePokemonCenter(map)
 end
 
 
-def pbBedCore(item)
+def pbBedCoreOld(item)
 command = 0
 	$PokemonGlobal.bars_visible=false
   loop do
@@ -266,15 +610,17 @@ command = 0
       commands = []
       commands[cmdSleep  = commands.length] = _INTL("Sleep")
       commands[cmdNap  = commands.length] = _INTL("Nap")
-      commands[cmdSave   = commands.length] = _INTL("Save")
-      commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
-      commands[cmdPickUp  = commands.length] = _INTL("Pick Up")
+      #commands[cmdSave   = commands.length] = _INTL("Save")
+      #commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
+      #commands[cmdPickUp  = commands.length] = _INTL("Pick Up")
       commands[commands.length]              = _INTL("Cancel")
       msgwindow = pbCreateMessageWindow(nil,nil)
       pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
       command = pbShowCommands(msgwindow, commands, -1)
       pbDisposeMessageWindow(msgwindow)
       if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
+	  
+	  
           if pbConfirmMessage(_INTL("Do you want to head to bed?\\wtnp[1]"))
 		   if !nuzlocke_has?(:AFULLEIGHTHOURS)
              params = ChooseNumberParams.new
@@ -301,7 +647,7 @@ command = 0
             if !is_current_pos_center?
 			  sideDisplay("Respawn Point set to #{$game_map.name}!")
              pbSetPokemonCenter
-			 end
+			end
 			  pbShowTipCardsGrouped(:BEDTIMETIPS) if !pbSeenTipCard?(:SLEEPING1)
 				 curTime = pbGetTimeNow
 				 nuTime = Time.new($PokemonGlobal.newFrameCount+(((3600*hours))/UnrealTime::PROPORTION.to_f))
@@ -335,7 +681,11 @@ command = 0
 			        pbMessage(_INTL("You really need to sleep."))
 				end  
         	    break
+				
+				
 		  end
+
+
       elsif cmdNap >= 0 && command == cmdNap   # Summary
           if pbConfirmMessage(_INTL("Do you want to take a nap?"))
 			    pbMessage(_INTL("You lay down to take a nap."))
@@ -420,7 +770,7 @@ EventHandlers.add(:on_frame_update, :midnight_activations,
   }
 )
 def midnight_activations_please
-
+    puts "ACTIVATIONS AT MIDNIGHT"
 	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
 	$PokemonGlobal.everytwodays+=1
 	if $PokemonGlobal.everytwodays==2

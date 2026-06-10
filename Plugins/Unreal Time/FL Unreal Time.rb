@@ -273,7 +273,14 @@ end
   return time_ret
 end
 
-
+def pbGetTime(hours)
+ start_time = UnrealTime.initial_date
+ curTime = pbGetTimeNow
+ modifytime = hours * 60 * 60
+ result = curTime + modifytime
+ result = start_time if result < start_time
+ return result
+end 
 
 
 

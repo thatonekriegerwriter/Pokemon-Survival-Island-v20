@@ -7,17 +7,47 @@ module BorderSettings
  BORDERSENABLED = true
  SELECTEDBORDER = 0 
  
- BORDERS = [["Graphics/Pictures/Borders/empty",0,0, 0, 0],
- ["Graphics/Pictures/Borders/GBA",-28,-28, 100, 100],
- ["Graphics/Pictures/Borders/GBC",-28,-28, 100, 100],
- ["Graphics/Pictures/Borders/GB",-28,-28, 100, 100],
- ["Graphics/Pictures/Borders/Mini",-28,-28, 100, 100],
- ["Graphics/Pictures/Borders/custom",-28,-28, 100, 100]]
 
 end
+
+module Settings
+ BORDERS = [["Graphics/Pictures/Borders/empty",0,0, 0, 0, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBA",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBC",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GB",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/Mini",-28,-28, 120, 120, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/Cube",-28,-28, 100, 100, 2, 2, 0, 0],
+ ["Graphics/Pictures/Borders/GBA2",-50,0, 300, 100, 1, 4, 26, 4],
+ ["Graphics/Pictures/Borders/TV",-50,0, 300, 100, 1, 4, 26, 4],
+ ["Graphics/Pictures/Borders/custom",-50,0, 300, 100, 1, 4, 26, 4]]
+end
+
+MenuHandlers.add(:options_menu, :borders, {
+  "name"        => _INTL("Borders"),
+  "parent"      => :ui_menu,
+  "order"       => 90,
+  "type"        => NumberOption,
+  "parameters"  => 1..Settings::BORDERS.length,
+  "description" => _INTL("Choose a Border."),
+  "get_proc"    => proc { next $PokemonSystem.cur_border },
+  "set_proc"    => proc { |value, scene|
+    $PokemonSystem.cur_border = value
+	pbForceResizeFactor
+	scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
+	$scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
+	 amtx = 0
+	 amty = 0
+	 amtx = $PokemonSystem.screenposx-$PokemonSystem.screenposx if $PokemonSystem.screenposx!=0
+	 amty = $PokemonSystem.screenposy-$PokemonSystem.screenposy if $PokemonSystem.screenposy!=0
+	scene.sprites["textbox"].x=0+amtx
+	scene.sprites["textbox"].y=288+amty
+	
+  }
+})
+
 class PokemonSystem
   attr_accessor :cur_border
-  attr_accessor :borders
+  attr_reader :borders
   attr_accessor :offsetx
   attr_accessor :offsety
    
@@ -26,23 +56,31 @@ class PokemonSystem
    return @cur_border
   end
   def borders
-   @borders = Settings::BORDERS 
+   @borders = Settings::BORDERS  if @borders.nil?
    return @borders
   end
    
    def offsetx
-    return $PokemonSystem.borders[$PokemonSystem.cur_border][3]
+    @cur_border = 0 if @cur_border.nil?
+   @borders = Settings::BORDERS  if @borders.nil?
+    return @borders[@cur_border][3]
    end
    def offsety
-    return $PokemonSystem.borders[$PokemonSystem.cur_border][4]
+    @cur_border = 0 if @cur_border.nil?
+   @borders = Settings::BORDERS  if @borders.nil?
+    return @borders[@cur_border][4]
    end
    def screenposx
-    offset = (offsety/$PokemonSystem.borders[$PokemonSystem.cur_border][5])+$PokemonSystem.borders[$PokemonSystem.cur_border][7]
+    @cur_border = 0 if @cur_border.nil?
+   @borders = Settings::BORDERS  if @borders.nil?
+     offset = (offsetx/@borders[@cur_border][5])+@borders[@cur_border][7]
 	 #puts "screenposx: #{offset}"
     return offset
    end
    def screenposy
-    offset = (offsety/$PokemonSystem.borders[$PokemonSystem.cur_border][6])+$PokemonSystem.borders[$PokemonSystem.cur_border][8]
+    @cur_border = 0 if @cur_border.nil?
+   @borders = Settings::BORDERS  if @borders.nil?
+    offset = (offsety/@borders[@cur_border][6])+@borders[@cur_border][8]
 	 #puts "screenposy: #{offset}"
     return offset
    end
@@ -72,7 +110,7 @@ module Graphics
   # I'm sorry, again.
   def self.width
     width = 640
-    #return Settings::SCREEN_WIDTH if BorderSettings::OFFSETX!=0
+    #return Settings::SCREEN_WIDTH if Settings::OFFSETX!=0
     width = Settings::SCREEN_WIDTH 
 	return width
   end
@@ -80,21 +118,32 @@ module Graphics
   def self.height
     height = 480
    
-    #return Settings::SCREEN_HEIGHT if BorderSettings::OFFSETY!=0
+    #return Settings::SCREEN_HEIGHT if Settings::OFFSETY!=0
     height = Settings::SCREEN_HEIGHT 
 	return height
   end
 end
 
 class Viewport
-  attr_accessor :x 
-  attr_accessor :y
- alias :viewportinitold :initialize
-  def initialize(x, y, width, height)
-   x+=$PokemonSystem.screenposx
-   y+=$PokemonSystem.screenposy
-   viewportinitold(x, y, width, height)
+
+  unless instance_variable_defined?(:@__orig_initialize)
+    @__orig_initialize = instance_method(:initialize)
   end
+  
+  define_method(:initialize) do |x, y, width, height|
+    self.class.instance_variable_get(:@__orig_initialize).bind(self).call(x, y, width, height)
+   @ox = x+$PokemonSystem.screenposx
+   @oy = y+$PokemonSystem.screenposy
+  end
+  
+ # def initialize(x, y, width, height)
+  # puts self.class.superclass
+ #  super
+ #  @ox = x+$PokemonSystem.screenposx
+ #  @oy = y+$PokemonSystem.screenposy
+ # end
+  
+  
 end
 class LocationWindow
  alias :locationinitold :initialize

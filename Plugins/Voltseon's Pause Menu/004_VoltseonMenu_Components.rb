@@ -107,6 +107,7 @@ class SurvivalHud < Component
   end
 
 
+  def isSpecial?; return true; end
   def shouldDraw?; return true; end
   def createMap(viewport)
   

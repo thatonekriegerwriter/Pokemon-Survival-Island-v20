@@ -30,6 +30,7 @@ class DayCare
       inherit_ability(egg, mother_data, father_data)
       inherit_moves(egg, mother_data, father_data)
       inherit_IVs(egg, mother, father)
+		inherit_hptype(egg, mother, father)
       inherit_poke_ball(egg, mother_data, father_data)
       egg.age = 1
       egg.lifespan = 50

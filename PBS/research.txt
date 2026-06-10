@@ -1,0 +1,280 @@
+#-------------------------------
+[MASTERBALLC]
+Name=Research
+HoursPerStage=1
+StageAmt=5
+UnlockItem=PURPLEAPRICORN
+AssociatedRecipe=MASTERBALLC
+Flags=
+#-------------------------------
+[MACHINEBOX]
+Name=Sprinkler
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=SPRINKLER
+Flags=
+#-------------------------------
+[MACHINEBOX_2]
+Name=Electric Grinder
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=ELECTRICGRINDER
+Flags=
+#-------------------------------
+[MACHINEBOX_3]
+Name=Poke Generator
+HoursPerStage=1
+StageAmt=5
+UnlockItem=MACHINEBOX
+AssociatedRecipe=POKEGENERATOR
+Flags=
+#-------------------------------
+[MACHINEBOX_4]
+Name=Exp All
+HoursPerStage=1
+StageAmt=5
+UnlockItem=MACHINEBOX
+AssociatedRecipe=EXPALL
+Flags=
+#-------------------------------
+[MACHINEBOX_5]
+Name=Exp Share
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=EXPSHARE
+Flags=
+#-------------------------------
+[MACHINEBOX_6]
+Name=Hydro Generator
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=HYDROGENERATOR
+Flags=
+#-------------------------------
+[MACHINEBOX_7]
+Name=Wind Generator
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=WINDGENERATOR
+Flags=
+#-------------------------------
+[MACHINEBOX_8]
+Name=Solar Generator
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=SOLARGENERATOR
+Flags=
+#-------------------------------
+[MACHINEBOX_9]
+Name=Coal Generator
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=COALGENERATOR
+Flags=
+#-------------------------------
+[MACHINEBOX_10]
+Name=Wood Saw 
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=CUTTER
+Flags=
+#-------------------------------
+[MACHINEBOX_11]
+Name=Electric Icebox
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=ELECTRICICEBOX
+Flags=
+#-------------------------------
+[MACHINEBOX_12]
+Name=Sewing Machine
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=SEWINGMACHINE
+Flags=
+#-------------------------------
+[MACHINEBOX_13]
+Name=Apricorn Machine
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=APRICORNMACHINE
+Flags=
+#-------------------------------
+[MACHINEBOX_14]
+Name=Electric Press
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=ELECTRICPRESS
+Flags=
+#-------------------------------
+[MACHINEBOX_15]
+Name=Electric Furnace
+HoursPerStage=1
+StageAmt=2
+UnlockItem=MACHINEBOX
+AssociatedRecipe=ELECTRICFURNACE
+Flags=
+#-------------------------------
+[MEGARING]
+Name=Megaring
+HoursPerStage=1
+StageAmt=5
+UnlockItem=MEGASTONE
+AssociatedRecipe=MEGARING
+Flags=
+#-------------------------------
+[SNATCHER]
+Name=Snatcher
+HoursPerStage=1
+StageAmt=5
+UnlockItem=IRON2
+AssociatedRecipe=SNATCHER
+Flags=
+#-------------------------------
+[SUSPO]
+Name=Suspicious Potion
+HoursPerStage=1
+StageAmt=5
+UnlockItem=ARGOSTBERRY
+AssociatedRecipe=SUSPO
+Flags=
+#-------------------------------
+[SUPERPOTION]
+Name=Super Potion
+HoursPerStage=1
+StageAmt=2
+UnlockItem=POTION
+AssociatedRecipe=SUPERPOTION
+Flags=
+#-------------------------------
+[HYPERPOTION]
+Name=Hyper Potion
+HoursPerStage=1
+StageAmt=4
+UnlockItem=SUPERPOTION
+AssociatedRecipe=HYPERPOTION
+Flags=
+#-------------------------------
+[MAXPOTION]
+Name=Max Potion
+HoursPerStage=2
+StageAmt=4
+UnlockItem=HYPERPOTION
+AssociatedRecipe=MAXPOTION
+Flags=
+#-------------------------------
+[FULLRESTORE]
+Name=Full Restore
+HoursPerStage=24
+StageAmt=4
+UnlockItem=MAXPOTION
+AssociatedRecipe=FULLRESTORE
+Flags=
+#-------------------------------
+[MAXETHER]
+Name=Max Ether
+HoursPerStage=2
+StageAmt=4
+UnlockItem=ETHER
+AssociatedRecipe=MAXETHER
+Flags=
+#-------------------------------
+[ELIXIR]
+Name=Elixir
+HoursPerStage=4
+StageAmt=4
+UnlockItem=ETHER
+AssociatedRecipe=ELIXIR
+Flags=
+#-------------------------------
+[MAXELIXIR]
+Name=Max Elixir
+HoursPerStage=6
+StageAmt=4
+UnlockItem=ELIXIR
+AssociatedRecipe=MAXELIXIR
+Flags=
+#-------------------------------
+[MAXREPEL]
+Name=Max Repel
+HoursPerStage=6
+StageAmt=4
+UnlockItem=SUPERREPEL
+AssociatedRecipe=MAXREPEL
+Flags=
+#-------------------------------
+[PPUP]
+Name=Max Repel
+HoursPerStage=2
+StageAmt=3
+UnlockItem=LEPPABERRY
+AssociatedRecipe=PPUP
+Flags=
+#-------------------------------
+[SQUIRTBOTTLE]
+Name=Squirt Bottle
+HoursPerStage=2
+StageAmt=3
+UnlockItem=WOODENPAIL
+AssociatedRecipe=SQUIRTBOTTLE
+Flags=
+#-------------------------------
+[PORTABLECAMP]
+Name=Portable Camp
+HoursPerStage=2
+StageAmt=3
+UnlockItem=WOOL
+AssociatedRecipe=PORTABLECAMP
+Flags=
+#-------------------------------
+[ADVENTUREFLAG]
+Name=Adventure Flag
+HoursPerStage=2
+StageAmt=3
+UnlockItem=WOOL
+AssociatedRecipe=ADVENTUREFLAG
+Flags=
+#-------------------------------
+[UPGRADEDCRAFTINGBENCH]
+Name=Upgraded Crafting Bench
+HoursPerStage=1
+StageAmt=3
+UnlockItem=CRAFTINGBENCH
+AssociatedRecipe=UPGRADEDCRAFTINGBENCH
+Flags=
+#-------------------------------
+[GOODROD]
+Name=Good Rod
+HoursPerStage=1
+StageAmt=2
+UnlockItem=OLDROD
+AssociatedRecipe=GOODROD
+Flags=
+#-------------------------------
+[HOE]
+Name=Hoe
+HoursPerStage=1
+StageAmt=2
+UnlockItem=GOLD2
+AssociatedRecipe=HOE
+Flags=
+#-------------------------------
+[CROPSTICKS]
+Name=Cropsticks
+HoursPerStage=1
+StageAmt=2
+UnlockItem=WOODENSTICKS
+AssociatedRecipe=CROPSTICKS
+Flags=

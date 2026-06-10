@@ -370,31 +370,6 @@ end
 
 end
 
-class Game_Character
-  def passable?(x, y, d, strict = false)
-    new_x = x + (d == 6 ? 1 : d == 4 ? -1 : 0)
-    new_y = y + (d == 2 ? 1 : d == 8 ? -1 : 0)
-    return false unless self.map.valid?(new_x, new_y)
-    return true if @through
-    if strict
-      return false unless self.map.passableStrict?(x, y, d, self)
-      return false unless self.map.passableStrict?(new_x, new_y, 10 - d, self)
-    else
-      return false unless self.map.passable?(x, y, d, self)
-      return false unless self.map.passable?(new_x, new_y, 10 - d, self)
-    end
-    self.map.events.each_value do |event|
-      next if self == event || !event.at_coordinate?(new_x, new_y) || event.through
-	   return true if self == $game_player && event.name[/PlayerPkmn/]
-      return false if self != $game_player || event.character_name != ""
-    end
-    if $game_player.x == new_x && $game_player.y == new_y &&
-       !$game_player.through && @character_name != ""# && !
-      return false
-    end
-    return true
-  end
-end
 
 class PokemonGlobalMetadata
   attr_writer :alternate_control_mode #$PokemonGlobal.hardcore = true
@@ -436,6 +411,7 @@ end
   end 
   def clearOverworldPokemonMemory
     @pokemon   = {}
+	$DynamicEvents.hostile_mobs = {}
   end
   
   def update_objects_remotely
@@ -463,7 +439,10 @@ end
   end
   
 
+  def update_map_id(event_id)
   
+  
+  end 
   
   def addMovedEvent(type,key_id,x=nil,y=nil,direction=nil) 
    #THIS IS PASSING KEY ID YOU NEED TO PASS EVENT.
@@ -545,6 +524,7 @@ SaveData.register(:overworld_events) do
   new_game_value {
     ExtraEvents.new
   }
+  reset_on_new_game
 end
 
 
@@ -718,7 +698,7 @@ def making_an_egg(event,pokemon,maps)
   @making_an_egg=false if @movement_type!=:MAKINGANEGG && @making_an_egg==true
  
  
- if @movement_type == :WANDER && maps.include?($game_map.map_id) && rand(100)<10 && @recieving_handshake.empty? && @sending_handshake.empty? 
+ if @movement_type == :WANDER && maps.include?($game_map.map_id) && rand(10000)<10 && @recieving_handshake.empty? && @sending_handshake.empty? 
     pokemonlist = pokemon_in_world
 	daycare = $PokemonGlobal.day_care
 	if pokemonlist.length>1
@@ -736,8 +716,8 @@ def making_an_egg(event,pokemon,maps)
 			
 			
 		      if !event_id2.nil?
-			     @sending_handshake = [self,false,$game_map.events[event_id]]
-		        $game_map.events[event_id].recieving_handshake=[self,false,$game_map.events[event_id]]
+			     @sending_handshake = [self,false,$game_map.events[event.id]]
+		        $game_map.events[event.id].recieving_handshake=[self,false,$game_map.events[event.id]]
 			  end
 			  
 			  
@@ -806,13 +786,7 @@ def live_movement(event,pokemon,maps)
    if daycare.egg_generated == true
         egg = EggGenerator.generate(@sending_handshake[0],@sending_handshake[3])
         raise _INTL("Couldn't generate the egg.") if egg.nil?
-        if !$map_factory
-           event = $game_map.generateEvent(@sending_handshake[0].x+1,@sending_handshake[0].y+1,egg,false,false,2)
-       else
-          mapId = $game_map.map_id
-          spawnMap = $map_factory.getMap(mapId)
-          event = spawnMap.generateEvent(@sending_handshake[0].x+1,@sending_handshake[0].y+1,egg,false,false,2)
-       end
+        event_id = $DynamicEvents.generateEvent(x,y,object,aat,true)
 	    @movement_type = :WANDER
    end 
   
@@ -1207,42 +1181,16 @@ end
 	  $hud.removeaChargeBar(@id)
     @type.inworld=false
 	pbDeselectThisPokemon(@type)
-    if $game_map.events.has_key?(@id) and $game_map.events[@id]==self
-	 pbRemoveParticleEffectfromEvent(self)
-      if defined?($scene.spritesets)
-        for sprite in $scene.spritesets[$game_map.map_id].character_sprites
-          if sprite.character==self
-            $scene.spritesets[$game_map.map_id].character_sprites.delete(sprite)
-            sprite.dispose
-            break
-          end
-        end
-      end
-		$ExtraEvents.removethisEvent(:SPECIAL,@id,$game_map.map_id)
-      $game_map.events.delete(@id)
-    else
-      if $map_factory
-        for map in $map_factory.maps
-          if map.events.has_key?(@id) and map.events[@id]==self
-            if defined?($scene.spritesets) && $scene.spritesets[self.map_id] && $scene.spritesets[self.map_id].character_sprites
-              for sprite in $scene.spritesets[self.map_id].character_sprites
-                if sprite.character==self
-                  $scene.spritesets[map.map_id].character_sprites.delete(sprite)
-                  sprite.dispose
-                  break
-                end
-              end
-            end
-	  	     $ExtraEvents.removethisEvent(:SPECIAL,@id,map.map_id)
-            map.events.delete(@id)
-            break
-          end
-        end
-      else
-        raise ArgumentError.new(_INTL("Actually, this should not be possible"))
-      end
-    end
-  end
+	
+	 if $DynamicEvents.block_data.has_key?(@id) && $DynamicEvents.block_data[@id]==self
+	    pbRemoveParticleEffectfromEvent(self)
+		pbRemoveLightEffectfromThisEvent(self)
+	  	$ExtraEvents.removethisEvent(:SPECIAL,@id,map.map_id)
+        $DynamicEvents.block_data.delete(@id)
+	    $DynamicEvents.update!
+	 end 
+   end
+  
 
 
   alias original_increase_steps64 increase_steps
@@ -1274,6 +1222,7 @@ end
   def add_target(event_id,object)
     return if event_id.nil?
     return if object.nil?
+	puts "A little checky check in add_target"
     if @targets[event_id]
 	  if @targets[event_id]!=object
 	    @targets[event_id]=object
@@ -1300,7 +1249,8 @@ end
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values
+    events.each do |event|
       next if !event.at_coordinate?(new_x, new_y)
       next if event.jumping? || event.over_trigger?
       return event
@@ -1309,7 +1259,8 @@ end
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+	events = $game_map.events.values
+    events.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event
@@ -1458,7 +1409,8 @@ end
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values
+    events.each do |event|
       next if !event.at_coordinate?(new_x, new_y)
       next if event.jumping?
       return event
@@ -1467,7 +1419,8 @@ end
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+	events = $game_map.events.values
+    events.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event
@@ -1553,8 +1506,14 @@ end
     end
   end
 
-
-
+ alias deselect_update update
+ def update
+    deselect_update
+	puts @type.deselecttimer if @type.deselecttimer>0
+	if @type.deselecttimer>0
+    @type.deselecttimer-=1 
+	end
+ end 
 
 
 

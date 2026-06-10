@@ -120,7 +120,6 @@ class Pokemon
   attr_reader   :hue
   attr_accessor :inworld
   attr_accessor :attacking
-  attr_accessor :inventory
   attr_accessor :height
   attr_accessor :weight
   attr_accessor :moves2
@@ -165,7 +164,7 @@ class Pokemon
 #def species=(species_id)
 #  _SI_Pokemon_species=(species_id)
 #end
-
+  
 
 alias _SI_Pokemon_init initialize
 def initialize(*args)
@@ -183,7 +182,6 @@ def initialize(*args)
     @status_turns            = 0 
     @inworld     = false     # Text input mode (0=PSID, 1=PSIA)
     @attacking     = false     # Text input mode (0=PSID, 1=PSIA)
-    @inventory     = []     # Text input mode (0=PSID, 1=PSIA)
     @moves2     = []     # Text input mode (0=PSID, 1=PSIA)
     @height = species_data.height + (rand(2).zero? ? -rand(40) : rand(40))
     @weight = species_data.weight + (rand(2).zero? ? -rand(70) : rand(70))
@@ -558,64 +556,7 @@ end
     @lifespan = 100 if !@lifespan
     return @lifespan
   end
-  def inventory
-    @inventory = [[@item,1]] if !@inventory
-    if !@item.nil? && @inventory[0][0].nil?
-	 @inventory[0][0]=@item
-	end
-    return @inventory
-  end
-  
-  def inv_add(item,amt=1)
-    amt=1 if amt.nil?
-    if !@item.nil? && @inventory[0][0].nil?
-	 @inventory[0][0]=@item
-	end
-    if @inventory.length+1<=7
-     theitems = inv_has?(item)
-    if theitems==true
-	  @inventory[theitems][1]+=amt
-	 else
-    @inventory << [item,amt]
-	 end
-	return true
-    else
-	return false
-	end
-  end
-  
-  
-  def inv_remove(item,amt=1)
-    if !@item.nil? && @inventory[0][0].nil?
-	 @inventory[0][0]=@item
-	end
-     inventory = @inventory.reverse
-     theitems = inv_has?(item)
-    if theitems!=false
-	  @inventory[theitems][1]-=amt
-	  if @inventory[theitems][1]==0
-	   @inventory.delete_at(theitems)
-	  end
-	   return true
-	 end
-   return false
-  end
-  
-  
-  def inv_has?(item)
-    if !@item.nil? && @inventory[0][0].nil?
-	 @inventory[0][0]=@item
-	end
-     index2 = -1
-    @inventory.each_with_index do |invitem,index|
-	   next if invitem.nil?
-      index2 = index if invitem[0]==item
-	
-	end
-	 return true if index2!=-1
-	 return false if index2==-1
-	 return false
-  end
+
 
 
 def check_obedience(pkmn,directing=false)
@@ -775,6 +716,7 @@ class Player < Trainer
   attr_accessor :acting
   attr_accessor :iframes
   attr_accessor :running
+  attr_accessor :run_pressed
   attr_accessor :stages
   attr_accessor :effects
   attr_accessor :potion_sickness
@@ -795,6 +737,8 @@ class Player < Trainer
   attr_reader :playerwatermod  #206
   attr_reader :playerstaminamod
   attr_reader :playermaxlevel
+
+   
    def playermaxlevel
     @playermaxlevel = 20 if @playermaxlevel.nil?
     return @playermaxlevel
@@ -821,7 +765,7 @@ class Player < Trainer
    end
   
    def time_last_stamina
-    @time_last_stamina = pbGetTimeNow.to_i-rand(5)+1 if @time_last_stamina.nil?
+    @time_last_stamina = 0+rand(5)+1 if @time_last_stamina.nil?
     return @time_last_stamina
    end
   
@@ -829,7 +773,11 @@ class Player < Trainer
     @time_last_health = pbGetTimeNow.to_i-rand(5)+1 if @time_last_health.nil?
     return @time_last_health
    end
-   
+   def potion_sickness
+    @potion_sickness = pbGetTimeNow.to_i-900 if @potion_sickness.nil?
+    return @potion_sickness
+   end
+     @time_last_milk = pbGetTimeNow.to_i-3600
    def attack_cooldowns
      return @weapon_cooldown, @punch_cooldown
    end
@@ -842,6 +790,10 @@ class Player < Trainer
    def running
     @running = false if @running.nil?
     return @running
+   end
+   def run_pressed
+    @run_pressed = false if @run_pressed.nil?
+    return @run_pressed
    end
   def playersaturation=(value)
     validate value => Float
@@ -859,7 +811,11 @@ class Player < Trainer
     validate value => Float
     @playerfood = value.clamp(0, 9999)
   end
-
+  
+  def playermaxsaturation
+    return 100.0
+  end 
+  
   def playertemperature=(value)
     validate value => Float
     @playertemperature = value.clamp(0, 9999)
@@ -1493,12 +1449,12 @@ class Player < Trainer #HELD ITEM
   
   
      alias _SI2_Player_Init initialize
-  def initialize(name, trainer_type)
-    _SI2_Player_Init(name, trainer_type)
-    @held_item           = nil
-    @held_item_object = nil
-    @equipped_item = nil
-  end
+     def initialize(name, trainer_type)
+       _SI2_Player_Init(name, trainer_type)
+       @held_item           = nil
+       @held_item_object = nil
+       @equipped_item = nil
+     end
 
 
     def held_item=(value)
@@ -1507,52 +1463,49 @@ class Player < Trainer #HELD ITEM
     def held_item_object=(value)
        @held_item_object = value
     end
-
-
-    def hold(item)
-    if !@held_item
-        @held_item=item
-	  if !pbSeenTipCard?(:OVERWORLDITEMS)
-	    pbShowTipCard(:OVERWORLDITEMS)
-	  end
-        pbHoldingObject($game_player.x,$game_player.y-1,item,true)
-		return true
+   
+   
+    def held_item?
+	  return !@held_item_object.nil? && !@held_item.nil?
 	end
-    return false
+    
+	def store_in_inv
+	  @held_item.reset_data
+	  $bag.add(@held_item)
+	  remove_dynamic_object(@held_item_object)
+	  @held_item = nil
+	  @held_item_object = nil
+	end
+	
+    def hold(item)
+	 return false if @held_item 
+	 @held_item=item
+	 pbShowTipCard(:OVERWORLDITEMS) if !pbSeenTipCard?(:OVERWORLDITEMS)
+     pbHoldingObject($game_player.x,$game_player.y-1,item,true)
+	 return true
     end
     
+
+    def place(x,y)
+	 return false if @held_item.nil?
+	 item = @held_item
+	 key_id = @held_item_object
+	 direction = $game_map.events[key_id].direction
+	 if pbPlaceObject(x,y,item,false,direction)
+		$game_map.events[key_id].removeThisEventfromMap
+        @held_item=nil
+		@held_item_object=nil
+        return true
+	 end
+	 return false
+    end
+
     def equip(item)
     @equipped_item = item
 	end
     def unequip
     @equipped_item = nil
 	end
-
-    def place(x,y)
-    if !@held_item.nil?
-	
-	    item = @held_item
-		key_id = @held_item_object
-		direction = $game_map.events[key_id].direction
-		if pbPlaceObject(x,y,item,false,direction)
-		if !$map_factory
-           $game_map.removeThisEventfromMap(key_id)
-        else
-           mapId = $game_map.map_id
-           $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-        end
-		deletefromSIData(key_id,$game_map.map_id)
-        @held_item=nil
-		@held_item_object=nil
-           return true
-	    else
-           return false
-	    end
-    else
-      return false
-    end
-    end
-
 
 end
 
@@ -1580,60 +1533,63 @@ def pbSleepRestore(wari,vari=nil)
 	  time = [time,1].max
   $player.playersleep = $player.playersleep+(wari*9)+(8 * time)
   end
+  
+  
+  
+  
   if $player.playersleep > 200.0
   $player.playersleep = 200.0  
   end
   if $player.playersleep < 0.0
   $player.playersleep = 0.0  
   end
-#       FoodWater     #
- if false
+
+
+
+ 
+ 
  if $player.playersaturation==0
-   $player.playerfood=$player.playerfood-(wari*1.25)
-   $player.playerwater=$player.playerwater-(wari*1.25)
+   $player.playerfood=$player.playerfood-(wari*3.25)
+   $player.playerwater=$player.playerwater-(wari*3.25)
   else
-   if $player.playersaturation-(wari*7) < 0.0
-    potato = $player.playersaturation-(wari*2)
+   if $player.playersaturation-(wari * 1.25) < 0.0
+    potato = ($player.playersaturation-wari) * 1.25
 	$player.playersaturation=0.0
-   $player.playerfood=$player.playerfood+(potato*1.25)
-   $player.playerwater=$player.playerwater+(potato*1.25)
+    $player.playerfood=$player.playerfood-(potato*3.25)
+    $player.playerwater=$player.playerwater-(potato*3.25)
    else
-   $player.playersaturation=$player.playersaturation-(wari*2)
+    $player.playersaturation=$player.playersaturation-(wari*1.25)
    end
  end
-  end
+
+
+  
 ##########POKEMON###################
 
-				party = $player.party
-                 for i in 0...party.length
-				pkmn = party[i]
-				if pkmn.sleep.nil?
-				 pkmn.sleep = 100
-				end
-				 pkmn.sleep=pkmn.sleep+(wari*9)
-				 if pkmn.sleep > 100
-				 pkmn.sleep= 100  
-				 end
-				 pkmn.food=pkmn.food-(wari*1.25)
-				 pkmn.water=pkmn.water-(wari*1.25)
-				 end
+	party = $player.party
+    for i in 0...party.length
+	  pkmn = party[i]
+	  pkmn.sleep = 100 if pkmn.sleep.nil?
+	  pkmn.sleep=pkmn.sleep+(wari*9)
+	  pkmn.sleep= 100 if pkmn.sleep > 100
+	  pkmn.food=pkmn.food-(wari*1.25)
+	  pkmn.water=pkmn.water-(wari*1.25)
+	end
 #       Daycare     #
   deposited = DayCare.count
   if deposited==2 && $PokemonGlobal.daycareEgg==0
     $PokemonGlobal.daycareEggSteps = 0 if !$PokemonGlobal.daycareEggSteps
     $PokemonGlobal.daycareEggSteps += (1*wari*10)
   end
+    
+
  end
  
 
  def pbEatingPkmn(pkmn,item=nil)
  if item.nil?
  item = 0
-pbFadeOutIn(99999){
-scene = PokemonBag_Scene.new
-screen = PokemonBagScreen.new(scene,$bag)
-item = screen.pbChooseItemScreen(proc { |item| (GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).is_berry?) && !GameData::Item.get(item).is_apricorn? && item!=:ACORN })
-}
+ item = pbChooseEdiable
  end
 
 
@@ -1868,11 +1824,7 @@ end
  def pbEating(bag=nil,item=nil,scene=nil)
  if item.nil?
  item = 0
-pbFadeOutIn(99999){
-scene = PokemonBag_Scene.new
-screen = PokemonBagScreen.new(scene,$bag)
-item = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_foodwater? })
-}
+item = pbChooseEdiable
  end
  idate = GameData::Item.get(item)
   action = "eat" if !idate.is_water?
@@ -2326,6 +2278,202 @@ end
 end
 
 
+def food_effects 
+  {
+    WATER:          { water: 10, damage: 10.0, bottle: true },
+    FRESHWATER:     { water: 20, bottle: true },
+    MEAT:           { food: 15, damage: 7.0, se: "normaldamage" },
+    BIRDMEAT:       { food: 10, damage: 7.0, se: "normaldamage" },
+    POISONOUSMEAT:  { food: 10, damage: 25.0, se: "normaldamage" },
+    ROCKYMEAT:      { food: 10, damage: 10.0, se: "normaldamage" },
+    BUGMEAT:        { food: 2, damage: 2.0, se: "normaldamage" },
+    STEELYMEAT:     { food: 3, damage: 10.0, se: "normaldamage" },
+    SUSHI:          { food: 15, damage: 6.0, se: "normaldamage" },
+    LEAFYMEAT:      { food: 10, damage: 6.0, se: "normaldamage" },
+    FROZENMEAT:     { food: 6, damage: 15.0, se: "normaldamage" },
+    DRAGONMEAT:     { food: 20, damage: 15.0, se: "normaldamage" },
+    EDIABLESCRYSTAL: { food: 6, damage: 15.0, se: "normaldamage" },
+
+    ORANBERRY:      { food: 1, health: 0.5 },
+    LEPPABERRY:     { food: 1 },
+    CHERIBERRY:     { food: 1 },
+    CHESTOBERRY:    { food: 1 },
+    PECHABERRY:     { food: 1 },
+    RAWSTBERRY:     { food: 1 },
+    ASPEARBERRY:    { food: 1 },
+    PERSIMBERRY:    { food: 1 },
+    LUMBERRY:       { food: 1 },
+    FIGYBERRY:      { food: 1 },
+    WIKIBERRY:      { food: 1 },
+    MAGOBERRY:      { food: 1 },
+    AGUAVBERRY:     { food: 1 },
+    IAPAPABERRY:    { food: 1 },
+    SITRUSBERRY:    { food: 1, health: 1.0 },
+    BERRYJUICE:     { food: 1, water: 8, health: 2.0, bottle: true },
+
+    ATKCURRY:       { food: 8, saturation: 15, water: -7 },
+    SATKCURRY:      { food: 8, saturation: 15, water: -7 },
+    SPEEDCURRY:     { food: 8, saturation: 15, water: -7 },
+    SPDEFCURRY:     { food: 8, saturation: 15, water: -7 },
+    ACCCURRY:       { food: 8, saturation: 15, water: -7 },
+    DEFCURRY:       { food: 8, saturation: 15, water: -7 },
+    CRITCURRY:      { food: 8, saturation: 15, water: -7 },
+    GSCURRY:        { food: 8, saturation: 15, water: -7 },
+
+    RAGECANDYBAR:   { food: 10, saturation: 3, sleep: 7 },
+    SWEETHEART:     { food: 10, saturation: 3, sleep: 7 },
+    SODAPOP:        { food: 11, saturation: 30, sleep: 25, bottle: true },
+    LEMON:          { food: 1 },
+    HONEY:          { saturation: 20 },
+    MOOMOOMILK:     { water: 20, saturation: 10, bottle: true },
+    CSLOWPOKETAIL:  { food: 20, saturation: 20 },
+    BAKEDPOTATO:    { food: 7, saturation: 10, water: 4 },
+    APPLE:          { food: 1, water: 1 },
+    CHOCOLATE:      { food: 10, saturation: 3, sleep: 7 },
+    OLDGATEAU:      { food: 10, saturation: 3, sleep: 7 },
+    LAVACOOKIE:     { food: 6, saturation: 5, water: 3 },
+    CASTELIACONE:   { food: 7, water: 7 },
+    LUMIOSEGALETTE: { food: 6, saturation: 5 },
+    SHALOURSABLE:   { food: 8, saturation: 8 },
+    BIGMALASADA:    { food: 8, saturation: 8 },
+    ONION:          { food: 1, water: 1 },
+    COOKEDORAN:     { food: 3, health: 2, saturation: 2 },
+    CARROT:         { food: 1, water: 1, saturation: 6 },
+    BREAD:          { food: 10, saturation: 10 },
+    TEA:            { water: 15, saturation: 15 },
+    CARROTCAKE:     { food: 10, water: 1, saturation: 15 },
+    SITRUSJUICE:    { food: 6, health: 25, saturation: 20, bottle: true },
+    BERRYMASH:      { food: 8, water: 2, health: 4.0, saturation: 5 },
+    LARGEMEAL:      { food: 50, water: 50, saturation: 50, feast: [[:DEFENSE,1],[:HP,1]] },
+
+    COOKEDMEAT:     { food: 12, saturation: 10 },
+    COOKEDBIRDMEAT: { food: 12, saturation: 10 },
+    COOKEDROCKYMEAT: { food: 12, saturation: 10 },
+    COOKEDBUGMEAT:   { food: 12, saturation: 10 },
+    COOKEDSTEELYMEAT: { food: 12, saturation: 10 },
+    COOKEDSUSHI:     { food: 6, water: 6, saturation: 10 },
+    COOKEDLEAFYMEAT: { food: 24, saturation: 5 },
+    COOKEDDRAGONMEAT: { food: 10, saturation: 100 },
+    COOKEDEDIABLESCRYSTAL: { food: 10, saturation: 10 },
+
+    MEATSANDWICHBIRD:    { food: 30, saturation: 40 },
+    MEATSANDWICHSLOWPOKETAIL: { food: 30, saturation: 40 },
+    MEATSANDWICHROCKY:  { food: 30, saturation: 40 },
+    MEATSANDWICHBUG:    { food: 30, saturation: 40 },
+    MEATSANDWICHSTEELY: { food: 30, saturation: 40 },
+    MEATSANDWICHSUS:    { food: 30, saturation: 40 },
+    MEATSANDWICHLEAFY:  { food: 30, saturation: 40 },
+    MEATSANDWICHMJ:     { food: 30, saturation: 40 },
+    MEATSANDWICHCRYSTAL: { food: 30, saturation: 40 },
+    MEATSANDWICH:       { food: 30, saturation: 40 },
+
+    EGGEDIBLE:       { food: 1, saturation: 20 },
+    CHERUBIBALL:     { food: 7, water: 7, saturation: 1 },
+    MEATKABOB:       { food: 24, saturation: 20 },
+    POTATOSTEW:      { food: 20, water: 30, saturation: 40, bottle: true },
+    FISHSOUP:        { food: 40, water: 30, saturation: 10, bottle: true }
+  }
+
+
+
+
+end 
+def medicine_effects
+  {
+    WEAKPOTION:   { health: 10, bottle: true },
+    POTION:       { health: 20, bottle: true },
+    SUPERPOTION:  { health: 40, bottle: true },
+    HYPERPOTION:  { health: 60, bottle: true },
+    FULLRESTORE:  { health: $player.playermaxhealth2 - $player.playerhealth,
+                    status: :NONE,
+                    healthiness: 100,
+                    bottle: true }
+  }
+end
+
+def pbNeoEating(item)
+  idate = GameData::Item.get(item)
+  effects = food_effects[idate.id]
+  return false unless effects
+  has_effect = false
+  if effects[:food] && $player.playerfood < $player.playermaxfood
+    has_effect = true
+  end
+  if effects[:water] && $player.playerwater < $player.playermaxwater
+    has_effect = true
+  end
+  if effects[:saturation] && $player.playersaturation < $player.playermaxsaturation
+    has_effect = true
+  end
+  if effects[:sleep] && $player.playersleep < $player.playermaxsleep
+    has_effect = true
+  end
+  if effects[:health] && $player.playerhealth < $player.playermaxhealth2
+    has_effect = true
+  end
+  
+  return false unless has_effect
+  
+  action = idate.is_water? ? "drink" : "eat"
+  pbSEPlay(action)
+  sideDisplay(_INTL("You {2} {1}.", idate.name, action),true,-9)
+  
+  increaseFood(effects[:food])          if effects[:food]
+  increaseWater(effects[:water])        if effects[:water]
+  increaseSaturation(effects[:saturation]) if effects[:saturation]
+  increaseSleep(effects[:sleep])        if effects[:sleep]
+  increaseHealth(effects[:health])      if effects[:health]
+  damagePlayer(effects[:damage])        if effects[:damage]
+  pbSEPlay(effects[:se])                if effects[:se]
+  
+  if effects[:bottle]
+    bottle = item.bottle_type
+    bottle.decrease_durability(1) if bottle 
+    $bag.add(bottle, 1) if bottle 
+  end
+  
+  if effects[:feast]
+    sideDisplay(_INTL("You feasted on the {1}.", idate.name),true,-9)
+    @party.each do |pokemon|
+	  effects[:feast].each do |stat, amt|
+	  next unless pokemon.ev.key?(stat)
+      pokemon.ev[stat] += amt
+	  end 
+    end
+  end
+  
+  
+  return true
+end 
+
+def pbNeoMedicine(item)
+ return false if $player.playerhealth == $player.playermaxhealth2
+ time_now   = pbGetTimeNow
+ time_delta = time_now.to_i - $player.potion_sickness
+ if true#time_delta <= 900
+    idate = GameData::Item.get(item)
+    effects = medicine_effects[idate.id]
+    return false unless effects
+    sideDisplay(_INTL("You used {1} to heal yourself.", item.name),true,-9)
+    increaseHealth(effects[:health]) if effects[:health]
+	$player.status       = effects[:status]       if effects[:status]
+	$player.healthiness  = [$player.healthiness+effects[:healthiness],100].min  if effects[:healthiness]
+    if effects[:bottle]
+      bottle = item.bottle_type
+      bottle.decrease_durability(1)
+      $bag.add(bottle, 1)
+    end
+	$player.potion_sickness = time_now.to_i
+	return true
+ else
+  sideDisplay(_INTL("You used a Potion too recently."),true,-9)
+  return false
+ end 
+end 
+
+
+
+
 
  def pbMedicine(bag=nil,item=nil,scene=nil)
 return if $player.playerhealth == $player.playermaxhealth2
@@ -2431,6 +2579,7 @@ end
 end
 
 def decreaseWater(amount)
+return "HI THERE"
 if $player.playerwater.is_a? Integer
     $player.playerwater = $player.playerwater.to_f
 end
@@ -2460,17 +2609,14 @@ def decreaseStamina(amount)
  amount/=1.5 if $player.is_it_this_class?(:TRIATHLETE)
 
 if $player.playerstamina-amount<0 && $player.playerstamina>0
-pbSEPlay("normaldamage")
 $player.playerstamina=0.0
 return true
 elsif $player.playerstamina-amount<0 && $player.playerstamina<=0
-pbSEPlay("normaldamage")
 return false
 else
 $player.playerstamina-=amount.to_f
 
 end
-
 
 
 return true

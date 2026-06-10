@@ -117,9 +117,9 @@ def player_pokemonattack(user,target,move,distance)
    else
   	  if doesStatus?(move)
 	    sideDisplay("#{pokemon.pokemon.name} used #{move.name}!")
-	    target.status_turns=0 if target.status_turns.nil?
-	    target.status_turns-=1 if  target.status_turns>0
-	    target.status=:NONE if target.status_turns==0
+	    target.pokemon.status_turns=0 if target.pokemon.status_turns.nil?
+	    target.pokemon.status_turns-=1 if  target.pokemon.status_turns>0
+	    target.pokemon.status=:NONE if target.pokemon.status_turns==0
 	    returneffects = applyStatus(pokemon,target,move,pokemon.pokemon,target.pokemon,0) if rand(100) < 26
 	  else
 	    sideDisplay("#{move.name} has not been implemented!")

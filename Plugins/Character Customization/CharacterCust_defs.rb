@@ -13,7 +13,16 @@ end
  
 def pbFullCustomization
 $game_temp.savedoutfit = false
-updateTrainerOutfit
+if $player.character_ID != 11 && $player.character_ID != 12
+if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
+ index2=12
+ pbChangePlayer(index2)
+else
+ index2=11
+ pbChangePlayer(index2)
+end
+end
+#updateTrainerOutfit
 pbChooseBaseGraphic
 pbCustomizeCharacter
 

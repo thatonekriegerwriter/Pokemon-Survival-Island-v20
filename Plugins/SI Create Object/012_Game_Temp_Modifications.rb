@@ -34,9 +34,19 @@ class Game_Temp
   attr_accessor :radial_enabled
   attr_accessor :favorites_enabled
   attr_accessor :currently_selecting
+  attr_accessor :in_inventory
+  attr_accessor :inv_cooldown
   
+  def in_inventory
+    @in_inventory = false if @in_inventory.nil?
+    return @in_inventory
+  end
+  def inv_cooldown
+    @inv_cooldown = 0 if @inv_cooldown.nil?
+    return @inv_cooldown
+  end
   def weapon_selection_end
-    @weapon_selection_end = 0 if !@weapon_selection_end
+    @weapon_selection_end = 0 if @weapon_selection_end.nil?
     return @weapon_selection_end
   end
   

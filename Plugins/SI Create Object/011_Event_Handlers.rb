@@ -31,40 +31,6 @@ EventHandlers.add(:on_leave_tile, :update_sprite_position,
 )
 
 
-EventHandlers.add(:on_leave_map, :update_sprite_position2,
-  proc {
-    next
-    if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
-    $player.held_item_object=nil
-    $player.held_item=nil
-	end
-    next if $player.held_item_object.nil?
-    next if $player.held_item.nil?
-	key_id = $player.held_item_object
-	$game_map.events[key_id].moveto($game_player.x,$game_player.y-5)
-    pbMoveRoute($game_map.events[key_id], [PBMoveRoute::ThroughOff,PBMoveRoute::AlwaysOnTopOff])
-    $ExtraEvents.objects[key_id][1].x=$game_player.x
-	$ExtraEvents.objects[key_id][1].y=$game_player.y-5
-    $ExtraEvents.objects[key_id][1] = false
-    $ExtraEvents.objects[key_id][1] = false
-    $player.held_item_object=nil
-    $player.held_item=nil
-  }
-)
-EventHandlers.add(:on_leave_map, :update_sprite_position2,
-  proc {
-    next
-	$game_map.events.each do |id,event|
-	if event.name == "PlayerPkmn"
-	deletefromSISData(event.id,$game_map,map_id)
-	pbReturnPokemon(event.id)
-	end
-	end
-    
-  }
-)
-
-
 
 EventHandlers.add(:on_leave_tile, :spawn_queued_events,
   proc { |event|
@@ -74,10 +40,10 @@ EventHandlers.add(:on_leave_tile, :spawn_queued_events,
     if $game_switches[556]==true && !$game_map.check_event(28,18)
        manuallyGenerate(28,18,8)
     end
-    if $game_temp.spawnqueue.length > 0 && $game_temp.preventspawns==false && !pbMapInterpreterRunning? && false
+    if $game_temp.spawnqueue.length > 0  && !pbMapInterpreterRunning? && false #&& $game_temp.preventspawns==false
 	  completed_events = []
 	  $game_temp.spawnqueue.each_with_index do |i,index|
-	   next if $game_temp.preventspawns==true
+	   #next if $game_temp.preventspawns==true
 	   gameEvent = i[0]
 	   event = i[1]
 	   next if $game_map.map_id!=gameEvent.map_id
@@ -108,7 +74,7 @@ EventHandlers.add(:on_leave_tile, :spawn_queued_events,
 EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
     next if $scene.to_s.include?("#<Scene_DebugIntro")
     next if $scene.to_s.include?("#<Scene_Intro")
-
+	next
     if $ExtraEvents.objects.nil?
 	$ExtraEvents.objects = {}
 	end 
@@ -125,12 +91,8 @@ EventHandlers.add(:on_map_or_spriteset_change, :populateextraevents, proc{
 	  if $ExtraEvents.pokemon[i].map_id==mapId
 	  if $game_temp.in_temple==false
 	   result = rand(3)==0 
-	   if result
         spawnMap = $map_factory.getMap(mapId)
 	    spawnMap.recreateEvent($ExtraEvents.pokemon[i],$ExtraEvents.pokemon)
-		else
-		 tempspawnspokemon << i
-		end
 	  
 	  else
         spawnMap = $map_factory.getMap(mapId)
@@ -201,5 +163,39 @@ EventHandlers.add(:on_enter_map, :populateextraevents, proc{
     end
 
 })
+
+
+EventHandlers.add(:on_leave_map, :update_sprite_position2,
+  proc {
+    next
+    if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
+    $player.held_item_object=nil
+    $player.held_item=nil
+	end
+    next if $player.held_item_object.nil?
+    next if $player.held_item.nil?
+	key_id = $player.held_item_object
+	$game_map.events[key_id].moveto($game_player.x,$game_player.y-5)
+    pbMoveRoute($game_map.events[key_id], [PBMoveRoute::ThroughOff,PBMoveRoute::AlwaysOnTopOff])
+    $ExtraEvents.objects[key_id][1].x=$game_player.x
+	$ExtraEvents.objects[key_id][1].y=$game_player.y-5
+    $ExtraEvents.objects[key_id][1] = false
+    $ExtraEvents.objects[key_id][1] = false
+    $player.held_item_object=nil
+    $player.held_item=nil
+  }
+)
+EventHandlers.add(:on_leave_map, :update_sprite_position2,
+  proc {
+    next
+	$game_map.events.each do |id,event|
+	if event.name == "PlayerPkmn"
+	deletefromSISData(event.id,$game_map,map_id)
+	pbReturnPokemon(event.id)
+	end
+	end
+    
+  }
+)
 
 

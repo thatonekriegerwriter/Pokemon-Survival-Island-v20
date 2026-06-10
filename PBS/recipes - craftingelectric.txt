@@ -1,0 +1,10 @@
+#-------------------------------
+#[TEALEAF1]
+#Name=Recipe
+#Result=TEA
+#Yield=1
+#Recipe=FRESHWATER,1,TEALEAF,1
+#Station=CAULDRON
+#CookingTime=0
+#Locked=false
+#Flags=

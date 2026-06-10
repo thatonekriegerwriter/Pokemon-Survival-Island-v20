@@ -46,6 +46,9 @@ class Game_Map
   end
 end
 class OverworldCombat 
+
+
+
 def who_am_i_hitting(attacker,target=nil,immune=nil)
   amt = sight_line(attacker)
   start_coord,landing_coord = getLandingCoords(amt,attacker)
@@ -53,9 +56,15 @@ def who_am_i_hitting(attacker,target=nil,immune=nil)
   starty = start_coord[1]
     event = nil
 	targets = who_am_i_hitting2(attacker)
+	
+	
+	
     return false if attacker.is_a?(Game_PokeEvent) && attacker.battle_timer>0
 
-	 if targets.dup.each_with_index do |atarget, index|
+
+
+
+	 targets.dup.each_with_index do |atarget, index|
 	  if atarget.pokemon.iframes>0
 	    targets.delete_at(index)
 	  end
@@ -63,15 +72,20 @@ def who_am_i_hitting(attacker,target=nil,immune=nil)
 	    targets.delete_at(index)
 	  end
 	 end
-    if targets.length>0
-    return targets
-    end
 	 
-	   attacker.battle_timer=attacker.get_battle_timer if attacker.is_a?(Game_PokeEvent)
+	 
+	 
+	 
+	 
+    return targets if targets.length>0
 	return false
   
 end
-end
+
+
+
+
+
 def who_am_i_hitting2(attacker)
     targets = [] 
   amt = sight_line(attacker)
@@ -247,6 +261,7 @@ def outSpeeds?(attacker,target, move)
   targetspeed = (target.pokemon.speed*1.8).to_i if target == $game_player && is_assassin?
   attackerspeed = attacker.pokemon.speed + move.accuracy
   targetspeed -= rand((target.pokemon.speed/2).to_i)
+  #puts "#{attacker.pokemon.name} is outsped by #{target.pokemon.name}? #{targetspeed>=attackerspeed}"
   return true if targetspeed>=attackerspeed
   return false
 end
@@ -281,9 +296,8 @@ end
 
 def inflictStatus(move, user, target, newStatus, newStatusCount = 0, sound = true, msg = nil)
     return if target.status != :NONE 
-         target.status=:SLEEP
-	     target.statusCount=newStatusCount
-
+	     target.status_turns=newStatusCount
+         target.status=newStatus
     if msg && !msg.empty?
       sideDisplay(msg)
     else
@@ -304,9 +318,9 @@ def inflictStatus(move, user, target, newStatus, newStatusCount = 0, sound = tru
         sideDisplay(_INTL("#{target.name} was frozen solid! It won't be able to move!"))
       end
     end
-         anim_name = GameData::Status.get(newStatus).animation if sound==true
-         sound_from_animation(anim_name, target) if anim_name
-		pbSEPlay("FollowEmote_Poison") if newStatus==:POISON
+    anim_name = GameData::Status.get(newStatus).animation if sound==true
+    sound_from_animation(anim_name, target) if anim_name
+	pbSEPlay("FollowEmote_Poison") if newStatus==:POISON
 end
 
 def applyStatus(user_event,target_event,move,user,target,damage)
@@ -405,7 +419,7 @@ end
 def getDamager(event,target,move,multiplier=0)
   #pbCalcDamage
 	 baseDmg = get_base_damage(event.pokemon,move)
-     puts "#{event.pokemon.name} used #{move.name} - #{move.category}! (Accuracy: #{move.accuracy}, Base Power: #{baseDmg})"
+     #puts "#{event.pokemon.name} used #{move.name} - #{move.category}! (Accuracy: #{move.accuracy}, Base Power: #{baseDmg})"
      atk, atkStage = getAttackStats(event.pokemon, target.pokemon, move)
     defense, defStage = getDefenseStats(event.pokemon, target.pokemon, move)
     multipliers = {
@@ -519,7 +533,7 @@ end
   	if pkmn.status_turns.nil?
 		 pkmn.status_turns=0
 	end
-	pkmn.status_turns-=1 if  pkmn.status_turns>0
+	pkmn.status_turns-=1 if pkmn.status_turns>0
 	if pkmn.status_turns==0 && pkmn.status!=:NONE
 	 pkmn.status=:NONE
 	 if event.movement_type==:IMMOBILE

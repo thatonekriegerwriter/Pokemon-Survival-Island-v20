@@ -29,7 +29,7 @@ ItemHandlers::UseOnPokemon.add(:SUPERPOTION, proc { |item, qty, pkmn, scene|
 })
 
 ItemHandlers::UseOnPokemon.add(:HYPERPOTION, proc { |item, qty, pkmn, scene|
-  next pbHPItem(pkmn, 120, scene)
+  next pbHPItem(pkmn, 100, scene)
 })
 
 ItemHandlers::UseOnPokemon.add(:MAXPOTION, proc { |item, qty, pkmn, scene|
@@ -61,12 +61,12 @@ ItemHandlers::UseOnPokemon.add(:ORANBERRY, proc { |item, qty, pkmn, scene|
 })
 
 ItemHandlers::UseOnPokemon.add(:SITRUSBERRY, proc { |item, qty, pkmn, scene|
-  next pbHPItem(pkmn, pkmn.totalhp / 4, scene)
+  next pbHPItem(pkmn, pkmn.totalhp / 10, scene)
 })
 
 
 
-ItemHandlers::UseOnPokemon.add(:SUSPO,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:SUSPO,proc { |item, qty, pkmn, scene|
        chance = rand(4)
         if pkmn.happiness >= 75
 		 if 0 == chance
@@ -279,7 +279,7 @@ def pbHasCrafting?
  return true if $bag.has?(:UPGRADEDCRAFTINGBENCH)
 end
 
-ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
     scene.pbDisplay(_INTL("It won't have any effect."))
     next false
@@ -290,7 +290,7 @@ ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item,pkmn,scene|
   next true
 })
 
-ItemHandlers::UseOnPokemon.add(:GRITGRAVEL,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:GRITGRAVEL,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
     scene.pbDisplay(_INTL("It won't have any effect."))
     next false
@@ -300,18 +300,7 @@ ItemHandlers::UseOnPokemon.add(:GRITGRAVEL,proc { |item,pkmn,scene|
   pkmn.changeLoyalty("vitamin",pkmn)
   next true
 })
-ItemHandlers::UseOnPokemon.add(:GRITPEBBLE,proc { |item,pkmn,scene|
-  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
-    scene.pbDisplay(_INTL("It won't have any effect."))
-    next false
-  end
-  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
-  pkmn.changeHappiness("vitamin",pkmn)
-  pkmn.changeLoyalty("vitamin",pkmn)
-  next true
-})
-
-ItemHandlers::UseOnPokemon.add(:GRITROCK,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:GRITPEBBLE,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
     scene.pbDisplay(_INTL("It won't have any effect."))
     next false
@@ -322,9 +311,20 @@ ItemHandlers::UseOnPokemon.add(:GRITROCK,proc { |item,pkmn,scene|
   next true
 })
 
+ItemHandlers::UseOnPokemon.add(:GRITROCK,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
 
 
-ItemHandlers::UseOnPokemon.add(:SPEEDCOMET,proc { |item,pkmn,scene|
+
+ItemHandlers::UseOnPokemon.add(:SPEEDCOMET,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPEED,40)
   else
     scene.pbDisplay(_INTL("It won't have any effect."))
@@ -336,7 +336,7 @@ ItemHandlers::UseOnPokemon.add(:SPEEDCOMET,proc { |item,pkmn,scene|
   next true
 })
 
-ItemHandlers::UseOnPokemon.add(:DEFENDCOMET,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:DEFENDCOMET,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:SPECIAL_DEFENSE,20)
   else
     scene.pbDisplay(_INTL("It won't have any effect."))
@@ -353,7 +353,7 @@ ItemHandlers::UseOnPokemon.add(:DEFENDCOMET,proc { |item,pkmn,scene|
   next true
 })
 
-ItemHandlers::UseOnPokemon.add(:BALANCEDCOMET,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:BALANCEDCOMET,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:ATTACK,10)
   else
     scene.pbDisplay(_INTL("It won't have any effect."))
@@ -390,7 +390,7 @@ ItemHandlers::UseOnPokemon.add(:BALANCEDCOMET,proc { |item,pkmn,scene|
   next true
 })
 
-ItemHandlers::UseOnPokemon.add(:ATKCOMET,proc { |item,pkmn,scene|
+ItemHandlers::UseOnPokemon.add(:ATKCOMET,proc { |item, qty,pkmn,scene|
   if pbJustRaiseEffortValues(pkmn,:ATTACK,20)
   else
     scene.pbDisplay(_INTL("It won't have any effect."))
@@ -498,11 +498,6 @@ ItemHandlers::UseFromBag.add(:LVLDETECTOR,proc{|item|
          $game_switches[240]=false
         end
     next 1
-})
-
-
-ItemHandlers::UseOnPokemon.add(:APPLE,proc { |item,pkmn,scene|
-  next pbHPItem(pkmn,10,scene)
 })
 
 ItemHandlers::UseInBattle.add(:POISONDART,proc { |item,battler,battle|

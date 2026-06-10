@@ -3,6 +3,7 @@ class PokemonGlobalMetadata
   attr_accessor :itemStorageSystems
   attr_accessor :pokemonStorageSystems
   attr_accessor :storagesystemssteps
+  attr_accessor :storagesystemssteps
   attr_accessor :bossesArrayTimer
   attr_accessor :bossesRefightAmt
 
@@ -26,65 +27,129 @@ class PokemonGlobalMetadata
 
 end
 
-class Spoilage
-  attr_reader :spoiling
-
-  MAX_SIZE     = 20   # Number of different slots in storage
-  MAX_PER_SLOT = 99   # Max. number of items per slot
-
+class PokemonBag
+   attr_accessor :time_last_updated
+  alias _SI_Bag_Init2222 initialize
   def initialize
-    @spoiling = []
-  end
-  
-  def spoil(index)
-   @spoiling[index]-=1
-  end
-  
-  def add(amt)
-	 @spoiling << amt
-	 return true
+    _SI_Bag_Init2222
+    @time_last_updated = pbGetTimeNow.to_i
   end
 
-  def remove(index)
-    return @spoiling.remove_at(index)
+  def update
+    @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
+    time_now = pbGetTimeNow
+    time_delta = time_now.to_i - @time_last_updated
+    time_per_stage = 5400
+	stages_passed = time_delta / time_per_stage
+	#puts "#{time_delta}/#{time_per_stage} (#{stages_passed})"
+    return if stages_passed <= 0
+	 @pockets.each do |pocket|
+      pocket.each do |slot|
+	   next if slot.nil?
+	   item, amt = slot
+	   next if item.nil?
+       next unless item.respond_to?(:update)
+	   item.update(stages_passed) 
+      end
+	 end 
+	
+   @time_last_updated = time_now.to_i
   end
 
+
+end 
+
+class PokemonBox
+  attr_reader   :pokemon
+  attr_accessor :name
+  attr_accessor :background
+
+  BOX_WIDTH  = 9
+  BOX_HEIGHT = 3
+  BOX_SIZE   = BOX_WIDTH * BOX_HEIGHT
+
+  def initialize(name, maxPokemon = BOX_SIZE)
+    @name = name
+    @background = 0
+    @pokemon = []
+    maxPokemon.times { |i| @pokemon[i] = nil }
+  end
+
+  def length
+    return @pokemon.length
+  end
+
+  def nitems
+    ret = 0
+    @pokemon.each { |pkmn| ret += 1 if !pkmn.nil? }
+    return ret
+  end
+
+  def full?
+    return nitems == self.length
+  end
+
+  def empty?
+    return nitems == 0
+  end
+
+  def [](i)
+    return @pokemon[i]
+  end
+
+  def []=(i, value)
+    @pokemon[i] = value
+  end
+
+  def each
+    @pokemon.each { |item| yield item }
+  end
+
+  def clear
+    @pokemon.clear
+  end
 end
 
 
 class PCItemStorage
-  attr_reader :items
+  attr_accessor :items
   attr_accessor :name
   attr_accessor :active
   attr_accessor :maxsize
   attr_accessor :maxperslot
+  attr_accessor :time_last_updated
 
-  MAX_SIZE    = 48   # Number of different slots in storage
+  MAX_SIZE_OLD    = 48   # Number of different slots in storage
+  MAX_SIZE    = 27
   MAX_PER_SLOT = 99   # Max. number of items per slot
 
   def initialize(maxsize=MAX_SIZE,maxperslot=MAX_PER_SLOT)
     $PokemonGlobal.itemStorageSystems = {} if $PokemonGlobal.itemStorageSystems.nil?
     @items = []
 	@active = false
-	@name = ""
+    @name = "Item#{next_box_id}"
 	@maxsize = maxsize
 	@maxperslot = maxperslot
 	@originalsize = maxsize
 	@originalperslot = maxperslot
-    @name = "Item#{$PokemonGlobal.itemStorageSystems.keys.length}"
+	@time_last_updated = pbGetTimeNow.to_i
 	$PokemonGlobal.itemStorageSystems[@name] = self
   end
-  
-  
-  
-  def changeName(name)
-    $PokemonGlobal.itemStorageSystems[name] = $PokemonGlobal.itemStorageSystems.delete(@name)
+  def next_box_id
+  max = $PokemonGlobal.itemStorageSystems.keys
+            .map { |k| k[/\d+/].to_i }
+            .max || -1
+  return max + 1
   end
+  
+  
+  
   def maxsize
-   if @maxsize.nil?
+   if @maxsize.nil? || @maxsize==MAX_SIZE_OLD
    @maxsize = MAX_SIZE
    @originalsize = MAX_SIZE
    end
+   return @maxsize
   end
   def maxperslot
    @maxperslot = MAX_PER_SLOT if @maxperslot.nil?
@@ -167,8 +232,22 @@ class PCItemStorage
 
 
   def update
-   @items.each do |i|
-   end
+    return if !active?
+    @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
+    time_now = pbGetTimeNow
+    time_delta = time_now.to_i - @time_last_updated
+    time_per_stage = 5400
+	stages_passed = time_delta / time_per_stage
+    return if stages_passed <= 0
+      @items.each do |slot|
+	   next if slot.nil?
+	   item, amt = slot
+       next unless item.respond_to?(:update)
+	   item.update(stages_passed) 
+      end
+	
+	
+   @time_last_updated = time_now.to_i
   end
 
 
@@ -177,25 +256,34 @@ end
 
 class IceBoxStorage
   attr_reader :items
+  attr_reader :electronic 
+  attr_accessor :maxperslot
+  attr_accessor :maxsize
   attr_accessor :name
   attr_accessor :active
+  attr_accessor :time_last_updated
 
-  MAX_SIZE     = 20   # Number of different slots in storage
+  MAX_SIZE     = 9   # Number of different slots in storage
   MAX_PER_SLOT = 99   # Max. number of items per slot
 
-  def initialize
+  def initialize(electronic=false)
     $PokemonGlobal.iceboxStorageSystems = {} if $PokemonGlobal.iceboxStorageSystems.nil?
     @items = []
 	@active = false
-	@name = ""
-    @name = "Box#{$PokemonGlobal.iceboxStorageSystems.keys.length}"
+	@maxperslot = MAX_PER_SLOT
+	@maxsize = electronic==false ? MAX_SIZE : MAX_SIZE*2
+	@electronic = electronic
+    @name = "Box#{next_box_id}"
+	@time_last_updated = pbGetTimeNow.to_i
 	$PokemonGlobal.iceboxStorageSystems[@name] = self
   end
-  
-  def changeName(name)
-    $PokemonGlobal.iceboxStorageSystems[name] = $PokemonGlobal.iceboxStorageSystems.delete(@name)
+  def next_box_id
+  max = $PokemonGlobal.iceboxStorageSystems.keys
+            .map { |k| k[/\d+/].to_i }
+            .max || -1
+  return max + 1
   end
-  
+ 
   def [](i)
     return @items[i]
   end
@@ -256,10 +344,23 @@ class IceBoxStorage
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.remove(@items, item, qty)
   end
-  
   def update
-   @items.each do |i|
-   end
+    return if !active?
+    @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
+    time_now = pbGetTimeNow
+    time_delta = time_now.to_i - @time_last_updated
+    time_per_stage = @electronic==true ? 14400 : 10800
+	stages_passed = time_delta / time_per_stage
+    return if stages_passed <= 0
+      @items.each do |slot|
+	   next if slot.nil?
+	   item, amt = slot
+       next unless item.respond_to?(:update)
+	   item.update(stages_passed) 
+      end
+	
+	
+   @time_last_updated = time_now.to_i
   end
 
 
@@ -272,6 +373,7 @@ class PokemonStorage
   attr_writer   :unlockedWallpapers
   attr_accessor :name
   attr_accessor :active
+  attr_accessor :time_last_updated
 
   BASICWALLPAPERQTY = 16
 
@@ -284,19 +386,27 @@ class PokemonStorage
     @currentBox = 0
     @active = 0
     @boxmode = -1
+	@time_last_updated = pbGetTimeNow.to_i
     @unlockedWallpapers = []
     allWallpapers.length.times do |i|
       @unlockedWallpapers[i] = false
     end
-	@name = ""
     $PokemonGlobal.pokemonStorageSystems = {} if $PokemonGlobal.pokemonStorageSystems.nil?
-    @name = "Box#{$PokemonGlobal.pokemonStorageSystems.keys.length}"
+    @name = "Box#{next_box_id}"
 	$PokemonGlobal.pokemonStorageSystems[@name] = self
   end
-
-  def active?
-    return @active
+  
+  def next_box_id
+  max = $PokemonGlobal.pokemonStorageSystems.keys
+            .map { |k| k[/\d+/].to_i }
+            .max || -1
+  return max + 1
   end
+  
+  def box(index=0)
+    return @boxes[index]
+  end 
+  
   
   def box_pokemon
    return @boxes[0].pokemon
@@ -306,7 +416,11 @@ class PokemonStorage
     @active = false if @active.nil?
     return @active
   end
-
+  
+  def active?
+    @active
+  end 
+  
   def allWallpapers
     return [
       # Basic wallpapers
@@ -494,74 +608,66 @@ class PokemonStorage
   end
  
   def update
-   pokemon = box_pokemon
-   pokemon.each do |i|
-   end
+    return if !active?
+    @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
+    time_now = pbGetTimeNow
+    time_delta = time_now.to_i - @time_last_updated
+    time_per_stage = 5400
+	stages_passed = time_delta / time_per_stage
+    return if stages_passed <= 0
+      pokemon = @boxes[0]
+      pokemon.each do |pkmn|
+	    pkmn.update if pkmn.respond_to?(:update)
+      end
+	
+	
+   @time_last_updated = time_now.to_i
   end
 
 end
 
-EventHandlers.add(:on_step_taken, :update_pokemon_storages,
-  proc { |event|
+EventHandlers.add(:on_frame_update, :update_storages,
+  proc { 
     next if !$scene.is_a?(Scene_Map)
-    next if event != $game_player
-	$PokemonGlobal.storagesystemssteps+=1
-	 next $PokemonGlobal.storagesystemssteps<100
+	
+	$bag.update
     $PokemonGlobal.pokemonStorageSystems.each_key do |key|
 	  $PokemonGlobal.pokemonStorageSystems[key] = $PokemonGlobal.pokemonStorageSystems[key][0] if $PokemonGlobal.pokemonStorageSystems[key].is_a? Array
 	  $PokemonGlobal.pokemonStorageSystems[key].update
 	end
-  }
-)
-EventHandlers.add(:on_step_taken, :update_item_storages,
-  proc { |event|
-    next if !$scene.is_a?(Scene_Map)
-    next if event != $game_player
-	 next $PokemonGlobal.storagesystemssteps<100
     $PokemonGlobal.itemStorageSystems.each_key do |key|
 	  $PokemonGlobal.itemStorageSystems[key] = $PokemonGlobal.itemStorageSystems[key][0] if $PokemonGlobal.itemStorageSystems[key].is_a? Array
 	  $PokemonGlobal.itemStorageSystems[key].update
 	end
-  }
-)
-EventHandlers.add(:on_step_taken, :update_icebox_storages,
-  proc { |event|
-    next if !$scene.is_a?(Scene_Map)
-    next if event != $game_player
-	next $PokemonGlobal.storagesystemssteps<100
     $PokemonGlobal.iceboxStorageSystems.each_key do |key|
 	  $PokemonGlobal.iceboxStorageSystems[key] = $PokemonGlobal.iceboxStorageSystems[key][0] if $PokemonGlobal.iceboxStorageSystems[key].is_a? Array
 	  $PokemonGlobal.iceboxStorageSystems[key].update
 	end
+
+
+
   }
 )
 
 
 def pbBoxesFull?
-  if !$PokemonStorage.nil?
-  
-  
-    if $PokemonStorage.full?
-   $PokemonGlobal.pokemonStorageSystems.keys.each do |i|
-	  next if !$PokemonGlobal.pokemonStorageSystems[i].active?
-	  next if $PokemonGlobal.pokemonStorageSystems[i].full?
-        $PokemonStorage = $PokemonGlobal.pokemonStorageSystems[i]
-      end
-	if $PokemonStorage.nil? && $player.party_full?
-	  return true
-	end
-	  
-	  
-	  return false
-	 else
-      return ($player.party_full? && $PokemonStorage.full?)
-	 end
-
-  else
-  
-  
-  return $player.party_full?
+  return false unless $player.party_full?
+  systems = $PokemonGlobal&.pokemonStorageSystems
+  return true if systems.nil? || systems.empty?
+  if $PokemonStorage && $PokemonStorage.active? && !$PokemonStorage.full?
+    return false
   end
+  
+  
+  systems.each_value do |system|
+    next unless system.active?
+    next if system.full?
+
+    $PokemonStorage = system
+    return false
+  end
+  
+  return true 
 end
 
 

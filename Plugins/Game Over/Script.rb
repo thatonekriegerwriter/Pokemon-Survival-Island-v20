@@ -261,8 +261,8 @@ class PokemonClose_Scene
     @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
     @sprites["locwindow"] = Window_AdvancedTextPokemon.new(loctext)
     @sprites["locwindow"].viewport = @viewport
-    @sprites["locwindow"].x = 0-BorderSettings::SCREENPOSX
-    @sprites["locwindow"].y = 0-BorderSettings::SCREENPOSY
+    @sprites["locwindow"].x = 0-$PokemonSystem.screenposx
+    @sprites["locwindow"].y = 0-$PokemonSystem.screenposy
     @sprites["locwindow"].width = 228 if @sprites["locwindow"].width < 228
     @sprites["locwindow"].visible = true
   end
@@ -312,8 +312,10 @@ class PokemonCloseScreen
       $scene.main
     end
     Graphics.transition(20)
+	
 	else
     @scene.pbEndScreen
+	return false
     end
   end
 

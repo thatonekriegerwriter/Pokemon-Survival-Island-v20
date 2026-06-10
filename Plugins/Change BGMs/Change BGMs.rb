@@ -72,35 +72,7 @@ class Game_Map
   #update the bgm to what it should be rn (I tinkered with load_data)
   def update_bgm
     temp = load_data(sprintf("Data/Map%03d.rxdata",map_id))
-    @map.bgm = temp.bgm
-  end
-  
-  #if the bgm playing rn is different than the maps bgm, switch to the maps bgm
-  def play_current_bgm
-    bgm = $game_system.playing_bgm
-    if (!bgm || bgm.name != @map.bgm.name || bgm.name != @map.bgm.volume || bgm.name != @map.bgm.pitch)
-      pbCueBGM(@map.bgm.name,1.0,@map.bgm.volume,@map.bgm.pitch)
-    end
-  end
-end
-
-class PokemonMapFactory
-  #calls update_bgm for each map that is loaded to make sure map transition bgms work
-  def update_bgms
-    @maps.each{ |map| map.update_bgm}
-  end
-end
-
-
-#yeah sorry for changing the method here :D you're getting what I want, not 
-#what your gamefiles say
-
-alias load_data_old_aiyinsi load_data
-def load_data(file)
-  
-  ret = load_data_old_aiyinsi(file)
-  if file.start_with?("Data/Map") && $PokemonGlobal && $PokemonGlobal.bgm_state_array && ret.respond_to?('bgm')
-    map_id = file[8..file.length-1].to_i
+  if $PokemonGlobal && $PokemonGlobal.bgm_state_array && temp.respond_to?('bgm')
     #iterate through REPLACE_BGMS and see if a switch is set to "On"
     REPLACE_BGMS.each{ |entry|
       if $PokemonGlobal.bgm_state_array[entry[0]]
@@ -127,14 +99,14 @@ def load_data(file)
         #if the bgm should be changed:
         if change_bgm
           #name
-          ret.bgm.name = entry[1]
+          temp.bgm.name = entry[1]
           #volume
           if entry[3]
-            ret.bgm.volume = entry[3]
+            temp.bgm.volume = entry[3]
           end
           #pitch
           if entry[4]
-            ret.bgm.pitch = entry[4]
+            temp.bgm.pitch = entry[4]
           end
           break
           #break out of looping through REPLACE_BGMS loop
@@ -142,5 +114,22 @@ def load_data(file)
       end
     } #end of each loop
   end
-  return ret
+    @map.bgm = temp.bgm
+  end
+  
+  #if the bgm playing rn is different than the maps bgm, switch to the maps bgm
+  def play_current_bgm
+    bgm = $game_system.playing_bgm
+    if (!bgm || bgm.name != @map.bgm.name || bgm.name != @map.bgm.volume || bgm.name != @map.bgm.pitch)
+      pbCueBGM(@map.bgm.name,1.0,@map.bgm.volume,@map.bgm.pitch)
+    end
+  end
 end
+
+class PokemonMapFactory
+  #calls update_bgm for each map that is loaded to make sure map transition bgms work
+  def update_bgms
+    @maps.each{ |map| map.update_bgm}
+  end
+end
+

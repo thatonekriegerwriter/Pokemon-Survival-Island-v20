@@ -593,75 +593,9 @@ module Chaser
 end
 
 
-class Game_Player < Game_Character
-  def update
-    last_real_x = @real_x
-    last_real_y = @real_y
-    super
-    update_stop if $game_temp.in_menu && @stopped_last_frame
-    update_screen_position(last_real_x, last_real_y)
-    # Update dependent events
-    if (!@moved_last_frame || @stopped_last_frame ||
-       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
-      $game_temp.followers.move_followers
-    end
-    $game_temp.followers.update
-    if (!@moved_last_frame || @stopped_last_frame ||
-       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
-      $game_temp.chasers.move_followers
-    end
-    $game_temp.chasers.update
-    # Count down the time between allowed bump sounds
-    @bump_se -= 1 if @bump_se && @bump_se > 0
-    # Finish up dismounting from surfing
-    if $game_temp.ending_surf && !moving?
-      pbCancelVehicles
-      $game_temp.surf_base_coords = nil
-      $game_temp.ending_surf = false
-    end
-    update_event_triggering
-  end
-end
 
-class Spriteset_Global
-  attr_reader :playersprite
 
-  @@viewport2 = Viewport.new(0, 0, Settings::SCREEN_WIDTH, Settings::SCREEN_HEIGHT)
-  @@viewport2.z = 200
 
-  def initialize
-    @follower_sprites = FollowerSprites.new(Spriteset_Map.viewport)
-    @chaser_sprites = ChaserSprites.new(Spriteset_Map.viewport)
-    @playersprite = Sprite_Character.new(Spriteset_Map.viewport, $game_player)
-    @picture_sprites = []
-    (1..100).each do |i|
-      @picture_sprites.push(Sprite_Picture.new(@@viewport2, $game_screen.pictures[i]))
-    end
-    @timer_sprite = Sprite_Timer.new
-    update
-  end
-
-  def dispose
-    @follower_sprites.dispose
-    @follower_sprites = nil
-    @chaser_sprites.dispose
-    @chaser_sprites = nil
-    @playersprite.dispose
-    @playersprite = nil
-    @picture_sprites.each { |sprite| sprite.dispose }
-    @picture_sprites.clear
-    @timer_sprite.dispose
-    @timer_sprite = nil
-  end
-
-  def update
-    @follower_sprites.update
-    @chaser_sprites.update
-    @playersprite.update
-    @picture_sprites.each { |sprite| sprite.update }
-    @timer_sprite.update
-  end
-end
 
 
 

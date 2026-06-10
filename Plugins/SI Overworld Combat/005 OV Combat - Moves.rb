@@ -30,22 +30,135 @@ def can_choose_move?(event,move,showMessages=false)
   end
   return true
 end
+def adjacent?(a, b)
+   dx = (a.x - b.x).abs
+   dy = (a.y - b.y).abs
+  (dx + dy) == 1
+end
 
-
-def attack_movement(attacker,target,amt)
-
-	   $game_temp.preventspawns=true
-	  amt.times do |i|
+def attack_movement_old(attacker,target,amt)
+    $game_temp.preventspawns=true
+	amt.times do |i|
 	  attacker.move_to_another_event(target)
       attacker.turn_toward_event(target)
-	  end 
-	  moving = true
-     start_coord,landing_coord = getLandingCoords(amt,attacker)
-     startx = start_coord[0]
-      starty = start_coord[1]
-	  moving = $game_map.check_event_and_adjacents2(attacker, target)
-	   $game_temp.preventspawns=false
-      return moving
+	end 
+	moving = true
+    start_coord,landing_coord = getLandingCoords(amt,attacker)
+    startx = start_coord[0]
+    starty = start_coord[1]
+	moving = $game_map.check_event_and_adjacents2(attacker, target)
+	$game_temp.preventspawns=false
+    return moving
+
+end
+
+def within_cardinal_sight?(attacker, target)
+  dx = (attacker.x - target.x).abs
+  dy = (attacker.y - target.y).abs
+  (dx == 0 || dy == 0) && dx + dy <= sight_line(attacker)
+end
+def target_in_front?(attacker, target)
+  case attacker.direction
+  when 2 # down
+    target.x == attacker.x && target.y == attacker.y + 1
+  when 4 # left
+    target.x == attacker.x - 1 && target.y == attacker.y
+  when 6 # right
+    target.x == attacker.x + 1 && target.y == attacker.y
+  when 8 # up
+    target.x == attacker.x && target.y == attacker.y - 1
+  else
+    false
+  end
+end
+
+def tile_in_front(event)
+  x = event.x
+  y = event.y
+
+  case event.direction
+  when 2 # down
+    y += 1
+  when 4 # left
+    x -= 1
+  when 6 # right
+    x += 1
+  when 8 # up
+    y -= 1
+  end
+
+  return x, y
+end
+
+def attack_movement(attacker,target,amt)
+   # $game_temp.preventspawns=true
+	moving = false
+	steps = 0 
+      attacker.turn_toward_event(target)
+	loop do
+	  break if steps>=sight_line(attacker)
+	  if target_in_front?(attacker, target)
+        moving = true
+        break
+      end
+	  if attacker.can_move_in_direction?(attacker.direction)
+	  attacker.move_forward  #move_to_another_event(target)
+	  loop do
+        update_package
+        break unless attacker.moving?
+      end
+	  steps+=1 if !within_cardinal_sight?(attacker, target)
+	  else 
+	    event = $game_map.check_event(*tile_in_front(attacker))
+		if event && event.is_a?(Game_PokeEvent) || event.is_a?(Game_PokeEventA)
+		 moving = event
+		else 
+         moving = :COLLIDED
+		end 
+        break
+	  end
+	end 
+#	$game_temp.preventspawns=false
+    return moving
+
+end
+
+def attack_special(attacker,target,move)
+   # $game_temp.preventspawns=true
+   
+	moving = false
+	steps = 0 
+      attacker.turn_toward_event(target)
+	  dx, dy = tile_in_front(attacker)
+	  event = $DynamicEvents.spawnTempEvent(dx,dy,move)
+	  event.counter = attacker.counter
+	  event.direction = attacker.direction
+	loop do
+	  break if steps>=sight_line(event)
+	  if target_in_front?(event, target)
+        moving = true
+        break
+      end
+	  if event.can_move_in_direction?(event.direction)
+	  event.move_forward  #move_to_another_event(target)
+	  loop do
+        update_package
+        break unless event.moving?
+      end
+	  steps+=1 if !within_cardinal_sight?(event, target)
+	  else 
+	    detected_event = $game_map.check_event(*tile_in_front(attacker))
+	   if detected_event && detected_event.is_a?(Game_PokeEvent) || detected_event.is_a?(Game_PokeEventA)
+		 moving = detected_event
+	   else
+        moving = false
+	   end 
+        break
+	  end
+	end 
+#	$game_temp.preventspawns=false
+    event.removeThisEventfromMap
+    return moving
 
 end
 
@@ -143,8 +256,8 @@ end
      move_id = move.id if defined?(move.id)
      return true if overworld_aoe?(move_id)
      distance = sight_line(user) if distance.nil?
-	  result = pbAbsoluteDistance(target.x,target.y,user.x,user.y)<=distance
-	   puts "Within Range? (#{!result})"
+	 new_distance = pbAbsoluteDistance(target.x,target.y,user.x,user.y)
+	  result = new_distance<=distance
    return result
   
   end
@@ -165,7 +278,14 @@ end
 	
 	return target
   end
- 
+ def within_cardinal_range?(a, b, range)
+  dx = (a.x - b.x).abs
+  dy = (a.y - b.y).abs
+
+  return false unless dx == 0 || dy == 0
+
+  dx + dy <= range
+end
  
  def use_move(attacker,target,move,distance,target_x,target_y)
        puts "#{move.category}(#{distance}).#{move.name}"
@@ -175,80 +295,48 @@ end
 		  return
 		end
 		if !within_range?(attacker,target,move,distance)
-		  target = who_now?(attacker,target,target_x,target_y)
-		   return if target==false
+		   return
 		end
-       turning_prep(attacker,target)
+        turning_prep(attacker,target)
 	    amt = sight_line(attacker)
-	    moving = true
-	    moving = attack_movement(attacker,target,amt) if movement_attack?(attacker,move,distance)
+	    moving = false
+		if movement_attack?(attacker,move,distance)
+	     sideDisplay("#{attacker.pokemon.name} is rearing back for a dash!!") if !target.is_a?(Game_PokeEvent)
+	     moving = attack_movement(attacker,target,amt) 
+		 if moving == :COLLIDED
+	      sideDisplay("#{attacker.pokemon.name} was stunned by the collision!") if !target.is_a?(Game_PokeEvent)
+	      moving = false
+		  inflictStatus(nil, nil, attacker.pokemon, :PARALYSIS, 4)
+		  attacker.battle_timer = 200 if defined?(attacker.battle_timer)
+		 elsif moving.is_a?(Game_PokeEvent) || moving.is_a?(Game_PokeEventA)
+		   target = moving
+		   moving = true 
+		 end 
+		elsif move.category == 1 && within_cardinal_range?(attacker, target, sight_line(attacker))
+	     sideDisplay("#{attacker.pokemon.name} begins channeling its energy!") if !target.is_a?(Game_PokeEvent) && move.category == 1
+		 moving = attack_special(attacker,target,move) 
+		 if moving.is_a?(Game_PokeEvent) || moving.is_a?(Game_PokeEventA)
+		   target = moving
+		   moving = true 
+		 end 
+		elsif adjacent?(attacker,target)
+         attacker.turn_toward_event(target)
+	     moving = true
+		end 
 	    puts "#{attacker.pokemon.name} is trying to move and the result? #{moving}" if attacker.battle_timer<1
 
 		if moving==false
-        sideDisplay("#{attacker.pokemon.name} missed!")
-        pbSEPlay("Miss")
-		 return
+         sideDisplay("#{attacker.pokemon.name} missed!")
+         pbSEPlay("Miss")
+		 return false 
 		end
 		if outSpeeds?(attacker,target, move)
 			sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!") if !target.is_a?(Game_PokeEvent)
 	       pbSEPlay("phenomenon_grass")
-	       if (nutarget = who_am_i_hitting(attacker,target,target))
-		       return false if nutarget==false
-		       return false if target==nutarget
-	           start_glow(attacker)
-		       if nutarget.is_a?(Array)
-		         nutarget.each do |target2|
-		          next if target2==target
-			       target_x = target2.x.dup
-			       target_y = target2.y.dup
-			      offensive_turn_finishing(attacker,target2,move,distance)
-			      end
-		       else
-			       target_x = nutarget.x.dup
-			       target_y = nutarget.y.dup
-	             return offensive_turn_finishing(attacker,nutarget,move,distance)
-		       end
-          else
-		      return
-		   end
-
+		   return false
 		end
-
-
-		if (nutarget = who_am_i_hitting(attacker,target))
-	       sideDisplay("#{attacker.pokemon.name} is rearing back!!") if !target.is_a?(Game_PokeEvent) && movement_attack?(attacker,move,distance)
-	       sideDisplay("#{attacker.pokemon.name} is gathering energy!") if !target.is_a?(Game_PokeEvent) && move.category == 1
-		   return false if nutarget==false
-	        start_glow(attacker)
-		   if nutarget.is_a?(Array)
-		     nutarget.each do |target2|
-		if !within_range?(attacker,target,move,distance)
-		  target = who_now?(attacker,target,target_x,target_y)
-		   return if target==false
-		end
-			       target_x = target2.x.dup
-			       target_y = target2.y.dup
-			   offensive_turn_finishing(attacker,target2,move,distance)
-			 end
-		   else
-		if !within_range?(attacker,target,move,distance)
-		  target = who_now?(attacker,target,target_x,target_y)
-		   return if target==false
-		end
-			       target_x = nutarget.x.dup
-			       target_y = nutarget.y.dup
-	      return offensive_turn_finishing(attacker,nutarget,move,distance)
-		   end
-        else
-		  return
-		end
-
-
-
-
-
- 
- 
+	    start_glow(attacker)
+		offensive_turn_finishing(attacker,target,move,distance)
  end
 
 def offensive_turn_finishing(attacker,target,move,distance,evasionbonus=0)

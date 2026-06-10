@@ -310,7 +310,6 @@ end
 @sprites["window2"]=SpriteWindow_Base.new(Graphics.width/2-64,Graphics.height/2,128,128)
 @sprites["window2"].visible=false
 charset = pbBuildCharset
-puts charset
 @sprites["player"]=TrainerWalkingCharSprite.new(charset,@viewport)
 @sprites["player"].x=Graphics.width/2-@sprites["player"].bitmap.width/8
 @sprites["player"].y=Graphics.height/2-@sprites["player"].bitmap.height/8 -64
@@ -752,6 +751,8 @@ temp=BASE_GRAPHICS[i]
 end
 #Version 17.2 Difference Above
 return false if !addBaseFiles
+
+
 @index=0
 @sprites={}
 @viewport=Viewport.new(0,0,Graphics.width,Graphics.height)
@@ -837,10 +838,12 @@ return true
 end
  
 def saveBase(filepath,folder)
-
+puts filepath
+return if filepath == "Graphics/Characters/"
 filepath = filepath.gsub(/\.png/,"")
 return if !$player
 return if !filepath.is_a?(String) || !folder.is_a?(String)
+
 name="Graphics/Characters/base graphics/"+folder+"/"+(@sprites["cmdwindow"].index).to_s
 if File.exists?(name+($player.gender+65).chr+".png")
 bmp=Bitmap.new(name+($player.gender+65).chr)

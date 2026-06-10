@@ -21,7 +21,6 @@ end
   def isthereagift
   if !nil_or_empty?(MysteryGift::URL)
     string = pbDownloadToString(MysteryGift::URL)
-	puts string
     return !nil_or_empty?(string)
   else
    return false
@@ -74,6 +73,7 @@ class Scene_Intro
   def main
 	Graphics.show_cursor=false
     Graphics.transition(0)
+    siGetMetaData if $meta.nil?
     # refresh input
     Input.update
     # Loads up a species cry for the title screen
@@ -101,7 +101,6 @@ class Scene_Intro
     # Creates/updates the main title screen loop
 	loop do 
     result = self.update
-	puts result
 	break if result == true
 	end
     Graphics.freeze if @main_loop==false
@@ -117,7 +116,6 @@ class Scene_Intro
     handle_saves
     pbValidateGameVersionAndUpdate() if (GameVersion::POKE_UPDATER_CONFIG['FORCE_UPDATE']==true || forcetheupdate) && getUpdate && GameVersion::ENABLED
     first_time = true
-	createSIDataValues
     loop do
       @screen.update
       Graphics.update
@@ -128,7 +126,7 @@ class Scene_Intro
         ret = 2
         break
       end
-	  if @demo_timer>45*Graphics.frame_rate
+	  if @demo_timer>270*Graphics.frame_rate
 	    @demo_timer=0
         ret = 1
         break
@@ -194,12 +192,12 @@ class Scene_Intro
       @screen.update
       Graphics.update
       Input.update
-	  if @demo_timer>45*Graphics.frame_rate
-	  @demo_timer=0
-	pbFadeOutIn { @screen.hide }
-	   pbPlayIntroVideo
-	pbFadeOutIn { @screen.show}
-	  end
+#	  if @demo_timer>270*Graphics.frame_rate
+#	  @demo_timer=0
+#	pbFadeOutIn { @screen.hide }
+#	   pbPlayIntroVideo
+#	pbFadeOutIn { @screen.show}
+#	  end
      show_continue = !@save_data.empty?
 	 
 	 if @save_data.empty? && SaveData.get_all_saves.length < 2 && commands.include?(_INTL('Load Game'))
@@ -243,7 +241,6 @@ class Scene_Intro
   end
 
   def load_save_file(file_path)
-    puts file_path
     return {} if file_path=="Saves/.rxdata"
     save_data = SaveData.read_from_file(file_path)
     unless SaveData.valid?(save_data)
@@ -430,7 +427,6 @@ class Scene_Intro
 	     @demo_timer=0
         case @index
         when cmd_continue
-		 puts "A"
 		 if !@save_data.empty?
 		 pbPlayDecisionSE
 	     @screen.displayboxdisplaymeasavefile(@newest_data,commands[cmd_continue],@newest_file)
@@ -439,7 +435,6 @@ class Scene_Intro
       Graphics.update
       Input.update
 		  if Input.trigger?(Input::USE) 
-		   puts @save_data
 		  pbPlayDecisionSE
 		  select_this_file(@save_data)
 		   break
@@ -459,9 +454,7 @@ class Scene_Intro
 		  @selected_file = nil
 		  @newest_data = {}
          @save_data = {}
-		  puts @save_data
 	       @screen.displayboxdisplaymeasavefile
-		  puts @save_data
 		   break
 		  end
 		  elsif Input.trigger?(Input::BACK)
@@ -472,7 +465,6 @@ class Scene_Intro
         end
 
         when cmd_load_game
-		 puts "B"
 		 if !@save_data.empty?
 	      @screen.displayboxdisplaymeasavefile(@save_data,commands[cmd_load_game],@selected_file)
 		 loop do
@@ -512,7 +504,6 @@ class Scene_Intro
 		 end
         end
         when cmd_new_game
-		 puts "C"
 		result = false
 		  pbPlayDecisionSE
 		  result=select_difficulty
@@ -569,7 +560,7 @@ class Scene_Intro
 		   disposeTitle
 		   @main_loop=false
           $scene = nil
-          return
+          exit
 		  end
         #when cmd_delete
 		 # save_data = SaveData.get_full_path(@selected_file)

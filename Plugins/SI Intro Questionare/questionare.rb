@@ -454,6 +454,8 @@ end
   end
   
   def update_player_sprites
+    puts @index+1
+	puts @index+1<9
       if @index+1<9
       meta = GameData::PlayerMetadata.get(@index+1)
 	   if meta
@@ -628,11 +630,11 @@ end
 
 		  pbPlayDecisionSE
 		  $player.name = @sprites["entry"].text
-		 if @index==9
+		 if @index+1==9
 		    if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
-				index2=11
-			else
 				index2=12
+			else
+				index2=11
 			end
 		 else
 				index2=@index+1
@@ -642,11 +644,11 @@ end
       elsif @sprites["cmdwindow"].active == false && @sprites["entry"].text!="" && !$player.playerclass.nil? && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5+$PokemonSystem.screenposx,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["finishbutton"].y+$PokemonSystem.screenposy,@sprites["finishbutton"].y+@sprites["finishbutton"].height+$PokemonSystem.screenposy))
 		  pbPlayDecisionSE
          $player.name = @sprites["entry"].text
-		 if @index==9
+		 if @index+1==9
 		    if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
-				index2=11
-			else
 				index2=12
+			else
+				index2=11
 			end
 		 else
 				index2=@index+1

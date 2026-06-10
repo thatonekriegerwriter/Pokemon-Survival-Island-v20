@@ -61,7 +61,7 @@ def pbUseItem(bag, item, bagscene = nil)
     return (ret) ? 1 : 0
   elsif useType == 2 || itm.is_machine?   # Item is usable from Bag or teaches a move
     intret = ItemHandlers.triggerUseFromBag(item)
-    if intret >= 0
+    if intret && intret >= 0
       bag.remove(item) if intret == 1 && itm.consumed_after_use?
       return intret
     end
@@ -157,6 +157,7 @@ class ItemData
   attr_accessor :hidden_modifiers
   attr_accessor :damage_bonus
   attr_accessor :crate_storage
+  attr_accessor :internal_data
   attr_accessor :food_water_stats
   attr_accessor :berry_stats
   attr_accessor :pokeball_stats
@@ -164,28 +165,19 @@ class ItemData
   attr_accessor :stored_items
   attr_accessor :bottle
    
-   def hp
-    return @durability.to_i if @durability!=false
-    return 100 if @durability==false
-   end
-   
-   def totalhp
-    return @max_durability.to_i if @durability!=false
-    return 100 if @durability==false
-   end
-
   def initialize(id,durability=false,water=false)
     @id         = id
 	data = GameData::Item.get(@id)
     @display_name = data.real_name
     @flags      = []
     @durability  = durability
-	@durability = 100 if durability==false && ((GameData::Item.get(@id).is_tool? && @id != :STONE) || (GameData::Item.get(@id).is_foodwater? && GameData::Item.get(@id).has_flag?("NoSpoiling")) || GameData::Item.get(@id).is_berry?)
+	@durability = 100 if durability==false && default_durability_item?(@id)
     @max_durability  = @durability
     @water      = water
     @water      = 0 if water==false && (GameData::BerryPlant::WATERING_CANS.include?(@id) || @id == :WATERBOTTLE || @id == :GLASSBOTTLE)
     @damage_bonus      = 0
     @crate_storage      = []
+    @internal_data      = nil
     @modifiers  = []
     @hidden_modifiers  = []
     @food_water_stats  = food_water_defs
@@ -208,6 +200,29 @@ class ItemData
     @stored_items  = []
     @bottle  = nil
   end
+
+
+
+   def hp
+    return @durability.to_i if @durability!=false
+    return 100 if @durability==false
+   end
+   
+   def totalhp
+    return @max_durability.to_i if @durability!=false
+    return 100 if @durability==false
+   end
+
+def default_durability_item?(item_id)
+  item = GameData::Item.get(item_id)
+
+  return true if item.is_berry? && !item.is_apricorn?
+  return true if item.is_tool? && item_id != :STONE
+  return true if [:WATERBOTTLE, :BOWL].include?(item_id)
+  return true if item.is_foodwater? && !item.has_flag?("NoSpoiling") && !item.is_apricorn?
+
+  false
+end
 
    def stored_items
     @stored_items  = [] if @stored_items.nil?
@@ -237,7 +252,7 @@ class ItemData
     def flavor
 	  return @berry_stats["Flavor"]
 	end
-    def spoilage
+    def spoil_amount
 	  return @food_water_stats["Spoiling"]
 	end
     def priority
@@ -319,29 +334,46 @@ class ItemData
     return @food_water_stats
    end
    
+   
    def stack_size
 	 return data.stack_size if defined?(data.stack_size)
-	 return 3 if (data.is_weapon? && !data.is_dart? && @id!=:STONE && @id!=:BAIT) || @id==:WATERBOTTLE || GameData::BerryPlant::WATERING_CANS.include?(@id) || (data.is_foodwater? && !data.is_berry?)
-	 return 3 if data.is_medicine?
+	 return 64 if @id==:JACKETEDCABLE
+	 return 12 if data.has_flag?("CraftingMaterial")
+	 return 1 if data.is_shoes? || data.is_shirt? || data.is_pants?
+	 return 1 if data.is_machine?
+	 return 1 if (data.is_weapon? && !data.is_dart? && @id!=:STONE && @id!=:BAIT)  || GameData::BerryPlant::WATERING_CANS.include?(@id) 
+	 return 3 if data.is_medicine? || @id==:WATERBOTTLE || (data.is_foodwater? && !data.is_berry?)
 	 return 6 if data.is_dart? || @id==:GLASSBOTTLE
 	 return 12 if data.is_pokeball?
 	 return 24 if data.is_berry? && !data.is_apricorn?
      return 36
      return Settings::BAG_MAX_PER_SLOT	 
    end
-
+   alias max_per_slot stack_size
+   
+   
 
    def damage_bonus
     @damage_bonus = 0 if @damage_bonus.nil?
     return @damage_bonus
    end
-
+   
+   def reset_data
+    @internal_data = nil
+	@crate_storage.active = false if @crate_storage.respond_to?(:active)
+   end 
+   
+   
    def crate_storage
     @crate_storage = [] if @crate_storage.nil?
     return @crate_storage
    end
-
-
+   
+   def crate_storage=(value)
+     @crate_storage = value
+    return @crate_storage
+   end
+ 
     def hidden_modifiers
      @hidden_modifiers = [] if @hidden_modifiers.nil?
 	 return @hidden_modifiers
@@ -379,7 +411,7 @@ class ItemData
   
 	def food_water_defs
 	   return { 
-	  "Spoiling" => rand(5)+1, # effects the rate the food spoils, rang: 1-5
+	  "Spoiling" => rand(2)+1, # effects the rate the food spoils, rang: 1-5
 	  "Priority" => rand(5)+1, # effects how much this as an ingredient changes the food, rang: 1-5
 	  "Servings" => rand(3)+1, # effects how many times the food can be eaten, rang: 1-3
 	  "Flavor" => [0,0,0,0,0], #effects how a pokemon likes the food
@@ -493,6 +525,35 @@ class ItemData
      return @id==item if item.is_a?(Symbol)
      return @id==item.id && @flags==item.flags && @durability==item.durability && @water==item.water && @modifiers==item.modifiers if item.is_a?(ItemData)
    end
+
+   def update(spoil_amt)
+   
+     return if @id==:SPOILEDFOOD
+     item = GameData::Item.get(@id)
+     return unless item.is_berry? || item.is_foodwater?
+     return if item.is_apricorn?
+     return if item.has_flag?("NoSpoiling")
+     #puts self.name 
+     #puts "Old Durability: #{self.durability}/#{self.max_durability}"
+	 if @durability==false
+	 @durability = 100 
+	 @max_durability = @durability
+	 end 
+	 amt = spoil_amt * @food_water_stats["Spoiling"]
+	 amt = amt/2.0 if item.is_berry?
+     @durability-=amt
+     #puts "New Durability: #{self.durability}/#{self.max_durability}"
+     if @durability==0
+	   @id = :SPOILEDFOOD
+	   @durability=false
+	   @max_durability=false
+	 end 
+     #puts self.name 
+	 #puts "======================"
+
+
+   end 
+
 end
 
 
@@ -600,23 +661,6 @@ module GameData
 
 
 
-    def spoiling(storage) #$bag, $PokemonGlobal.pcItemStorage, Other
-     @durability-=1
-	 if @durability==0
-	 
-	 
-	 storage.remove(self,1)
-	 potatoes = [:GROWTHMULCH,:DAMPMULCH,:STABLEMULCH,:GOOEYMULCH]
-	 storage.add(potatoes[rand(potatoes.length)],amt)
-	 
-	 
-	 end
-	 
-	 
-	 
-	
-	end
-
   end
 end
 
@@ -700,10 +744,11 @@ module ItemStorageHelper
   end
 
   def self.add(items, max_slots, max_per_slot, item, qty)
-	items = convert_to_itemdata(items) if items.any? { |element| element[0].is_a?(Symbol) }
+	items = convert_to_itemdata(items) if items.any? { |element| element && element[0].is_a?(Symbol) }
 	item = get_item_data(item) if item.is_a?(Symbol)
     raise "Invalid value for qty: #{qty}" if qty < 0
     return true if qty == 0
+	return false if !self.can_add?(items, max_slots, max_per_slot, item, qty)
     max_slots.times do |i|
       item_slot = items[i]
       if !item_slot
@@ -786,6 +831,7 @@ class PokemonBag
 	$bag.pockets.each do |pocket| 
 	next if pocket.nil?
 	pocket.each do |i| 
+	  next if i.nil?
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
@@ -802,6 +848,7 @@ class PokemonBag
 	$bag.pockets.each do |pocket| 
 	next if pocket.nil?
 	pocket.each do |i| 
+	  next if i.nil?
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
@@ -818,6 +865,7 @@ class PokemonBag
 	$bag.pockets.each do |pocket| 
 	next if pocket.nil?
 	pocket.each do |i| 
+	  next if i.nil?
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
@@ -835,6 +883,7 @@ class PokemonBag
 	$bag.pockets.each do |pocket| 
 	next if pocket.nil?
 	pocket.each do |i| 
+	  next if i.nil?
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
@@ -909,6 +958,8 @@ class PokemonBag
     pocket = item_data.pocket
     max_size = max_pocket_size(pocket)
     max_size = @pockets[pocket].length + 1 if max_size < 0   # Infinite size
+	
+    @pockets[pocket].fill(nil, @pockets[pocket].length...Settings::BAG_MAX_POCKET_SIZE.max) 
     ret = ItemStorageHelper.add(@pockets[pocket],
                                 max_size, item.stack_size, item, qty)
     if ret && Settings::BAG_POCKET_AUTO_SORT[pocket - 1]

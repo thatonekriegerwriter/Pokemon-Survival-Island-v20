@@ -219,6 +219,16 @@ module UIHelper
     cw.visible = oldvisible
   end
 
+  def self.pbDisplayStatic2(msgwindow, message)
+    oldvisible = msgwindow.visible
+    msgwindow.visible        = true
+    msgwindow.letterbyletter = false
+    msgwindow.width          = Graphics.width
+    msgwindow.resizeHeightToFit(message, Graphics.width)
+    msgwindow.text = message
+    pbBottomRight(msgwindow)
+  end
+  
   def self.pbDisplayStatic(msgwindow, message)
     oldvisible = msgwindow.visible
     msgwindow.visible        = true

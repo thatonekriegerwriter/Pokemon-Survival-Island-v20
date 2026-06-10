@@ -48,7 +48,9 @@ end
 end
  
  
-
+  def pbBodyTypeMessage(message,&block)
+     return (pbMessage(message,[_INTL("Feminine"),_INTL("Masculine")],1,&block)==0)
+  end
 
 
 #===============================================================================

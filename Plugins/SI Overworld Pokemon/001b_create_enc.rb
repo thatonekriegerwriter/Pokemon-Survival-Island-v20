@@ -10,9 +10,11 @@ class Game_Player < Game_Character
     end
     return true
   end
+  
   def force_start_event(event)
       event.start
   end
+  
   def pbCheckEventTriggerFromDistanceMoving(triggers)
     ret = pbTriggeredSurroundingEvents(triggers)
     return if ret.length == 0
@@ -51,7 +53,8 @@ class Game_Player < Game_Character
     # All event loops
     x_offset = (dir == 4) ? -1 : (dir == 6) ? 1 : 0
     y_offset = (dir == 8) ? -1 : (dir == 2) ? 1 : 0
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
       next if ![1, 2].include?(event.trigger)   # Player touch, event touch
       # If event coordinates and triggers are consistent
       next if !event.at_coordinate?(@x + x_offset, @y + y_offset)
@@ -73,17 +76,76 @@ class Game_Player < Game_Character
     return result
   end
 
+  def check_event_trigger_here(triggers)
+    result = false
+    # If event is running
+    return result if $game_system.map_interpreter.running?
+    # All event loops
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      # If event coordinates and triggers are consistent
+      next if !event.at_coordinate?(@x, @y)
+      next if !triggers.include?(event.trigger)
+      # If starting determinant is same position event (other than jumping)
+      next if event.jumping? || !event.over_trigger?
+      event.start
+      result = true
+    end
+    return result
+  end
+
+  def check_event_trigger_there(triggers)
+    result = false
+    # If event is running
+    return result if $game_system.map_interpreter.running?
+    # Calculate front event coordinates
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return false if !$game_map.valid?(new_x, new_y)
+    # All event loops
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !triggers.include?(event.trigger)
+      # If event coordinates and triggers are consistent
+      next if !event.at_coordinate?(new_x, new_y)
+      # If starting determinant is front event (other than jumping)
+      next if event.jumping? || event.over_trigger?
+      event.start
+      result = true
+    end
+    # If fitting event is not found
+    if result == false && $game_map.counter?(new_x, new_y)
+      # Calculate coordinates of 1 tile further away
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+      return false if !$game_map.valid?(new_x, new_y)
+      # All event loops
+      $game_map.events.each_value do |event|
+        next if !triggers.include?(event.trigger)
+        # If event coordinates and triggers are consistent
+        next if !event.at_coordinate?(new_x, new_y)
+        # If starting determinant is front event (other than jumping)
+        next if event.jumping? || event.over_trigger?
+        event.start
+        result = true
+      end
+    end
+    return result
+  end
+
   def pbTriggeredSurroundingEvents(triggers, checkIfRunning = true)
     result = []
     # If event is running
     return result if checkIfRunning && $game_system.map_interpreter.running?
     # All event loops
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
       next if !triggers.include?(event.trigger)
       next if !event.name[/surrounding\((\d+)\)/i]
       distance = $~[1].to_i
 	   potato = []
 	  if !pbPlayerOnOrAroundEvent?(event, self, distance)
+	    next if !defined?(event.angry_at)
 	    event.angry_at.each do |target|
 		  if pbPlayerOnOrAroundEvent?(event, target, distance)
 		   potato << target
@@ -97,6 +159,72 @@ class Game_Player < Game_Character
     end
     return result
   end
+
+
+  def pbTriggeredTrainerEvents(triggers, checkIfRunning = true, trainer_only = false)
+    result = []
+    # If event is running
+    return result if checkIfRunning && $game_system.map_interpreter.running?
+    # All event loops
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !triggers.include?(event.trigger)
+      next if !event.name[/trainer\((\d+)\)/i] && (trainer_only || !event.name[/sight\((\d+)\)/i])
+      distance = $~[1].to_i
+      next if !pbEventCanReachPlayer?(event, self, distance)
+      next if event.jumping? || event.over_trigger?
+      result.push(event)
+    end
+    return result
+  end
+
+  def pbTriggeredCounterEvents(triggers, checkIfRunning = true)
+    result = []
+    # If event is running
+    return result if checkIfRunning && $game_system.map_interpreter.running?
+    # All event loops
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !triggers.include?(event.trigger)
+      next if !event.name[/counter\((\d+)\)/i]
+      distance = $~[1].to_i
+      next if !pbEventFacesPlayer?(event, self, distance)
+      next if event.jumping? || event.over_trigger?
+      result.push(event)
+    end
+    return result
+  end
+
+
+  def pbFacingEvent(ignoreInterpreter = false)
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !event.at_coordinate?(new_x, new_y)
+      next if event.jumping? || event.over_trigger?
+      return event
+    end
+    # If the tile in front is a counter, check one tile beyond that for events
+    if $game_map.counter?(new_x, new_y)
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+      $game_map.events.each_value do |event|
+        next if !event.at_coordinate?(new_x, new_y)
+        next if event.jumping? || event.over_trigger?
+        return event
+      end
+    end
+    return nil
+  end
+
+
+
+
+
 end
 
 
@@ -394,6 +522,9 @@ def manuallyGenerate(x,y,dir,pkmn=nil)
 
 
 end
+
+
+
 def testPokeSpawn(x,y,dir)
     species = pbChooseSpeciesList
     if species
@@ -415,6 +546,9 @@ def testPokeSpawn(x,y,dir)
     end
 
 end
+
+
+
 def reset_event_functionality_timer
      event = pbMapInterpreter.get_self
  if Input.press?(Input::CTRL) && $DEBUG
@@ -912,6 +1046,7 @@ end
 
 
   def move_type_toward_event(target)
+    return if target.nil?
     sx = @x + (@width / 2.0) - (target.x + (target.width / 2.0))
     sy = @y - (@height / 2.0) - (target.y - (target.height / 2.0))
     if sx.abs + sy.abs >= 20
@@ -972,7 +1107,6 @@ class Game_Map
 	      end
 	 end
 	end
-    puts "A"
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     mapId = $game_map.map_id
@@ -1004,7 +1138,6 @@ class Game_Map
 	
     #--- movement of the event --------------------------------
 	
-	 puts "B"
     event.pages[0].step_anime = true if VisibleEncounterSettings::USE_STEP_ANIMATION
     event.pages[0].through = false
     event.pages[0].through = true if pokemon.types.include?(:FLYING)
@@ -1049,7 +1182,6 @@ class Game_Map
 	
 	
 	
-	  puts "C"
     #--- creating and adding the Game_PokeEvent ------------------------------------
     gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, self)
     gameEvent.id = key_id
@@ -1068,7 +1200,6 @@ class Game_Map
 	
 	
 	
-	  puts "D"
     $ExtraEvents.pokemon[[mapId,key_id]] = StoredEvent.new(mapId,event,pokemon)
 	 $ExtraEvents.pokemon[[mapId,key_id]].eventdata = gameEvent
 	
@@ -1078,20 +1209,14 @@ class Game_Map
 	 return nil
 	end
 
-	  puts "E"
     @events[key_id] = gameEvent
 	
 	
-	
-	
-	
-	  puts "F"
 	
     #--- updating the sprites --------------------------------------------------------
     sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
     $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
     $scene.spritesets[self.map_id].character_sprites.push(sprite)
-	  puts "F"
 	$player.pokedex.register(pokemon.species)
     $player.pokedex.set_seen(pokemon.species)
 	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
@@ -1102,8 +1227,6 @@ class Game_Map
 	
 	
 	
-	
-	  puts "G"
 	
 	
     # alternatively: updating the sprites (old and slow but working):

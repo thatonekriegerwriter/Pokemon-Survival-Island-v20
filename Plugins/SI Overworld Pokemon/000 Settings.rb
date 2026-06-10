@@ -1,4 +1,22 @@
 module VisibleEncounterSettings
+  MAX_SPAWN = 16 # default 0
+  MAX_SPAWN_DAY = 8
+  # MAX_SPAWN is the max number of wild Encounters Events that can be spawned on the map at the same time.
+  # <=0  - means infinite (no maximum)
+  # >0   - maximum of wild encounters on the map  
+  
+  #------------- MAXIMAL NUMBER OF ENCOUNTERS WITH REDUCED ENCOUNTER PROBABILITY ------------ 
+  MAX_ENCOUNTER_REDUCED = 10# default 8 - means that at most 8 pokemon will have a drastically reduced spawn probability before it become the usual encounter probability
+  # 0   - means that all pokemon have the encounter probability as it is set by you for the maps and the encounter type, grass, cave, water.
+  # >0  - means that the first at most that given number of pokemon will have a drastically reduced spawn probability and might not make it. This will increase the average spawning time for every pokemon.
+  AUTO_SPAWN_SPEED = 20 # default 60
+  #You can set the speed of automatic pokemon spawning, i.e. the ability of pokemon
+  # to spawn automatically even without even moving the player.
+  #0   - means that pokemon only spawn while the player is moving
+  #>0  - means automatic spawning is activated, the closer to 0 the faster the spawning
+end
+
+module VisibleEncounterSettings
   #------------- SPAWN RATE AND SPAWN PROPABILITY ------------ 
   INSTANT_WILD_BATTLE_PROPABILITY = 50 # default 0.
   # This parameter holds the default propability of normal to overworld encountering.
@@ -8,8 +26,23 @@ module VisibleEncounterSettings
   # >= 100         - means only normal encounters and instant battles as usual, no overworld spawning
   
   #--------------- SPAWN POSITION ------------------
-  SPAWN_RANGE = 10 # default 4
+  STEPS_PER_SPAWN_TICK = 2 # default 4
+  MIN_SPAWN_RANGE = 4 # default 4
+  SPAWN_RANGE = 13 # default 4
   # This parameter needs to be a positive integer. It is the maximum range from the player a PokeEvent will be able to spawn 
+
+  NO_OF_CHOSEN_TILES = 9 # default 1
+  # Pokemon only spawn on allowed ground. This parameter needs to be an integer.
+  # It says up to how many different, random tiles in SPAWN_RANGE to the player
+  # will be checked for beeing allowed spawning ground.
+  # = 0  - means that it will choose a random tile until one of them 
+  #       is possible to spawn a pokemon or all tiles in SPAWN_RANGE to the player were chosen
+  #       (this will increase the spawn probability)
+  #       (may cause lag with other scripts)
+  # = 1  - means that only one random tile around the player will be chosen
+  # > 1   - maximal number of chosen tiles to find a possible tile where a pokemon can spawn
+  #         (the more you use, more performance needed)
+
 
   RESTRICT_ENCOUNTERS_TO_PLAYER_MOVEMENT = false # default false
   # true - means that water encounters are popping up
@@ -133,3 +166,5 @@ module VisibleEncounterSettings
   #         that usual encounter type list will spawn
   
 end
+
+

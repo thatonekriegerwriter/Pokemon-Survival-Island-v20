@@ -1,6 +1,8 @@
 class Game_Map
 
   def generatePokemon(x,y,pokemon)
+    key_id = $DynamicEvents.generatePokemon(x,y,pokemon)
+	return key_id 
     mapId = $game_map.map_id
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
@@ -48,7 +50,7 @@ class Game_Map
     gameEvent = Game_PokeEventA.new(pokemon, mapId, event, self)
     gameEvent.id = key_id
     gameEvent.type = pokemon
-	if $game_temp.preventspawns==false
+	#if $game_temp.preventspawns==false
     $ExtraEvents.special[[mapId,key_id]] = StoredEvent.new(mapId,event,pokemon)
 	 $ExtraEvents.special[[mapId,key_id]].eventdata = gameEvent
 	 @events[key_id] = gameEvent
@@ -62,7 +64,7 @@ class Game_Map
     #$scene.disposeSpritesets
     #$scene.createSpritesets
 	pbAddParticleEffecttoEvent("soot") if pokemon.shadowPokemon?
-	end
+	#end
   end
 end
 
@@ -104,7 +106,7 @@ end
 class Game_Event < Game_Character
 
   def pbSurroundingEvent(ignoreInterpreter = false)
-    return nil if $game_temp.preventspawns==false
+    #return nil if $game_temp.preventspawns==false
     return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 
     # Check the tile in front of the player for events
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
@@ -121,7 +123,7 @@ class Game_Event < Game_Character
   end
 
   def pbSurroundingEvents(ignoreInterpreter = false)
-    return nil if $game_temp.preventspawns==false
+    #return nil if $game_temp.preventspawns==false
     return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 
     # Check the tile in front of the player for events
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
@@ -141,7 +143,7 @@ class Game_Event < Game_Character
 
   def pbEventWithin(distance,ignoreInterpreter = false)
 	theevents = []
-    return nil if $game_temp.preventspawns==false
+    #return nil if $game_temp.preventspawns==false
     return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 
     # Check the tile in front of the player for events
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
@@ -198,14 +200,8 @@ def pbPlacePokemon(x,y,pokemon)
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
   if !pokemon.fainted?
   if pbObjectIsPossible(x,y)
-  if !$map_factory
-    event = $game_map.generatePokemon(x,y,pokemon)
-  else
-    mapId = $game_map.map_id
-    spawnMap = $map_factory.getMap(mapId)
-    event = spawnMap.generatePokemon(x,y,pokemon)
-  end
-   
+   key_id = $DynamicEvents.generatePokemon(x,y,pokemon)
+   event = $game_map.events[key_id]
    pokemon.set_in_world(true,event)
   return true
   else
@@ -232,7 +228,7 @@ end
 def get_overworld_pokemon_length
   potato = []
  $player.party.each do |b|
-   if b.inworld==true && !b.associatedevent.nil? && !$game_map[b.associatedevent].nil?
+   if b.inworld==true && !b.associatedevent.nil? && !$game_map.events[b.associatedevent].nil?
      potato << b
 	 else
 	  b.inworld=false
@@ -249,7 +245,8 @@ def pbClosestHiddenItemPokemon(pokemon)
   result = []
   playerX = pokemon.x
   playerY = pokemon.y
-  $game_map.events.each_value do |event|
+	events = $game_map.events.values
+    events.each do |event|
     next if !event.name[/hiddenitem/i]
     next if (playerX - event.x).abs >= 8
     next if (playerY - event.y).abs >= 6
@@ -442,6 +439,7 @@ class Game_Character
         end
         return
       end
+
 	  if command.code == 52879
 		eval(command.parameters[0])
         @move_route_index = 0

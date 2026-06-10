@@ -19,40 +19,12 @@ class Game_OVEvent < Game_Event
   end
   
   def removeThisEventfromMap
-    if $game_map.events.has_key?(@id) and $game_map.events[@id]==self
-      if defined?($scene.spritesets)
-        for sprite in $scene.spritesets[$game_map.map_id].character_sprites
-          if sprite.character==self
-            $scene.spritesets[$game_map.map_id].character_sprites.delete(sprite)
-            sprite.dispose
-            break
-          end
-        end
-      end
-		$ExtraEvents.removethisEvent(:OBJECT,@id,$game_map.map_id)
-      $game_map.events.delete(@id)
-    else
-      if $map_factory
-        for map in $map_factory.maps
-          if map.events.has_key?(@id) and map.events[@id]==self
-            if defined?($scene.spritesets) && $scene.spritesets[self.map_id] && $scene.spritesets[self.map_id].character_sprites
-              for sprite in $scene.spritesets[self.map_id].character_sprites
-                if sprite.character==self
-                  $scene.spritesets[map.map_id].character_sprites.delete(sprite)
-                  sprite.dispose
-                  break
-                end
-              end
-            end
-	  	     $ExtraEvents.removethisEvent(:OBJECT,@id,map.map_id)
-            map.events.delete(@id)
-            break
-          end
-        end
-      else
-        raise ArgumentError.new(_INTL("Actually, this should not be possible"))
-      end
-    end
+	 if $DynamicEvents.block_data.has_key?(@id) && $DynamicEvents.block_data[@id]==self
+	    pbRemoveParticleEffectfromEvent(self)
+		pbRemoveLightEffectfromThisEvent(self)
+        $DynamicEvents.block_data.delete(@id)
+	    $DynamicEvents.update!
+	 end 
   end
   
   
@@ -61,7 +33,7 @@ class Game_OVEvent < Game_Event
    if type != :BERRYPLANT
     data = self.variable
     if data
-	  data.update
+	  data.update if data.respond_to?(:update)
 	end
    end
   end
@@ -106,13 +78,7 @@ end.compact
 
 def pbPlaceBerryPlant(x,y)
   if pbObjectIsPossible(x,y)
-  if !$map_factory
-    event = $game_map.generateBerryPlant(x,y)
-  else
-    mapId = $game_map.map_id
-    spawnMap = $map_factory.getMap(mapId)
-    event = spawnMap.generateBerryPlant(x,y)
-  end
+  event = $DynamicEvents.generateBerryPlant(x,y)
   return event
   else
   pbMessage(_INTL("You can't farm there!"))
@@ -213,167 +179,15 @@ class Game_Map
 
 
   def generateBerryPlant(x,y)
-    event = RPG::Event.new(x,y)
-    event.name = "BerryPlant.center"
-    key_id = ((@events.keys.max)|| -1) + 1
-    event.id = key_id
-    mapId = $game_map.map_id
-    event.x = x
-    event.y = y
-    event.pages[0].move_speed = 2 #Sets movement speed.
-    event.pages[0].move_frequency = 2 #Sets movement frequency.
-    event.pages[0].move_type = 0 #Sets movement type.
-    event.pages[0].direction_fix = true
-    event.pages[0].walk_anime = false #Sets movement type.
-    event.pages[0].step_anime = true #Sets movement type.
-    event.pages[0].always_on_top = false #Sets movement type.
-    event.pages[0].through = true #Sets movement type.
-    event.pages[0].trigger = 0
-    Compiler::push_script(event.pages[0].list,sprintf("pbBerryPlant"))
-    Compiler::push_end(event.pages[0].list)
-	
-    gameEvent = Game_OVEvent.new(:BERRYPLANT, @map_id, event, self)
-    gameEvent.id = key_id
-	$ExtraEvents.objects[[@map_id,key_id]] = StoredEvent.new(@map_id,event,:BERRYPLANT)
-	 $ExtraEvents.objects[[@map_id,key_id]].eventdata = gameEvent
-	@events[key_id] = gameEvent
-    berry_plant = $PokemonGlobal.eventvars[[@map_id, key_id]]
-    if !berry_plant
-       berry_plant = BerryPlantData.new(@events[key_id])
-       berry_plant.jit=true
-	   berry_plant.beside_water=any_acceptable_water_tiles_for_hoe(x,y)
-       $PokemonGlobal.eventvars[[@map_id, key_id]] = berry_plant
-    end
-	    map = @map_id
-		 viewport = Spriteset_Map.viewport
-        sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
-        $scene.spritesets[self.map_id].character_sprites.push(sprite)
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantGroundSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantMoistureSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantMulchSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantWeedSprite.new(@events[key_id], map, viewport))
-  
-  
-    return @events[key_id]
+    event = $DynamicEvents.generateEvent(x,y,object,aat,store,direction)
+	return event
   end
 
 
 
   def generateEvent(x,y,object,aat=false,store=false,direction=nil)
-    true_object = nil
-    true_object = object if object.is_a?(ItemData)
-    true_object = ItemStorageHelper.get_item_data(object) if object.is_a?(Symbol)
-    object = object.id if object.is_a?(ItemData)
-    #--- generating a new event ---------------------------------------
-    event = RPG::Event.new(x,y)
-    #--- nessassary properties ----------------------------------------
-    key_id = ((@events.keys.max)|| -1) + 1
-    event.id = key_id
-	if object == :PORTABLECAMP
-    event.name = "Size(3,3).noshadow"
-	elsif object == :BEDROLL
-    event.name = "Size(1,2).noshadow"
-	elsif object == :TORCH
-    event.name = "playertorch(3,3)"
-	elsif object == "CampsiteDoor"
-    event.name = ".noshadow"
-	else 
-    event.name = ".noshadow"
-	end
-    image = getObjectImage(object)
-	fname = "#{image}.png"
-	if store==true && (object==:BEDROLL||object==:PORTABLECAMP||object==:HOME )
-	fname = "Packed.png"
-	end
-	
-	if !direction.nil?
-	if object == :BEDROLL && (direction == 4 || direction == 6)
-    case $game_player.direction
-    when 2 #then event.move_down
-	 x = $game_player.x
-	 y = $game_player.y+1
-    when 4 #then event.move_left
-	 x = $game_player.x-1
-	 y = $game_player.y
-    when 6 #then event.move_right
-	 x = $game_player.x+1
-	 y = $game_player.y
-    when 8 #then event.move_up
-	 x = $game_player.x
-	 y = $game_player.y-1
-    end
-    event.name = "Size(2,1).noshadow"
-	fname = "bedsideways.png"
-    event.x = x
-    event.y = y
-	end
-    end
-    event.pages[0].graphic.character_name = fname
-    #--- movement of the event --------------------------------
-    event.pages[0].move_speed = 0 #Sets movement speed.
-    event.pages[0].move_frequency = 0 #Sets movement frequency.
-    event.pages[0].move_type = 0 #Sets movement type.
-    event.pages[0].direction_fix = true
-    event.pages[0].walk_anime = false #Sets movement type.
-    event.pages[0].always_on_top = aat #Sets movement type.
-    event.pages[0].through = aat #Sets movement type.
-    event.pages[0].trigger = 0 if object != "CampsiteDoor"
-    event.pages[0].trigger = 1 if object == "CampsiteDoor"
-    #--- event commands of the event -------------------------------------
-    mapId = $game_map.map_id
-	if object == "CampsiteDoor"
-    Compiler::push_script(event.pages[0].list,sprintf("campsiteDoorEntry"))
-	elsif object == "OvPot"
-	elsif object == "Egg"
-    Compiler::push_script(event.pages[0].list,sprintf("leggomyeggo"))
-	else
-    Compiler::push_script(event.pages[0].list,("object = get_own_event"))
-    Compiler::push_script(event.pages[0].list,("ItemHandlers.triggerUseFromEvent(object.type,#{key_id}) if defined?(object.type)"))
-    end
-	
-    #Compiler::push_script(event.pages[0].list,sprintf(parameter),1)
-    #  - finally push end command
-    Compiler::push_end(event.pages[0].list)
-    #--- creating and adding the Game_Event ------------------------------------
-	true_object = object if true_object.nil?
-	
-	if object == :PORTABLECAMP && store==true
-    event.x = x-1
-    event.y = y
-	end
-	
-	
-	
-    gameEvent = Game_OVEvent.new(true_object, @map_id, event, self)
-    gameEvent.id = key_id
-    gameEvent.direction = direction if !direction.nil?
-    #$ExtraEvents.objects[key_id] = [mapId,event,true_object,x,y]
-	
-	$ExtraEvents.objects[[mapId,key_id]] = StoredEvent.new(mapId,event,true_object)
-	 $ExtraEvents.objects[[mapId,key_id]].eventdata = gameEvent
-	@events[key_id] = gameEvent
-    #--- updating the sprites --------------------------------------------------------
-	
-	
-    sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
-    $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
-    $scene.spritesets[self.map_id].character_sprites.push(sprite)
-	
-	
-	
-	
-	
-	
-	if store==true
-	$player.held_item_object = key_id
-	$player.held_item = true_object
-	$game_temp.position_calling = true
-	$game_system.save_disabled = true
-	end
-	
-	
-	 return key_id
+    event = $DynamicEvents.generateEvent(x,y,object,aat,store,direction)
+	return event.id
   end
 
 
@@ -381,6 +195,7 @@ class Game_Map
 
 
   def recreateEvent(storedevent,subtype)
+     raise ""
 	 event = storedevent.event
 	 object = storedevent.type
 	 key_id = event.id
@@ -419,11 +234,9 @@ class Game_Map
 	  end
 	end
     @events[key_id] = gameEvent
-	 puts @events[key_id].event.pages[0].graphic.character_name
 	 if @events[key_id].type!=:BERRYPLANT
     #--- updating the sprites --------------------------------------------------------
     sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
-	 puts sprite.character.event.pages[0].graphic.character_name
 	#if defined?(spritesets)
     $scene.spritesets[self.map_id]=Spriteset_Map.new(self) if $scene.spritesets[self.map_id]==nil
     $scene.spritesets[self.map_id].character_sprites.push(sprite)
@@ -455,6 +268,7 @@ class Game_Map
 
 
   def recreateEvent2(event)
+     raise ""
     #--- generating a new event ---------------------------------------
 	theevent = event.event
     key_id = ((@events.keys.max)|| -1) + 1

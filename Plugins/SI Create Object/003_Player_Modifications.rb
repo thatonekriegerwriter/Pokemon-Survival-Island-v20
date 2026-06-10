@@ -677,7 +677,7 @@ end
  
 def pbMoveTowardEvent9(event,target)
   maxsize = [$game_map.width, $game_map.height].max
-  return false if $game_temp.preventspawns==true
+  #return false if $game_temp.preventspawns==true
   return false if !pbEventCanReachPlayer?(event, target, maxsize)
   loop do
     x = event.x
@@ -726,7 +726,7 @@ end
 
 def pbMoveTowardPlayer9(event)
   maxsize = [$game_map.width, $game_map.height].max
-  return false if $game_temp.preventspawns==true
+  #return false if $game_temp.preventspawns==true
   return if !pbEventCanReachPlayer?(event, $game_player, maxsize)
   loop do
     x = event.x

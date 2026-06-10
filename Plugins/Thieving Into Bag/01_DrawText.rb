@@ -36,6 +36,7 @@ def colorToRgb32(color)
 end
 
 def colorToRgb16(color)
+  return "" if !color 
   ret = (color.red.to_i >> 3)
   ret |= ((color.green.to_i >> 3) << 5)
   ret |= ((color.blue.to_i >> 3) << 10)
@@ -923,7 +924,8 @@ def getLineBrokenChunks(bitmap, value, width, dims, plain = false)
     ccheck = c
     if ccheck == "\n"
       x = 0
-      y += 32
+        textSize = bitmap.text_size("\n")
+      y += textSize.height + 4
       next
     end
     textcols = []
@@ -942,10 +944,10 @@ def getLineBrokenChunks(bitmap, value, width, dims, plain = false)
           minTextSize = bitmap.text_size(word.gsub(/\s*/, ""))
           if x > 0 && x + minTextSize.width > width
             x = 0
-            y += 32
+            y += textSize.height + 4
           end
         end
-        ret.push([word, x, y, textwidth, 32, color])
+        ret.push([word, x, y, textwidth, textSize.height + 4, color])
         x += textwidth
         dims[0] = x if dims && dims[0] < x
       end
@@ -954,9 +956,67 @@ def getLineBrokenChunks(bitmap, value, width, dims, plain = false)
       end
     end
   end
-  dims[1] = y + 32 if dims
+  amt = bitmap.text_size("A").height + 4
+  dims[1] = y + amt if dims
   return ret
 end
+
+
+def getLineBrokenChunksHeight(bitmap, value, width, dims, plain = false)
+  x = 0
+  y = 0
+  ret = []
+  if dims
+    dims[0] = 0
+    dims[1] = 0
+  end
+  re = /<c=([^>]+)>/
+  reNoMatch = /<c=[^>]+>/
+  return ret if !bitmap || bitmap.disposed? || width <= 0
+  textmsg = value.clone
+  color = Font.default_color
+  while (c = textmsg.slice!(/\n|[^ \r\t\f\n\-]*\-+|(\S*([ \r\t\f]?))/)) != nil
+    break if c == ""
+    ccheck = c
+    if ccheck == "\n"
+      x = 0
+        textSize = bitmap.text_size("\n")
+      y += textSize.height + 4
+      next
+    end
+    textcols = []
+    if ccheck[/</] && !plain
+      ccheck.scan(re) { textcols.push(rgbToColor($1)) }
+      words = ccheck.split(reNoMatch) # must have no matches because split can include match
+    else
+      words = [ccheck]
+    end
+    words.length.times do |i|
+      word = words[i]
+      if word && word != ""
+        textSize = bitmap.text_size(word)
+        textwidth = textSize.width
+        if x > 0 && x + textwidth > width
+          minTextSize = bitmap.text_size(word.gsub(/\s*/, ""))
+          if x > 0 && x + minTextSize.width > width
+            x = 0
+            y += textSize.height + 4
+          end
+        end
+        ret.push([word, x, y, textwidth, textSize.height + 4, color])
+        x += textwidth
+        dims[0] = x if dims && dims[0] < x
+      end
+      if textcols[i]
+        color = textcols[i]
+      end
+    end
+  end
+  amt = bitmap.text_size("A").height + 4
+  dims[1] = y + amt if dims
+  return dims
+end
+
 
 def renderLineBrokenChunks(bitmap, xDst, yDst, normtext, maxheight = 0)
   normtext.each do |text|
@@ -978,12 +1038,16 @@ def renderLineBrokenChunksWithShadow(bitmap, xDst, yDst, normtext, maxheight, ba
     if maxheight == 0 || text[2] < maxheight
       height = text[4]
       text = text[0]
+	   if shadowColor 
       bitmap.font.color = shadowColor
       bitmap.draw_text(textx + 2, texty, width + 2, height, text)
       bitmap.draw_text(textx, texty + 2, width + 2, height, text)
       bitmap.draw_text(textx + 2, texty + 2, width + 2, height, text)
-      bitmap.font.color = baseColor
+	  end
+	  if baseColor 
+      bitmap.font.color = baseColor 
       bitmap.draw_text(textx, texty, width + 2, height, text)
+	  end
     end
   end
 end

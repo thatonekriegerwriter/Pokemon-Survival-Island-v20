@@ -4,16 +4,29 @@ def pbHeldItemDropOW(pkmn,meat=false)
 
 
 pbCookMeat(pkmn) if meat==true
+
+
 if pkmn.types.include?(:ROCK)
   amt = rand(2)+1
         if $bag.add(:STONE,amt)
 		itemAnim(:STONE,amt)
         end
-elsif pkmn.types.include?(:STEEL)
+end
+if pkmn.types.include?(:STEEL)
         if $bag.add(:IRON2,1)
 		itemAnim(:IRON2,1)
         end
 end
+if pkmn.types.include?(:FLYING)
+    feathers = [:PRETTYFEATHER, :PRETTYFEATHER, :PRETTYFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :MUSCLEFEATHER, :RESISTFEATHER, :GENIUSFEATHER, :CLEVERFEATHER, :SWIFTFEATHER] 
+	item = feathers[rand(feathers.length)]
+        if $bag.add(item,1)
+		itemAnim(item,1)
+        end
+end
+
+
+
 return if pkmn.wildHoldItems.nil?
     wildDrop = pkmn.wildHoldItems
     firstqty = ItemDropsConfig::Common_Item_Quantity

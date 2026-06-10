@@ -38,7 +38,8 @@ class Game_Player < Game_Character
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
 
 
       next if !event.at_coordinate?(new_x, new_y)
@@ -49,7 +50,8 @@ class Game_Player < Game_Character
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event
@@ -471,6 +473,7 @@ class Game_PokeEvent < Game_Event
   attr_accessor :barreling # contains the map_id
   
   def initialize(map_id, event, pokemon, map=nil)
+    map = $map_factory.maps[map_id]
     super(map_id, event, map)
 	@event = event
     @id  = event.id
@@ -559,6 +562,7 @@ class Game_PokeEvent < Game_Event
   def transferrable_data
    return copied_values.map { |var| instance_variable_get("@#{var}") }
   end
+
   
   def set_data(values)
    copied_values.each_with_index do |value, index|
@@ -569,10 +573,30 @@ class Game_PokeEvent < Game_Event
   end
   
   def thinking
-  
    $PokemonGlobal.ov_combat.ov_combat_loop(self)
   end
-  
+  def screen_x
+    if !$map_factory.hasMap?(@map_id)
+	 index = $map_factory.getMapIndex(@map_id)
+	 map = $map_factory.maps[index]
+	end
+	map = self.map if map.nil?
+    ret = ((@real_x.to_f - map.display_x) / Game_Map::X_SUBPIXELS).round
+    ret += @width * Game_Map::TILE_WIDTH / 2
+    ret += self.x_offset
+    return ret
+  end
+
+  def screen_y_ground
+    if $map_factory.hasMap?(@map_id)
+	  index = $map_factory.getMapIndex(@map_id)
+	  map = $map_factory.maps[index]
+	end 
+	map = self.map if map.nil?
+    ret = ((@real_y.to_f - map.display_y) / Game_Map::Y_SUBPIXELS).round
+    ret += Game_Map::TILE_HEIGHT
+    return ret
+  end
   
   
    def attackment_actions(event,pokemon)
@@ -610,6 +634,8 @@ class Game_PokeEvent < Game_Event
    def movement_actions(event,pokemon)
      return if @cannot_move == true
      return if @movement_hit_logic == true
+     return if pokemon.status == :PARALYSIS
+     return if pokemon.status == :SLEEP
      case @movement_type
        when :WANDER
           event.move_type_random_smart
@@ -961,7 +987,6 @@ class Game_PokeEvent < Game_Event
   
   alias original_update update
   def update
-
     if !$game_temp.in_menu
 
       for anim in VisibleEncounterSettings::Perma_Enc_Animations
@@ -988,7 +1013,11 @@ class Game_PokeEvent < Game_Event
           end
         end
       end
-    end
+  
+
+  end
+
+
     original_update
   end
    
@@ -1025,7 +1054,8 @@ end
     return nil if !$game_map.valid?(new_x, new_y)
 	
 	
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
       next if !event.at_coordinate?(new_x, new_y)
       next if event.jumping?
       return event
@@ -1034,7 +1064,8 @@ end
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event
@@ -1057,7 +1088,7 @@ end
     if @parasteps_steps.nil?
     @parasteps_steps  = 7
 	end
-    if @parasteps_steps <= 0 && @pokemon.status = :PARALYSIS
+    if @parasteps_steps <= 0 && @pokemon.status == :PARALYSIS
       @pokemon.status = :NONE
       @parasteps_steps  = 7
     else
@@ -1087,43 +1118,15 @@ end
 	 
 	 pbOverworldCombat.removeEnemy(@id)
 	 $selection_arrows.clear_lock_on if $game_temp.lockontarget==self
-	
-    if $game_map.events.has_key?(@id) and $game_map.events[@id]==self
-	 pbRemoveParticleEffectfromEvent(self)
-      if defined?($scene.spritesets)
-        for sprite in $scene.spritesets[$game_map.map_id].character_sprites
-          if sprite.character==self
-            $scene.spritesets[$game_map.map_id].character_sprites.delete(sprite)
-            sprite.dispose
-            break
-          end
-        end
-      end
-		$ExtraEvents.removethisEvent(:POKEMON,@id,$game_map.map_id)
-      $game_map.events.delete(@id)
-    else
-      if $map_factory
-        for map in $map_factory.maps
-          if map.events.has_key?(@id) and map.events[@id]==self
-            if defined?($scene.spritesets) && $scene.spritesets[self.map_id] && $scene.spritesets[self.map_id].character_sprites
-              for sprite in $scene.spritesets[self.map_id].character_sprites
-                if sprite.character==self
-                  $scene.spritesets[map.map_id].character_sprites.delete(sprite)
-                  sprite.dispose
-                  break
-                end
-              end
-            end
-		    $ExtraEvents.removethisEvent(:POKEMON,@id,map.map_id)
-            map.events.delete(@id)
-            break
-          end
-        end
-      else
-        raise ArgumentError.new(_INTL("Actually, this should not be possible"))
-      end
-    end
-  end
+	 if $DynamicEvents.hostile_mobs.has_key?(@id) && $DynamicEvents.hostile_mobs[@id]==self
+	    pbRemoveParticleEffectfromEvent(self)
+	    $ExtraEvents.removethisEvent(:POKEMON,@id,$game_map.map_id)
+        $DynamicEvents.hostile_mobs.delete(@id)
+	    $DynamicEvents.update!
+	 end 
+
+
+ end
 
 
   def pbFacingEvent(ignoreInterpreter = false)
@@ -1132,7 +1135,8 @@ end
     new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
     new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
     return nil if !$game_map.valid?(new_x, new_y)
-    $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
       next if !event.at_coordinate?(new_x, new_y)
       next if event.jumping? || event.over_trigger?
       return event
@@ -1141,7 +1145,8 @@ end
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event

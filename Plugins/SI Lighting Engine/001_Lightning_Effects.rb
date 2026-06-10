@@ -83,13 +83,14 @@ class Particle_Engine
   def initialize(viewport = nil, map = nil)
     @map       = (map) ? map : $game_map
     @viewport  = viewport
-    @effect    = []
+    @effect    = {}
     @disposed  = false
     @lastRefreshFrame = Graphics.frame_count
     @firsttime = true
     @effects   = {
       # PinkMan's Effects
       "fire"         => Particle_Engine::Fire,
+      "water"         => Particle_Engine::Water,
       "smoke"        => Particle_Engine::Smoke,
       "teleport"     => Particle_Engine::Teleport,
       "spirit"       => Particle_Engine::Spirit,
@@ -111,12 +112,12 @@ class Particle_Engine
   def reset
     dispose
     @firsttime = true
-    @effect    = []
+    @effect    = {}
     @map = $game_map if @map!=$game_map
   end
   
   def remove_particles
-    @effect.each do |particle|
+    @effect.each_value do |particle|
       next if particle.nil?
       particle.dispose
     end
@@ -126,7 +127,7 @@ class Particle_Engine
   
   def dispose
     return if disposed?
-    @effect.each do |particle|
+    @effect.each_value do |particle|
       next if particle.nil?
       particle.dispose
     end
@@ -150,7 +151,7 @@ class Particle_Engine
     return if @effect[event.id].nil?
     event.has_a_particle=[false,nil]
     @effect[event.id].dispose
-    @effect.delete_at(event.id)
+    @effect.delete(event.id)
   end
   
   def realloc_effect(event, particle = nil, type = nil)
@@ -190,7 +191,7 @@ class Particle_Engine
       
 	  end
     end
-    @effect.each_with_index do |particle, i|
+    @effect.values.each_with_index do |particle, i|
       next if particle.nil?
 	  
 	   particle.event.pe_pause=false if particle.event.pe_pause.nil?
@@ -309,8 +310,31 @@ def pbRemoveParticleEffectfromEvent(event=nil)
   $particle_engine.remove_effect(event)
 end
 
+def pbAddLightEffecttoThisEvent(event,sizex=nil,sizey=nil)
+  return if !$scene
+  return if !$scene.spriteset
+  return if !Spriteset_Map.viewport
+  return if !event.currentcustomsprite.nil?
+  spriteset = $scene.spriteset($game_map.map_id)
+  sizex,sizey = get_light_size(event) if (sizex.nil? || sizey.nil?)
+  index = spriteset.addUserSprite(LightEffect_DayNight.new(event, Spriteset_Map.viewport, $game_map, sizex, sizey))
+  
+  event.currentcustomsprite = index
+  event.has_a_light=[true,[sizex,sizey]]
+end
+def pbRemoveLightEffectfromThisEvent(event)
+  return if !$scene
+  return if !$scene.spriteset
+  return if event.currentcustomsprite.nil?
+  spriteset = $scene.spriteset($game_map.map_id)
+  spriteset.usersprites[event.currentcustomsprite].dispose
+  #spriteset.removeUserSprite(event.currentcustomsprite)
+  event.has_a_light=[false,[1,1]]
+  event.currentcustomsprite=nil
 
 
+
+end
 def pbAddLightEffecttoEvent(sizex=nil,sizey=nil)
   return if !$scene
   return if !$scene.spriteset
@@ -673,6 +697,14 @@ class Particle_Engine::Fire < ParticleEffect_Event
     initParticles("particle", 250)
   end
 end
+class Particle_Engine::Water < ParticleEffect_Event
+  def initialize(event, viewport)
+    super
+    setParameters([0, 0, 1, 20, 0, 0.5, -64,
+                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -13, 30, 0])
+    initParticles("particle_water", 250)
+  end
+end
 
 
 
@@ -864,6 +896,7 @@ class Particle_Engine::Splash < ParticleEffect_Event
   def update
     super
     @maxparticless.times do |i|
+	  next if @particles[i].nil?
       @particles[i].opacity = 50
       @particles[i].update
     end

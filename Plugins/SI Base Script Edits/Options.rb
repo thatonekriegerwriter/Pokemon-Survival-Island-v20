@@ -1218,7 +1218,7 @@ MenuHandlers.add(:options_menu, :hardcore, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'Hardcore Mode'. You only have one life, and one save. Upon dying, your save is deleted."),
+  "description" => _INTL("You only have one life, and one save. Upon dying, your save is deleted."),
   "condition"   => proc { 
   next $player
   next $PokemonGlobal },
@@ -1265,7 +1265,7 @@ MenuHandlers.add(:options_menu, :permadeath, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'Nuzlocke Mode'. When your Pokemon dies, it will be removed from your party with no recovery."),
+  "description" => _INTL("When your Pokemon dies, it will be removed from your party with no recovery."),
   "condition"   => proc { 
   next $player
   next $PokemonGlobal},
@@ -1316,7 +1316,7 @@ MenuHandlers.add(:options_menu, :one_route, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'One Catch per Map'. You can only capture one encounter per map. [NOT FINISHED]"),
+  "description" => _INTL("You can only capture one encounter per map. [NOT FINISHED]"),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore3 },
@@ -1511,7 +1511,7 @@ MenuHandlers.add(:options_menu, :nicknameforcing, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'Forced Nicknames'. 'Forced Nicknames' forces you to give a Pokemon a name more than 2 characters."),
+  "description" => _INTL("'Forced Nicknames' forces you to give a Pokemon a name more than 2 characters."),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore6 },
@@ -1560,7 +1560,7 @@ MenuHandlers.add(:options_menu, :sleepforcing, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'A Full Eight Hours'. 'A Full Eight Hours' forces you to sleep 8 hours every time you go to bed."),
+  "description" => _INTL("'A Full Eight Hours' forces you to sleep 8 hours every time you go to bed."),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore7 },
@@ -1607,7 +1607,7 @@ MenuHandlers.add(:options_menu, :nocatchforcing, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'No Overworld Capture'. 'No Overworld Capture' forces you to capture Pokemon in turn based combat."),
+  "description" => _INTL("'No Overworld Capture' forces you to capture Pokemon in turn based combat."),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore8 },
@@ -1654,7 +1654,7 @@ MenuHandlers.add(:options_menu, :nostatueforcing, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("Enables 'No Statues'. 'No Statues' removes all statues from being accessable."),
+  "description" => _INTL("'No Statues' removes all statues from being accessable."),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore9 },
@@ -1701,7 +1701,7 @@ MenuHandlers.add(:options_menu, :pkmnfoodandwater, {
   "order"       => 50,
   "type"        => EnumOption,
   "parameters"  => [_INTL("Enable")],
-  "description" => _INTL("[INCOMPLETE] Enables 'Survival Mode (Pokemon)'. 'Survival Mode (Pokemon)' causes Pokemon to have Food, Water, and Sleep stats like the player."),
+  "description" => _INTL("[INCOMPLETE] 'Survival Mode (Pokemon)' causes Pokemon to have Food, Water, and Sleep stats like the player."),
   "condition"   => proc { 
   next $player && $PokemonGlobal},
   "get_proc"    => proc { next $PokemonSystem.hardcore10 },
@@ -2027,40 +2027,7 @@ MenuHandlers.add(:options_menu, :lowbattle_music, {
 }})
 
 
-module Settings
- BORDERS = [["Graphics/Pictures/Borders/empty",0,0, 0, 0, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/GBA",-28,-28, 100, 100, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/GBC",-28,-28, 100, 100, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/GB",-28,-28, 100, 100, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/Mini",-28,-28, 120, 120, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/Cube",-28,-28, 100, 100, 2, 2, 0, 0],
- ["Graphics/Pictures/Borders/GBA2",-50,0, 300, 100, 1, 4, 26, 4],
- ["Graphics/Pictures/Borders/TV",-50,0, 300, 100, 1, 4, 26, 4],
- ["Graphics/Pictures/Borders/custom",-50,0, 300, 100, 1, 4, 26, 4]]
-end
 
-MenuHandlers.add(:options_menu, :borders, {
-  "name"        => _INTL("Borders"),
-  "parent"      => :ui_menu,
-  "order"       => 90,
-  "type"        => NumberOption,
-  "parameters"  => 1..Settings::BORDERS.length,
-  "description" => _INTL("Choose a Border."),
-  "get_proc"    => proc { next $PokemonSystem.cur_border },
-  "set_proc"    => proc { |value, scene|
-    $PokemonSystem.cur_border = value
-	pbForceResizeFactor
-	scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
-	$scene.viewport.rect.set(0+$PokemonSystem.screenposx,0+$PokemonSystem.screenposy,scene.viewport.rect.width,scene.viewport.rect.height)
-	 amtx = 0
-	 amty = 0
-	 amtx = $PokemonSystem.screenposx-$PokemonSystem.screenposx if $PokemonSystem.screenposx!=0
-	 amty = $PokemonSystem.screenposy-$PokemonSystem.screenposy if $PokemonSystem.screenposy!=0
-	scene.sprites["textbox"].x=0+amtx
-	scene.sprites["textbox"].y=288+amty
-	
-  }
-})
 
 MenuHandlers.add(:options_menu, :journey, {
   "name"        => _INTL("Journey"),

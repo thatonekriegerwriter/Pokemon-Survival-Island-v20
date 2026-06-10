@@ -40,33 +40,19 @@ class VoltseonsPauseMenu < Component
     @sprites["entrytext"].x = 0
     @sprites["leftarrow"].visible = !(@displayIndexes.length == 1)
     @sprites["rightarrow"].visible = @displayIndexes.length > 1
-	7.times do |i|
+	
+	
+	for i in 0...@displayIndexes.length
     @sprites["boxi#{i}"] = IconSprite.new(0,0,@viewport)
-    @sprites["boxi#{i}"].visible = true
-	x=0
-    case i
-	 when 0
-	   x=-5
-	 when 1
-	   x=64
-	 when 2
-	   x=133
-	 when 3
-	   x=226
-	 when 4
-	   x=319
-	 when 5
-	   x=388
-	 when 6
-	   x=457
-	end 
-	 @sprites["boxi#{i}"].x = x+12
-    @sprites["boxi#{i}"].y = Graphics.height - 10
+	@sprites["boxi#{i}"].x = 0
+    @sprites["boxi#{i}"].y = 0
     @sprites["boxi#{i}"].z = @sprites["entrytext"].z-1
-    @sprites["boxi#{i}"].ox = $game_temp.menu_icon_width/2
-    @sprites["boxi#{i}"].oy = $game_temp.menu_icon_width/2
     @sprites["boxi#{i}"].setBitmap("Graphics/Pictures/tinyuiboxgrey.png")
+    @sprites["boxi#{i}"].visible = false 
 	end
+
+
+
     @doingStartup = true
   end
 
@@ -83,8 +69,7 @@ class VoltseonsPauseMenu < Component
     elsif Input.trigger?(Input::USE)
       pbPlayDecisionSE
       exit = @entries[@currentSelection].selected(@menu) # trigger selected entry.
-	  if @entries[@currentSelection].name == "Quit" && exit == false
-	  else
+	  if exit == false
       calculateMenuEntries
       calculateDisplayIndex
       redrawMenuIcons
@@ -92,92 +77,27 @@ class VoltseonsPauseMenu < Component
       @shouldRefresh = true
       $game_temp.last_menu_selection = @currentSelection
 	  end
-    elsif Input.triggerex?(:P) #Pokemon
-	   @entries.each do |i|
-	    if i.name == "Pokemon"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:B) #Bag
-	   @entries.each do |i|
-	    if i.name == "Bag"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:C) #Craft
-	   @entries.each do |i|
-	    if i.name == "Crafting"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:V) #Adventure
-	   @entries.each do |i|
-	    if i.name == "Adventures"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:S) #Save
-	   @entries.each do |i|
-	    if i.name == "Save"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:W) #Disable Menu?
-	   
-    elsif Input.triggerex?(:N) #Quest
-	   @entries.each do |i|
-	    if i.name == "Notebook"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:T) #Advancement
-	   @entries.each do |i|
-	    if i.name == "Achievements"
-	   i.selected(@menu)
-	   end
-	   end
-      calculateMenuEntries
-      calculateDisplayIndex
-      redrawMenuIcons
-      calculateXPositions(true)
-      @shouldRefresh = true
-    elsif Input.triggerex?(:Q) #Quit
-	   @entries.each do |i|
-	    if i.name == "Quit"
-	   i.selected(@menu)
-	   end
-	   end
-    end
+	end
+	@entries.each do |entry|
+	  next if entry.text=="-"
+	  if Input.triggerex?(entry.text.strip.upcase.to_sym)
+	    exit = entry.selected(@menu)
+		if entry.name=="Resume"
+         $game_temp.last_menu_selection = @currentSelection
+		end 
+		if exit == false
+           calculateMenuEntries
+           calculateDisplayIndex
+           redrawMenuIcons
+           calculateXPositions(true)
+           @shouldRefresh = true
+           $game_temp.last_menu_selection = @currentSelection
+		end 
+	  end 
+	end 
+
+
+
     if @shouldRefresh && !@menu.shouldExit
       refreshMenu
       @menu.shouldRefresh = true
@@ -377,12 +297,17 @@ class VoltseonsPauseMenu < Component
     middle = @displayIndexes.length/2
 	textpos = []
 	textpos << [@entries[@currentSelection]&.name,Graphics.width/2,20,2,baseColor,shadowColor]
+	
     for i in 0...@displayIndexes.length
       @sprites["icon#{i}"].setBitmap(@entries[@displayIndexes[i]].icon)
       @sprites["icon#{i}"].zoom_x = 1
       @sprites["icon#{i}"].zoom_y = 1
+	  @sprites["boxi#{i}"].x = @sprites["icon#{i}"].x - (@sprites["boxi#{i}"].width/2) - 26
+	  @sprites["boxi#{i}"].y = @sprites["icon#{i}"].y + (@sprites["boxi#{i}"].height/2) - 8
+	  @sprites["boxi#{i}"].visible = true 
 	  textpos << [@entries[@displayIndexes[i]].text,(@sprites["icon#{i}"].x-30),152,99,baseColor,shadowColor] 
     end
+	
     @sprites["icon#{middle}"].zoom_x = ACTIVE_SCALE
     @sprites["icon#{middle}"].zoom_y = ACTIVE_SCALE
     if @entries.length <= 8

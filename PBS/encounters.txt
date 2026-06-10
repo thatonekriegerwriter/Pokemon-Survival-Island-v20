@@ -1936,7 +1936,7 @@ Adventure,1
 OverworldLandMorning,21
     20,MINCCINO,5
     20,WOOPER,5
-    10,CROAGUNK,5
+    20,CROAGUNK,5
     10,POLIWAG,2
     10,SHELMET,4
     10,VOLBEAT,2,5

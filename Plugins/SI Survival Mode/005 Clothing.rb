@@ -20,6 +20,7 @@ def pbCrateClothes
 end
 
 def pbClothingEffect(clothing)
+        return if clothing==0
 		  $player.playerhealthmod=0.0
         case clothing.id
 		when :NORMALSHOES
@@ -147,8 +148,10 @@ class WardrobeScene
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playershirt = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_shirt? })}
+		if $player.playershirt 					 
 		$bag.remove($player.playershirt,1)
 		pbClothingEffect($player.playershirt)
+		end
 		 else
 		  pbMessage(_INTL("You aren't wearing a top!"))
 		 end
@@ -160,7 +163,7 @@ class WardrobeScene
 	   when 1
        cmd2 = pbMessage(_INTL("Do you want to put different bottoms on?"),[_INTL("Yes"), _INTL("No"), _INTL("Take off current bottoms.")])
        if cmd2 == 0
-	     if $player.playershirt!=0
+	     if $player.playerpants!=0
 	    $bag.add($player.playerpants,1) if $player.playerpants != 0
         $player.playerpants = 0
 		pbClothingEffect(0)
@@ -168,8 +171,12 @@ class WardrobeScene
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playerpants = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_pants? })}
+							 
+		if $player.playerpants					 
 		$bag.remove($player.playerpants,1)
 		pbClothingEffect($player.playerpants)
+		end
+		
 		 else
 		  pbMessage(_INTL("You aren't wearing bottoms!"))
 		 
@@ -182,7 +189,7 @@ class WardrobeScene
 	   when 2
        cmd2 = pbMessage(_INTL("Do you want to put different shoes on?"),[_INTL("Yes"), _INTL("No"), _INTL("Take off current shoes.")])
        if cmd2 == 0
-	     if $player.playershirt!=0
+	     if $player.playershoes!=0
 	    $bag.add($player.playershoes,1) if $player.playershoes != 0
         $player.playershoes = 0
 		pbClothingEffect(0)
@@ -190,9 +197,13 @@ class WardrobeScene
                               scene = PokemonBag_Scene.new
                               screen = PokemonBagScreen.new(scene, $bag)
                              $player.playershoes = screen.pbChooseItemScreen(proc { |item| GameData::Item.get(item).is_shoes? })}
+							 
+		if $player.playershoes
 		$bag.remove($player.playershoes,1)
-		
 		pbClothingEffect($player.playershoes)
+		end
+		
+		
 		 else
 		  pbMessage(_INTL("You aren't wearing shoes!"))
 		 

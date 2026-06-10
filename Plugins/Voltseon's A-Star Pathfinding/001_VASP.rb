@@ -99,7 +99,7 @@ def move_to_location(event = nil, desired_x = 0, desired_y = 0, wait_for_complet
   return false if !event 
   return true if (event.x == desired_x && event.y == desired_y)
   # Calculates the pathfinding
-  if event.through
+  if event.through || ((event.is_a?(Game_PokeEventA) || event.is_a?(Game_PokeEvent)) && event.pokemon.types.include?(:FLYING) )
     moveroute = calc_path_through(event,[desired_x, desired_y])
   else
     moveroute = calc_path(event,[desired_x, desired_y])
@@ -483,7 +483,6 @@ commands_duplicate = commands.map do |command|
     command # In case of any other values, keep them as they are
   end
 end
-puts commands_duplicate.to_s
   route = RPG::MoveRoute.new
   route.repeat    = false
   route.skippable = true
@@ -493,7 +492,6 @@ puts commands_duplicate.to_s
     Graphics.update
 	 Input.update
 	 $scene.miniupdate
-	  puts "Kill me"
     event.decrease_attack_opportunity(6) if event.attack_opportunity>0 if event.is_a?(Game_PokeEventA)
     case commands[i]
     when PBMoveRoute::Wait, PBMoveRoute::SwitchOn, PBMoveRoute::SwitchOff,

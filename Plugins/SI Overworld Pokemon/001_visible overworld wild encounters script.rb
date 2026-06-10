@@ -1,80 +1,88 @@
+module VisibleEncounterTimeGate
+  COOLDOWN_FRAMES = 120
+  @progress = 0
+  
+  def self.add_progress(type,amount=1)
+    case type
+    when :frame
+      @progress += 1 * amount
+    when :turn
+      @progress += 0.5 * amount
+    when :step
+      @progress += 30 * amount
+    end
+	#puts "Spawn Progress: #{@progress}>=#{COOLDOWN_FRAMES}"
+  end
+  
+  
+  def self.allow_spawn?(cooldown = COOLDOWN_FRAMES)
+    @progress >= cooldown
+  end
+
+  def self.consume!
+    @progress = 0
+  end
+  
+  
+end
+class PokemonEncounters
+  def any_encounters_on_map?
+    terrain_tag = $game_map.terrain_tag($game_player.x, $game_player.y)
+    return false if terrain_tag.ice
+    return true if has_water_encounters?
+    return true if has_cave_encounters?   # i.e. this map is a cave
+    return true if has_land_encounters?
+    return false
+  end
 
 
+
+end 
 EventHandlers.remove(:on_player_change_direction, :trigger_encounter)
 
 EventHandlers.add(:on_player_change_direction, :trigger_encounter,
   proc {
     next if $game_temp.in_menu
     next if $game_temp.no_natural_spawning
+	next if !$PokemonEncounters.any_encounters_on_map?
     repel_active = ($PokemonGlobal.repel > 0)
-      #pbBattleOnStepTaken(repel_active) if !$game_temp.in_menu # STANDARD WILD BATTLE
-      pbSpawnOnStepTaken(repel_active) if !$game_temp.in_menu  # OVERWORLD ENCOUNTERS
+    next if repel_active
+	amt = is_grass? ? 2 : 1
+	VisibleEncounterTimeGate.add_progress(:turn, amt)
+    pbSpawnOnStepTaken(repel_active) if !$game_temp.in_menu 
 	  
   }
 )
 
-class PokemonGlobalMetadata
-  attr_accessor :blackFluteUsed
-  attr_accessor :whiteFluteUsed
-  attr_accessor :fluteTimer
+EventHandlers.add(:on_frame_update, :automatic_spawning,
+  proc {
+    next if !$player
+	 next if $game_temp.in_menu
+	next if !$PokemonEncounters.any_encounters_on_map?
+    repel_active = ($PokemonGlobal.repel > 0)
+    next if repel_active
+    next unless Graphics.frame_count % VisibleEncounterSettings::AUTO_SPAWN_SPEED == 0
+	VisibleEncounterTimeGate.add_progress(:frame)
+    pbSpawnOnStepTaken(repel_active) if !pbBattleOrSpawnOnStepTaken(repel_active) 
+  }
+)
+EventHandlers.add(:on_player_step_taken, :progress_timegate,
+  proc {
+    next if !$player
+	next if $game_temp.in_menu
+	next if !$PokemonEncounters.any_encounters_on_map?
+    repel_active = ($PokemonGlobal.repel > 0)
+    next if repel_active
+	amt = is_grass? ? 2 : 1
+	VisibleEncounterTimeGate.add_progress(:step, amt)
+  }
+)
 
-  alias original_initialize23 initialize
-  def initialize
-    @blackFluteUsed = false
-    @whiteFluteUsed = false
-    @fluteTimer = pbGetTimeNow.to_i-3600
-    original_initialize23
-  end
-  
-  def blackFluteUsed
-    @blackFluteUsed = false if @blackFluteUsed.nil?
-	return @blackFluteUsed
-  end
-  
-  def whiteFluteUsed
-    @whiteFluteUsed = false if @whiteFluteUsed.nil?
-	return @whiteFluteUsed
-  end
-  
-  def fluteTimer
-    @fluteTimer = pbGetTimeNow.to_i-3600 if @fluteTimer.nil?
-	return @fluteTimer
-  end
-end
-
-
-ItemHandlers::UseInField.add(:BLACKFLUTE, proc { |item|
-  pbUseItemMessage(item)
-  
-    time_delta = pbGetTimeNow.to_i - @fluteTimer
-  if time_delta < 3600
-  pbMessage(_INTL("Wild Pokémon will be repelled."))
-  $PokemonGlobal.blackFluteUsed = true
-  $PokemonGlobal.whiteFluteUsed = false
-  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
-  next true
-  else
-  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
-  next false
-  end
-})
-
-ItemHandlers::UseInField.add(:WHITEFLUTE, proc { |item|
-  pbUseItemMessage(item)
-    time_delta = pbGetTimeNow.to_i - @fluteTimer
-  if time_delta < 3600
-  pbMessage(_INTL("Wild Pokémon will be lured."))
-  $PokemonGlobal.blackFluteUsed = false
-  $PokemonGlobal.whiteFluteUsed = true
-  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
-  next true
-  else
-  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
-  next false
-  end
-})
-
-
+def is_grass?(x=$game_player.x,y=$game_player.y)
+ terrain_tag = $game_map.terrain_tag(x, y)
+ return true if [:Grass,:TallGrass,:UnderwaterGrass,:SootGrass].include?(terrain_tag.id)
+ return false
+end 
 
 def pbOnStepTaken(eventTriggered)
   if $game_player.move_route_forcing || pbMapInterpreterRunning?
@@ -90,9 +98,9 @@ def pbOnStepTaken(eventTriggered)
   EventHandlers.trigger(:on_player_step_taken_can_transfer, handled)
   return if handled[0]
   if !eventTriggered && !$game_temp.in_menu && !$game_temp.no_natural_spawning
-    if pbBattleOrSpawnOnStepTaken(repel_active)
-      pbBattleOnStepTaken(repel_active) # STANDARD WILD BATTLE
-    end
+    #if pbBattleOrSpawnOnStepTaken(repel_active)
+    #  pbBattleOnStepTaken(repel_active) # STANDARD WILD BATTLE
+    #end
       pbSpawnOnStepTaken(repel_active)  # OVERWORLD ENCOUNTERS
   end
   $game_temp.encounter_triggered = false   # This info isn't needed here
@@ -108,8 +116,10 @@ def pbBattleOrSpawnOnStepTaken(repel_active)
 end
 
 def pbSpawnOnStepTaken(repel_active)
+  return false if pbCountPokeEventInMap >= (PBDayNight.isNight? ? VisibleEncounterSettings::MAX_SPAWN : VisibleEncounterSettings::MAX_SPAWN_DAY)
   return if $game_temp.in_menu
   return if $game_system.menu_disabled
+  return false if !VisibleEncounterTimeGate.allow_spawn?
   
   
   #First we choose a tile near the player
@@ -118,19 +128,27 @@ def pbSpawnOnStepTaken(repel_active)
   encounter_type = $PokemonEncounters.encounter_type_on_tile(pos[0],pos[1])
   return if !encounter_type
   return if !$PokemonEncounters.encounter_triggered_on_tile?(encounter_type, repel_active, true)
+  
+  
   $game_temp.encounter_type = encounter_type
   encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
   $PokemonGlobal.creatingSpawningPokemon = true
   EventHandlers.trigger(:on_wild_species_chosen, encounter)
+  
+  
   if $PokemonEncounters.allow_encounter?(encounter, repel_active)
     pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
     # trigger event on spawning of pokemon
     EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
+	puts "Performing Spawn of Lv#{pokemon.level} #{pokemon.name} at #{pos[0]},#{pos[1]}"
     pbPlaceEncounter(pos[0],pos[1],pokemon)
+	VisibleEncounterTimeGate.consume!
     # $PokemonEncounters.reset_step_count # added such that your encounter rate resets after spawning of an overworld pokemon 
     $game_temp.encounter_type = nil
     $game_temp.encounter_triggered = true
   end
+  
+  
   $game_temp.force_single_battle = false
   EventHandlers.trigger(:on_wild_pokemon_created_for_spawning_end)
   $PokemonGlobal.creatingSpawningPokemon = false
@@ -139,24 +157,40 @@ def pbSpawnOnStepTaken(repel_active)
 end
 
 def pbChooseTileOnStepTaken
-  x = $game_player.x
-  y = $game_player.y
-  range = VisibleEncounterSettings::SPAWN_RANGE
-  i = rand(range)
-  r = rand((i+1)*8)
-  if r<=(i+1)*2
-    new_x = x-i-1+r
-    new_y = y-i-1
-  elsif r<=(i+1)*6-2
-    new_x = [x+i+1,x-i-1][r%2]
-    new_y = y-i+((r-1-(i+1)*2)/2).floor
-  else
-    new_x = x-i+r-(i+1)*6
-    new_y = y+i+1
+    px = $game_player.x
+    py = $game_player.y
+    min = VisibleEncounterSettings::MIN_SPAWN_RANGE
+    max = VisibleEncounterSettings::SPAWN_RANGE
+    attempts = VisibleEncounterSettings::NO_OF_CHOSEN_TILES 
+	
+	
+    tried = {}
+  attempts.times do
+	i = rand(min..max-1) ** 1.25
+    i = i.floor
+    r = rand((i+1) * 8)
+
+    next if tried[[i, r]]
+    tried[[i, r]] = true
+
+    if r <= (i+1)*2
+      x = px - i - 1 + r
+      y = py - i - 1
+    elsif r <= (i+1)*6 - 2
+      x = [px + i + 1, px - i - 1][r % 2]
+      y = py - i + ((r - 1 - (i+1)*2) / 2).floor
+    else
+      x = px - i + r - (i+1)*6
+      y = py + i + 1
+    end
+    if pbTileIsPossible(x, y)
+     return [x, y] 
+	end
   end
-  return [new_x,new_y] if pbTileIsPossible(new_x,new_y)
-  return
+    return
 end
+
+
 
 def pbTileIsPossible(x,y)
   if !$game_map.valid?(x,y) #check if the tile is on the map
@@ -207,6 +241,16 @@ end
 def pbPlaceEncounter(x,y,pokemon,dir=false)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
+  ret = $DynamicEvents.spawnPokeEvent(x,y,pokemon,dir)
+  pbPlayCryOnOverworld(pokemon.species, pokemon.form) if $game_switches[556]==false && rand(100)<26# Play the pokemon cry of encounter
+   return ret
+end
+
+
+
+def pbOldPlaceEncounter(x,y,pokemon,dir=false)
+  # place event with random movement with overworld sprite
+  # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
   if !$map_factory
     $game_map.spawnPokeEvent(x,y,pokemon,dir)
   else
@@ -217,7 +261,6 @@ def pbPlaceEncounter(x,y,pokemon,dir=false)
   pbPlayCryOnOverworld(pokemon.species, pokemon.form) if $game_switches[556]==false && rand(100)<26# Play the pokemon cry of encounter
    return ret
 end
-
 
 def pbPlacePokemonDungeon(index)
 
@@ -280,6 +323,15 @@ end
 
 
 
+def pbShouldSpawn
+    chance = rand(750)
+  if (chance <= VisibleEncounterSettings::INSTANT_WILD_BATTLE_PROPABILITY) #&& $game_temp.preventspawns==false
+    return true
+  else
+    return false
+  end
+end
+
 class PokemonEncounters  
   def encounter_type_on_tile(x,y)
     time = pbGetTimeNow
@@ -330,6 +382,123 @@ class PokemonEncounters
   def encounter_triggered_on_tile?(enc_type, repel_active = false, triggered_by_step = true)
     return $PokemonEncounters.encounter_triggered?(enc_type, repel_active, true)
   end
+  
+  def encounter_triggered?(enc_type, repel_active = false, triggered_by_step = true)
+    
+    if !enc_type || !GameData::EncounterType.exists?(enc_type)
+      raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
+    end
+	
+    return false if $game_system.encounter_disabled
+    return false if !$player
+    return false if $DEBUG && Input.press?(Input::CTRL)
+    # Check if enc_type has a defined step chance/encounter table
+    return false if !@step_chances[enc_type] || @step_chances[enc_type] == 0
+    return false if !has_encounter_type?(enc_type)
+	
+	
+    # Poké Radar encounters always happen, ignoring the minimum step period and
+    # trigger probabilities
+    return true if pbPokeRadarOnShakingGrass
+	
+	
+    # Get base encounter chance and minimum steps grace period
+    encounter_chance = @step_chances[enc_type].to_f
+    min_steps_needed = (VisibleEncounterSettings::MAX_ENCOUNTER_REDUCED - (encounter_chance / 10)).clamp(0, 8).to_f
+    # Apply modifiers to the encounter chance and the minimum steps amount
+    
+	
+	
+    stainfluance = $player.playerstamina/$player.playermaxstamina
+    encounter_chance /= stainfluance
+    min_steps_needed *= stainfluance
+	
+	
+    if triggered_by_step
+      encounter_chance += @chance_accumulator / 200
+      encounter_chance *= 0.8 if $PokemonGlobal.bicycle
+    end
+	
+	
+	if $PokemonMap.blackFluteUsed
+      encounter_chance /= 2 
+      min_steps_needed *= 2
+	end
+	
+	if $PokemonMap.whiteFluteUsed
+      encounter_chance *= 1.5 
+      min_steps_needed /= 2
+	end
+	
+	if $player.is_it_this_class?(:TRIATHLETE)
+      encounter_chance /= 3 
+	end
+	  
+	  
+	  
+	  
+	  
+    first_pkmn = $player.first_pokemon
+    if first_pkmn
+      case first_pkmn.item_id
+      when :CLEANSETAG
+        encounter_chance *= 2.0 / 3
+        min_steps_needed *= 4 / 3.0
+      when :PUREINCENSE
+        encounter_chance *= 2.0 / 3
+        min_steps_needed *= 4 / 3.0
+      else   # Ignore ability effects if an item effect applies
+        case first_pkmn.ability_id
+        when :STENCH, :WHITESMOKE, :QUICKFEET
+          encounter_chance /= 2
+          min_steps_needed *= 2
+        when :INFILTRATOR
+          if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SNOWCLOAK
+          if GameData::Weather.get($game_screen.weather_type).category == :Hail
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SANDVEIL
+          if GameData::Weather.get($game_screen.weather_type).category == :Sandstorm
+            encounter_chance /= 2
+            min_steps_needed *= 2
+          end
+        when :SWARM
+          encounter_chance *= 1.5
+          min_steps_needed /= 2
+        when :ILLUMINATE, :ARENATRAP, :NOGUARD
+          encounter_chance *= 2
+          min_steps_needed /= 2
+        end
+      end
+    end
+    # Wild encounters are much less likely to happen for the first few steps
+    # after a previous wild encounter
+	
+	
+    if triggered_by_step && @step_count > min_steps_needed
+	  if rand(100) <= encounter_chance * 5 / (@step_chances[enc_type] + (@chance_accumulator / 200))
+       return true 
+	  end
+    end
+    # Decide whether the wild encounter should actually happen
+    return true if rand(50) < encounter_chance
+    # If encounter didn't happen, make the next step more likely to produce one
+    if triggered_by_step
+      @chance_accumulator += @step_chances[enc_type]
+      @chance_accumulator = 0 if repel_active
+    end
+
+
+
+    return false
+  end
+
+
 
   #===============================================================================
   # adding new method have_double_wild_battle_on_tile? in class PokemonEncounters
@@ -580,3 +749,66 @@ if rand(100) > 85
 end
 
 })
+
+
+class PokemonGlobalMetadata
+  attr_accessor :blackFluteUsed
+  attr_accessor :whiteFluteUsed
+  attr_accessor :fluteTimer
+
+  alias original_initialize23 initialize
+  def initialize
+    @blackFluteUsed = false
+    @whiteFluteUsed = false
+    @fluteTimer = pbGetTimeNow.to_i-3600
+    original_initialize23
+  end
+  
+  def blackFluteUsed
+    @blackFluteUsed = false if @blackFluteUsed.nil?
+	return @blackFluteUsed
+  end
+  
+  def whiteFluteUsed
+    @whiteFluteUsed = false if @whiteFluteUsed.nil?
+	return @whiteFluteUsed
+  end
+  
+  def fluteTimer
+    @fluteTimer = pbGetTimeNow.to_i-3600 if @fluteTimer.nil?
+	return @fluteTimer
+  end
+end
+
+
+ItemHandlers::UseInField.add(:BLACKFLUTE, proc { |item|
+  pbUseItemMessage(item)
+  
+    time_delta = pbGetTimeNow.to_i - @fluteTimer
+  if time_delta < 3600
+  pbMessage(_INTL("Wild Pokémon will be repelled."))
+  $PokemonGlobal.blackFluteUsed = true
+  $PokemonGlobal.whiteFluteUsed = false
+  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
+  next true
+  else
+  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
+  next false
+  end
+})
+
+ItemHandlers::UseInField.add(:WHITEFLUTE, proc { |item|
+  pbUseItemMessage(item)
+    time_delta = pbGetTimeNow.to_i - @fluteTimer
+  if time_delta < 3600
+  pbMessage(_INTL("Wild Pokémon will be lured."))
+  $PokemonGlobal.blackFluteUsed = false
+  $PokemonGlobal.whiteFluteUsed = true
+  $PokemonGlobal.fluteTimer = pbGetTimeNow.to_i
+  next true
+  else
+  pbMessage(_INTL("You've played a flute recently, it won't have an effect."))
+  next false
+  end
+})
+

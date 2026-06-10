@@ -461,13 +461,16 @@ end
 	    item = pbGetItem(pkmn)
 	    amt = 1
 	    amt += 1 if pkmn.chosenAdvType=="Collector"
-		 puts "amt: #{amt}"
-	    pkmn.inv_add(item,amt)
+		if pkmn.inventory.can_add?(item,amt)
+	     pkmn.inventory.add(item,amt)
+		end 
 	end
 
     def addItem(pkmn,item)
 	    amt = 1
-	    pkmn.inv_add(item,amt)
+		if pkmn.inventory.can_add?(item,amt)
+	      pkmn.inventory.add(item,amt)
+		end 
 	end
 end
 
@@ -1054,41 +1057,31 @@ def is_hitting(attacker,target,move)
 end
 
  def useAutoReviveItem(pkmn)
-   if pkmn.inv_has?(:REVIVALHERB) && pkmn.hp<=0
-        pkmn.inv_remove(:REVIVALHERB)
+   if pkmn.inventory.has?(:REVIVALHERB) && pkmn.hp<=0
+        pkmn.inventory.remove(:REVIVALHERB)
 		 pkmn.hp=pkmn.totalhp
 		 return
    end
-   if pkmn.inv_has?(:MAXHONEY) && pkmn.hp<=0
-        pkmn.inv_remove(:MAXHONEY)
+   if pkmn.inventory.has?(:MAXHONEY) && pkmn.hp<=0
+        pkmn.inventory.remove(:MAXHONEY)
 		 pkmn.hp=pkmn.totalhp
 		 return
    end
-   if pkmn.inv_has?(:ARGOSTBERRY) && pkmn.hp<=0
-        pkmn.inv_remove(:ARGOSTBERRY)
+   if pkmn.inventory.has?(:ARGOSTBERRY) && pkmn.hp<=0
+        pkmn.inventory.remove(:ARGOSTBERRY)
 		 pkmn.hp=1
-		 return
-   end
-   if pkmn.inv_has?(:ORANBERRY) && pkmn.hp<=pkmn.totalhp/4
-        pkmn.inv_remove(:ORANBERRY)
-		 pkmn.hp+=20
-		 return
-   end
-   if pkmn.inv_has?(:SITRUSBERRY) && pkmn.hp<=pkmn.totalhp/2
-        pkmn.inv_remove(:SITRUSBERRY)
-		 pkmn.hp+=pkmn.totalhp/4
 		 return
    end
  end
 
  def useAutoItem(pkmn)
-   if pkmn.inv_has?(:ORANBERRY) && pkmn.hp<=pkmn.totalhp/4
-        pkmn.inv_remove(:ORANBERRY)
+   if pkmn.inventory.has?(:ORANBERRY) && pkmn.hp<=pkmn.totalhp/4
+        pkmn.inventory.remove(:ORANBERRY)
 		 pkmn.hp+=20
 		 return
    end
-   if pkmn.inv_has?(:SITRUSBERRY) && pkmn.hp<=pkmn.totalhp/2
-        pkmn.inv_remove(:SITRUSBERRY)
+   if pkmn.inventory.has?(:SITRUSBERRY) && pkmn.hp<=pkmn.totalhp/2
+        pkmn.inventory.remove(:SITRUSBERRY)
 		 pkmn.hp+=pkmn.totalhp/4
 		 return
    end
@@ -1236,7 +1229,7 @@ class Adventure
 		  end
 		when "Aggressor"
 		  if curAction == "battling"
-		     pkmn.collectedItems.append(pbGetItem(pkmn))
+		     collectItem(pkmn)
 		  end
 		when "Wary Fighter"
 		  if curAction == "startingBattle" && pkmn.hp<30

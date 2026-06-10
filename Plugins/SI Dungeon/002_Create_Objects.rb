@@ -1,6 +1,9 @@
 class Game_Map
 
   def generateMining(x,y,object)
+    $DynamicEvents.generateMining(x,y,object)
+    
+	return 
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     #--- nessassary properties ----------------------------------------
@@ -51,13 +54,14 @@ end
 def pbPlaceOre(x,y,object)
   # place event with random movement with overworld sprite
   # We define the event, which has the sprite of the pokemon and activates the wildBattle on touch
-  if !$map_factory
-    event = $game_map.generateMining(x,y,object)
-  else
-    mapId = $game_map.map_id
-    spawnMap = $map_factory.getMap(mapId)
-    event = spawnMap.generateMining(x,y,object)
-  end
+    event = $DynamicEvents.generateMining(x,y,object)
+#if !$map_factory
+ #   event = $game_map.generateMining(x,y,object)
+ # else
+ #   mapId = $game_map.map_id
+ #   spawnMap = $map_factory.getMap(mapId)
+#    event = spawnMap.generateMining(x,y,object)
+ # end
  # Play the pokemon cry of encounter
 end
 
@@ -67,20 +71,22 @@ def getObjectImage2(object)
 	 image = "Legends_Tumblestone"
 	when :STONE
 	 image = "Object rock"
+	when :HARDSTONE
+	 image = "Object hardrock"
 	when :IRONORE
-	 image = "Legends_Tumblestone"
+	 image = "Object iron"
 	when :GOLDORE
-	 image = "Legends_Tumblestone"
+	 image = "Object gold"
 	when :SILVERORE
-	 image = "Legends_Tumblestone"
+	 image = "Object silver"
 	when :COPPERORE
-	 image = "Legends_Tumblestone"
+	 image = "Object copper"
 	when :COAL
-	 image = "Legends_Tumblestone"
+	 image = "Object coal"
 	when "MININGMINIGAME"
 	 image = "Object boulder"
 	else
-	 image = "Object rock"
+	 image = "Object specialrock"
 	end
 
  return image

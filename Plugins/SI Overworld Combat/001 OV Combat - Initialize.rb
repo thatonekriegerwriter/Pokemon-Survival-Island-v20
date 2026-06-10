@@ -360,13 +360,16 @@ end
 def get_player_and_allies
   potato = []
   potato << @participants[:PLAYER] 
+  @participants[:ALLIES].delete_if { |key, value| value.pokemon.inworld == false }
   @participants[:ALLIES].each_value do |value|
+     next if value.pokemon.inworld==false 
      potato << value
   end
   return potato
 end
 def get_allies
   potato = []
+  @participants[:ALLIES].delete_if { |key, value| value.pokemon.inworld == false }
   @participants[:ALLIES].each_value do |value|
      potato << value
   end
@@ -382,26 +385,119 @@ end
 def controlled_pokemon?
   return @participants[:PLAYER].pokemon.is_a?(Pokemon)
 end
+def turn_left(direction)
+  case direction
+  when 2 then 4
+  when 4 then 8
+  when 6 then 2
+  when 8 then 6
+  end
+end
+
+def turn_right(direction)
+  case direction
+  when 2 then 6
+  when 4 then 2
+  when 6 then 8
+  when 8 then 4
+  end
+end
 
 def get_distance(unit)
- distances = []
+    distances = []
+	considered_targets = []
+    directions_needed = []
     targets = get_player_and_allies + unit.angry_at
 	targets.compact!
 	targets.uniq!
-	 targets.each do |event|
-	  amt = pbDetectTargetPokemon(unit,event)
-	 distances << amt
-	 end
-     minimum = distances.min if distances.min>0
-     minimum = 1 if distances.min==0
-     max_index = distances.index(minimum)
-	 if !max_index.nil?
-     target = targets[max_index] if max_index
-     distance = distances[max_index] if max_index
+	  min_distance = nil
+      best_dir = nil
+	targets.each do |event|
+	  directions_to_check = [unit.direction, turn_left(unit.direction), turn_right(unit.direction)]
+	  directions_to_check.each do |dir|
+	   amt = pbDetectTargetPokemonDirection(unit,dir,event)
+       if amt && amt > 0
+	     if min_distance.nil? || amt < min_distance
+          min_distance = amt
+		  best_dir = dir
+		 end
+       end
+      if min_distance
+        distances << min_distance
+        considered_targets << event
+        directions_needed << best_dir
       end
- 
-  return target,distance
+	  end 
+	end
+	return nil, nil, nil if distances.empty?
+	min_dist = distances.min
+	index = distances.index(min_dist)
+	target = considered_targets[index]
+    needed_direction = directions_needed[index]
+	return target, min_dist, needed_direction
 end
+
+def tiles_in_cone(unit, max_range)
+  px, py = unit.x, unit.y
+  tiles = []
+
+  (1..max_range).each do |i|
+    case unit.direction
+    when 2  # down
+      tiles << [px, py+i]            # center
+      tiles << [px-1, py+i]          # left
+      tiles << [px+1, py+i]          # right
+    when 4  # left
+      tiles << [px-i, py]            # center
+      tiles << [px-i, py-1]          # up
+      tiles << [px-i, py+1]          # down
+    when 6  # right
+      tiles << [px+i, py]            # center
+      tiles << [px+i, py-1]          # up
+      tiles << [px+i, py+1]          # down
+    when 8  # up
+      tiles << [px, py-i]            # center
+      tiles << [px-1, py-i]          # left
+      tiles << [px+1, py-i]          # right
+    end
+  end
+
+  tiles
+end
+def manhattan_distance(a,b)
+  (a.x - b.x).abs + (a.y - b.y).abs
+end
+
+def get_distance_alt(unit)
+  targets = get_player_and_allies + unit.angry_at
+  targets.compact!
+  targets.uniq!
+  max_range = amt = sight_line(unit)
+  cone_tiles = tiles_in_cone(unit, max_range)
+  targets.compact.uniq!
+
+  visible = []
+
+  cone_tiles.each_with_index do |(tx, ty), idx|
+    targets.each do |target|
+      next if target.x != tx || target.y != ty
+      # Priority: center tiles first, then left/righ
+      priority = idx % 3 == 0 ? 1 : 2
+      distance = manhattan_distance(unit, target)
+      visible << [target, distance, priority]
+    end
+  end
+
+  return nil, nil if visible.empty?
+
+  visible.sort_by! { |target,distance,priority| [priority, distance] }
+
+  target, distance, _ = visible.first
+  return target, distance
+end
+
+
+
 
 def get_overworld_pokemon
 $player.party.each_with_index do |pkmn,index|

@@ -32,6 +32,9 @@
 #   Maybe auto-save slots should act like a queue instead of cycling around.
 
 # Autosave every 30 steps
+
+
+
 module UILoad
 	# If true, player name will be blue if male, red if female
 	SHOW_GENDER_COLOR = true
@@ -1195,16 +1198,89 @@ def pbCallTitle(bgmchange=true)
   return Scene_Intro.new
 end
 
-def get_si_default_values
-return {
-	 "stars" => [0,[]],
-	 "classicTitleScreen" => 0
-	 }
+
+def siGetMetaData
+  return if !$meta.nil?
+  defaults = get_si_default_values
+  file_name = metadata_dir
+  loaded = {}
+  if File.exist?(file_name)
+    File.open(file_name, "rb") { |f| loaded = Marshal.load(f.read) || {} }
+  else
+    File.open(file_name, "wb") { |f| f.write(Marshal.dump(defaults)) }
+  end
+  $meta = deep_merge(defaults, loaded)
+end
+
+def deep_merge(defaults, saved)
+  result = {}
+
+  defaults.each do |key, default_value|
+    if saved.key?(key)
+      saved_value = saved[key]
+
+      if default_value.is_a?(Hash) && saved_value.is_a?(Hash)
+        result[key] = deep_merge(default_value, saved_value)
+
+      else
+        result[key] = saved_value
+      end
+    else
+      result[key] = default_value
+    end
+  end
+
+  saved.each do |key, value|
+    result[key] = value unless result.key?(key)
+  end
+
+  result
+end
+
+def metadata_dir
+  dir = File.directory?(System.data_directory) ? System.data_directory : "."
+  return "#{dir}/metadata.rxdata"
+end 
+
+
+def siSaveMetadata
+  file_name = metadata_dir
+   File.open(file_name, "wb") do |file|
+      file.write(Marshal.dump($meta))
+   end
 
 
 end
 
+
+def get_si_default_values
+return {
+	 "stars" => [0,[]],
+	 "controls_settings" => Keys.default_controls,
+	 "classicTitleScreen" => 0
+	 }.freeze
+end
+
 def getSIDataStatus(option)
+  siGetMetaData if $meta.nil?
+  return getStarsSI if option == "stars"
+  $meta[option] = ($meta[option] == true) ? 1 : 0 if option == "classicTitleScreen"
+  $meta[option]=Keys.default_controls if option == "controls_settings" && $meta[option].nil?
+  return $meta[option]
+end
+
+def setSIDataStatus(option,value)
+  siGetMetaData if $meta.nil?
+  if option == "stars"
+   setStarsSI(value)
+  else
+    $meta[option] = value
+  end
+  siSaveMetadata
+end
+
+
+def getSIDataStatusold(option)
   save_dir2 = if File.directory?(System.data_directory)
                System.data_directory
              else
@@ -1218,21 +1294,23 @@ def getSIDataStatus(option)
  File.open(file_name, "rb") do |file|
     loaded_data = Marshal.load(file.read)
  end
-  if option == "classicTitleScreen"
+ if option == "classicTitleScreen"
     if loaded_data[option]==true
 	  loaded_data[option]=1
 	else
 	  loaded_data[option]=0
 	end
   end
+  if option == "controls_settings"
+     loaded_data[option]=Keys.default_controls if loaded_data[option].nil?
+  end
   if option == "stars"
-   return getStarsSI(loaded_data)
   else
    return loaded_data[option]
   end
 end
 
-def setSIDataStatus(option,value)
+def setSIDataStatusold(option,value)
   save_dir2 = if File.directory?(System.data_directory)
                System.data_directory
              else
@@ -1260,13 +1338,21 @@ def setSIDataStatus(option,value)
   
 end
 
-def setStarsSI(loaded_data,value)
-  return if loaded_data["stars"][1].include?(value)
-  loaded_data["stars"][0]+=1
-  loaded_data["stars"][1]<<value
+def siLoadControls
+  return getSIDataStatus("controls_settings")
+end 
+def siSaveControls(value)
+  return setSIDataStatus("controls_settings",value)
+
+end 
+
+def setStarsSI(value)
+  return if $meta["stars"][1].include?(value)
+  $meta["stars"][0]+=1
+  $meta["stars"][1]<<value
 end
-def getStarsSI(loaded_data)
-  return loaded_data["stars"][0]
+def getStarsSI
+  return $meta["stars"][0]
 end
 
 

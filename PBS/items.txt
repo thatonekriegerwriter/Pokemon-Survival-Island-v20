@@ -1239,6 +1239,51 @@ SellPrice = 500
 Flags = Fling_10
 Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
 #-------------------------------
+[REDSCARF]
+Name = Red Scarf
+NamePlural = Red Scarves
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_10
+Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+#-------------------------------
+[BLUESCARF]
+Name = Red Scarf
+NamePlural = Red Scarves
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_10
+Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+#-------------------------------
+[PINKSCARF]
+Name = Red Scarf
+NamePlural = Red Scarves
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_10
+Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+#-------------------------------
+[GREENSCARF]
+Name = Red Scarf
+NamePlural = Red Scarves
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_10
+Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+#-------------------------------
+[YELLOWSCARF]
+Name = Red Scarf
+NamePlural = Red Scarves
+Pocket = 1
+Price = 3000
+SellPrice = 500
+Flags = Fling_10
+Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+#-------------------------------
 [FLAMEPLATE]
 Name = Flame Plate
 NamePlural = Flame Plates
@@ -2034,7 +2079,7 @@ Price = 1500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can be used to restore 120 HP to a single Pokémon.
+Description = A spray-type medicine for treating wounds. It can be used to restore 100 HP to a single Pokémon.
 #-------------------------------
 [MAXPOTION]
 Name = Max Potion
@@ -2153,7 +2198,7 @@ Price = 500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A very bitter medicinal powder. It can be used to restore 60 HP to a single Pokémon.
+Description = A very bitter medicinal powder. It can be used to restore half of a Pokemon's HP.
 #-------------------------------
 [HEALPOWDER]
 Name = Heal Powder
@@ -2897,14 +2942,6 @@ Flags = KeyItem
 Consumable = false
 Description = Supplies for digging out bases.
 #-------------------------------
-[MASTERBALLPL]
-Name = Schematic (Master Ball)
-NamePlural = Schematics (Master Ball)
-Pocket = 10
-Price = 0
-Flags = KeyItem
-Description = 
-#-------------------------------
 [SPEEDCOMET]
 Name = Shining Comet Shard
 NamePlural = Shining Comet Shard
@@ -2912,7 +2949,7 @@ Pocket = 1
 Price = 60000
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A radiant comet shard that seems to spark with speed, enhancing swiftness.
 #-------------------------------
 [DEFENDCOMET]
 Name = Shining Comet Shard
@@ -2921,7 +2958,7 @@ Pocket = 1
 Price = 60000
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A shimmering comet shard that bolsters resilience and fortitude.
 #-------------------------------
 [BALANCEDCOMET]
 Name = Shining Comet Shard
@@ -2930,7 +2967,7 @@ Pocket = 1
 Price = 60000
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A luminous comet shard that harmonizes strength and agility.
 #-------------------------------
 [ATKCOMET]
 Name = Shining Comet Shard
@@ -2939,7 +2976,7 @@ Pocket = 1
 Price = 60000
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A blazing comet shard that amplifies raw power.
 #-------------------------------
 [JOYSCENT]
 Name = Joy Scent
@@ -2947,7 +2984,7 @@ NamePlural = Joy Scent
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A sweet fragrance that brings joy and lifts spirits.
 #-------------------------------
 [EXCITESCENT]
 Name = Excite Scent
@@ -2955,7 +2992,7 @@ NamePlural = Excite Scent
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A lively aroma that excites and invigorates.
 #-------------------------------
 [VIVIDSCENT]
 Name = Vivid Scent
@@ -2963,7 +3000,7 @@ NamePlural = Vivid Scent
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A vibrant scent that sharpens senses and enlivens the mind.
 #-------------------------------
 [TIMEFLUTE]
 Name = Time Flute
@@ -2971,7 +3008,7 @@ NamePlural = Time Flute
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A mystical flute said to influence the passage of time.
 #-------------------------------
 [LUCKIEREGG]
 Name = Luckier Egg
@@ -2979,16 +3016,16 @@ NamePlural = Luckier Egg
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = An egg radiating fortune, said to bring luck to its holder.
 #-------------------------------
 [SUSPO]
-Name = Suspicious Drink
-NamePlural = Suspicious Drink
+Name = Suspicious Potion
+NamePlural = Suspicious Potion
 Pocket = 1
 Price = 0
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A Potion that can revive a living or dead Pokemon.
 #-------------------------------
 [GOLDLEAF]
 Name = Gold Leaf
@@ -2996,7 +3033,7 @@ NamePlural = Gold Leaf
 Pocket = 1
 Price = 5
 Flags = Fling_10
-Description = 
+Description = A delicate gold-colored leaf, prized for decoration and rituals.
 #-------------------------------
 [SILVERLEAF]
 Name = Silver Leaf
@@ -3004,7 +3041,7 @@ NamePlural = Silver Leaf
 Pocket = 1
 Price = 5
 Flags = Fling_10
-Description = 
+Description = A shimmering silver leaf, often used for ceremonial purposes.
 #-------------------------------
 [SHINYLEAF]
 Name = Shiny Leaf
@@ -3012,7 +3049,7 @@ NamePlural = Shiny Leaf
 Pocket = 1
 Price = 5
 Flags = Fling_10
-Description = 
+Description = A lustrous leaf that glints in the light, admired for its beauty.
 #-------------------------------
 [GRITDUST]
 Name = Grit Dust
@@ -3021,7 +3058,7 @@ Pocket = 1
 Price = 5
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = Fine grit dust, often used to toughen a Pokémon’s footing.
 #-------------------------------
 [GRITGRAVEL]
 Name = Grit Gravel
@@ -3030,7 +3067,7 @@ Pocket = 1
 Price = 60000
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = Coarse gravel with a gritty texture, valued for enhancing a Pokémon’s training.
 #-------------------------------
 [GRITPEBBLE]
 Name = Grit Pebble
@@ -3039,7 +3076,7 @@ Pocket = 1
 Price = 5
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A small pebble, perfect for training and conditioning.
 #-------------------------------
 [GRITROCK]
 Name = Grit Rock
@@ -3048,7 +3085,7 @@ Pocket = 1
 Price = 5
 FieldUse = OnPokemon
 Flags = Fling_10
-Description = 
+Description = A solid rock with a rough surface, used to build strength and resilience.
 #-------------------------------
 [SMOOCHUMDOLL]
 Name = Smoochum Doll
@@ -3056,7 +3093,7 @@ NamePlural = Smoochum Doll
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A small doll resembling Smoochum, soft and collectible.
 #-------------------------------
 [TORCHICDOLL]
 Name = Torchic Doll
@@ -3064,7 +3101,7 @@ NamePlural = Torchic Doll
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A plush doll shaped like Torchic, cute and cuddly.
 #-------------------------------
 [MEOWTHDOLL]
 Name = Meowth Doll
@@ -3072,7 +3109,7 @@ NamePlural = Meowth Doll
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A Meowth doll, soft and suitable for display or play.
 #-------------------------------
 [TREECKODOLL]
 Name = Treecko Doll
@@ -3080,7 +3117,7 @@ NamePlural = Treecko Doll
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A doll shaped like Treecko, crafted for fans and collectors.
 #-------------------------------
 [CHIKORITADOLL]
 Name = Chikorita Doll
@@ -3088,7 +3125,7 @@ NamePlural = Chikorita Doll
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A Chikorita plush doll, small and endearing.
 #-------------------------------
 [POKEBLOCK]
 Name = Pokeblock
@@ -3328,16 +3365,25 @@ Description = A notebook where you can write and view notes during your journey.
 [NORMALSHOES]
 Name = Shoes
 NamePlural = Shoes
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shoes
 Consumable = false
 Description = Your long term pair of shoes. Instructions: Wash in SLOW or NO SPIN cycle.
 #-------------------------------
+[MAKESHIFTSHOES]
+Name = Makeshift Shoes
+NamePlural = Makeshift Shoes
+Pocket = 7
+Price = 0
+Flags = KeyItem,Shoes
+Consumable = false
+Description = Shoes you fashioned yourself. Instructions: Try not to get dirty.
+#-------------------------------
 [MAKESHIFTRUNNINGSHOES]
 Name = Running Shoes (Makeshift)
 NamePlural = Running Shoes (Makeshift)
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shoes
 Consumable = false
@@ -3346,7 +3392,7 @@ Description = Shoes that you made at your Workbench! Instructions: Hold SHIFT to
 [RUNNINGSHOES]
 Name = Running Shoes
 NamePlural = Running Shoes
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shoes
 Consumable = false
@@ -3355,7 +3401,7 @@ Description = Special high-quality shoes that launch you at speed with compresse
 [SEASHOES]
 Name = Sea Shoes
 NamePlural = Sea Shoes
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shoes
 Consumable = false
@@ -3364,7 +3410,7 @@ Description = Special high-quality shoes that let you walk on Water! Instruction
 [DASHBOOTS]
 Name = Dash Boots
 NamePlural = Dash Boots
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shoes
 Consumable = false
@@ -3373,16 +3419,25 @@ Description = Special high-quality shoes that trade a sustained run for a quick 
 [NORMALSHIRT]
 Name = Shirt
 NamePlural = Shirts
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shirt
 Consumable = false
 Description = The Shirt you have worn since the wreck, probably needs a wash.
 #-------------------------------
+[MAKESHIFTTUNIC]
+Name = Makeshift Tunic
+NamePlural = Makeshift Tunic
+Pocket = 7
+Price = 0
+Flags = KeyItem,Shirt
+Consumable = false
+Description = A Tunic you fashioned out of materials.
+#-------------------------------
 [SILKSHIRT]
 Name = Silk Shirt
 NamePlural = Silk Shirts
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shirt
 Consumable = false
@@ -3391,7 +3446,7 @@ Description = A Clean Silk Shirt that makes you feel clean.
 [WOOLENCLOAK]
 Name = Woolen Cloak
 NamePlural = Woolen Cloaks
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shirt
 Consumable = false
@@ -3400,7 +3455,7 @@ Description = A Cloak that keeps you warm in your coldest moments.
 [LEATHERJACKET]
 Name = Leather Jacket
 NamePlural = Leather Jackets
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shirt
 Consumable = false
@@ -3409,7 +3464,7 @@ Description = A Snazzy Looking Leather Coat.
 [IRONARMOR]
 Name = Chain Armor
 NamePlural = Chain Armor
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Shirt
 Consumable = false
@@ -3418,16 +3473,25 @@ Description = A Set of Armor that makes you feel a little more secure.
 [NORMALPANTS]
 Name = Pants
 NamePlural = Pants
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Pants
 Consumable = false
 Description = The Pants you have worn since the wreck, probably need a wash.
 #-------------------------------
+[MAKESHIFTPANTS]
+Name = Makeshift Pants
+NamePlural = Makeshift Pants
+Pocket = 7
+Price = 0
+Flags = KeyItem,Pants
+Consumable = false
+Description = A Pair of Pants you fashioned out of materials.
+#-------------------------------
 [SPOOKYPANTS]
 Name = Spooky Pants
 NamePlural = Spooky Pants
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Pants
 Consumable = false
@@ -3436,7 +3500,7 @@ Description = A Pair of Pants that prevents you from dying.
 [PROTECTIVEPANTS]
 Name = Protective Pants
 NamePlural = Protective Pants
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem,Pants
 Consumable = false
@@ -4373,7 +4437,7 @@ Pocket = 7
 Price = 0
 Flags = KeyItem,Tool,Overworld
 Consumable = false
-Description = 
+Description = A durable canteen for storing water during your adventures.
 #-------------------------------
 [STONE]
 Name = Stone
@@ -4381,7 +4445,7 @@ NamePlural = Stone
 Pocket = 1
 Price = 0
 Flags = Fling_10,Weapon,Tool,Overworld
-Description = 
+Description = A rock that can be used as a tool, weapon, or crafting material.
 #-------------------------------
 [RAFT]
 Name = Raft
@@ -7521,7 +7585,7 @@ NamePlural = Glass Bottle
 Pocket = 7
 Price = 5
 FieldUse = Direct,Tool,Overworld
-Description = 
+Description = A glass bottle for holding liquids or crafting ingredients.
 #-------------------------------
 [GLASS]
 Name = Glass
@@ -7529,7 +7593,7 @@ NamePlural = Glass
 Pocket = 1
 Price = 5
 Flags = 
-Description = 
+Description = A piece of glass used for crafting.
 #-------------------------------
 [CHARREDGLASS]
 Name = Charred Glass
@@ -7537,7 +7601,7 @@ NamePlural = Charred Glass
 Pocket = 1
 Price = 5
 Flags = 
-Description = 
+Description = Glass that has been heated and hardened, used for crafting.
 #-------------------------------
 [SILK]
 Name = Silk
@@ -7545,7 +7609,7 @@ NamePlural = Silk
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A fine fabrics used for crafting other items.
 #-------------------------------
 [LEATHER]
 Name = Leather
@@ -7553,7 +7617,7 @@ NamePlural = Leather
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Tanned hide used for crafting armor, tools, and other items.
 #-------------------------------
 [GOLDORE]
 Name = Gold Ore
@@ -7561,7 +7625,7 @@ NamePlural = Gold Ore
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A chunk of gold ore used for smelting and crafting valuable items.
 #-------------------------------
 [COPPERORE]
 Name = Copper Ore
@@ -7569,7 +7633,7 @@ NamePlural = Copper Ore
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A chunk of copper ore used for smelting and crafting tools and equipment.
 #-------------------------------
 [SILVERORE]
 Name = Silver Ore
@@ -7577,7 +7641,7 @@ NamePlural = Silver Ore
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A chunk of silver ore used for smelting and crafting refined materials.
 #-------------------------------
 [GOLD2]
 Name = Gold Bar
@@ -7585,7 +7649,7 @@ NamePlural = Gold Bar
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A bar of gold, smelted from ore, used for crafting valuable items and equipment.
 #-------------------------------
 [SILVER2]
 Name = Silver Bar
@@ -7593,7 +7657,7 @@ NamePlural = Silver Bar
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A bar of silver, smelted from ore, used for crafting tools and refined materials.
 #-------------------------------
 [COPPER2]
 Name = Copper Bar
@@ -7601,7 +7665,7 @@ NamePlural = Copper Bar
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A bar of copper, smelted from ore, used for crafting tools and basic equipment.
 #-------------------------------
 [CLAY2]
 Name = Hardened Clay
@@ -7609,7 +7673,7 @@ NamePlural = Hardened Clay
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Clay that has been fired and hardened, used for crafting bricks and building materials.
 #-------------------------------
 [DARTCASING]
 Name = Dart Casing
@@ -7617,7 +7681,7 @@ NamePlural = Dart Casing
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A casing used to assemble darts or similar projectiles.
 #-------------------------------
 [IRONDUST]
 Name = Iron Dust
@@ -7625,7 +7689,7 @@ NamePlural = Iron Dust
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Finely ground iron, used for crafting and smelting.
 #-------------------------------
 [GOLDDUST]
 Name = Gold Dust
@@ -7633,7 +7697,7 @@ NamePlural = Gold Dust
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Finely ground gold, used for crafting valuable items.
 #-------------------------------
 [CLAYDUST]
 Name = Clay Ball
@@ -7641,7 +7705,7 @@ NamePlural = Clay Ball
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A ball of clay, ready to be shaped or fired for crafting.
 #-------------------------------
 [BONEDUST]
 Name = Bone Dust
@@ -7649,7 +7713,7 @@ NamePlural = Bone Dust
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Finely ground bone, used for crafting or as an ingredient.
 #-------------------------------
 [COPPERDUST]
 Name = Copper Dust
@@ -7657,7 +7721,7 @@ NamePlural = Copper Dust
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Finely ground copper, used for crafting and smelting.
 #-------------------------------
 [SILVERDUST]
 Name = Silver Dust
@@ -7665,7 +7729,7 @@ NamePlural = Silver Dust
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Finely ground silver, used for crafting refined materials.
 #-------------------------------
 [IRONORE]
 Name = Iron Ore
@@ -7673,7 +7737,7 @@ NamePlural = Iron Ore
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A chunk of iron ore used for smelting into iron bars and crafting tools.
 #-------------------------------
 [WOOL]
 Name = Wool
@@ -7681,7 +7745,7 @@ NamePlural = Wool
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = Soft fiber sheared from animals, used for crafting fabrics and clothing.
 #-------------------------------
 [BOWL]
 Name = Bowl
@@ -7689,7 +7753,7 @@ NamePlural = Bowl
 Pocket = 1
 Price = 0
 Flags = Fling_10,Tool
-Description = 
+Description = A simple bowl used for cooking, mixing, or crafting ingredients.
 #-------------------------------
 [WOODENPLANKS]
 Name = Wooden Plank
@@ -7697,7 +7761,7 @@ NamePlural = Wooden Planks
 Pocket = 1
 Price = 0
 Flags = Fling_10,Coal
-Description = 
+Description = Processed wood used for building structures, crafting tools, and other items.
 #-------------------------------
 [WOODENSTICKS]
 Name = Wooden Stick
@@ -7705,7 +7769,7 @@ NamePlural = Wooden Sticks
 Pocket = 1
 Price = 0
 Flags = Fling_10,Coal
-Description = 
+Description = Simple wooden sticks used for crafting tools, weapons, or other items.
 #-------------------------------
 [IRON2]
 Name = Fine Iron Bar
@@ -7713,7 +7777,7 @@ NamePlural = Fine Iron Bars
 Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = A bar of iron, smelted from ore, used for crafting tools and basic equipment.
 #-------------------------------
 [WOODENLOG]
 Name = Wooden Log
@@ -7721,15 +7785,15 @@ NamePlural = Wooden Logs
 Pocket = 1
 Price = 0
 Flags = Fling_10,Coal
-Description = 
+Description = A log of wood used for crafting, building, or processing into planks and sticks.
 #-------------------------------
 [TUMBLEROCK]
 Name = Tumblestone
 NamePlural = Tumblestones
-Pocket = 3
+Pocket = 1
 Price = 0
 Flags = Fling_10
-Description = 
+Description = When combined with an Apricorn, this stone can draw out the properties required to forge a Poké Ball. 
 #-------------------------------
 [COAL]
 Name = Coal
@@ -7737,7 +7801,7 @@ NamePlural = Coals
 Pocket = 1
 Price = 0
 Flags = Fling_10,Coal
-Description = 
+Description = A chunk of coal used as fuel for smelting, crafting, and powering equipment.
 #-------------------------------
 [ARMORITEORE]
 Name = Armorite Ore
@@ -7868,15 +7932,15 @@ NamePlural = Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Fresh meat that can be cooked to restore status.
 #-------------------------------
-[SPOILED_FOODWATER]
-Name = Spoiled Leftovers
-NamePlural = Spoiled Leftovers
+[SPOILEDFOOD]
+Name = Spoiled Food
+NamePlural = Spoiled Food
 Pocket = 6
 Price = 5
-Flags = FoodWater
-Description = 
+Flags = FoodWater, NoSpoiling
+Description = Food that has gone bad. It should not be eaten.
 #-------------------------------
 [HONEY]
 Name = Honey
@@ -7893,7 +7957,7 @@ NamePlural = Bird Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Meat from birds, versatile for cooking or crafting dishes.
 #-------------------------------
 [POISONOUSMEAT]
 Name = Poisonous Meat
@@ -7901,7 +7965,7 @@ NamePlural = Poisonous Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Meat that may be especially toxic if eaten raw.
 #-------------------------------
 [ROCKYMEAT]
 Name = Rocky Meat
@@ -7909,7 +7973,7 @@ NamePlural = Rocky Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Tough, rocky meat for cooking or crafting dishes.
 #-------------------------------
 [BUGMEAT]
 Name = Bug Meat
@@ -7917,7 +7981,7 @@ NamePlural = Bug Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Insect meat that can be prepared in various ways.
 #-------------------------------
 [STEELYMEAT]
 Name = Steely Meat
@@ -7925,7 +7989,7 @@ NamePlural = Steely Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Dense metallic-tasting meat that can be prepared in various ways.
 #-------------------------------
 [SUSHI]
 Name = Sushi
@@ -7933,7 +7997,7 @@ NamePlural = Sushi
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Freshly prepared sushi, ready to serve.
 #-------------------------------
 [LEAFYMEAT]
 Name = Leafy Meat
@@ -7941,15 +8005,15 @@ NamePlural = Leafy Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Meat infused with plant matter that can be prepared in various ways.
 #-------------------------------
 [FROZENMEAT]
-Name = Icey Rocks
-NamePlural = Icey Rocks
+Name = Icey Meat
+NamePlural = Icey Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Ice-cold meat that can be prepared in various ways.
 #-------------------------------
 [DRAGONMEAT]
 Name = Dragon Meat
@@ -7957,7 +8021,7 @@ NamePlural = Dragon Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Rare dragon meat, prized for exotic recipes.
 #-------------------------------
 [EDIABLESCRYSTAL]
 Name = Ediable Crystal
@@ -7965,7 +8029,7 @@ NamePlural = Ediable Crystal
 Pocket = 6
 Price = 5
 Flags = 
-Description = 
+Description = A crystalline treat, safe to eat and craft with.
 #-------------------------------
 [ORANMASH]
 Name = Oran Mash
@@ -7973,7 +8037,7 @@ NamePlural = Oran Mash
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Mashed Oran fruit, used in recipes or eaten directly.
 #-------------------------------
 [COOKEDMEAT]
 Name = Meat (Cooked)
@@ -7981,7 +8045,7 @@ NamePlural = Meat (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Meat that has been cooked, ready for consumption or crafting.
 #-------------------------------
 [FISHSOUP]
 Name = Soup (Fish)
@@ -7989,7 +8053,7 @@ NamePlural = Soup (Fish)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A warm fish soup, flavorful and ready to serve.
 #-------------------------------
 [SOUPBROTH]
 Name = Soup Broth
@@ -7997,7 +8061,7 @@ NamePlural = Soup Broth
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A rich broth, used as a base or consumed on its own.
 #-------------------------------
 [COOKEDBIRDMEAT]
 Name = Bird Meat (Cooked)
@@ -8045,7 +8109,7 @@ NamePlural = Leafy Meat (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A NonVegan Plant Alternate
+Description = A NonVegan Plant Alternative
 #-------------------------------
 [COOKEDDRAGONMEAT]
 Name = Dragon Meat (Cooked)
@@ -8061,15 +8125,15 @@ NamePlural = Ediable Crystal (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Ediable crystals
 #-------------------------------
-[MEATSANDWICH]
+[MEATSANDWICH]  #YES
 Name = Meat Sandwich (Normal)
 NamePlural = Meat Sandwich (Normal)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A classic meat sandwich, simple but satisfying.
 #-------------------------------
 [MEATSANDWICHMJ]
 Name = Meat Sandwich (Meat Jesus)
@@ -8077,63 +8141,63 @@ NamePlural = Meat Sandwich (Meat Jesus)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A hearty meat sandwich with a legendary twist.
 #-------------------------------
-[MEATSANDWICHSUS]
+[MEATSANDWICHSUS]  #YES
 Name = Meat Sandwich (Sus)
 NamePlural = Meat Sandwich (Sus)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A suspicious-looking meat sandwich, unusual in appearance.
 #-------------------------------
-[MEATSANDWICHLEAFY]
+[MEATSANDWICHLEAFY]  #YES
 Name = Meat Sandwich (Leafy)
 NamePlural = Meat Sandwich (Leafy)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A meat sandwich layered with fresh leafy greens.
 #-------------------------------
-[MEATSANDWICHCRYSTAL]
+[MEATSANDWICHCRYSTAL]  #YES
 Name = Meat Sandwich (Crystal)
 NamePlural = Meat Sandwich (Crystal)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A meat sandwich with sparkling crystal-like toppings.
 #-------------------------------
-[MEATSANDWICHROCKY]
+[MEATSANDWICHROCKY]  #YES
 Name = Meat Sandwich (Crunchy)
 NamePlural = Meat Sandwich (Crunchy)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A crunchy meat sandwich, definitely made of rocks.
 #-------------------------------
-[MEATSANDWICHBUG]
+[MEATSANDWICHBUG]  #YES
 Name = Meat Sandwich (Ew)
 NamePlural = Meat Sandwich (Ew)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A meat sandwich with insect-based ingredients, for the adventurous.
 #-------------------------------
-[MEATSANDWICHSTEELY]
+[MEATSANDWICHSTEELY]  #YES
 Name = Meat Sandwich (Dental Visit)
 NamePlural = Meat Sandwich (Dental Visit)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A dense, metallic-tasting meat sandwich.
 #-------------------------------
-[MEATSANDWICHBIRD]
+[MEATSANDWICHBIRD]  #YES
 Name = Meat Sandwich (Chicken?)
 NamePlural = Meat Sandwich (Chicken?)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A chicken-flavored meat sandwich.
 #-------------------------------
 [MEATSANDWICHSLOWPOKETAIL]
 Name = Meat Sandwich (Slowpoke Tail)
@@ -8141,7 +8205,7 @@ NamePlural = Meat Sandwich (Slowpoke Tail)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A rare sandwich made with Slowpoke tail.
 #-------------------------------
 [SITRUSJUICE]
 Name = Sitrus Juice
@@ -8149,7 +8213,7 @@ NamePlural = Sitrus Juice
 Pocket = 6
 Price = 5
 Flags = FoodWater,Water
-Description = 
+Description = Freshly squeezed Sitrus Berry juice, tangy and refreshing.
 #-------------------------------
 [BERRYMASH]
 Name = Berry Mash
@@ -8157,7 +8221,7 @@ NamePlural = Berry Mash
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A mash of assorted berries, perfect for recipes or eating as is.
 #-------------------------------
 [COOKEDORAN]
 Name = Oran Berry (Cooked)
@@ -8165,7 +8229,7 @@ NamePlural = Oran Berry (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Cooked Oran berry, soft and flavorful.
 #-------------------------------
 [BREAD]
 Name = Bread
@@ -8173,7 +8237,7 @@ NamePlural = Bread
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Freshly baked bread, soft and versatile for meals.
 #-------------------------------
 [TEA]
 Name = Tea
@@ -8181,7 +8245,7 @@ NamePlural = Tea
 Pocket = 6
 Price = 5
 Flags = FoodWater,Water
-Description = 
+Description = Brewed tea, warm and soothing.
 #-------------------------------
 [WATER]
 Name = Water
@@ -8189,7 +8253,7 @@ NamePlural = Water
 Pocket = 6
 Price = 5
 Flags = FoodWater,NoSpoiling,Water
-Description = 
+Description = Freshly connected water, essential for any recipe or drink.
 #-------------------------------
 [CARROTCAKE]
 Name = Carrot Cake
@@ -8197,7 +8261,7 @@ NamePlural = Carrot Cake
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A sweet carrot cake, moist and spiced.
 #-------------------------------
 [CHOCOLATE]
 Name = Chocolate
@@ -8205,15 +8269,15 @@ NamePlural = Chocolate
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Rich chocolate, ideal for desserts or snacking.
 #-------------------------------
 [SUGAR]
 Name = Sugar
 NamePlural = Sugar
 Pocket = 1
 Price = 5
-Flags = FoodWater
-Description = 
+Flags = FoodWater,CraftingMaterial
+Description = Fine sugar, used for cooking, baking, and sweetening.
 #-------------------------------
 [CSLOWPOKETAIL]
 Name = Slowpoke Tail (Cooked)
@@ -8221,7 +8285,7 @@ NamePlural = Slowpoke Tail (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Cooked Slowpoke tail, tender and rare.
 #-------------------------------
 [BAKEDPOTATO]
 Name = Potato (Cooked)
@@ -8229,7 +8293,7 @@ NamePlural = Potato (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A baked potato, soft and savory. 
 #-------------------------------
 [CHERUBIBALL]
 Name = Cherubi Ball
@@ -8237,7 +8301,7 @@ NamePlural = Cherubi Ball
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A Cherubi treat, sweet and fruity.
 #-------------------------------
 [EGGEDIBLE]
 Name = Egg
@@ -8245,7 +8309,7 @@ NamePlural = Eggs
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A fresh egg, versatile for cooking or baking.
 #-------------------------------
 [POTATOSTEW]
 Name = Stew (Potato)
@@ -8253,7 +8317,7 @@ NamePlural = Stew (Potato)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Potato stew, hearty and flavorful.
 #-------------------------------
 [ATKCURRY]
 Name = Spelon Curry
@@ -8261,7 +8325,7 @@ NamePlural = Spelon Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Spelon curry, a spicy dish to excite the senses.
 #-------------------------------
 [SATKCURRY]
 Name = Kelpsy Curry
@@ -8269,7 +8333,7 @@ NamePlural = Kelpsy Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Kelpsy curry, rich in flavor and aroma.
 #-------------------------------
 [SPEEDCURRY]
 Name = Watmel Curry
@@ -8277,7 +8341,7 @@ NamePlural = Watmel Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Watmel curry, a zesty and lively dish.
 #-------------------------------
 [SPDEFCURRY]
 Name = Durin Curry
@@ -8285,7 +8349,7 @@ NamePlural = Durin Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Durin curry, savory and robust.
 #-------------------------------
 [ACCCURRY]
 Name = Micle Curry
@@ -8293,7 +8357,7 @@ NamePlural = Micle Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Micle curry, a complex blend of spices.
 #-------------------------------
 [DEFCURRY]
 Name = Belue Curry
@@ -8301,7 +8365,7 @@ NamePlural = Belue Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Belue curry, hearty and warming.
 #-------------------------------
 [CRITCURRY]
 Name = Lansat Curry
@@ -8309,7 +8373,7 @@ NamePlural = Lansat Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Lansat curry, bold and flavorful.
 #-------------------------------
 [GSCURRY]
 Name = Starf Curry
@@ -8317,7 +8381,7 @@ NamePlural = Starf Curry
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Starf curry, aromatic and rich in taste.
 #-------------------------------
 [LARGEMEAL]
 Name = Hearty Meal
@@ -8325,7 +8389,7 @@ NamePlural = Hearty Meal
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A hearty meal, filling and well-prepared.
 #-------------------------------
 [HOTDOG]
 Name = Hot Dog
@@ -8333,7 +8397,7 @@ NamePlural = Hot Dog
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A classic hot dog, simple and satisfying.
 #-------------------------------
 [CORNDOG]
 Name = Corn Dog
@@ -8341,7 +8405,7 @@ NamePlural = Corn Dog
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A corn dog, crunchy on the outside and soft inside.
 #-------------------------------
 [FUNNELCAKE]
 Name = Funnel Cake
@@ -8349,7 +8413,7 @@ NamePlural = Funnel Cake
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A sweet funnel cake, fried and dusted with sugar.
 #-------------------------------
 [CHEESECAKE]
 Name = Cheese Cake
@@ -8357,7 +8421,7 @@ NamePlural = Cheese Cake
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Creamy cheesecake, rich and indulgent.
 #-------------------------------
 [ICECREAMSANDWICH]
 Name = Ice Cream Sandwich
@@ -8365,7 +8429,7 @@ NamePlural = Ice Cream Sandwich
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A cold ice cream sandwich, perfect for a treat.
 #-------------------------------
 [CHURROS]
 Name = Churro
@@ -8373,7 +8437,7 @@ NamePlural = Churro
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Sweet churros, fried to golden perfection.
 #-------------------------------
 [TOFFEEAPPLE]
 Name = Toffee Apple
@@ -8381,7 +8445,7 @@ NamePlural = Toffee Apple
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A toffee apple, sticky, sweet, and crunchy.
 #-------------------------------
 [JAMDONUT]
 Name = Jelly Donut
@@ -8389,7 +8453,7 @@ NamePlural = Jelly Donut
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = A jelly-filled donut, soft and fruity.
 #-------------------------------
 [DEEPFRIEDFRIES]
 Name = Deep Fried Fries
@@ -8397,7 +8461,7 @@ NamePlural = Deep Fried Fries
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Crispy deep-fried fries, golden and hot.
 #-------------------------------
 [PRETZELS]
 Name = Pretzel
@@ -8405,7 +8469,7 @@ NamePlural = Pretzel
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Salted pretzels, twisted and baked to perfection.
 #-------------------------------
 [ICECREAM]
 Name = Ice Cream
@@ -8413,7 +8477,7 @@ NamePlural = Ice Cream
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Smooth ice cream, cold and creamy.
 #-------------------------------
 [SNOWCONE]
 Name = Snow Cone
@@ -8421,7 +8485,7 @@ NamePlural = Snow Cone
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Shaved ice snow cone, sweet and refreshing.
 #-------------------------------
 [MEATKABOB]
 Name = Kabob (Meat)
@@ -8429,7 +8493,7 @@ NamePlural = Kabob (Meat)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = 
+Description = Skewered meat kabob, grilled and flavorful.
 #-------------------------------
 [MAXHONEY]
 Name = Max Honey
@@ -8500,7 +8564,7 @@ Price = 600
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,FoodWater,Water
-Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 20 points.
+Description = Milk with a very high nutrition content. It restores the HP of one Pokémon by 50 points.
 #-------------------------------
 [PEWTERCRUNCHIES]
 Name = Pewter Crunchies
@@ -9017,7 +9081,7 @@ Price = 20
 FieldUse = OnPokemon
 BattleUse = OnMove
 Flags = Berry,Fling_10,NaturalGift_FIGHTING_80
-Description = It may be used or held by a Pokémon to restore a move's PP by 10.
+Description = It may be used or held by a Pokémon to restore a move's PP by 1.
 #-------------------------------
 [ORANBERRY]
 Name = Oran Berry
@@ -9046,7 +9110,7 @@ Price = 20
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Berry,Fling_10,NaturalGift_FLYING_80
-Description = It may be used or held by a Pokémon to recover from any status problem.
+Description = It may be used or held by a Pokémon to have a chance to recover from any status problem.
 #-------------------------------
 [SITRUSBERRY]
 Name = Sitrus Berry
@@ -9253,7 +9317,7 @@ Description = If held by a Pokémon, this Berry will recover the Pokémon at 1 H
 [REDAPRICORN]
 Name = Red Apricorn
 NamePlural = Red Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A red Apricorn. It assails your nostrils.
@@ -9261,7 +9325,7 @@ Description = A red Apricorn. It assails your nostrils.
 [YELLOWAPRICORN]
 Name = Yellow Apricorn
 NamePlural = Yellow Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A yellow Apricorn. It has an invigorating scent.
@@ -9269,7 +9333,7 @@ Description = A yellow Apricorn. It has an invigorating scent.
 [BLUEAPRICORN]
 Name = Blue Apricorn
 NamePlural = Blue Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A blue Apricorn. It smells a bit like grass.
@@ -9277,7 +9341,7 @@ Description = A blue Apricorn. It smells a bit like grass.
 [GREENAPRICORN]
 Name = Green Apricorn
 NamePlural = Green Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A green Apricorn. It has a mysterious, aromatic scent.
@@ -9285,7 +9349,7 @@ Description = A green Apricorn. It has a mysterious, aromatic scent.
 [PINKAPRICORN]
 Name = Pink Apricorn
 NamePlural = Pink Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A pink Apricorn. It has a nice, sweet scent.
@@ -9293,7 +9357,7 @@ Description = A pink Apricorn. It has a nice, sweet scent.
 [WHITEAPRICORN]
 Name = White Apricorn
 NamePlural = White Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A white Apricorn. It doesn't smell like anything.
@@ -9301,7 +9365,7 @@ Description = A white Apricorn. It doesn't smell like anything.
 [BLACKAPRICORN]
 Name = Black Apricorn
 NamePlural = Black Apricorns
-Pocket = 3
+Pocket = 4
 Price = 200
 Flags = Apricorn,Berry
 Description = A black Apricorn. It has an indescribable scent.
@@ -9309,7 +9373,7 @@ Description = A black Apricorn. It has an indescribable scent.
 [PURPLEAPRICORN]
 Name = Purple Apricorn
 NamePlural = Purple Apricorns
-Pocket = 3
+Pocket = 4
 Price = 2000
 Flags = Apricorn,Berry
 Description = A purple Apricorn. It has a powerful scent.
@@ -9320,7 +9384,7 @@ NamePlural = Carrots
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A carrot that can be used for cooking or planted to grow more carrots.
 #-------------------------------
 [SUGARCANE]
 Name = Sugar Cane
@@ -9328,7 +9392,7 @@ NamePlural = Sugar Canes
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A stalk of sugar cane that can be used for crafting or planted to grow more sugar cane.
 #-------------------------------
 [WHEAT]
 Name = Wheat
@@ -9336,7 +9400,7 @@ NamePlural = Wheats
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A stalk of wheat that can be used for cooking or planted to grow more wheat.
 #-------------------------------
 [TEALEAF]
 Name = Tea Leaf
@@ -9344,7 +9408,7 @@ NamePlural = Tea Leaves
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A leaf that can be used for brewing tea or planted to grow more tea leaves.
 #-------------------------------
 [COCOABEAN]
 Name = Cocoa Bean
@@ -9352,7 +9416,7 @@ NamePlural = Cocoa Beans
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A bean that can be planted to grow a tree, which can later be harvested for wood and more cocoa beans.
 #-------------------------------
 [APPLE]
 Name = Apple
@@ -9360,7 +9424,7 @@ NamePlural = Apples
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = An apple that can be planted to grow a tree, which can later be harvested for wood and more apples.
 #-------------------------------
 [POTATO]
 Name = Potato
@@ -9368,7 +9432,7 @@ NamePlural = Potatoes
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A potato that can be used for cooking or grown into a new plant.
 #-------------------------------
 [LEMON]
 Name = Lemon
@@ -9376,7 +9440,7 @@ NamePlural = Lemons
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = A lemon that can be planted to grow a tree, which can later be harvested for wood and more lemons.
 #-------------------------------
 [ONION]
 Name = Onion
@@ -9384,22 +9448,22 @@ NamePlural = Onions
 Pocket = 4
 Price = 5
 Flags = Berry
-Description = 
+Description = An onion that can be used for cooking or grown into a new plant.
 #-------------------------------
 [ACORN]
 Name = Acorn
 NamePlural = Acorns
 Pocket = 4
 Price = 5
-Flags = Berry,Coal
-Description = 
+Flags = Berry,Coal,NoSpoiling
+Description = An acorn that can be planted to grow a tree, which can later be harvested for wood.
 #-------------------------------
 [PURESEED]
 Name = Pure Seed
 NamePlural = Pure Seeds
 Pocket = 1
 Price = 0
-Flags = Fling_30,Berry
+Flags = Fling_30,Berry,NoSpoiling
 Description = An item that can be used to immediately move to the next staircase of a dungeon.
 #-------------------------------
 [MAXMUSHROOMS]
@@ -9419,7 +9483,7 @@ Price = 2800
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Berry
-Description = A very bitter medicinal herb. It revives a fainted Pokémon, fully restoring its HP.
+Description = A very bitter medicinal herb. It has restorative properties that prevent bleeding.
 #-------------------------------
 [ENERGYROOT]
 Name = Energy Root
@@ -9437,7 +9501,7 @@ NamePlural = Miracle Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 500
-Flags = Fling_30,Berry
+Flags = Fling_30,Berry,NoSpoiling
 Description = An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
 #-------------------------------
 [ELECTRICSEED]
@@ -9446,7 +9510,7 @@ NamePlural = Electric Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10,Berry
+Flags = Fling_10,Berry,NoSpoiling
 Description = An item to be held by a Pokémon. It boosts Defense on Electric Terrain. It can only be used once.
 #-------------------------------
 [GRASSYSEED]
@@ -9455,7 +9519,7 @@ NamePlural = Grassy Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10,Berry
+Flags = Fling_10,Berry,NoSpoiling
 Description = An item to be held by a Pokémon. It boosts Defense on Grassy Terrain. It can only be used once.
 #-------------------------------
 [MISTYSEED]
@@ -9464,7 +9528,7 @@ NamePlural = Misty Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10,Berry
+Flags = Fling_10,Berry,NoSpoiling
 Description = An item to be held by a Pokémon. It boosts Sp. Def on Misty Terrain. It can only be used once.
 #-------------------------------
 [PSYCHICSEED]
@@ -9473,7 +9537,7 @@ NamePlural = Psychic Seeds
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10,Berry
+Flags = Fling_10,Berry,NoSpoiling
 Description = An item to be held by a Pokémon. It boosts Sp. Def on Psychic Terrain. It can only be used once.
 #-------------------------------
 [LUMINOUSMOSS]
@@ -9554,7 +9618,7 @@ NamePlural = Seeds of Mastery
 Pocket = 2
 Price = 3000
 FieldUse = OnPokemon
-Flags = Fling_30,Berry
+Flags = Fling_30,Berry,NoSpoiling
 Description = A rare seed that can be used to master a Pokémon move so it can be used in the agile or strong styles.
 #-------------------------------
 [CROPSTICKS]
@@ -9564,61 +9628,13 @@ Pocket = 7
 Price = 1
 Description = A set of cropsticks used to more effectively farm.
 #-------------------------------
-[PRODUCEMULCH2]
-Name = Produce Mulch (II)
-NamePlural = Produce Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
-[POTENTIALMULCH2]
-Name = Potential Mulch (II)
-NamePlural = Potential Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
-[GROWTHMULCH2]
-Name = Growth Mulch (II)
-NamePlural = Growth Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
-[DAMPMULCH2]
-Name = Damp Mulch (II)
-NamePlural = Damp Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
-[STABLEMULCH2]
-Name = Stable Mulch (II)
-NamePlural = Stable Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
-[GOOEYMULCH2]
-Name = Gooey Mulch (II)
-NamePlural = Gooey Mulch (II)
-Pocket = 1
-Price = 10
-Flags = Mulch,Fling_10
-Description = 
-#-------------------------------
 [FERTILIZERMIX]
 Name = Fertilizer Mix
 NamePlural = Fertilizer Mix
 Pocket = 1
 Price = 10
 Flags = Mulch,Fling_10
-Description = 
+Description = A balanced fertilizer blend, designed to be used to craft other fertilizers.
 #-------------------------------
 [POTENTIALMULCH]
 Name = Potential Mulch (I)
@@ -9626,7 +9642,7 @@ NamePlural = Potential Mulch (I)
 Pocket = 1
 Price = 10
 Flags = Mulch,Fling_10
-Description = 
+Description = A fertilizer for growing Crops. It increases the potential maximum yield of a Crop.
 #-------------------------------
 [PRODUCEMULCH]
 Name = Produce Mulch (I)
@@ -9634,79 +9650,127 @@ NamePlural = Produce Mulch (I)
 Pocket = 1
 Price = 10
 Flags = Mulch,Fling_10
-Description = 
+Description = A fertilizer for growing Crops. It causes it to be more likely for you to get a larger amount of Crops.
 #-------------------------------
 [GROWTHMULCH]
-Name = Growth Mulch
-NamePlural = Growth Mulch
+Name = Growth Mulch (I)
+NamePlural = Growth Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+Description = A fertilizer for growing Crops. It accelerates the growth rate of a Crop.
 #-------------------------------
 [DAMPMULCH]
-Name = Damp Mulch
-NamePlural = Damp Mulch
+Name = Damp Mulch (I)
+NamePlural = Damp Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+Description = A fertilizer for growing Crops. It slows the growth of a Crop, but causes the soil to dry slower.
 #-------------------------------
 [STABLEMULCH]
-Name = Stable Mulch
-NamePlural = Stable Mulch
+Name = Stable Mulch (I)
+NamePlural = Stable Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+Description = A fertilizer for growing Crops. It extends the time Crops remain in their prime before dying.
 #-------------------------------
 [GOOEYMULCH]
-Name = Gooey Mulch
-NamePlural = Gooey Mulch
+Name = Gooey Mulch (I)
+NamePlural = Gooey Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+Description = A fertilizer for growing Crops. It ups the number of times new plants grow where mature plants withered. 
 #-------------------------------
 [SURPRISEMULCH]
-Name = Surprise Mulch
-NamePlural = Surprise Mulch
+Name = Surprise Mulch (I)
+NamePlural = Surprise Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer for growing Berries. It causes strange, sudden mutations based on other Berries nearby.
+Description = A fertilizer for growing Crops. It causes strange, sudden mutations based on other Crops nearby.
 #-------------------------------
 [ALLUREMULCH]
-Name = Allure Mulch
-NamePlural = Allure Mulch
+Name = Allure Mulch (I)
+NamePlural = Allure Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer for growing Berries. Berries that fall from nearby plants can take root in this mulch.
+Description = A fertilizer for growing Crops. Crops that fall from nearby plants can take root in this mulch.
 #-------------------------------
 [RICHMULCH]
-Name = Rich Mulch
-NamePlural = Rich Mulch
+Name = Rich Mulch (I)
+NamePlural = Rich Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer for growing Berries. It increases the harvest without the need for particularly diligent care.
+Description = A fertilizer for growing Crops. It increases the harvest without the need for particularly diligent care.
 #-------------------------------
 [BOOSTMULCH]
-Name = Boost Mulch
-NamePlural = Boost Mulch
+Name = Boost Mulch (I)
+NamePlural = Boost Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer for growing Berries. It makes the soil dry out faster.
+Description = A fertilizer for growing Crops. It makes the soil dry out faster.
 #-------------------------------
 [AMAZEMULCH]
-Name = Amaze Mulch
-NamePlural = Amaze Mulch
+Name = Amaze Mulch (I)
+NamePlural = Amaze Mulch (I)
 Pocket = 1
 Price = 200
 Flags = Mulch,Fling_30
-Description = A fertilizer for growing Berries. It increases the harvest, chance of mutations, and drying rate.
+Description = A fertilizer for growing Crops. It increases the harvest, chance of mutations, and drying rate.
+#-------------------------------
+[PRODUCEMULCH2]
+Name = Produce Mulch (II)
+NamePlural = Produce Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It causes it to be more likely for you to get a larger amount of Crops.
+#-------------------------------
+[POTENTIALMULCH2]
+Name = Potential Mulch (II)
+NamePlural = Potential Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It increases the potential maximum yield of a Crop.
+#-------------------------------
+[GROWTHMULCH2]
+Name = Growth Mulch (II)
+NamePlural = Growth Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It accelerates the growth rate of a Crop.
+#-------------------------------
+[DAMPMULCH2]
+Name = Damp Mulch (II)
+NamePlural = Damp Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It slows the growth of a Crop, but causes the soil to dry slower.
+#-------------------------------
+[STABLEMULCH2]
+Name = Stable Mulch (II)
+NamePlural = Stable Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It extends the time Crops remain in their prime before dying.
+#-------------------------------
+[GOOEYMULCH2]
+Name = Gooey Mulch (II)
+NamePlural = Gooey Mulch (II)
+Pocket = 1
+Price = 10
+Flags = Mulch,Fling_10
+Description = A fertilizer for growing Crops. It ups the number of times new plants grow where mature plants withered. 
 #-------------------------------
 [BERRYBLENDER]
 Name = Berry Blender
@@ -9714,7 +9778,7 @@ NamePlural = Berry Blender
 Pocket = 7
 Price = 0
 Flags = Fling_10,Overworld,PlacingItem
-Description = A item for mixing berries.
+Description = A machine that turns berries into fresh mixtures and ingredients.
 #-------------------------------
 [APRICORNCRAFTING]
 Name = Pokeball Carver
@@ -9723,7 +9787,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Table that can be used to carve Apricorns.
+Description = A simple carving table for making Poké Balls from Apricorns.
 #-------------------------------
 [CRAFTINGBENCH]
 Name = Workbench
@@ -9732,7 +9796,16 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Crafting Bench you fashioned out of wood.
+Description = A simple wooden workbench for crafting tools and other essential items.
+#-------------------------------
+[POCKET]
+Name = Pocket Workbench
+NamePlural = Workbench
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = Inaccessable
 #-------------------------------
 [CAULDRON]
 Name = Cauldron
@@ -9741,7 +9814,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Cauldron used for Cooking.
+Description = A sturdy iron cauldron used to cook meals.
 #-------------------------------
 [FURNACE]
 Name = Furnace
@@ -9750,7 +9823,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Furnace used for cooking items.
+Description = A heavy stone furnace used to smelt and cook items.
 #-------------------------------
 [MEDICINEPOT]
 Name = Medicine Pot
@@ -9759,7 +9832,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Pot used for making potions.
+Description = A fragile clay pot used to craft medicinal potions.
 #-------------------------------
 [UPGRADEDCRAFTINGBENCH]
 Name = Upgraded Workbench
@@ -9768,7 +9841,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Crafting Bench you fashioned out of wood and upgraded with Silver.
+Description = A wooden workbench reinforced with silver for crafting advanced items.
 #-------------------------------
 [GRINDER]
 Name = Grinder
@@ -9777,7 +9850,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Grinder used to grind things into dust.
+Description = A solid grinder used to crush materials into dust.
 #-------------------------------
 [BEDROLL]
 Name = Bed
@@ -9786,7 +9859,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Bedroll, used for Sleeping.
+Description = A cozy bedroll for a good night’s sleep.
 #-------------------------------
 [PKMNCRATE]
 Name = Pokemon Crate
@@ -9795,7 +9868,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Crate that is used to Store Pokemon.
+Description = A large crate for housing Pokémon comfortably in your base.
 #-------------------------------
 [PORTABLECAMP]
 Name = Portable Campsite
@@ -9804,7 +9877,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Camp that can be set up anywhere, it's one use.
+Description = A foldable camp that can be placed anywhere for rest
 #-------------------------------
 [COALGENERATOR]
 Name = Power Generator (Coal)
@@ -9813,7 +9886,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Station that uses Coal to to create energy.
+Description = A generator that burns coal to produce energy for your base.
 #-------------------------------
 [SOLARGENERATOR]
 Name = Power Generator (Solar)
@@ -9822,7 +9895,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Station that uses the Sun to to create energy.
+Description = A solar generator that harnesses sunlight to power your base.
 #-------------------------------
 [HYDROGENERATOR]
 Name = Power Generator (Water)
@@ -9831,7 +9904,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Station that uses the Water to to create energy.
+Description = A water-powered generator that converts flowing water into energy.
 #-------------------------------
 [WINDGENERATOR]
 Name = Power Generator (Wind)
@@ -9840,7 +9913,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Station that uses the Wind to to create energy.
+Description = A generator that captures wind to generate energy.
 #-------------------------------
 [POKEGENERATOR]
 Name = Power Generator (Pokemon)
@@ -9849,7 +9922,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Station that uses electric type Pokemon to to create energy.
+Description = A generator that channels electricity from Electric-type Pokémon to power your base.
 #-------------------------------
 [SPRINKLER]
 Name = Sprinkler
@@ -9858,7 +9931,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station that is designed to water a large area.
+Description = A motorized sprinkler that spreads water evenly over the surrounding area.
 #-------------------------------
 [ELECTRICGRINDER]
 Name = Electric Grinder
@@ -9867,7 +9940,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station designed to macerate down materials.
+Description = A powered grinder designed to break down materials efficiently.
 #-------------------------------
 [ELECTRICFURNACE]
 Name = Electric Furnace
@@ -9876,7 +9949,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station designed to heat both metals and foods.
+Description = An electric furnace that heats metals and food efficiently.
 #-------------------------------
 [PC]
 Name = PC
@@ -9885,7 +9958,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Small Laptop that can be used to connect to a Regions PC System.
+Description = A small laptop used to access regional PC systems.
 #-------------------------------
 [APRICORNMACHINE]
 Name = Apricorn Machine
@@ -9894,7 +9967,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Stationed designed to more effectively create Pokeballs.
+Description = An electric machine that efficiently crafts Pokéballs from Apricorns.
 #-------------------------------
 [ELECTRICPRESS]
 Name = Electric Press
@@ -9903,7 +9976,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station designed to compress Shards into Plates.
+Description = A motorized press that smooths and compacts raw materials.
 #-------------------------------
 [SEWINGMACHINE]
 Name = Sewing Machine
@@ -9912,7 +9985,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station designed for Sewing Fabrics into new items.
+Description = A motorized sewing machine that weaves and joins materials.
 #-------------------------------
 [ITEMCRATE]
 Name = Item Crate
@@ -9921,7 +9994,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Crate that contains your Items and Mail, it is crafted from Light Clay and Wooden Planks.
+Description = A handcrafted wooden crate to keep your items organized.
 #-------------------------------
 [ICEBOX]
 Name = Icebox
@@ -9930,7 +10003,7 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Storage Unit for items that can spoil.
+Description = An ice-filled crate to preserve ingredients and perishable goods within.
 #-------------------------------
 [ELECTRICICEBOX]
 Name = Electric Icebox
@@ -9939,45 +10012,81 @@ Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Storage Unit for items that can spoil.
+Description = A motorized ice-filled crate to maintain freshness of perishable goods within.
 #-------------------------------
 [CUTTER]
-Name = Wood Cutter
-NamePlural = Wood Cutter
+Name = Wood Saw
+NamePlural = Wood Saw
 Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
-Description = A Powered Station designed to more efficiently cut down Wooden Logs into Wooden Planks.
+Description = An electric saw for efficiently shaping logs and planks.
 #-------------------------------
 [MACHINEBOX]
 Name = Machine Box
 NamePlural = Machine Box
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = Fling_10,PlacingItem,Overworld
-Description = An Electric Device for the Storage and Transmission of Power.
+Description = A device to store and transmit electricity where needed.
 #-------------------------------
 [TORCH]
 Name = Torch
 NamePlural = Torches
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = Fling_10,PlacingItem,Overworld
-Description = A torch that generates light, and makes it less likely for Pokemon to spawn.
+Description = A torch that lights the area and keeps wild Pokémon at bay.
 #-------------------------------
 [ELECTRICLIGHT]
 Name = Electric Light
 NamePlural = Electric Lights
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = Fling_10,PlacingItem,Overworld
-Description = A torch that generates light, and makes it less likely for Pokemon to spawn.
+Description = A powered light that illuminates your base and deters Pokémon.
+#-------------------------------
+[WARDINGTOTEM]
+Name = Repelling Totem
+NamePlural = Repelling Totem
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A totem imbued with Repel to keep wild Pokémon from approaching.
+#-------------------------------
+[RESEARCHTABLE]
+Name = Research Table
+NamePlural = Research Table
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A place to study materials and develop new recipes.
+#-------------------------------
+[GARBAGEBIN]
+Name = Garbage Bin
+NamePlural = Garbage Bin
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A bin to help organize your base by removing unwanted materials.
+#-------------------------------
+[ADVENTUREFLAG]
+Name = Adventure Flag
+NamePlural = Adventure Flag
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A flag marking a waypoint for Pokémon on their adventures.
 #-------------------------------
 [SOOTSACK]
 Name = Soot Sack
 NamePlural = Soot Sacks
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = KeyItem
 Description = A sack used to gather and hold volcanic ash.
@@ -9985,16 +10094,16 @@ Description = A sack used to gather and hold volcanic ash.
 [SPLINT]
 Name = Splint
 NamePlural = Splints
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = 
-Description = A sack used to gather and hold volcanic ash.
+Description = A Splint used for fixing broken bones.
 #-------------------------------
 [BANDAGE]
 Name = Bandage
 NamePlural = Bandages
-Pocket = 1
+Pocket = 7
 Price = 0
 Flags = 
-Description = A sack used to gather and hold volcanic ash.
+Description = A bandage used to stop bleeding.
 

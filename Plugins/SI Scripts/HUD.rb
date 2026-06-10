@@ -555,7 +555,11 @@ class HUD
     @sprites3["namewindowevent"].visible = false
 	@sprites3["namewindowevent"].windowskin  = nil
 end
+   
 
+   
+  
+  
         #@sprites5["ball_icon2"]=IconSprite.new(49,-25,nil,@viewport)
        # @sprites5["ball_icon2"].setBitmap("Graphics/Pictures/dropdownstuff")
        # @sprites5["ball_icon2"].z=9
@@ -1104,10 +1108,10 @@ class HUD
          @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
       end
 	  if !current_selection.egg? && $PokemonGlobal.selected_pokemon[0]!=current_selection
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}") if $PokemonGlobal.selected_pokemon[0] != 0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}") if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = current_selection  if !current_selection&.associatedevent.nil?
 	  elsif $PokemonGlobal.selected_pokemon[0] != 0
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}")if $PokemonGlobal.selected_pokemon[0]!=0
 	  $PokemonGlobal.selected_pokemon[0] = 0 if current_selection.egg?
 	  end
      end
@@ -1119,7 +1123,7 @@ class HUD
 	
 	  if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}")if $PokemonGlobal.selected_pokemon[0]!=0
 	  end
 	  
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
@@ -1151,7 +1155,7 @@ class HUD
 	
 	  if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}")if $PokemonGlobal.selected_pokemon[0]!=0
 	  end
 	  
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
@@ -1211,7 +1215,7 @@ class HUD
      @sprites2["waterwindow"].shadowColor=get_shadow_color(:FIRE)
 	  if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}")if $PokemonGlobal.selected_pokemon[0]!=0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}")if $PokemonGlobal.selected_pokemon[0]!=0
 	  end
 	  
      @sprites2["status_effect"].setBitmap("Graphics/Pictures/Hud/empty")
@@ -1238,7 +1242,7 @@ class HUD
 	else
 	 if $PokemonGlobal.selected_pokemon[0] != 0
 	  $PokemonGlobal.selected_pokemon[0] = 0 
-	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}") if $PokemonGlobal.selected_pokemon[0]!=0
+	  $selection_arrows.remove_sprite("Arrow#{$PokemonGlobal.selected_pokemon[0]&.associatedevent}#{$PokemonGlobal.selected_pokemon[0]&.name}") if $PokemonGlobal.selected_pokemon[0]!=0
 	 end
     	return
 	end
@@ -1305,7 +1309,8 @@ end
 
 def refresh_extended_hud_display
   
-     @sprites2["extendedBG"].setBitmap("Graphics/UI/OV HUD/extendedbg")
+     @sprites2["extendedBG"].setBitmap("Graphics/UI/OV HUD/extendedbg") if $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.alt_control_move==false
+     @sprites2["extendedBG"].setBitmap("Graphics/UI/OV HUD/extendedbg2") if !$PokemonGlobal.cur_stored_pokemon.nil? || $PokemonGlobal.alt_control_move==true
      @sprites2["extendedBG"].visible=true
 	 @sprites2["title_window"].text=get_text_for_title_window
 	 @sprites2["title_window"].resizeToFit(get_text_for_title_window)
@@ -1599,8 +1604,9 @@ end
 	  text = "Torch"  if text.include?("playertorch")
 	  text = "A Rock."  if text.include?("A Rock")
 	  text = "Ancient Statue"  if text.downcase.include?("ancientstone")
-    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol})" if defined?(event.pokemon)
-    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol}) Lv #{event.pokemon.level}" if defined?(event.pokemon) && $bag.has?(:LVLDETECTOR)
+    text = "#{event.pokemon.name}" if defined?(event.pokemon) && !event.pokemon.is_a?(Pokemon)
+    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol})" if defined?(event.pokemon) && event.pokemon.is_a?(Pokemon)
+    text = "#{event.pokemon.name} (#{event.pokemon.gender_symbol}) Lv #{event.pokemon.level}" if defined?(event.pokemon) && $bag.has?(:LVLDETECTOR) && event.pokemon.is_a?(Pokemon)
 	@sprites3["namewindowevent"].text  = text
 	@sprites3["namewindowevent"].setTextToFit(text)
    @sprites3["namewindowevent"].visible = true 
@@ -1707,9 +1713,67 @@ class HUD #Player Bars
     @sprites["hpbarfill"].x = x-fillWidth/2
     @sprites["hpbarfill"].y = y-fillHeight/2
     @sprites["hpbarfill"].z=9
-	
+	["FOD","H20","SLP"].each_with_index do |text, index|
+	   new_x = (x-width/2) + 24*index
+	   new_y = y - 8 
+	   
+	   
+	   
+	   create_text2(text,1,new_x+1,new_y+1)
+	   create_text(text,new_x,new_y)
+	   create_text_backdrop("#{text}_backdrop",0,y - 24, 0, width+28, 80) if index==0
+	end 
   end
 
+  def pbPrepareWindow(window)
+    window.visible=true
+    window.letterbyletter=false
+  end
+def create_text_backdrop(key, x, y, z, width, height,color = Color.new(0, 0, 0, 160))
+  sprite = BitmapSprite.new(width, height, @viewport)
+  sprite.x = x
+  sprite.y = y
+  sprite.z = z
+  sprite.bitmap.fill_rect(0, 0, width, height, color)
+
+  @sprites[key] = sprite
+end
+
+  def create_text(text,x,y)
+    @sprites["#{text}_text"]=Window_UnformattedTextPokemon.new(text)
+    text_sprite = @sprites["#{text}_text"]
+	text_sprite.contents.font.size = 14 
+	text_sprite.refresh
+    pbPrepareWindow(text_sprite)
+    text_sprite.resizeToFit(text)
+	text_sprite.x = x
+	text_sprite.y= y - 16 - text_sprite.contents.font.size
+    text_sprite.windowskin=nil
+    text_sprite.baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    text_sprite.shadowColor=nil
+    text_sprite.text=text
+    text_sprite.viewport=@viewport
+    text_sprite.z = 10
+    text_sprite.visible=true
+  end
+
+  def create_text2(text,index,x,y)
+    @sprites["#{text}_#{index}_text"]=Window_UnformattedTextPokemon.new(text)
+    text_sprite = @sprites["#{text}_#{index}_text"]
+	text_sprite.contents.font.size = 14 
+	text_sprite.refresh
+    pbPrepareWindow(text_sprite)
+    text_sprite.resizeToFit(text)
+	text_sprite.x = x
+	text_sprite.y= y - 16 - text_sprite.contents.font.size
+    text_sprite.windowskin=nil
+    text_sprite.baseColor=MessageConfig::DARK_TEXT_MAIN_COLOR
+    text_sprite.shadowColor=nil
+    text_sprite.text=text
+    text_sprite.viewport=@viewport
+    text_sprite.z = 10
+    text_sprite.visible=true
+  end
 
   def refreshSTABar
     @sprites["starbarborder"].visible = $player.playerstamina!=nil
@@ -1758,8 +1822,33 @@ class HUD #Player Bars
       ), hpColors[0]
     )
 
+	[["H20",$player.playerwater,$player.playermaxwater],["FOD",$player.playerfood,$player.playermaxfood],["SLP",$player.playersleep,$player.playermaxsleep]].each_with_index do |stat, index|
+	  text = stat[0]
+	  cur = stat[1]
+	  max = stat[2]
+	  if ["H20","FOD"].include?(text)
+	   color = $player.playersaturation>0 ? CurrentColorsAlt : CurrentColors(cur, max)
+	  else
+	   color = CurrentColors(cur, max)
+	  end 
+	   @sprites["#{text}_text"].baseColor = color
+	end 
   end
 
+
+  def CurrentColors(hp, totalhp)
+    if hp<(totalhp/4.0)
+      return Color.new(255,55,55)
+    elsif hp<=(totalhp/4.0)
+      return Color.new(255,125,55)
+    elsif hp<=(totalhp/2.0)
+      return Color.new(255,255,55)
+    end
+    return Color.new(55,255,55)
+  end
+  def CurrentColorsAlt
+      return Color.new(152,208,248)
+  end
 
 
 end
@@ -1921,11 +2010,22 @@ class MouseVisual
     @mode = :DEFAULT
   end
   
+  def getMousePos(catch_anywhere = false)
+    return nil unless Input.mouse_in_window || catch_anywhere
+    return @mouse.x - (@mouse.width/2), @mouse.y - (@mouse.height/2)
+  end
+  
   def x
    return @mouse.x
   end
   def y
    return @mouse.y
+  end
+  def width 
+    @mouse.width
+  end
+  def height 
+    @mouse.height
   end
   def current_mode
    return @mode
@@ -1991,10 +2091,10 @@ class MouseVisual
   end
   
   def disposed?
-   return @disposed
+   return @mouse && @mouse.disposed?
   end
   def update
-    return if @disposed
+    return if @mouse && @mouse.disposed?
     return if @disabled
 	if @mouse.nil?
    @mouse = IconSprite.new(@viewport)
@@ -2182,7 +2282,7 @@ end
 
 
 class SelectionBaseDisplay
-  
+  attr_reader :sprites
   def initialize(viewport)
     @viewport = viewport
 	@sprites = {}
@@ -2226,6 +2326,7 @@ class SelectionBaseDisplay
 		@sprites.delete(sprite)
 		end
 		end
+		
   end
   
   def create_consistant_sizes(width,height)
@@ -2318,6 +2419,7 @@ class SelectionBaseDisplay
 	    @sprites["Arrow#{event_id}#{event.pokemon.name}"] = IconSprite.new(@viewport)
 		@sprites["Arrow#{event_id}#{event.pokemon.name}"].setBitmap("Graphics/UI/Cursor/selected2.png")
 	   end
+	   
          if !@sprites["Arrow#{event_id}#{event.pokemon.name}"].disposed?
 	    width,height = get_graphic_size(event)
 	    width,height = create_consistant_sizes(width,height)
@@ -2341,6 +2443,9 @@ class SelectionBaseDisplay
 	   end
 	   
 	 end
+	 
+	 
+	 
    if filtered_pokemon.length < @sprites.length
      $player.party.each do |pkmn|
 	    next if pkmn.in_world==false
@@ -2361,7 +2466,7 @@ class SelectionBaseDisplay
        @sprites["Arrow#{event_id}#{pkmn.name}"].x = ScreenPosHelper.pbScreenX(event) - 17
        @sprites["Arrow#{event_id}#{pkmn.name}"].y = ScreenPosHelper.pbScreenY(event) - (height/2) - 6
        @sprites["Arrow#{event_id}#{pkmn.name}"].z = ScreenPosHelper.pbScreenZ(event) + 1
-	   pbSelectThisPokemon(pkmn) if !$PokemonGlobal.selected_pokemon.include?(pkmn)
+	   puts $PokemonGlobal.selected_pokemon.to_s
 	     end
 	   else
 		 
@@ -2376,26 +2481,9 @@ class SelectionBaseDisplay
    
    
    end
-	    
-   if Input.time?(Input::MOUSELEFT) >= 0.50 && Input.mouse_in_window? 
-	  event_id2=$game_map.check_event(*get_tile_mouse_on)
-      if event_id2.is_a?(Integer)
-	     if $game_map.events[event_id2].is_a?(Game_PokeEventA)
-	    if $game_map.events[event_id2].name=="PlayerPkmn" && $PokemonGlobal.selected_pokemon.include?($game_map.events[event_id2].pokemon) && $game_map.events[event_id2].pokemon.deselecttimer == 0
-		  $PokemonGlobal.selected_pokemon.delete($game_map.events[event_id2].pokemon)
-		  
-	   if !@sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].nil? && !@sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].disposed?
-	    @sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].visible=false
-	    @sprites["Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}"].dispose
-		@sprites.delete("Arrow#{event_id2}#{$game_map.events[event_id2].pokemon.name}")
-	   end
-       else
-	    $game_map.events[event_id2].pokemon.deselecttimer -= 1 if $game_map.events[event_id2].pokemon.deselecttimer>0
-		end
 
-        end
-	  end
-	end
+
+
   end
 
 
@@ -2442,11 +2530,17 @@ end
 class TensionBars
   attr_accessor :triggered
   attr_accessor :top
+  attr_reader :viewport
   
   def initialize(viewport)
-    @top = Sprite.new(viewport)
+     @viewport = viewport 
+     create
+  end
+  
+  def create
+     @top = Sprite.new(@viewport)
      @top.z = 0
-     @bottom = Sprite.new(viewport)
+     @bottom = Sprite.new(@viewport)
      @bottom.z = @top.z
      @triggered = false
      @custom_graphic = false
@@ -2490,6 +2584,7 @@ class TensionBars
   
   def update
     return if !@created
+	create if disposed?
     if @triggered
       if @top.y < (@custom_graphic ? 0 : (TrainerSensor::BAR_HEIGHT - 6) )
         @top.y += 6
@@ -2673,7 +2768,7 @@ class MouseTrail
   def update
     return if $game_temp.in_menu
     return if @disposed
-    @styler = create_styler if !@styler
+    @styler = create_styler if !@styler || @styler && @styler.disposed?
     if $PokemonGlobal.ball_hud_enabled==true && $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]!=:CAPTURESTYLER
 	 @styler.visible = false if @styler.visible==true
     @trail_sprites.each_with_index do |sprite, index|
@@ -2747,10 +2842,8 @@ class MouseTrail
 			$game_temp.preventspawns=true
             event_id = $game_map.check_event(x,y)
 			$game_temp.preventspawns=false
-	           if event_id.is_a?(Integer)
+	           if $game_map.events[event_id]
 	            #puts "event_id: #{[event_id].to_s}}"
-                 if event_id > 0
-				   if !$game_map.events[event_id].nil?
   				    if $game_map.events[event_id].name[/vanishingEncounter/]
 				      triggered=true
 				      event = $game_map.events[event_id]
@@ -2811,8 +2904,8 @@ class MouseTrail
 
 					   @trigger_cooldown=@trigger_target
 				   end
-                 end
-               end
+                 
+               
 			   end
          end
       end
@@ -3028,42 +3121,72 @@ class SelectionDisplay
     end
   end
 
+  def mouse_tile_has_pokemon?
+   event_id = $game_map.check_event(*get_tile_mouse_on)
+   ($game_map.events[event_id] && $game_map.events[event_id].is_a?(Game_PokeEventA)) || event_id == $game_player
+  end
   
   def update
     return if @disposed
      bonus = 2 
-	 if Input.press?(Input::ALTERNATEMOUSEMODE) && $mouse.current_mode!=:FOLLOW
-	  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:FOLLOW
-	  $mouse.set_mode(:FOLLOW)
-	 elsif Input.release?(Input::ALTERNATEMOUSEMODE) && @drawing==false && @prior_mode!=:FOLLOW
-	  $mouse.set_mode(@prior_mode)
-	 end
-    if ((Input.time?(Input::MOUSELEFT) >= 1 && $mouse.current_mode!=:FOLLOW) || Input.trigger?(Input::MOUSELEFT) && $mouse.current_mode==:SQUARE  ) && @drawing==false && !($game_map.check_event(*get_tile_mouse_on)).is_a?(Integer)
-   @mouse_start_x = Input.mouse_x + bonus
-   @mouse_start_y = Input.mouse_y + bonus
-      @drawing = true
+	# if Input.press?(Input::ALTERNATEMOUSEMODE) && $mouse.current_mode!=:FOLLOW
+	#  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:FOLLOW
+	#  $mouse.set_mode(:FOLLOW)
+	# elsif Input.release?(Input::ALTERNATEMOUSEMODE) && @drawing==false && @prior_mode!=:FOLLOW
+	#  $mouse.set_mode(@prior_mode)
+	# end
+    if Input.held_for?(Input::TOGGLETYPE) >= 18 && !@drawing && !mouse_tile_has_pokemon? && 
+     @mouse_start_x = Input.mouse_x + bonus
+     @mouse_start_y = Input.mouse_y + bonus
+     @drawing = true
 	  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:SQUARE
 	  $mouse.set_mode(:SQUARE)
-   end
-     if ((Input.time?(Input::MOUSELEFT) >= 1 && $mouse.current_mode!=:FOLLOW) || Input.press?(Input::MOUSELEFT) && $mouse.current_mode==:SQUARE )  && @drawing==true
+    end
+    if Input.held_for?(Input::TOGGLETYPE) >= 18  && @drawing
       @mouse_end_x = Input.mouse_x + bonus
       @mouse_end_y = Input.mouse_y + bonus
       draw_square(@mouse_start_x, @mouse_start_y, @mouse_end_x, @mouse_end_y)  # Draw the square based on mouse positions
 	  check_events_in_square
     end 
-     if Input.release?(Input::MOUSELEFT) && @drawing==true
+    if Input.release?(Input::TOGGLETYPE) && @drawing
       reset_square
     end 
 	 
   end
 
+  def update_egj
+    return if @disposed
+     bonus = 2 
+	 
+     if ((Input.time?(Input::MOUSELEFT) >= 1 && $mouse.current_mode!=:FOLLOW) || Input.trigger?(Input::MOUSELEFT) && $mouse.current_mode==:SQUARE  ) && @drawing==false && !($game_map.check_event(*get_tile_mouse_on)).is_a?(Integer)
+      @mouse_start_x = Input.mouse_x + bonus
+      @mouse_start_y = Input.mouse_y + bonus
+      @drawing = true
+	  @prior_mode = $mouse.current_mode if $mouse.current_mode!=:SQUARE
+	  $mouse.set_mode(:SQUARE)
+     end
+     if ((Input.time?(Input::MOUSELEFT) >= 1 && $mouse.current_mode!=:FOLLOW) || Input.press?(Input::MOUSELEFT) && $mouse.current_mode==:SQUARE )  && @drawing==true
+      @mouse_end_x = Input.mouse_x + bonus
+      @mouse_end_y = Input.mouse_y + bonus
+      draw_square(@mouse_start_x, @mouse_start_y, @mouse_end_x, @mouse_end_y)  # Draw the square based on mouse positions
+	  check_events_in_square
+    end  
+     if Input.release?(Input::MOUSELEFT) && @drawing==true
+      reset_square
+     end   
+  end
+
+
+
+
+
   def reset_square
     @sprites["square"].bitmap.clear 
+	  $mouse.set_mode(:DEFAULT)
     @mouse_start_x = nil
     @mouse_start_y = nil
     @mouse_end_x = nil
     @mouse_end_y = nil
-	$mouse.set_mode(@prior_mode)
     @drawing = false
   end
 
@@ -3089,8 +3212,8 @@ def pbDeselectThisPokemon(pkmn)
   if $PokemonGlobal.selected_pokemon.index(pkmn)==0
     $PokemonGlobal.selected_pokemon[0]=0
   end
-  $PokemonGlobal.selected_pokemon.delete(pkmn) if $PokemonGlobal.selected_pokemon.include?(pkmn)
-  $selection_arrows.remove_sprite("Arrow#{pkmn.associatedevent}")
+  $PokemonGlobal.selected_pokemon.delete(pkmn)
+  $selection_arrows.remove_sprite("Arrow#{pkmn.associatedevent}#{pkmn.name}")
   return true
 end
 # For compatibility with older versions
@@ -3187,6 +3310,7 @@ def get_item_box(update_index,othersays=nil)
 	  $PokemonGlobal.set_item_hud(:TOOL) 
 	  update_index=true
 	 end
+	 basicitems = []
      basicitems=$bag.isPlacableinInventory if cur_item_hud==:PLACE
      basicitems=$bag.isWeaponinInventory if cur_item_hud==:WEAPONS
      basicitems=$bag.isToolinInventory if cur_item_hud==:TOOL
@@ -3510,6 +3634,9 @@ end
   def ball_hud_type
     return @ball_hud_type || :PKMN
   end
+  def ball_hud_type_old
+    return @ball_hud_type_old || :PKMN
+  end
 
 
 
@@ -3577,20 +3704,24 @@ end
   end
   
   def set_ball_hud_type(type,update=false,pkmn=nil)
+      return if type.nil?
 	  pkmn = $PokemonGlobal.cur_stored_pokemon if pkmn.nil? && !$PokemonGlobal.cur_stored_pokemon.nil?
 	  $game_temp.favorites_enabled=false
 	  $game_temp.radial_enabled=false
 	  $PokemonGlobal.alt_control_move=false
 	  $PokemonGlobal.cur_stored_pokemon=nil
 	  return if type==@ball_hud_type
+	  @ball_hud_type_old = nil
     set_item_box_index if $PokemonGlobal.alt_control_move==false && update==true
 	if type==:FAVORITES
 	 $game_temp.favorites_enabled=true
 	elsif type==:RADIAL
 	 $game_temp.radial_enabled=true
 	elsif type==:MULTISELECT
+	  @ball_hud_type_old = @ball_hud_type
 	  $PokemonGlobal.alt_control_move=true
 	elsif type==:MOVES && !pkmn.nil?
+	  @ball_hud_type_old = @ball_hud_type
 	 $PokemonGlobal.cur_stored_pokemon=pkmn
 	else
      @ball_hud_type=type

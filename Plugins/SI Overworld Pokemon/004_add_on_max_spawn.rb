@@ -13,22 +13,6 @@
 # * Stop more PokeEvent from spawning with the MAX_SPAWN parameter
 
 
-module VisibleEncounterSettings
-  MAX_SPAWN = 12 # default 0
-  # MAX_SPAWN is the max number of wild Encounters Events that can be spawned on the map at the same time.
-  # <=0  - means infinite (no maximum)
-  # >0   - maximum of wild encounters on the map  
-end
-
-#===============================================================================
-# overwriting method pbSpawnOnStepTaken in script visible overworld wild encounters
-# to include maximal number of spawned pokemon
-#===============================================================================
-alias o_pbSpawnOnStepTaken pbSpawnOnStepTaken
-def pbSpawnOnStepTaken(repel_active)
-  return false if VisibleEncounterSettings::MAX_SPAWN>0 && pbCountPokeEvent >= VisibleEncounterSettings::MAX_SPAWN
-  o_pbSpawnOnStepTaken(repel_active)
-end 
 
 #===============================================================================
 # new methods to count pkmn spawned 
@@ -62,6 +46,7 @@ def pbCountPokeEventInMap
       currentCountPokeEvent = currentCountPokeEvent + 1
     end
   }
+  #puts "Pokemon amount in Map: #{currentCountPokeEvent}/#{(PBDayNight.isNight? ? VisibleEncounterSettings::MAX_SPAWN : VisibleEncounterSettings::MAX_SPAWN_DAY)}"
   return currentCountPokeEvent
 end
   

@@ -1,5 +1,0 @@
-Name = Charms Case
-Version = 1.6
-Essentials = 20,20.1,21,21.1
-Credits = Dr.Doom76,Wrigty12,TechSkylander1518,LinKazamine
-Link = https://reliccastle.com/resources/1390/

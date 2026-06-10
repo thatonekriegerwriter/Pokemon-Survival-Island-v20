@@ -1,0 +1,4 @@
+Name = Sound Manager
+Version = 1
+Essentials = 20.1
+Credits = thatonekriegerwriter

@@ -1,0 +1,2 @@
+Name = SI Dynamic Events
+Version = 0

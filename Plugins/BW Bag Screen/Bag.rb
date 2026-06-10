@@ -75,7 +75,13 @@ class Window_PokemonBag < Window_DrawableCommand
     if index == self.itemCount - 1
       textpos.push([_INTL("CLOSE BAG"), rect.x, rect.y + 2, false, self.baseColor, self.shadowColor])
     else
-      item = (@filterlist) ? thispocket[@filterlist[@pocket][index]][0] : thispocket[index][0]
+	  slot = if @filterlist
+         thispocket[@filterlist[@pocket][index]]
+      else
+         thispocket[index]
+      end
+      item = slot ? slot[0] : nil
+	  return if item.nil?
       baseColor   = self.baseColor
       shadowColor = self.shadowColor
       if @sorting && index == self.index
@@ -85,7 +91,13 @@ class Window_PokemonBag < Window_DrawableCommand
       textpos.push(
         [@adapter.getDisplayName(item), rect.x, rect.y + 2, false, baseColor, shadowColor]
       )
-        qty = (@filterlist) ? thispocket[@filterlist[@pocket][index]][1] : thispocket[index][1]
+	  
+	  
+        qty = slot ? slot[1] : nil
+		
+		#18
+		
+		
         qtytext = _ISPRINTF("x{1: 3d}", qty)
         xQty    = rect.x + rect.width - self.contents.text_size(qtytext).width - 16
         textpos.push([qtytext, xQty, rect.y + 2, false, baseColor, shadowColor])
@@ -361,7 +373,7 @@ class PokemonBag_Scene
     (1...@bag.pockets.length).each do |i|
       @filterlist[i] = []
       @bag.pockets[i].length.times do |j|
-        @filterlist[i].push(j) if @filterproc.call(@bag.pockets[i][j][0])
+        @filterlist[i].push(j) if @bag.pockets[i][j] && @filterproc.call(@bag.pockets[i][j][0])
       end
     end
   end

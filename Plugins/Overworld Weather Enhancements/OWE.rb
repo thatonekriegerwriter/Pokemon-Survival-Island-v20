@@ -34,7 +34,7 @@ module RPG
     def update
       if @type == :Storm && !@fading && @time_until_flash > 0 && @time_until_flash - Graphics.delta_s <= 0
         sfx = ["OWThunder1", "OWThunder2", nil].sample
-        pbSEPlay(sfx) if sfx
+        SoundManager.play_se(sfx) if sfx
       end
       owsfx_update
     end

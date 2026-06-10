@@ -596,6 +596,9 @@ Category = Snake
 Pokedex = Moving silently and stealthily, it eats the eggs of birds, such as Pidgey and Spearow, whole.
 Generation = 1
 Evolutions = ARBOK,Level,22
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [ARBOK]
 Name = Arbok
@@ -621,6 +624,9 @@ Habitat = Grassland
 Category = Cobra
 Pokedex = To intimidate foes, it spreads its chest wide and makes eerie sounds by expelling air from its mouth.
 Generation = 1
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [PIKACHU]
 Name = Pikachu
@@ -5114,6 +5120,9 @@ Category = Water Fish
 Pokedex = When walking on land, it covers its body with a poisonous film that keeps its skin from dehydrating.
 Generation = 2
 Evolutions = QUAGSIRE,Level,20
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [QUAGSIRE]
 Name = Quagsire
@@ -5139,6 +5148,9 @@ Habitat = WatersEdge
 Category = Water Fish
 Pokedex = Its body is always slimy. It often bangs its head on the river bottom as it swims but seems not to care.
 Generation = 2
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [ESPEON]
 Name = Espeon
@@ -7046,6 +7058,9 @@ Category = Cocoon
 Pokedex = It never forgets any attack it endured while in the cocoon. After evolution, it seeks payback.
 Generation = 3
 Evolutions = DUSTOX,Level,10
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [DUSTOX]
 Name = Dustox
@@ -7072,6 +7087,8 @@ Category = Poison Moth
 Pokedex = It violently flutters its wings to scatter toxic dust when attacked. It becomes active after sunset.
 Generation = 3
 WildItemUncommon = SHEDSHELL
+WildItemRare = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [LOTAD]
 Name = Lotad
@@ -8299,6 +8316,7 @@ Pokedex = There is nothing its stomach can't digest. While it is digesting, vile
 Generation = 3
 WildItemCommon = ORANBERRY
 WildItemUncommon = SITRUSBERRY
+WildItemRare = BLACKSLUDGE
 Evolutions = SWALOT,Level,26
 #-------------------------------
 [SWALOT]
@@ -8327,6 +8345,7 @@ Pokedex = It gulps anything that fits in its mouth. Its special enzymes can diss
 Generation = 3
 WildItemCommon = ORANBERRY
 WildItemUncommon = SITRUSBERRY
+WildItemRare = BLACKSLUDGE
 #-------------------------------
 [CARVANHA]
 Name = Carvanha
@@ -8353,6 +8372,8 @@ Category = Savage
 Pokedex = It won't attack while it's alone, not even if it spots prey. Instead, it waits for other Carvanha to join it, and then the Pokémon attack as a group.
 Generation = 3
 WildItemUncommon = DEEPSEATOOTH
+WildItemRare = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 Evolutions = SHARPEDO,Level,30
 #-------------------------------
 [SHARPEDO]
@@ -8820,6 +8841,8 @@ Category = Fang Snake
 Pokedex = Constant polishing makes the edge of the blade on its tail extremely sharp. It's Zangoose's archrival.
 Generation = 3
 WildItemUncommon = SHEDSHELL
+WildItemRare = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [LUNATONE]
 Name = Lunatone
@@ -9050,6 +9073,8 @@ Habitat = Sea
 Category = Sea Lily
 Pokedex = This Pokémon was restored from a fossil. Lileep once lived in warm seas that existed approximately 100,000,000 years ago.
 Generation = 3
+WildItemRare = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 WildItemUncommon = BIGROOT
 Evolutions = CRADILY,Level,40
 #-------------------------------
@@ -9077,6 +9102,8 @@ Habitat = Sea
 Category = Barnacle
 Pokedex = It has short legs and can't walk very fast, but its neck and tentacles can extend to over three times their usual length to nab distant prey.
 Generation = 3
+WildItemRare = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 WildItemUncommon = BIGROOT
 #-------------------------------
 [ANORITH]
@@ -11376,6 +11403,9 @@ Category = Skunk
 Pokedex = From its rear, it sprays a foul-smelling liquid at opponents. It aims for their faces, and it can hit them from over 16 feet away.
 Generation = 4
 Evolutions = SKUNTANK,Level,34
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [SKUNTANK]
 Name = Skuntank
@@ -11401,6 +11431,9 @@ Habitat = Grassland
 Category = Skunk
 Pokedex = In its belly, it reserves stinky fluid that it shoots from its tail during battle. As this Pokémon's diet varies, so does the stench of its fluid.
 Generation = 4
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [BRONZOR]
 Name = Bronzor
@@ -11876,7 +11909,9 @@ Habitat = Forest
 Category = Toxic Mouth
 Pokedex = Once diluted, its poison becomes medicinal. This Pokémon came into popularity after a pharmaceutical company chose it as a mascot.
 Generation = 4
+WildItemRare = BLACKSLUDGE
 WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 Evolutions = TOXICROAK,Level,37
 #-------------------------------
 [TOXICROAK]
@@ -11903,7 +11938,9 @@ Habitat = Forest
 Category = Toxic Mouth
 Pokedex = It bounces toward opponents and gouges them with poisonous claws. No more than a scratch is needed to knock out its adversaries.
 Generation = 4
+WildItemRare = BLACKSLUDGE
 WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [CARNIVINE]
 Name = Carnivine
@@ -11928,6 +11965,9 @@ Habitat = Forest
 Category = Bug Catcher
 Pokedex = It binds itself to trees in marshes. It attracts prey with its sweet-smelling drool and gulps them down.
 Generation = 4
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [FINNEON]
 Name = Finneon
@@ -16131,6 +16171,9 @@ Habitat = Forest
 Category = Shell Out
 Pokedex = It moves with blinding speed and lobs poison at foes. Featuring Accelgor as a main character is a surefire way to make a movie or comic popular.
 Generation = 5
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [STUNFISK]
 Name = Stunfisk
@@ -18379,7 +18422,9 @@ Habitat = WatersEdge
 Category = Soft Tissue
 Pokedex = Their horns are powerful sensors. As soon as Goomy pick up any sign of enemies, they go into hiding. This is how they've survived.
 Generation = 6
+WildItemRare = BLACKSLUDGE
 WildItemUncommon = SHEDSHELL
+WildItemCommon = BLACKSLUDGE
 Evolutions = SLIGGOO,Level,40
 #-------------------------------
 [SLIGGOO]
@@ -18406,7 +18451,9 @@ Habitat = WatersEdge
 Category = Soft Tissue
 Pokedex = Although this Pokémon isn't very strong, its body is coated in a caustic slime that can melt through anything, so predators steer clear of it.
 Generation = 6
+WildItemRare = BLACKSLUDGE
 WildItemUncommon = SHEDSHELL
+WildItemCommon = BLACKSLUDGE
 Evolutions = GOODRA,LevelRain,50
 #-------------------------------
 [GOODRA]
@@ -18433,6 +18480,9 @@ Habitat = WatersEdge
 Category = Dragon
 Pokedex = Sometimes it misunderstands instructions and appears dazed or bewildered. Many Trainers don't mind, finding this behavior to be adorable.
 Generation = 6
+WildItemRare = BLACKSLUDGE
+WildItemUncommon = BLACKSLUDGE
+WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [KLEFKI]
 Name = Klefki

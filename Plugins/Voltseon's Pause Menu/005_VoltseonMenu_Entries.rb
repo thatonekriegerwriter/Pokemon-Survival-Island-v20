@@ -69,20 +69,42 @@ class MenuEntryBag < MenuEntry
 
   def selected(menu)
     item = nil
-    pbFadeOutIn(99999) {
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      item = screen.pbStartScreen
-    }
+	  $player.store_in_inv if $player.held_item? && !$player.held_item.is_a?(Pokemon)
+	  menu.pbHideMenu
+	  pbSEPlay("GUI menu open")
+      item = Inventory.invWindow
+	  pbSEPlay("GUI menu close")
     if item
-      menu.pbHideMenu
+      
       $game_temp.in_menu = false
       pbUseKeyItemInField(item)
+      menu.pbShowMenu
       return true
     end
+    menu.pbShowMenu
   end
 
   def selectable?; return !pbInBugContest?; end
+end
+#-------------------------------------------------------------------------------
+# Entry for Resume
+#-------------------------------------------------------------------------------
+class MenuEntryResume < MenuEntry
+	def initialize
+		@icon = "menuBack"
+		@name = "Resume"
+       @text = "Z"
+	end
+
+	def selected(menu)
+	  
+      menu.shouldExit = true
+	end
+
+	def selectable? 
+	return false if $PokemonSystem.playermode == 0
+	return true if $game_switches[485]==false
+	end
 end
 #-------------------------------------------------------------------------------
 # Entry for Craft Screen
@@ -311,7 +333,7 @@ class MenuEntryOptions < MenuEntry
   def initialize
     @icon = "menuOptions"
     @name = "Options"
-       @text = "-"
+       @text = "O"
   end
 
   def selected(menu)
@@ -415,7 +437,7 @@ class MenuEntryQuit < MenuEntry
   def initialize
     @icon = "menuQuit"
     @name = "Quit"
-       @text = "Q"
+    @text = "Q"
   end
 
   def selected(menu)
@@ -424,8 +446,9 @@ class MenuEntryQuit < MenuEntry
 	$game_temp.in_menu = false
     scene = PokemonClose_Scene.new
     screen = PokemonCloseScreen.new(scene)
-    screen.pbCloseScreen(menu)
-
+    exit = screen.pbCloseScreen(menu)
+    menu.pbShowMenu if exit==false
+    return exit 
   end
 
   def selectable?; return !pbInBugContest?; end

@@ -2049,7 +2049,7 @@ Price = 100
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can be used to restore 10 HP to a single Pokémon.
+Description = A medicine for treating wounds. It can be used to restore 10 HP to a single Pokémon.
 #-------------------------------
 [POTION]
 Name = Potion
@@ -2059,7 +2059,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can be used to restore 20 HP to a single Pokémon.
+Description = A medicine for treating wounds. It can be used to restore 20 HP to a single Pokémon.
 #-------------------------------
 [SUPERPOTION]
 Name = Super Potion
@@ -2069,7 +2069,7 @@ Price = 700
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can be used to restore 60 HP to a single Pokémon.
+Description = A medicine for treating wounds. It can be used to restore 60 HP to a single Pokémon.
 #-------------------------------
 [HYPERPOTION]
 Name = Hyper Potion
@@ -2079,7 +2079,7 @@ Price = 1500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can be used to restore 100 HP to a single Pokémon.
+Description = A medicine for treating wounds. It can be used to restore 100 HP to a single Pokémon.
 #-------------------------------
 [MAXPOTION]
 Name = Max Potion
@@ -2089,7 +2089,7 @@ Price = 2500
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30,Medicine
-Description = A spray-type medicine for treating wounds. It can completely restore the max HP of a single Pokémon.
+Description = A medicine for treating wounds. It can completely restore the max HP of a single Pokémon.
 #-------------------------------
 [FULLRESTORE]
 Name = Full Restore
@@ -2118,7 +2118,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It awakens a Pokémon from the clutches of sleep.
+Description = A medicine. It awakens a Pokémon from the clutches of sleep.
 #-------------------------------
 [ANTIDOTE]
 Name = Antidote
@@ -2128,7 +2128,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It lifts the effect of poison from one Pokémon.
+Description = A medicine. It lifts the effect of poison from one Pokémon.
 #-------------------------------
 [BURNHEAL]
 Name = Burn Heal
@@ -2138,7 +2138,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It heals a single Pokémon that is suffering from a burn.
+Description = A medicine. It heals a single Pokémon that is suffering from a burn.
 #-------------------------------
 [PARALYZEHEAL]
 Name = Paralyze Heal
@@ -2148,7 +2148,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It eliminates paralysis from a single Pokémon.
+Description = A medicine. It eliminates paralysis from a single Pokémon.
 #-------------------------------
 [ICEHEAL]
 Name = Ice Heal
@@ -2158,7 +2158,7 @@ Price = 200
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It defrosts a Pokémon that has been frozen solid.
+Description = A medicine. It defrosts a Pokémon that has been frozen solid.
 #-------------------------------
 [FULLHEAL]
 Name = Full Heal
@@ -2168,7 +2168,7 @@ Price = 400
 FieldUse = OnPokemon
 BattleUse = OnPokemon
 Flags = Fling_30
-Description = A spray-type medicine. It heals all the status problems of a single Pokémon.
+Description = A medicine. It heals all the status problems of a single Pokémon.
 #-------------------------------
 [REVIVE]
 Name = Revive
@@ -4105,7 +4105,7 @@ Name = Capture Styler
 NamePlural = Capture Stylers
 Pocket = 7
 Price = 0
-Flags = KeyItem,Tool,Overworld
+Flags = KeyItem,Tool,Overworld,CaptureStyler
 Consumable = false
 Description = An interesting device used by PKMN Rangers to temporarily obtain a POKeMON.
 #-------------------------------
@@ -4239,6 +4239,10 @@ Name = Pickaxe
 NamePlural = Pickaxes
 Pocket = 7
 Price = 0
+WeaponCooldown = 40
+BattleTimer = 12
+MovementLock = 10
+Move = ROCKSMASH
 Flags = Tool,HMItem,Overworld,Weapon,Durable
 Description = A pickaxe made of iron that can be used for breaking rocks.
 #-------------------------------
@@ -4264,16 +4268,44 @@ NamePlural = Baits
 Pocket = 7
 Price = 5
 FieldUse = Direct
-Flags = Tool,Berry,Weapon
-Description = A spongy, aromatic fungus that attracts Pokémon, it can be used to attract Pokémon, or escape ongoing fights.
+Flags = Tool,Weapon
+Description = A crafted food that attracts Pokémon, it can be used to attract Pokémon, or to approach a Pokémon carefully.
 #-------------------------------
 [MACHETE]
 Name = Machete
 NamePlural = Machetes
 Pocket = 7
 Price = 0
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 30
+Move = SLASH
 Flags = Tool,Weapon,HMItem,Overworld,Durable
-Description = A blade typically used for cutting and carving. If be trees or POKeMON, it will be useful.
+Description = A blade typically used for cutting and carving.
+#-------------------------------
+[SHEARS]
+Name = Shears
+NamePlural = Shears
+Pocket = 7
+Price = 0
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 30
+Move = SLASH
+Flags = Tool,Overworld,Durable
+Description = A pair of scissors used for safely parting a POKeMON from its wool.
+#-------------------------------
+[BUCKLER]
+Name = Buckler
+NamePlural = Bucklers
+Pocket = 7
+Price = 0
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 30
+Move = SHELTER
+Flags = Tool,Weapon,HMItem,Overworld,Durable
+Description = A buckler used for defending. Can be reenforced with various materials.
 #-------------------------------
 [STONEAXE]
 Name = Stone Axe
@@ -4288,8 +4320,20 @@ Name = Axe
 NamePlural = Axe
 Pocket = 7
 Price = 0
+WeaponCooldown = 80
+BattleTimer = 12
+MovementLock = 10
+Move = STONEAXE
 Flags = Tool,HMItem,Overworld,Weapon,Durable
 Description = A axe made of iron, it can be used to cut down trees.
+#-------------------------------
+[POKEMONBRUSH]
+Name = Brush
+NamePlural = Brushes
+Pocket = 7
+Price = 0
+Flags = Tool,Overworld,Durable
+Description = A brush that can be used to brush your Pokemon.
 #-------------------------------
 [STONEHAMMER]
 Name = Stone Hammer
@@ -4304,14 +4348,22 @@ Name = Vaulting Pole
 NamePlural = Vaulting Poles
 Pocket = 7
 Price = 0
+WeaponCooldown = 45
+BattleTimer = 12
+MovementLock = 4
+Move = BONECLUB
 Flags = Tool,HMItem,Overworld,Weapon,Durable
-Description = A Pole for traversing a distance.
+Description = A Pole used to vault long distances.
 #-------------------------------
 [IRONHAMMER]
 Name = Hammer
 NamePlural = Hammers
 Pocket = 7
 Price = 0
+WeaponCooldown = 40
+BattleTimer = 12
+MovementLock = 10
+Move = ROCKSMASH
 Flags = Tool,HMItem,Overworld,Weapon,Durable
 Description = A hammer made of iron, it can be used for mining.
 #-------------------------------
@@ -4391,6 +4443,10 @@ NamePlural = Poison Darts
 Pocket = 7
 Price = 0
 BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
 Description = A handcrafted dart gun that poisons a Pokémon in battle.
 #-------------------------------
@@ -4400,6 +4456,10 @@ NamePlural = Sleep Darts
 Pocket = 7
 Price = 0
 BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
 Description = A handcrafted dart gun that sedates a Pokémon in battle.
 #-------------------------------
@@ -4409,6 +4469,10 @@ NamePlural = Paralysis Darts
 Pocket = 7
 Price = 0
 BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
 Description = A handcrafted dart gun that stuns a Pokémon in battle.
 #-------------------------------
@@ -4418,6 +4482,10 @@ NamePlural = Ice Darts
 Pocket = 7
 Price = 0
 BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
 Description = A handcrafted dart gun that freezes a Pokémon in battle.
 #-------------------------------
@@ -4427,6 +4495,10 @@ NamePlural = Fire Darts
 Pocket = 7
 Price = 0
 BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
 Description = A handcrafted dart gun that burns a Pokémon in battle.
 #-------------------------------
@@ -4437,13 +4509,17 @@ Pocket = 7
 Price = 0
 Flags = KeyItem,Tool,Overworld
 Consumable = false
-Description = A durable canteen for storing water during your adventures.
+Description = A durable canteen, that can store various liquids and make them safe to drink.
 #-------------------------------
 [STONE]
 Name = Stone
 NamePlural = Stone
 Pocket = 1
 Price = 0
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ROCKTHROW
 Flags = Fling_10,Weapon,Tool,Overworld
 Description = A rock that can be used as a tool, weapon, or crafting material.
 #-------------------------------
@@ -4715,23 +4791,14 @@ BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
 Description = A special Poké Ball designed to catch Ultra Beasts. It has a low success rate for catching others.
 #-------------------------------
-[MASTERBALLC]
-Name = Master Ball (Crafted)
-NamePlural = Master Balls (Crafted)
+[POKEBALLC]
+Name = Poké Ball (Crafted)
+NamePlural = Poké Balls (Crafted)
 Pocket = 3
-Price = 0
+Price = 200
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = The best Ball with the ultimate level of performance. It will catch any wild Pokémon without fail.
-#-------------------------------
-[ULTRABALLC]
-Name = Ultra Ball (Crafted)
-NamePlural = Ultra Balls (Crafted)
-Pocket = 3
-Price = 800
-BattleUse = OnFoe
-Flags = PokeBall,Tool,Overworld
-Description = An ultra-performance Ball that provides a higher Pokémon catch rate than a Great Ball.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [GREATBALLC]
 Name = Great Ball (Crafted)
@@ -4740,16 +4807,25 @@ Pocket = 3
 Price = 600
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A good, high-performance Ball that provides a higher Pokémon catch rate than a standard Poké Ball.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
-[POKEBALLC]
-Name = Poké Ball (Crafted)
-NamePlural = Poké Balls (Crafted)
+[ULTRABALLC]
+Name = Ultra Ball (Crafted)
+NamePlural = Ultra Balls (Crafted)
 Pocket = 3
-Price = 200
+Price = 800
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A device for catching wild Pokémon. It is thrown like a ball at the target. It is designed as a capsule system.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
+#-------------------------------
+[MASTERBALLC]
+Name = Master Ball (Crafted)
+NamePlural = Master Balls (Crafted)
+Pocket = 3
+Price = 0
+BattleUse = OnFoe
+Flags = PokeBall,Tool,Overworld
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [SAFARIBALLC]
 Name = Safari Ball (Crafted)
@@ -4758,7 +4834,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A special Poké Ball that is used only in the Safari Zone. It is decorated in a camouflage pattern.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [SPORTBALLC]
 Name = Sport Ball (Crafted)
@@ -4767,7 +4843,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A special Poké Ball for the Bug-Catching Contest.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [NETBALLC]
 Name = Net Ball (Crafted)
@@ -4776,7 +4852,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that works especially well on Water- and Bug-type Pokémon.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [DIVEBALLC]
 Name = Dive Ball (Crafted)
@@ -4785,7 +4861,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that works especially well on Pokémon that live underwater.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [NESTBALLC]
 Name = Nest Ball (Crafted)
@@ -4794,7 +4870,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that works especially well on weaker Pokémon in the wild.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [REPEATBALLC]
 Name = Repeat Ball (Crafted)
@@ -4803,7 +4879,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that works especially well on Pokémon species that were previously caught.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [TIMERBALLC]
 Name = Timer Ball (Crafted)
@@ -4812,7 +4888,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Ball that becomes progressively better the more turns there are in a battle.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [LUXURYBALLC]
 Name = Luxury Ball (Crafted)
@@ -4821,7 +4897,7 @@ Pocket = 3
 Price = 3000
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A comfortable Poké Ball that makes a caught wild Pokémon quickly grow friendly.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [PREMIERBALLC]
 Name = Premier Ball (Crafted)
@@ -4831,7 +4907,7 @@ Price = 200
 SellPrice = 10
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat rare Poké Ball that has been specially made to commemorate an event of some sort.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [DUSKBALLC]
 Name = Dusk Ball (Crafted)
@@ -4840,7 +4916,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon at night or in dark places like caves.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [HEALBALLC]
 Name = Heal Ball (Crafted)
@@ -4849,7 +4925,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A remedial Poké Ball that restores the caught Pokémon's HP and eliminates any status problem.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [QUICKBALLC]
 Name = Quick Ball (Crafted)
@@ -4858,7 +4934,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that provides a better catch rate if used at the start of a wild encounter.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [CHERISHBALLC]
 Name = Cherish Ball (Crafted)
@@ -4867,7 +4943,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A quite rare Poké Ball that has been specially crafted to commemorate an occasion of some sort.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [FASTBALLC]
 Name = Fast Ball (Crafted)
@@ -4876,7 +4952,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that makes it easier to catch fast Pokémon.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [LEVELBALLC]
 Name = Level Ball (Crafted)
@@ -4885,7 +4961,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching Pokémon that are a lower level than your own.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [LUREBALLC]
 Name = Lure Ball (Crafted)
@@ -4894,7 +4970,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching Pokémon hooked by a Rod when fishing.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [HEAVYBALLC]
 Name = Heavy Ball (Crafted)
@@ -4903,7 +4979,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching very heavy Pokémon.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [LOVEBALLC]
 Name = Love Ball (Crafted)
@@ -4912,7 +4988,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching Pokémon that are the opposite gender of your Pokémon.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [FRIENDBALLC]
 Name = Friend Ball (Crafted)
@@ -4921,7 +4997,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that makes caught Pokémon more friendly.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [MOONBALLC]
 Name = Moon Ball (Crafted)
@@ -4930,7 +5006,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching Pokémon that evolve using the Moon Stone.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [DREAMBALLC]
 Name = Dream Ball (Crafted)
@@ -4939,7 +5015,7 @@ Pocket = 3
 Price = 300
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon while they're asleep.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [BEASTBALLC]
 Name = Beast Ball (Crafted)
@@ -4948,7 +5024,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A special Poké Ball designed to catch Ultra Beasts. It has a low success rate for catching others.
+Description = A Ball for catching Pokémon. It's shell resembles a regular Poké Ball.
 #-------------------------------
 [SUPERBALLC]
 Name = Super Ball (Crafted)
@@ -4957,7 +5033,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = An supreme-performance Ball that provides a higher Pokémon catch rate than an Ultra Ball.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [HIGHBALLC]
 Name = Pressure Ball (Crafted)
@@ -4966,7 +5042,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball for catching Pokémon that are a higher level than your own.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [DAWNBALLC]
 Name = Dawn Ball (Crafted)
@@ -4975,7 +5051,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that makes it easier to catch wild Pokémon during the daytime.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [BARBEDBALLC]
 Name = Barbed Ball (Crafted)
@@ -4984,7 +5060,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball fitted with barbed wire. If it misses, it damages the enemy slightly.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [YOLOBALLC]
 Name = Emergency Ball (Crafted)
@@ -4993,7 +5069,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A somewhat different Poké Ball that makes it easier to catch Pokémon when yours is at low health.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [STATUSBALLC]
 Name = Status Ball (Crafted)
@@ -5002,7 +5078,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that is better at catching Pokémon that have status effects.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [SHOCKBALLC]
 Name = Shock Ball (Crafted)
@@ -5011,7 +5087,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that is better at catching Electric Pokémon.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [HIDDENBALLC]
 Name = Hidden Ball (Crafted)
@@ -5020,7 +5096,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that upon capture gives your Pokémon it's Hidden Ability.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [SHADOWBALL]
 Name = Shadow Ball
@@ -5029,7 +5105,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball filled with malice that will convert a Pokémon into a Shadow Pokemon.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [IMMUNEBALLC]
 Name = Immune Ball (Crafted)
@@ -5038,7 +5114,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A rare ball that works well on Pokémon that are immune to one of your Pokémon's types.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [DEBUFFBALLC]
 Name = Debuff Ball (Crafted)
@@ -5047,7 +5123,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that works better if an enemy has stat reductions.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [BURNBALLC]
 Name = Burn Ball (Crafted)
@@ -5056,7 +5132,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that works better if an enemy is burned.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [FREEZEBALLC]
 Name = Freeze Ball (Crafted)
@@ -5065,7 +5141,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that works better if an enemy is frozen.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [STUNBALLC]
 Name = Stun Ball (Crafted)
@@ -5074,7 +5150,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that works better if an enemy is paralyzed.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [TOXICBALLC]
 Name = Toxic Ball (Crafted)
@@ -5083,7 +5159,7 @@ Pocket = 3
 Price = 0
 BattleUse = OnFoe
 Flags = PokeBall,Tool,Overworld
-Description = A Poké Ball that works better if an enemy is poisoned.
+Description = A Ball for catching Pokémon. It's shell is a custom design.
 #-------------------------------
 [TM01]
 Name = TM01
@@ -7932,7 +8008,7 @@ NamePlural = Meat
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Fresh meat that can be cooked to restore status.
+Description = Fresh meat.
 #-------------------------------
 [SPOILEDFOOD]
 Name = Spoiled Food
@@ -7940,7 +8016,7 @@ NamePlural = Spoiled Food
 Pocket = 6
 Price = 5
 Flags = FoodWater, NoSpoiling
-Description = Food that has gone bad. It should not be eaten.
+Description = Spoiled food.
 #-------------------------------
 [HONEY]
 Name = Honey
@@ -8127,7 +8203,7 @@ Price = 5
 Flags = FoodWater
 Description = Ediable crystals
 #-------------------------------
-[MEATSANDWICH]  #YES
+[MEATSANDWICH] 
 Name = Meat Sandwich (Normal)
 NamePlural = Meat Sandwich (Normal)
 Pocket = 6
@@ -8143,7 +8219,7 @@ Price = 5
 Flags = FoodWater
 Description = A hearty meat sandwich with a legendary twist.
 #-------------------------------
-[MEATSANDWICHSUS]  #YES
+[MEATSANDWICHSUS]
 Name = Meat Sandwich (Sus)
 NamePlural = Meat Sandwich (Sus)
 Pocket = 6
@@ -8151,7 +8227,7 @@ Price = 5
 Flags = FoodWater
 Description = A suspicious-looking meat sandwich, unusual in appearance.
 #-------------------------------
-[MEATSANDWICHLEAFY]  #YES
+[MEATSANDWICHLEAFY] 
 Name = Meat Sandwich (Leafy)
 NamePlural = Meat Sandwich (Leafy)
 Pocket = 6
@@ -8159,7 +8235,7 @@ Price = 5
 Flags = FoodWater
 Description = A meat sandwich layered with fresh leafy greens.
 #-------------------------------
-[MEATSANDWICHCRYSTAL]  #YES
+[MEATSANDWICHCRYSTAL]  
 Name = Meat Sandwich (Crystal)
 NamePlural = Meat Sandwich (Crystal)
 Pocket = 6
@@ -8167,7 +8243,7 @@ Price = 5
 Flags = FoodWater
 Description = A meat sandwich with sparkling crystal-like toppings.
 #-------------------------------
-[MEATSANDWICHROCKY]  #YES
+[MEATSANDWICHROCKY]  
 Name = Meat Sandwich (Crunchy)
 NamePlural = Meat Sandwich (Crunchy)
 Pocket = 6
@@ -8175,7 +8251,7 @@ Price = 5
 Flags = FoodWater
 Description = A crunchy meat sandwich, definitely made of rocks.
 #-------------------------------
-[MEATSANDWICHBUG]  #YES
+[MEATSANDWICHBUG]  
 Name = Meat Sandwich (Ew)
 NamePlural = Meat Sandwich (Ew)
 Pocket = 6
@@ -8183,7 +8259,7 @@ Price = 5
 Flags = FoodWater
 Description = A meat sandwich with insect-based ingredients, for the adventurous.
 #-------------------------------
-[MEATSANDWICHSTEELY]  #YES
+[MEATSANDWICHSTEELY]  
 Name = Meat Sandwich (Dental Visit)
 NamePlural = Meat Sandwich (Dental Visit)
 Pocket = 6
@@ -8191,7 +8267,7 @@ Price = 5
 Flags = FoodWater
 Description = A dense, metallic-tasting meat sandwich.
 #-------------------------------
-[MEATSANDWICHBIRD]  #YES
+[MEATSANDWICHBIRD] 
 Name = Meat Sandwich (Chicken?)
 NamePlural = Meat Sandwich (Chicken?)
 Pocket = 6
@@ -8213,7 +8289,7 @@ NamePlural = Sitrus Juice
 Pocket = 6
 Price = 5
 Flags = FoodWater,Water
-Description = Freshly squeezed Sitrus Berry juice, tangy and refreshing.
+Description = A bottle of Sitrus Juice.
 #-------------------------------
 [BERRYMASH]
 Name = Berry Mash
@@ -8221,7 +8297,7 @@ NamePlural = Berry Mash
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A mash of assorted berries, perfect for recipes or eating as is.
+Description = A mash of Oran Berry.
 #-------------------------------
 [COOKEDORAN]
 Name = Oran Berry (Cooked)
@@ -8229,7 +8305,15 @@ NamePlural = Oran Berry (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Cooked Oran berry, soft and flavorful.
+Description = Oran Berry roasted in a Furnace.
+#-------------------------------
+[COOKEDAPPLE]
+Name = Apple (Cooked)
+NamePlural = Apple (Cooked)
+Pocket = 6
+Price = 5
+Flags = FoodWater
+Description = Apple roasted in a Furnace.
 #-------------------------------
 [BREAD]
 Name = Bread
@@ -8237,7 +8321,7 @@ NamePlural = Bread
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Freshly baked bread, soft and versatile for meals.
+Description = Freshly baked bread.
 #-------------------------------
 [TEA]
 Name = Tea
@@ -8245,7 +8329,7 @@ NamePlural = Tea
 Pocket = 6
 Price = 5
 Flags = FoodWater,Water
-Description = Brewed tea, warm and soothing.
+Description = Freshly brewed tea.
 #-------------------------------
 [WATER]
 Name = Water
@@ -8253,7 +8337,7 @@ NamePlural = Water
 Pocket = 6
 Price = 5
 Flags = FoodWater,NoSpoiling,Water
-Description = Freshly connected water, essential for any recipe or drink.
+Description = Freshly collected water.
 #-------------------------------
 [CARROTCAKE]
 Name = Carrot Cake
@@ -8261,7 +8345,7 @@ NamePlural = Carrot Cake
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A sweet carrot cake, moist and spiced.
+Description = A sweet carrot cake.
 #-------------------------------
 [CHOCOLATE]
 Name = Chocolate
@@ -8269,7 +8353,7 @@ NamePlural = Chocolate
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Rich chocolate, ideal for desserts or snacking.
+Description = Freshly made chocolate.
 #-------------------------------
 [SUGAR]
 Name = Sugar
@@ -8285,7 +8369,7 @@ NamePlural = Slowpoke Tail (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Cooked Slowpoke tail, tender and rare.
+Description = Cooked Slowpoke tail.
 #-------------------------------
 [BAKEDPOTATO]
 Name = Potato (Cooked)
@@ -8293,7 +8377,7 @@ NamePlural = Potato (Cooked)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A baked potato, soft and savory. 
+Description = A baked potato. 
 #-------------------------------
 [CHERUBIBALL]
 Name = Cherubi Ball
@@ -8301,7 +8385,7 @@ NamePlural = Cherubi Ball
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A Cherubi treat, sweet and fruity.
+Description = A Cherubi treat.
 #-------------------------------
 [EGGEDIBLE]
 Name = Egg
@@ -8317,7 +8401,7 @@ NamePlural = Stew (Potato)
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = Potato stew, hearty and flavorful.
+Description = Potato stew.
 #-------------------------------
 [ATKCURRY]
 Name = Spelon Curry
@@ -8557,8 +8641,8 @@ Flags = Fling_30,FoodWater,Water
 Description = A very sweet and refreshing drink. It can be used to restore 70 HP to a single Pokémon.
 #-------------------------------
 [MOOMOOMILK]
-Name = Moomoo Milk
-NamePlural = Moomoo Milks
+Name = Milk
+NamePlural = Milks
 Pocket = 6
 Price = 600
 FieldUse = OnPokemon
@@ -9834,6 +9918,51 @@ FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A fragile clay pot used to craft medicinal potions.
 #-------------------------------
+[BERRYPOT]
+Name = Plant Pot
+NamePlural = Plant Pots
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A clay pot used for growing crops inside, but they take twice as long as normal soil.
+#-------------------------------
+[PETBED]
+Name = Pet Bed
+NamePlural = Pet Beds
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A bed for POKéMON working in the base to lay in. Any Eggs placed in the bed will grow faster.
+#-------------------------------
+[PETBEDOUTDOOR]
+Name = Pet Bed (Outdoor)
+NamePlural = Pet Beds (Outdoor)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A more rugged bed for POKéMON working outdoors to lay in. Any Eggs placed in the bed will grow faster.
+#-------------------------------
+[SILKSPINNER]
+Name = Spinner
+NamePlural = Spinner
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A spinner that can be used by specific bug POKéMON to freely produce silk.
+#-------------------------------
+[APIARY]
+Name = Apiary
+NamePlural = Apiary
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = An Apiary which can be used to produce honey and more effectively breed Bee-type POKéMON.
+#-------------------------------
 [UPGRADEDCRAFTINGBENCH]
 Name = Upgraded Workbench
 NamePlural = Upgraded Workbench
@@ -9853,8 +9982,8 @@ Flags = Fling_10,Overworld,PlacingItem
 Description = A solid grinder used to crush materials into dust.
 #-------------------------------
 [BEDROLL]
-Name = Bed
-NamePlural = Bed
+Name = Bedroll
+NamePlural = Bedrolls
 Pocket = 7
 Price = 0
 FieldUse = Direct
@@ -10037,7 +10166,7 @@ NamePlural = Torches
 Pocket = 7
 Price = 0
 Flags = Fling_10,PlacingItem,Overworld
-Description = A torch that lights the area and keeps wild Pokémon at bay.
+Description = A torch that lights the area.
 #-------------------------------
 [ELECTRICLIGHT]
 Name = Electric Light

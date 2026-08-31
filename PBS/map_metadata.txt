@@ -24,14 +24,20 @@ Outdoor = true
 ShowArea = true
 HealingSpot = 4,21,12
 MapPosition = 0,0,0
+AssociatedBase = TEMPERATEBASE
 BattleBack = Forest
+MapStart = 211, 226
+MapEnd = 233, 246
 #-------------------------------
 [005]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
+AssociatedBase = TEMPERATEBASE
 BattleBack = Forest
+MapStart = 213,246
+MapEnd = 230,264
 #-------------------------------
 [006]   # Temperate Plains
 Name = Temperate Coast
@@ -47,6 +53,8 @@ Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
+MapStart = 228,219
+MapEnd = 260,246
 #-------------------------------
 [008]   # Temperate Plains
 Name = Temperate Coast
@@ -55,6 +63,8 @@ ShowArea = true
 MapPosition = 0,0,0
 DiveMap = 9
 BattleBack = Forest
+MapStart = 228,219
+MapEnd = 249,211
 #-------------------------------
 [009]   # Temperate Plains
 Name = Temperate Coast
@@ -62,6 +72,8 @@ Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
+MapStart = 250,218
+MapEnd = 282,200
 #-------------------------------
 [010]   # Temperate Base
 Name = Temperate Base
@@ -69,6 +81,7 @@ Bicycle = true
 MapPosition = 0,0,0
 SnapEdges = true
 WildBattleBGM = Forest
+AssociatedBase = TEMPERATEBASE
 BaseMap = true
 #-------------------------------
 [011]   # Challenge Map
@@ -91,6 +104,8 @@ Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = Forest
+MapStart = 259,216
+MapEnd = 282,242
 #-------------------------------
 [014]   # Stone Temple Cave
 Name = Stone Temple Cave
@@ -128,6 +143,7 @@ Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 SafariMap = true
+AssociatedBase = MOUNTAINBASE
 BattleBack = Mountain
 #-------------------------------
 [020]   # Mountain Base
@@ -135,6 +151,7 @@ Name = Rocky Base
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
+AssociatedBase = MOUNTAINBASE
 BaseMap = true
 #-------------------------------
 [022]   # Cave
@@ -150,6 +167,7 @@ Name = Temperate Highlands
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
+AssociatedBase = MOUNTAINBASE
 BattleBack = mountain
 #-------------------------------
 [025]   # Transition Room
@@ -200,6 +218,7 @@ Name = Temperate Marsh
 Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
+AssociatedBase = SWAMPBASE
 BattleBack = Swamp
 #-------------------------------
 [034]   # Temperate Marsh
@@ -244,6 +263,15 @@ BattleBack = Water
 Name = Forested Base
 Bicycle = true
 MapPosition = 0,0,0
+AssociatedBase = SWAMPBASE
+BattleBack = Indoor
+BaseMap = true
+#-------------------------------
+[021]   # Swamp Base
+Name = Forested Base
+Bicycle = true
+MapPosition = 0,0,0
+AssociatedBase = SWAMPBASE
 BattleBack = Indoor
 BaseMap = true
 #-------------------------------
@@ -270,6 +298,8 @@ Outdoor = true
 ShowArea = true
 MapPosition = 0,0,0
 BattleBack = snow
+MapStart = 245,200
+MapEnd = 228,211
 #-------------------------------
 [045]   # Temperate Plains
 Name = Temperate Coast
@@ -296,11 +326,15 @@ Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
+MapStart = 232,261
+MapEnd = 224,269
 #-------------------------------
 [053]   # Temperate Shore
 Name = Temperate Coast
 Outdoor = true
 MapPosition = 0,0,0
+MapStart = 282,242
+MapEnd = 306,216
 #-------------------------------
 [054]   # Temperate Plains
 Name = Temperate Coast
@@ -323,12 +357,16 @@ Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
+MapStart = 232,267
+MapEnd = 263,260
 #-------------------------------
 [058]   # Temperate Ocean
 Name = Temperate Ocean
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = Water
+MapStart = 263,261
+MapEnd = 290,272
 #-------------------------------
 [059]   # Temperate Ocean
 Name = Temperate Ocean
@@ -337,6 +375,8 @@ MapPosition = 0,0,0
 DiveMap = 66
 BattleBack = Water
 Flags = PowerSpot
+MapStart = 263,261
+MapEnd = 282,242
 #-------------------------------
 [060]   # Temperate Ocean
 Name = Temperate Ocean
@@ -370,6 +410,8 @@ Weather = Rain,20
 MapPosition = 0,0,0
 BattleBack = Forest
 Flags = PowerSpot
+MapStart = 232,246
+MapEnd = 263,258
 #-------------------------------
 [065]   # Ravine (Folder)
 Name = Ravine
@@ -383,6 +425,8 @@ Name = Temperate Inland
 Outdoor = true
 MapPosition = 0,0,0
 BattleBack = snow
+MapStart = 245,200
+MapEnd = 225,186
 #-------------------------------
 [071]   # Ice Cave
 Name = Ice Cave
@@ -414,7 +458,7 @@ BattleBack = Snow
 #-------------------------------
 [076]   # Cave
 Name = Cave
-Outdoor = true
+Outdoor = false
 MapPosition = 0,0,0
 BattleBack = Cave
 #-------------------------------
@@ -469,6 +513,7 @@ BattleBack = Snow
 Name = Frigid Highlands
 Outdoor = true
 MapPosition = 0,0,0
+AssociatedBase = FRIGIDOUTPOST
 BattleBack = Snow
 #-------------------------------
 [086]   # Temperate Marsh
@@ -542,6 +587,7 @@ Name = Cave
 Bicycle = true
 MapPosition = 0,0,0
 BattleBack = Cave
+AssociatedBase = FRIGIDOUTPOST
 BaseMap = true
 #-------------------------------
 [098]   # Ice Temple
@@ -764,6 +810,7 @@ BattleBack = Water
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
+AssociatedBase = OILTANKER
 BattleBack = Water
 #-------------------------------
 [138]   # Tropical Coast
@@ -788,6 +835,7 @@ BattleBack = Water
 Name = Tropical Coast
 Outdoor = true
 MapPosition = 0,0,0
+AssociatedBase = OILTANKER
 BattleBack = Water
 #-------------------------------
 [142]   # Tropical Coast
@@ -800,6 +848,7 @@ BattleBack = Water
 Name = Tropical Coast
 Bicycle = true
 MapPosition = 0,0,0
+AssociatedBase = OILTANKER
 BattleBack = Water
 #-------------------------------
 [144]   # Temperate Caves

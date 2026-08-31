@@ -1,48 +1,19 @@
 class OverworldCombat
 
 
-def doesithitfam(event,item)
-         pkmn = event.pokemon
-        hit_rate=hitcalc(item,pkmn)
-        hit_rate+=2 if event.direction == $game_player.direction
-        hit_rate+=1 if event.direction == 4 || 6 && $game_player.direction == 8 || 2
-		randhit = rand(8)
-        return randhit<=hit_rate
-
- end
-
-
-
-
-def is_assassin?
-  return $player.is_it_this_class?(:TRIATHLETE,false) if $player.playerclass.respond_to?("name")
-  return $player.playerclass == "Assassin" if !$player.playerclass.respond_to?("name")
-end
-   
-  def hitcalc(ball,pkmn)
-    x = pkmn.speed
-    pkmn.bait_eaten=0 if pkmn.bait_eaten.nil?
-	x -= pkmn.bait_eaten
-    x = x.floor
-    x = 1 if x < 1
-    return 99 if $player.pokedex.owned_count<2
-    return 99 if pkmn.status == :SLEEP || pkmn.status == :FROZEN
-	return 99 if $DEBUG && Input.press?(Input::CTRL)
-    y = x-($player.shoespeed/2)
-    numShakes = 0
-    4.times do |i|
-      numShakes += 1 if rand(75) > y
-    end
-    return numShakes
+  def player_action(event,item,dir)
+    begin_action(event, item, dir)
   end
   
-
-  def capturecalc(event,ball,dir)
+  
+  def capturecalc(event, ball, dir)
     pkmn = event.pokemon
-    catch_rate = pkmn.species_data.catch_rate if !catch_rate
-	
+    catch_rate = pkmn.species_data.catch_rate
+	puts catch_rate 
       if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
-         catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
+         catch_rate = ball.effects.trigger(:modifyCatchRate, catch_rate, nil, pkmn)
+	puts catch_rate 
+         #catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
       else
          catch_rate /= 10
       end
@@ -56,13 +27,8 @@ end
     if Input.repeat?(Input::ACTION)
       x *= 1.2
     end 
-	   if pkmn.bait_eaten.nil?
-	     pkmn.bait_eaten=0
-	   end
-	x += pkmn.bait_eaten
-    x = x.floor
-    x = 1 if x < 1
-    return 99 if x >= 255 || OverworldPBEffects.isUnconditional?(ball, pkmn)
+    return 4 if x >= 255 || ball.effects.trigger(:isUnconditional, nil, pkmn)
+    #return 99 if x >= 255 || OverworldPBEffects.isUnconditional?(ball, pkmn)
     y = (65_536 / ((255.0 / x)**0.1875)).floor
     if Settings::ENABLE_CRITICAL_CAPTURES
       dex_modifier = 0
@@ -97,66 +63,10 @@ end
     return numShakes
   end
 
-
-
-
-
-  def player_action(event,item,dir)
-   if $player.weapon_cooldown<=0
-   $game_temp.weapon_selection_end=60 if $game_temp.weapon_selection_end!=-1
-   $PokemonGlobal.set_item_hud(:WEAPONS,true) if cur_item_hud!=:WEAPONS
-   $game_temp.lockontarget=event if $PokemonSystem.autotarget == 0
-   pbSEPlay("smeck") if item=="Punch"
-   if item.is_a?(Symbol) || item.is_a?(ItemData)
-    pbSEPlay("Sword") if GameData::Item.get(item).id==:MACHETE
-    item_data=GameData::Item.get(item)
-   end
-   
-	hit = doesithitfam(event,item)
-	event.times_not_attacking+=1 if hit
-	punch(event) if item=="Punch" && hit && !@battle_rules.include?("No Player Damage") && !@battle_rules.include?("No Player Basics")
-	if !item_data.nil?
-   stone_and_bait(event,item) if (item_data.id == :BAIT || item_data.id == :STONE)
-    dartly_actions(event,item) if item_data.is_dart? && hit
-    weaponly_actions(event,item) if item_data.is_weapon? && hit && item_data.id != :BAIT && item_data.id != :STONE
-    snatcher(event) if item==:SNATCHER && hit
-	end
-     event.remaining_steps+=10 if hit
-
-    if !hit && !item_data.nil? && (item_data.id != :BAIT && item_data.id != :STONE)
-	  
-	  sideDisplay("#{$player.name} missed!")
-	  #pbMessage("\\ts[]" + (_INTL"#{$player.name} missed!\\wtnp[10]"))
-      pbSEPlay("Miss")
-	   $player.punch_cooldown+=40
-	   $player.weapon_cooldown+=80
-	   no_moving(15)
-	elsif item=="Punch" && !hit
-	   
-	  sideDisplay("#{$player.name} missed!")
-      pbSEPlay("Miss")
-	   $player.punch_cooldown+=80
-	   no_moving(15)
-	elsif item=="Punch" && hit
-	  sideDisplay("#{$player.name} landed a punch on #{event.pokemon.name}!")
-	   $player.punch_cooldown+=80
-	   no_moving(15)
-	end
-
-    @turn+=1
-	$hud.createaChargeBar($game_player) if $player.attack_opportunity>=0
-	return
-  else
-	sideDisplay("You are too winded from your last attack still!")
-  end
-  end
   
-  
-  
-  def capture_calcs(target,ball,dir)
-     pkmn = target.pokemon
-     catch_rate=capturecalc(target,ball,dir)
-	  return catch_rate>=4
+  def capture_calcs(event, ball, dir)
+     catch_rate = capturecalc(event, ball, dir)
+	 return catch_rate>=4
   end
   
   
@@ -166,7 +76,7 @@ end
    loop do
     break if loops >= frames
 	  
-      update_package
+      OverworldCombat.update_package
 	  
 	  loops+=1
    end
@@ -174,282 +84,110 @@ end
    $game_temp.no_moving=false
   end
   
+
+def is_assassin?
+  return $player.is_it_this_class?(:ASSASSIN,false)
+end
   
-  
-  def dartly_actions(event,item)
-       pkmn = event.pokemon
-       case GameData::Item.get(item).id
-           when :POISONDART
-            	  inflictStatus(move,user,target,:POISON, rand(4)+1) if (!target.pbHasType?(:STEEL) || !target.hasAbility?(:CORROSION))
-           when :SLEEPDART
-            	inflictStatus(move,user,target,:SLEEP, rand(4)+1) if (!target.hasAbility?(:INSOMNIA) || !target.hasAbility?(:VITALSPIRIT))
-           when :PARALYZDART
-       	     inflictStatus(move,user,target,:PARALYSIS, rand(4)+1) if !target.pbHasType?(:GROUND)
-           when :ICEDART
-       	     inflictStatus(move,user,target,:FROZEN, rand(4)+1) if !target.pbHasType?(:ICE)
-           when :FIREDART
-       	     inflictStatus(move,user,target,:BURN, rand(4)+1) if !target.pbHasType?(:FIRE)
-        end
-	   move = Pokemon::Move.new(:TACKLE)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=40
-	   no_moving(15)
-       event.angry_at << $game_player if !event.angry_at.include?($game_player)
+  def tool?(item)
+	return true if item.id==:SNATCHER
+	return false 
+  end 
+   
+  def hitcalc(ball,pkmn)
+    x = pkmn.speed
+    x = x.floor
+    x = 1 if x < 1
+    return 99 if $player.pokedex.owned_count<2
+    return 99 if pkmn.status == :SLEEP || pkmn.status == :FROZEN
+	return 99 if $DEBUG && Input.press?(Input::CTRL)
+    y = x-($player.shoespeed/2)
+    numShakes = 0
+    4.times do |i|
+      numShakes += 1 if rand(75) > y
+    end
+    return numShakes
   end
 
 
 
 
+ def hits?(event,item)
+        return true if item.id == :BAIT || item.id == :STONE
+		
+        pkmn = event.pokemon
+		
+        hit_rate=hitcalc(item,pkmn)
+		
+        hit_rate+=4 if event.direction == $game_player.direction
+        hit_rate+=2 if (event.direction == 4 || event.direction == 6) && ($game_player.direction == 8 || $game_player.direction == 2)
+		randhit = rand(8)
+        return randhit<=hit_rate
 
-  def stone_and_bait(event,item)
-     pkmn = event.pokemon
-	 if !@battle_rules.include?("No Player Damage") && !@battle_rules.include?("No Player Basics")
-     case GameData::Item.get(item).id
-     when :STONE
-	   move = Pokemon::Move.new(:ROCKTHROW)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(move.type, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   damage = damage.floor
-	 
-	  start_attacked_glow(event,$game_player)
-	  makeAggressive(event) 
-      damagePokemon(event,damage)
-	  if pkmn.status==:SLEEP
-	    pkmn.status=:NONE
-	  end
-      event.battle_timer = 6
-	   $player.weapon_cooldown+=80
-	  pbSEPlay("Battle damage normal")
-	   no_moving(10)
-	  
-	  
-	 when :BAIT
-        event.remaining_steps -= 1
-	    pkmn.bait_eaten=0 if pkmn.bait_eaten.nil?
-	    pkmn.bait_eaten+=1
-	    pkmn.bait_eaten=4 if pkmn.bait_eaten>4
-	    pkmn.hp=pkmn.hp+(rand(20)+1)
-		makeUnaggressive(event,$game_player)
-       event.battle_timer = 15
-	   $player.weapon_cooldown+=60
-		pbSEPlay("eat")
-	 
+ end
+ 
+ def begin_action(event, item, dir)
+   unless $player.weapon_cooldown<=0
+	sideDisplay("You are too winded from your last attack still!")
+    return 
+   end 
+   $game_temp.weapon_selection_end=60 if $game_temp.weapon_selection_end!=-1
+   $game_temp.lockontarget=event if $PokemonSystem.autotarget == 0
+   play_attack_sound(item)
+   unless hits?(event,item)
+	 sideDisplay("#{$player.name} missed!")
+     pbSEPlay("Miss")
+	 $player.punch_cooldown+=40
+	 $player.weapon_cooldown+=80
+	 no_moving(15)
+     return 
+   end
+   event.times_not_attacking += 1
+   if item==:PUNCH
+     handle_punch(event)
+   else
+     handle_itemdata(event, item)
+   end 
+   end_action(event)
+ end 
+ 
+ def end_action(event)
+   event.remaining_steps+=10
+  # @turn+=1
+   $hud.createaChargeBar($game_player) if $player.attack_opportunity>=0
+ end 
+ 
+ def handle_punch(event)
+  return if @battle_rules.include?("No Player Damage") || @battle_rules.include?("No Player Basics")
+  pkmn = event.pokemon
+  move = Pokemon::Move.new(:TACKLE)
+  baseDmg = move.base_damage
+  damage = calculate_weapon_damage(pkmn, :FIGHTING, baseDmg)
+  deal_weapon_damage(event, damage)
+  $player.punch_cooldown += 80
+  no_moving(15)
+ end 
+ 
+
+ def handle_itemdata(event, item)
+  if tool?(item)
+    handle_tool(event, item)
   
-     end
-	end
-  end
+  else 
+    handle_attack(event, item)
+  end 
 
 
-
-  def weaponly_actions(event,item)
-     pkmn = event.pokemon
-	 if !@battle_rules.include?("No Player Damage")
-     case GameData::Item.get(item).id
-	 
-	 when :MACHETE
-	 
-	   move = Pokemon::Move.new(:SLASH)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #SLASH - Power 70, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=20
-	   no_moving(30)
-     when :STONEPICKAXE
-	   move = Pokemon::Move.new(:ROCKSMASH)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=40
-	   no_moving(2)
-     when :IRONPICKAXE
-	   move = Pokemon::Move.new(:ROCKSMASH)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=40
-	   no_moving(2)
-     when :STONEAXE
-	   move = Pokemon::Move.new(:STONEAXE)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #STONEAXE - Power 80, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=80
-	   no_moving(2)
-     when :IRONAXE
-	   move = Pokemon::Move.new(:STONEAXE)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #STONEAXE - Power 80, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=80
-	   no_moving(2)
-     when :STONEHAMMER
-	   move = Pokemon::Move.new(:ROCKSMASH)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=40
-	   no_moving(2)
-     when :IRONHAMMER
-	   move = Pokemon::Move.new(:ROCKSMASH)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, pkmn.types)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #ROCKSMASH - Power 40, Accuracy 100
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=40
-	   no_moving(2)
-     when :POLE
-	   move = Pokemon::Move.new(:BONECLUB)
-	   baseDmg = move.base_damage
-       damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	   value = Effectiveness.calculate(:NORMAL, type)
-	   damage *= 2 if Effectiveness.super_effective?(value)
-	   damage /= 2 if Effectiveness.not_very_effective?(value)
-	   damage /= 2 if Effectiveness.resistant?(value)
-	   damage *= 0 if Effectiveness.ineffective?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   damage *= 1 if Effectiveness.normal?(value)
-	   end
-	   damage += $player.equipmentatkbuff.to_i
-	   machete(event,damage) #BONECLUB - Power 65
-      event.battle_timer = 12
-	   $player.weapon_cooldown+=45
-	   no_moving(1)
-	 
-	 
-	 
-	 end
-     else
-	  sideDisplay("#{$player.name}'s blows seem to be doing nothing!!")
-	 
-	 end
-    
-		event.angry_at << $game_player if !event.angry_at.include?($game_player)
-  end
-
-
-
-  def machete(event,injury)
-   pkmn = event.pokemon
-	  if rand(100)<20
-	   injury*=2
-		pbSEPlay("Battle damage super")
-	  else
-		pbSEPlay("Battle damage normal")
-	  end
-      
-	   injury = injury.floor
-	  start_attacked_glow(event,$game_player)
-      damagePokemon(event,injury.to_i)
-	  if pkmn.status==:SLEEP
-	    pkmn.status=:NONE
-	  end
-      event.remaining_steps += 1
-	  makeAggressive(event)
-  
-  
-  end
-
-
+ end  
+ 
+ def handle_tool(event, item)
+    case item.id
+	  when :SNATCHER 
+	   snatcher(event)
+	end 
+ 
+ 
+ end 
 
   def snatcher(event)
 	return false if @battle_rules.include?("Theftless")
@@ -461,49 +199,87 @@ end
 		event.angry_at << $game_player if !event.angry_at.include?($game_player)
 	 end
   end
-
-
-
-  def punch(event)
-   pkmn = event.pokemon
-    #RAPIDSPIN - Power 20
-    #TACKLE - Power 40
-    #STRENGTH - Power 80
-	 move = Pokemon::Move.new(:TACKLE)
-	 baseDmg = move.base_damage
-     damage  = ((((2.0 * pkmn.level / 5) + 2).floor * baseDmg).floor / 50).floor + 2
-	  pkmn.types.each do |type|
-	 value = Effectiveness.calculate(:FIGHTING, type)
-	 damage *= 2 if Effectiveness.super_effective?(value)
-	 damage /= 2 if Effectiveness.not_very_effective?(value)
-	 damage /= 2 if Effectiveness.resistant?(value)
-	 damage *= 0 if Effectiveness.ineffective?(value)
-	 damage *= 1 if Effectiveness.normal?(value)
-	 damage *= 1 if Effectiveness.normal?(value)
-	   end
-	 damage += $player.equipmentatkbuff.to_i
-	  if rand(100)<20
-	   damage*=2
-		pbSEPlay("Battle damage super")
-	  else
-		pbSEPlay("Battle damage normal")
-	  end
-	   
-	  damage = damage.floor
-	  start_attacked_glow(event,$game_player)
-      damagePokemon(event,damage)
-	    puts "#{event.type.name}: #{event.type.hp}/#{event.type.totalhp}"
-	  
-	    pkmn.status=:NONE if pkmn.status==:SLEEP
-       event.remaining_steps += 1
-	   
-	  makeAggressive(event)
-		event.angry_at << $game_player if !event.angry_at.include?($game_player)
   
+ def handle_attack(event, item)
+  return if @battle_rules.include?("No Player Damage") 
+  pkmn = event.pokemon
   
+  item_meta = GameData::Item.get(item) 
+  move_id = item_meta.move
+  weapon_cooldown = item_meta.weapon_cooldown
+  battle_timer = item_meta.battle_timer
+  movement_lock = item_meta.movement_lock
+  move = Pokemon::Move.new(move_id)
+  moveType = move.type 
+  baseDmg = move.base_damage
+  
+  damage = calculate_weapon_damage(pkmn, moveType, baseDmg)
+  deal_weapon_damage(event, damage)
+  if item_meta.is_dart?
+       case item.id
+           when :POISONDART
+            	  inflictStatus(move,$player,pkmn,:POISON, rand(4)+1) if (!pkmn.pbHasType?(:STEEL) || !pkmn.hasAbility?(:CORROSION))
+           when :SLEEPDART
+            	inflictStatus(move,$player,pkmn,:SLEEP, rand(4)+1) if (!pkmn.hasAbility?(:INSOMNIA) || !pkmn.hasAbility?(:VITALSPIRIT))
+           when :PARALYZDART
+       	     inflictStatus(move,$player,pkmn,:PARALYSIS, rand(4)+1) if !pkmn.pbHasType?(:GROUND)
+           when :ICEDART
+       	     inflictStatus(move,$player,pkmn,:FROZEN, rand(4)+1) if !pkmn.pbHasType?(:ICE)
+           when :FIREDART
+       	     inflictStatus(move,$player,pkmn,:BURN, rand(4)+1) if !pkmn.pbHasType?(:FIRE)
+        end
+  
+  end 
+ end 
+  
+ def play_attack_sound(item)
+   if item==:PUNCH
+     pbSEPlay("smeck")
+   
+   elsif item.is_a?(ItemData)
+     pbSEPlay("Sword") if item.id == :MACHETE
+   else
+     puts "item"
+	 raise 
+   end 
+   
+
+
+ end  
+ 
+ def calculate_weapon_damage(pkmn, move_type, base_damage)
+  damage = ((((2.0 * pkmn.level / 5) + 2).floor * base_damage).floor / 50).floor + 2
+
+  pkmn.types.each do |type|
+    value = Effectiveness.calculate(move_type, type)
+    damage *= 2 if Effectiveness.super_effective?(value)
+    damage /= 2 if Effectiveness.not_very_effective?(value)
+    damage /= 2 if Effectiveness.resistant?(value)
+    damage = 0 if Effectiveness.ineffective?(value)
   end
 
+  damage += $player.equipmentatkbuff.to_i
+  damage.floor
+ end
 
 
+ def deal_weapon_damage(event, damage)
+  pkmn = event.pokemon
 
-end
+  if rand(100) < 20
+    damage *= 2
+    pbSEPlay("Battle damage super")
+  else
+    pbSEPlay("Battle damage normal")
+  end
+  puts "#{event.type.name}: #{event.type.hp}/#{event.type.totalhp}"
+
+
+  event.remaining_steps += 1
+  makeAggressive(event)
+  pkmn.status = :NONE if pkmn.status == :SLEEP
+  attacking_whatever_else(damage.floor, event, $game_player, nil)
+ end
+
+
+end 

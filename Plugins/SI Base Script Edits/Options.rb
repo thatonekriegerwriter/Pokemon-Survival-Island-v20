@@ -1341,7 +1341,7 @@ MenuHandlers.add(:options_menu, :one_route, {
 	  value = 0
 	 end
     else 
-	 puts $PokemonGlobal.nuzlockeRules.to_s
+	# puts $PokemonGlobal.nuzlockeRules.to_s
     scene.sprites["textbox"].text           = "'One Catch per Map' is already enabled, and cannot be disabled."
 	end
   }

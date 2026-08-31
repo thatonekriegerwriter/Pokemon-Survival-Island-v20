@@ -217,144 +217,278 @@ end
 
 
 
-
-
-
-def sideDisplay(text,onlyme=false,looptimeadjustment=0,flashing=true)
-return false if !$scene
-$sidedisplay.set_text(text,onlyme,looptimeadjustment,flashing)
-return true
+def sideDisplay(text, onlyme = false, looptimeadjustment = 0, flashing = true)
+  return false unless $scene
+  $sidedisplay.set_text(text, onlyme, looptimeadjustment, flashing)
+  true
 end
 
 class SideDisplayUI
   attr_accessor :text
-  def initialize(viewport,x=10,y=1,z=999999)
-    @bitmapsprite = BitmapSprite.new(Graphics.width,Graphics.height,viewport)
-	@bitmapsprite.z = 999999
+
+  X            = 10
+  Y            = 1
+  Z            = 999999
+  MAX_MESSAGES = 7
+  LINE_HEIGHT  = 21
+  PADDING      = 10
+
+  TEXT_COLOR   = Color.new(248, 248, 248)
+  SHADOW_COLOR = Color.new(97, 97, 97)
+
+  def initialize(viewport, x = X, y = Y, z = Z)
+    @bitmapsprite = BitmapSprite.new(Graphics.width, Graphics.height, viewport)
+    @bitmapsprite.z = z
     @bitmap = @bitmapsprite.bitmap
+
     pbSetSmallFont(@bitmap)
-	 @text = FixedSizeArray.new(7)
-    @bitmapsprite.visible = true
-    @frame = 0
-    @looptime = 0
-    @looptimetarget = 3
-    @i = 1
-	@x = x
-	@y = y 
-	@z = z
-    @flashing = true
-    @value = false
+
+    @x = x
+    @y = y
+    @z = z
+
+    @messages = []
     @currentmap = $game_map.map_id
   end
-  def add_looptime(amt)
-    @looptimetarget+=amt
+
+  # Kept for compatibility with existing calls.
+  # Adds time to the newest message.
+  def add_looptime(amount)
+    return if @messages.empty?
+    @messages.last[:duration] += amount
   end
-  def set_text(text,onlyme,looptimet,flashing)
+
+  def text
+    @messages.map { |message| message[:text] }
+  end
+
+  def set_text(text, onlyme = false, looptimeadjustment = 0, flashing = true)
+    return if text.nil? || text.to_s.empty?
+
     @currentmap = $game_map.map_id
-	 clear_text if onlyme==true
-	  
-	@text = FixedSizeArray.new(7) if !@text.is_a?(FixedSizeArray)
-	 @text.add(text)
-        @frame = 0
-        @looptime = 0
-        @i = 1
-        @looptimetarget = 6 + looptimet
-        @flashing = flashing
-	 refresh
-	 show
+
+    clear_text if onlyme
+
+    # Don't add the same message twice.
+    return if @messages.any? { |message| message[:text] == text.to_s }
+
+    @messages << {
+      :text      => text.to_s,
+      :lines     => wrap_text(text.to_s),
+      :frame     => 0,
+      :duration  => 6 + looptimeadjustment,
+      :flashing  => flashing
+    }
+
+    # Keep the queue bounded.
+    @messages.shift while @messages.length > MAX_MESSAGES
+
+    refresh
+    show
   end
-  
+
   def disposed?
     @bitmapsprite.disposed?
   end
-  
+
   def refresh
-   return if cleared?
-   @bitmap.clear
-	text2 = []
-	loops = 0
-	@text = FixedSizeArray.new(7) if !@text.is_a?(FixedSizeArray)
-	@text.to_a.each do |i|
-	    y1 = @y+(loops*21)
-	  text2 << [i,@x,y1,@z,Color.new(248,248,248),Color.new(97,97,97)]
-	  loops+=1
-	end
-    pbDrawTextPositions(@bitmap,text2)
-  
-  end
-  
-  def update
-    
-    if @currentmap != $game_map.map_id
-	   clear_text
-      hide
-      refresh
-        @frame = 0
-        @looptime = 0
-        @i = 1
-	  return
-    end
-    
-    if $game_temp.in_menu==true
-	   clear_text
-      hide
-      refresh
-        @frame = 0
-        @looptime = 0
-        @i = 1
-	  return
-    end
-    
-    if $game_temp.in_battle==true
-	   clear_text
-      hide
-      refresh
-        @frame = 0
-        @looptime = 0
-        @i = 1
-	  return
-    end
-	return if @bitmapsprite.visible == false
-	return if cleared?
-	if @text.length>4 && @looptime<@looptimetarget && @value==false
-	    @frame = 16
-	    @looptime = 2
-		@value = true
-	end
-	
-    if @frame > Graphics.frame_rate / 2
-      if @looptime == @looptimetarget
-	    clear_text
-        hide
-        refresh
-        @frame = 0
-        @looptime = 0
-        @i = 1
-      else
-        @looptime += 1
-        @frame = 0
-        @i *= -1
+    @bitmap.clear
+    return if @messages.empty?
+
+    y = @y
+
+    @messages.each do |message|
+      message[:lines].each do |line|
+        color = message_color(message)
+
+        pbDrawTextPositions(
+          @bitmap,
+          [[line, @x, y, @z, color, SHADOW_COLOR]]
+        )
+
+        y += LINE_HEIGHT
       end
-    else
-      @frame += 1
-      @bitmapsprite.opacity += 10 * @i if @looptime >= (2.0 / 3.0) * @looptimetarget && @flashing==true
+
+      # Small gap between messages.
+      y += 2
     end
   end
-  
+
+  def update
+    if invalid_context?
+      clear_and_hide
+      return
+    end
+
+    return if @messages.empty?
+    return unless @bitmapsprite.visible
+
+    changed = false
+
+    @messages.each do |message|
+      message[:frame] += 1
+    end
+
+    # Remove messages individually.
+    before = @messages.length
+
+    @messages.reject! do |message|
+      message_expired?(message)
+    end
+
+    changed = true if before != @messages.length
+
+    refresh if changed
+
+    if @messages.empty?
+      hide
+    end
+  end
+
   def clear_text
-   @bitmapsprite.visible = false
-   @text.clear
+    @messages.clear
+    hide
+    @bitmap.clear
   end
+
   def cleared?
-    return @text.empty?
+    @messages.empty?
   end
+
   def hide
     @bitmapsprite.visible = false
   end
+
   def show
     @bitmapsprite.visible = true
   end
+
   def dispose
     @bitmapsprite.dispose if @bitmapsprite
+  end
+
+  private
+
+  def invalid_context?
+    return true if @currentmap != $game_map.map_id
+
+    if $game_temp.in_menu == true &&
+       $game_temp.just_update_anyways == false
+      return true
+    end
+
+    return true if $game_temp.in_battle == true
+
+    false
+  end
+
+  def clear_and_hide
+    @messages.clear
+    @bitmap.clear
+    hide
+    @currentmap = $game_map.map_id
+  end
+
+  # --------------------------------------------------------------------------
+  # Text wrapping
+  # --------------------------------------------------------------------------
+
+  def wrap_text(text)
+    max_width = Graphics.width - @x - PADDING
+    lines = []
+
+    text.to_s.split(/\r?\n/).each do |paragraph|
+      words = paragraph.split(/\s+/)
+      current = ""
+
+      words.each do |word|
+        test = current.empty? ? word : "#{current} #{word}"
+
+        if text_width(test) <= max_width
+          current = test
+          next
+        end
+
+        unless current.empty?
+          lines << current
+          current = ""
+        end
+
+        # A single word can itself be wider than the screen.
+        if text_width(word) > max_width
+          chunks = split_long_word(word, max_width)
+          lines.concat(chunks[0...-1])
+          current = chunks[-1]
+        else
+          current = word
+        end
+      end
+
+      lines << current unless current.empty?
+    end
+
+    lines
+  end
+
+  def text_width(text)
+    @bitmap.text_size(text).width
+  end
+
+  def split_long_word(word, max_width)
+    chunks = []
+    current = ""
+
+    word.each_char do |char|
+      test = current + char
+
+      if current.empty? || text_width(test) <= max_width
+        current = test
+      else
+        chunks << current
+        current = char
+      end
+    end
+
+    chunks << current unless current.empty?
+    chunks
+  end
+
+  # --------------------------------------------------------------------------
+  # Message timing / flashing
+  # --------------------------------------------------------------------------
+
+  def message_expired?(message)
+    half_second = Graphics.frame_rate / 2
+
+    # The message lasts for `duration` half-second intervals.
+    message[:frame] >= message[:duration] * half_second
+  end
+
+  def message_color(message)
+    return TEXT_COLOR unless message[:flashing]
+
+    half_second = Graphics.frame_rate / 2
+    flash_start = (message[:duration] * 2 / 3.0) * half_second
+
+    return TEXT_COLOR if message[:frame] < flash_start
+
+    # Fade repeatedly during the final third of the message's lifetime.
+    elapsed = message[:frame] - flash_start
+    cycle = elapsed % half_second
+    midpoint = half_second / 2.0
+
+    alpha =
+      if cycle < midpoint
+        255 - ((cycle / midpoint) * 180).to_i
+      else
+        75 + (((cycle - midpoint) / midpoint) * 180).to_i
+      end
+
+    Color.new(
+      TEXT_COLOR.red,
+      TEXT_COLOR.green,
+      TEXT_COLOR.blue,
+      alpha
+    )
   end
 end

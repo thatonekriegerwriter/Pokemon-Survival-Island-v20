@@ -5,6 +5,7 @@ Result=HEALPOWDER
 Yield=1
 Recipe=CHERIBERRY,10
 Station=GRINDER
+Type = MEDICINE
 CookingTime=0
 Locked=false
 Flags=
@@ -16,6 +17,18 @@ Yield=1
 Recipe=SITRUSBERRY,10
 Station=GRINDER
 CookingTime=0
+Type = MEDICINE
+Locked=false
+Flags=
+#-------------------------------
+[HARDSTONE_2]
+Name=Recipe
+Result=STONE
+Yield=4
+Recipe=HARDSTONE,1
+Station=GRINDER
+CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -26,6 +39,7 @@ Yield=1
 Recipe=IRONORE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -36,6 +50,7 @@ Yield=2
 Recipe=IRONBALL,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -46,6 +61,7 @@ Yield=4
 Recipe=IRONPLATE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -56,6 +72,7 @@ Yield=1
 Recipe=GOLDORE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -66,6 +83,7 @@ Yield=2
 Recipe=NUGGET,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -76,6 +94,7 @@ Yield=4
 Recipe=BIGNUGGET,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -86,6 +105,7 @@ Yield=6
 Recipe=RELICGOLD,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -96,6 +116,18 @@ Yield=4
 Recipe=SUGARCANE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
+Locked=false
+Flags=
+#-------------------------------
+[BONEDUST]
+Name=Recipe
+Result=BONEDUST
+Yield=2
+Recipe=RAREBONE,1
+Station=GRINDER
+CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -106,6 +138,7 @@ Yield=1
 Recipe=COPPERORE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -116,6 +149,7 @@ Yield=6
 Recipe=RELICCOPPER,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -126,6 +160,7 @@ Yield=1
 Recipe=SILVERORE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -136,16 +171,18 @@ Yield=6
 Recipe=RELICSILVER,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
 [CLAYDUST]
 Name=Recipe
 Result=CLAYDUST
-Yield=1
+Yield=2
 Recipe=LIGHTCLAY,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -156,5 +193,6 @@ Yield=1
 Recipe=STARPIECE,1
 Station=GRINDER
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=

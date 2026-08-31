@@ -286,6 +286,7 @@ class Battle
   #-----------------------------------------------------------------------------
   #  deletes all fainted battlers after battle (if rule is applied)
   #-----------------------------------------------------------------------------
+  
   alias pbEndOfBattle_nuzlocke_x pbEndOfBattle unless self.method_defined?(:pbEndOfBattle_nuzlocke_x)
   def pbEndOfBattle
     ret = pbEndOfBattle_nuzlocke_x

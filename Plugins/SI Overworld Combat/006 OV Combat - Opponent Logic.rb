@@ -1,205 +1,253 @@
+class OverworldCombat::Opponent
+  def self.score_target(attacker, move, target, skill)
+    case OverworldCombat::Moves.target_data(move.id)
+     when :User
+      return score_self_target(attacker, move, skill)
 
+     when :NearAlly, :AllAllies, :UserAndAllies, :UserOrNearAlly
+       return score_ally_target(attacker, move, target, skill)
+
+     else
+       return score_hostile_target(attacker, move, target, skill)
+    end
+  end
+  def self.score_self_target(attacker, move, skill)
+    score = 0 
+    if attacker.hp < (attacker.totalhp/2).round
+      score += 50 if move.function_code.include?("Heal")
+      score += 0 if move.function_code.include?("UserEnduresFaintingThisTurn")
+      score += 0 if move.function_code.include?("EnsureNextCriticalHit")
+      score += 50 if move.function_code.include?("UserMakeSubstitute")
+    else
+      score -= 40 if move.function_code.include?("Heal")
+    end
+    if attacker.hp < (attacker.totalhp/4).round
+      score += 50 if move.function_code.include?("UserEnduresFaintingThisTurn")
+      score += 40 if move.function_code.include?("EnsureNextCriticalHit")
+    end
+    if attacker.hp < (attacker.totalhp/6).round
+	  score += 100
+    end
+    if attacker.pokemon.status != :NONE
+      score += 50 if move.function_code.include?("Cure")
+      score += 50 if move.function_code.include?("HealUserStatus")
+    end
+   if attacker.hp > attacker.totalhp / 2
+     score += 30 if move.function_code.include?("RaiseUser")
+   end
+   score += 0 if move.function_code.include?("RedirectAllMovesToUser")
+   score += 0 if move.function_code.include?("StealAndUseBeneficialStatusMove")
+   score += 0 if move.function_code.include?("StartUserAirborne")
+   score += 0 if move.function_code.include?("ProtectUser")
+   score += 0 if move.function_code.include?("RestoreUserConsumedItem")
+   score += 0 if move.function_code.include?("CurseTargetOrLowerUserSpd1RaiseUserAtkDef1")
+   score += 0 if move.function_code.include?("StartHealUserEachTurnTrapUserInBattle")
+   score += 0 if move.function_code.include?("UseRandomMoveFromUserParty")
+   score += 0 if move.function_code.include?("UseRandomUserMoveIfAsleep")
+   score += 0 if move.function_code.include?("UseRandomMove")
+   score += 0 if move.function_code.include?("MaxUserAttackLoseHalfOfTotalHP")
+   score += 0 if move.function_code.include?("SwitchOutUserPassOnEffects")
+   score += 0 if move.function_code.include?("DoesNothingCongratulations")
+   score += 0 if move.function_code.include?("SetUserTypesToUserMoveType")
+   score += 0 if move.function_code.include?("UseLastMoveUsed")
+   score += 0 if move.function_code.include?("DoesNothingUnusableInGravity")
+   score += 0 if move.function_code.include?("UserSwapsPositionsWithAlly")
+   score += 0 if move.function_code.include?("DisableTargetMovesKnownByUser")
+   score += 0 if move.function_code.include?("BounceBackProblemCausingStatusMoves")
+   score += 0 if move.function_code.include?("UserSwapBaseAtkDef")
+   score += 0 if move.function_code.include?("SwitchOutUserStatusMove")
+   if move.function_code.include?("UserFaints")
+     score -= 100
+   end
+   return score
+  end 
+  
+  def self.score_ally_target(attacker, move, target, skill)
+   distance = OverworldCombat.attack_distance(attacker, target)
+   return nil unless distance
+   score = 0
+    if target.hp < (target.totalhp/2).round
+	  score += 15
+      score += 50 if move.function_code.include?("Heal")
+	else
+      score -= 40 if move.function_code.include?("Heal")
+	
+	end 
+    if target.pokemon.status != :NONE
+	  score += 50
+      score += 50 if move.function_code.include?("Cure")
+      score += 50 if move.function_code.include?("HealUserStatus")
+    end
+
+  if move.function_code.include?("RaiseTarget")
+    score += target.pokemon.level / 2
+  end
+   score += OverworldCombat::Scoring.closer_score(attacker, distance)
+   score += OverworldCombat::Scoring.adjacent_score(attacker, target)
+   score += OverworldCombat::Scoring.sightline_score(attacker, distance)
+   score += OverworldCombat::Scoring.can_use_move_score(attacker, move, target)
+   score += OverworldCombat::Scoring.movement_penalty(attacker, move, target)
+   return score
+  end 
+  
+  def self.score_hostile_target(attacker, move, target, skill)
+   distance = OverworldCombat.attack_distance(attacker, target)
+   return nil unless distance
+   score = 0
+   score += OverworldCombat::Scoring.closer_score(attacker, distance)
+   score += OverworldCombat::Scoring.adjacent_score(attacker, target)
+   score += OverworldCombat::Scoring.sightline_score(attacker, distance)
+   score += OverworldCombat::Scoring.hostility_score(attacker, target)
+   score += OverworldCombat::Scoring.player_score(attacker, target)
+   score += OverworldCombat::Scoring.last_attacked_score(attacker, target)
+   
+   score += OverworldCombat::Scoring.can_use_move_score(attacker, move, target)
+   score += OverworldCombat::Scoring.movement_penalty(attacker, move, target)
+   score += OverworldCombat::Scoring.type_match_score(attacker, target)
+   if move.function_code.include?("UserFaints")
+     score -= 100
+   end
+   score -= 100 if move.function_code.include?("BurnTarget") && target.pokemon.status != :NONE
+   score -= 100 if move.function_code.include?("PoisonTarget") && target.pokemon.status != :NONE
+   score -= 100 if move.function_code.include?("ParalyzeTarget") && target.pokemon.status != :NONE
+   score -= 100 if move.function_code.include?("SleepTarget") && target.pokemon.status != :NONE
+   score -= 100 if move.function_code.include?("FreezeTarget") && target.pokemon.status != :NONE
+   score += OverworldCombat::Scoring.get_ov_damage_score(score, move, attacker, target, skill)
+   if target.pokemon.is_a?(Pokemon)
+		   value = Effectiveness.calculate(move.type, *target.pokemon.types)
+	else
+		   value = Effectiveness.calculate(move.type, :NORMAL)
+	end
+    score += 60 if Effectiveness.super_effective?(value)
+    score -= 60 if Effectiveness.not_very_effective?(value)
+    score -= 60 if Effectiveness.resistant?(value)
+    score = 0 if Effectiveness.ineffective?(value)
+   
+   score
+  end 
+  
+  
+  def self.can_attack?(attacker)
+    return false unless defined?(attacker.pokemon)
+    return false if OverworldCombat.fainted_check(attacker)
+    return false if attacker.dont_attack
+    return false if $PokemonGlobal.fishing
+    return false if $game_temp.in_menu
+    return false if $game_temp.message_window_showing &&
+                  !$PokemonGlobal.alternate_control_mode
+
+    return true
+  end
+
+end 
 
 
 
 class OverworldCombat
+def self.attack_distance(unit, target)
+  directions = [2,4,6,8]
 
+  distances = directions.filter_map do |dir|
+    pbGetTargetInDirection(unit, dir, target)
+  end
+   distance = distances.any? ? distances.min : (unit.x - target.x).abs + (unit.y - target.y).abs + 2
+  # puts "ATTACKER #{unit.pokemon.name} (Player Side? #{OverworldCombat.player_side?(unit)}): #{unit.x}, #{unit.y} dir #{unit.direction}"
+  # puts "TARGET #{target.pokemon.name} (Player Side? #{OverworldCombat.player_side?(target)}): #{target.x}, #{target.y} dir #{target.direction}"
+  # puts "DISTANCE #{distance}"
+
+   return distance 
+end
 
 def wild_should_attack?(opponent)
  return false if opponent.attacked_last_call==true
  return false if opponent.battle_timer>0
  return true if $game_temp.bossfight==true
- attack_chance = rand(99)+1
- rate = 10
- rate = 40 if opponent.pokemon.is_aggressive?
- rate /= 1.5 if opponent.pokemon.hp == opponent.pokemon.totalhp
- return attack_chance<=rate
+
+ return OverworldCombat.attack_rate(opponent)
 end
 
-def update_package
-  Graphics.update           # Updates the screen and game visuals
-  Input.update              # Checks for player input
-  $scene.update
-end
+def self.attack_rate(opponent)
+  attack_chance = rand(100) + 1
+  rate = opponent.pokemon.is_aggressive? ? 40 : 10
+  rate += opponent.times_not_attacking * 10
+ rate /= 1.5 if opponent.pokemon.hp == opponent.pokemon.totalhp
+ rate = 90 if rate > 90
+
+ return attack_chance<=rate
+end 
 
 def grace_period(amt)
   loops = 0
   loop do
-    update_package
+    OverworldCombat.update_package
 	 break if loops==amt
     loops+=1
   
   end
 end
 
-def opponentChoice(attacker,target,target_x,target_y,distance,bonus=0,type=:DEFAULT)
-result = false
-@hard_hitting =  bonus
 
-loop do
-  update_package
-   should = pbShouldAttack?(attacker,target)
-   previousmove=false
-   attempts=0
-	#puts "#{attacker.pokemon.name} will attack? #{should}" if attacker.battle_timer<1
-  if should
-   
-    move = chooseMove(attacker,target,distance)
 
-	 if move!=false && !move.nil? && move!=previousmove
-	   break if attacker.is_a?(Game_PokeEvent) && attacker.battle_timer>0 && type!=:SURROUNDING
-	   next if attacker.attacking==true if defined?(attacker.attacking)
-	   next if attacker.attacking==true if defined?(attacker.attacking)
-     if move.category == 0
-	   next if attacker.attacking==true if defined?(attacker.attacking)
-	   if attacker.battle_timer<1
-	 #  puts "#{attacker.pokemon.name} need to move to attack? #{distance<=sight_line(attacker) && distance>1}" 
-	 #  puts "#{attacker.pokemon.name} can attack from this position? #{distance==1}" 
-	   end
-	  if distance==1 
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_physical_close(attacker,target,move,distance,target_x,target_y)
-	  elsif distance<=sight_line(attacker) && distance>1
-	     
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_physical(attacker,target,move,distance,target_x,target_y)
-	  elsif $game_temp.bossfight==true
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_physical_close(attacker,target,move,distance,target_x,target_y)
-	  end
-	 elsif move.category == 1
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_special(attacker,target,move,distance,target_x,target_y)
-	 else
-	   next if attacker.attacking==true if defined?(attacker.attacking)
-         attacker.attacking=true if defined?(attacker.cannot_move)
-	   result = move_other(attacker,target,move,distance,target_x,target_y)
-	 end
-    
-     attacker.attacking==false if defined?(attacker.attacking)
-     break
-	elsif attempts>2
-	 break
-    else
-	  previousmove = move
-	  attempts+=1
-    end
-  else
-   
- 	 attacker.battle_timer=attacker.get_battle_timer
-   break
-  end
+def process_ai_action(attacker)
+   return unless OverworldCombat::Opponent.can_attack?(attacker)
+   should_attack = wild_should_attack?(attacker)
+   puts "#{attacker.pokemon.name} (#{attacker.id}) has #{attacker.battle_timer} left on it's timer, has not attacked #{attacker.times_not_attacking} times, and #{attacker.battle_timer==0 ? "#{should_attack ? "is attacking." : "is not attacking."}" : "cannot attack."}."
+   if should_attack
+     attacker.cannot_move = true if defined?(attacker.cannot_move)
+     acted = perform_ai_attack(attacker)
+     attacker.cannot_move = false if defined?(attacker.cannot_move)
+     unless acted
+       attacker.times_not_attacking += 1
+       attacker.battle_timer -= attacker.times_not_attacking
+       attacker.battle_timer = 0 if attacker.battle_timer < 0
+     end
+   elsif attacker.attacked_last_call==true
+	 attacker.battle_timer-=1
+	 attacker.attacked_last_call = false
+   elsif attacker.attacked_last_call==false
+	 attacker.times_not_attacking+=1
+	 attacker.battle_timer-=1
+	 attacker.battle_timer= 0 if attacker.battle_timer<0
+	 attacker.times_not_attacking=0
+   end 
+	
+
+end 
+alias ov_combat_loop process_ai_action
+
+
+def perform_ai_attack(attacker)
+  if attacker.pokemon.effects[PBEffects::Confusion]>0
+    damagePokemon(attacker, attacker.pokemon.totalhp/6)
+      return false
+  end 
+  action = OverworldCombat::Moves.choose_action(attacker)
+#   puts "#{attacker.pokemon.name} (#{attacker.id}) is in the attacking logic, and action #{!action.nil? ? "does exist, and it's attacking #{action[1].pokemon.name} with #{action[0].name}" : "does not exist."}."
+  return false unless action
   
+  move, target, score = action
+  
+  
+  addEnemy(attacker.id, attacker)
+  attacker.dont_attack = true
+  begin
+  attacker.turn_toward_event(target)
+  result = execute_move(attacker, move, target)
+  ensure
+  attacker.dont_attack = false
+  end
+  @turn += 1
+  status_checks(attacker)
+  set_bgm
 
-end
+  if result
+    attacker.attacked_last_call = true
+    attacker.remaining_steps += 1
+	attacker.times_not_attacking = 0
+  end
+  return result
+end 
 
-return result
-end
-
-def movement_attack(attacker,target,distance)
- 	 return if @currentlyinbattle==true
-	 result = false
- 	 @currentlyinbattle=true
- 	 get_overworld_pokemon
-	 start_glow(attacker)
-	 target_x = target.x.dup
-	 target_y = target.y.dup
- 	 turning_prep(attacker,target)
- 	 result = opponentChoice(attacker,target,target_x,target_y,distance,3)
- 	 @currentlyinbattle=false
-	 return result
-end
-
-def ov_combat_loop(opponent)
-    return if !defined?(opponent.pokemon)
- 	 return if fainted_check(opponent)==true
- 	 return if opponent.dont_attack==true
-    return if $PokemonGlobal.fishing == true
-    return if $game_temp.in_menu == true
-    return if $game_temp.message_window_showing == true && $PokemonGlobal.alternate_control_mode==false
-    opponent.cannot_move=true if defined?(opponent.cannot_move)
-	
-	#puts "#{opponent.pokemon.name}'s timer is at #{opponent.battle_timer}."
-	
-	theresult = false
-	duris = wild_should_attack?(opponent)
-	#puts "#{opponent.pokemon.name} has an opportunity? #{duris}" if opponent.battle_timer<1
-	
-	
-	if duris
-	 addEnemy(opponent.id,opponent)
-	 opponent.dont_attack = true
- 	 get_overworld_pokemon
- 	 target,distance,direction = get_distance(opponent)
-     if target.nil?
-	 #puts "#{opponent.pokemon.name} has no target."
- 	 opponent.dont_attack = false
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
- 	 return 
-	 else 
-	# puts "#{opponent.pokemon.name} is targeting #{target.pokemon.name}."
-	 end
-	 target_x = target.x
-	 target_y = target.y
-     #opponent.move_type_toward_event(target)
-	 
-     opponent.turn_toward_event(target)
-	 #puts "#{opponent.pokemon.name} is #{distance} tiles away from #{target.pokemon.name}" if distance>0
-     if distance<1
- 	 opponent.dont_attack = false
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
- 	 return 
-	 end
-	 #puts "#{opponent.pokemon.name} attempts attack." 
- 	 theresult = opponentChoice(opponent,target,target_x,target_y,distance)
- 	 opponent.dont_attack = false
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
- 	 @turn+=1
-	 status_checks(opponent)
-     set_bgm 
-	 opponent.times_not_attacking=0
-	 
-	 
-	 if theresult==true
-	 opponent.attacked_last_call=true
- 	 opponent.battle_timer=opponent.get_battle_timer
-	 opponent.remaining_steps+=1
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
-	 end
-
-
-	 
-	 
-	 
-	 
-	 
-	elsif opponent.attacked_last_call==true
-	 opponent.attacked_last_call=false
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
-	 opponent.battle_timer-=1
-	 
-	 
-	 
-	 
-	 
-	elsif opponent.attacked_last_call==false
-	
-	
-	
-	
-	 opponent.times_not_attacking+=1
-	 opponent.battle_timer-=opponent.times_not_attacking
-	 opponent.battle_timer= 0 if opponent.battle_timer<0
-	 opponent.times_not_attacking=0
-     opponent.cannot_move=false if defined?(attacker.cannot_move)
-
-
-
-	 
-	end
-
-
-end
 
 
 end

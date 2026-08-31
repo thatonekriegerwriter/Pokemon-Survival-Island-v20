@@ -1,6 +1,14 @@
 module VisibleEncounterSettings
-  MAX_SPAWN = 16 # default 0
-  MAX_SPAWN_DAY = 8
+
+
+
+  MAX_SPAWN_MORNING = 6
+  MAX_SPAWN_NOON = 16
+  MAX_SPAWN_AFTERNOON = 12
+  MAX_SPAWN_EVENING = 10
+  MAX_SPAWN_NIGHT = 6
+  
+  
   # MAX_SPAWN is the max number of wild Encounters Events that can be spawned on the map at the same time.
   # <=0  - means infinite (no maximum)
   # >0   - maximum of wild encounters on the map  

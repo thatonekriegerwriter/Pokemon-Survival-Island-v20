@@ -5,7 +5,7 @@ class PokemonGlobalMetadata
 	
 	
 	def active_statues
-	 @active_statues = [] if @active_statues.nil?
+	 @active_statues = StatueCollection.new if @active_statues.nil? || !@active_statues.is_a?(StatueCollection)
 	 return @active_statues
 	end
 
@@ -24,6 +24,75 @@ class PokemonGlobalMetadata
 	
 end
 
+class StatueCollection
+STATUE_MAP_POSITIONS = {
+  :STATUE_01 => [27, 32, "Temporate Coast", ""],
+  :STATUE_02 => [34, 26, "Temperate Plains", "Stone Temple"],
+  :STATUE_03 => [33, 21, "Temperate Highlands", "Mountain"],
+  :STATUE_04 => [36, 33, "Temperate Ocean", ""],
+  :STATUE_05 => [41, 23, "Temperate Marsh", "Deep Swamp Dungeon"],
+  :STATUE_06 => [50, 30, "Temperate Marsh", "Deep Marsh"],
+  :STATUE_07 => [26, 14, "Frigid Highlands", "Xatu Village"],
+  :STATUE_08 => [50, 30, "Tropical Coast", "Oil Tanker"],
+ # :STATUE_09 => [26, 17],
+  :STATUE_10 => [26, 14, "Northern Highlands", ""],
+  :STATUE_11 => [8, 6, "Atmosphere", "Mountain Skies"],
+  :STATUE_99 => [9, 19, "Tropical Jungle", "Temple Tech Lab"]
+}
+  def initialize
+    @statues = {}
+  end 
+
+  def register(id, data)
+    return false if @statues.key?(id)
+    @statues[id] = data
+	return true 
+  end
+  
+  def length
+    @statues.length
+  end 
+  
+  def [](id)
+    @statues[id]
+  end
+
+  def each(&block)
+    @statues.each(&block)
+  end
+  
+  def map_id(id)
+    @statues[id][:map_id]
+  end 
+  
+  def x(id)
+    @statues[id][:x]
+  end 
+  
+  def y(id)
+    @statues[id][:y]
+  end 
+  
+  def map_x(id)
+    @statues[id][:map_x]
+  end 
+  
+  def map_y(id)
+    @statues[id][:map_y]
+  end 
+  
+  def statue_name(id)
+    @statues[id][:statue_name]
+  end 
+  
+  def point_of_interest(id)
+    @statues[id][:point_of_interest]
+  end 
+  
+  def delete(id)
+    @statues.delete(id)
+  end 
+end 
 
 
    def pbUnlockPlayerClass(aclass=nil)
@@ -190,14 +259,25 @@ class StatueData
     attr_accessor :power
     attr_accessor :charging
     attr_accessor :time_last_updated
+    attr_accessor :power_at_charge_start
     attr_accessor :time_recharging
     attr_accessor :time_recharging2
     attr_accessor :evo_stones
     attr_accessor :broken
     attr_accessor :version
     attr_accessor :solved
-
-	
+  
+  def id
+   return :STATUE 
+  end 
+  def event_id=(value)
+    @event_id = value 
+  end 
+  
+  def event_id
+    @event_id 
+  end 
+  
   def initialize(event = nil)
     @event = event if !event.nil?
     @star_pieces = [0,0]
@@ -249,7 +329,6 @@ class StatueData
   end
 
   def update
-   $ExtraEvents.berry_plants[[@event.map_id,@event.id]] = StoredEvent.new(@event.map_id,@event,:STATUE) if $ExtraEvents.berry_plants[[@event.map_id,@event.id]].nil?
     return if @health==0
 	 return if @broken == true && @power>=100
     time_now = pbGetTimeNow
@@ -268,9 +347,9 @@ class StatueData
 	  end
 	   @power +=(10*time)
 	 else
-    puts @power
+  #  puts @power
 	  @power +=(5*time) if @power<100
-    puts @power
+  #  puts @power
 	 
 	 end
 	 if @power>=100 && @broken == true
@@ -318,8 +397,17 @@ class StatueData
   
     end
   end 
-
-
+  def statue_id
+    :"STATUE_#{version.to_s.rjust(2, "0")}"
+  end
+  def register_self
+    raise if statue_id == :STATUE_09
+    registry = {:map_id => @event.map_id, :x => @event.x, :y => @event.y}
+    $PokemonGlobal.active_statues.register(statue_id, registry)
+  end 
+  def unregister_self
+    $PokemonGlobal.active_statues.delete(statue_id)
+  end 
 
 end
 
@@ -419,7 +507,7 @@ def pbTeleportStatues1
 	   statue.reset
     end
 
-   $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]] = StoredEvent.new(this_event.map_id,this_event,:STATUE) if $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]].nil?	
+  # $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]] = StoredEvent.new(this_event.map_id,this_event,:STATUE) if $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]].nil?	
 	
     if statue
     statue.solved = true if statue.version == 1 || statue.version == 7
@@ -436,7 +524,7 @@ def pbTeleportStatues1
      pbMessage(_INTL("The Spirit Statue has been rebuilt. It will take some time for it to rebuild its power."))
 	elsif statue.power>=100 && statue.charging==true
      pbMessage(_INTL("The Spirit Statue has finished rebuilding its spiritual energy. It can return to normal use."))
-	   $PokemonGlobal.active_statues << $game_map.map_id
+	   statue.register_self
 	   statue.charging = false
 	   statue.broken = false
      pbSetSelfSwitch(this_event.id, "A", true)  
@@ -451,10 +539,9 @@ def pbTeleportStatues1
        $player.heal_self
 	   end
 	   statue.charging = false
-	   $PokemonGlobal.active_statues << $game_map.map_id
+	   statue.register_self
 	   this_event.turn_left
 	   pbWait(2)
-	   pbTeleportStatues2
      pbSetSelfSwitch(this_event.id, "A", true)  
 	 
 	 end
@@ -463,14 +550,13 @@ def pbTeleportStatues1
 	
      pbMessage(_INTL("This is a Spirit Statue. Once activated, the spirit inside will aid you with some of its power."))
 	 if pbConfirmMessage(_INTL("Touch Statue?"))
-	   $PokemonGlobal.active_statues << $game_map.map_id
+	   statue.register_self
 	   pbMessage(_INTL("It doesn't seem to react at first, before..."))
 	   pbMEPlay("Pokemon Healing")
        $player.heal_party
        $player.heal_self
 	   this_event.turn_left
 	   pbWait(2)
-	   pbTeleportStatues2
 	   pbUnlockPlayerClass if $player.playerclass.id==:ACTOR
        pbSetSelfSwitch(this_event.id, "A", true)  
 	 end
@@ -483,14 +569,13 @@ def pbTeleportStatues1
 	  statue.puzzle
 	  if statue.solved == true
 	 if pbConfirmMessage(_INTL("Touch Statue?"))
-	   $PokemonGlobal.active_statues << $game_map.map_id
+	   statue.register_self
 	   pbMessage(_INTL("It doesn't seem to react at first, before..."))
 	   pbMEPlay("Pokemon Healing")
        $player.heal_party
        $player.heal_self
 	   this_event.turn_left
 	   pbWait(2)
-	   pbTeleportStatues2
 	   pbUnlockPlayerClass if $player.playerclass.id==:ACTOR
        pbSetSelfSwitch(this_event.id, "A", true)  
 	 end
@@ -517,6 +602,7 @@ command = 0
        interp.setVariable(statue)
 	   statue.reset
     end
+	statue.register_self
    $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]] = StoredEvent.new(this_event.map_id,this_event,:STATUE) if $ExtraEvents.berry_plants[[this_event.map_id,this_event.id]].nil?	
 	if $game_temp.carried_evo_stones.length>0
 	  $game_temp.carried_evo_stones.each do |stone|
@@ -590,7 +676,7 @@ command = 0
       cmd_rest     = -1
       cmd_quit     = -1
       commands[cmd_level_up = commands.length] = _INTL('Level Up') if $player.party.length>0
-      commands[cmd_move_statues = commands.length] = _INTL('Move Between Statues') if $PokemonGlobal.active_statues.length>1
+      commands[cmd_move_statues = commands.length] = _INTL('Move Between Statues') #if $PokemonGlobal.active_statues.length>1
       commands[cmd_present_pokemon = commands.length] = _INTL('Learn Move') if $player.party.length>0
       commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.playerclass.id==:ACTOR
       commands[cmd_evolve = commands.length]  = _INTL('Use Evo Stone') if statue.evo_stones.length > 0
@@ -612,7 +698,7 @@ command = 0
 	 if statue.power-10>=0
 	   statue.power-=10
 
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
 	  elsif statue.power<=0
@@ -626,7 +712,7 @@ command = 0
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
 	  this_event.turn_down
 
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
      end
@@ -641,23 +727,23 @@ command = 0
 	   statuewindow.dispose if statuewindow
 	if true
 	pbDisposeMessageWindow(msgwindow)
-	 if statue.star_pieces == [1,1] && statue.power>100
-   	  pbShowTeleportMap if $game_temp.fly_destination.nil?
+	 if statue.power>=100
+   	  pbShowTeleportMap(statue) if $game_temp.fly_destination.nil?
 	  statue.power-=100 if statue.power-100>=0
-	   pbMessage(_INTL("Nothing is different about it physically, but something feels different."))
-	  if statue.power<=0 && statue.star_pieces==[1,1] || [1,0] || [0,1]
-	  this_event.turn_down
-      pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+	  
+	  
+	  if statue.power<=0 && [[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)
+	   this_event.turn_down
+       pbMessage(_INTL("The Star Pieces crumble to dust."))
+       statue.star_pieces = [0,0]
 	  end
-	  if statue.power<=0
-	  this_event.turn_down
-     end	
+	  
+	  
+	  this_event.turn_down if statue.power<=0
       pbTeleportToLocation
 	else
      pbMessage(_INTL("The Statue doesn't have the energy to move you somewhere."))
 	  this_event.turn_down
-      pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
     end
    end
@@ -671,7 +757,7 @@ command = 0
 	 if statue.power-50>=0
 	   statue.power-=50
 
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
 	  elsif statue.power<=0
@@ -698,7 +784,7 @@ command = 0
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
 	  this_event.turn_down
 
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
      end
@@ -808,23 +894,24 @@ command = 0
 	if statue.power-5<1
      pbMessage(_INTL("The Statue doesn't have enough energy to store your memories!"))
 	  this_event.turn_down
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
 	  elsif statue.power<=0
 	  this_event.turn_down
      end	
 	else
-	statue.power-=5
-	  if (statue.star_pieces==[1,1] || [1,0] || [0,1]) && statue.power<=0
+	this_event.clear_starting
+    scene = PokemonSave_Scene.new
+    screen = PokemonSaveScreen.new(scene)
+    statue.power-=5 
+	status.power+=5 unless screen.pbSaveScreen==true
+	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
       statue.star_pieces = [0,0]
 	  elsif statue.power<=0
 	  this_event.turn_down
      end	
-    scene = PokemonSave_Scene.new
-    screen = PokemonSaveScreen.new(scene)
-    screen.pbSaveScreen
 	end
 
 
@@ -927,8 +1014,7 @@ command = 0
      pbMessage(_INTL("You feel some energy leave your body."))
 	 statue.power_at_charge_start = statue.power
       statue.charging = true
-	  
-	 $PokemonGlobal.active_statues.delete($game_map.map_id)
+	  statue.unregister_self
       pbSetSelfSwitch(this_event.id, "A", false)  
       break
 
@@ -959,7 +1045,7 @@ command = 0
     end
     else
 	 
-	 $PokemonGlobal.active_statues << $game_map.map_id
+	 statue.register_self
      pbSetSelfSwitch(this_event.id, "B", true)  
      pbMessage(_INTL("The Statue has been damaged, and will need to be repaired."))
 	 if pbConfirmMessage(_INTL("Would you like to attempt a repair?"))
@@ -1007,9 +1093,11 @@ command = 0
     case command
 	when 0   # Save Game
     pbDisposeMessageWindow(msgwindow)
+	this_event.clear_starting
     scene = PokemonSave_Scene.new
     screen = PokemonSaveScreen.new(scene)
-    screen.pbSaveScreen
+    statue.power-=5 
+	status.power+=5 unless screen.pbSaveScreen
    else
       break
       pbDisposeMessageWindow(msgwindow)
@@ -1023,6 +1111,14 @@ end
 
 
 def pbTeleportStatues4(home=false)
+	interp = pbMapInterpreter
+    this_event = interp.get_self
+    statue = interp.getVariable
+    if !statue || statue.is_a?(Array)
+       statue = StatueData.new(this_event)
+       interp.setVariable(statue)
+	   statue.reset
+    end
 command = 0
   loop do
     msgwindow = pbCreateMessageWindow(nil,nil)
@@ -1036,7 +1132,7 @@ command = 0
     when 0   # Use Statue
     pbDisposeMessageWindow(msgwindow)
 	  pbMessage(_INTL("The Statue is now sparking. This doesn't feel safe."))
-   	  pbShowTeleportMap(-1, false) if $game_temp.fly_destination.nil?
+   	  pbShowTeleportMap(statue) if $game_temp.fly_destination.nil?
 	  if rand(2)==1
 	  $game_temp.fly_destination[0]=255
 	  $game_temp.fly_destination[1]=26
@@ -1050,9 +1146,11 @@ command = 0
     
 	when 1   # Save Game
     pbDisposeMessageWindow(msgwindow)
+	this_event.clear_starting
     scene = PokemonSave_Scene.new
     screen = PokemonSaveScreen.new(scene)
-    screen.pbSaveScreen
+    statue.power-=5 
+	status.power+=5 unless screen.pbSaveScreen
     else
       break
       pbDisposeMessageWindow(msgwindow)

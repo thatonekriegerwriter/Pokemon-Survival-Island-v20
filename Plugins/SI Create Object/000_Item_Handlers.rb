@@ -1,246 +1,3 @@
-module ItemHandlers
-  attr_reader :hash
-  UseFromBox          = ItemHandlerHash.new
-  UseFromEvent          = ItemHandlerHash.new
-
-
-
-  def self.hasUseText(item)
-    return !UseText[item].nil?
-  end
-
-  def self.hasOutHandler(item)                       # Shows "Use" option in Bag
-    return !UseFromBag[item].nil? || !UseInField[item].nil? || !UseOnPokemon[item].nil?
-  end
-
-  def self.hasUseInFieldHandler(item)           # Shows "Register" option in Bag
-    return !UseInField[item].nil?
-  end
-
-  def self.hasUseOnPokemon(item)
-    return !UseOnPokemon[item].nil?
-  end
-
-  def self.hasUseOnPokemonMaximum(item)
-    return !UseOnPokemonMaximum[item].nil?
-  end
-
-  def self.hasUseInBattle(item)
-    return !UseInBattle[item].nil?
-  end
-
-  def self.hasBattleUseOnBattler(item)
-    return !BattleUseOnBattler[item].nil?
-  end
-
-  def self.hasBattleUseOnPokemon(item)
-    return !BattleUseOnPokemon[item].nil?
-  end
-
-  # Returns text to display instead of "Use"
-  def self.getUseText(item)
-    return UseText.trigger(item)
-  end
-
-  # Return value:
-  # 0 - Item not used
-  # 1 - Item used, don't end screen
-  # 2 - Item used, end screen
-  def self.triggerUseFromBag(item)
-    ret = 0
-    ret = UseFromBag.trigger(item) if UseFromBag[item]
-    # No UseFromBag handler exists; check the UseInField handler if present
-    if UseInField[item]
-      ret = (UseInField.trigger(item)) ? 1 : 0
-    end
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==1 && !UseInField[item]
-    return ret
-  end
-
-  # Returns whether item can be used
-  def self.triggerConfirmUseInField(item)
-    return true if !ConfirmUseInField[item]
-    return ConfirmUseInField.trigger(item)
-  end
-
-  # Return value:
-  # -1 - Item effect not found
-  # 0  - Item not used
-  # 1  - Item used
-  def self.triggerUseInField(item)
-    ret = -1 if !UseInField[item]
-    ret = (UseInField.trigger(item)) ? 1 : 0
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==1
-    return ret
-  end
-
-  # Returns whether item was used
-  def self.triggerUseOnPokemon(item, qty, pkmn, scene)
-    return false if !UseOnPokemon[item] && !UseOnPokemon[item.id]
-    ret = UseOnPokemon.trigger(item, qty, pkmn, scene)
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==true
-    return ret
-  end
-
-  # Returns the maximum number of the item that can be used on the Pokémon at once.
-  def self.triggerUseOnPokemonMaximum(item, pkmn)
-    return 1 if !UseOnPokemonMaximum[item]
-    return 1 if !Settings::USE_MULTIPLE_STAT_ITEMS_AT_ONCE
-    return [UseOnPokemonMaximum.trigger(item, pkmn), 1].max
-  end
-
-  def self.triggerCanUseInBattle(item, pkmn, battler, move, firstAction, battle, scene, showMessages = true)
-    ret = false
-    ret = true if !CanUseInBattle[item]   # Can use the item by default
-    ret = CanUseInBattle.trigger(item, pkmn, battler, move, firstAction, battle, scene, showMessages)
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==true
-    return ret 
-  end
-
-  def self.triggerUseInBattle(item, battler, battle)
-    ret = UseInBattle.trigger(item, battler, battle)
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==true
-    return ret
-  end
-
-  # Returns whether item was used
-  def self.triggerBattleUseOnBattler(item, battler, scene)
-    return false if !BattleUseOnBattler[item]
-    pbEatingPkmn(pkmn,item) if item.data.is_berry? || item.data.is_foodwater?
-    ret = BattleUseOnBattler.trigger(item, battler, scene)
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==true
-    return ret
-  end
-
-  # Returns whether item was used
-  def self.triggerBattleUseOnPokemon(item, pkmn, battler, choices, scene)
-    return false if !BattleUseOnPokemon[item]
-    ret = BattleUseOnPokemon.trigger(item, pkmn, battler, choices, scene)
-    pbEatingPkmn(pkmn,item) if (item.data.is_berry? || item.data.is_foodwater?) && ret==true
-    return ret
-  end
-
-
-  def self.hasUseFromBox(item)
-    return !UseFromBox[item].nil?
-  end
-
-  def self.hasUseFromEvent(item)
-    return !UseFromEvent[item].nil?
-  end
-  
-  def self.triggerUseFromBox(item, event=nil)
-	  return if item.nil?
-    return UseFromBox.triggerpokemon(item, event) if item.is_a? Pokemon
-    return UseFromBox.trigger(item, event) if UseFromBox[item]
-    if UseInField[item]
-      return (UseInField.trigger(item)) ? 1 : 0
-    end
-    if UseFromBag[item]
-      return (UseFromBag.trigger(item)) ? 1 : 0
-    end
-    return 0
-  end
-  
-
-  def self.triggerUseFromEvent(item, *args)
-    item = ItemStorageHelper.get_item_data(item) if item.is_a?(Symbol)
-    return UseFromEvent.trigger(item, *args) if UseFromEvent[item]
-    return 0
-  end
-end
-class HandlerHash2
-
-  def trigger(sym, *args)
-    handler = self[sym.id] if sym.respond_to?("id") 
-    return handler&.call(sym, *args)
-  end
-  def triggerpokemon(sym, *args)
-    handler = self[sym]
-    return handler&.call(sym, *args)
-  end
-  
-  def [](sym)
-    return @hash[sym.id] if sym && sym.respond_to?("id")  && @hash[sym.id]
-    return @hash[sym] if sym && !sym.respond_to?("id") && @hash[sym]
-    @add_ifs.each do |add_if|
-      return add_if[1] if add_if[0].call(sym)
-    end
-    return nil
-  end
-  
-  def add(sym, handler = nil, &handlerBlock)
-    if ![Proc, Hash].include?(handler.class) && !block_given?
-      raise ArgumentError, "#{self.class.name} for #{sym.inspect} has no valid handler (#{handler.inspect} was given)"
-    end
-    @hash[sym] = handler || handlerBlock if sym
-  end
-
-  def addIf(conditionProc, handler = nil, &handlerBlock)
-    if ![Proc, Hash].include?(handler.class) && !block_given?
-      raise ArgumentError, "addIf call for #{self.class.name} has no valid handler (#{handler.inspect} was given)"
-    end
-    @add_ifs.push([conditionProc, handler || handlerBlock])
-  end
-
-
-end
-
-class CraftingStationData
-    attr_accessor :time_last_updated
-    attr_accessor :time_active
-    attr_accessor :fuel
-	
-	
-    attr_accessor :reset
-    attr_accessor :electronic
-    attr_accessor :on
-	
-	
-    attr_accessor :power
-    attr_accessor :connected_to
-    attr_accessor :time_running
-    attr_accessor :network
-
-
-	
-  def initialize
-    @time_last_updated = pbGetTimeNow.to_i
-    @time_active         = 0
-	
-    @reset = false
-    @fuel = 0.0
-	
-    @electronic = false
-    @on = 0
-	
-    @power = 0
-    @connected_to = nil
-    @time_running       = 0
-    @network = {}
-  end
-  
-  def still_me?
-	  return true 
-  end
-  
-  def update
-  end
-  
-  def refresh
-    @time_last_updated = pbGetTimeNow.to_i
-    @time_active         = 0
-    @reset = false
-    @fuel = 0.0
-    @electronic = false
-    @on = 0
-    @power = 0
-    @connected_to = nil
-    @time_running       = 0
-    @network = {}
-  end 
-
-end
 
 
 def getCampExit
@@ -300,959 +57,6 @@ def reduceStaminaBasedOnItem(item)
     return false
 end
 
-
-def pbDisplayPowerWindow(msgwindow,statue)
-  moneyString=_INTL("{1}/100",statue.power.to_s_formatted)
-  goldwindow=Window_AdvancedTextPokemon.new(_INTL("Power: <ar>{1}</ar>",moneyString))
-  #goldwindow.setSkin("Graphics/Windowskins/goldskin")
-  goldwindow.resizeToFit(goldwindow.text,Graphics.width)
-  goldwindow.width=160 if goldwindow.width<=160 
-  if msgwindow.y==0
-    goldwindow.y=Graphics.height-goldwindow.height
-  else
-    goldwindow.y=0
-  end
-  goldwindow.viewport=msgwindow.viewport
-  goldwindow.z=msgwindow.z
-  return goldwindow
-end
-
-def powerGenerators(type)
-action = []
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-case type.id
-when :COALGENERATOR
-commands=[]
-commands.push(_INTL"Fuel")
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
-	  #Fueling
-elsif commandMail == 1
- #Connection UI
-elsif commandMail == 2
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-
-
-when :SOLARGENERATOR
-commands=[]
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
- #Connection UI
-elsif commandMail == 1
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-
-
-
-when :WINDGENERATOR
-commands=[]
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
- #Connection UI
-elsif commandMail == 1
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-
-
-
-when :HYDROGENERATOR
-commands=[]
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
- #Connection UI
-elsif commandMail == 1
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-
-
-
-
-when :POKEGENERATOR
-commands=[] 
-commands.push(_INTL("Assign")) 
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
-commandMail = pbMessage(_INTL("What are you going to do?"),commands, -1)
- if commandMail == 0
-elsif commandMail == 1
- #Connection UI
-elsif commandMail == 2
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-
-
-
-
-
-end
-
-end
-
-def powerConsumersCrafting(type)
-action = []
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-
-#pbSetSelfSwitch(this_event, "A", true)
-commands=[]
-commands.push(_INTL("Craft"))
-commands.push(_INTL("Turn Off")) 
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-   commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
-	  pbCraftingBench(type, localMeter)
-elsif commandMail == 1
- #Turn On/Off
-elsif commandMail == 2
- #Connection UI
-elsif commandMail == 3
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-end
-
-def powerConsumersStorage(type)
-action = []
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-
-#pbSetSelfSwitch(this_event, "A", true)
-commands=[]
-commands.push(_INTL("Store"))
-commands.push(_INTL("Turn Off")) 
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-  msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-  pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
- commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
-	  pbCraftingBench(type, localMeter)
-elsif commandMail == 1
- #Turn On/Off
-elsif commandMail == 2
- #Connection UI
-elsif commandMail == 3
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-
-
-end
-
-def powerTransmitters(type)
-action = []
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-commands=[]
-commands.push(_INTL("Check Power")) 
-commands.push(_INTL("Connect")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-  msgwindow = pbCreateMessageWindow(nil,nil)
-  powerwindow = pbDisplayPowerWindow(msgwindow,localMeter)
-  pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
- commandMail = pbShowCommands(msgwindow,commands,-1)
-pbDisposeMessageWindow(msgwindow)
-powerwindow.dispose
- if commandMail == 0
-   pbMessage(_INTL("#{GameData::Item.try_get(type).name} has #{localMeter} power."))
-elsif commandMail == 1
- #Connection UI
-elsif commandMail == 2
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(type).name}?"))
-	  $bag.add(type)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
-end
-else
-	 return -1
-end
-
-
-
-
-
-end
-
-def item_crates(item=:ITEMCRATE)
-$PokemonGlobal.itemStorageSystems = {} if $PokemonGlobal.itemStorageSystems.nil?
-action = []
-interp = pbMapInterpreter
-this_event = interp.get_self
-key_id = this_event.id
-if item.is_a?(Symbol)
-puts "Does this run?"
-storage = interp.getVariable
-item = ItemStorageHelper.get_item_data(item) 
-item.crate_storage = storage[0] if storage.is_a? Array
-item.crate_storage = storage if !storage.is_a? Array
-storage_key = storage[0].name if storage.is_a? Array
-storage_key = storage.name if !storage.is_a? Array
-$PokemonGlobal.itemStorageSystems[storage_key] = item.crate_storage
-else 
-storage = item.crate_storage
-end
-
-if storage.empty? || storage.nil?
-creation=PCItemStorage.new
-storage_key = creation.name
-$PokemonGlobal.itemStorageSystems[storage_key] = creation
-storage = $PokemonGlobal.itemStorageSystems[storage_key]
-item.crate_storage = storage
-end
-
-
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateileft.png",0,this_event.direction,0])
-@move_route_waiting = true if !$game_temp.in_battle
-pbSEPlay("Voltorb Flip tile")
-Inventory.invWindow(:ITEMCRATE,localMeter,item.crate_storage)
-pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateidown.png",0,this_event.direction,0])
-@move_route_waiting = true if !$game_temp.in_battle
-
-end
-
-def icebox_crates(item=:ICEBOX)
-$PokemonGlobal.itemStorageSystems = {} if $PokemonGlobal.itemStorageSystems.nil?
-action = []
-interp = pbMapInterpreter
-this_event = interp.get_self
-key_id = this_event.id
-
-storage = item.crate_storage
-if storage.empty? || storage.nil?
-creation=IceBoxStorage.new
-storage_key = creation.name
-$PokemonGlobal.iceboxStorageSystems[storage_key] = creation
-storage = $PokemonGlobal.iceboxStorageSystems[storage_key]
-item.crate_storage = storage
-end
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateileft.png",0,this_event.direction,0])
-@move_route_waiting = true if !$game_temp.in_battle
-pbSEPlay("Voltorb Flip tile")
-Inventory.invWindow(:ITEMCRATE,localMeter,item.crate_storage)
-pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateidown.png",0,this_event.direction,0])
-@move_route_waiting = true if !$game_temp.in_battle
-
-end
-
-
-def pokemon_crates(item=:PKMNCRATE)
-
-$PokemonGlobal.pokemonStorageSystems = {} if $PokemonGlobal.pokemonStorageSystems.nil?
-
-action = []
-interp = pbMapInterpreter
-this_event = interp.get_self
-key_id = this_event.id
-
-
-if item.is_a?(Symbol)
-storage = interp.getVariable
-item = ItemStorageHelper.get_item_data(item) 
-item.crate_storage = storage[0] if storage.is_a? Array
-item.crate_storage = storage if !storage.is_a? Array
-storage_key = storage[0].name if storage.is_a? Array
-storage_key = storage.name if !storage.is_a? Array
-$PokemonGlobal.pokemonStorageSystems[storage_key] = item.crate_storage
-else
-storage = item.crate_storage
-end
-
-if !storage.is_a?(PokemonStorage) && storage.empty?
-creation=PokemonStorage.new(1)
-storage_key = creation.name
-$PokemonGlobal.pokemonStorageSystems[storage_key] = creation
-storage = $PokemonGlobal.pokemonStorageSystems[storage_key]
-item.crate_storage = storage
-end
-
-
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-
-if false
-commands=[]
-commands.push(_INTL"Use Storage ")
-commands.push(_INTL("Set Storage Name")) 
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-commandMail = pbMessage(_INTL("What are you going to do?"),commands, -1)
- if commandMail == 0
-      pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateleft.png",0,this_event.direction,0])
-      @move_route_waiting = true if !$game_temp.in_battle
-      pbSEPlay("Voltorb Flip tile")
-      storage.active=true
-      item.crate_storage = storage
-      storage_key = storage.name
-      $PokemonGlobal.pokemonStorageSystems[storage_key] = item.crate_storage
-      $PokemonStorage = storage
-      pbStorageCrateMenu(storage)
-      pbMoveRoute(this_event, [PBMoveRoute::Graphic,"cratedown.png",0,this_event.direction,0])
-      @move_route_waiting = true if !$game_temp.in_battle
-elsif commandMail == 1
-      name = pbFreeTextNoWindow("#{storage.name}",false,256,Graphics.width,false)
-      if name != "" && !name.nil?
-	    storage.changeName(name)
-	    item.crate_storage = storage
-	    storage_key = storage.name
-	    $PokemonGlobal.pokemonStorageSystems[storage_key] = item.crate_storage
-        $PokemonStorage = storage
-	    pbMessage(_INTL("#{storage.name} is now #{name}."))
-	  else
-	    pbMessage(_INTL("#{storage.name} has not had their name changed."))
-	  end
-elsif commandMail == 2
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(item).name}?"))
-      $bag.add(item)
-      storage.active=false
-      item.crate_storage = storage
-      storage_key = storage.name
-      $PokemonStorage = storage
-      $PokemonGlobal.pokemonStorageSystems[storage_key] = item.crate_storage
-      if $PokemonStorage == storage
-      $PokemonGlobal.pokemonStorageSystems.keys.each do |i|
-	  next if !$PokemonGlobal.pokemonStorageSystems[i].active?
-	  next if $PokemonGlobal.pokemonStorageSystems[i].full?
-        $PokemonStorage = $PokemonGlobal.pokemonStorageSystems[i]
-	     pbMessage(_INTL("Storage has been redirected to #{$PokemonStorage.name}."))
-      end
-	  if $PokemonStorage == storage
-	   $PokemonStorage == nil
-	  end
-	 end 
-
-	  if !$map_factory
-	    $game_map.removeThisEventfromMap(key_id)
-	  else
-	    mapId = $game_map.map_id
-	    $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-	  end
-	  deletefromSIData(key_id)
- end
-else
-	 return -1
-end
-else
-      pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateleft.png",0,this_event.direction,0])
-      @move_route_waiting = true if !$game_temp.in_battle
-      pbSEPlay("Voltorb Flip tile")
-Inventory.invWindow(:PKMNCRATE,localMeter,item.crate_storage)
-      pbMoveRoute(this_event, [PBMoveRoute::Graphic,"cratedown.png",0,this_event.direction,0])
-      @move_route_waiting = true if !$game_temp.in_battle
-
-end 
-
-
-
-
-
-
-
-end
-
-def leggomyeggo
-elec = false
-action = []
-this_event = pbMapInterpreter.get_self
-key_id = this_event.id
-pkmn = this_event.type
-if true
-hpiv = pkmn.iv[:HP] & 15
-ativ = pkmn.iv[:ATTACK] & 15
-dfiv = pkmn.iv[:DEFENSE] & 15
-saiv = pkmn.iv[:SPECIAL_ATTACK] & 15
-sdiv = pkmn.iv[:SPECIAL_DEFENSE] & 15
-spiv = pkmn.iv[:SPEED] & 15
-hpev = pkmn.ev[:HP] & 15
-atev = pkmn.ev[:ATTACK] & 15
-dfev = pkmn.ev[:DEFENSE] & 15
-saev = pkmn.ev[:SPECIAL_ATTACK] & 15
-sdev = pkmn.ev[:SPECIAL_DEFENSE] & 15
-spev = pkmn.ev[:SPEED] & 15
-end
-
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,type)
-else
-
-commands=[]
-commands.push(_INTL"Check the Egg")
-commands.push(_INTL("Pat the Egg")) 
-commands.push(_INTL("Shake the Egg"))
-commands.push(_INTL("Pick Up the Egg"))
-commands.push(_INTL("Store Egg in Inventory"))
-commands.push(_INTL("Cancel"))
-commandMail = pbMessage(_INTL("What are you going to do?"),commands, -1)
- if commandMail == 0
-   pbEggCheck(pkmn)
- elsif commandMail == 1
-   pbMessage(_INTL("The Egg seems to bounce slightly."))
-   if pkmn.steps_to_hatch >= 3000
-    pkmn.steps_to_hatch -= 100
-    pkmn.happiness += 6
-    pkmn.loyalty += 6
-   elsif pkmn.steps_to_hatch >= 2000
-    pkmn.steps_to_hatch -= 75
-    pkmn.happiness += 6
-    pkmn.loyalty += 6
-   elsif pkmn.steps_to_hatch < 1000
-    pkmn.steps_to_hatch -= 50
-    pkmn.happiness += 6
-    pkmn.loyalty += 6
-   end
- elsif commandMail == 2
-   pbMessage(_INTL("You shake the Egg. It does not do anything in response."))
-   if pkmn.steps_to_hatch >= 3750
-    pkmn.steps_to_hatch -= 200
-    pkmn.happiness += 2
-    pkmn.loyalty -= 1
-   elsif pkmn.steps_to_hatch >= 3000
-    pkmn.steps_to_hatch -= 150
-    pkmn.happiness += 2
-    pkmn.loyalty -= 1
-   elsif pkmn.steps_to_hatch >= 2500
-    pkmn.steps_to_hatch -= 100
-    pkmn.happiness += 2
-    pkmn.loyalty -= 1
-   end
- 
- elsif commandMail == 3
-  pickMeUp(key_id,pkmn)
-
- elsif commandMail == 4
- if !$player.party_full?
- if pbConfirmMessage(_INTL("Would you like to pick up the Egg?"))
-	  $player.party.push(egg)
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
-end
- else
-   pbMessage(_INTL("You do not have enough space for the egg."))
- end
-
- else
-	 return -1
-end
-
-
-
-
-
-
-
-
-
-
-end
-end
-
-
-def campsiteDoorEntry
- 
- 
-$PokemonGlobal.pokecenterX = pbMapInterpreter.get_self.x
-$PokemonGlobal.pokecenterY = pbMapInterpreter.get_self.y+1
-$PokemonGlobal.pokecenterMapId = $game_map.map_id
-$PokemonGlobal.pokecenterDirection = 2
-    pbFadeOutIn {
-      $game_temp.player_new_map_id    = 398
-      $game_temp.player_new_x         = 2
-      $game_temp.player_new_y         = 6
-      $game_temp.player_new_direction = 8
-      pbDismountBike
-      $scene.transfer_player
-      $game_map.autoplay
-      $game_map.refresh
-    }
- 
-end
-
-
-def remove_dynamic_object(key_id)
-
-	  if !$map_factory
-       $game_map.removeThisEventfromMap(key_id)
-      else
-       mapId = $game_map.map_id
-       $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-      end
-	  deletefromSIData(key_id)
-
-
-
-end 
-
-
-
-ItemHandlers::UseFromEvent.add(:CRAFTINGBENCH, proc { |item, key_id|
-
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:UPGRADEDCRAFTINGBENCH, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:APRICORNCRAFTING, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:FURNACE, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:CAULDRON, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:GRINDER, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:MEDICINEPOT, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-else
- pbCraftingBench(item.id, localMeter)
-end
-}
-)
-
-
-ItemHandlers::UseFromEvent.add(:ELECTRICPRESS, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:ELECTRICICEBOX, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:SEWINGMACHINE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:APRICORNMACHINE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:ELECTRICFURNACE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:ELECTRICGRINDER, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:COALGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:SOLARGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:WINDGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:HYDROGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:POKEGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:HYDROGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerGenerators(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:MACHINEBOX, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  powerTransmitters(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:ITEMCRATE, proc { |item, key_id|\
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  item_crates(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:PKMNCRATE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  pokemon_crates(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:TORCH, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-end
-}
-)
-
-
-ItemHandlers::UseFromEvent.add(:BEDROLL, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pbErasePokemonCenter($game_map.map_id)
-pickMeUp(key_id,item)
-else
-pbBedCore(item)
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:PORTABLECAMP, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pbErasePokemonCenter(398)
-pickMeUp(key_id,item)
-else
-pbMessage(_INTL("It's a Campsite Tent."))
-end
-}
-)
-
-ItemHandlers::UseFromEvent.add(:RESEARCHTABLE, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(ResearchTableData)
-localMeter=ResearchTableData.new
-item.internal_data=localMeter
-end
-if Input.press?(Input::SHIFT)
-  pickMeUp(key_id,item)
-end
-}
-)
-
-
-ItemHandlers::UseFromEvent.add(:ICEBOX, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,item)
-else
-  icebox_crates(item)
-end
-}
-)
 
 class PositionMarker
   def initialize(x,y,viewport = Spriteset_Map.viewport, map = $game_map)
@@ -1369,170 +173,7 @@ class Game_Player < Game_Character
 end
 
 
-def pbGetObjectFunc(object,event)
-puts "GET OBJECT FUNC IS BEING USED"
-elec = false
-action = []
-this_event = pbMapInterpreter.get_self
-key_id = this_event.id
-case object
-when "Egg"
 
-return
-when :CRAFTINGBENCH
-action = [_INTL("Craft"),object] 
-
-when :UPGRADEDCRAFTINGBENCH
-action = [_INTL("Craft"),object] 
-
-when :APRICORNCRAFTING
-action = [_INTL("Craft"),object] 
-
-when :FURNACE
-action = [_INTL("Craft"),object] 
-
-when :CAULDRON
-pbCommonEvent(17)
-return
-
-when :GRINDER
-action = [_INTL("Craft"),object] 
-
-when :MEDICINEPOT
-action = [_INTL("Craft"),object] 
-
-when :ELECTRICPRESS
-  powerConsumersCrafting(object)
-
-return
-
-when :ELECTRICICEBOX
-  powerConsumersStorage(object)
-
-return
-
-when :SEWINGMACHINE
-  powerConsumersCrafting(object)
-
-return
-
-when :APRICORNMACHINE
-  powerConsumersCrafting(object)
-
-return
-
-when :ELECTRICFURNACE
-  powerConsumersCrafting(object)
-
-return
-
-when :ELECTRICGRINDER
-  powerConsumersCrafting(object)
-
-return
-
-when :COALGENERATOR
-  powerGenerators(object)
-
-return
-
-when :SOLARGENERATOR
-  powerGenerators(object)
-
-return
-
-when :WINDGENERATOR
-  powerGenerators(object)
-
-return
-
-when :HYDROGENERATOR
-  powerGenerators(object)
-
-return
-
-when :POKEGENERATOR
-  powerGenerators(object)
-
-return
-
-when :MEDICINEPOT
-action = [_INTL("Craft"),object] 
-elec = true
-
-when :MACHINEBOX
-  powerTransmitters(object)
-return
-when :ITEMCRATE
-item_crates
-return
-
-when :PKMNCRATE
-pokemon_crates
-return
-
-when :BEDROLL
-if Input.press?(Input::SHIFT)
-pickMeUp(key_id,object)
-else
-pbBedCore()
-end
-return
-
-when :PORTABLECAMP
-pbMessage(_INTL("It's a Campsite Tent."))
-when "CampsiteDoor"
-$PokemonGlobal.pokecenterX = pbMapInterpreter.get_self.x
-$PokemonGlobal.pokecenterY = pbMapInterpreter.get_self.y+1
-$PokemonGlobal.pokecenterMapId = $game_map.map_id
-$PokemonGlobal.pokecenterDirection = 2
-    pbFadeOutIn {
-      $game_temp.player_new_map_id    = 398
-      $game_temp.player_new_x         = 2
-      $game_temp.player_new_y         = 6
-      $game_temp.player_new_direction = 8
-      pbDismountBike
-      $scene.transfer_player
-      $game_map.autoplay
-      $game_map.refresh
-    }
-end
-if object!="CampsiteDoor"
-if Input.press?(Input::SHIFT)
-    type = $ExtraEvents.objects[key_id][2]
-	pickMeUp(key_id,type)
-	 return
-end
-if object==:PORTABLECAMP
-
-	 return
-end
-commands=[]
-commands.push(action[0])
-commands.push(_INTL("Pick Up"))
-commands.push(_INTL("Cancel"))
-commandMail = pbMessage(_INTL("What are you going to do?"),commands, -1)
- if commandMail == 0
- if pbConfirmMessage(_INTL("Would you like to pick up #{GameData::Item.try_get(action[1]).name}?"))
-	  $bag.add(action[1])
-	  if !$map_factory
-  $game_map.removeThisEventfromMap(key_id)
-else
-  mapId = $game_map.map_id
-  $map_factory.getMap(mapId).removeThisEventfromMap(key_id)
-end
-      deletefromSIData(key_id)
-end
-else
-	 return -1
-end
-
-end
-	  
-	  
-
-
-end
 
 def get_opposite_direction
   case $game_player.direction
@@ -1694,7 +335,7 @@ def throwing_range_logic(do_it, amt)
 	position_marker.y=start_end[1][1]
     pbSEPlay("GUI storage put down")
 	 end
-	 if Input.trigger?(Input::USE) && !start_end.nil? && (start_end[1][0]!=start_end[0][0]) && (start_end[1][1]!=start_end[0][1])
+	 if Input.trigger?(Input::USE) && !start_end.nil?
 	   
 	    turn,amt = player_turning_logic(start_end[1][0],start_end[1][1])
 	    $game_player.turn_generic(turn) 
@@ -1720,8 +361,9 @@ def throwing_range_logic(do_it, amt)
 end
 
 
-def throwing_range_logic2(do_it, amt)
-
+def throwing_range_logic_pokeball(amt)
+	 $game_temp.currently_throwing_pkmn = true
+     do_it = false 
 	 if (Input.trigger?(Input::JUMPUP)  || Input.scroll_v==1) && false
 	  if amt+1<=7
 	  position_marker.visible=false
@@ -1755,21 +397,21 @@ def throwing_range_logic2(do_it, amt)
     start_end = getLandingCoords2#getLandingCoords(amt)
 	position_marker = PositionMarker.new(start_end[1][0],start_end[1][1])
 	$game_temp.in_throwing=true
+	
 	$mouse.hide
 	loop do
 	Graphics.update
 	Input.update
 	$scene.update
 	position_marker.update
-
 	 temp = getLandingCoords2
 	 if start_end!=temp
-    start_end = temp
-	position_marker.x=start_end[1][0]
-	position_marker.y=start_end[1][1]
-    pbSEPlay("GUI storage put down")
+      start_end = temp
+	  position_marker.x=start_end[1][0]
+	  position_marker.y=start_end[1][1]
+      pbSEPlay("GUI storage put down")
 	 end
-	 if Input.trigger?(Input::USE) && !start_end.nil? && (start_end[1][0]!=start_end[0][0]) && (start_end[1][1]!=start_end[0][1])
+	 if Input.trigger?(Input::USE) && !start_end.nil? #&& (start_end[1][0]!=start_end[0][0]) && (start_end[1][1]!=start_end[0][1])
 	   
 	    turn,amt = player_turning_logic(start_end[1][0],start_end[1][1])
 	    $game_player.turn_generic(turn) 
@@ -1795,142 +437,87 @@ def throwing_range_logic2(do_it, amt)
 	
 	end
     $mouse.show
+	 $game_temp.currently_throwing_pkmn = false
   return do_it,amt,start_end
 end
 
-
+ def can_throw_pkmn?
+    return false if $game_temp.pokemon_calling==true
+    return false if $game_temp.in_throwing==true
+   # return false if $game_temp.preventspawns == true
+	return true 
+ end 
 
 ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn, event|
-    if pkmn.inworld==true && !pkmn.associatedevent.nil?
-	 if $game_map.events[pkmn.associatedevent].nil?
-	   pkmn.inworld=false
-	 end
-	end
-    if pkmn.inworld==false && !pkmn.associatedevent.nil?
-	 if !$game_map.events[pkmn.associatedevent].nil?
-	   pkmn.inworld=true
-	 end
-	end
-   # next false if $game_temp.preventspawns == true
-    next false if $game_temp.pokemon_calling==true
-    next false if pkmn.fainted?
-    next false if pkmn.egg?
-    next false if pkmn.dead?
-	next false if $game_temp.in_throwing==true
-    active_item=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-	 pkmn = active_item
-	 if pkmn.inworld==true && Input.press?(Input::CTRL)
-	    $game_temp.preventspawns = true
-       event = getOverworldPokemonfromPokemon(pkmn)
-	    $game_temp.preventspawns = false
-	   if !event.nil?
-	   pbReturnPokemon(event,true)
-	   else
-	   pkmn.inworld==false
-	   end
-
-    elsif pkmn.inworld==true
-	  if $PokemonGlobal.cur_stored_pokemon!=pkmn
-	   $PokemonGlobal.set_ball_hud_type(:MOVES,true,pkmn)
-	  end
-	else
-	if pbOverworldCombat.battle_rules.include?("Only-One-Mon") && get_overworld_pokemon_length == 1
+    pkmn.sanitize_in_world
+    next false if pkmn.unavailable?
+    next false if !can_throw_pkmn?
+    if pkmn.inworld==true && $PokemonGlobal.cur_stored_pokemon!=pkmn
+	  $PokemonGlobal.set_ball_hud_type(:MOVES,true,pkmn)
+	  next true
+	end 
+	next true if pkmn.inworld==true
+	if pbOverworldCombat.battle_rules.include?("Only-One-Mon") && refresh_overworld_pokemon_count == 1
 	  sideDisplay(_INTL("You can only have one Pokemon on the map right now!"))
 	  next false
 	end
-	amt=1
-	do_it = false
-	 $game_temp.currently_throwing_pkmn = true
-    do_it,amt,start_end = throwing_range_logic2(do_it, amt)
-	 $game_temp.currently_throwing_pkmn = false
-	if do_it==true
-     pbSEPlay("Battle throw")
-	 can_do = decreaseStamina(3.55*amt)
-	 if can_do == true && $game_player.pbFacingTerrainTag.can_surf_freely==false
-	 FollowingPkmn.toggle_off if FollowingPkmn.get_pokemon == pkmn
-	 #item.damage_bonus=amt
-     $game_temp.preventspawns=true
-     spriteindex = $scene.spriteset.addUserSprite(OWPokemonReleaseSprite.new(start_end,pkmn,$game_map,Spriteset_Map.viewport))
-	 holding_pattern(spriteindex)
-      id=$game_map.check_event(*start_end[1])
-     $game_temp.preventspawns=false
-      id=$game_map.check_event(*start_end[1])
-  if id
-   event = $game_map.events[id]
-     if event.is_a?(Game_PokeEvent)
-		poke = event.pokemon 
-		pbStoreTempForBattle()
-		if $PokemonGlobal.roamEncounter!=nil # i.e. $PokemonGlobal.roamEncounter = [i,species,poke[1],poke[4]]
+    do_it, amt, start_end = throwing_range_logic_pokeball(amt)
+    next false if !do_it
+	x,y = start_end[1]
+	can_do = decreaseStamina(3.55*amt)
+    next false unless can_do #&& $game_player.pbFacingTerrainTag.can_surf_freely==false
+    pbSEPlay("Battle throw")
+    sprite_index = $scene.spriteset.addUserSprite(OWPokemonReleaseSprite.new(start_end,pkmn,$game_map,Spriteset_Map.viewport))
+	holding_pattern(sprite_index)
+    event_id = $game_map.check_event(x, y)
+	enemy_present = event_id && $game_map.events[event_id] && $game_map.events[event_id].is_a?(Game_PokeEvent)
+    if enemy_present
+	   poke = $game_map.events[event_id].pokemon 
+       pbStoreTempForBattle()
+       if $PokemonGlobal.roamEncounter!=nil # i.e. $PokemonGlobal.roamEncounter = [i,species,poke[1],poke[4]]
         parameter1 = $PokemonGlobal.roamEncounter[0].to_s
         parameter2 = $PokemonGlobal.roamEncounter[1].to_s
         parameter3 = $PokemonGlobal.roamEncounter[2].to_s
         $PokemonGlobal.roamEncounter[3] != nil ? (parameter4 = '"'+$PokemonGlobal.roamEncounter[3].to_s+'"') : (parameter4 = "nil")
         $PokemonGlobal.roamEncounter = ["+parameter1+",:"+parameter2+","+parameter3+","+parameter4+"]
-		else
-        $PokemonGlobal.roamEncounter = nil
-		end
-		$PokemonGlobal.battlingSpawnedPokemon = true
-		if poke.status==:PARALYSIS||poke.status==:SLEEP||poke.status==:FROZEN
-        sideDisplay(_INTL("#{pkmn.name} got a quick hit on #{poke.name}!\\wtnp[10]"))
-        damage = getDamager(poke,1,:TACKLE,false)
-        poke.hp-= damage
-		end
-	  
-		if poke.fainted?
-        event.removeThisEventfromMap
-        pbPlayerEXP(poke,$player.able_party)
-        pbHeldItemDropOW(poke,true)
-		else
-        pbSingleOrDoubleWildBattle( $game_map.map_id, event.x, event.y, poke )
-        $PokemonGlobal.battlingSpawnedPokemon = false
-        event.removeThisEventfromMap
-        pbResetTempAfterBattle()
-		end
        else
-
-	   next if pkmn.in_world==true
-	    x,y = start_end[1]
-		pbSEPlay("Battle recall")
-		$game_temp.preventspawns=false if $DEBUG && Input.press?(Input::CTRL)
-	   next if pkmn.in_world==true
-	    pbPlacePokemon(x, y,pkmn)
-	    event_id = getOverworldPokemonfromPokemon(pkmn)
-		if !event_id.nil?
-		poke_event = $game_map.events[event_id]
-		pkmn.set_in_world(true,poke_event)
-       $game_temp.preventspawns=false
-		end
-		end
-    else
-	   
-	   next if pkmn.in_world==true
-	    x,y = start_end[1]
-		pbSEPlay("Battle recall")
-		$game_temp.preventspawns=false if $DEBUG && Input.press?(Input::CTRL)
-	   next if pkmn.in_world==true
-	    pbPlacePokemon(x, y,pkmn)
-	    event_id = getOverworldPokemonfromPokemon(pkmn)
-		if !event_id.nil?
-		poke_event = $game_map.events[event_id]
-		pkmn.set_in_world(true,poke_event)
-       $game_temp.preventspawns=false
-		end
-    end
+        $PokemonGlobal.roamEncounter = nil
+       end
+	   if poke.status==:PARALYSIS || poke.status==:SLEEP || poke.status==:FROZEN
+        sideDisplay(_INTL("#{pkmn.name} surprised #{poke.name}!\\wtnp[10]"))
+        pbSEPlay("Battle damage normal")
+        damage = pbOverworldCombat.getDamager(poke, 1, :TACKLE)
+        pbOverworldCombat.damagePokemon($game_map.events[event_id], damage)
+		next true if poke.fainted?
+       end
+       pbSingleOrDoubleWildBattle( $game_map.map_id, $game_map.events[event_id].x, $game_map.events[event_id].y, poke )
+       $PokemonGlobal.battlingSpawnedPokemon = false
+       $game_map.events[event_id].removeThisEventfromMap
+       pbResetTempAfterBattle()
+	   next true
+	end 
+	if !pbObjectIsPossible(x,y)
+	 sideDisplay(_INTL("Your Pokeball bounced off for some reason."))
+	 pbSEPlay("Player bump")
+     next false 
 	end
-	end
+	pbSEPlay("Battle recall") 
+	pbPlacePokemon(x, y, pkmn)
+	event = pkmn.event
+	next false if event.nil?
+	pbShowTipCardsGrouped(:OVERWORLD_PKMN) if !pbSeenTipCard?(:OVERWORLDPOKEMON)
 	
-	end
-	
-	
-	
-   $game_temp.preventspawns=false
-	next true
   }
 )
+
 
 ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_poke_ball? }, proc { |item, event|
     next if $player.is_it_this_class?(:RANGER,false)
 	next if $game_temp.in_throwing==true
+	if pbBoxesFull?
+	  sideDisplay(_INTL("There's no room for Pokémon!"))
+	  next
+	end 
 	if pbOverworldCombat.battle_rules.include?("Catchless")
 	  sideDisplay(_INTL("You can't catch anything right now!"))
 	next
@@ -1967,45 +554,63 @@ ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_po
 )
 
 
-
+ItemHandlers::UseFromBox.add(:POKEMONBRUSH,proc { |brush, facingEvent|
+   next unless facingEvent
+   pkmn = facingEvent.pokemon
+   time_delta = pbGetTimeNow.to_i - pkmn.time_last_brush
+   next if time_delta < 1800
+   pkmn.time_last_brush = pbGetTimeNow.to_i
+   pkmn.changeLoyalty("groom",pkmn)
+   if pkmn.species_data.egg_groups.include?(:Flying) && rand(255) < 3
+    item = ItemData.new(PetBedData::FEATHERS.sample)
+    quantity = rand(4)+1
+	if $bag.can_add?(item, quantity)
+	 $bag.add(item, quantity)
+	 itemAnim(item, quantity)
+     itemname = (quantity > 1) ? item.name_plural : item.name
+	 sideDisplay(_INTL("You brush out {1} {2} from {3}.", quantity, itemname, pkmn.name))
+	end 
+   
+   end 
+   pbSEPlay("pet", 80)
+   if pkmn.loyalty>=240
+	   $scene.spriteset.addUserAnimation(50,facingEvent.x,facingEvent.y,true,1)
+   elsif pkmn.loyalty<=30
+	   $scene.spriteset.addUserAnimation(36,facingEvent.x,facingEvent.y,true,1)
+   else
+	   $scene.spriteset.addUserAnimation(34,facingEvent.x,facingEvent.y,true,1)
+   end
+   pkmn.update_interacted
+   brush.decrease_durability(1)
+})
 
 ItemHandlers::UseFromBag.add(:HOE,proc{|item, event|
 	 facing = $game_player.pbFacingTile($game_player.direction, $game_player)
     terrain = $game_map.terrain_tag(facing[1], facing[2], true)
 	next 0 if !$game_map.metadata&.outdoor_map
 	can_do = reduceStaminaBasedOnItem(item)
-	 next 0 if can_do == false
-    if !pbObjectIsPossible(facing[1],facing[2])
-	  	 pbSEPlay("shovelhittingrock")
-	     next 0 
+	next 0 if can_do == false
+    unless can_hoe_here?(facing, terrain)
+	  pbSEPlay("shovelhittingrock")
+	  next 0 
 	end
-
- if item.decrease_durability(1)
-	  if !pbSeenTipCard?(:HOE)
-	    pbShowTipCard(:HOE)
-	  end
+    if item.decrease_durability(1)
+	  pbShowTipCard(:HOE) if !pbSeenTipCard?(:HOE)
 	  pbSEPlay("shovel")
 	  pbPlaceBerryPlant(facing[1],facing[2])
       next 2
-
-
-
-
-
-
-
-
-
- end
-     next 0
+    end
+    next 0
 
 	}
 )
-def fuck_mothering_rabbit(item)
+
+
+def is_consumable_item?(item)
 return (GameData::Item.get(item).is_berry? && GameData::Item.get(item).name.include?("Berry")) || GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).name.include?("Potion") || GameData::Item.get(item).id==:REVIVALHERB || GameData::Item.get(item).id==:HEALPOWDER || GameData::Item.get(item).id==:ENERGYPOWDER || GameData::Item.get(item).id==:ENERGYROOT
 end
 
-ItemHandlers::UseFromBox.addIf(proc { |item| fuck_mothering_rabbit(item) }, proc { |item, event|
+ItemHandlers::UseFromBox.addIf(proc { |item| is_consumable_item?(item) }, proc { |item, event|
     item_data = item.data
 	amt=1
 	do_it = false
@@ -2015,11 +620,13 @@ ItemHandlers::UseFromBox.addIf(proc { |item| fuck_mothering_rabbit(item) }, proc
    id=$game_map.check_event(*start_end[1])
    if id&.is_a?(Game_Player)
        if item_data.is_foodwater? || item_data.is_berry?
-        ret = pbEating($bag,item)
+        ret = pbNeoEating(item)
+		$bag.remove(item, 1)
         next 2
 	   
 	   elsif item_data.is_medicine?
-        ret = pbMedicine($bag,item)
+        ret = pbNeoMedicine(item)
+		$bag.remove(item, 1)
         next 2
 	   
 	   else
@@ -2060,7 +667,7 @@ ItemHandlers::UseFromBox.addIf(proc { |item| fuck_mothering_rabbit(item) }, proc
          end
        next 2
 	   else
-        sideDisplay(_INTL("{2} doesn't need (a) {1} right now.", item.name,pkmn.name)) 
+        sideDisplay(_INTL("{2} doesn't need {1} right now.", item.name,pkmn.name)) 
 	 end
       else
         sideDisplay(_INTL("{2} doesn't need (a) {1} right now.", item.name,pkmn.name)) 
@@ -2088,13 +695,16 @@ ItemHandlers::UseFromBox.addIf(proc { |item| fuck_mothering_rabbit(item) }, proc
         ret = pbUseItem($bag, item, $scene)
         next 2
 	  elsif commands.length == 1 && commands[0]== _INTL("Drink")
-        ret = pbEating($bag,item)
+        ret = pbNeoEating(item)
+		$bag.remove(item, 1)
         next 2
 	  elsif commands.length == 1 && commands[0]== _INTL("Eat")
-        ret = pbEating($bag,item)
+        ret = pbNeoEating(item)
+		$bag.remove(item, 1)
         next 2
 	  elsif commands.length == 1 && commands[0]== _INTL("Use (Self)")
-        ret = pbMedicine($bag,item)
+        ret = pbNeoMedicine(item)
+		$bag.remove(item, 1)
         next 2
 	  else
 	  
@@ -2106,11 +716,13 @@ ItemHandlers::UseFromBox.addIf(proc { |item| fuck_mothering_rabbit(item) }, proc
           $PokemonGlobal.alternate_control_mode=false
         next 2
       elsif cmdMedicate>=0 && command==cmdMedicate   # Medicate
-        ret = pbMedicine($bag,item)
+        ret = pbNeoMedicine(item)
+		$bag.remove(item, 1)
           $PokemonGlobal.alternate_control_mode=false
         next 2
       elsif cmdEat >=0 && command==cmdEat   # Eat
-        ret = pbEating($bag,item)
+        ret = pbNeoEating(item)
+		$bag.remove(item, 1)
           $PokemonGlobal.alternate_control_mode=false
         next 2
       elsif Input.trigger(Input::BACK)   # Eat
@@ -2132,15 +744,20 @@ def is_a_watering_can?(item)
  item = item.id if item.respond_to?("id")
  return GameData::BerryPlant::WATERING_CANS.include?(item)
 end
+
+
+
+
 ItemHandlers::UseFromBox.addIf(proc { |item| is_a_watering_can?(item) }, proc { |item, event|
      facingEvent = event
-	 
-	 if !facingEvent.nil? && facingEvent.name[/berryplant/i]
-	    
+	 if facingEvent 
+	  if facingEvent.name[/berryplant/i]
 	     berry_plant = facingEvent.variable
 		 if berry_plant
-	     pbTurnBerryPlant(facingEvent,berry_plant)
-	    end
+	      pbTurnBerryPlant(facingEvent,berry_plant)
+	     end
+      elsif facingEvent.is_a?(Game_OVEvent) && facingEvent.type.id == :BERRYPOT
+	  end 
 	 end
 	 can_do = reduceStaminaBasedOnItem(item)
 	 next 0 if can_do == false
@@ -2162,19 +779,30 @@ ItemHandlers::UseFromBox.addIf(proc { |item| is_a_watering_can?(item) }, proc { 
 
 
       if item.water>=10
-	   if !facingEvent.nil? && facingEvent.name[/berryplant/i]
-        if item.decrease_durability(1)
-	     berry_plant = facingEvent.variable
+	   if !facingEvent.nil? && (facingEvent.name[/berryplant/i] || facingEvent.is_a?(Game_OVEvent) && facingEvent.type.id == :BERRYPOT)
+	     berry_plant = facingEvent.internal_data
 		  if berry_plant
+		  req = facingEvent.name[/berryplant/i] ? 9999 : 100
+		 if berry_plant.moisture_level<req
+        if item.decrease_durability(1)
 		    
 			    if item.decrease_water(10)
 		          berry_plant_refills(berry_plant,item)
                   SoundManager.play_se("can_empty")
+				  if facingEvent.is_a?(Game_OVEvent) && facingEvent.type.id == :BERRYPOT
+				  text = berry_plant.moisture_level>=100 ? _INTL("It doesn't seem to need anymore water.") : _INTL("No harm in watering it more!")
+				  
+		          sideDisplay(text) 
+				  
+				  end 
 			    else
                   SoundManager.play_se("glug")
 				end
 		  end
+        else 
+		 sideDisplay(_INTL("It doesn't seem to need anymore water.")) if facingEvent.is_a?(Game_OVEvent) && facingEvent.type.id == :BERRYPOT
 	    end
+         end 
        end
       else
         SoundManager.play_se("glug")
@@ -2266,14 +894,14 @@ ItemHandlers::UseFromBox.add(:BAIT, proc { |item, event|
 	do_it = false
     do_it,amt,start_end = throwing_range_logic(do_it, amt)
 	if do_it==true
-   pbSEPlay("Battle throw")
-   can_do = decreaseStamina(1.5*amt)
+     pbSEPlay("Battle throw")
+     can_do = decreaseStamina(1.5*amt)
 	 facing = $game_player.pbFacingTile($game_player.direction, $game_player)
-    terrain = $game_map.terrain_tag(facing[1], facing[2], true)
-   next false if can_do == false
-    spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
-	holding_pattern(spriteindex)
-    $bag.remove(item)
+     terrain = $game_map.terrain_tag(facing[1], facing[2], true)
+     next false if can_do == false
+     spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
+	  holding_pattern(spriteindex)
+     $bag.remove(item)
       id=$game_map.check_event(*start_end[1])
 	  dir = 0
 	  if true
@@ -2289,32 +917,23 @@ ItemHandlers::UseFromBox.add(:BAIT, proc { |item, event|
     end
 	  end
 
-  if id
-   event = $game_map.events[id]
+     if id
+      event = $game_map.events[id]
      if event.is_a?(Game_PokeEvent)
-   pkmn = event.pokemon
-   pbSEPlay("Battle ball hit")
-	thefight = pbOverworldCombat
-	thefight.player_action(event,item,dir)
-	next true
-	elsif terrain.land_wild_encounters
-   if pbConfirmMessage(_INTL("Pokemon began building around the bait you through in the grass. Battle one?"))
-      spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,:POKEBALLC,$game_map,Spriteset_Map.viewport))
-	  holding_pattern(spriteindex)
-   pbSEPlay("Battle ball hit")
-      pbEncounter(:Bait)
-	next true
-   end
+      pkmn = event.pokemon
+      pbSEPlay("Battle ball hit")
+	  pbSafariBattle(nil, nil, pkmn)
+	  next true
+	 elsif terrain.land_wild_encounters
+       pbSEPlay("Battle ball hit")
+     pbSpawnEncounter(:Bait, start_end[1][0], start_end[1][1])
+	   next true
 	 
 	 end
-  elsif terrain.land_wild_encounters
-   if pbConfirmMessage(_INTL("Pokemon began building around the bait you through in the grass. Battle one?"))
-      spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,:POKEBALLC,$game_map,Spriteset_Map.viewport))
-	  holding_pattern(spriteindex)
-   pbSEPlay("Battle ball hit")
-      pbEncounter(:Bait)
+     elsif terrain.land_wild_encounters
+       pbSEPlay("Battle ball hit")
+     pbSpawnEncounter(:Bait, start_end[1][0], start_end[1][1])
 	next true
-   end
   end
   end
 
@@ -2326,18 +945,20 @@ next false
 ItemHandlers::UseFromBag.add(:BAIT,proc { |item|
    amt = 3
      next 2
-   start_end = getLandingCoords(amt)
+	do_it = false
+    do_it,amt,start_end = throwing_range_logic(do_it, amt)
+	if do_it==true
+     pbSEPlay("Battle throw")
+     can_do = decreaseStamina(1.5*amt)
+     next false if can_do == false
    spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
    holding_pattern(spriteindex)
     $bag.remove(item)
    pbSEPlay("Battle ball hit")
-   if pbConfirmMessage(_INTL("POKeMON began fighting over the bait you threw in the grass. Battle one?"))
-    spriteindex =  $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,:POKEBALLC,$game_map,Spriteset_Map.viewport))
-	 holding_pattern(spriteindex)
-   pbSEPlay("Battle ball hit")
-     pbEncounter(:Bait)
-     
-   end
+     pbSpawnEncounter(:Bait, start_end[1][0], start_end[1][1])
+    end 
+
+
 })
 ItemHandlers::UseFromBox.add(:STONE, proc { |item, event|
 	next if $game_temp.in_throwing==true
@@ -2347,7 +968,6 @@ ItemHandlers::UseFromBox.add(:STONE, proc { |item, event|
    can_do = decreaseStamina(1.5*amt)
 	next false if can_do == false
 	if do_it==true
-	item.damage_bonus=amt
    pbSEPlay("Battle throw")
     $bag.remove(item)
   spriteindex = $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
@@ -2401,11 +1021,87 @@ next false
 #  }
 #)
 
+ItemHandlers::UseFromBox.add(:WATERBOTTLE,proc { |canteen|
+  if Input.press?(Input::SHIFT)
+	next pbFillCanteen(canteen)
+  end 
+  next pbCanteen(canteen)
+})
 
+def pbCanteen(canteen, can_fill = true )
+ return pbFillCanteen(canteen) if canteen.liquid_type.nil? && can_fill
+ result = true 
+  while Input.press?(Input::USE)
+    break if $player.playerwater >= $player.playermaxwater
+    result = canteen.drink(1)
+    break unless result
+    Graphics.update
+    Input.update
+    $scene.update
+    pbWait(5)
+  end
+  return result
+end 
+
+def pbFillCanteen(canteen, drink=nil)
+  if drink
+   return false if canteen.liquid_type && canteen.liquid_type != drink.id 
+   SoundManager.play_se("can_fill")
+   result = canteen.fill(drink, 25)
+  canteen.decrease_durability(1) if result 
+   return result
+  end
+  facingEvent = $game_player.pbFacingEvent
+  if $game_player.pbFacingTerrainTag.can_surf
+	drink = ItemData.new(:WATER)
+    return false if canteen.liquid_type && canteen.liquid_type != drink.id 
+	result = fill_the_canteen(canteen, drink)
+    canteen.decrease_durability(1) if result   
+    return result
+  elsif facingEvent && facingEvent.pokemon && facingEvent.pokemon.is_a?(Pokemon) && can_milk?(facingEvent.pokemon.species)
+   if facingEvent.pokemon.can_harvest?
+    drink = ItemData.new(:MOOMOOMILK)
+    return false if canteen.liquid_type && canteen.liquid_type != drink.id 
+    result = fill_the_canteen(canteen, drink, 25)
+    canteen.decrease_durability(1) if result   
+    facingEvent.pokemon.harvest if result
+    return result
+   else
+    sideDisplay(_INTL("It needs some time to make more milk!"))
+	return false
+   end 
+  end
+
+  return false 
+end 
+
+def fill_the_canteen(canteen, item, cap = 100)
+  return true if canteen.water >= cap
+
+  filled = false
+
+  while Input.press?(Input::USE)
+    Graphics.update
+    Input.update
+    $scene.update
+
+    break if canteen.water >= cap
+
+    amount = [5, cap - canteen.water].min
+
+    if canteen.fill(item, amount)
+      filled = true
+      SoundManager.play_se("can_fill")
+      pbWait(5)
+    end
+  end
+
+  filled
+end
 
 ItemHandlers::UseFromBox.add(:MACHETE, proc { |item, event|
      facingEvent = event
-	 facingEvent = $game_player.pbFacingEvent4 if event.nil?
+	 facingEvent = $game_player.pbFacingEventIgnoreOverTrigger if event.nil?
 	 next false if facingEvent.nil?
    can_do = decreaseStamina(5)
 	next false if can_do == false
@@ -2413,57 +1109,58 @@ ItemHandlers::UseFromBox.add(:MACHETE, proc { |item, event|
  if item.durability>0
    #pbSEPlay("Sword")
    start_end = getLandingCoords(1)
-	 facingEvent = $game_player.pbFacingEvent
-  $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport,true))
-      id=$game_map.check_event(*start_end[1])
-	  dir = 0
-	  if true
-    x_plus = start_end[1][0] - start_end[0][0]
-    y_plus = start_end[1][1] - start_end[0][1]
-    
-    if x_plus != 0 || y_plus != 0
+   $scene.spriteset.addUserSprite(OWItemUseSprite.new(start_end,item,$game_map,Spriteset_Map.viewport,true))
+   id=$game_map.check_event(*start_end[1])
+   dir = 0
+   x_plus = start_end[1][0] - start_end[0][0]
+   y_plus = start_end[1][1] - start_end[0][1]
+   if x_plus != 0 || y_plus != 0
       if x_plus.abs > y_plus.abs
         dir = ((x_plus < 0) ? 1 : 2)
       else
         dir = ((y_plus < 0) ? 3 : 0)
       end
-    end
-	  end
-
-  if id
+   end
+   if id
    event = $game_map.events[id]
-   puts event
-   puts id
-     if event.is_a?(Game_PokeEvent)
-   pkmn = event.pokemon
-	thefight = pbOverworldCombat
-	thefight.player_action(event,item,dir)
-	next true
-	 elsif facingEvent
+   if event.is_a?(Game_PokeEvent)
+     pkmn = event.pokemon
+	 thefight = pbOverworldCombat
+	 puts "COmbate"
+	 thefight.player_action(event,item,dir)
+	 next true
+   elsif facingEvent
 	   if facingEvent.name[/cuttree/i]
          $stats.cut_count += 1
          pbSmashEvent(facingEvent)
 		  next true
 	   end
 	 
-	 end
-  elsif facingEvent
-	   if facingEvent.name[/cuttree/i]
-         $stats.cut_count += 1
-         pbSmashEvent(facingEvent)
-		  next true
-	   end
-  
-  end
+   end
+   end
  end
  end
 
 next false
   }
 )
+
+ItemHandlers::UseFromBox.add(:BUCKLER, proc { |item, event|
+ if $player.playerstamina>=25
+ if decreaseStamina(25)
+    $player.blocking = true 
+    next true
+ end 
+ end 
+next false
+
+  }
+)
+
+
 ItemHandlers::UseFromBox.add(:IRONPICKAXE,proc{|item, event|
      facingEvent = event
-	 facingEvent = $game_player.pbFacingEvent4 if event.nil?
+	 facingEvent = $game_player.pbFacingEventIgnoreOverTrigger if event.nil?
 	 next false if facingEvent.nil?
 	can_do = decreaseStamina(8)
 	next false if can_do == false
@@ -2514,30 +1211,95 @@ next false
 
   }
 )
+
+
 ItemHandlers::UseFromBag.add(:POLE,proc{|item, event|
-
- if item.decrease_durability(1)
-	can_do = decreaseStamina(8)
-	next 0 if can_do == false
-	   case $game_player.direction
-	     when 2 
-		    jump(0, 3)   # down
-			 next 2
-	     when 4 
-		    jump(-3, 0)    # left
-			 next 2
-	     when 6 
-		    jump(3, 0)   # right
-			 next 2
-	     when 8 
-		    jump(0, -3)    # up 
-			 next 2
-	   end
- end
-    next 0	   
-
+  next 0 unless $player.playerstamina>=4
+  if pole_range_logic
+   #item.decrease_durability(1)
+   next 2 
+  end 
+  next 0
 	}
 )
+
+
+def pole_range_logic
+  
+  
+  max_range = [$player.playerstamina / 4, 3].min
+  amt = 1
+  charge = 0
+  
+  
+  
+  start_end = getLandingCoords(amt)
+  return false if start_end.nil?
+
+  position_marker = PositionMarker.new(start_end[1][0],start_end[1][1])
+  position_marker.visible = true
+ 
+  $game_temp.in_throwing = true
+  $game_temp.no_moving = true 
+  $mouse.hide
+  cancelled = false 
+  loop do
+    Graphics.update
+    Input.update
+    $scene.update
+    position_marker.update
+    if Input.trigger?(Input::BACK)
+    cancelled = true  
+    break 
+	
+	end
+    if Input.press?(Input::USE)
+      charge += 1
+
+      new_amt =
+        if charge >= 65
+          3
+        elsif charge >= 35
+          2
+        else
+          1
+        end
+      new_amt = [new_amt, max_range].min
+	  
+	  
+      if new_amt != amt
+          new_start_end = getLandingCoords(new_amt)
+
+        unless new_start_end.nil?
+          amt = new_amt
+         start_end = new_start_end
+		  
+          position_marker.x = start_end[1][0]
+          position_marker.y = start_end[1][1]
+          pbSEPlay("GUI storage pick up")
+        end
+      end
+    else
+      break
+    end
+  end
+
+  $game_temp.in_throwing = false
+  $game_temp.no_moving = false 
+  $mouse.show
+  position_marker.dispose
+  
+
+  
+  
+  if cancelled
+    return false 
+  end
+  
+  decreaseStamina(amt * 4) if pbJumpToward(amt, true, false, $game_player.direction)
+  return true
+end
+
 class Interpreter
 
 
@@ -2571,555 +1333,723 @@ end
 
 
 
+class Game_Map
+  def can_dig_here?(coords, terrain)
+	 $PokemonGlobal.collection_maps[$game_map.map_id] ||= []
+	return false if coords.nil?
+	return false if terrain.nil?
+    return false if $PokemonGlobal.collection_maps[$game_map.map_id].include?(coords)
+	return terrain.can_dig
+  end 
+  def can_hoe_here?(coords, terrain)
+	return false if coords.nil?
+	return false if terrain.nil?
+	x, y = coords 
+	return false unless pbObjectIsPossible(x,y)
+	return terrain.can_hoe
+  
+  
+  end 
+
+  
+end 
+
+def pbDigUpBerryPlant(berry_event)
+    berry_plant = get_other_data(berry_event.id)
+	berry_data = berry_plant.berry
+    return false unless berry_plant
+	return false unless berry_plant.growth_stage == 1
+	if !$bag.can_add?(berry_data, 1)
+	  sideDisplay("You do not have enough space!")
+	  return false 
+	end 
+	berry_id = berry_plant.berry_id
+	return false if berry_id.nil?
+    berry = GameData::Item.get(berry_id)
+	result = (rand(100) < 50 || $player.is_it_this_class?(:GARDENER))
+	
+	berry_plant.reset
+	if result
+	  sideDisplay("The dug up #{berry.name} was in good enough condition to keep.")
+      $bag.add(berry_data, 1)
+	  itemAnim(berry_data,qnt)
+	else
+	  sideDisplay("The dug up #{berry.name} broke apart while digging it up.")
+	end 
+    return true 
+end 
+
+def pbDigTheGround(coords, shovel=true)
+    if $PokemonGlobal.collection_maps[$game_map.map_id].include?(coords)
+      pbSEPlay("shovelhittingrock") if shovel
+	  return false
+    end 	
+       shovel ? pbSEPlay("shovel") : pbSEPlay("Anim/PRSFX- Dig2")
+      pbCollectionMain2
+	  amt = 1
+	  amt = 2 if $player.is_it_this_class?(:COLLECTOR)
+	  $PokemonGlobal.collection_maps[$game_map.map_id] << coords
+	  return true 
+
+end 
+
 
 
 
 ItemHandlers::UseFromBag.add(:SHOVEL,proc{|item, event|
 	 $PokemonGlobal.collection_maps[$game_map.map_id] ||= []
-	 puts "Mfer"
 	 facingEvent = event
-	 facingEvent = $game_player.pbFacingEvent4 if event.nil?
+	 facingEvent = $game_player.pbFacingEventIgnoreOverTrigger if event.nil?
 	 facing = $game_player.pbFacingTile($game_player.direction, $game_player)
 	 coords = [facing[1],facing[2]]
-    terrain = $game_map.terrain_tag(facing[1], facing[2], true)
-	next 0 if !terrain.can_dig &&
-           (!facingEvent || !facingEvent.name.match?(/berryplant/i))
-	can_do = reduceStaminaBasedOnItem(item)
-	 next 0 if can_do == false
-	 next 0 if facingEvent.nil? && !terrain.can_dig
-    next 0 if $PokemonGlobal.collection_maps[$game_map.map_id].include?(coords)
-
-
- if item.decrease_durability(1)
-	  if !pbSeenTipCard?(:SHOVEL)
-	    pbShowTipCard(:SHOVEL)
-	  end
-	  
-	  
-	  if !facingEvent.nil? && facingEvent.name[/berryplant/i] && false
-	     berry_plant = pbMapInterpreter.getVariableOther(facingEvent.id)
-		  if berry_plant
-		  berry = berry_plant.berry_obj
-    if berry_plant.growing? && berry_plant.growth_stage == 1
-        if pbConfirmMessage(_INTL("You may be able to dig up the berry. Dig up the {1}?", GameData::Item.get(berry).name))
-            berry_plant.reset
-            if rand(100) < 50 || $player.is_it_this_class?(:GARDENER)
-                $bag.add(berry)
-                pbMessage(_INTL("The dug up {1} was in good enough condition to keep.",GameData::Item.get(berry).name))
-            else
-                pbMessage(_INTL("The dug up {1} broke apart in your hands.",GameData::Item.get(berry).name))
-            end
-               next 2
-        end
-    end
-         end
-	   
-     elsif terrain.can_dig
-	 puts "Mfer2"
-	   if !$PokemonGlobal.collection_maps[$game_map.map_id].include?(coords)
-	     pbSEPlay("shovel")
-	     pbCollectionMain2
-		  amt = 1
-	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
-	     $PokemonGlobal.collection_maps[$game_map.map_id] << coords
-         next 2
-	   else
-	  	 pbSEPlay("shovelhittingrock")
+     terrain = $game_map.terrain_tag(facing[1], facing[2], true)
+     berry_tree = (facingEvent && facingEvent.name.match?(/berryplant/i))
 	 
-	   end
-
-	  end
- end
+	 
+	 next 0 unless $game_map.can_dig_here?(coords, terrain)
+	 can_do = reduceStaminaBasedOnItem(item)
+	 next 0 if can_do == false
+     if item.decrease_durability(1)
+        pbShowTipCard(:SHOVEL) if !pbSeenTipCard?(:SHOVEL)
+        if terrain.can_dig && !berry_tree
+		  next 2 if pbDigTheGround(coords)
+		elsif berry_tree
+		  next 2 if pbDigUpBerryPlant(facingEvent)
+		end 
+	 end
      next 0
-
+ 
 	}
 )
 
 
 
 
-ItemHandlers::UseFromBag.add(:WARDINGTOTEM,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if $game_map.metadata&.outdoor_map || $game_map.name.include?("Test")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
+
+def pbHPItem(pkmn, restoreHP, scene)
+  if !pkmn.able? || pkmn.hp == pkmn.totalhp
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    return false
+  end
+  hpGain = pbItemRestoreHP(pkmn, restoreHP)
+  scene.pbRefresh
+  scene.pbDisplay(_INTL("{1}'s HP was restored by {2} points.", pkmn.name, hpGain))
+  return true
+end
+def pbItemRestoreHP(pkmn, restoreHP)
+  newHP = pkmn.hp + restoreHP
+  newHP = pkmn.totalhp if newHP > pkmn.totalhp
+  hpGain = newHP - pkmn.hp
+  pkmn.hp = newHP
+  return hpGain
+end
+
+ItemHandlers::UseOnPokemon.add(:POTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 20, scene)
 })
-ItemHandlers::UseFromBag.add(:PORTABLECAMP,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if $game_map.metadata&.outdoor_map || $game_map.name.include?("Test")
-    x = 0
-	y = 0
-    x = $game_player.x-1
-	y = $game_player.y-1
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
+
+ItemHandlers::UseOnPokemon.copy(:POTION, :BERRYJUICE, :SWEETHEART)
+ItemHandlers::UseOnPokemon.copy(:POTION, :RAGECANDYBAR) if !Settings::RAGE_CANDY_BAR_CURES_STATUS_PROBLEMS
+
+ItemHandlers::UseOnPokemon.add(:SUPERPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 60, scene)
 })
-ItemHandlers::UseFromBag.add(:ITEMCRATE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    case $game_player.direction
-    when 2 #then event.move_down
-	 x = $game_player.x
-	 y = $game_player.y+1
-    when 4 #then event.move_left
-	 x = $game_player.x-1
-	 y = $game_player.y
-    when 6 #then event.move_right
-	 x = $game_player.x+1
-	 y = $game_player.y
-    when 8 #then event.move_up
-	 x = $game_player.x
-	 y = $game_player.y-1
-    end
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
+
+ItemHandlers::UseOnPokemon.add(:HYPERPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 100, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:MAXPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, pkmn.totalhp - pkmn.hp, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:FRESHWATER, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 30, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:SODAPOP, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 60, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:LEMONADE, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 80, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:WEAKPOTION, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 10, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:MOOMOOMILK, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 50, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:ORANBERRY, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, 10, scene)
+})
+
+ItemHandlers::UseOnPokemon.add(:SITRUSBERRY, proc { |item, qty, pkmn, scene|
+  next pbHPItem(pkmn, pkmn.totalhp / 10, scene)
+})
 
 
 
-	end
-	}
+ItemHandlers::UseOnPokemon.add(:SUSPO,proc { |item, qty, pkmn, scene|
+       chance = rand(4)
+        if pkmn.happiness >= 75
+		 if 0 == chance
+          pkmn.species = pkmn.species_data.get_baby_species
+          pkmn.exp           = 0
+          pkmn.calc_stats
+          pkmn.name           = _INTL("Egg")
+          pkmn.steps_to_hatch = pkmn.species_data.hatch_steps
+          pkmn.food  = 100
+          pkmn.water  = 100
+          pkmn.age  = 1
+          pkmn.lifespan  = 100
+		  pkmn.permaFaint = false if pkmn.permaFaint==true 
+          next true
+		 else
+         scene.pbDisplay(_INTL("It was indigested, but had no effect."))
+          next true
+		 end
+        else
+         scene.pbDisplay(_INTL("It doesn't like you enough to reincarnate."))
+         next false
+        end
 })
-ItemHandlers::UseFromBag.add(:PKMNCRATE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+
+
+ItemHandlers::UseInField.add(:CALENDAR,proc { |item|
+  openCalendar
   next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:CRAFTINGBENCH,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
 
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-     next 2
-	end
-	else
-     pbMessage(_INTL("You can't use that here."))
-     next 0
-	end
-	}
-})
-ItemHandlers::UseFromBag.add(:APRICORNCRAFTING,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
 
-	}
-})
-ItemHandlers::UseFromBag.add(:MEDICINEPOT,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
+Battle::ItemEffects::HPHeal.add(:ARGOSTBERRY,
+  proc { |item, battler, battle, forced|
+    next false if battler.able
+    battle.pbCommonAnimation("EatBerry", battler) if !forced
+    battler.hp = 1
+    itemName = GameData::Item.get(item).name
+    if forced
+      PBDebug.log("[Item triggered] Forced consuming of #{itemName}")
+      battle.pbDisplay(_INTL("{1}'s was revived.", battler.pbThis))
+    else
+      battle.pbDisplay(_INTL("{1} was revived!", battler.pbThis, itemName))
+    end
+    next true
+  }
+)
 
-	}
+
+ItemHandlers::UseOnPokemon.add(:ARGOSTBERRY, proc { |item, qty, pkmn, scene|
+    next false if !pkmn.fainted?
+    next false if pkmn.permaFaint
+    pkmn.hp = 1
+    pkmn.heal_status
+  scene.pbRefresh
+  scene.pbDisplay(_INTL("{1}'s was revived.", pkmn.name))
+  next true
 })
-ItemHandlers::UseFromBag.add(:BEDROLL,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+
+ItemHandlers::UseFromBag.add(:BAIT, proc { |item|
+  next 2
+})
+ItemHandlers::UseInField.add(:BAIT,proc { |item|
+  next true
+})
+
+
+ItemHandlers::UseFromBag.add(:GLASSBOTTLE,proc { |item|
+  next 2
+})
+
+ItemHandlers::UseFromBag.add(:IRONAXE,proc { |item|
+  next 2
+})
+
+ def can_shear?(species)
+   GameData::Species.get(species).shearable?
+ end 
+
+ def can_milk?(species)
+   GameData::Species.get(species).milkable?
+ end 
+ 
+ def fill_container(container, item)
+  item.set_bottle(container)
+  $bag.add(item, 1)
+  itemAnim(item, 1) 
+  $bag.remove(container, 1)
+end
+
+ItemHandlers::UseInField.add(:SHEARS,proc { |shears|
+  facingEvent = $game_player.pbFacingEvent
+if facingEvent && facingEvent.pokemon && facingEvent.pokemon.is_a?(Pokemon) && can_shear?(facingEvent.pokemon.species)
+   if facingEvent.pokemon.can_harvest?
+    item = ItemData.new(:WOOL)
+	amt = rand(6)+1
+    $bag.add(item, amt)
+    itemAnim(item, amt) 
+    shears.decrease_durability(1)
+	 facingEvent.pokemon.harvest
+    next true
+   else
+    sideDisplay(_INTL("It needs some time to make more wool!"))
+	next false
+   end 
+end
+})
+
+
+
+ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |container|
+  facingEvent = $game_player.pbFacingEvent
+  if $game_player.pbFacingTerrainTag.can_surf
+	item = ItemData.new(:WATER)
+	 fill_container(container, item)
+    next true
+  elsif facingEvent && facingEvent.pokemon && facingEvent.pokemon.is_a?(Pokemon) && can_milk?(facingEvent.pokemon.species)
+   if facingEvent.pokemon.can_harvest?
+    item = ItemData.new(:MOOMOOMILK)
+	 fill_container(container, item)
+	 facingEvent.pokemon.harvest
+    next true
+   else 
+    sideDisplay(_INTL("It needs some time to make more milk!"))
+	next false
+   end 
+  end
+	next false
+})
+
+
+ItemHandlers::UseInField.add(:BOWL,proc { |item2|
+if $game_player.pbFacingTerrainTag.can_surf
+     message=(_INTL("Drink some unpurified water?"))
+    if pbConfirmMessage(message)
+        item2.decrease_durability(1)
+        increaseWater(10)
+        damagePlayer(10.0)
+	next true
+	end
+	next false
+end
+	next false
+})
+
+ItemHandlers::UseInField.add(:IRONAXE,proc { |item|
+if $game_player.pbFacingTerrainTag.can_knockdown
+     message=(_INTL("Want to knock down some branches?"))
+    if pbConfirmMessage(message)
+       item.decrease_durability(1)
+       $bag.add(:WOODENSTICKS,(rand(2)+1))
+	next true
+	end
+	next false
+   else
+	next false
+end
+})
+
+
+
+def pbBait
+  viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+  viewport.z = 99999
+  count = 0
+  viewport.color.red   = 255
+  viewport.color.green = 0
+  viewport.color.blue  = 0
+  viewport.color.alpha -= 10
+  alphaDiff = 12 * 20 / Graphics.frame_rate
+  loop do
+    if count == 0 && viewport.color.alpha < 128
+      viewport.color.alpha += alphaDiff
+    elsif count > Graphics.frame_rate / 4
+      viewport.color.alpha -= alphaDiff
+    else
+      count += 1
+    end
+    Graphics.update
+    Input.update
+    pbUpdateSceneMap
+    break if viewport.color.alpha <= 0
+  end
+  viewport.dispose
+  enctype = $PokemonEncounters.encounter_type
+  if !enctype || !$PokemonEncounters.encounter_possible_here?
+    pbMessage(_INTL("There appears to be nothing here..."))
+  else
+   pbMessage(_INTL("You throw the bait on the ground, and a POKeMON appeared!"))
+	$game_temp.in_safari=true
+   if pbEncounter(enctype)
+   end
+	$game_temp.in_safari=false
+  end
+end
+
+
+
+
+def pbHasCrate?
+ return true if $bag.has?(:PORTABLEPC)
+ return true if $bag.has?(:ITEMCRATE)
+end
+
+def pbHasGrinder?
+ return true if $bag.has?(:GRINDER)
+ return true if $bag.has?(:ELECTRICGRINDER)
+end
+
+def pbHasApricorn?
+ return true if $bag.has?(:APRICORNCRAFTING)
+ return true if $bag.has?(:APRICORNMACHINE)
+end
+
+def pbHasFurnace?
+ return true if $bag.has?(:FURNACE)
+ return true if $bag.has?(:ELECTRICFURNACE)
+end
+
+def pbHasCrafting?
+ return true if $bag.has?(:CRAFTINGBENCH)
+ return true if $bag.has?(:UPGRADEDCRAFTINGBENCH)
+end
+
+ItemHandlers::UseOnPokemon.add(:GRITDUST,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:GRITGRAVEL,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+ItemHandlers::UseOnPokemon.add(:GRITPEBBLE,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:GRITROCK,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK)
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+
+
+ItemHandlers::UseOnPokemon.add(:SPEEDCOMET,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPEED,40)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Speed increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:DEFENDCOMET,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_DEFENSE,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:DEFENSE,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Defenses increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:BALANCEDCOMET,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:ATTACK,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_DEFENSE,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:DEFENSE,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPEED,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:HP,10)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+ItemHandlers::UseOnPokemon.add(:ATKCOMET,proc { |item, qty,pkmn,scene|
+  if pbJustRaiseEffortValues(pkmn,:ATTACK,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  if pbJustRaiseEffortValues(pkmn,:SPECIAL_ATTACK,20)
+  else
+    scene.pbDisplay(_INTL("It won't have any effect."))
+    next false
+  end
+  scene.pbDisplay(_INTL("{1}'s Special Attack increased.",pkmn.name))
+  pkmn.changeHappiness("vitamin",pkmn)
+  pkmn.changeLoyalty("vitamin",pkmn)
+  next true
+})
+
+
+ItemHandlers::UseInField.add(:LCLOAK,proc{|item|
+  if !$game_variables[256]==(:LCLOAK)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:LCLOAK)
+  else
+  $game_variables[256]=(:LCLOAK) 
+  end
     next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:GRINDER,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:PROTECTIVEVEST,proc{|item|
+  if !$game_variables[256]==(:PROTECTIVEVEST)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:PROTECTIVEVEST)
+  else
+  $game_variables[256]=(:PROTECTIVEVEST) 
+  end
     next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:FURNACE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:SEASHOES,proc{|item|
+  if !$game_variables[256]==(:SEASHOES)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:SEASHOES)
+  else
+  $game_variables[256]=(:SEASHOES) 
+  end
     next 2
-	else
-    next 0
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:CAULDRON,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-     maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:LJACKET,proc{|item|
+  if !$game_variables[256]==(:LJACKET)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:LJACKET)
+  else
+  $game_variables[256]=(:LJACKET) 
+  end
     next 2
-	else
-    pbMessage(_INTL("You can't use that here."))
-    next 0
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:UPGRADEDCRAFTINGBENCH,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:SSHIRT,proc{|item|
+  if !$game_variables[256]==(:SSHIRT)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:SSHIRT)
+  else
+  $game_variables[256]=(:SSHIRT) 
+  end
     next 2
-	else
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:ELECTRICPRESS,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:GHOSTMAIL,proc{|item|
+  if !$game_variables[256]==(:GHOSTMAIL)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:GHOSTMAIL)
+  else
+  $game_variables[256]=(:GHOSTMAIL) 
+  end
     next 2
-	else
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:ELECTRICGRINDER,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
+
+ItemHandlers::UseInField.add(:IRONARMOR,proc{|item|
+  if !$game_variables[256]==(:IRONARMOR)
+    item = $game_variables[256]
+	$PokemonBag.pbStoreItem(item,1)
+	$game_variables[256]=(:IRONARMOR)
+  else
+  $game_variables[256]=(:IRONARMOR) 
+  end
     next 2
-	else
-	end
-	end
-	}
 })
-ItemHandlers::UseFromBag.add(:MACHINEBOX,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+
+ItemHandlers::UseInField.add(:BERRYBLENDER,proc{|item|
+  pbCommonEvent(29)
+    next 1
 })
-ItemHandlers::UseFromBag.add(:MEDICINEPOT,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseFromBag.add(:LVLDETECTOR,proc{|item|
+        if $game_switches[240]==false
+         $game_switches[240]=true
+        elsif $game_switches[240]==true
+         $game_switches[240]=false
+        end
+    next 1
 })
-ItemHandlers::UseFromBag.add(:POKEGENERATOR,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.outdoor_map || $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:POISONDART,proc { |item,battler,battle|
+   if battler && battler.status == :NONE || !battler.pbHasType?(:STEEL)
+     battle.pbDisplay(_INTL("You shoot a dart at the Pokemon, poisoning it."))
+     battler.pbPoison(user) if target.pbCanPoison?(user,false,self)
+     next true
+   else
+    battle.pbDisplay(_INTL("It won't have any effect."))
+     next false
+   end
+   next true
 })
-ItemHandlers::UseFromBag.add(:HYDROGENERATOR,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.outdoor_map  || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:SLEEPDART,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ ability1=GameData::Ability.try_get(:INSOMNIA)
+ ability2=GameData::Ability.try_get(:VITALSPIRIT)
+  if battler.status != :NONE || battler.ability==ability1 || battler.ability==ability2
+     next false
+  else
+     battle.pbDisplay(_INTL("Enemy {1} was put to sleep by the {2}!",battler.name,itemname))
+     battler.pbSleep
+     next true
+  end
+  next true
 })
-ItemHandlers::UseFromBag.add(:WINDGENERATOR,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.outdoor_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:PARALYZDART,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ type=:GROUND
+  if battler.status != :NONE || battler.pbHasType?(:GROUND)
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next false
+  else
+     battle.pbDisplay(_INTL("Enemy {1} was paralyzed by the {2}!",battler.name,itemname))
+     battler.pbParalyze(battler)
+     next true
+  end
+  next true
 })
-ItemHandlers::UseFromBag.add(:SOLARGENERATOR,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.outdoor_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:ICEDART,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ type=:ICE
+  if battler.status != :NONE  || battler.pbHasType?(:ICE)
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next false
+  else
+     battle.pbDisplay(_INTL("Enemy {1} was frozen solid by the {2}!",battler.name,itemname))
+     battler.pbFreeze(battler)
+     next true
+  end
+  next true
 })
-ItemHandlers::UseFromBag.add(:COALGENERATOR,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.metadata&.outdoor_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:FIREDART,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ type=:FIRE
+  if battler.status != :NONE || battler.pbHasType?(:FIRE)
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next false
+  else
+     scene.pbDisplay(_INTL("Enemy {1} was burned by the {2}!",battler.name,itemname))
+     battler.pbBurn(battler)
+     next true
+  end
+  next true
 })
-ItemHandlers::UseFromBag.add(:ELECTRICFURNACE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:MACHETE,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+  if battler.hp==1
+       battle.pbReduceHP(1)
+	   scene.pbDisplay(_INTL("You slashed at Enemy {1} with the {2}!",battler.name,itemname))
+	   pbCookMeat(battler)
+	   next false
+  else
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next false
+  end
 })
-ItemHandlers::UseFromBag.add(:APRICORNMACHINE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:RUSTEDPICKAXE,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ type=:GROUND
+ typeb=PBTypes::ROCK
+  if battler.type1==type || battler.type2==typeb 
+     battler.pbReduceHP(battler.totalhp/3)
+	   battle.pbDisplay(_INTL("You axed at Enemy {1} with the {2}!",battler.name,itemname))
+     next false
+  else
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next true
+  end
 })
-ItemHandlers::UseFromBag.add(:SEWINGMACHINE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
+
+ItemHandlers::UseInBattle.add(:PICKAXE,proc { |item,battler,battle|
+ itemname = GameData::Item.get(item).name
+ type=:GROUND
+ typeb=PBTypes::ROCK
+  if battler.type1==type || battler.type2==typeb 
+     battler.pbReduceHP(battler.totalhp/5)
+	   battle.pbDisplay(_INTL("You axed at Enemy {1} with the {2}!",battler.name,itemname))
+     next false
+  else
+     battle.pbDisplay(_INTL("It won't have any effect."))
+     next true
+  end
 })
-ItemHandlers::UseFromBag.add(:ELECTRICICEBOX,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
-})
-ItemHandlers::UseFromBag.add(:ICEBOX,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
-})
-ItemHandlers::UseFromBag.add(:RESEARCHTABLE,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
-})
-ItemHandlers::UseFromBag.add(:SPRINKLER,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	
-	}
-})
-ItemHandlers::UseFromBag.add(:TORCH,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	
-	}
-})
-ItemHandlers::UseFromBag.add(:ELECTRICLIGHT,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	
-	}
-})
-ItemHandlers::UseFromBag.add(:ADVENTUREFLAG,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	
-	}
-})
-ItemHandlers::UseFromBag.add(:GARBAGEBIN,proc{|item|
-    next 0 if !$player.held_item_object.nil?
-    next 0 if !$player.held_item.nil?
-  pbFadeOutIn {
-    maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-	if $game_map.metadata&.base_map || $game_map.name.include?("Test") || $game_map.name.include?("Challenge")
-    if pbPlaceorHold(item)
-	$bag.remove(item)
-    next 2
-	else
-	end
-	end
-	}
-})
+
+
 
 
 

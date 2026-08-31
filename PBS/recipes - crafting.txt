@@ -16,6 +16,7 @@ Yield=2
 Recipe=SUGARCANE,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -26,16 +27,7 @@ Yield=1
 Recipe=CRAFTINGBENCH,1,WOODENPLANKS,6,STONE,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[GARBAGEBIN]
-Name=Recipe
-Result=GARBAGEBIN
-Yield=1
-Recipe=IRON2,2,CRAFTINGBENCH,1
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -46,6 +38,7 @@ Yield=1
 Recipe=STONE,3,WOODENLOG,1,STONE,3
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -56,6 +49,7 @@ Yield=1
 Recipe=IRON2,2,WOODENPLANKS,1,IRON2,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -66,6 +60,7 @@ Yield=1
 Recipe=STONE,2,COPPER2,3,GOLD2,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -76,6 +71,7 @@ Yield=1
 Recipe=CLAY2,2,WOODENPLANKS,1,CLAY2,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -86,6 +82,51 @@ Yield=1
 Recipe=WOODENPLANKS,2,WOODENPLANKS,2,WOOL,3
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[GARBAGEBIN]
+Name=Recipe
+Result=GARBAGEBIN
+Yield=1
+Recipe=IRON2,2,CRAFTINGBENCH,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[BERRYPOT]
+Name=Recipe
+Result=BERRYPOT
+Yield=1
+Recipe=CLAY2,4,FERTILIZERMIX,2,CLAY2,4
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[PETBED]
+Name=Recipe
+Result=PETBED
+Yield=1
+Recipe=WOOL,2,SILK,1,WOOL,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[PETBEDOUTDOOR]
+Name=Recipe
+Result=PETBEDOUTDOOR
+Yield=1
+Recipe=LEATHER,2,WOOL,1,LEATHER,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -96,6 +137,7 @@ Yield=1
 Recipe=WOODENSTICKS,1,WOODENPLANKS,1,WOODENPLANKS,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -106,8 +148,30 @@ Yield=1
 Recipe=IRON2,3,IRON2,3,IRON2,3
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=true
 Flags=
+#-------------------------------
+[ITEMCRATE]
+Name=Recipe
+Result=ITEMCRATE
+Yield=1
+Recipe=WOODENLOG,1,WOODENPLANKS,5,WOODENLOG,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[PKMNCRATE]
+Name=Recipe
+Result=PKMNCRATE
+Yield=1
+Recipe=WOODENPLANKS,5,IRON2,3,TUMBLEROCK,8
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
 #-------------------------------
 [ICEBOX]
 Name=Recipe
@@ -116,6 +180,7 @@ Yield=1
 Recipe=WOODENPLANKS,5,ICESTONE,2,WOODENPLANKS,5
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -126,27 +191,9 @@ Yield=1
 Recipe=WOODENPLANKS,5,NEVERMELTICE,2,WOODENPLANKS,5
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
-#-------------------------------
-[ITEMCRATE]
-Name=Recipe
-Result=ITEMCRATE
-Yield=1
-Recipe=WOODENLOG,1,WOODENPLANKS,5,WOODENLOG,1
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[PKMNCRATE]
-Name=Recipe
-Result=PKMNCRATE
-Yield=1
-Recipe=WOODENPLANKS,5,IRON2,3,POKEBALLC,5
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Locked=false
 Flags=
 #-------------------------------
 [PORTABLECAMP]
@@ -156,6 +203,7 @@ Yield=1
 Recipe=WOOL,5,WOODENPLANKS,5,COPPER2,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=true
 Flags=
 #-------------------------------
@@ -166,7 +214,8 @@ Yield=1
 Recipe=CRAFTINGBENCH,1,WOODENPLANKS,5,SILVER2,4
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
-Locked=false
+Type = PLACEABLE
+Locked=true
 Flags=
 #-------------------------------
 [RESEARCHTABLE]
@@ -176,6 +225,7 @@ Yield=1
 Recipe=CRAFTINGBENCH,1,WOODENPLANKS,5,COPPER2,4
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -186,46 +236,29 @@ Yield=1
 Recipe=WOOL,1,WOODENSTICKS,4,IRON2,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[OLDROD]
-Name=Recipe
-Result=OLDROD
-Yield=1
-Recipe=WOODENSTICKS,1,WOODENSTICKS,1
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[GOODROD]
-Name=Recipe: Good Rod
-Result=GOODROD
-Yield=1
-Recipe=OLDROD,1,GOLD2,2
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
+Type = PLACEABLE
 Locked=true
 Flags=
 #-------------------------------
-[BOWL]
+[SILKSPINNER]
 Name=Recipe
-Result=BOWL
+Result=SILKSPINNER
 Yield=1
-Recipe=WOODENPLANKS,1,WOODENPLANKS,1,WOODENPLANKS,1
+Recipe=WOODENPLANKS,5,CLAY2,5,LEATHER,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
-[WATERBOTTLE]
+[APIARY]
 Name=Recipe
-Result=WATERBOTTLE
+Result=APIARY
 Yield=1
-Recipe=IRON2,3,LEATHER,1
+Recipe=WOODENLOG,5,WOODENPLANKS,4,HONEY,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -236,7 +269,30 @@ Yield=1
 Recipe=IRON2,2,WOODENSTICKS,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
+Flags=
+#-------------------------------
+[OLDROD]
+Name=Recipe
+Result=OLDROD
+Yield=1
+Recipe=WOODENSTICKS,1,WOODENSTICKS,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[GOODROD]
+Name=Recipe: Good Rod
+Result=GOODROD
+Yield=1
+Recipe=OLDROD,1,GOLD2,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=true
 Flags=
 #-------------------------------
 [SHOVEL]
@@ -246,36 +302,7 @@ Yield=1
 Recipe=WOODENSTICKS,1,WOODENSTICKS,1,IRON2,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[HOE]
-Name=Recipe: Hoe
-Result=HOE
-Yield=1
-Recipe=WOODENSTICKS,2,GOLD2,1,IRON2,1
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Locked=true
-Flags=
-#-------------------------------
-[CALENDAR]
-Name=Recipe
-Result=CALENDAR
-Yield=1
-Recipe=LEATHER,4,WOODENPLANKS,1
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Locked=false
-Flags=
-#-------------------------------
-[IRONHAMMER]
-Name=Recipe
-Result=IRONHAMMER
-Yield=1
-Recipe=IRON2,2,WOODENSTICKS,3,IRON2,2
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -286,6 +313,95 @@ Yield=1
 Recipe=WOODENSTICKS,3,WOODENPLANKS,1,IRON2,5
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BOWL]
+Name=Recipe
+Result=BOWL
+Yield=1
+Recipe=WOODENPLANKS,1,WOODENPLANKS,1,WOODENPLANKS,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BUCKLER]
+Name=Recipe
+Result=BUCKLER
+Yield=1
+Recipe=IRON2,2,WOODENLOG,2,LEATHER,4
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[HOE]
+Name=Recipe: Hoe
+Result=HOE
+Yield=1
+Recipe=WOODENSTICKS,2,GOLD2,1,IRON2,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=true
+Flags=
+#-------------------------------
+[POKEMONBRUSH]
+Name=Recipe
+Result=POKEMONBRUSH
+Yield=1
+Recipe=WOODENSTICKS,1,WOODENSTICKS,1,PRETTYFEATHER,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[SHEARS]
+Name=Recipe
+Result=SHEARS
+Yield=1
+Recipe=IRON2,1,WOODENSTICKS,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[CALENDAR]
+Name=Recipe
+Result=CALENDAR
+Yield=1
+Recipe=LEATHER,4,WOODENPLANKS,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[IRONHAMMER]
+Name=Recipe
+Result=IRONHAMMER
+Yield=1
+Recipe=IRON2,2,WOODENSTICKS,3,IRON2,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[IRONAXE]
+Name=Recipe
+Result=IRONAXE
+Yield=1
+Recipe=WOODENSTICKS,5,COPPER2,1,IRON2,3
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -296,6 +412,7 @@ Yield=1
 Recipe=LEATHER,2,LEAFYMEAT,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -306,6 +423,7 @@ Yield=1
 Recipe=NORMALSHOES,1,PRETTYFEATHER,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -316,6 +434,7 @@ Yield=1
 Recipe=MAKESHIFTSHOES,1,PRETTYFEATHER,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -326,7 +445,8 @@ Yield=1
 Recipe=WOODENSTICKS,1,WOODENSTICKS,1,WOODENSTICKS,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
-Locked=false
+Type = TOOL
+Locked=true
 Flags=
 #-------------------------------
 [GROWTHMULCH]
@@ -336,6 +456,7 @@ Yield=1
 Recipe=BALMMUSHROOM,3,MOOMOOMILK,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -346,6 +467,7 @@ Yield=1
 Recipe=REDAPRICORN,2,FRESHWATER,3
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -356,6 +478,7 @@ Yield=1
 Recipe=MIRACLESEED,2,FRESHWATER,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -366,6 +489,7 @@ Yield=1
 Recipe=MOOMOOMILK,1,BLUEAPRICORN,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -376,6 +500,7 @@ Yield=1
 Recipe=LEFTOVERS,1,MOOMOOMILK,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -386,6 +511,7 @@ Yield=1
 Recipe=BALMMUSHROOM,1,FRESHWATER,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -396,6 +522,7 @@ Yield=4
 Recipe=IRON2,1,SILVER2,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -406,6 +533,7 @@ Yield=1
 Recipe=DARTCASING,1,POISONBARB,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -416,6 +544,7 @@ Yield=1
 Recipe=DARTCASING,1,MOONSTONE,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -426,6 +555,7 @@ Yield=1
 Recipe=DARTCASING,1,THUNDERSTONE,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -436,6 +566,7 @@ Yield=1
 Recipe=DARTCASING,1,ICESTONE,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -446,5 +577,105 @@ Yield=1
 Recipe=DARTCASING,1,FIRESTONE,1
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_1]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=MEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_2]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=BIRDMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_3]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=ROCKYMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_4]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=BUGMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_5]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=STEELYMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_6]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=SUSHI,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_7]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=LEAFYMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_8]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=FROZENMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
+[BAIT_9]
+Name=Recipe
+Result=BAIT
+Yield=4
+Recipe=DRAGONMEAT,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
 Locked=false
 Flags=

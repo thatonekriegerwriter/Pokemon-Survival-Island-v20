@@ -36,10 +36,21 @@ class Game_Temp
   attr_accessor :currently_selecting
   attr_accessor :in_inventory
   attr_accessor :inv_cooldown
+  attr_accessor :assignment_mode 
+  attr_accessor :assignment_source 
+  attr_accessor :assignment_cooldown
   
   def in_inventory
     @in_inventory = false if @in_inventory.nil?
     return @in_inventory
+  end
+  def assignment_mode
+    @assignment_mode = false if @assignment_mode.nil?
+    return @assignment_mode
+  end
+  def assignment_cooldown
+    @assignment_cooldown = 0 if @assignment_cooldown.nil?
+    return @assignment_cooldown
   end
   def inv_cooldown
     @inv_cooldown = 0 if @inv_cooldown.nil?
@@ -55,7 +66,9 @@ class Game_Temp
     return @currently_selecting
   end
   
-  
+  def assigning?
+    self.assignment_mode == true && !self.assignment_source.nil?
+  end 
   
   def radial_enabled
     @radial_enabled = false if @radial_enabled.nil?

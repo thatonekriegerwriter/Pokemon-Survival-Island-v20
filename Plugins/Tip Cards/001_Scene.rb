@@ -13,7 +13,11 @@ def pbShowTipCardsGrouped(*groups, continuous: false)
         screen = TipCardGroups_Screen.new(scene)
         screen.pbStartScreen
     elsif sections[0]
+	    if sections[0]==:ALL
+		tips = $PokemonGlobal.tipcards.keys
+		else
         tips = Settings::TIP_CARDS_GROUPS[sections[0]][:Tips]
+		end 
         pbShowTipCard(*tips)
     else
         Console.echo_warn "No available tips to show"
@@ -43,18 +47,36 @@ class TipCard_Scene
     end
 
     def pbStartScene
+	    $game_temp.in_menu = true 
         @viewport = Viewport.new(0,0,Graphics.width,Graphics.height)
         @viewport.z = 99999
         @index = 0
         @pages = @tips.length
         @sprites = {}
+        @sprites["header"] = IconSprite.new(0, 0, @viewport)
+        @sprites["header"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/group_header"))
+        @sprites["header"].x = (Graphics.width - @sprites["header"].bitmap.width) / 2
+        @sprites["header"].visible = true
         @sprites["background"] = IconSprite.new(0, 0, @viewport)
         @sprites["background"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/#{Settings::TIP_CARDS_DEFAULT_BG}"))
         @sprites["background"].x = (Graphics.width - @sprites["background"].bitmap.width) / 2
-        @sprites["background"].y = (Graphics.height - @sprites["background"].bitmap.height) / 2
         @sprites["background"].visible = true
+
+        total_height = @sprites["header"].bitmap.height + @sprites["background"].bitmap.height
+        initial_y = (Graphics.height - total_height) / 2
+        @sprites["header"].y = initial_y
+        @sprites["background"].y = initial_y + @sprites["header"].bitmap.height
+		
         @sprites["image"] = IconSprite.new(0, 0, @viewport)
         @sprites["image"].visible = false
+        @sprites["image2"] = IconSprite.new(0, 0, @viewport)
+        @sprites["image2"].visible = false
+        @sprites["image3"] = IconSprite.new(0, 0, @viewport)
+        @sprites["image3"].visible = false
+        @sprites["image4"] = IconSprite.new(0, 0, @viewport)
+        @sprites["image4"].visible = false
+        @sprites["image5"] = IconSprite.new(0, 0, @viewport)
+        @sprites["image5"].visible = false
         @sprites["arrow_right"] = IconSprite.new(0, 0, @viewport)
         @sprites["arrow_right"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/arrow_right"))
         @sprites["arrow_right"].x = Graphics.width / 2 + 48
@@ -66,6 +88,9 @@ class TipCard_Scene
         @sprites["arrow_left"].y = @sprites["background"].y + @sprites["background"].bitmap.height -  @sprites["arrow_left"].bitmap.height - 4
         @sprites["arrow_left"].visible = false
       
+      
+        @sprites["overlay_h"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
+        @sprites["overlay_h"].visible = true
         @sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
         @sprites["overlay"].visible = true
         pbSEPlay(Settings::TIP_CARDS_SHOW_SE)
@@ -114,6 +139,7 @@ class TipCard_Scene
         Input.update
         pbDisposeSpriteHash(@sprites)
         @viewport.dispose
+	    $game_temp.in_menu = false 
     end
   
     def pbUpdate
@@ -121,16 +147,19 @@ class TipCard_Scene
     end
 
     def pbDrawTip
+	    overlay_h = @sprites["overlay_h"].bitmap
+        overlay_h.clear
+        pbSetSystemFont(overlay_h)
         overlay = @sprites["overlay"].bitmap
         overlay.clear
         @sprites["image"].visible = false
         @sprites["arrow_right"].visible = false
         @sprites["arrow_left"].visible = false
         pbSetSystemFont(overlay)
-        base = Settings::TIP_CARDS_TEXT_MAIN_COLOR
-        shadow = Settings::TIP_CARDS_TEXT_SHADOW_COLOR
         tip = @tips[@index]
         info = $PokemonGlobal.tipcards[tip] || nil
+        base = info[:Text_Color] || Settings::TIP_CARDS_TEXT_MAIN_COLOR
+        shadow = info[:Shadow_Color] || Settings::TIP_CARDS_TEXT_SHADOW_COLOR
         if info
             text_y_adj = 64
             text_x_adj = 16
@@ -173,13 +202,161 @@ class TipCard_Scene
                 @sprites["image"].x += adjust_x
                 @sprites["image"].y += adjust_y
                 @sprites["image"].visible = true
+		    else 
+                @sprites["image"].visible = false
+            end
+            if info[:Image2]
+                @sprites["image2"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Images/#{info[:Image2]}"))
+                zoom_amt = info[:Image2Zoom] || 1
+                @sprites["image2"].zoom_x = zoom_amt
+                @sprites["image2"].zoom_y = zoom_amt
+                image2_pos = info[:Image2Position] || ((@sprites["image2"].width > @sprites["image2"].height) ? :Top : :Left)
+                case image2_pos
+                when :Top
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image2"].height + 16
+                when :Top2
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image2"].height + 16
+                when :Bottom
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image2"].bitmap.height - 32
+                when :Left
+                    @sprites["image2"].x = @sprites["background"].x + 16
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image2"].width + 16
+                when :Right
+                    @sprites["image2"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image2"].bitmap.width - 16
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image2"].width + 16
+                end
+				  adjust_x = info[:AdjustImage2X]  || 0
+				  adjust_y = info[:AdjustImage2Y]  || 0
+                @sprites["image2"].x += adjust_x
+                @sprites["image2"].y += adjust_y
+                @sprites["image2"].visible = true
+		    else 
+                @sprites["image2"].visible = false
+            end
+            if info[:Image3]
+                @sprites["image3"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Images/#{info[:Image3]}"))
+                zoom_amt = info[:Image3Zoom] || 1
+                @sprites["image3"].zoom_x = zoom_amt
+                @sprites["image3"].zoom_y = zoom_amt
+                image3_pos = info[:Image3Position] || ((@sprites["image3"].width > @sprites["image3"].height) ? :Top : :Left)
+                case image3_pos
+                when :Top
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image3"].height + 16
+                when :Top2
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image3"].height + 16
+                when :Bottom
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image3"].bitmap.height - 32
+                when :Left
+                    @sprites["image3"].x = @sprites["background"].x + 16
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image3"].width + 16
+                when :Right
+                    @sprites["image3"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image3"].bitmap.width - 16
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image3"].width + 16
+                end
+				  adjust_x = info[:AdjustImage3X]  || 0
+				  adjust_y = info[:AdjustImage3Y]  || 0
+                @sprites["image3"].x += adjust_x
+                @sprites["image3"].y += adjust_y
+                @sprites["image3"].visible = true
+		    else 
+                @sprites["image3"].visible = false
+            end
+
+            if info[:Image4]
+                @sprites["image4"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Images/#{info[:Image4]}"))
+                zoom_amt = info[:Image4Zoom] || 1
+                @sprites["image4"].zoom_x = zoom_amt
+                @sprites["image4"].zoom_y = zoom_amt
+                image4_pos = info[:Image4Position] || ((@sprites["image4"].width > @sprites["image4"].height) ? :Top : :Left)
+                case image4_pos
+                when :Top
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image4"].height + 16
+                when :Top2
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image4"].height + 16
+                when :Bottom
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image4"].bitmap.height - 32
+                when :Left
+                    @sprites["image4"].x = @sprites["background"].x + 16
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image4"].width + 16
+                when :Right
+                    @sprites["image4"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image4"].bitmap.width - 16
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image4"].width + 16
+                end
+				  adjust_x = info[:AdjustImage4X]  || 0
+				  adjust_y = info[:AdjustImage4Y]  || 0
+                @sprites["image4"].x += adjust_x
+                @sprites["image4"].y += adjust_y
+                @sprites["image4"].visible = true
+		    else 
+                @sprites["image4"].visible = false
+            end
+
+            if info[:Image5]
+                @sprites["image5"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Images/#{info[:Image5]}"))
+                zoom_amt = info[:Image5Zoom] || 1
+                @sprites["image5"].zoom_x = zoom_amt
+                @sprites["image5"].zoom_y = zoom_amt
+                image5_pos = info[:Image5Position] || ((@sprites["image5"].width > @sprites["image5"].height) ? :Top : :Left)
+                case image5_pos
+                when :Top
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image5"].height + 16
+                when :Top2
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image5"].height + 16
+                when :Bottom
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image5"].bitmap.height - 32
+                when :Left
+                    @sprites["image5"].x = @sprites["background"].x + 16
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image5"].width + 16
+                when :Right
+                    @sprites["image5"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image5"].bitmap.width - 16
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image5"].width + 16
+                end
+				adjust_x = info[:AdjustImage5X]  || 0
+				adjust_y = info[:AdjustImage5Y]  || 0
+                @sprites["image5"].x += adjust_x
+                @sprites["image5"].y += adjust_y
+                @sprites["image5"].visible = true
+		    else 
+                @sprites["image5"].visible = false
             end
             title = "<ac>" + info[:Title] + "</ac>"
             # drawFormattedTextEx(bitmap, x, y, width, text, baseColor = nil, shadowColor = nil, lineheight = 32)
-            drawFormattedTextEx(overlay, @sprites["background"].x, @sprites["background"].y + 18, @sprites["background"].width, 
-                title, base, shadow)
+			overlay_h.font.size = info[:TitleFontSize] ||  Settings::TIP_CARDS_TITLE_SIZE
+			
+            title_y = @sprites["header"].y + 18
+            title_y += info[:TitleYAdjustment] || Settings::TIP_CARDS_TITLE_Y_OFFSET
+            drawFormattedTextEx(overlay_h, @sprites["header"].x, title_y, @sprites["header"].width, title, base, shadow)
             text_y_adj += info[:YAdjustment] if info[:YAdjustment]
             text = "<ac>" + info[:Text] + "</ac>"
+			overlay.font.size = info[:BodyFontSize] ||  Settings::TIP_CARDS_BODY_SIZE
             drawFormattedTextEx(overlay, @sprites["background"].x + text_x_adj, @sprites["background"].y + text_y_adj, 
                 @sprites["background"].width - 16 - text_x_adj + text_width_adj, text, base, shadow)
         else
@@ -340,22 +517,6 @@ class TipCardGroups_Scene
     end
 
     def pbDrawGroup
-        overlay = @sprites["overlay_h"].bitmap
-        overlay.clear
-        @sprites["arrow_right_h"].visible = false
-        @sprites["arrow_left_h"].visible = false
-        pbSetSystemFont(overlay)
-        base = Settings::TIP_CARDS_TEXT_MAIN_COLOR
-        shadow = Settings::TIP_CARDS_TEXT_SHADOW_COLOR
-        group = Settings::TIP_CARDS_GROUPS[@groups[@section]]
-        title = "<ac>" + group[:Title] + "</ac>"
-        # drawFormattedTextEx(bitmap, x, y, width, text, baseColor = nil, shadowColor = nil, lineheight = 32)
-        drawFormattedTextEx(overlay, @sprites["header"].x, @sprites["header"].y + 18, @sprites["header"].width, 
-            title, base, shadow)
-        if @sections > 1
-            @sprites["arrow_left_h"].visible = (@section > 0)
-            @sprites["arrow_right_h"].visible = (@section < @sections - 1)
-        end
         @tips = []
         if @revisit
             group[:Tips].each do |tip|
@@ -367,9 +528,30 @@ class TipCardGroups_Scene
             @tips = group[:Tips]
         end
         @pages = @tips.length
+        overlay = @sprites["overlay_h"].bitmap
+        overlay.clear
+        @sprites["arrow_right_h"].visible = false
+        @sprites["arrow_left_h"].visible = false
+        pbSetSystemFont(overlay)
+        tip = @tips[@index]
+        info = $PokemonGlobal.tipcards[tip] || nil
+        base = info[:Text_Color] || Settings::TIP_CARDS_TEXT_MAIN_COLOR
+        shadow = info[:Shadow_Color] || Settings::TIP_CARDS_TEXT_SHADOW_COLOR
+        if @last_index
+            @index = @pages - 1
+            @last_index = nil
+        end
+        title = "<ac>" + info[:Title] + "</ac>"
+		overlay.font.size = info[:TitleFontSize] ||  Settings::TIP_CARDS_TITLE_SIZE
+        # drawFormattedTextEx(bitmap, x, y, width, text, baseColor = nil, shadowColor = nil, lineheight = 32)
+        drawFormattedTextEx(overlay, @sprites["header"].x, @sprites["header"].y + 18, @sprites["header"].width, 
+            title, base, shadow)
+        if @sections > 1
+            @sprites["arrow_left_h"].visible = (@section > 0)
+            @sprites["arrow_right_h"].visible = (@section < @sections - 1)
+        end
         pbDrawTip
     end
-
     def pbDrawTip
         overlay = @sprites["overlay"].bitmap
         overlay.clear
@@ -377,14 +559,10 @@ class TipCardGroups_Scene
         @sprites["arrow_right"].visible = false
         @sprites["arrow_left"].visible = false
         pbSetSystemFont(overlay)
-        base = Settings::TIP_CARDS_TEXT_MAIN_COLOR
-        shadow = Settings::TIP_CARDS_TEXT_SHADOW_COLOR
-        if @last_index
-            @index = @pages - 1
-            @last_index = nil
-        end
         tip = @tips[@index]
         info = $PokemonGlobal.tipcards[tip] || nil
+        base = info[:Text_Color] || Settings::TIP_CARDS_TEXT_MAIN_COLOR
+        shadow = info[:Shadow_Color] || Settings::TIP_CARDS_TEXT_SHADOW_COLOR
         if info
             text_y_adj = 64
             text_x_adj = 16
@@ -428,12 +606,153 @@ class TipCardGroups_Scene
                 @sprites["image"].y += adjust_y
                 @sprites["image"].visible = true
             end
+
+            if info[:Image2]
+                @sprites["image2"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Image2s/#{info[:Image2]}"))
+                zoom_amt = info[:Image2Zoom] || 1
+                @sprites["image2"].zoom_x = zoom_amt
+                @sprites["image2"].zoom_y = zoom_amt
+                image2_pos = info[:Image2Position] || ((@sprites["image2"].width > @sprites["image2"].height) ? :Top : :Left)
+                case image2_pos
+                when :Top
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image2"].height + 16
+                when :Top2
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image2"].height + 16
+                when :Bottom
+                    @sprites["image2"].x = (Graphics.width - @sprites["image2"].bitmap.width) / 2
+                    @sprites["image2"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image2"].bitmap.height - 32
+                when :Left
+                    @sprites["image2"].x = @sprites["background"].x + 16
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image2"].width + 16
+                when :Right
+                    @sprites["image2"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image2"].bitmap.width - 16
+                    @sprites["image2"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image2"].width + 16
+                end
+				  adjust_x = info[:AdjustImage2X]  || 0
+				  adjust_y = info[:AdjustImage2Y]  || 0
+                @sprites["image2"].x += adjust_x
+                @sprites["image2"].y += adjust_y
+                @sprites["image2"].visible = true
+            end
+
+            if info[:Image3]
+                @sprites["image3"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Image3s/#{info[:Image3]}"))
+                zoom_amt = info[:Image3Zoom] || 1
+                @sprites["image3"].zoom_x = zoom_amt
+                @sprites["image3"].zoom_y = zoom_amt
+                image3_pos = info[:Image3Position] || ((@sprites["image3"].width > @sprites["image3"].height) ? :Top : :Left)
+                case image3_pos
+                when :Top
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image3"].height + 16
+                when :Top2
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image3"].height + 16
+                when :Bottom
+                    @sprites["image3"].x = (Graphics.width - @sprites["image3"].bitmap.width) / 2
+                    @sprites["image3"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image3"].bitmap.height - 32
+                when :Left
+                    @sprites["image3"].x = @sprites["background"].x + 16
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image3"].width + 16
+                when :Right
+                    @sprites["image3"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image3"].bitmap.width - 16
+                    @sprites["image3"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image3"].width + 16
+                end
+				  adjust_x = info[:AdjustImage3X]  || 0
+				  adjust_y = info[:AdjustImage3Y]  || 0
+                @sprites["image3"].x += adjust_x
+                @sprites["image3"].y += adjust_y
+                @sprites["image3"].visible = true
+            end
+
+            if info[:Image4]
+                @sprites["image4"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Image4s/#{info[:Image4]}"))
+                zoom_amt = info[:Image4Zoom] || 1
+                @sprites["image4"].zoom_x = zoom_amt
+                @sprites["image4"].zoom_y = zoom_amt
+                image4_pos = info[:Image4Position] || ((@sprites["image4"].width > @sprites["image4"].height) ? :Top : :Left)
+                case image4_pos
+                when :Top
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image4"].height + 16
+                when :Top2
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image4"].height + 16
+                when :Bottom
+                    @sprites["image4"].x = (Graphics.width - @sprites["image4"].bitmap.width) / 2
+                    @sprites["image4"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image4"].bitmap.height - 32
+                when :Left
+                    @sprites["image4"].x = @sprites["background"].x + 16
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image4"].width + 16
+                when :Right
+                    @sprites["image4"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image4"].bitmap.width - 16
+                    @sprites["image4"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image4"].width + 16
+                end
+				  adjust_x = info[:AdjustImage4X]  || 0
+				  adjust_y = info[:AdjustImage4Y]  || 0
+                @sprites["image4"].x += adjust_x
+                @sprites["image4"].y += adjust_y
+                @sprites["image4"].visible = true
+            end
+
+            if info[:Image5]
+                @sprites["image5"].setBitmap(_INTL("Graphics/Pictures/Tip Cards/Image5s/#{info[:Image5]}"))
+                zoom_amt = info[:Image5Zoom] || 1
+                @sprites["image5"].zoom_x = zoom_amt
+                @sprites["image5"].zoom_y = zoom_amt
+                image5_pos = info[:Image5Position] || ((@sprites["image5"].width > @sprites["image5"].height) ? :Top : :Left)
+                case image5_pos
+                when :Top
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_y_adj += @sprites["image5"].height + 16
+                when :Top2
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + 20
+                    text_y_adj += @sprites["image5"].height + 16
+                when :Bottom
+                    @sprites["image5"].x = (Graphics.width - @sprites["image5"].bitmap.width) / 2
+                    @sprites["image5"].y = @sprites["background"].y + @sprites["background"].height - @sprites["image5"].bitmap.height - 32
+                when :Left
+                    @sprites["image5"].x = @sprites["background"].x + 16
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_x_adj += @sprites["image5"].width + 16
+                when :Right
+                    @sprites["image5"].x = @sprites["background"].x + @sprites["background"].width - @sprites["image5"].bitmap.width - 16
+                    @sprites["image5"].y = @sprites["background"].y + 64
+                    text_width_adj -= @sprites["image5"].width + 16
+                end
+				adjust_x = info[:AdjustImage5X]  || 0
+				adjust_y = info[:AdjustImage5Y]  || 0
+                @sprites["image5"].x += adjust_x
+                @sprites["image5"].y += adjust_y
+                @sprites["image5"].visible = true
+            end
+
             title = "<ac>" + info[:Title] + "</ac>"
             # drawFormattedTextEx(bitmap, x, y, width, text, baseColor = nil, shadowColor = nil, lineheight = 32)
-            drawFormattedTextEx(overlay, @sprites["background"].x, @sprites["background"].y + 18, @sprites["background"].width, 
-                title, base, shadow)
+			overlay.font.size = info[:TitleFontSize] ||  Settings::TIP_CARDS_TITLE_SIZE
+			
+            title_y = @sprites["background"].y + 18
+            title_y += info[:TitleYAdjustment] || Settings::TIP_CARDS_TITLE_Y_OFFSET
+            drawFormattedTextEx(overlay, @sprites["background"].x, title_y, @sprites["background"].width, title, base, shadow)
             text_y_adj += info[:YAdjustment] if info[:YAdjustment]
             text = "<ac>" + info[:Text] + "</ac>"
+			overlay.font.size = info[:BodyFontSize] ||  Settings::TIP_CARDS_BODY_SIZE
             drawFormattedTextEx(overlay, @sprites["background"].x + text_x_adj, @sprites["background"].y + text_y_adj, 
                 @sprites["background"].width - 16 - text_x_adj + text_width_adj, text, base, shadow)
         else

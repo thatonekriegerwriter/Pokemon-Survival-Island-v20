@@ -159,7 +159,7 @@ end
  dir = attacker.direction #we have 16 frames to play with
 
 (1..fadeTime).each do |index|
-   update_package
+   OverworldCombat.update_package
    next if sprite.nil?
    next if sprite.disposed?
     case dir
@@ -231,7 +231,7 @@ end
  dir = attacked.direction #we have 16 frames to play with
 
 (1..fadeTime).each do |index|
-   update_package
+   OverworldCombat.update_package
    next if sprite.nil?
    next if sprite.disposed?
     case dir
@@ -293,7 +293,7 @@ def start_ov_sprite_movement(attacker,sprite=nil)
   $game_temp.preventspawns=false
   end
 (1..21).each_with_index do |number,index|
-   update_package
+   OverworldCombat.update_package
    next if sprite.nil?
    next if sprite.disposed?
     case dir
@@ -488,21 +488,21 @@ class OWBallThrowSprite
   def initialize(start_end,ball_used,map=nil,viewport=nil)
     @start_coord=start_end[0]
     @end_coord=start_end[1]
-    @map=map
-	if @map.nil?
-	@map=$game_map
-	end
-    @ball_used=ball_used
+	
+    @map= map.nil? ? $game_map : map 
+
+    @ball_used = ball_used
+	
     @real_x = @start_coord[0] * Game_Map::REAL_RES_X
     @real_y = @start_coord[1] * Game_Map::REAL_RES_Y
     @dest_x = @end_coord[0] * Game_Map::REAL_RES_X
     @dest_y = @end_coord[1] * Game_Map::REAL_RES_Y
     
-    
     x_plus = @end_coord[0] - @start_coord[0]
     y_plus = @end_coord[1] - @start_coord[1]
     
     @dir=0
+	
     if x_plus != 0 || y_plus != 0
       if x_plus.abs > y_plus.abs
         @dir = ((x_plus < 0) ? 1 : 2)
@@ -520,12 +520,12 @@ class OWBallThrowSprite
     @ball = IconSprite.new(0,0,viewport)
     @ball.ox=16
     @ball.oy=32
-	 if @landing_coord!=[$PokemonGlobal.dungeon_x,$PokemonGlobal.dungeon_y] && $PokemonGlobal.in_dungeon==false
+	if $PokemonGlobal.in_dungeon==false && @landing_coord!=[$PokemonGlobal.dungeon_x,$PokemonGlobal.dungeon_y]
 	 item_name = GameData::Item.try_get(ball_used).id
-    graphic = pbResolveBitmap("Graphics/Characters/throw_ball_#{ball_used.to_s}")
-    graphic = pbResolveBitmap("Graphics/Characters/throw_ball_#{ball_used.to_s.chop}") if graphic.nil?
-    graphic = pbResolveBitmap("Graphics/Characters/throw_ball") if graphic.nil?
-    @ball.setBitmap(graphic)
+     graphic = pbResolveBitmap("Graphics/Characters/throw_ball_#{ball_used.to_s}")
+     graphic = pbResolveBitmap("Graphics/Characters/throw_ball_#{ball_used.to_s.chop}") if graphic.nil?
+     graphic = pbResolveBitmap("Graphics/Characters/throw_ball") if graphic.nil?
+     @ball.setBitmap(graphic)
 	end
     @ball.x = self.screen_x
     @ball.y = self.screen_y
@@ -569,31 +569,28 @@ class OWBallThrowSprite
       @frames=0
       @ball.src_rect.x=0
       event_id=@map.check_event(*@end_coord)
-	  if event_id.is_a?(Integer)
-      if event_id > 0 && @map.events[event_id].name[/vanishingEncounter/]
+      if event_id && @map.events[event_id] && @map.events[event_id].is_a?(Game_PokeEvent)
 		pbSEPlay("Battle ball hit")
         @event=@map.events[event_id]
 		@pkmn = @event.pokemon #pbMapInterpreter.execute_script(script)
-		 @pkmn.status_turns=0 if @pkmn.status_turns.nil?
+		@pkmn.status_turns=0 if @pkmn.status_turns.nil?
 		if  @pkmn.status_turns>0
-		@pkmn.status_turns-=1 
-		@pkmn.status=:NONE if @pkmn.status_turns==0
+		  @pkmn.status_turns-=1 
+		  @pkmn.status=:NONE if @pkmn.status_turns==0
 		end
-
-
-
 		if @pkmn.fainted?
-		  
-        EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 1)
-        @event.removeThisEventfromMap
-        pbPlayerEXP(@pkmn,$player.able_party)
-        pbHeldItemDropOW(@pkmn,true)
-        @phase = 5
+          EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 1)
+          @event.removeThisEventfromMap
+          pbPlayerEXP(@pkmn,$player.party_in_world)
+          pbHeldItemDropOW(@pkmn,true)
+          @phase = 5
 		else 
-        @phase = 2
-		 thefight = $PokemonGlobal.ov_combat
-		 @catch=thefight.capture_calcs(@event,@ball_used,@dir)
-        $scene.spriteset.addUserAnimation(BALL_CATCH_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
+		  @event.being_caught = true
+		  @event.transparent = true
+          @phase = 2
+		  thefight = pbOverworldCombat
+		  @catch=thefight.capture_calcs(@event, @ball_used, @dir)
+          $scene.spriteset.addUserAnimation(BALL_CATCH_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
 		end
 
 
@@ -601,41 +598,44 @@ class OWBallThrowSprite
       else
         @phase = 5
 	  end
-      else
-        @phase = 5
-	  end
+
+
+
+
+
+
     when 2
       @frames+=1
-	  @phase = 3 if @pkmn.level<10 && $player.pokemon_party.length<1 && $Adventure.pokemon_party.length<1
       @phase=(@catch ? 3 : 4) if @frames>=BALL_CATCH_WAIT_FRAMES
     when 3
 	   pbSEPlay("Battle catch click")
-	  sideDisplay("The capture was a success!")
-	  if nuzlocke_has?(:ONEROUTE)
-      static = data.include?(:STATIC) && !$nuzx_static_enc
-      shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
-      map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
-        $PokemonGlobal.nuzlockeData[$game_map.map_id] = true unless static || shiny
+	   sideDisplay("The capture was a success!")
+	   if nuzlocke_has?(:ONEROUTE)
+        static = data.include?(:STATIC) && !$nuzx_static_enc
+        shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
+        map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
+         $PokemonGlobal.nuzlockeData[$game_map.map_id] = true unless static || shiny
        end
-        pbPlayerEXP(@pkmn,$player.able_party)
-		@pkmn = @event.pokemon if !@pkmn.is_a?(Pokemon)
-		@pkmn.poke_ball = @ball_used
-		 @pkmn.calc_stats
-        $scene.spriteset.addUserAnimation(BALL_SUCCESS_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
-        pbHeldItemDropOW(@pkmn)
-        pkmnAnim(@pkmn)
-        pbAddPokemonSilent(@pkmn)
-		  
-        EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 4)
-        OverworldPBEffects.onCatch(@ball_used,@pkmn)
-        @event.removeThisEventfromMap
-        @phase=5
+       pbPlayerEXP(@pkmn,$player.party_in_world)
+	   @pkmn = @event.pokemon if !@pkmn.is_a?(Pokemon)
+	   @pkmn.poke_ball = @ball_used
+	   @pkmn.calc_stats
+	   $scene.spriteset.addUserAnimation(BALL_SUCCESS_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
+	   pkmnAnim(@pkmn)
+	   pbAddPokemonSilent(@pkmn)
+	   EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 4)
+	   @ball_used.effects.trigger(:onCatch, @pkmn, nil)
+	   #OverworldPBEffects.onCatch(@ball_used,@pkmn)
+	   @event.removeThisEventfromMap
+	   @phase=5
     when 4
-		pbSEPlay("Battle recall")
-      $scene.spriteset.addUserAnimation(BALL_RELEASE_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
-	  sideDisplay("#{@pkmn.name} broke free!")
-	  makeAggressive(@event)
-      @phase=5
+	   @event.being_caught = false
+	   @event.transparent = false
+	   pbSEPlay("Battle recall")
+	   $scene.spriteset.addUserAnimation(BALL_RELEASE_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
+	   sideDisplay("#{@pkmn.name} broke free!")
+	   makeAggressive(@event)
+	   @phase=5
     when 5
       self.dispose
       return
@@ -650,13 +650,20 @@ class OWBallThrowSprite
   def update
     return if !@ball || @disposed
     @ball.update
+	
+	
+	
+	
 	pokeball_ov_behavior
+	
+	
+	
 	if !@ball.disposed?
-	@ball.x = self.screen_x
-    @ball.y = self.screen_y
-    @ball.zoom_x = 1.0
-    @ball.zoom_y = @ball.zoom_x
-    pbDayNightTint(@ball)
+	 @ball.x = self.screen_x
+     @ball.y = self.screen_y
+     @ball.zoom_x = 1.0
+     @ball.zoom_y = @ball.zoom_x
+     pbDayNightTint(@ball)
 	end
     $game_temp.pokemon_calling=false
   end
@@ -975,6 +982,7 @@ class OWPokemonReleaseSprite
 	
       @frames=0
       @ball.src_rect.x=0
+	    puts @end_coord.to_s
       event_id=@map.check_event(*@end_coord)
 	  @phase = 5
 
@@ -1389,15 +1397,12 @@ class OWItemUseSprite
       @frames=0
       @ball.src_rect.x=0
       event_id=@map.check_event(*@end_coord)
-	  if event_id.is_a?(Integer)
-      if event_id > 0 && @map.events[event_id].name[/vanishingEncounter/]
+      if event_id && @map.events[event_id] && @map.events[event_id].is_a?(Game_PokeEvent)
         @event=event_id
         @phase = 5
 
 	  end
-        @phase = 5
 
-	  end
       @phase = 5
 
 	  
@@ -1479,7 +1484,87 @@ end
 
 
 
+class OWShieldSprite
+  X_OFFSET = 0
+  Y_OFFSET = 0
 
+  def initialize(viewport = nil)
+    @sprite = IconSprite.new(0, 0, viewport)
+
+    graphic = pbResolveBitmap("Graphics/Characters/shield")
+    @sprite.setBitmap(graphic) if graphic
+
+	frame_width  = @sprite.bitmap.width / 4
+    frame_height = @sprite.bitmap.height / 4
+    @sprite.ox = frame_width / 2
+    @sprite.oy = frame_height
+
+    @x_offset = 0
+    @y_offset = 0
+
+    @disposed = false
+    update
+  end
+
+  def x_offset
+    @x_offset
+  end
+
+  def x_offset=(value)
+    @x_offset = value
+  end
+
+  def y_offset
+    @y_offset
+  end
+
+  def y_offset=(value)
+    @y_offset = value
+  end
+
+  def update
+    return if @disposed
+    unless $player.blocking
+	 dispose
+	 return 
+	end 
+    direction = $game_player.direction
+
+    @sprite.x = $game_player.screen_x + @x_offset
+    @sprite.y = $game_player.screen_y + @y_offset
+    if $game_player.direction == 8
+      @sprite.z = $game_player.screen_z - 1
+    else
+      @sprite.z = $game_player.screen_z + 31
+    end
+	frame_width  = @sprite.bitmap.width / 4
+    frame_height = @sprite.bitmap.height / 4
+    row = (direction / 2) - 1
+    @sprite.src_rect.set(0,row * frame_height,frame_width,frame_height)
+
+    pbDayNightTint(@sprite)
+    @sprite.update
+  end
+
+  def visible=(value)
+    @sprite.visible = value
+  end
+
+  def visible
+    @sprite.visible
+  end
+
+  def dispose
+    return if @disposed
+
+    @sprite.dispose
+    @disposed = true
+  end
+
+  def disposed?
+    @disposed
+  end
+end
 
 
 

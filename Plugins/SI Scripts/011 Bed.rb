@@ -61,7 +61,6 @@ class PBSleepScene
   def perform_sleep(value)
       pbSetPokemonCenter if !is_current_pos_center?
 	  countdownSlider(value)
-	  pbRandomEvent
 	  sideDisplay(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
       $ExtraEvents.clearOverworldPokemonMemory
 	  party = $player.party
@@ -82,14 +81,14 @@ class PBSleepScene
 	  else
 		sideDisplay(_INTL("You really need to sleep."))
 	  end  
-
+      pbRandomEvent
   end 
   
 
 
   def pbChoose
     value = @scene.pbChoose
-	if value
+	if value && value > 0
 	  @hours = value
 	  perform_sleep(value)
 	end 
@@ -131,7 +130,7 @@ SLIDER_WIDTH  = 280
 SLIDER_HEIGHT = 8
 
   def initialize(
-    min: 1,
+    min: 0,
     max: 24,
     start: 12,
     ticks: nil,
@@ -199,6 +198,7 @@ end
 def positionArrow
   bar = @sprites["bar"]
   @sprites["arrow"].x = bar.x + (value_ratio * SLIDER_WIDTH).to_i - 1
+  @sprites["arrow"].x = @sprites["arrow"].x + 4 if @value == 0
 end
 
 def createText
@@ -239,11 +239,15 @@ def get_future_food_water(water=$player.playerwater,food=$player.playerfood, sat
   return water, food, saturation>0
 end
   def CurrentColors(value, maxvalue)
-    if value<(maxvalue/4.0)
+    quarter = maxvalue / 4.0
+    half = maxvalue / 2.0
+    if value < 1
+      return Color.new(139,0,0)
+    elsif value < quarter
       return Color.new(255,55,55)
-    elsif value<=(maxvalue/4.0)
+    elsif value < half
       return Color.new(255,125,55)
-    elsif value<=(maxvalue/2.0)
+    elsif value < half + quarter
       return Color.new(255,255,55)
     end
     return Color.new(55,255,55)
@@ -262,7 +266,7 @@ def drawText
   h20_value, fod_value, saturated = get_future_food_water
   slp_value = get_future_sleep
   
-  subtraction = 26
+  subtraction = 14
   if saturated
     h20colors = CurrentColorsAlt(h20_value, $player.playermaxwater)
 	fodcolors = CurrentColorsAlt(fod_value, $player.playermaxfood)
@@ -279,12 +283,12 @@ def drawText
     ["#{@value} hours#{bonus}", @x + 260, @y + 170, 2, Color.new(200,200,200), nil],
 	
 	
-    ["H20: ", @x + 220 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
-    ["#{h20_value}", @x + 240 - subtraction, @y + 186, 0, h20colors, nil],
-    ["  FOD: ", @x + 260 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
-    ["#{fod_value}", @x + 288 - subtraction, @y + 186, 0, fodcolors, nil],
-    ["  SLP: ", @x + 308 - subtraction, @y + 186, 0, Color.new(200,200,200), nil],
-    ["#{slp_value}", @x + 336 - subtraction, @y + 186, 0, slpcolors, nil]
+    ["H20", @x + 220 - subtraction, @y + 186, 0, h20colors, nil],
+   # ["#{h20_value}", @x + 240 - subtraction, @y + 186, 0, h20colors, nil],
+    ["  FOD", @x + 260 - subtraction, @y + 186, 0, fodcolors, nil],
+   # ["#{fod_value}", @x + 288 - subtraction, @y + 186, 0, fodcolors, nil],
+    ["  SLP", @x + 308 - subtraction, @y + 186, 0, slpcolors, nil],
+   # ["#{slp_value}", @x + 336 - subtraction, @y + 186, 0, slpcolors, nil]
   ]
   
   
@@ -310,8 +314,8 @@ end
 def updateInput
   delta = 0
 
-  delta -= 1 if Input.repeat?(Input::LEFT) || Input.scroll_v==-1
-  delta += 1 if Input.repeat?(Input::RIGHT) || Input.scroll_v==1
+  delta -= 1 if Input.repeat?(Input::LEFT) || Input.scroll_v==-1 || Input.repeat?(Input::JUMPUP)
+  delta += 1 if Input.repeat?(Input::RIGHT) || Input.scroll_v==1 || Input.repeat?(Input::JUMPDOWN)
   
 
   return unless delta != 0
@@ -515,6 +519,7 @@ end
 
 
 def heal_BED(wari,pkmn)
+  return if pkmn.egg?
   case $PokemonSystem.difficulty
     when 0
 	 chance = rand(5)+1
@@ -527,20 +532,27 @@ def heal_BED(wari,pkmn)
 	 else
 	 chance = rand(19)+4
   end
-  pkmn.lifespan=100 if pkmn.lifespan.nil?
-  if pkmn.permaFaint==true && wari>7
-    pkmn.lifespan=-15
-    return if pkmn.lifespan<=0
-    pkmn.permaFaint=false
-    #pkmn.lifespan=50
+  
+  if pkmn.fainted?
+    if wari > 7
+	  pkmn.hp = 1
+	else
+	  wari.times do 
+	   pkmn.changeLifespan("mortally_wounded")
+	  end 
+	  pkmn.die #Has internal check to return if does not meet conditions.
+	  return if pkmn.dead?
+	end 
   end
-  return if pkmn.egg?
+  
     newHP = pkmn.hp + (wari*4.25)
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)
     pkmn.hp = newHP
     pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
-	
+	pkmn.status = :NONE if pkmn.status==:SLEEP
+	#puts pkmn.name
+	#puts pkmn.status
 	
 	 if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
 	 amt = BED_LOOKUP_FOR_HOURS[wari.to_s]
@@ -598,192 +610,15 @@ def pbErasePokemonCenter(map)
 end
 
 
-def pbBedCoreOld(item)
-command = 0
-	$PokemonGlobal.bars_visible=false
-  loop do
-      cmdSleep  = -1
-      cmdNap   = -1
-      cmdSave   = -1
-      cmdDreamConnect = -1
-      cmdPickUp = -1
-      commands = []
-      commands[cmdSleep  = commands.length] = _INTL("Sleep")
-      commands[cmdNap  = commands.length] = _INTL("Nap")
-      #commands[cmdSave   = commands.length] = _INTL("Save")
-      #commands[cmdDreamConnect = commands.length] = _INTL("Dream Connect")
-      #commands[cmdPickUp  = commands.length] = _INTL("Pick Up")
-      commands[commands.length]              = _INTL("Cancel")
-      msgwindow = pbCreateMessageWindow(nil,nil)
-      pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
-      command = pbShowCommands(msgwindow, commands, -1)
-      pbDisposeMessageWindow(msgwindow)
-      if cmdSleep >= 0 && command == cmdSleep      # Send to Boxes
-	  
-	  
-          if pbConfirmMessage(_INTL("Do you want to head to bed?\\wtnp[1]"))
-		   if !nuzlocke_has?(:AFULLEIGHTHOURS)
-             params = ChooseNumberParams.new
-             params.setMaxDigits(2)
-             params.setRange(0,24)
-             msgwindow = pbCreateMessageWindow(nil,nil)
-             pbMessageDisplay(msgwindow,_INTL("How many hours do you want to sleep?\\wtnp[1]"))
-		     hours = pbChooseNumber(msgwindow,params)
-             pbDisposeMessageWindow(msgwindow)
-			else
-			 hours = 8
-			end
 
-			  if hours == 0
-			    pbMessage(_INTL("You decide not to sleep.",hours))
-				 break
-			  else
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for {1} hours.\\wtnp[6]",hours)) if hours>1
-			    pbMessage(_INTL("You lay down to rest with your Pokemon for an hour.\\wtnp[6]")) if hours==1
-				 
-				 
-			  end
-				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
-            if !is_current_pos_center?
-			  sideDisplay("Respawn Point set to #{$game_map.name}!")
-             pbSetPokemonCenter
-			end
-			  pbShowTipCardsGrouped(:BEDTIMETIPS) if !pbSeenTipCard?(:SLEEPING1)
-				 curTime = pbGetTimeNow
-				 nuTime = Time.new($PokemonGlobal.newFrameCount+(((3600*hours))/UnrealTime::PROPORTION.to_f))
-				  if curTime.day!=nuTime.day
-				    midnight_activations_please
-				  end
-				party = $player.party
-                 for i in 0...party.length
-                 pkmn = party[i]
-				 heal_BED(hours,pkmn)
-				 end
-				pbWait(80)
-				pbRandomEvent
-				
-			    pbMessage(_INTL("Your Pokemon seems a little off tonight.")) if pbPokerus?
-				$game_variables[29] += (3600*hours)
-				pbSleepRestore(hours)
-			   increaseHealthAndTotalHP(hours)
-	            pbMEPlay("Pokemon Healing")
-              $ExtraEvents.clearOverworldPokemonMemory
-				pbToneChangeAll(Tone.new(0,0,0,0),20)
-				if $player.playersleep >= 100.0
-			        pbMessage(_INTL("You feel well rested!"))
-				elsif $player.playersleep >= 75.0
-			        pbMessage(_INTL("You feel a little groggy, but are raring to go!"))
-				elsif $player.playersleep >= 50.0
-			        pbMessage(_INTL("Your brain feels fuzzy."))
-				elsif $player.playersleep >= 25.0
-			        pbMessage(_INTL("You want to go back to bed."))
-				else
-			        pbMessage(_INTL("You really need to sleep."))
-				end  
-        	    break
-				
-				
-		  end
-
-
-      elsif cmdNap >= 0 && command == cmdNap   # Summary
-          if pbConfirmMessage(_INTL("Do you want to take a nap?"))
-			    pbMessage(_INTL("You lay down to take a nap."))
-				pbToneChangeAll(Tone.new(-255,-255,-255,0),20)
-			    hours = 1
-
-				 curTime = pbGetTimeNow
-				 nuTime = Time.new($PokemonGlobal.newFrameCount+(((3600*hours))/UnrealTime::PROPORTION.to_f))
-				  if curTime.day!=nuTime.day
-				    midnight_activations_please
-				  end
-				$game_variables[29] += ((3600*hours)/2).round
-            if !is_current_pos_center?
-			  sideDisplay("Respawn Point set to #{$game_map.name}!")
-             pbSetPokemonCenter
-			 end
-				pbWait(40)
-				pbRandomEvent
-				chance = rand(3)
-				if chance == 0
-				$player.pokemon_party.each do |pkmn|
-                 pkmn.heal_HP
-                 pkmn.heal_status
-                 pkmn.heal_PP
-				 end
-				 pbSleepRestore(hours)
-              $ExtraEvents.clearOverworldPokemonMemory
-			   increaseHealthAndTotalHP(hours)
-	            pbMEPlay("Pokemon Healing")
-			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
-			     pbMessage(_INTL("You wake up feeling great!"))
-				 elsif chance == 1
-			 	pbToneChangeAll(Tone.new(0,0,0,0),20)
-			     pbMessage(_INTL("You wake up not feeling any different."))
-				 else
-				   $player.playersleep -= 24
-				 pbToneChangeAll(Tone.new(0,0,0,0),20)
-			     pbMessage(_INTL("You wake up feeling worse than before."))
-				 end
-
-              break
-				end
-      elsif cmdSave >= 0 && command == cmdSave   # Summary
-       scene = PokemonSave_Scene.new
-       screen = PokemonSaveScreen.new(scene)
-       screen.pbSaveScreen
-	   break
-      elsif cmdDreamConnect >= 0 && command == cmdDreamConnect   # Summary
-	    pbCableClub
-		break
-      elsif cmdPickUp >= 0 && command == cmdPickUp   # Summary
-          if pbConfirmMessage(_INTL("Do you want to pick up the Bed?"))
-		    pbErasePokemonCenter($game_map.map_id)
-			  sideDisplay("Respawn Point removed!")
-		    pbReceiveItem(item)
-		    this_event = pbMapInterpreter.get_self
-	  if !$map_factory
-           $game_map.removeThisEventfromMap(this_event.id)
-         else
-           mapId = $game_map.map_id
-           $map_factory.getMap(mapId).removeThisEventfromMap(this_event.id)
-         end
-          deletefromSIData(this_event.id,mapId)
-
-		  end
-		  break
-	  elsif Input.trigger?(Input::BACK)
-	    break
-	  else
-	    break
-      end
-end
-
-			  $PokemonGlobal.bars_visible=true
-end
-
-EventHandlers.add(:on_frame_update, :midnight_activations,
-  proc {
-    next if !$player
-    next if !PBDayNight.isMidnight?
-	midnight_activations_please
-  }
-)
 def midnight_activations_please
-    puts "ACTIVATIONS AT MIDNIGHT"
-	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
-	$PokemonGlobal.everytwodays+=1
-	if $PokemonGlobal.everytwodays==2
-	  bed_plant_reset
-	  $PokemonGlobal.collection_maps = {}
-	  $PokemonGlobal.everytwodays=0
-	end
-
+  
 
 end
 
 
 def bed_plant_reset
+     #THIS NEEDS REHASHING
 	 $map_factory.maps.each do |map|
       map.events.each_value do |event|
         if event.name[/berryplant/i]

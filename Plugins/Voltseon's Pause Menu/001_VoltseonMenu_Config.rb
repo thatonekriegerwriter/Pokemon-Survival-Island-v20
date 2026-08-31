@@ -27,7 +27,7 @@ MENU_FILE_PATH = "Graphics/Pictures/Voltseon's Pause Menu/"
 #	"MenuEntryDebug", "MenuEntryOptions", "MenuEntryBadge", "MenuEntryMystery", "MenuEntryQuit"
 #]
 MENU_ENTRIES = [
-	"MenuEntryResume", "MenuEntryBag", "MenuEntrySave", "MenuEntryOptions","MenuEntryMystery","MenuEntryDebug", "MenuEntryQuit"
+	"MenuEntryResume", "MenuEntrySave", "MenuEntryOptions","MenuEntryMystery","MenuEntryDebug", "MenuEntryQuit"
 ]
 
 # An array of aLL the Menu Component Classes from 004_VoltseonMenu_Components

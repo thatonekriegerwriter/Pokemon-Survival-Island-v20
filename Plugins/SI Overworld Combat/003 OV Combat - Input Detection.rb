@@ -130,7 +130,8 @@ end
      if target==$game_player
        damagePlayer(amt)
 	 else
-      damagePokemon(amt)
+      damagePokemon(target.pokemon, amt) if !target.is_a?(Pokemon)
+      damagePokemon(target, amt) if target.is_a?(Pokemon)
 	 end
   
   end
@@ -141,7 +142,7 @@ end
        increaseHealth(amt)
 	 else
       increaseHealth(target.pokemon,amt) if !target.is_a?(Pokemon)
-      increaseHealth(pokemon,amt) if !target.is_a?(Pokemon)
+      increaseHealth(pokemon,amt) if target.is_a?(Pokemon)
 	 end
   
   end
@@ -162,14 +163,15 @@ end
 	  if target.pokemon.status==:SLEEP
 	    target.pokemon.status=:NONE
 	  end
-  if target.pokemon.hp<0
-    target.pokemon.hp=0
-  end
+     if target.pokemon.hp<0
+      target.pokemon.hp=0
+     end
     if target.pokemon.owner == Pokemon::Owner.new_from_trainer($player)
 	   target.pokemon.iframes=5
 	end
+	target.movement_state = :WANDER if target.is_a?(Game_PokeEventA) && target.can_be_knocked_out_of_state?
 	puts "#{target.type.name} Lv#{target.type.level}: #{target.type.hp}/#{target.type.totalhp} - #{theamt}"
-	fainted_check(target) if target.is_a?(Game_PokeEvent)
+	OverworldCombat.fainted_check(target) 
  end
 
 
@@ -202,23 +204,21 @@ end
   end
  
  
- def getdirissues(o,c)
-   
-	backattack = o == c
-	sideattack = (c == 4 || c == 6)  && (o == 2 || o == 8)
-	baddir = if o == 8
-            2
-          elsif o == 4
-            6
-          elsif o == 2
-            8
-          elsif o == 6
-            4
-          else
-            0
-          end
-	
-  return backattack,sideattack,baddir
+ def getdirissues(attacker_direction, target_direction)
+  backattack = attacker_direction == target_direction
+
+  sideattack = [4, 6].include?(target_direction) &&
+               [2, 8].include?(attacker_direction)
+
+  baddir = case attacker_direction
+           when 8 then 2
+           when 4 then 6
+           when 2 then 8
+           when 6 then 4
+           else 0
+           end
+
+  [backattack, sideattack, baddir]
 
 end
 

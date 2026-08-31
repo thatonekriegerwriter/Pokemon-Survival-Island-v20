@@ -1,4 +1,37 @@
+class Hash
+  alias_method :old_each, :each
+
+  def each(*args, &block)
+    if $game_map && equal?($game_map.events)
+      puts "Iterating over $game_map.events with each"
+      puts caller.take(10)
+	  raise
+    end
+
+    old_each(*args, &block)
+  end
+  
+  alias_method :old_each_value, :each_value
+
+  def each_value(*args, &block)
+    if $game_map && equal?($game_map.events)
+      puts "Iterating over $game_map.events with each_value"
+      puts caller.take(10)
+	  raise 
+    end
+
+    old_each_value(*args, &block)
+  end
+end
+
+class Game_Event < Game_Character
+  attr_accessor :interaction_source
+  
+end 
+
 class Interpreter
+
+
   def setup_starting_event
     $game_map.refresh if $game_map.need_refresh
     # Set up common event if one wants to start
@@ -8,7 +41,7 @@ class Interpreter
       return
     end
     # Check all map events for one that wants to start, and set it up
-    $game_map.events.each_value do |event|
+    $game_map.events.values.each do |event|
       next if !event.starting
       if event.trigger < 3   # Isn't autorun or parallel processing
         event.lock
@@ -58,7 +91,7 @@ class Interpreter
       # Do nothing if any event or the player is in the middle of a move route
       if @move_route_waiting
         return if $game_player.move_route_forcing
-        $game_map.events.each_value do |event|
+        $game_map.events.values.each do |event|
           return if event.move_route_forcing
         end
         $DynamicEvents.each_value do |event|
@@ -93,17 +126,22 @@ class Interpreter
     @list = nil
     end_follower_overrides
     # If main map event and event ID are valid, unlock event
+	event = nil 
     if @main 
 	 if @event_id.is_a?(String) && @event_id.start_with?("MOB_") && $DynamicEvents.hostile_mobs[@event_id] && $DynamicEvents.hostile_mobs[@event_id].map_id == $game_map.map_id
-      $DynamicEvents.hostile_mobs[@event_id].unlock
+      event = $DynamicEvents.hostile_mobs[@event_id]
 	 elsif @event_id.is_a?(String) && @event_id.start_with?("ALLY_") && $DynamicEvents.allied_mobs[@event_id] && $DynamicEvents.allied_mobs[@event_id].map_id == $game_map.map_id
-      $DynamicEvents.allied_mobs[@event_id].unlock
+      event = $DynamicEvents.allied_mobs[@event_id]
 	 elsif @event_id.is_a?(String) && @event_id.start_with?("BLOCK_") && $DynamicEvents.block_data[@event_id] && $DynamicEvents.block_data[@event_id].map_id == $game_map.map_id
-      $DynamicEvents.block_data[@event_id].unlock
+      event = $DynamicEvents.block_data[@event_id]
 	 elsif @event_id.is_a?(String) && @event_id.start_with?("TEMP_") && $DynamicEvents.block_data[@event_id] && $DynamicEvents.block_data[@event_id].map_id == $game_map.map_id
-      $DynamicEvents.temp_data[@event_id].unlock
+      event = $DynamicEvents.temp_data[@event_id]
 	 elsif @event_id.is_a?(Integer) && @event_id > 0 && $game_map.events[@event_id]
-      $game_map.events[@event_id].unlock
+      event = $game_map.events[@event_id]
+	 end 
+	 if event 
+	  event.interaction_source = nil  
+	  event.unlock 
 	 end 
     end
   end
@@ -131,6 +169,11 @@ class Interpreter
   end 
 
 end 
+
+class Game_Event < Game_Character
+  attr_accessor :width
+  attr_accessor :height
+end
 
 class PokemonMapFactory
 def map_offset(map_from, map_to)
@@ -282,8 +325,8 @@ class Sprite_Multimap < RPG::Sprite
     self.z          = @character.screen_z(@ch)
     self.opacity    = @character.opacity
     self.blend_type = @character.blend_type
-	
-	
+#puts "========================="
+
     if @character.animation_id != 0
       animation = $data_animations[@character.animation_id]
       animation(animation, true)
@@ -386,6 +429,7 @@ class OverworldSprites
     existing = @sprites.map(&:character)
   $DynamicEvents.each_value_in_connected_map do |event, index|
     next if existing.include?(event) && !$map_factory.hasMap?(event.map_id)
+	#puts event.pokemon.name
     @sprites << Sprite_Multimap.new(@viewport, event)
   end
   visible = $DynamicEvents.events_for_connected_map($game_map.map_id)
@@ -433,9 +477,14 @@ class DynamicEventFactory
     @last_update ||= -1
     @last_update += 1
   end 
+  def on_load!
+    @temp_data   = {}
+	update!
+  end 
   
   def clear_temp!
     @temp_data   = {}
+	update!
   end 
   
   def last_update
@@ -466,13 +515,17 @@ def testPokeSpawn(x,y,dir)
 
 end
   
-  def spawnTempEvent(x,y,data,dir=false)
+  def spawnTempEvent(x,y,data,dir=false, extra_data = nil)
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     mapId = $game_map.map_id
 	amt = rand(3)+3
     event.name = "vanishingEncounter.surrounding(#{amt})" 
-
+    if data.is_a?(Pokemon::Move) && data.id == :SUBSTITUTE
+	   hp = extra_data.nil? ? 20 : extra_data
+	  sub = Substitute.new(move, hp)
+	  data = sub if sub
+	end 
     #--- nessassary properties ----------------------------------------
 	temp_key = highest_key(@temp_data) + 1
     key_id = "TEMP_#{temp_key.to_s}"
@@ -486,38 +539,32 @@ end
 	
 
     #--- movement of the event --------------------------------
-	
+	event.pages[0].direction_fix = true if data.is_a?(Pokemon::Move)
     event.pages[0].step_anime = false
-    event.pages[0].through = false
+    event.pages[0].through = data.is_a?(Pokemon::Move) ? move_is_through?(data) : false
 	
     event.pages[0].move_speed = 4
     event.pages[0].move_frequency = 4
     event.pages[0].trigger = 2
     event.pages[0].move_type = 3
 	
-	
-	
+    if data.is_a?(Pokemon::Move) && data.execution_type == "TrappedMove"
+     Compiler::push_script(event.pages[0].list,sprintf("PLEASE IMPLEMENT ME"))
+     Compiler::push_end(event.pages[0].list)
+	end 
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_TempEvent.new(mapId, event, data)
+    gameEvent = Game_TempEvent.new(mapId, event, data, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.direction = dir if dir!=false
 	
-
     @temp_data[key_id] = gameEvent
 	
     #--- updating the sprites --------------------------------------------------------
     if data.is_a?(Pokemon::Move)
+    puts "CREATED MOVE EVENT!"
 	 move = GameData::Move.get(data.id)
-	 if move.type == :FIRE 
-	   pbAddParticleEffecttoEvent("fire",@temp_data[key_id]) 
-	   pbAddLightEffecttoThisEvent(@temp_data[key_id])
-	 elsif move.type == :WATER
-	   pbAddParticleEffecttoEvent("water",@temp_data[key_id]) 
-	 else 
-	   pbAddParticleEffecttoEvent("smoke",@temp_data[key_id]) 
-	#pbAddLightEffecttoEvent
-	 end 
+	 move_visual(@temp_data[key_id], move)
 	end
 	
     update!
@@ -529,15 +576,73 @@ end
   
 end
 
-  
+def move_visual(event, move)
+  case move.execution_type
+  when "ProjectileMove"
+    pbAddLightEffecttoThisEvent(event) if move.type == :FIRE
+    pbAddParticleEffecttoEvent("combat_projectile", event)
+  when "ArcMove"
+    pbAddLightEffecttoThisEvent(event) if move.type == :FIRE
+    pbAddParticleEffecttoEvent("combat_projectile", event)
+  when "ArcExplodeMove"
+    pbAddLightEffecttoThisEvent(event) if move.type == :FIRE
+    pbAddParticleEffecttoEvent("combat_projectile", event)
+
+  when "BeamMove"
+    pbAddLightEffecttoThisEvent(event, move.overworld_range, move.overworld_range) if move.type == :FIRE
+    pbAddParticleEffecttoEvent("beam_projectile", event)
+    # beam visuals
+
+  when "ConeMove"
+    pbAddLightEffecttoThisEvent(event, move.overworld_range, move.overworld_range) if move.type == :FIRE
+    pbAddParticleEffecttoEvent("cone_projectile", event)
+    # cone visuals
+
+  else
+    pbAddParticleEffecttoEvent("smoke", event)
+  end
+end
+  def move_is_through?(move)
+  case move.execution_type
+  when "ProjectileMove"
+    return false 
+  when "ArcMove"
+    return false 
+  when "ArcExplodeMove"
+    return true 
+
+  when "SummonMove"
+    return false 
+  when "OrbitingMove"
+    return false 
+  when "RandomOrbitingMove"
+    return false 
+
+  when "SummonMove"
+    return true 
+  when "TrappedMove"
+    return true 
+  when "AreaSurroundingUserAuraMove"
+    return true 
+
+  when "BeamMove"
+    return true 
+    # beam visuals
+
+  when "ConeMove"
+    return true 
+    # cone visuals
+
+  else
+    return false 
+  end
+
+  end 
   def spawnPokeEvent(x,y,pokemon,dir=false)
 	if $game_switches[556]==true
-		 $game_map.events.each do |event|
-	      if event.is_a?(Array)
-	       return if event[1].name == "tutorialvanishingEncounter" 
-	      else
-	       return if event.name == "tutorialvanishingEncounter" 
-	      end
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+	    return if event.name == "tutorialvanishingEncounter" 
 	 end
 	end
     #--- generating a new event ---------------------------------------
@@ -615,7 +720,8 @@ end
     Compiler::push_end(event.pages[0].list)
 	
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(mapId, event, pokemon)
+#	puts "Performing Spawn Part C of Lv#{pokemon.level} #{pokemon.name} at #{x},#{y} in map #{$game_map.map_id}"
+    gameEvent = Game_PokeEvent.new(mapId, event, pokemon, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.direction = dir if dir!=false
@@ -806,9 +912,8 @@ end
 	
 	
 	
-	
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon)
+    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.direction = dir if dir!=false
@@ -899,7 +1004,7 @@ end
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon)
+    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
@@ -951,6 +1056,8 @@ update!
     event.name = "Size(3,3).noshadow"
 	elsif object == :BEDROLL
     event.name = "Size(1,2).noshadow"
+	elsif object == :ADVENTUREFLAG
+    event.name = "Size(1,3).center.noshadow"
 	elsif object == :TORCH
     event.name = "playertorch(3,3)"
 	elsif object == "CampsiteDoor"
@@ -960,7 +1067,7 @@ update!
 	end
     image = getObjectImage(object)
 	fname = "#{image}.png"
-	if store==true && (object==:BEDROLL||object==:PORTABLECAMP||object==:HOME )
+	if store==true && (object==:BEDROLL||object==:PORTABLECAMP||object==:HOME||object==:ADVENTUREFLAG )
 	fname = "Packed.png"
 	end
 	
@@ -994,7 +1101,10 @@ update!
     event.pages[0].direction_fix = true
     event.pages[0].walk_anime = false #Sets movement type.
     event.pages[0].always_on_top = aat #Sets movement type.
-    event.pages[0].through = aat #Sets movement type.
+	through = aat 
+	through = true if object==:ADVENTUREFLAG || object==:PETBED || object==:PETBEDOUTDOOR
+    event.pages[0].through = through #Sets movement type.
+    event.pages[0].step_anime = true if object==:ADVENTUREFLAG && store==false
     event.pages[0].trigger = 0 if object != "CampsiteDoor"
     event.pages[0].trigger = 1 if object == "CampsiteDoor"
     #--- event commands of the event -------------------------------------
@@ -1019,10 +1129,17 @@ update!
     event.x = x-1
     event.y = y
 	end
+	if object == :PETBED || object == :PETBEDOUTDOOR
+	 localMeter = true_object.internal_data
+	 if localMeter.nil? || !localMeter.is_a?(PetBedData)
+	 localMeter=PetBedData.new(key_id)
+	 true_object.internal_data=localMeter
+	 end
 	
 	
-	true_object.crate_storage.active = true if true_object.crate_storage.respond_to?(:active)
-    gameEvent = Game_OVEvent.new(true_object, mapId, event)
+	end 
+	
+    gameEvent = Game_OVEvent.new(true_object, mapId, event,$game_map)
     gameEvent.id = key_id
     gameEvent.direction = direction if !direction.nil?
 	if object == :PORTABLECAMP && store==true
@@ -1036,7 +1153,7 @@ update!
 	 $ExtraEvents.objects[[mapId,key_id]].eventdata = gameEvent
 	@block_data[key_id] = gameEvent
     #--- updating the sprites --------------------------------------------------------
-	
+
 	
 	
 	
@@ -1054,11 +1171,14 @@ update!
   end
 
   def generateBerryPlant(x,y)
-    event = $DynamicEvents.generateEvent(x,y,object,aat,store,direction)
-	return event
+    true_object = :BERRYPLANT
+   # object = object.id if object.is_a?(ItemData)
+   # event = $DynamicEvents.generateEvent(x,y,object,aat,store,direction)
+	#return event
     event = RPG::Event.new(x,y)
     event.name = "BerryPlant.center"
-    key_id = (($game_map.events.keys.max)|| -1) + 1
+    key_id_r = highest_key(@block_data) + 1
+    key_id = "BLOCK_#{key_id_r.to_s}"
     event.id = key_id
     mapId = $game_map.map_id
     event.x = x
@@ -1075,10 +1195,10 @@ update!
     Compiler::push_script(event.pages[0].list,sprintf("pbBerryPlant"))
     Compiler::push_end(event.pages[0].list)
 	
-    gameEvent = Game_OVEvent.new(:BERRYPLANT, @map_id, event)
+    gameEvent = Game_OVEvent.new(:BERRYPLANT, @map_id, event, $game_map)
     gameEvent.id = key_id
-	$ExtraEvents.objects[[@map_id,key_id]] = StoredEvent.new(@map_id,event,:BERRYPLANT)
-	 $ExtraEvents.objects[[@map_id,key_id]].eventdata = gameEvent
+	#$ExtraEvents.objects[[@map_id,key_id]] = StoredEvent.new(@map_id,event,:BERRYPLANT)
+	# $ExtraEvents.objects[[@map_id,key_id]].eventdata = gameEvent
 	@events[key_id] = gameEvent
     berry_plant = $PokemonGlobal.eventvars[[@map_id, key_id]]
     if !berry_plant
@@ -1122,8 +1242,11 @@ update!
     graphic_form = (VisibleEncounterSettings::SPRITES[0] && form!=nil) ? form : 0
     graphic_gender = (VisibleEncounterSettings::SPRITES[1] && gender!=nil) ? gender : 0
     graphic_shiny = (VisibleEncounterSettings::SPRITES[2] && shiny!=nil) ? shiny : false
+    shadow = pokemon.shadowPokemon?
+	egg = pokemon.egg?
     fname = ow_sprite_filename(encounter[0].to_s, graphic_form, graphic_gender, graphic_shiny)
     fname.gsub!("Graphics/Characters/","")
+	fname = "Followers/egg" if egg 
 
     event.pages[0].graphic.character_name = fname
     #--- movement of the event --------------------------------
@@ -1131,6 +1254,7 @@ update!
     event.pages[0].move_frequency = 4
     event.pages[0].move_type = 3
     event.pages[0].step_anime = true
+    #event.pages[0].step_anime = false if pokemon.egg?
     event.pages[0].always_on_top = false #Sets movement type.
     event.pages[0].through = false #Sets movement type.
     #event.pages[0].always_on_top = true if pokemon.types.include?(:FLYING)
@@ -1145,15 +1269,18 @@ update!
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_Event ------------------------------------
 	
-    gameEvent = Game_PokeEventA.new(pokemon, mapId, event)
+    gameEvent = Game_PokeEventA.new(pokemon, mapId, event, $game_map)
     gameEvent.id = key_id
     gameEvent.type = pokemon
     gameEvent.moveto(x,y)
 	#if $game_temp.preventspawns==false
     $ExtraEvents.special[[mapId,key_id]] = StoredEvent.new(mapId,event,pokemon)
 	$ExtraEvents.special[[mapId,key_id]].eventdata = gameEvent
+	
 	@allied_mobs[key_id] = gameEvent
-    pokemon.associatedevent=key_id
+	
+    pokemon.associatedevent = key_id
+	pokemon.in_world = true 
     #--- updating the sprites --------------------------------------------------------
     # alternatively: updating the sprites (old and slow but working):
     #$scene.disposeSpritesets
@@ -1166,6 +1293,7 @@ update!
 
 
   def generateMining(x,y,object)
+    mapId = $game_map.map_id
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     #--- nessassary properties ----------------------------------------
@@ -1190,11 +1318,10 @@ update!
     #--- event commands of the event -------------------------------------
     Compiler::push_script(event.pages[0].list,("object = get_own_event"))
     Compiler::push_script(event.pages[0].list,("ov_mining2(object.type) if defined?(object.type)"))
-    Compiler::push_script(event.pages[0].list,("object.removeThisEventfromMap"))
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_Event ------------------------------------
-    gameEvent = Game_OVEvent.new(object, @map_id, event, self)
+    gameEvent = Game_TempEvent.new(mapId, event, object, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.type = object
@@ -1246,10 +1373,68 @@ update!
     events.select { |event| event.map_id == map_id }
   end 
   def events_for_connected_map(map_id=$game_map.map_id)
-    events.select { |event| $map_factory.areConnected?(event.map_id,map_id) && $map_factory.hasMap?(event.map_id)}
+     events.select do |event|
+    begin
+      $map_factory.areConnected?(event.map_id, map_id) &&
+        $map_factory.hasMap?(event.map_id)
+    rescue => e
+      raise "#{e.message}\nEvent: #{event.name} (ID #{event.id}) Map #{event.map_id}"
+    end
+  end
+  end 
+  def events_for_other_map(map_id=$game_map.map_id)
+    events.select { |event| $map_factory.hasMap?(event.map_id)}
   end 
   
+  def hostile_mobs_for_map(map_id=$game_map.map_id)
+    @hostile_mobs.values.select { |event| event.map_id == map_id }
+  end 
+  def allied_mobs_for_map(map_id=$game_map.map_id)
+    @allied_mobs.values.select { |event| event.map_id == map_id }
+  end 
+  def block_data_for_map(map_id=$game_map.map_id)
+    @block_data.values.select { |event| event.map_id == map_id }
+  end 
+  def block_data_for_type(type, map_id=$game_map.map_id)
+   @block_data.values.select do |event|
+     next false unless event.map_id == map_id
+     event.type.id == type
+   end
+  end 
+  def block_data_at(x, y, type = nil, map_id = $game_map.map_id)
+  @block_data.values.select do |event|
+    next false unless event.map_id == map_id
+    next false unless event.x == x && event.y == y
+    next true unless type
+    event.type.id == type
+  end
+  end
+  def delete_events_for_map(map_id = $game_map.map_id)
+   @block_data.delete_if { |_id, event| event.map_id == map_id }
+  end
+  def temp_data_for_map(map_id=$game_map.map_id)
+    @temp_data.values.select { |event| event.map_id == map_id }
+  end 
   
+  def available_pet_beds(self_id = nil, map_id=$game_map.map_id)
+    @block_data.values.select do |event|
+     next false unless event.map_id == map_id && event.id != self_id
+     next false unless event.type.id == :PETBED || event.type.id == :PETBEDOUTDOOR
+
+     data = event.type.internal_data
+     data.is_a?(PetBedData) && !data.breeding && data.pokemon && data.pokemon.able?
+    end
+  end
+  def available_empty_pet_beds(map_id = $game_map.map_id)
+   @block_data.values.select do |event|
+    next false unless event.map_id == map_id
+    next false unless event.type.id == :PETBED || event.type.id == :PETBEDOUTDOOR
+
+    data = event.type.internal_data
+    data.is_a?(PetBedData) && !data.pokemon && !data.reserved_for_egg
+   end
+  end
+
   def refresh
     @hostile_mobs.each_value do |event|
       event.refresh if $map_factory.areConnected?(event.map_id,$game_map.map_id) && $map_factory.hasMap?(event.map_id)
@@ -1336,7 +1521,19 @@ class Game_Character
     end
     return true
   end
+
+  def turn_toward_target(event)
+    sx = @x + (@width / 2.0) - (event.x + (event.width / 2.0))
+    sy = @y - (@height / 2.0) - (event.y - (event.height / 2.0))
+    return if sx == 0 && sy == 0
+    if sx.abs > sy.abs
+      (sx > 0) ? turn_left : turn_right
+    else
+      (sy > 0) ? turn_up : turn_down
+    end
+  end
 end
+
 class EventHash
   def initialize(hash={})
     @hash = hash
@@ -1345,6 +1542,8 @@ class EventHash
   def [](key)
     if key.is_a?(Integer)
       value = @hash[key]
+	elsif key.is_a?(String) && key == "GAME_PLAYER"
+	   value = $game_player
 	elsif key.is_a?(String) && key.start_with?("MOB_") && $DynamicEvents.hostile_mobs[key]
       value = $DynamicEvents.hostile_mobs[key]
 	elsif key.is_a?(String) && key.start_with?("ALLY_") && $DynamicEvents.allied_mobs[key]
@@ -1358,11 +1557,11 @@ class EventHash
   def []=(key, value)
     if key.is_a?(Integer)
       @hash[key] = value
-	elsif @event_id.is_a?(String) && @event_id.start_with?("MOB_") 
+	elsif key.is_a?(String) && key.start_with?("MOB_") 
       $DynamicEvents.hostile_mobs[key] = value
-	elsif @event_id.is_a?(String) && @event_id.start_with?("ALLY_") 
+	elsif key.is_a?(String) && key.start_with?("ALLY_") 
       $DynamicEvents.allied_mobs[key] = value
-	elsif @event_id.is_a?(String) && @event_id.start_with?("BLOCK_")
+	elsif key.is_a?(String) && key.start_with?("BLOCK_")
       $DynamicEvents.block_data[key] = value
 	end 
   end
@@ -1378,7 +1577,14 @@ class EventHash
   end
   
   def has_key?(key)
-    @hash.has_key?(key)
+    return true if @hash.has_key?(key)
+  if key.is_a?(String)
+    return true if key.start_with?("MOB_") && $DynamicEvents.hostile_mobs[key]
+    return true if key.start_with?("ALLY_") && $DynamicEvents.allied_mobs[key]
+    return true if key.start_with?("BLOCK_") && $DynamicEvents.block_data[key]
+  end
+
+  false
   end 
   def keys
     @hash.keys
@@ -1392,6 +1598,8 @@ class EventHash
   end 
   
 end
+
+
 class Game_Map
   def passable?(x, y, d, self_event = nil)
     return false if !valid?(x, y)
@@ -1451,7 +1659,8 @@ class Game_Map
       tile_id = data[x, y, i]
       terrain = GameData::TerrainTag.try_get(@terrain_tags[tile_id])
       # If already on water, only allow movement to another water tile
-      if self_event && terrain.can_surf_freely
+	  unless self_event.is_a?(Game_TempEvent)
+      if self_event && terrain.can_surf_freely 
         [2, 1, 0].each do |j|
           facing_tile_id = data[newx, newy, j]
           next if facing_tile_id == 0
@@ -1476,8 +1685,9 @@ class Game_Map
           break if facing_terrain.id != :None && !facing_terrain.ignore_passability
         end
       end
-      next if terrain&.ignore_passability
       next if tile_id == 0
+	  end 
+      next if terrain&.ignore_passability
       # Regular passability checks
       passage = @passages[tile_id]
       return false if passage & bit != 0 || passage & 0x0f == 0x0f
@@ -1541,27 +1751,67 @@ class Game_Map
     end
     return true
   end
-  
 
+if false  #Check disk change
+  alias old_map_setup setup
+  def setup(map_id, add = false)
+    old_map_setup(map_id, add)
+#	puts "Is this running?"
+	if add
+	$DynamicEvents.events_for_map(map_id).each do |event|
+	  next if event.map.object_id == self.object_id
+	  event.map = self 
+	  event.map_id = map_id
+	end 
+	end 
+  end 
+end 
 end
-
+class Game_Event
+  attr_accessor :disappeared
+  def disappeared
+    @disappeared ||= false
+	@disappeared
+  end 
+  def is_a_pokemon?
+    defined?(self.pokemon) && self.pokemon.is_a?(Pokemon)
+  end 
+end 
 
 class Game_TempEvent < Game_Event
   attr_accessor :event
   attr_accessor :id
   attr_accessor :counter
+  attr_accessor :spawn_map_id
+  attr_accessor :data
+  attr_accessor :disabled
+  attr_accessor :map_id # contains the map_id
+  attr_writer :map # contains the original map 
   def initialize(map_id, event, data, map=nil)
     super(map_id, event, map)
 	@event = event
     @id  = event.id
-    @map_id  = map_id
+    @spawn_map_id  = map_id
+    @disabled  = false
     @data  = data
 	@counter = my_sight_line
   end
+  
+  def type
+    @data
+  end 
+  def type=(value)
+    @data=value
+  end 
   def sight_line
     @counter
   end 
-
+  def data
+    @data
+  end 
+  def pokemon
+    @data 
+  end 
 def my_sight_line
      counter_match = @event.name.match(/surrounding\(\d+\)/)
 	 counter = counter_match[0] if counter_match
@@ -1581,3 +1831,51 @@ end
   end 
 
  end
+MenuHandlers.add(:debug_menu, :clear_dynamics, {
+  "name"        => _INTL("Clear Dynamic Events"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Clear All Dynamic Events."),
+  "effect"      => proc {
+    $DynamicEvents.hostile_mobs.clear 
+	$DynamicEvents.allied_mobs.clear
+	$DynamicEvents.block_data.clear
+	$DynamicEvents.temp_data.clear
+      pbSEPlay("GUI save choice")
+  }
+})
+MenuHandlers.add(:debug_menu, :clear_dynamic_enemies, {
+  "name"        => _INTL("Clear Dynamic Enemies"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Clear All Dynamic Enemies."),
+  "effect"      => proc {
+    $DynamicEvents.hostile_mobs.clear 
+      pbSEPlay("GUI save choice")
+  }
+})
+MenuHandlers.add(:debug_menu, :clear_dynamic_allies, {
+  "name"        => _INTL("Clear Dynamic Allies"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Clear All Dynamic Allies."),
+  "effect"      => proc {
+    $DynamicEvents.allied_mobs.clear 
+      pbSEPlay("GUI save choice")
+  }
+})
+MenuHandlers.add(:debug_menu, :clear_dynamic_tiles, {
+  "name"        => _INTL("Clear Dynamic Tile Entities"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Clear All Dynamic Tile Entities."),
+  "effect"      => proc {
+    $DynamicEvents.block_data.clear 
+      pbSEPlay("GUI save choice")
+  }
+})
+MenuHandlers.add(:debug_menu, :clear_dynamic_temp, {
+  "name"        => _INTL("Clear Dynamic Temporary Entities"),
+  "parent"      => :field_menu,
+  "description" => _INTL("Clear All Dynamic Temporary Entities."),
+  "effect"      => proc {
+    $DynamicEvents.temp_data.clear 
+      pbSEPlay("GUI save choice")
+  }
+})

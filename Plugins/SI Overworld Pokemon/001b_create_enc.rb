@@ -21,7 +21,7 @@ class Game_Player < Game_Character
     ret.each do |event| 
 	   next if !event.is_a?(Game_PokeEvent)
 	    if rand(10)<4
-      event.battle_timer-=1 if event.battle_timer>0
+     # event.battle_timer-=1 if event.battle_timer>0
 	#puts "Battle Timer (skip_move): #{event.battle_timer}"
 	  end
     end
@@ -120,7 +120,8 @@ class Game_Player < Game_Character
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
       return false if !$game_map.valid?(new_x, new_y)
       # All event loops
-      $game_map.events.each_value do |event|
+	   events = $game_map.events.values + $DynamicEvents.events_for_map
+       events.each do |event|
         next if !triggers.include?(event.trigger)
         # If event coordinates and triggers are consistent
         next if !event.at_coordinate?(new_x, new_y)
@@ -212,7 +213,7 @@ class Game_Player < Game_Character
     if $game_map.counter?(new_x, new_y)
       new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
       new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-      $game_map.events.each_value do |event|
+      $game_map.events.values.each do |event|
         next if !event.at_coordinate?(new_x, new_y)
         next if event.jumping? || event.over_trigger?
         return event
@@ -426,8 +427,6 @@ def tutorial_fight(key_id)
     end
   
     end
-	 pbMessage("\\ts[]" + (_INTL"If a POKeMON hits you, you'll take damage!"))
-	 pbMessage("\\ts[]" + (_INTL"You will have to use a Potion, or Berries to repair damage, and it repairs slowly over time when you sleep."))
 	 pbMessage("\\ts[5]" + (_INTL". . ."))
      pbTurnTowardEvent(event,$game_player)
 	 pbMessage("\\ts[]" + (_INTL"The #{event.pokemon.name} rears back again, and fast enough you can't avoid!"))
@@ -435,13 +434,15 @@ def tutorial_fight(key_id)
 	  $game_temp.encounter_type = $game_temp.encounter_type
 	  pbStoreTempForBattle()
 	  $PokemonGlobal.battlingSpawnedPokemon = true
-	  $game_temp.in_safari = true
-	  pbSingleOrDoubleWildBattle($game_map.map_id, event.x, event.y, event.pokemon)
-	  $game_temp.in_safari = false
+	  pbSafariBattle(nil,nil,event.pokemon)
+	  #pbSingleOrDoubleWildBattle($game_map.map_id, event.x, event.y, event.pokemon)
 	  $game_switches[556]=false
 	  $PokemonGlobal.battlingSpawnedPokemon = false
 	  pbResetTempAfterBattle()
       event.removeThisEventfromMap
+	  $player.playerhealth = $player.totalhp
+	  $player.playerfood = $player.playermaxfood
+	  $player.playerwater = $player.playermaxwater
 	$game_switches[556]=false
   
   

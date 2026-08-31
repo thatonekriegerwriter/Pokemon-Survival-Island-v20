@@ -7,6 +7,18 @@ Recipe=REDAPRICORN,4,TUMBLEROCK,2
 Station=APRICORNCRAFTING
 CookingTime=0
 Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[PREMIERBALLC]
+Name=Recipe
+Result=PREMIERBALLC
+Yield=1
+Recipe=WHITEAPRICORN,2,TUMBLEROCK,2
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
 Flags=
 #-------------------------------
 [GREATBALLC]
@@ -17,6 +29,7 @@ Recipe=POKEBALLC,1,BLUEAPRICORN,4,TUMBLEROCK,2
 Station=APRICORNCRAFTING
 CookingTime=0
 Locked=false
+Type = TOOL
 Flags=
 #-------------------------------
 [ULTRABALLC]
@@ -27,4 +40,401 @@ Recipe=BLACKAPRICORN,6,YELLOWAPRICORN,6,POKEBALLC,1,TUMBLEROCK,2
 Station=APRICORNCRAFTING
 CookingTime=0
 Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[SUPERBALLC]
+Name=Recipe
+Result=SUPERBALLC
+Yield=1
+Recipe=WHITEAPRICORN,4,GREENAPRICORN,1,YELLOWAPRICORN,2,TUMBLEROCK,4
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[MASTERBALLC]
+Name=Recipe: Masterball (Crafted)
+Result=MASTERBALLC
+Yield=1
+Recipe=PURPLEAPRICORN,2,ENIGMABERRY,2,COMETSHARD,1,TUMBLEROCK,4
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=true
+Type = TOOL
+Flags=
+#-------------------------------
+[SAFARIBALLC]
+Name=Recipe
+Result=SAFARIBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[SPORTBALLC]
+Name=Recipe
+Result=SPORTBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[NETBALLC]
+Name=Recipe
+Result=NETBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[DIVEBALLC]
+Name=Recipe
+Result=DIVEBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[NESTBALLC]
+Name=Recipe
+Result=NESTBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[REPEATBALLC]
+Name=Recipe
+Result=REPEATBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[TIMERBALLC]
+Name=Recipe
+Result=TIMERBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[LUXURYBALLC]
+Name=Recipe
+Result=LUXURYBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[DUSKBALLC]
+Name=Recipe
+Result=DUSKBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[HEALBALLC]
+Name=Recipe
+Result=HEALBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[QUICKBALLC]
+Name=Recipe
+Result=QUICKBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[CHERISHBALLC]
+Name=Recipe
+Result=CHERISHBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[FASTBALLC]
+Name=Recipe
+Result=FASTBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[LEVELBALLC]
+Name=Recipe
+Result=LEVELBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[LUREBALLC]
+Name=Recipe
+Result=LUREBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[HEAVYBALLC]
+Name=Recipe
+Result=HEAVYBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[LOVEBALLC]
+Name=Recipe
+Result=LOVEBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[FRIENDBALLC]
+Name=Recipe
+Result=FRIENDBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[MOONBALLC]
+Name=Recipe
+Result=MOONBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[DREAMBALLC]
+Name=Recipe
+Result=DREAMBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[BEASTBALLC]
+Name=Recipe
+Result=BEASTBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[HIGHBALLC]
+Name=Recipe
+Result=HIGHBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[DAWNBALLC]
+Name=Recipe
+Result=DAWNBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[BARBEDBALLC]
+Name=Recipe
+Result=BARBEDBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[YOLOBALLC]
+Name=Recipe
+Result=YOLOBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[STATUSBALLC]
+Name=Recipe
+Result=STATUSBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[SHOCKBALLC]
+Name=Recipe
+Result=SHOCKBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[HIDDENBALLC]
+Name=Recipe
+Result=HIDDENBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[IMMUNEBALLC]
+Name=Recipe
+Result=IMMUNEBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[DEBUFFBALLC]
+Name=Recipe
+Result=DEBUFFBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[BURNBALLC]
+Name=Recipe
+Result=BURNBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[FREEZEBALLC]
+Name=Recipe
+Result=FREEZEBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[STUNBALLC]
+Name=Recipe
+Result=STUNBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
+Flags=
+#-------------------------------
+[TOXICBALLC]
+Name=Recipe
+Result=TOXICBALLC
+Yield=1
+Recipe=NO,1
+Station=APRICORNCRAFTING
+CookingTime=0
+Locked=false
+Type = TOOL
 Flags=

@@ -6,6 +6,7 @@ Yield=1
 Recipe=WOOL,4
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -17,6 +18,7 @@ Yield=1
 Recipe=LEATHER,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -25,9 +27,10 @@ Flags=
 Name=Recipe
 Result=MUSCLEBAND
 Yield=1
-Recipe=WOOL,3,LIECHIBERRY,3
+Recipe=WOOL,3,JABOCABERRY,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -39,6 +42,7 @@ Yield=1
 Recipe=WOOL,2,IRON2,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -50,6 +54,7 @@ Yield=1
 Recipe=WOOL,5,ARGOSTBERRY,4
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -61,6 +66,7 @@ Yield=1
 Recipe=WOOL,2,ARGOSTBERRY,1
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -72,6 +78,7 @@ Yield=1
 Recipe=LEATHER,2,CHOPLEBERRY,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -83,6 +90,7 @@ Yield=1
 Recipe=SILK,2,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -94,6 +102,7 @@ Yield=1
 Recipe=REDSHARD,3,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -105,6 +114,7 @@ Yield=1
 Recipe=BLUESHARD,2,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -116,6 +126,7 @@ Yield=1
 Recipe=REDSHARD,2,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -127,6 +138,7 @@ Yield=1
 Recipe=GREENSHARD,3,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -138,6 +150,7 @@ Yield=1
 Recipe=YELLOWSHARD,3,WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -146,9 +159,10 @@ Flags=
 Name=Recipe
 Result=LUCKYPUNCH
 Yield=1
-Recipe=LEATHER,6,LANSATBERRY,4
+Recipe=LEATHER,6,LEEK,4
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 
@@ -160,6 +174,7 @@ Yield=1
 Recipe=WOOL,5,IRON2,6,SILVER2,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 #-------------------------------
@@ -170,6 +185,7 @@ Yield=1
 Recipe=WOOL,2,LEATHER,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 #-------------------------------
@@ -180,6 +196,7 @@ Yield=1
 Recipe=WOOL,3,LEATHER,4
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 #-------------------------------
@@ -190,6 +207,7 @@ Yield=1
 Recipe=WOOL,1,LEATHER,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = POKEMON
 Locked=false
 Flags=
 #-------------------------------
@@ -200,6 +218,7 @@ Yield=1
 Recipe=WOOL,12
 Station=SEWINGMACHINE
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -210,6 +229,7 @@ Yield=1
 Recipe=SILK,8,WOOL,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -220,6 +240,7 @@ Yield=1
 Recipe=LEATHER,6,WOOL,3
 Station=SEWINGMACHINE
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -230,6 +251,7 @@ Yield=1
 Recipe=IRONPLATE,10,WOOL,10
 Station=SEWINGMACHINE
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -240,6 +262,7 @@ Yield=1
 Recipe=LEATHER,4,WOOL,2,SILK,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
@@ -250,6 +273,7 @@ Yield=1
 Recipe=WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -260,6 +284,7 @@ Yield=1
 Recipe=WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -270,6 +295,7 @@ Yield=1
 Recipe=WOOL,2
 Station=SEWINGMACHINE
 CookingTime=0
+Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
@@ -279,6 +305,7 @@ Result=TREECKODOLL
 Yield=1
 Recipe=WOOL,2
 Station=SEWINGMACHINE
+Type = PLACEABLE
 CookingTime=0
 Locked=false
 Flags=

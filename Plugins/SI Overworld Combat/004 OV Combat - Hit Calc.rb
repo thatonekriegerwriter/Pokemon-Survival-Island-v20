@@ -50,7 +50,7 @@ class OverworldCombat
 
 
 def who_am_i_hitting(attacker,target=nil,immune=nil)
-  amt = sight_line(attacker)
+  amt = OverworldCombat.sight_line(attacker)
   start_coord,landing_coord = getLandingCoords(amt,attacker)
   startx = start_coord[0]
   starty = start_coord[1]
@@ -88,7 +88,7 @@ end
 
 def who_am_i_hitting2(attacker)
     targets = [] 
-  amt = sight_line(attacker)
+  amt = OverworldCombat.sight_line(attacker)
   start_coord,landing_coord = getLandingCoords(amt,attacker)
   startx = start_coord[0]
   starty = start_coord[1]
@@ -148,7 +148,7 @@ end
 
 def who_around_me_is_a_target(attacker)
     targets = [] 
-  amt = sight_line(attacker)
+  amt = OverworldCombat.sight_line(attacker)
   start_coord,landing_coord = getLandingCoords(amt,attacker)
   startx = start_coord[0]
   starty = start_coord[1]
@@ -257,6 +257,11 @@ end
 
 
 def outSpeeds?(attacker,target, move)
+  unless target == $game_player
+   return true if !defined?(target.pokemon)
+   return true if !defined?(attacker.pokemon)
+   return true if !defined?(attacker.pokemon.speed)
+  end
   targetspeed = target.pokemon.speed
   targetspeed = (target.pokemon.speed*1.8).to_i if target == $game_player && is_assassin?
   attackerspeed = attacker.pokemon.speed + move.accuracy
@@ -287,15 +292,24 @@ def getDefenseStatsforplayer(target)
 end
 
 
-def get_the_multipliers(mult,pkmn,move)
 
+def get_the_multipliers(mult, user, target, move, effects)
+ 
 		 mult[:final_damage_multiplier] *= 1
-		 mult[:final_damage_multiplier] *= 1.5 if pbThisHasType?(pkmn,move.type)
+		 if pbThisHasType?(user,move.type)
+		   if user.hasAbility?(:ADAPTABILITY)
+		     mult[:final_damage_multiplier] *= 2
+		   else
+		     mult[:final_damage_multiplier] *= 1.5 
+		   end 
+		 end
+		 mult[:final_damage_multiplier] *= 1.5 if is_a_crit?(user, target, move, effects)
 		 return mult
 end
 
 def inflictStatus(move, user, target, newStatus, newStatusCount = 0, sound = true, msg = nil)
-    return if target.status != :NONE 
+    return {} if target.nil?
+    return {} if target.status != :NONE 
 	     target.status_turns=newStatusCount
          target.status=newStatus
     if msg && !msg.empty?
@@ -321,51 +335,11 @@ def inflictStatus(move, user, target, newStatus, newStatusCount = 0, sound = tru
     anim_name = GameData::Status.get(newStatus).animation if sound==true
     sound_from_animation(anim_name, target) if anim_name
 	pbSEPlay("FollowEmote_Poison") if newStatus==:POISON
+	return {} 
 end
 
-def applyStatus(user_event,target_event,move,user,target,damage)
-  return if !target
-    returneffects = {}
-	inflictStatus(move,user,target,:SLEEP, rand(4)+1) if move.function_code.include?("SleepTarget") && (!target.hasAbility?(:INSOMNIA) || !target.hasAbility?(:VITALSPIRIT))
-	inflictStatus(move,user,target,:PARALYSIS, rand(4)+1) if move.function_code.include?("ParalyzeTarget")  && !target.pbHasType?(:GROUND)
-	inflictStatus(move,user,target,:PARALYSIS, rand(6)+1, true,"#{target.name} was bound!") if move.function_code == "BindTarget"
-	inflictStatus(move,user,target,:POISON, rand(4)+1) if move.function_code.include?("PoisonTarget") && (!target.pbHasType?(:STEEL) || !target.hasAbility?(:CORROSION))
-	inflictStatus(move,user,target,:BURN, rand(4)+1) if move.function_code.include?("BurnTarget") && !target.pbHasType?(:FIRE)
-	inflictStatus(move,user,target,:FROZEN, rand(4)+1) if move.function_code.include?("FreezeTarget") && !target.pbHasType?(:ICE)
-	inflictStatus(move,user,target,user.status, user.statusCount) if move.function_code == "GiveUserStatusToTarget" &&  user.status != :NONE
-	target_event.attack_cooldowns.each { |cooldown| cooldown+=20 } if move.function_code == "FlinchTarget"
-	user_event.attack_cooldowns.each { |cooldown| cooldown+=move.priority*10 } if move.priority!=0
-	target.stages[:ATTACK]-=1 if move.function_code == "LowerTargetAttack1"
-	target.stages[:ATTACK]-=2 if move.function_code == "LowerTargetAttack2"
-	target.stages[:DEFENSE]-=1 if move.function_code == "LowerTargetDefense1"
-	target.stages[:DEFENSE]-=2 if move.function_code == "LowerTargetDefense2"
-	target.stages[:ACCURACY]-=1 if move.function_code == "LowerTargetAccuracy1"
-	target.stages[:SPECIAL_DEFENSE]-=1 if move.function_code == "LowerTargetSpDef1"
-	target.stages[:SPEED]-=2 if move.function_code == "LowerTargetSpeed2"
-	user.stages[:SPEED]+=2 if move.function_code == "RaiseUserSpeed2"
-	user.stages[:DEFENSE]+=1 if move.function_code == "RaiseTargetDefense1"
-	user.stages[:ATTACK]+=2 if move.function_code == "RaiseUserAttack2"
-	damageTarget(user,(damage/4).to_i) if move.function_code == "RecoilQuarterOfDamageDealt"
-	damageTarget(user,(damage/3).to_i) if move.function_code == "RecoilThirdOfDamageDealt"
-	healTarget(user,(damage/2).to_i) if move.function_code == "HealUserByHalfOfDamageDone"
-	user.effects[:CRIT]+=1 if move.flags.include?("HighCriticalHitRate")
-	if move.function_code == "ProtectUser"
-	user.effects[PBEffects::Protect]=true 
-	user.effects[PBEffects::ProtectRate]=2 
-	end
-	if move.function_code == "RaiseUserCriticalHitRate2"
-	user.effects[PBEffects::FocusEnergy]+=1 
-    sideDisplay(_INTL("#{user.name} is getting pumped!"))
-	end
-	pbConfuse(target) if move.function_code == "ConfuseTarget"
-	returneffects[:ABSOLUTEDAMAGE] = lower_that_power_based_on_hp(user) if move.function_code == "PowerLowerWithUserHP"
-	
-	
-	return returneffects
-end
-  
+
   def lower_that_power_based_on_hp(user)
-  
     ret = 20
     n = 48 * user.hp / user.totalhp
     if n < 2
@@ -380,15 +354,12 @@ end
       ret = 40
     end
     return ret
-  
-  
   end
   
   def pbConfuse(pkmn,msg = nil)
     pkmn.effects[PBEffects::Confusion] = pbConfusionDuration
-    msg = _INTL("{1} became confused!", pbThis) if nil_or_empty?(msg)
+    msg = _INTL("{1} became confused!", pkmn.name) if nil_or_empty?(msg)
     sideDisplay(msg)
-    PBDebug.log("[Lingering effect] #{pbThis}'s confusion count is #{@effects[PBEffects::Confusion]}")
     # Confusion cures
     #pbItemStatusCureCheck
     #pbAbilityStatusCureCheck
@@ -411,14 +382,54 @@ end
   end
 
   def pbConfusionDuration(duration = -1)
-    duration = 11 + rand(10) if duration <= 0
+    duration = Graphics.frame_rate * 3 + rand(Graphics.frame_rate * 3) if duration <= 0
     return duration
   end
+  
+  
+  def is_a_crit?(user, target, move, effects)
+    c = 0
+    return false if c<0
+	case effects[:critical]
+	when 1 then return true
+	when -1 then return false
+	end
+    return true if c > 50   # Merciless
+    return true if user.effects[PBEffects::LaserFocus] > 0
+    c += 1 if move.flags.include?("HighCriticalHitRate")
+    c += user.effects[PBEffects::FocusEnergy]
+    c += 4 if user.shadowPokemon?
+    c += 2 if user.inHyperMode? 
+    c += 3 if user.purifiedPokemon?
+    
+    ratios = Battle::Move::CRITICAL_HIT_RATIOS
+    c = ratios.length - 1 if c >= ratios.length
+    return true if ratios[c] == 1
+    r = rand(ratios[c])
+	return true if r == 0
+	return true if r == 1 && user.happiness >=240
+	return false 
+  end 
 
 
+  
+  def get_base_damage(user, move, effects)
+    baseDmg = move.base_damage
+    baseDmg = effects[:new_base_damage] if effects[:new_base_damage]
+    return baseDmg
+  end
+  
+  
 def getDamager(event,target,move,multiplier=0)
+	effects = OverworldCombat::MoveAttributes.apply({
+	 move: move,
+     user_event: event,
+     target_event: target,
+     target: target.pokemon,
+     user: event.pokemon,
+	})
   #pbCalcDamage
-	 baseDmg = get_base_damage(event.pokemon,move)
+	 baseDmg = get_base_damage(event.pokemon, move, effects)
      #puts "#{event.pokemon.name} used #{move.name} - #{move.category}! (Accuracy: #{move.accuracy}, Base Power: #{baseDmg})"
      atk, atkStage = getAttackStats(event.pokemon, target.pokemon, move)
     defense, defStage = getDefenseStats(event.pokemon, target.pokemon, move)
@@ -428,13 +439,9 @@ def getDamager(event,target,move,multiplier=0)
       :defense_multiplier      => 1.0,
       :final_damage_multiplier => 1.0
     }
-	multipliers = get_the_multipliers(multipliers,event.pokemon,move)
-	value = Effectiveness.calculate(move.type, *target.pokemon.types)
-	multipliers[:final_damage_multiplier] *= 2 if Effectiveness.super_effective?(value)
-	multipliers[:final_damage_multiplier] /= 2 if Effectiveness.not_very_effective?(value)
-	multipliers[:final_damage_multiplier] /= 2 if Effectiveness.resistant?(value)
-	multipliers[:final_damage_multiplier] *= 0 if Effectiveness.ineffective?(value)
-	multipliers[:final_damage_multiplier] *= 1 if Effectiveness.normal?(value)
+	multipliers = get_the_multipliers(multipliers, event.pokemon, target.pokemon, move, effects)
+	#value = Effectiveness.calculate(move.type, *target.pokemon.types)
+	multipliers[:final_damage_multiplier] *= OverworldCombat::Moves.type_mod(move.type, event.pokemon, target.pokemon)&.to_f / Effectiveness::NORMAL_EFFECTIVE
     # pbCalcDamageMultipliers(user, target, numTargets, type, baseDmg, multipliers)
     # Main damage calculation
     baseDmg = [(baseDmg * multipliers[:base_damage_multiplier]).round, 1].max
@@ -444,6 +451,7 @@ def getDamager(event,target,move,multiplier=0)
     damage  = [(damage * multipliers[:final_damage_multiplier]).round, 1].max
 	damage += (multiplier*5)
 	result = damage.floor
+	result = effects[:fixed_damage] if effects[:fixed_damage]
      return result
 end
 
@@ -525,7 +533,7 @@ def getRate2(event,target)
 	  return rate
 end
 
-  
+
   
   def status_checks(event)
     return nil if !defined?(event.pokemon)
@@ -540,7 +548,7 @@ end
 	   makeAggressive(event)
 	 end
 	end
-	  return fainted_check(event)
+	  return OverworldCombat.fainted_check(event)
   end  
 
 

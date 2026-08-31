@@ -20,10 +20,10 @@ Look at examples to write.
 
 AdventureGuide.list({
 	:name => "Surviving in the Wilderness",
-	:description => "It's as easy as A,B,C,Died.",
+	:description => "It's as easy as A, B, C, Dead.",
 	:enabled => true,
 	:sub => [
-		{:name => "Chapter 1: Basic Needs", :enabled => true, :description => "In a survival situation, access what is your most pressing needs. If you are in an area with aggressive Pokémon your top priority should be shelter, as to not be attacked. Once you have located a shelter, check your needs with a tap of the 'Z' button, or the 'A' Button. Berries are a good basic source of food and liquids to tide you over until you can get better sources of both. When looking for berries, generally berries edible by Pokémon are edible by humans, so look for loamy soil housing berry trees once your shelter is set up."},
+		{:name => "Chapter 1: Basic Needs", :enabled => true, :description => "In a survival situation, access what is your most pressing needs. If you are in an area with aggressive Pokémon your top priority should be shelter, as to not be attacked. Berries are a good basic source of food and liquids to tide you over until you can get better sources of both. When looking for berries, generally berries edible by Pokémon are edible by humans, so look for loamy soil housing berry trees once your shelter is set up. Another source of food is fishing, with even a cheaply made fishing rod, a Pokémon may be caught and used for food."},
 		{:name => "Chapter 2: Defense ", :enabled => false,    :description => "When going out to look for food and drink from your shelter, you may encounter wild Pokémon. With skilled evasion, some of these encounters may be avoided, but some may get the jump upon you if you are walking in Tall Grass. If you cannot evade a POKeMON, attempt to take it's approach head on, lest it could attack you and do damage to you and yours, If you end up getting into a battle with a Pokémon, your POKeDEX will not be able to report the level of the Pokémon if the area in question has not been throughly explored, so you may need to be careful when approaching wild Pokémon for the safety of your own Pokémon. If your Pokémon are damaged, return to your shelter, and give them, and yourself, a much needed rest."},
         {:name => "Chapter 3: Exploration", :enabled => false,  :description => "When venturing far from home, it would not only be a good idea to have a good amount of food and water ready, but portable shelter is also a must for ones ability to comfortably sleep, if you must stay in an area for a long amount of time, however, prioritize locating shelter in the local area."},	
 		{:name => "Chapter 4: Hidden Items", :enabled => false, :description => "When exploring the wilderness around you, there may be items laying around that are not readily visible for you to see, the most common places for unseen items to be are near sources of water, but such items could be anywhere in the world, so if you are missing that one thing to craft what you want, start searching throughly, and it may show up."},
@@ -72,8 +72,8 @@ AdventureGuide.list({
 	:description => "",
 	:enabled => false,
 	:sub => [
-		{:name => "Chapter 1: Primer", :enabled => false, :description => "Many people forget that at the end of the day, POKeMON are more used to the outdoors than we humans are. Collectively, they are excellent scavengers, and great hunters. Some Trainers choose to send their POKeMON out on their own, and the results can be quite surprising, level ups, mountains of items, and more!"},
-		{:name => "Chapter 2: Eggs", :enabled => false, :description => "While not advisable, you can send out an Egg with another member of your Adventuring Party, wherein the egg can be cared for by the POKeMON, and not counting towards your primary party limit. Note that Eggs hatched this way may be less happy or loyal than their in party counterparts."},
+		{:name => "Chapter 1: Primer", :enabled => false, :description => "Many people forget that at the end of the day, POKeMON are more used to the outdoors than we humans are. Collectively, they are excellent scavengers, and capable hunters. Some Trainers choose to send their POKeMON out on their own, and the results can be quite surprising, new allies, mountains of items, and other discoveries."},
+		{:name => "Chapter 2: Eggs", :enabled => false, :description => "While not advisable, you can send out an Egg with another member of your Adventuring Party, wherein the egg can be cared for by the POKeMON. Note that Eggs hatched this way may be less happy or loyal than their in-party counterparts."},
 	]
 })
 

@@ -254,6 +254,9 @@ Habitat = Forest
 Category = Worm
 Pokedex = For protection, it releases a horrible stench from the antenna on its head to drive away enemies.
 Generation = 1
+WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = METAPOD,Level,7
 #-------------------------------
 [METAPOD]
@@ -279,6 +282,9 @@ Habitat = Forest
 Category = Cocoon
 Pokedex = It is waiting for the moment to evolve. At this stage, it can only harden, so it remains motionless to avoid attack.
 Generation = 1
+WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = BUTTERFREE,Level,10
 #-------------------------------
 [BUTTERFREE]
@@ -332,6 +338,9 @@ Habitat = Forest
 Category = Hairy Bug
 Pokedex = Its poison stinger is very powerful. Its bright-colored body is intended to warn off its enemies.
 Generation = 1
+WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = KAKUNA,Level,7
 #-------------------------------
 [KAKUNA]
@@ -357,6 +366,9 @@ Habitat = Forest
 Category = Cocoon
 Pokedex = While awaiting evolution, it hides from predators under leaves and in nooks of branches.
 Generation = 1
+WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = BEEDRILL,Level,10
 #-------------------------------
 [BEEDRILL]
@@ -760,6 +772,9 @@ Habitat = Grassland
 Category = Poison Pin
 Pokedex = It uses its hard incisor teeth to crush and eat berries. The tip of a female Nidoran's horn is a bit more rounded than the tip of a male's horn.
 Generation = 1
+WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Evolutions = NIDORINA,Level,16
 #-------------------------------
 [NIDORINA]
@@ -786,6 +801,9 @@ Habitat = Grassland
 Category = Poison Pin
 Pokedex = If the group is threatened, these Pokémon will band together to assault enemies with a chorus of ultrasonic waves.
 Generation = 1
+WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Evolutions = NIDOQUEEN,Item,MOONSTONE
 #-------------------------------
 [NIDOQUEEN]
@@ -810,6 +828,9 @@ Color = Blue
 Shape = BipedalTail
 Habitat = Grassland
 Category = Drill
+WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Pokedex = It pacifies offspring by placing them in the gaps between the spines on its back. The spines will never secrete poison while young are present.
 Generation = 1
 #-------------------------------
@@ -838,6 +859,8 @@ Category = Poison Pin
 Pokedex = The horn on a male Nidoran's forehead contains a powerful poison. This is a very cautious Pokémon, always straining its large ears.
 Generation = 1
 WildItemCommon = POISONBARB
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Evolutions = NIDORINO,Level,16
 #-------------------------------
 [NIDORINO]
@@ -865,6 +888,8 @@ Category = Poison Pin
 Pokedex = It's nervous and quick to act aggressively. The potency of its poison increases along with the level of adrenaline present in its body.
 Generation = 1
 WildItemCommon = POISONBARB
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Evolutions = NIDOKING,Item,MOONSTONE
 #-------------------------------
 [NIDOKING]
@@ -892,6 +917,8 @@ Category = Drill
 Pokedex = One swing of its mighty tail can snap a telephone pole as if it were a matchstick.
 Generation = 1
 WildItemCommon = POISONBARB
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 #-------------------------------
 [CLEFAIRY]
 Name = Clefairy
@@ -2044,6 +2071,8 @@ Category = Fire Horse
 Pokedex = It can't run properly when it's newly born. As it races around with others of its kind, its legs grow stronger.
 Generation = 1
 WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 Evolutions = RAPIDASH,Level,40
 #-------------------------------
 [RAPIDASH]
@@ -2072,6 +2101,8 @@ Category = Fire Horse
 Pokedex = This Pokémon can be seen galloping through fields at speeds of up to 150 mph, its fiery mane fluttering in the wind.
 Generation = 1
 WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = LEATHER
 #-------------------------------
 [SLOWPOKE]
 Name = Slowpoke
@@ -3390,6 +3421,9 @@ Category = Wild Bull
 Pokedex = When Tauros begins whipping itself with its tails, it's a warning that the Pokémon is about to charge with astounding speed.
 Generation = 1
 WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = MOOMOOMILK
+Flags = Milkable
 #-------------------------------
 [MAGIKARP]
 Name = Magikarp
@@ -4411,6 +4445,8 @@ Category = String Spit
 Pokedex = It lies still in the same pose for days in its web, waiting for its unsuspecting prey to wander close.
 Generation = 2
 WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = ARIADOS,Level,22
 #-------------------------------
 [ARIADOS]
@@ -4438,6 +4474,8 @@ Category = Long Leg
 Pokedex = It attaches silk to its prey and sets it free. Later, it tracks the silk to the prey and its friends.
 Generation = 2
 WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 #-------------------------------
 [CROBAT]
 Name = Crobat
@@ -4731,6 +4769,7 @@ Pokedex = It stores lots of air in its soft fur, allowing it to stay cool in sum
 Generation = 2
 WildItemCommon = WOOL
 Evolutions = FLAAFFY,Level,15
+Flags = Shearable
 #-------------------------------
 [FLAAFFY]
 Name = Flaaffy
@@ -4758,6 +4797,7 @@ Pokedex = If its coat becomes fully charged with electricity, its tail lights up
 Generation = 2
 WildItemCommon = WOOL
 Evolutions = AMPHAROS,Level,30
+Flags = Shearable
 #-------------------------------
 [AMPHAROS]
 Name = Ampharos
@@ -4785,6 +4825,7 @@ Pokedex = The tail's tip shines brightly and can be seen from far away. It acts 
 Generation = 2
 WildItemCommon = LEATHER
 WildItemUncommon = WOOL
+Flags = Shearable
 #-------------------------------
 [BELLOSSOM]
 Name = Bellossom
@@ -6343,6 +6384,7 @@ Generation = 2
 WildItemCommon = LEATHER
 WildItemUncommon = MOOMOOMILK
 WildItemRare = MOOMOOMILK
+Flags = Milkable
 #-------------------------------
 [BLISSEY]
 Name = Blissey
@@ -6706,7 +6748,7 @@ Abilities = BLAZE
 HiddenAbilities = SPEEDBOOST
 Moves = 1,SCRATCH,1,GROWL,3,EMBER,6,QUICKATTACK,9,FLAMECHARGE,12,DETECT,15,SANDATTACK,18,AERIALACE,21,SLASH,24,BOUNCE,27,FOCUSENERGY,30,FLAMETHROWER,33,FEATHERDANCE,36,REVERSAL,39,FLAREBLITZ
 TutorMoves = AERIALACE,AGILITY,ASSURANCE,ATTRACT,BATONPASS,BODYSLAM,BOUNCE,CONFIDE,CUT,DEFOG,DIG,DOUBLETEAM,ECHOEDVOICE,ENDURE,FACADE,FIREBLAST,FIREPLEDGE,FIRESPIN,FLAMECHARGE,FLAMETHROWER,FLAREBLITZ,FOCUSENERGY,FRUSTRATION,HEATWAVE,HELPINGHAND,HIDDENPOWER,LASTRESORT,LOWKICK,MEGAKICK,MEGAPUNCH,OVERHEAT,PROTECT,REST,RETURN,REVERSAL,ROCKSLIDE,ROCKSMASH,ROCKTOMB,ROUND,SHADOWCLAW,SLEEPTALK,SNORE,STRENGTH,SUBSTITUTE,SUNNYDAY,SWAGGER,SWIFT,SWORDSDANCE,TOXIC,WILLOWISP,WORKUP
-EggGroups = Field
+EggGroups = Field, Flying
 HatchSteps = 5120
 Height = 0.4
 Weight = 2.5
@@ -6732,7 +6774,7 @@ Abilities = BLAZE
 HiddenAbilities = SPEEDBOOST
 Moves = 0,DOUBLEKICK,1,DOUBLEKICK,1,FLAMETHROWER,1,FEATHERDANCE,1,SCRATCH,1,GROWL,1,EMBER,1,QUICKATTACK,9,FLAMECHARGE,12,DETECT,15,SANDATTACK,20,AERIALACE,25,SLASH,30,BOUNCE,35,FOCUSENERGY,40,BLAZEKICK,45,BULKUP,50,REVERSAL,55,FLAREBLITZ
 TutorMoves = AERIALACE,AGILITY,ASSURANCE,ATTRACT,BATONPASS,BLAZEKICK,BODYSLAM,BOUNCE,BRICKBREAK,BULKUP,COACHING,CONFIDE,CUT,DEFOG,DIG,DOUBLETEAM,DUALCHOP,ECHOEDVOICE,ENDURE,FACADE,FIREBLAST,FIREPLEDGE,FIREPUNCH,FIRESPIN,FLAMECHARGE,FLAMETHROWER,FLAREBLITZ,FLING,FOCUSBLAST,FOCUSENERGY,FOCUSPUNCH,FRUSTRATION,HEATWAVE,HELPINGHAND,HIDDENPOWER,LASTRESORT,LOWKICK,LOWSWEEP,MEGAKICK,MEGAPUNCH,OVERHEAT,POISONJAB,POWERUPPUNCH,PROTECT,REST,RETURN,REVENGE,REVERSAL,ROCKSLIDE,ROCKSMASH,ROCKTOMB,ROUND,SHADOWCLAW,SLEEPTALK,SNORE,STRENGTH,SUBSTITUTE,SUNNYDAY,SWAGGER,SWIFT,SWORDSDANCE,THUNDERPUNCH,TOXIC,WILLOWISP,WORKUP
-EggGroups = Field
+EggGroups = Field, Flying
 HatchSteps = 5120
 Height = 0.9
 Weight = 19.5
@@ -6758,7 +6800,7 @@ Abilities = BLAZE
 HiddenAbilities = SPEEDBOOST
 Moves = 1,DOUBLEKICK,1,FIREPUNCH,1,BRAVEBIRD,1,FLAMETHROWER,1,FEATHERDANCE,1,SCRATCH,1,GROWL,1,EMBER,1,QUICKATTACK,9,FLAMECHARGE,12,DETECT,15,SANDATTACK,20,AERIALACE,25,SLASH,30,BOUNCE,35,FOCUSENERGY,42,BLAZEKICK,49,BULKUP,56,REVERSAL,63,FLAREBLITZ
 TutorMoves = ACROBATICS,AERIALACE,AGILITY,ASSURANCE,ATTRACT,AURASPHERE,BATONPASS,BLASTBURN,BLAZEKICK,BODYSLAM,BOUNCE,BRAVEBIRD,BRICKBREAK,BULKUP,BULLDOZE,CLOSECOMBAT,COACHING,CONFIDE,CUT,DEFOG,DIG,DOUBLETEAM,DUALCHOP,EARTHQUAKE,ECHOEDVOICE,ENDURE,FACADE,FIREBLAST,FIREPLEDGE,FIREPUNCH,FIRESPIN,FLAMECHARGE,FLAMETHROWER,FLAREBLITZ,FLING,FOCUSBLAST,FOCUSENERGY,FOCUSPUNCH,FRUSTRATION,GIGAIMPACT,HEATCRASH,HEATWAVE,HELPINGHAND,HIDDENPOWER,HYPERBEAM,KNOCKOFF,LASERFOCUS,LASTRESORT,LOWKICK,LOWSWEEP,MEGAKICK,MEGAPUNCH,OVERHEAT,POISONJAB,POWERUPPUNCH,PROTECT,REST,RETURN,REVENGE,REVERSAL,ROAR,ROCKSLIDE,ROCKSMASH,ROCKTOMB,ROLEPLAY,ROUND,SCORCHINGSANDS,SHADOWCLAW,SLEEPTALK,SNORE,SOLARBEAM,STONEEDGE,STRENGTH,SUBSTITUTE,SUNNYDAY,SUPERPOWER,SWAGGER,SWIFT,SWORDSDANCE,THUNDERPUNCH,TOXIC,UTURN,WILLOWISP,WORKUP
-EggGroups = Field
+EggGroups = Field, Flying
 HatchSteps = 5120
 Height = 1.9
 Weight = 52.0
@@ -6979,8 +7021,9 @@ Habitat = Forest
 Category = Worm
 Pokedex = It lives among the tall grass and in forests. It repels attacks by raising up the spikes on its rear.
 Generation = 3
-WildItemCommon = PECHABERRY
-WildItemUncommon = BRIGHTPOWDER
+WildItemCommon = SILK
+WildItemUncommon = PECHABERRY
+WildItemRare = BRIGHTPOWDER
 Evolutions = SILCOON,Silcoon,7,CASCOON,Cascoon,7
 #-------------------------------
 [SILCOON]
@@ -7006,6 +7049,9 @@ Habitat = Forest
 Category = Cocoon
 Pokedex = It drinks dew that collects on its silk and waits for evolution. Its hard cocoon repels attacks.
 Generation = 3
+WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = BEAUTIFLY,Level,10
 #-------------------------------
 [BEAUTIFLY]
@@ -7032,7 +7078,9 @@ Habitat = Forest
 Category = Butterfly
 Pokedex = It has an aggressive nature. It stabs prey with its long, narrow mouth to drain the prey's fluids.
 Generation = 3
+WildItemCommon = SILK
 WildItemUncommon = SHEDSHELL
+WildItemRare = SILK
 #-------------------------------
 [CASCOON]
 Name = Cascoon
@@ -7058,8 +7106,8 @@ Category = Cocoon
 Pokedex = It never forgets any attack it endured while in the cocoon. After evolution, it seeks payback.
 Generation = 3
 Evolutions = DUSTOX,Level,10
-WildItemRare = BLACKSLUDGE
-WildItemUncommon = BLACKSLUDGE
+WildItemRare = SILK
+WildItemUncommon = SILK
 WildItemCommon = BLACKSLUDGE
 #-------------------------------
 [DUSTOX]
@@ -8763,6 +8811,7 @@ Pokedex = Its cottony wings are full of air, making them light and fluffy to the
 Generation = 3
 WildItemCommon = WOOL
 Evolutions = ALTARIA,Level,35
+Flags = Shearable
 #-------------------------------
 [ALTARIA]
 Name = Altaria
@@ -8789,6 +8838,7 @@ Category = Humming
 Pokedex = This Pokémon has a kind disposition, but if it's provoked, it will threaten opponents with shrill cries before attacking them without mercy.
 Generation = 3
 WildItemCommon = WOOL
+Flags = Shearable
 #-------------------------------
 [ZANGOOSE]
 Name = Zangoose
@@ -14163,7 +14213,9 @@ Habitat = Forest
 Category = Sewing
 Pokedex = Since this Pokémon makes its own clothes out of leaves, it is a popular mascot for fashion designers.
 Generation = 5
+WildItemCommon = SILK
 WildItemUncommon = MENTALHERB
+WildItemRare = SILK
 Evolutions = SWADLOON,Level,20
 #-------------------------------
 [SWADLOON]
@@ -14190,7 +14242,9 @@ Habitat = Forest
 Category = Leaf-Wrapped
 Pokedex = It protects itself from the cold by wrapping up in leaves. It stays on the move, eating leaves in forests.
 Generation = 5
+WildItemCommon = SILK
 WildItemUncommon = MENTALHERB
+WildItemRare = SILK
 Evolutions = LEAVANNY,Happiness,
 #-------------------------------
 [LEAVANNY]
@@ -14217,7 +14271,9 @@ Habitat = Forest
 Category = Nurturing
 Pokedex = It keeps its eggs warm with heat from fermenting leaves. It also uses leaves to make warm wrappings for Sewaddle.
 Generation = 5
+WildItemCommon = SILK
 WildItemUncommon = MENTALHERB
+WildItemRare = SILK
 #-------------------------------
 [VENIPEDE]
 Name = Venipede
@@ -14329,6 +14385,7 @@ Generation = 5
 WildItemCommon = WOOL
 WildItemUncommon = ABSORBBULB
 Evolutions = WHIMSICOTT,Item,SUNSTONE
+Flags = Shearable
 #-------------------------------
 [WHIMSICOTT]
 Name = Whimsicott
@@ -14356,6 +14413,7 @@ Pokedex = As long as this Pokémon bathes in sunlight, its cotton keeps growing.
 Generation = 5
 WildItemCommon = WOOL
 WildItemUncommon = ABSORBBULB
+Flags = Shearable
 #-------------------------------
 [PETILIL]
 Name = Petilil
@@ -14904,7 +14962,7 @@ Habitat = Urban
 Category = Trash Bag
 Pokedex = Its favorite places are unsanitary ones. If you leave trash lying around, you could even find one of these Pokémon living in your room.
 Generation = 5
-WildItemUncommon = SILKSCARF
+WildItemUncommon = SILK
 Evolutions = GARBODOR,Level,36
 #-------------------------------
 [GARBODOR]
@@ -14931,7 +14989,7 @@ Habitat = Urban
 Category = Trash Heap
 Pokedex = This Pokémon eats trash, which turns into poison inside its body. The main component of the poison depends on what sort of trash was eaten.
 Generation = 5
-WildItemCommon = SILKSCARF
+WildItemCommon = SILK
 WildItemUncommon = BLACKSLUDGE
 #-------------------------------
 [ZORUA]
@@ -15609,6 +15667,8 @@ Category = Attaching
 Pokedex = Joltik can be found clinging to other Pokémon. It's soaking up static electricity because it can't produce a charge on its own.
 Generation = 5
 WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 Evolutions = GALVANTULA,Level,36
 #-------------------------------
 [GALVANTULA]
@@ -15636,6 +15696,8 @@ Category = EleSpider
 Pokedex = It launches electrified fur from its abdomen as its means of attack. Opponents hit by the fur could be in for three full days and nights of paralysis.
 Generation = 5
 WildItemCommon = SILK
+WildItemUncommon = SILK
+WildItemRare = SILK
 #-------------------------------
 [FERROSEED]
 Name = Ferroseed
@@ -16407,6 +16469,9 @@ Category = Bash Buffalo
 Pokedex = These Pokémon live in herds of about 20 individuals. Bouffalant that betray the herd will lose the hair on their heads for some reason.
 Generation = 5
 WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = MOOMOOMILK
+Flags = Milkable
 #-------------------------------
 [RUFFLET]
 Name = Rufflet
@@ -17603,6 +17668,10 @@ Category = Mount
 Pokedex = If it has sunshine and water, it doesn't need to eat, because it can generate energy from the leaves on its back.
 Generation = 6
 Evolutions = GOGOAT,Level,32
+WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = MOOMOOMILK
+Flags = Milkable
 #-------------------------------
 [GOGOAT]
 Name = Gogoat
@@ -17628,6 +17697,10 @@ Habitat = Grassland
 Category = Mount
 Pokedex = They inhabit mountainous regions. The leader of the herd is decided by a battle of clashing horns.
 Generation = 6
+WildItemCommon = LEATHER
+WildItemUncommon = LEATHER
+WildItemRare = MOOMOOMILK
+Flags = Milkable
 #-------------------------------
 [PANCHAM]
 Name = Pancham
@@ -19365,6 +19438,7 @@ Category = Woolly Crab
 Pokedex = It stores coldness in its pincers and pummels its foes. It can even smash thick walls of ice to bits!
 Generation = 7
 WildItemUncommon = CHERIBERRY
+Flags = Shearable
 #-------------------------------
 [ORICORIO]
 Name = Oricorio
@@ -21735,6 +21809,7 @@ Generation = 8
 WildItemCommon = WOOL
 WildItemUncommon = WOOL
 Evolutions = DUBWOOL,Level,24
+Flags = Shearable
 #-------------------------------
 [DUBWOOL]
 Name = Dubwool
@@ -21762,6 +21837,7 @@ Pokedex = Its majestic horns are meant only to impress the opposite gender. They
 Generation = 8
 WildItemCommon = WOOL
 WildItemUncommon = WOOL
+Flags = Shearable
 #-------------------------------
 [CHEWTLE]
 Name = Chewtle

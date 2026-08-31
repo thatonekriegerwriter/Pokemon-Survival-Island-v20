@@ -60,6 +60,8 @@ module Input
 	WHATISTHIS = 53
 	ALTERNATEMOUSEMODE = 54
 	INVENTORY = 55
+	SHOWGRID = 56
+	QUICKACCESSREGISTER = 57
 	
   @key_last_pressed = {}
   @key_press_time = {}
@@ -283,6 +285,8 @@ module Input
           return $PokemonSystem.game_control_code("Running")
         when Input::DEBUGMENU # F, F5, Tab
           return $PokemonSystem.game_control_code("Debug Menu")
+        when Input::QUICKACCESSREGISTER # F, F5, Tab
+          return $PokemonSystem.game_control_code("Quick Access")
       #  when Input::PKMNCONTROL # F, F5, Tab
       #    return $PokemonSystem.game_control_code("Direct Pokemon")
         when Input::ALTMENU # F, F5, Tab
@@ -301,6 +305,8 @@ module Input
           return $PokemonSystem.game_control_code("Check")
         when Input::INVENTORY # F, F5, Tab
           return $PokemonSystem.game_control_code("Inventory")
+        when Input::SHOWGRID
+          return $PokemonSystem.game_control_code("Show Grid")
         else
           return nil
       end
@@ -329,20 +335,21 @@ module Keys
       ControlConfig.new("Cancel",  "X"),
       ControlConfig.new("Cancel", "MouseRight"),
       ControlConfig.new("Inventory", "E"),
+      ControlConfig.new("Menu", "Z"),
       ControlConfig.new("Menu", "Esc"),
       ControlConfig.new("Menu", "Enter"),
-      ControlConfig.new("Menu", "Z"),
       ControlConfig.new("Running", "Shift"),
       ControlConfig.new("Punch", "F"),
     #  ControlConfig.new("Selection Mouse Mode", "Shift"),
-      ControlConfig.new("Open Notebook", "N"),
+      ControlConfig.new("Open Notebook", "V"),
       ControlConfig.new("Show HUD", "R"),
       ControlConfig.new("Expand HUD", "C"),
       ControlConfig.new("Combat HUD", "T"),
-#      ControlConfig.new("Direct Group", "Alt"),
+      ControlConfig.new("Show Grid", "G"),
       ControlConfig.new("Lock On", "Q"),
       ControlConfig.new("Scroll Up", "Up"),
       ControlConfig.new("Scroll Down", "Down"),
+      ControlConfig.new("Quick Access", "+"),
       ControlConfig.new("Aux 1", "J"),
       ControlConfig.new("Aux 2", "Y"),
       ControlConfig.new("Direct Pokemon", "MouseMiddle"),

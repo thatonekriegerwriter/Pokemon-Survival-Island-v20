@@ -110,28 +110,37 @@ class SurvivalHud < Component
   def isSpecial?; return true; end
   def shouldDraw?; return true; end
   def createMap(viewport)
-  
     map_data = pbLoadTownMapData
     map_metadata = $game_map.metadata
-    playerpos = (map_metadata) ? map_metadata.town_map_position : nil
-	if !playerpos.nil?
-    mapindex = playerpos[0]
-    map     = map_data[playerpos[0]]
+    playerpos = (map_metadata) ? map_metadata.town_map_position : [0,0,0]
+     mapindex = playerpos[0]
+     map     = map_data[playerpos[0]]
 	 @regionname = map[0]
-    @sprites["map"] = IconSprite.new(0, 0, @viewport)
-	if @regionname == "The Island"
-	maptemp = map[1].gsub(".png", "")
-    @sprites["map"].setBitmap("Graphics/Pictures/#{maptemp}#{getUncoveredMapAmt}.png")
-	else
-    @sprites["map"].setBitmap("Graphics/Pictures/#{map[1]}")
-	end
-    @sprites["map"].zoom_x=0.5
-    @sprites["map"].zoom_y=0.5
-    @sprites["map"].x = (Graphics.width - @sprites["map"].bitmap.width) / 2
-    @sprites["map"].y = ((Graphics.height - @sprites["map"].bitmap.height) / 2)+30
-    @sprites["map"].z = -10
+	 
+	 
+     @sprites["map"] = IconSprite.new(0, 0, @viewport)
+     @sprites["map"].setBitmap("Graphics/Pictures/Maps/#{map[1]}")
+
+     @sprites["map"].zoom_x=0.5
+     @sprites["map"].zoom_y=0.5
+     @sprites["map"].x = (Graphics.width - @sprites["map"].bitmap.width) / 2
+     @sprites["map"].y = ((Graphics.height - @sprites["map"].bitmap.height) / 2)+30
+     @sprites["map"].z = -10
+	 
+	 
+	 
+	 if @regionname == "The Island"
+	  @sprites["discovery"] = BitmapSprite.new(WorldMapDiscovery::WIDTH,WorldMapDiscovery::HEIGHT,viewport)
+      @sprites["discovery"].x = @sprites["map"].x
+      @sprites["discovery"].y = @sprites["map"].y
+      @sprites["discovery"].zoom_x = 0.5
+      @sprites["discovery"].zoom_y = 0.5
+      @sprites["discovery"].z = @sprites["map"].z
+      WorldMapDiscovery.create_mask(@sprites["discovery"].bitmap)
+	 end
+
     #[@regionname,((Graphics.width - @sprites["map"].bitmap.width) / 2)-60, 55,99,@baseColor,@shadowColor],
-	end
+
   end
  
   def createBars(viewport)
@@ -258,12 +267,17 @@ class SurvivalHud < Component
    
   end
 
-  def CurrentColors(hp, totalhp)
-    if hp<(totalhp/4.0)
+
+  def CurrentColors(value, maxvalue)
+    quarter = maxvalue / 4.0
+    half = maxvalue / 2.0
+    if value < 1
+      return Color.new(139,0,0)
+    elsif value < quarter
       return Color.new(255,55,55)
-    elsif hp<=(totalhp/4.0)
+    elsif value < half
       return Color.new(255,125,55)
-    elsif hp<=(totalhp/2.0)
+    elsif value < half + quarter
       return Color.new(255,255,55)
     end
     return Color.new(55,255,55)
@@ -468,7 +482,7 @@ class DateAndTimeHud < Component
     @shadowColor = MENU_TEXTOUTLINE[$PokemonSystem.current_menu_theme] || Color.new(48,48,48)
   end
 
-  def shouldDraw?; return true; end
+  def shouldDraw?; return false; end
 
   def update
     super

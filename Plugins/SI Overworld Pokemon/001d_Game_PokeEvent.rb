@@ -32,34 +32,6 @@ return $PokemonGlobal.bridge > 0 && get_cur_player.direction == 2
 
 end
 class Game_Player < Game_Character
-  def pbFacingEvent4(ignoreInterpreter = false)
-    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
-    # Check the tile in front of the player for events
-    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
-    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-    return nil if !$game_map.valid?(new_x, new_y)
-	events = $game_map.events.values + $DynamicEvents.events_for_map
-    events.each do |event|
-
-
-      next if !event.at_coordinate?(new_x, new_y)
-      next if event.jumping?
-      return event
-    end
-    # If the tile in front is a counter, check one tile beyond that for events
-    if $game_map.counter?(new_x, new_y)
-      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
-      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
-	events = $game_map.events.values + $DynamicEvents.events_for_map
-    events.each do |event|
-        next if !event.at_coordinate?(new_x, new_y)
-        next if event.jumping? || event.over_trigger?
-        return event
-      end
-    end
-    return nil
-  end
-
 
 
 end
@@ -108,6 +80,60 @@ class Game_Character
   def move_speed
     return @move_speed
   end
+
+  def pbFacingEventIgnoreOverTrigger(ignoreInterpreter = false)
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !event.at_coordinate?(new_x, new_y)
+      next if event.jumping?
+      return event
+    end
+    # If the tile in front is a counter, check one tile beyond that for events
+    if $game_map.counter?(new_x, new_y)
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+        next if !event.at_coordinate?(new_x, new_y)
+        next if event.jumping?
+        return event
+      end
+    end
+    return nil
+  end
+  alias pbFacingEvent4 pbFacingEventIgnoreOverTrigger
+  
+  def pbFacingEvent(ignoreInterpreter = false)
+    return nil if $game_system.map_interpreter.running? && !ignoreInterpreter
+    # Check the tile in front of the player for events
+    new_x = @x + (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+    new_y = @y + (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+    return nil if !$game_map.valid?(new_x, new_y)
+    events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
+      next if !event.at_coordinate?(new_x, new_y)
+      next if event.jumping? || event.over_trigger?
+      return event
+    end
+    # If the tile in front is a counter, check one tile beyond that for events
+    if $game_map.counter?(new_x, new_y)
+      new_x += (@direction == 6 ? 1 : @direction == 4 ? -1 : 0)
+      new_y += (@direction == 2 ? 1 : @direction == 8 ? -1 : 0)
+      events = $game_map.events.values + $DynamicEvents.events_for_map
+      events.each do |event|
+        next if !event.at_coordinate?(new_x, new_y)
+        next if event.jumping? || event.over_trigger?
+        return event
+      end
+    end
+    return nil
+  end
+
 end
 
  def pbMovePokeEventTowardsPlayer(event,target)
@@ -441,43 +467,47 @@ class Game_PokeEvent < Game_Event
   attr_accessor :pokemon # contains the original pokemon of class Pokemon
   attr_accessor :remaining_steps #counts the remaining steps of an overworld encounter before vanishing 
   attr_accessor :parasteps_steps
+  attr_accessor :spawn_map_id
   attr_accessor :map_id # contains the map_id
-  attr_accessor :battle_timer # contains the map_id
-  attr_accessor :movement_type # contains the map_id
-  attr_accessor :movement_timer # contains the map_id
-  attr_accessor :still_timer # contains the map_id
-  attr_accessor :angry_at # contains the map_id
-  attr_accessor :angy_at_cur_tar # contains the map_id
-  attr_accessor :attacked_last_call # contains the map_id
-  attr_accessor :dont_attack # contains the map_id
-  attr_accessor :times_not_attacking # contains the map_id
+  attr_writer :map # contains the original map 
+  attr_accessor :battle_timer 
+  attr_accessor :movement_type 
+  attr_accessor :movement_timer 
+  attr_accessor :still_timer 
+  attr_accessor :angry_at 
+  attr_accessor :angy_at_cur_tar 
+  attr_accessor :attacked_last_call 
+  attr_accessor :dont_attack 
+  attr_accessor :times_not_attacking 
   attr_accessor :counter # the sight line of the pokemon
-  attr_accessor :movement_hit_logic # contains the map_id
-  attr_accessor :default_move_frequency # contains the map_id
-  attr_accessor :default_move_speed # contains the map_id
-  attr_accessor :steps_taken # contains the map_id
-  attr_accessor :youarealreadydead # contains the map_id
-  attr_accessor :iveattacked # contains the map_id
-  attr_accessor :pathing # contains the map_id
-  attr_accessor :cur_path # contains the map_id
-  attr_accessor :isshovement # contains the map_id
-  attr_accessor :disable_despawn # contains the map_id
-  attr_accessor :can_pause # contains the map_id
-  attr_accessor :intelligent # contains the map_id
-  attr_accessor :stuck # contains the map_id
-  attr_accessor :blockedtiles # contains the map_id
-  attr_accessor :height_level # contains the map_id
-  attr_accessor :miniboss # contains the map_id
-  attr_accessor :boss # contains the map_id
-  attr_accessor :movement_type_locked # contains the map_id
-  attr_accessor :barreling # contains the map_id
+  attr_accessor :movement_hit_logic 
+  attr_accessor :default_move_frequency 
+  attr_accessor :default_move_speed 
+  attr_accessor :steps_taken 
+  attr_accessor :youarealreadydead 
+  attr_accessor :iveattacked 
+  attr_accessor :pathing 
+  attr_accessor :cur_path 
+  attr_accessor :isshovement 
+  attr_accessor :disable_despawn 
+  attr_accessor :can_pause 
+  attr_accessor :intelligent 
+  attr_accessor :stuck 
+  attr_accessor :blockedtiles 
+  attr_accessor :height_level 
+  attr_accessor :miniboss 
+  attr_accessor :boss 
+  attr_accessor :movement_type_locked 
+  attr_accessor :barreling 
+  attr_accessor :being_caught  
+  attr_accessor :last_attacked_by
   
   def initialize(map_id, event, pokemon, map=nil)
-    map = $map_factory.maps[map_id]
+    raise if map.nil?
     super(map_id, event, map)
 	@event = event
     @id  = event.id
-    @map_id  = map_id
+    @spawn_map_id  = map_id
     @pokemon  = pokemon
 	@iveattacked = false
 	@remaining_steps  = VisibleEncounterSettings::DEFAULT_STEPS_BEFORE_VANISH
@@ -497,7 +527,7 @@ class Game_PokeEvent < Game_Event
 	@counter = sight_line
 	
     @battle_timer  = 0
-    @battle_timer  = get_battle_timer
+    @battle_timer  = extend_battle_timer
 	@times_not_attacking = 0
 	@attacked_last_call = false
 	@dont_attack = false
@@ -516,11 +546,14 @@ class Game_PokeEvent < Game_Event
 	@boss = false
 	@movement_type_locked = false
 	@barreling = false
+	@being_caught = false
 	
 	
 	@default_move_frequency = self.move_frequency
 	@default_move_speed = self.move_speed
+	@last_attacked_by = nil
   end
+  
   def copied_values
     return [
     :parasteps_steps,
@@ -600,38 +633,15 @@ class Game_PokeEvent < Game_Event
   
   
    def attackment_actions(event,pokemon)
-   	 
-	 
-     if rand(2)==0
-       target = $game_player
-     else
-       target = nil
-     end
-	 
-	 
-	  rate = $PokemonGlobal.ov_combat.getRate1(event,target)
-	  @battle_timer-=1 if @battle_timer>0
-	  @battle_timer= 0 if @battle_timer<0
-	  @ov_movement_timer-=1 if @ov_movement_timer>0
-	  @ov_movement_timer= 0 if @ov_movement_timer<0
 	  
 
-
-
-   if @movement_hit_logic == false && @ov_movement_timer <= 0 && !@starting && rand(100)<=rate
-     self.start
-     @movement_hit_logic = true
-   end
    
     return rate
    end
-   def attackment_actions2(event,pokemon,rate)
-   if @movement_hit_logic == false && @ov_movement_timer <= 0 && !@starting && rand(100)<=rate
-     self.start
-   end
-   end
+   
 
-   def movement_actions(event,pokemon)
+
+   def movement_actions(event = self,pokemon = self.pokemon)
      return if @cannot_move == true
      return if @movement_hit_logic == true
      return if pokemon.status == :PARALYSIS
@@ -639,6 +649,7 @@ class Game_PokeEvent < Game_Event
      case @movement_type
        when :WANDER
           event.move_type_random_smart
+		   @battle_timer = [@battle_timer - 1, 0].max
        when :WANDERP
 	       
 			 yes = false
@@ -839,6 +850,7 @@ class Game_PokeEvent < Game_Event
 		    if !@angy_at_cur_tar.nil?
 			  if !within_one_tile?(self.x,self.y,@angy_at_cur_tar.x,@angy_at_cur_tar.y)
 		      event.move_toward_the_coordinate(@angy_at_cur_tar.x,@angy_at_cur_tar.y) 
+			   @battle_timer = [@battle_timer - 1, 0].max
 			  else
 			   event.turn_toward_event(@angy_at_cur_tar)
 			  end
@@ -877,7 +889,7 @@ class Game_PokeEvent < Game_Event
        when :FINDENEMY
           return if $game_temp.preventspawns==true
           $game_temp.preventspawns=true
-          pkmn_event = getRandomOverworldOtherPokemon(event)
+          pkmn_event = getRandomOverworldOtherPokemon
           if !pkmn_event.nil?
 		     makeAggressiveAtPokemon(self,pkmn_event)
           end
@@ -896,20 +908,68 @@ class Game_PokeEvent < Game_Event
    
    end
 
-
+  def use_reaction_move(target, move)
+	distance = (self.x - target.x).abs + (self.y - target.y).abs
+    pbOverworldCombat.move_special(
+      self,
+      target,
+      move,
+      distance,
+      target.x,
+      target.y
+    )
+  end
 
    def pkmnmovement2
-	  event,pokemon = setup_actions
-     rate = attackment_actions(event,pokemon)
-     movement_actions(event,pokemon)
-     attackment_actions2(event,pokemon,rate)
-
-
-
-     @movement_hit_logic = false
+     return if @being_caught
+     confused = self.pokemon.effects[PBEffects::Confusion]>0
+    if confused
+     self.pokemon.effects[PBEffects::Confusion] = [self.pokemon.effects[PBEffects::Confusion] - 1, 0].max
+	 @movement_type=:WANDER if @movement_type!=:WANDER
+	 @pokemon.aggressive=false
+     @pokemon.chasing = false 
+	 @angry_at = []
+	 @angy_at_cur_tar = nil
+	end 
+     movement_actions
+	 @ov_movement_timer-=1 if @ov_movement_timer>0
+	 @ov_movement_timer= 0 if @ov_movement_timer<0
+	 if @battle_timer>0
+	# nearby = nearby_hostile_events
+  # puts "#{self.pokemon.name} (#{self.id}) has #{self.battle_timer} left on it's timer, has not attacked #{self.times_not_attacking} times, and #{self.battle_timer==0 ? "could attack." : "cannot attack."}."
+	
+	 else 
+	 nearby = nearby_hostile_events_without_player
+	 if nearby > 0
+	 #puts "#{self.pokemon.name} is a self-starter."
+     self.start 
+	 end 
+	 end
     end
 
- 
+ def nearby_hostile_events_without_player
+  radius = OverworldCombat.sight_line(self) # whatever range you consider "nearby"
+  events = $game_map.events.values + $DynamicEvents.events_for_map
+  events.count do |event|
+    next false if event == self
+    next false unless event.is_a?(Game_PokeEventA) || event == get_cur_player || @angry_at.include?(event)
+
+    distance = (event.x - self.x).abs + (event.y - self.y).abs
+    distance <= radius
+  end
+end
+
+ def nearby_hostile_events
+  radius = OverworldCombat.sight_line(self) # whatever range you consider "nearby"
+  events = $game_map.events.values + $DynamicEvents.events_for_map + [$game_player]
+  events.count do |event|
+    next false if event == self
+    next false unless event.is_a?(Game_PokeEventA) || event == get_cur_player || @angry_at.include?(event)
+
+    distance = (event.x - self.x).abs + (event.y - self.y).abs
+    distance <= radius
+  end
+end
   
  
   
@@ -945,7 +1005,6 @@ class Game_PokeEvent < Game_Event
      event.move_speed=@default_move_speed if event.move_speed != @default_move_speed
 	  
 	  end
-    return event,pokemon
    end
    
    def is_close_patrol?
@@ -981,10 +1040,11 @@ class Game_PokeEvent < Game_Event
    end
 
 
-   def get_battle_timer
-    return @battle_timer + rand(Graphics.frame_rate)+Graphics.frame_rate
+   def extend_battle_timer
+    return @battle_timer + rand(Graphics.frame_rate) + 30
    end
-  
+   
+
   alias original_update update
   def update
     if !$game_temp.in_menu

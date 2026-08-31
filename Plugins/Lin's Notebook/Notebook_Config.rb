@@ -4,7 +4,7 @@
 
 module NoteConfig
   # The base number of notes that can be stored.
-  NUM_NOTE_STORAGE = 999
+  NUM_NOTE_STORAGE = 999999999999999
   # The switch ID for extra storage. Set to 0 or keep the variable at 0 if you don't want to use this function.
   NOTE_STORAGE_VARIABLE = 0
 

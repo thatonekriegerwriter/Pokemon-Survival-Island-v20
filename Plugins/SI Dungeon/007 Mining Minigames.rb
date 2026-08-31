@@ -886,9 +886,10 @@ end
 def ov_mining(type)
  interp = pbMapInterpreter
  this_event = interp.get_self
+ if $player.playerstamina>=8
  if hasPickaxe?
   image = nil
-  pbMessage(_INTL("You hack away at it with a Pickaxe."))
+  sideDisplay(_INTL("You hack away at it with a Pickaxe."))
    amt = rand(4)+1
   case type 
    when :TUMBLEROCK
@@ -930,28 +931,35 @@ def ov_mining(type)
 
   end
  end
+  decreaseStamina(8)
+ end
+
 end
 
 
 def ov_mining2(type)
  interp = pbMapInterpreter
  this_event = interp.get_self
- if hasPickaxe?
-  image = nil
-  pbMessage(_INTL("You hack away at it with a Pickaxe."))
-   amt = rand(4)+1
-  case type 
-   when :TUMBLEROCK
-     image = "Legends_Tumblestone"
-	  amt = rand(4)+1
-   when :STONE
-     image = "Legends_Tumblestone"
-   
-   when :IRON2
-     image = "Legends_Tumblestone"
-   else
-     image = "Legends_Tumblestone"
+ puts "Disabled? #{this_event.disabled}"
+ return if this_event.disabled
+      current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+ if isSelectedThisItem?(:IRONPICKAXE)
+  if $player.playerstamina>=8
+    this_event.disabled = true
+    ore_type = [:STONE,:TUMBLEROCK,:IRONORE,:GOLDORE,:SILVERORE,:COPPERORE,:COAL]
+	if ore_type.include?(type)
+     amt = rand(4)+1
+	else
+     amt = rand(2)+1
+    end
+   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
+   if !$bag.can_add?(type,amt)
+  sideDisplay(_INTL("You don't have space!"))
+  return
   end
+  image = nil
+  image = getObjectImage2(type)
+  if type== :TUMBLEROCK
   route = [PBMoveRoute::Wait,4,
           PBMoveRoute::Graphic, image, 0, 2, 1,
 		   PBMoveRoute::Wait,4,
@@ -959,25 +967,31 @@ def ov_mining2(type)
 		   PBMoveRoute::Wait,4,
           PBMoveRoute::Graphic, image, 0, 2, 3,
 		   PBMoveRoute::Wait,4,
-          PBMoveRoute::Graphic, image, 0, 2, 0]
-  pbMoveRoute2(this_event,route)
+          PBMoveRoute::Graphic, image, 0, 2, 0,
+		  PBMoveRoute::Script, "get_own_event.removeThisEventfromMap"]
+  else
+  route = [PBMoveRoute::Wait,4,
+          PBMoveRoute::Graphic, image, 0, 4, 0,
+		   PBMoveRoute::Wait,4,
+          PBMoveRoute::Graphic, image, 0, 6, 0,
+		   PBMoveRoute::Wait,4,
+          PBMoveRoute::Graphic, image, 0, 8, 0,
+		   PBMoveRoute::Wait,4,
+          PBMoveRoute::Graphic, image, 0, 0, 0,
+		  PBMoveRoute::Script, "get_own_event.removeThisEventfromMap"]
+  end 
+  if pbMoveRoute2(this_event,route,true)
    amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
+   current_selection.decrease_durability(1)
   if !$bag.add(type,amt)
-  pbMessage(_INTL("You don't have space!"))
+  sideDisplay(_INTL("You don't have space!"))
   else 
    itemAnim(type,amt)
-   pbSetEventTime
 
   end
- else 
-  pbMessage(_INTL("While you don't have a pickaxe, you chip off a piece of the #{GameData::Item.get(type).name}."))
-   amt = rand(2)+1
-   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
-  if !$bag.add(type,amt)
-  pbMessage(_INTL("You don't have space!"))
-  else 
-   itemAnim(type,amt)
-
-  end
+  
+  end 
+  decreaseStamina(8)
+ end
  end
 end

@@ -13,17 +13,18 @@
 #===============================================================================
 # Move mail to Notebook PC
 #===============================================================================
-def pbMoveToNotebook(pokemon)
+def pbMoveToNotebook(mail)
   $PokemonGlobal.notebook = [] if !$PokemonGlobal.notebook
-  noteStorage = NoteConfig::NUM_NOTE_STORAGE + $game_variables[NoteConfig::NOTE_STORAGE_VARIABLE]
-  pbMessage(NoteConfig::FULL_MESSAGE) if $PokemonGlobal.notebook.length >= noteStorage
-  return false if $PokemonGlobal.notebook.length >= noteStorage
-  return false if !pokemon.mail
-  $PokemonGlobal.notebook.push(pokemon.mail)
-  pokemon.mail = nil
+  return false if !mail
+  $PokemonGlobal.notebook.push(mail)
   return true
 end
-
+def pbMoveToNoteStorage(mail)
+  $PokemonGlobal.notestorage = [] if !$PokemonGlobal.notestorage
+  return false if !mail
+  $PokemonGlobal.notestorage.push(mail)
+  return true
+end
 
 #===============================================================================
 # * Notebook PC

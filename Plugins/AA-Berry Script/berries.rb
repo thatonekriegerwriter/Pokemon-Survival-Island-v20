@@ -25,6 +25,8 @@ return false
 end
 
 def pbBerryPlant
+  
+  pbShowTipCardsGrouped(:FARMING) if !pbSeenTipCard?(:BERRYPLANTS1)
   interp = pbMapInterpreter
   this_event = interp.get_self
   berry_plant = interp.getVariable
@@ -36,19 +38,23 @@ def pbBerryPlant
   if berry.nil? && !berry_plant.berry_id.nil?
    berry_plant.berry = ItemData.new(berry_plant.berry_id)
    berry = berry_plant.berry
-  
   end 
   berry_plant.dead=false if berry_plant.dead.nil?
+  pbTurnBerryPlant(this_event,berry_plant) 
   
-    pbTurnBerryPlant(this_event,berry_plant) 
-  if !bag_has_a_watering_can?
+  
+  
+  
+  if !bag_has_a_watering_can? && !berry_plant.is_raining? && berry_plant.no_water_can_message==false
     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
-    sideDisplay(_INTL("You do not have a Watering Can. You will be unable to water the plant."))
+    sideDisplay(_INTL("You do not have a Watering Can."))
+    sideDisplay(_INTL("You will be unable to water the plant."))
+	berry_plant.no_water_can_message = true
   end
   
   if berry_plant.beside_water==false && berry_plant.tile_data.waterless_length<6 && !berry_plant.growth_stalled? && berry_plant.stagnation_message==false
-    pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
-    sideDisplay(_INTL("The plant isn't near any water, it may need to be watered more often."))
+     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
+     sideDisplay(_INTL("The plant isn't near any water, it may need to be watered more often."))
 	 berry_plant.stagnation_message=true
   end
   
@@ -56,24 +62,26 @@ def pbBerryPlant
   if berry_plant.overall_soil_quality==0
     #puts "berry_plant.overall_soil_quality==0"
     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
-    pbMessage(_INTL("The soil seems to have become ruined."))
-    pbMessage(_INTL("The plant appears to have died."))
+    sideDisplay(_INTL("The soil seems to have become ruined."))
+    sideDisplay(_INTL("The plant appears to have died."))
 	pbBerryPlantWitheredItem
     berry_plant.reset
     return
   end
   
+  
+  
   if berry_plant.growth_stalled? && berry_plant.tile_data.waterless_length<6
     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
-    pbMessage(_INTL("The plant's growth seems to have stalled."))
+    sideDisplay(_INTL("The plant's growth seems to have stalled."))
   end
   
   
   if berry_plant.growth_stalled? && berry_plant.tile_data.waterless_length>=6
     #puts "berry_plant.growth_stalled? && berry_plant.tile_data.waterless_length>=6"
     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
-    pbMessage(_INTL("The plant's growth seems to have stalled."))
-    pbMessage(_INTL("The plant appears to have died."))
+    sideDisplay(_INTL("The plant's growth seems to have stalled."))
+    sideDisplay(_INTL("The plant appears to have died."))
 	pbBerryPlantWitheredItem
     berry_plant.reset
     return
@@ -87,43 +95,42 @@ def pbBerryPlant
     berry_plant.reset
     return
   end
-    not_planted = !berry_plant&.planted?
-	if !not_planted
-    if pbPestInteraction(this_event,berry_plant)
-	  return
-	 end
-	end
-    pbOtherInteractions if !not_planted
+  
+  
+  not_planted = !berry_plant&.planted?
+  if !not_planted
+   if pbPestInteraction(this_event,berry_plant)
+	return
+   end
+  end
+  pbOtherInteractions if !not_planted
+  
+  
+  
+  
   if berry_plant.grown?
     this_event.turn_up   # Stop the event turning towards the player
 	theyield = berry_plant.berry_yield
-	if theyield>0
-    berry_plant.reset if pbPickBerry(berry, theyield, true, berry_plant.mutated_berry_info)
+	if theyield > 0
+     berry_plant.reset if pbPickBerry(berry, theyield, true, berry_plant.mutated_berry_info)
 	else
      pbMessage(_INTL("There were no berries on the bush!"))
 	 berry_plant.reset
 	end
     return
   end
-	if !not_planted
+  
+  
+  if !not_planted
     if pailInteraction(this_event,berry_plant)
 	  return
     end
-	end
+  end
   # Interact with the event based on its growth
-  
-
-	
-	
   if berry_plant.growing?
     berry_name = GameData::Item.get(berry).name
     case berry_plant.growth_stage
-   
-   
     when 1   # X planted
-	
-	
-	
       this_event.turn_down   # Stop the event turning towards the player
 	  if pbShowBerryMessage
       if berry_name.starts_with_vowel?
@@ -131,27 +138,27 @@ def pbBerryPlant
       else
         pbMessage(_INTL("A {1} was planted here.", berry_name))
       end
+      else 
+      if berry_name.starts_with_vowel?
+        sideDisplay(_INTL("An {1} was planted here.", berry_name))
+      else
+        sideDisplay(_INTL("A {1} was planted here.", berry_name))
+      end
 	  end
-
-
-
-
-
-
     when 2   # X sprouted
-	
-	
       this_event.turn_down   # Stop the event turning towards the player
-	  
-      pbMessage(_INTL("The {1} has sprouted.", berry_name)) if pbShowBerryMessage
-	  
-	  
-	  
+	  if pbShowBerryMessage
+      pbMessage(_INTL("The {1} has sprouted.", berry_name)) 
+	  else
+      sideDisplay(_INTL("The {1} has sprouted.", berry_name)) 
+	  end
     when 3   # X taller
       this_event.turn_left 
-      pbMessage(_INTL("The {1} is growing bigger.", berry_name)) if pbShowBerryMessage
-	  
-	  
+	  if pbShowBerryMessage
+      pbMessage(_INTL("The {1} is growing bigger.", berry_name)) 
+	  else
+      sideDisplay(_INTL("The {1} is growing bigger.", berry_name)) 
+	  end
     else     # X flowering
       this_event.turn_right   # Stop the event turning towards the player
             mutation_comment = Settings::BERRY_PLANT_BLOOMING_COMMENT
@@ -170,6 +177,21 @@ def pbBerryPlant
           pbMessage(_INTL("This {1} is in bloom!!", berry_name))
         end
         pbMessage(mutation_comment) if mutation_comment if berry_plant&.mutated_berry_info
+	  else 
+        mutation_comment = Settings::BERRY_PLANT_BLOOMING_COMMENT if berry_plant&.mutated_berry_info
+        case berry_plant.watering_count
+        when 4
+          sideDisplay(_INTL("This {1} is wiggling!", berry_name))
+        when 3
+          sideDisplay(_INTL("This {1} is sitting pretty!", berry_name))
+        when 2
+          sideDisplay(_INTL("This {1} is great!", berry_name))
+        when 1
+          sideDisplay(_INTL("This {1} is going to be big one day!", berry_name))
+        else
+          sideDisplay(_INTL("This {1} is in bloom!!", berry_name))
+        end
+        sideDisplay(mutation_comment) if mutation_comment if berry_plant&.mutated_berry_info
 	  end
 
    end
@@ -179,14 +201,22 @@ def pbBerryPlant
   
 
   
+    # New mechanics
+ if new_planting(this_event,berry_plant)
+  return 
+ end 
+
+
+
+
+if false
+	
+  
   # Nothing planted yet
   ask_to_plant = true
   
-  
-    # New mechanics
-	
-  if berry_plant.mulch_id && berry_plant.cropsticks == false
-    if pbConfirmMessage(_INTL("{1} has been laid down.\1 Would you like to add Cropsticks?", GameData::Item.get(berry_plant.mulch_id).name))
+  if berry_plant.mulch && berry_plant.cropsticks == false
+    if pbConfirmMessage(_INTL("{1} has been laid down.\1 Would you like to add Cropsticks?", GameData::Item.get(berry_plant.mulch).name))
 			if $bag.has?(:CROPSTICKS)
           $bag.remove(:CROPSTICKS)
 		  berry_plant.cropsticks = true
@@ -197,8 +227,8 @@ def pbBerryPlant
 
 	
 	end
-  elsif berry_plant.mulch_id && berry_plant.cropsticks == true
-      pbMessage(_INTL("{1} has been laid down, surrounded by {2}.", GameData::Item.get(berry_plant.mulch_id).name,GameData::Item.get(:CROPSTICKS).name))
+  elsif berry_plant.mulch && berry_plant.cropsticks == true
+      pbMessage(_INTL("{1} has been laid down, surrounded by {2}.", GameData::Item.get(berry_plant.mulch).name,GameData::Item.get(:CROPSTICKS).name))
   else
       case pbMessage(_INTL("It's soft, loamy soil."),
                      [_INTL("Plant Berry"), _INTL("Fertilize"), _INTL("Cropsticks"), _INTL("Exit")], -1)
@@ -209,7 +239,7 @@ def pbBerryPlant
         return if !mulch
         mulch_data = GameData::Item.get(mulch)
         if mulch_data.is_mulch?
-          berry_plant.mulch_id = mulch
+          berry_plant.mulch = mulch
           $bag.remove(mulch)
           pbMessage(_INTL("The {1} was scattered on the soil.\1", mulch_data.name))
         else
@@ -217,6 +247,7 @@ def pbBerryPlant
           return
         end
       when 2
+	   if berry_plant.cropsticks == false 
 	    if pbConfirmMessage(_INTL("Would you like to use Cropsticks for this plant?"))
 		if $bag.has?(:CROPSTICKS)
           $bag.remove(:CROPSTICKS)
@@ -227,6 +258,20 @@ def pbBerryPlant
 		end
 
 		end
+       else
+	    if pbConfirmMessage(_INTL("Would you like to remove the Cropsticks from this plant?"))
+		if $bag.can_add?(:CROPSTICKS,1)
+          $bag.add(:CROPSTICKS,1)
+		  berry_plant.cropsticks = false
+		else
+          pbMessage(_INTL("You don't have any space."))
+          return
+		end
+
+		end
+	   
+	   end
+
       when 0   # Plant Berry
         ask_to_plant = false
       else   # Exit/cancel
@@ -263,16 +308,59 @@ def pbBerryPlant
 
     end
   end
-
+end
 
 end
 
+def new_planting(event, berry_plant)
+ current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+ return false if $PokemonGlobal.ball_hud_enabled==false
+ return false if current_selection.nil?
+ return false if !current_selection.is_a?(ItemData)
+ item_info = GameData::Item.get(current_selection)
+ return false if !item_info.is_mulch? && !item_info.is_berry? && item_info.id != :CROPSTICKS
+ pbTurnBerryPlant(event,berry_plant)
+ sideDisplay(_INTL("There is soft, loamy soil.", GameData::Item.get(berry_plant.mulch).name)) if !berry_plant.mulch.nil? && berry_plant.cropsticks == false
+ sideDisplay(_INTL("There is soft, loamy soil, it has had {1} laid down in it.", GameData::Item.get(berry_plant.mulch).name)) if berry_plant.mulch && berry_plant.cropsticks == false
+ sideDisplay(_INTL("There is soft, loamy soil, it has had {1} laid down in it, surrounded by {2}.", GameData::Item.get(berry_plant.mulch).name, GameData::Item.get(:CROPSTICKS).name)) if berry_plant.mulch && berry_plant.cropsticks == true
+ if item_info.id == :CROPSTICKS
+   if berry_plant.cropsticks==false
+    sideDisplay(_INTL("You place down Cropsticks."))
+    $bag.remove(current_selection, 1)
+    berry_plant.cropsticks = true
+   else
+    sideDisplay(_INTL("You pick back up the Cropsticks."))
+    $bag.add(current_selection, 1)
+    berry_plant.cropsticks = false
+   end
+ elsif item_info.is_mulch?
+    sideDisplay(_INTL("The {1} was scattered on the soil.\1", item_info.name))
+    $bag.remove(current_selection, 1)
+    berry_plant.mulch = current_selection
+ else
+    $stats.berries_planted += 1
+      berry_plant.plant(current_selection)
+      $bag.remove(current_selection, 1)
+      if item_info.name.starts_with_vowel?
+        sideDisplay(_INTL("{1} planted an {2} in the soft, loamy soil.",
+                        $player.name, item_info.name))
+      else
+        sideDisplay(_INTL("{1} planted a {2} in the soft, loamy soil.",
+                        $player.name, item_info.name))
+      end
+ end 
+
+ return true
+end 
+
+def shouldAutoselectCrop?
+  $PokemonSystem.autoselect_replant == 0
+end 
 
 def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
-  if berry.is_a?(Symbol)
-  berry = ItemData.new(berry) 
-  end
-  qty *= 2 if $bag.has?(:BERRYCHARM)
+  berry = ItemData.new(berry) if berry.is_a?(Symbol)
+ # qty *= 2 if $bag.has?(:BERRYCHARM)
+ 
   interp = pbMapInterpreter
   this_event = interp.get_self
   berry_plant = interp.getVariable
@@ -284,277 +372,68 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   berry_plant.last_berry = berry
   berry_plant.timewithoutberry = pbGetTimeNow.to_i
   
-  
   berrydata = GameData::Item.get(berry)
   mut_berry_qty = 0
   
   
   if !mutation_info.nil?
-  mut_berry = mutation_info[0]
-  mut_berrydata = GameData::Item.get(mutation_info[0])
-  mut_berry_qty = mutation_info[1]
-  mut_berry_qty -= 1 while qty - mut_berry_qty < 1
-  mut_berry_name = (mut_berry_qty > 1) ? mut_berrydata.name_plural : mut_berrydata.name
+   mut_berry = mutation_info[0]
+   mut_berrydata = GameData::Item.get(mutation_info[0])
+   mut_berry_qty = mutation_info[1]
+   mut_berry_qty -= 1 while qty - mut_berry_qty < 1
+   mut_berry_name = (mut_berry_qty > 1) ? mut_berrydata.name_plural : mut_berrydata.name
   end
   berry_name = (qty > 1) ? berrydata.name_plural : berrydata.name
+
+  wooden_log_amt = ((rand(4))+((qty/4).to_i))
+  wooden_log_amt = (wooden_log_amt < 1) ? 1 : wooden_log_amt
   
-  
-  
-  
-  
-  
-  
-  
-  if qty > 1
-    message = _INTL("There are {1} \\c[1]{2}\\c[0]!\nWant to pick them?", qty, berry_name)
-  else
-    message = _INTL("There is 1 \\c[1]{1}\\c[0]!\nWant to pick it?", berry_name)
-  end
-  
-  
-  
-  message = _INTL("Do you want to knock down this Tree?", berry_name) if berry.id == :ACORN || berry.id == :APPLE || berry.id == :LEMON
-  return false if !pbConfirmMessage(message)
-  pbMessage(_INTL("Oh! There are some odd berries mixed in! It seems to be some {1}!", mut_berry_name)) if !mutation_info.nil?
+  tree = berry.id == :ACORN
+  can_store = (!tree || $bag.can_add?(:WOODENLOG, wooden_log_amt)) && $bag.can_add?(berry, qty) && (mutation_info.nil? || $bag.can_add?(mut_berry, mut_berry_qty))
    
-   
-  if !mutation_info.nil?
-  if !$bag.can_add?(berry, qty)  || !$bag.can_add?(mut_berry, mut_berry_qty)
-    pbMessage(_INTL("Too bad...\nThe Bag is full..."))
+  unless can_store
+    sideDisplay(_INTL("The Bag is full."))
     return false
   end
-  else
-  if !$bag.can_add?(berry, qty)
-    pbMessage(_INTL("Too bad...\nThe Bag is full..."))
-    return false
+  $stats.berry_plants_picked += 1
+  $stats.mutated_berries_picked ||= 0
+  $stats.mutated_berries_picked += mut_berry_qty
+  if qty + mut_berry_qty >= GameData::BerryPlant.get(berry.id).maximum_yield
+    $stats.max_yield_berry_plants += 1
   end
-  end
-  
-  
-  
-    $stats.berry_plants_picked += 1
-    $stats.mutated_berries_picked ||= 0
-    $stats.mutated_berries_picked += mut_berry_qty
-  
-  
-  
-    if qty + mut_berry_qty >= GameData::BerryPlant.get(berry.id).maximum_yield
-      $stats.max_yield_berry_plants += 1
-    end
-
-
-
-
-
-
-
-
-
   $bag.add(berry, qty)
-  $bag.add(mut_berry, mut_berry_qty) if !mutation_info.nil?
-
-
-
-if true
-      axe = nil
-    if hasAxe? == true
-	  axe2 = getAxe
-     if axe2!=false || 
-      axe = GameData::Item.get(axe2)
-      axe.decreaseDurability(1)
-     end
-	 end
-	 
-	 show_log = false
-	 show_log = true if !axe.nil? || berry.id == :ACORN || berry.id == :APPLE || berry.id == :LEMON
-    wooden_log_amt = ((rand(4))+((qty/4).to_i))
-	wooden_log_amt = (wooden_log_amt < 1) ? 1 : wooden_log_amt
-    wooden_log = (wooden_log_amt > 1) ? GameData::Item.get(:WOODENLOG).name_plural : GameData::Item.get(:WOODENLOG).name
-	berry_name = "Trees" if berry.id == :ACORN
-	berry_name = "Tree" if berry.id == :ACORN  && berry == 1
-	berry_name = "Apple Trees" if berry.id == :APPLE
-	berry_name = "Apple Tree" if berry.id == :APPLE && berry == 1
-	berry_name = "Lemon Trees" if berry.id == :LEMON
-	berry_name = "Lemon Tree" if berry.id == :LEMON && berry == 1
-	berry_name_extra = ""
-	berry_name_extra = "" if berry.id == :ACORN || berry.id == :APPLE || berry.id == :LEMON
-	if !mutation_info.nil?
-	mut_berry_name = "Trees" if mut_berry.id == :ACORN 
-	mut_berry_name = "Tree" if mut_berry.id == :ACORN && mut_berry_qty == 1
-	mut_berry_name = "Apple Trees" if mut_berry.id == :APPLE
-	mut_berry_name = "Apple Tree" if mut_berry.id == :APPLE && mut_berry_qty == 1
-	mut_berry_name = "Lemon Trees" if mut_berry.id == :LEMON
-	mut_berry_name = "Lemon Tree" if mut_berry.id == :LEMON && mut_berry_qty == 1
-	berry_name_extra2 = "" 
-	berry_name_extra2 = "" if (mut_berry.id == :ACORN || mut_berry.id == :APPLE || mut_berry.id == :LEMON)
-	end
-
-    message = "\\me[Berry get]\\PN "
-    message += "knocked down the" if show_log == true
-    message += "picked the" if show_log == false
-	 message += " #{qty}" if qty > 1 && !(berry.id == :ACORN || berry.id == :APPLE || berry.id == :LEMON)
-    message += " \\c[1]#{berry_name}\\c[0]#{berry_name_extra}"
-	 message += ", and also picked the #{mut_berry_name}#{berry_name_extra2}" if (!mutation_info.nil? && show_log == false) && mut_berry_qty == 1
-	 message += ", and also picked the #{mut_berry_qty} #{mut_berry_name}  #{berry_name_extra2}" if (!mutation_info.nil? && show_log == false) && mut_berry_qty > 1
-	 
-	 message += ", obtained a #{mut_berry_name}#{berry_name_extra2}, and got a #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty == 1 && wooden_log_amt==1
-	 message += ", obtained a #{mut_berry_name}#{berry_name_extra2}, and got #{wooden_log_amt} #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty == 1 && wooden_log_amt>1
-	 message += ", obtained #{mut_berry_qty} #{mut_berry_name}#{berry_name_extra2}, and got a #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty > 1 && wooden_log_amt==1
-	 message += ", obtained #{mut_berry_qty} #{mut_berry_name}#{berry_name_extra2}, and got #{wooden_log_amt} #{wooden_log}" if !mutation_info.nil? && show_log == true && mut_berry_qty > 1 && wooden_log_amt>1
-	 
-	 message += ", and got a #{wooden_log}" if mutation_info.nil? && show_log == true && wooden_log_amt==1
-	 message += ", and got #{wooden_log_amt} #{wooden_log}" if mutation_info.nil? && show_log == true && wooden_log_amt>1
-	 message += "."
-	 pbMessage((message))
-end
-    if pbShowBerryMessage
-    pocket = berry.pocket
-    pbMessage(_INTL("{1} put the berries in the <icon=bagPocket{2}>\\c[1]{3}\\c[0] Pocket.\1", $player.name, pocket, PokemonBag.pocket_names[pocket - 1]))
-
+  itemAnim(berry, qty) 
+  if !mutation_info.nil?
+  $bag.add(mut_berry, mut_berry_qty) 
+  itemAnim(mut_berry, mut_berry_qty) 
+  end
+  if tree
+  $bag.add(:WOODENLOG, wooden_log_amt) 
+  itemAnim(:WOODENLOG, wooden_log_amt) 
+  end
+  if shouldAutoselectCrop?
+	$PokemonGlobal.set_ball_hud_type(:ITEM,true)
+	$PokemonGlobal.set_item_hud(:CROPS,true)
+    new_index = $PokemonGlobal.ball_order.index do |item|
+     item_id = item.is_a?(Symbol) || item.is_a?(String) ? item : item.id
+     item_id == berry.id
     end
-	
-    if !$bag.can_add?(:WOODENLOG, wooden_log_amt) && show_log==true
-    pbMessage(_INTL("You lost the logs... The Bag is full..."))
-	else
-	$bag.add(:WOODENLOG, wooden_log_amt) if show_log==true
-	if show_log==true && pbShowBerryMessage
-    pocket = :WOODENLOG.pocket
-    pbMessage(_INTL("{1} put the berries in the <icon=bagPocket{2}>\\c[1]{3}\\c[0] Pocket.\1", $player.name, pocket, PokemonBag.pocket_names[pocket - 1]))
-	end 
-    end
-	berry_plant.persistent = false if berry_plant.persistent.nil?
-    berry_plant.persistent = true if Settings::BERRY_PERSISTENT_PLANT_CHANCE > 0 && berry_plant && berry_plant.replant_count < GameData::BerryPlant::NUMBER_OF_REPLANTS && 
-            rand(100) < Settings::BERRY_PERSISTENT_PLANT_CHANCE
-    if berry_plant&.persistent==false
-    
-	
-	
-   confirmmessage = "Do you want to replant #{berry_name}?" if mutation_info.nil?
-   confirmmessage = "Do you want to replant one of the crops?" if !mutation_info.nil?
-
-
-
-
-  if pbConfirmMessage(_INTL(confirmmessage))
-    if !mutation_info.nil?
-       commands=[]
-       commands.push(_INTL"#{berry_name}")
-       commands.push(_INTL("#{mut_berry_name}")) 
-     commandMail = pbMessage(_INTL("Which crops do you want to replant?"),commands, -1)
-     if commandMail == 0
-	 
-	 
-	 
-	 
-  if $bag.remove(berry)
-  $stats.berries_planted += 1
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  if berry_plant 
-  berry_plant.event           = this_event if berry_plant.event.nil?
-  berry_plant.plant(berry)
-  if pbShowBerryMessage
-  if GameData::Item.get(berry).name.starts_with_vowel?
-    pbMessage(_INTL("{1} planted an {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(berry).name))
-  else
-        pbMessage(_INTL("{1} planted a {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(berry).name))
-  end
-  end
-  return false
-  else
-    raise "No Berry Plant!"
-  end 
-  else
-  pbMessage(_INTL("You don't have enough {1}.", berry_name))
-  pbMessage(_INTL("The soil returned to its soft, and loamy state.")) if pbShowBerryMessage
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  return true
-  end
- 
- 
- 
- 
- 
-     else
-	 
-	 
-	 
-  if $bag.remove(mut_berry)
-  $stats.berries_planted += 1
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  berry_plant.event           = this_event if berry_plant.event.nil?
-  berry_plant.plant(mut_berry)
-  if pbShowBerryMessage
-  if GameData::Item.get(mut_berry).name.starts_with_vowel?
-    pbMessage(_INTL("{1} planted an {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(mut_berry).name))
-  else
-        pbMessage(_INTL("{1} planted a {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(mut_berry).name))
-  end
-  end
-  return false
-  else
-  pbMessage(_INTL("You don't have enough {1}.", berry_name))
-  pbMessage(_INTL("The soil returned to its soft, and loamy state.")) if pbShowBerryMessage
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  return true
-  end
- 
- 
- 
- 
-	  end
-	 
-	 
-	 
-	 else
-  if $bag.remove(berry)
-  $stats.berries_planted += 1
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  if berry_plant 
-  berry_plant.event           = this_event if berry_plant.event.nil?
-  berry_plant.plant(berry)
-  
-  
-  if pbShowBerryMessage
-  if GameData::Item.get(berry).name.starts_with_vowel?
-    pbMessage(_INTL("{1} planted an {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(berry).name))
-  else
-        pbMessage(_INTL("{1} planted a {2} in the soft, loamy soil.",
-                        $player.name, GameData::Item.get(berry).name))
-  end
-  end
-  return false
-  else
-  
-    raise "No Berry Plant!"
-  end 
-  else
-  pbMessage(_INTL("You don't have enough {1}.", berry_name))
-  pbMessage(_INTL("The soil returned to its soft, and loamy state.")) if pbShowBerryMessage
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  return true
-  end
- 
-     end
-  else
-  pbMessage(_INTL("The soil returned to its soft, and loamy state.")) if pbShowBerryMessage
-  pbSetSelfSwitch(this_event.id, "A", true)  
-  return true
-  end
-   else
-    if pbShowBerryMessage
-		pbMessage(_INTL("The {1} plant seems to have survived you picking it!", berry_name))
+	unless new_index.nil?
+     $PokemonGlobal.ball_hud_index = new_index  
+     $PokemonGlobal.ball_hud_enabled = true
 	end
-  berry_plant.event           = this_event if berry_plant.event.nil?
-  berry_plant.plant(berry)
-    return false
-end
+  end 
+  berry_plant.persistent = false if berry_plant.persistent.nil?
+  berry_plant.persistent = true if Settings::BERRY_PERSISTENT_PLANT_CHANCE > 0 && berry_plant && berry_plant.replant_count < GameData::BerryPlant::NUMBER_OF_REPLANTS && rand(100) < Settings::BERRY_PERSISTENT_PLANT_CHANCE
+  if berry_plant.persistent==true
+   sideDisplay(_INTL("The {1} plant seems to have survived you picking it!", berry_name))
+   berry_plant.event           = this_event if berry_plant.event.nil?
+   berry_plant.plant(berry)
+   return false
+  end
     
    
+   return true
 end
 
 
@@ -954,9 +833,10 @@ end
 class BerryPlantData
   attr_accessor :event
   attr_accessor :tile_data
+  attr_accessor :no_water_can_message
   attr_accessor :berry
   attr_accessor :berry_id
-  attr_accessor :mulch_id             # Gen 4 mechanics
+  attr_accessor :mulch             # Gen 4 mechanics
   attr_accessor :time_alive
   attr_accessor :time_last_updated
   attr_accessor :growth_stage
@@ -1012,11 +892,20 @@ class BerryPlantData
     return @tile_data.cropsticks
   end
   
+  def no_water_can_message
+     @no_water_can_message = false if @no_water_can_message.nil?
+	 return @no_water_can_message
+  end 
+  
+  def cropsticks=(value)
+    return @tile_data.cropsticks=value
+  end
   
   def reset(planting = false)
 	@berry           = nil
     @berry_id           = nil
-    @mulch_id           = nil if !planting
+	@no_water_can_message = false
+    @mulch           = nil if !planting
     @time_alive         = 0
     @time_last_updated  = 0
     @growth_stage       = 0
@@ -1054,8 +943,31 @@ class BerryPlantData
     @stagnation_message = false
   end
 
-
-
+  def id
+   return :BERRYPLANT
+  end
+  
+  def event_id
+    @event_id 
+  end 
+  def event_id=(value)
+    @event_id = value 
+  end 
+  
+  def event
+   return $game_map.events[event_id] if event_id
+   interp = pbMapInterpreter
+   return interp.get_self
+  end 
+  
+  def workers
+    event.workers.current_workers 
+  end 
+  
+  def tending_multiplier
+    1.0 + (workers.length * 0.25)
+  end
+  
   def plant(berry)
     reset(true)
 	@dead = false
@@ -1066,7 +978,7 @@ class BerryPlantData
     @time_last_updated = pbGetTimeNow.to_i
     @timewithoutberry       = 0
     @preferred_weather = GameData::BerryPlant.get(@berry_id).weather
-    @preferred_season = @berry.season
+    @preferred_season = GameData::BerryPlant.get(@berry_id).season
 	@time_in_stage = 0
     @weeds = false
     @weeds_timer = pbGetTimeNow.to_i
@@ -1091,7 +1003,7 @@ class BerryPlantData
    end   
   
    def mulchly_actions(tps,dph,mr,sfg)
-       case @mulch_id
+       case @mulch&.id
          when :GROWTHMULCH
             tps = (tps * 0.75).to_i
             dph = (dph * 1.5).ceil
@@ -1152,6 +1064,7 @@ class BerryPlantData
 		end
 
      tps = [tps,3600].max
+	 tps = (tps / tending_multiplier).floor
      return tps,dph,mr,sfg
   end
   
@@ -1201,7 +1114,8 @@ class BerryPlantData
   def is_raining?
     zone = pbGetZone(@event.map_id)
     weather = $WeatherSystem.nextWeather[zone].mainWeather
-    return true if weather == :Rain || weather == :HeavyRain
+	return false if $WeatherSystem.actualWeather[zone].mainWeather.nil?
+    return true if weather == :Rain || weather == :HeavyRain || weather == :Storm
 	return false
   end 
   def rain_type
@@ -1214,7 +1128,6 @@ class BerryPlantData
 
 
   def update
-   $ExtraEvents.berry_plants[[@event.map_id,@event.id]] = StoredEvent.new(@event.map_id,event,:BERRYPLANT) if $ExtraEvents.berry_plants[[@event.map_id,@event.id]].nil?
 	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
     @exposed_to_rain = false if @exposed_to_rain.nil?
     @jit = false if @jit.nil?
@@ -1225,17 +1138,18 @@ class BerryPlantData
 	 
     if tile_delta > 600
 	   @tile_data.update(@berry_id)
-		@time_rain_last_updated = time_now.to_i
+		@time_tile_last_updated = time_now.to_i
     end
     return if !planted?
     
 	 @time_rain_last_updated ||= time_now.to_i
 	 rain_delta = time_now.to_i - @time_rain_last_updated
     if is_raining? && rain_delta > 60
-	        water(1.5,true) if rain_type == :Rain
-	        water(2.5, true) if rain_type == :HeavyRain
+	       refresh_amt = rain_delta/60
+	        water(1.5 * refresh_amt,true) if rain_type == :Rain
+	        water(2.5 * refresh_amt, true) if rain_type == :HeavyRain
 			 @exposed_to_rain = true
-			@time_rain_last_updated = time_now.to_i
+			@time_rain_last_updated = time_now.to_i - rand(60)
     end
 	
     time_delta = time_now.to_i - @time_last_updated
@@ -1345,6 +1259,10 @@ class BerryPlantData
 	@exposed_to_preferred_weather = true if checkPreferredWeather
     return if !planted? || !@event || @mutated_berry_tried || @growth_stage < 2
     checkNearbyPlantsForMutation
+	
+	update_watering
+    update_harvesting
+	update_weeds
   end
   
   
@@ -1374,7 +1292,64 @@ class BerryPlantData
   end
 
 
+def update_watering
+  return if @pests
+  return if @moisture_level >= 100
+  time_now = pbGetTimeNow.to_i
+  return if @watered_at && time_now - @watered_at < 3600
+  workers.each do |worker_id|
+    next if @moisture_level >= 100
+    worker = $game_map.events[worker_id]
+    next unless worker
+    pokemon = worker&.pokemon
+    next unless pokemon
 
+    move = pokemon.moves.find do |move|
+      move && move.type == :WATER && move.pp > 0
+    end
+
+    next unless move
+
+    water(move.base_damage)
+    move.pp -= 1
+    @watered_at = time_now
+  end
+end
+
+def update_harvesting
+  return if @pests
+  return unless grown?
+
+  workers.each do |worker_id|
+    worker = $game_map.events[worker_id]
+    next unless worker
+    pokemon = worker&.pokemon
+    next unless @berry
+    next unless pokemon
+    next unless pokemon.types.include?(:GRASS)
+	cur_yield = self.berry_yield
+    next unless pokemon.inventory.can_add?(@berry, cur_yield)
+   
+    pokemon.inventory.add(@berry, cur_yield)
+    reset
+	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
+  end
+end
+
+def update_weeds
+  return if @pests
+  return unless @weeds
+
+  workers.each do |worker_id|
+    worker = $game_map.events[worker_id]
+    next unless worker
+    pokemon = worker&.pokemon
+    next unless @weeds
+    next unless pokemon
+    next unless pokemon.types.include?(:GRASS)
+    pullWeeds
+  end
+end
 
 
 end
@@ -1456,7 +1431,9 @@ class BerryPlantData
         return ret
     end
 
-
+  def safe_to_harvest?
+    return !@weeds && !@pests
+  end 
 
   def planted?
     return @growth_stage > 0
@@ -1486,7 +1463,7 @@ class BerryPlantData
     data = GameData::BerryPlant.get(@berry_id)
     min_yield = data.minimum_yield
 	max_yield = data.max_yield 
-	 case @mulch_id
+	 case @mulch&.id
       when :PRODUCEMULCH
         min_yield+=(rand(2)+2)
       when :POTENTIALMULCH
@@ -1516,7 +1493,7 @@ class BerryPlantData
      ret =  [(max_yield * (5 + @yield_penalty) / 5), max_yield].max
 	 @exposed_to_preferred_weather=false if @exposed_to_preferred_weather.nil?
      ret += Settings::BERRY_PREFERRED_WEATHER_YIELD if @exposed_to_preferred_weather
-     ret += 2 if [:RICHMULCH, :AMAZEMULCH].include?(@mulch_id)
+     ret += 2 if [:RICHMULCH, :AMAZEMULCH].include?(@mulch&.id)
 	 if ret > max_yield
 	   ret = max_yield
 	 end 
@@ -1597,7 +1574,7 @@ class BerryPlantData
         @mutated_berry_tried = true
 		 return if cropsticks==false
         return if !@event || !$PokemonGlobal.berry_plant_mutation_parents.include?(@berry_id)
-        mutation_chance = Settings::BERRY_MULCHES_IMPACTING_MUTATIONS[@mulch_id] || Settings::BERRY_BASE_MUTATION_CHANCE
+        mutation_chance = Settings::BERRY_MULCHES_IMPACTING_MUTATIONS[@mulch,id] || Settings::BERRY_BASE_MUTATION_CHANCE
         return if mutation_chance <= 0 || rand(100) >= mutation_chance
         #position = [@event.map_id, @event.x, @event.y]
         #map = $map_factory.getMap(position[0])
@@ -1621,8 +1598,8 @@ class BerryPlantData
         neighbors = pbGetNeighbors
         neighbors.each do |data|
             next if data.nil? || !data.is_a?(BerryPlantData) || data.planted?
-            mulch_id = data.mulch_id
-            propagation_chance = Settings::BERRY_MULCHES_IMPACTING_PROPAGATION[mulch_id] || Settings::BERRY_BASE_PROPAGATION_CHANCE
+            mulch = data.mulch
+            propagation_chance = Settings::BERRY_MULCHES_IMPACTING_PROPAGATION[mulch.id] || Settings::BERRY_BASE_PROPAGATION_CHANCE
             next if propagation_chance <= 0 || rand(1000) >= propagation_chance
             data.plant(dropped_berries.sample)
             $stats.berries_propagated ||= 0
@@ -1720,6 +1697,7 @@ def pbShowBerryMessage
 end
 
 
+
 #===============================================================================
 #
 #===============================================================================
@@ -1780,7 +1758,7 @@ MenuHandlers.add(:options_menu, :fastberries, {
   "order"       => 41,
   "type"        => EnumOption,
   "parameters"  => [_INTL("On"), _INTL("Off")],
-  "condition"   => proc { next $player },
+  "condition"   => proc { next false },
   "description" => _INTL("Choose if you have info text for berries."),
   "get_proc"    => proc { next $PokemonSystem.fastberries },
   "set_proc"    => proc { |value, _scene|
@@ -1791,16 +1769,39 @@ MenuHandlers.add(:options_menu, :fastberries, {
   }
 })
 
+MenuHandlers.add(:options_menu, :autoselect_replant, {
+  "name"        => _INTL("Auto-Select Crop"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 41,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "condition"   => proc { next $player },
+  "description" => _INTL("Autoselect last planted crop for that plant."),
+  "get_proc"    => proc { next $PokemonSystem.autoselect_replant },
+  "set_proc"    => proc { |value, _scene|
+  $PokemonSystem.autoselect_replant = value
+
+
+
+  }
+})
 
 
 class PokemonSystem
    attr_accessor :fastberries
+   attr_accessor :autoselect_replant
    
    alias :_old_system_init :initialize
    def initialize
    _old_system_init
     @fastberries     = 0     # OFF
+    @autoselect_replant     = 0     # ON
    end
+   
+   def autoselect_replant
+     @autoselect_replant = 0 if @autoselect_replant.nil?
+	 @autoselect_replant
+   end 
 end
 
 
@@ -1924,7 +1925,7 @@ end
 # This sets up berry data if the event has pbberryplant in the event pages, but not pbpickberry before it.
 class Game_Map
     alias tdw_berry_improvements_map_setup setup
-    def setup(map_id)
+    def setup(map_id, add = false)
         tdw_berry_improvements_map_setup(map_id)
         return if $PokemonGlobal.maps_first_setups && $PokemonGlobal.maps_first_setups[map_id]
         @events.each do |event|
@@ -2144,7 +2145,7 @@ class BerryPlantMulchSprite
         cur_mulch = @mulch
         berry_plant = @event.variable
         return if !berry_plant.is_a?(BerryPlantData)
-        if berry_plant.planted? || !berry_plant.mulch_id
+        if berry_plant.planted? || !berry_plant.mulch
             @mulch = false
         else
             @mulch = true
@@ -2426,7 +2427,7 @@ GameData::BerryPlant::WATERING_CANS.each do |item|
         $PokemonGlobal.watering_can_levels[item] -= 1
 	 watered = true
 	  if item == :SPRAYDUCK
-    case @mulch_id
+    case @mulch&.id
     when :DAMPMULCH
       berry_plant.water(40)
     when :DAMPMULCH2
@@ -2442,7 +2443,7 @@ GameData::BerryPlant::WATERING_CANS.each do |item|
 
 
 	  elsif item == :SQUIRTBOTTLE
-    case @mulch_id
+    case @mulch&.id
     when :DAMPMULCH
       berry_plant.water(50)
     when :DAMPMULCH2
@@ -2456,7 +2457,7 @@ GameData::BerryPlant::WATERING_CANS.each do |item|
 
 
 	  elsif item == :WAILMERPAIL
-    case @mulch_id
+    case @mulch&.id
     when :DAMPMULCH
       berry_plant.water(60)
     when :DAMPMULCH2
@@ -2479,7 +2480,7 @@ GameData::BerryPlant::WATERING_CANS.each do |item|
       break
 
 	  elsif item == :SPRINKLOTAD
-    case @mulch_id
+    case @mulch&.id
     when :DAMPMULCH
       berry_plant.water(70)
     when :DAMPMULCH2
@@ -2502,7 +2503,7 @@ GameData::BerryPlant::WATERING_CANS.each do |item|
 
 
 	  elsif item == :WOODENPAIL
-    case @mulch_id
+    case @mulch&.id
     when :DAMPMULCH
       berry_plant.water(20)
     when :DAMPMULCH2

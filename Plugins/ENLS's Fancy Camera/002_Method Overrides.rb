@@ -94,8 +94,6 @@ end
 class Scene_Map
   def transfer_player(cancel_swimming = true)
     $game_temp.player_transferring = false
-	$game_temp.preventspawns=false
-   $PokemonGlobal.set_item_hud(:TOOL,true) if cur_item_hud==:WEAPONS
 	 old_map_id = $game_map.map_id
     pbCancelVehicles($game_temp.player_new_map_id, cancel_swimming)
     autofade($game_temp.player_new_map_id)

@@ -23,24 +23,6 @@ class Scene_Map
 	end 
   end
 
-  def main
-    createSpritesets
-    Graphics.transition
-    loop do
-      Graphics.update
-      Input.update
-      update
-      break if $scene != self
-    end
-    Graphics.freeze
-    dispose
-    if $game_temp.title_screen_calling
-      pbMapInterpreter.command_end if pbMapInterpreterRunning?
-      $game_temp.title_screen_calling = false
-      Graphics.transition
-      Graphics.freeze
-    end
-  end
 end
 
 def pbLoadRpgxpScene(scene)

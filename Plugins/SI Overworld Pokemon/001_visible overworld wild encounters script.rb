@@ -115,11 +115,20 @@ def pbBattleOrSpawnOnStepTaken(repel_active)
   end
 end
 
+def current_max_encounter
+  return VisibleEncounterSettings::MAX_SPAWN_MORNING if PBDayNight.isMorning?
+  return VisibleEncounterSettings::MAX_SPAWN_NOON if PBDayNight.isNoon?
+  return VisibleEncounterSettings::MAX_SPAWN_AFTERNOON if PBDayNight.isAfternoon?
+  return VisibleEncounterSettings::MAX_SPAWN_EVENING if PBDayNight.isEvening?
+  return VisibleEncounterSettings::MAX_SPAWN_NIGHT if PBDayNight.isNight?
+  return 0
+end 
+
 def pbSpawnOnStepTaken(repel_active)
-  return false if pbCountPokeEventInMap >= (PBDayNight.isNight? ? VisibleEncounterSettings::MAX_SPAWN : VisibleEncounterSettings::MAX_SPAWN_DAY)
   return if $game_temp.in_menu
   return if $game_system.menu_disabled
   return false if !VisibleEncounterTimeGate.allow_spawn?
+  return false if pbCountPokeEventInMap >= current_max_encounter
   
   
   #First we choose a tile near the player
@@ -132,6 +141,7 @@ def pbSpawnOnStepTaken(repel_active)
   
   $game_temp.encounter_type = encounter_type
   encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
+#	puts "Performing Spawn Part 9 of Lv#{encounter[1]} #{encounter[0]} at #{pos[0]},#{pos[1]} in map #{$game_map.map_id}"
   $PokemonGlobal.creatingSpawningPokemon = true
   EventHandlers.trigger(:on_wild_species_chosen, encounter)
   
@@ -139,8 +149,10 @@ def pbSpawnOnStepTaken(repel_active)
   if $PokemonEncounters.allow_encounter?(encounter, repel_active)
     pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
     # trigger event on spawning of pokemon
+#	puts PokemonEncounters.instance_method(:choose_wild_pokemon).source_location
+#	puts "Performing Spawn Part A of Lv#{pokemon.level} #{pokemon.name} at #{pos[0]},#{pos[1]} in map #{$game_map.map_id}"
     EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
-	puts "Performing Spawn of Lv#{pokemon.level} #{pokemon.name} at #{pos[0]},#{pos[1]}"
+#	puts "Performing Spawn Part B of Lv#{pokemon.level} #{pokemon.name} at #{pos[0]},#{pos[1]} in map #{$game_map.map_id}"
     pbPlaceEncounter(pos[0],pos[1],pokemon)
 	VisibleEncounterTimeGate.consume!
     # $PokemonEncounters.reset_step_count # added such that your encounter rate resets after spawning of an overworld pokemon 
@@ -190,7 +202,29 @@ def pbChooseTileOnStepTaken
     return
 end
 
+def pbSpawnEncounter(enc_type, x, y)
+  $game_temp.encounter_type = enc_type
+  encounter = $PokemonEncounters.choose_wild_pokemon(enc_type)
+  $PokemonGlobal.creatingSpawningPokemon = true
+  EventHandlers.trigger(:on_wild_species_chosen, encounter)
+  return false if !encounter
+  if $PokemonEncounters.allow_encounter?(encounter, repel_active)
+    pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
+    EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
+    pbPlaceEncounter(x, y, pokemon)
+	VisibleEncounterTimeGate.consume!
+    $game_temp.encounter_type = nil
+    $game_temp.encounter_triggered = true
+  
+  
+  end 
+  
+  $game_temp.force_single_battle = false
+  EventHandlers.trigger(:on_wild_pokemon_created_for_spawning_end)
+  $PokemonGlobal.creatingSpawningPokemon = false
 
+
+end 
 
 def pbTileIsPossible(x,y)
   if !$game_map.valid?(x,y) #check if the tile is on the map
@@ -198,7 +232,9 @@ def pbTileIsPossible(x,y)
   else
     tile_terrain_tag = $game_map.terrain_tag(x,y)
   end
-  for event in $game_map.events.values
+  return false if pbTileIsWarded?(x, y)
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+  for event in events
     if event.x==x && event.y==y
       return false
     end
@@ -236,6 +272,18 @@ def pbTileIsPossible(x,y)
   return false if !$PokemonEncounters.encounter_possible_here_on_tile?(x,y)
   
   return true
+end
+
+def pbTileIsWarded?(x, y)
+  events = $DynamicEvents.block_data_for_type(:WARDINGTOTEM)
+  return false if events.empty?
+  events.any? do |event|
+    dx = event.x - x
+    dy = event.y - y
+    next false if dx * dx + dy * dy > 9
+    data = event.internal_data
+	data.fuel > 0.0
+  end
 end
 
 def pbPlaceEncounter(x,y,pokemon,dir=false)
@@ -563,10 +611,7 @@ end
 
 
 def pbSingleOrDoubleWildBattle(map_id,x,y,pokemon)
-  if $game_temp.in_safari==true
-    $PokemonGlobal.nextBattleBGM = "Normal Battle"
-    pbSafariBattle(nil,nil,pokemon)
-  else
+
   if $PokemonEncounters.have_double_wild_battle_on_tile?(x,y,map_id)
       encounter2 = $PokemonEncounters.choose_wild_pokemon($game_temp.encounter_type)
       EventHandlers.trigger(:on_wild_species_chosen, encounter2)
@@ -575,7 +620,7 @@ def pbSingleOrDoubleWildBattle(map_id,x,y,pokemon)
   else
     WildBattle.start(pokemon, can_override: true)
   end
-  end
+
   $game_temp.encounter_type = nil
   $game_temp.encounter_triggered = true
 end

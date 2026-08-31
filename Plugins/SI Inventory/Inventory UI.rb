@@ -1,5 +1,6 @@
 module Inventory  
   def self.invWindow(type="Inventory", event_data = nil ,container = [])
+  return Inventory.invWindow2(type, event_data, container)
   return if $game_temp.in_inventory==true
   $game_temp.in_menu = true
   $game_temp.inv_cooldown = 5
@@ -9,7 +10,19 @@ module Inventory
   craftScene.pbEndScene
   $game_temp.in_inventory = false 
   $game_temp.in_menu = false
-  return item if item.is_a?(ItemData)
+  if item
+   intret = ItemHandlers.triggerUseFromBag(item)
+   itm = GameData::Item.get(item)
+    if intret >= 0
+      $bag.remove(item) if intret == 1 && itm.consumed_after_use?
+	  if $bag.quantity(item)>0
+      return item 
+	  else 
+      return nil 
+	  end
+    end
+   return item
+  end 
  end
 end
 
@@ -37,6 +50,12 @@ class Inv_Scene
     @objects={}
 	@item_hovered = nil
 	@grabbed_item = nil
+	@pokemon_inventory = nil
+	@exiting = false
+	@return_value = nil
+	@old_research = nil
+	@current_pokemon_for_inventory = nil
+	@current_pokemon_slot_for_inventory = nil
 	@current_tab = $bag.last_viewed_pocket-1
 	@pockets = $bag.pockets
 	@event_data = event_data
@@ -72,13 +91,23 @@ class Inv_Scene
     @sprites["highlight"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
 	@sprites["highlight"].z = 9999 
 	@sprites["highlight"].visible = false 
+
+
+	@sprites["highlight2"] = IconSprite.new(0,0,@viewport)
+    @sprites["highlight2"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
+	@sprites["highlight2"].z = 9999 
+	@sprites["highlight2"].visible = false 
 	
 	build_sprites 
     @sprites["overlay"]=BitmapSprite.new(Graphics.width,Graphics.height,@viewport)
     @sprites["overlay"].z = 99 
     pbDeactivateWindows(@sprites)
   end
- 
+
+
+
+
+
   def update 
     @tooltip.update
     pbUpdateSpriteHash(@sprites)
@@ -103,7 +132,15 @@ class Inv_Scene
 	end 
     if @grabbed_item
 	  icon = @grabbed_item[:icon]
-	  text_icon = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   text_icon = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	  amt = @grabbed_item[:stack][1]
       mouse_x, mouse_y = Mouse.getMousePos
 	  if mouse_x && mouse_y && icon && text_icon && !@grabbed_item[:stack][0].is_a?(Pokemon)
@@ -175,7 +212,7 @@ class Inv_Scene
 	  @item_hovered = item
 	  hash = {}
 	  hash[:name] = [item.name,0,0]
-	  if item.durability!=false && !(GameData::Item.get(item).is_foodwater?  || GameData::Item.get(item).is_berry?)
+	  if (!item.durability.nil? && !item.is_spoiling? && !item.dont_display_durability) 
 	  hash[:durability] = [item.durability,0,0] 
 	  hash[:maxdurability] = [item.max_durability,0,0] 
 	  end 
@@ -195,7 +232,7 @@ class Inv_Scene
     Settings::MAX_PARTY_SIZE.times do |i|
 	    key = "party#{i}"
 	  if @party[i]
-	    @sprites["#{i}_slottextpkmn"].text = @party[i].name if @sprites["#{i}_slottextpkmn"].text!=@party[i].name
+	    @sprites["#{i}_slottextpkmn"].setTextToFit(@party[i].name) if @sprites["#{i}_slottextpkmn"].text!=@party[i].name
         @sprites["#{i}_slottextpkmn"].visible=true
 		if @party[i].egg?
          @sprites["#{key}bartext"].visible=false if @sprites["#{key}bartext"]
@@ -209,9 +246,9 @@ class Inv_Scene
 		word = "HP"
         update_bar(key,word,min,max)
 	    update_status_sprite(i, @party[i])
-        @sprites["#{key}bartext"].visible=true
-        @sprites["#{key}barfill"].visible=true
-        @sprites["#{key}barborder"].visible=true
+        @sprites["#{key}bartext"].visible=true if @sprites["#{key}bartext"]
+        @sprites["#{key}barfill"].visible=true if @sprites["#{key}barfill"]
+        @sprites["#{key}barborder"].visible=true if @sprites["#{key}barborder"]
       else 
        @sprites["#{key}bartext"].visible=false if @sprites["#{key}bartext"]
        @sprites["#{key}barfill"].visible=false if @sprites["#{key}barfill"]
@@ -221,13 +258,43 @@ class Inv_Scene
       end
 	end
     if @type==:RESEARCHTABLE && @event_data.is_a?(ResearchTableData)
-      if @event_data.update
+		 if @craft[0] 
+	      if @craft[0][1]>0
+		   if @event_data.researching_item.nil?
+	        @event_data.research(@craft[0][0])
+	        sideDisplay(_INTL("You begin researching #{@craft[0][0].name}.")) if @old_research!=@craft[0][0]
+	   	   elsif @event_data.researching_item != @craft[0][0] 
+	        @event_data.research(@craft[0][0])
+	        sideDisplay(_INTL("You begin researching #{@craft[0][0].name}.")) if @old_research!=@craft[0][0]
+		   end 
+		   if @event_data.active_researches.empty? && @old_research!=@craft[0][0]
+		    @old_research = @craft[0][0]
+	        sideDisplay(_INTL("You can't think of anything to make out of #{@craft[0][0].name}."))
+		    @event_data.reset
+		   end
+	      end
+	     end 
+
+	  old_stage = @event_data.research_stage
+	   multiplier = 2
+	   count = $player.party.count { |pkmn| pkmn.nature.id == :SERIOUS }
+	   multiplier += count * 2
+      if @event_data.update(multiplier)
 		remove(@icons["0_slotimage"])
 		remove(@icons["0_slottext"])
 	    @craft[0]=nil
+	  elsif @event_data.researching?
+	  will_display = rand(1000) < 10
+	  if @event_data.research_stage > old_stage
+        sideDisplay(@event_data.text_for_stage_internal)
+	  elsif pbGetTimeNow.to_i >= @event_data.time_last_message
+        if will_display
+         sideDisplay(@event_data.research_flavor)
+         @event_data.time_last_message = pbGetTimeNow.to_i + rand(720..1745)
+        end
+      end 
 	  end 
 	end 
-	
     if @type!=:RESEARCHTABLE && !craft_empty_or_nil?
 	  temp_craft = (@type == :FURNACE) ? [@craft[0]] : @craft
       results = get_recipe(temp_craft)
@@ -267,6 +334,7 @@ class Inv_Scene
 	  remove(@icons["_result_slottext"]) #if @icons.key?("_result_slottext")
 	end 
     refresh_inventory if @type=="Inventory"
+	 
 	@sprites["tab_alttext"].text = "STA: #{$player.playerstamina}/#{$player.playermaxstamina}" if @type==:GRINDER
 	
 	
@@ -300,6 +368,8 @@ class Inv_Scene
 	
   end
   alias pbUpdate update
+   
+
    
 
   def get_bg
@@ -551,11 +621,13 @@ class Inv_Scene
 	update_selected_tab
 	end 
 	setup_ui
-  
+    setup_pokemon_inventory
   
   
   
   end 
+
+
 
 
   def normalize_ingredients(list)
@@ -572,7 +644,7 @@ class Inv_Scene
   end
   
   def get_recipe(ingredients)
-    results = []
+    results = nil
     inventory = normalize_ingredients(ingredients)
 	
 	  if @type == :APRICORNMACHINE
@@ -713,7 +785,7 @@ class Inv_Scene
     @sprites["#{key}barfill"].x = @sprites["#{key}barborder"].x+(amt/2)
     @sprites["#{key}barfill"].y = @sprites["#{key}barborder"].y+(amt/2)
 	minmax = min!="" && max!="" ? ": #{min}/#{max}" : ""
-	create_text3("#{key}bartext","#{word}#{minmax}",@sprites["#{key}barborder"].x-16,@sprites["#{key}barborder"].y+20,MessageConfig::LIGHT_TEXT_MAIN_COLOR,nil,11) if word!=""
+	create_text3("#{key}bartext","#{word}#{minmax}",@sprites["#{key}barborder"].x-16,@sprites["#{key}barborder"].y+20,MessageConfig::LIGHT_TEXT_MAIN_COLOR,nil,11)
   end 
   
   def update_bar(key,word,min,max)
@@ -735,7 +807,7 @@ class Inv_Scene
     )
 	end
 	minmax = min!="" && max!="" ? ": #{min}/#{max}" : ""
-	@sprites["#{key}bartext"].text = "#{word}#{minmax}" if word!=""
+	@sprites["#{key}bartext"].setTextToFit("#{word}#{minmax}") if @sprites["#{key}bartext"]
   end 
   
   
@@ -757,7 +829,7 @@ class Inv_Scene
     @sprites["hpbarfill"] = BitmapSprite.new(fillWidth,fillHeight,viewport)
     @sprites["hpbarfill"].x = @bonus_1+76-fillWidth/2
     @sprites["hpbarfill"].y = (@sprites["trainer"].y-fillHeight/2)+100
-	create_text2("HP","HP: #{$player.playerhealth}/#{$player.playermaxhealth2}",@sprites["hpbarborder"].x-20,@sprites["hpbarborder"].y)
+	create_text2("HP","HP: #{$player.playerhealth.to_i}/#{$player.playermaxhealth2.to_i}",@sprites["hpbarborder"].x-20,@sprites["hpbarborder"].y)
 	end
 	
 	
@@ -828,7 +900,7 @@ class Inv_Scene
     end
 
     @sprites["HP_text"].baseColor=hpColors
-    @sprites["HP_text"].text="HP: #{$player.playerhealth}/#{$player.playermaxhealth2}"
+    @sprites["HP_text"].text="HP: #{$player.playerhealth.to_i}/#{$player.playermaxhealth2.to_i}"
    end
    
 
@@ -962,7 +1034,13 @@ class Inv_Scene
     if @type == :ITEMCRATE 
 	 @container.items = @craft
 	else 
-	 if @type == :RESEARCHTABLE &&  @craft[0] 
+	 if @type == :RESEARCHTABLE && @craft[0] 
+	   if @old_research == @craft[0][0]
+	     if @old_research == @event_data.researching_item 
+		 @event_data.reset
+		 puts @event_data.researching_item
+		 end 
+	   else
 	   if @craft[0][1]>0
 	    @craft[0][1]-=1
 		if @event_data.researching_item.nil?
@@ -981,6 +1059,7 @@ class Inv_Scene
 		  @event_data.reset
 		end
 	   end
+       end 
 	 end 
      @craft.each do |data|
 	  next if data.nil?
@@ -993,6 +1072,7 @@ class Inv_Scene
     pbDisposeSpriteHash(@sprites)
     pbDisposeSpriteHash(@objects)
 	@tooltip.dispose
+    return if @viewport.nil? || @viewport.disposed?
     @viewport.dispose
   end
   
@@ -1016,11 +1096,21 @@ class Inv_Scene
             if pbLearnMove(pkmn, machine, false, true)
               if itm.consumed_after_use?
 	             icon = @grabbed_item[:icon]
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon)
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
               end 			  
               return true
             end
@@ -1040,11 +1130,21 @@ class Inv_Scene
 	    @grabbed_item[:stack][1]-=1
 		if @grabbed_item[:stack][1]==0
 	             icon = @grabbed_item[:icon]
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon)
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 				 @grabbed_item = nil
 		end 
 	  end
@@ -1117,9 +1217,27 @@ class Inv_Scene
   
   end 
   
+  def view_item
+    return if !@grabbed_item
+    index, col, row = slot_from_mouse
+	pkmninv_index, pkmn_col, pkmn_row = pkmninv_slot_from_mouse
+	#if pkmninv_index && render_pokemon_inventory? 
+	crafting_index = crafting_slot_from_mouse
+	pokemon_index = pokemon_slot_from_mouse
+    if !index.nil?
+	  item = current_pocket[index]
+	  item[0].identical_check(@grabbed_item[:stack][0])
+	elsif !crafting_index.nil?
+	  item = @craft[crafting_index]
+	  item[0].identical_check(@grabbed_item[:stack][0])
+	
+	end 
   
+  end 
   def left_click_item
     index, col, row = slot_from_mouse
+	pkmninv_index, pkmn_col, pkmn_row = pkmninv_slot_from_mouse
+	#if pkmninv_index && render_pokemon_inventory? 
 	crafting_index = crafting_slot_from_mouse
 	pokemon_index = pokemon_slot_from_mouse
 	if !index.nil?
@@ -1132,7 +1250,8 @@ class Inv_Scene
 		icon: icon,
         stack: current_pocket[index],
         index: index,
-		craft: false }
+		craft: false,
+		pkmn_inv: false }
 	  end 
 
     else
@@ -1142,7 +1261,16 @@ class Inv_Scene
 	  if slot_item
 	    if index == @grabbed_item[:index]
 	       icon = @grabbed_item[:icon]
-	       icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	       remove(icon)
 	       remove(icon_text)
            @grabbed_item = nil
@@ -1166,11 +1294,21 @@ class Inv_Scene
 			   text_icon.text = text
 			 if @grabbed_item[:stack][1]==0
 	             icon = @grabbed_item[:icon]
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon)
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
 				 @grabbed_item = nil
 			 end
 			end
@@ -1187,7 +1325,16 @@ class Inv_Scene
 
 	  else
 	    icon = @grabbed_item[:icon]
-	    icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	    
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	    icon.z = 98
 	     item = @grabbed_item[:stack][0]
 		 amt = @grabbed_item[:stack][1]
@@ -1195,7 +1342,9 @@ class Inv_Scene
 	     new_icon(item, amt,index,col,row)
 	     remove(icon)
 	       remove(icon_text)
-		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
          @grabbed_item = nil
 	  end 
     end 
@@ -1204,6 +1353,7 @@ class Inv_Scene
 
 	
 	end
+
     end 
 
     elsif !pokemon_index.nil? && pokemon_index.is_a?(Integer)
@@ -1246,7 +1396,8 @@ class Inv_Scene
 		      icon: icon3,
               stack: old_crafting_stack,
               index: "held",
-		      craft: false
+		      craft: false,
+		      pkmn_inv: false
 		    }
 	      end 
 		  @party[pokemon_index] = pokemon1
@@ -1285,7 +1436,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: pokemon_index,
-		   craft: false
+		   craft: false,
+		   pkmn_inv: false
 		  }
 	    end 
 	  end
@@ -1331,7 +1483,8 @@ class Inv_Scene
 		      icon: icon3,
               stack: old_crafting_stack,
               index: "held",
-		      craft: false
+		      craft: false,
+		      pkmn_inv: false
 		    }
 	      end 
 		  @pokemon[crafting_index] = pokemon1
@@ -1375,7 +1528,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: crafting_index,
-		   craft: false
+		   craft: false,
+		   pkmn_inv: false
 		  }
 	    end 
 	  end
@@ -1389,14 +1543,25 @@ class Inv_Scene
 	  if crafting_index!="_result"
 	  if !@craft[crafting_index]
 	    icon = @grabbed_item[:icon]
-	    icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	    
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	    icon.z = 98
 	    item, amt = @grabbed_item[:stack]
 	    @craft[crafting_index] = [item, amt]
 	    new_icon2(item, amt, crafting_index)
 	    remove(icon)
 	    remove(icon_text)
-	    current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+	    current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 	    @grabbed_item = nil
 	  else
        if @craft[crafting_index][0].identical(@grabbed_item[:stack][0]) && @craft[crafting_index][1]<@craft[crafting_index][0].stack_size
@@ -1417,10 +1582,21 @@ class Inv_Scene
 		   @icons["#{crafting_index}_slottext"].text = text
 		   if @grabbed_item[:stack][1]<=0
 		      icon = @grabbed_item[:icon]
-	          icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	          
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	          remove(icon)
 	          remove(icon_text)
-	          current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+	          current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 		      @grabbed_item = nil
 		   end 
 
@@ -1518,7 +1694,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: new_crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	     end 
 		 
@@ -1541,7 +1718,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	    end 
 		@craft[crafting_index] = nil 
@@ -1558,14 +1736,25 @@ class Inv_Scene
 	 
 	  if !@equip[crafting_index-100]
 	    icon = @grabbed_item[:icon]
-	    icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	    
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	    icon.z = 98
 	    item, amt = @grabbed_item[:stack]
 	    @equip[crafting_index-100] = [item, amt]
 	    new_icon2(item, amt, crafting_index)
 	    remove(icon)
 	    remove(icon_text)
-	    current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+	    current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
 	    @grabbed_item = nil
 	  else
        if @craft[crafting_index][0].identical(@grabbed_item[:stack][0]) && @equip[crafting_index-100][1]<@equip[crafting_index-100][0].stack_size
@@ -1586,10 +1775,21 @@ class Inv_Scene
 		   @icons["#{crafting_index}_slottext"].text = text
 		   if @grabbed_item[:stack][1]<=0
 		      icon = @grabbed_item[:icon]
-	          icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	          
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	          remove(icon)
 	          remove(icon_text)
-	          current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+	          current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 		      @grabbed_item = nil
 		   end 
 
@@ -1614,7 +1814,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	    end 
 		@equip[crafting_index-100] = nil 
@@ -1622,6 +1823,125 @@ class Inv_Scene
 
 
 	 end 
+    elsif !pkmninv_index.nil? && render_pokemon_inventory? 
+    if @grabbed_item.nil?
+      slot_item = @pokemon_inventory[pkmninv_index]
+      icon = @icons["#{pkmninv_index}_invimage"]
+		   pocket = slot_item[0].pocket
+	       @current_tab = pocket-1
+		   update_selected_tab
+	  if slot_item && icon
+        @grabbed_item = { 
+		icon: icon,
+        stack: @pokemon_inventory[pkmninv_index],
+        index: pkmninv_index,
+		craft: false,
+		pkmn_inv: true }
+	  end 
+
+    else
+	 if !@grabbed_item[:stack][0].is_a?(Pokemon)
+	
+      slot_item = @pokemon_inventory[pkmninv_index]
+	  if slot_item
+	    if pkmninv_index == @grabbed_item[:index] && @grabbed_item[:pkmn_inv]==true
+	       icon = @grabbed_item[:icon]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+	       remove(icon)
+	       remove(icon_text)
+           @grabbed_item = nil
+	       refresh_pokemon_inventory
+	    elsif slot_item[0].is_a?(ItemData) && slot_item[0].identical(@grabbed_item[:stack][0])
+		  item = slot_item[0]
+		  amt = slot_item[1]
+		  if amt<item.stack_size
+			if @grabbed_item[:stack][1]>0
+			  nu_amt = [@grabbed_item[:stack][1], item.stack_size - amt].min
+		      slot_item[1] += nu_amt
+	          @grabbed_item[:stack][1] -= nu_amt
+	           text_icon = @icons["#{pkmninv_index}_invtext"]
+	          if slot_item[1]>1
+	           text = slot_item[1].to_s
+	          else
+	           text = ""
+	          end
+			   text_icon.text = text
+			 if @grabbed_item[:stack][1]==0
+	             icon = @grabbed_item[:icon]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+		   pocket = item.pocket
+	       @current_tab = pocket-1
+		   update_selected_tab
+	       refresh_pokemon_inventory
+	             remove(icon)
+	             remove(icon_text)
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
+				 @grabbed_item = nil
+			 end
+			end
+		  end
+
+        else 
+		 puts "We are doing this."
+
+		end
+
+
+
+
+
+
+	  else
+	    icon = @grabbed_item[:icon]
+	    
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+	    icon.z = 98
+	     item = @grabbed_item[:stack][0]
+		 amt = @grabbed_item[:stack][1]
+	     @pokemon_inventory[pkmninv_index] = [item, amt]
+	     new_icon_pokemon_inv(item, amt,pkmninv_index, pkmn_col, pkmn_row)
+	     remove(icon)
+	     remove(icon_text)
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+         @grabbed_item = nil
+	  end 
+    end 
+
+
+
+	
+	end
+
     elsif object = clicked_on?
 	  return if @grabbed_item && @grabbed_item[:stack][0].is_a?(Pokemon)
 	  if object == "equipment_button"
@@ -1644,11 +1964,21 @@ class Inv_Scene
 		     @grabbed_item[:stack][1]-=1
 			 if @grabbed_item[:stack][1]==0
 	            icon = @grabbed_item[:icon]
-	            icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	            
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	            remove(icon)
 	            remove(icon_text)
-		        current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		        @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		        current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		        @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
 				@grabbed_item = nil
 			 end 
 		   end 
@@ -1657,14 +1987,27 @@ class Inv_Scene
 		     @grabbed_item[:stack][1]-=1
 			 if @grabbed_item[:stack][1]==0
 	            icon = @grabbed_item[:icon]
-	            icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	            
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	            remove(icon)
 	            remove(icon_text)
-		        current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		        @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		        current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		        @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
 				@grabbed_item = nil
 			 end 
 		   end 
+		 else
+		   @return_value = item
+		   @exiting = true 
 		 end 
 		
 		end 
@@ -1677,6 +2020,7 @@ class Inv_Scene
   def right_click_item
     index, col, row = slot_from_mouse
 	crafting_index = crafting_slot_from_mouse
+	pkmninv_index, pkmn_col, pkmn_row = pkmninv_slot_from_mouse
 	
 	if !index.nil?
     if @grabbed_item.nil?
@@ -1701,7 +2045,8 @@ class Inv_Scene
 		 icon: icon,
          stack: new_stack,
          index: "held",
-		 craft: false}
+		 craft: false,
+		pkmn_inv: false}
 	    end 
 
 
@@ -1713,7 +2058,8 @@ class Inv_Scene
 		icon: icon,
         stack: current_pocket[index],
         index: index,
-		craft: false}
+		craft: false,
+		pkmn_inv: false}
 	  end 
 	  end
      end
@@ -1724,7 +2070,16 @@ class Inv_Scene
 	    if index == @grabbed_item[:index]
 	       icon = @grabbed_item[:icon]
 	       remove(icon)
-	       icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	       remove(icon_text)
            @grabbed_item = nil
 		   update_selected_tab
@@ -1750,10 +2105,20 @@ class Inv_Scene
 	             icon = @grabbed_item[:icon]
 	             remove(icon)
 	            
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true 
 				 @grabbed_item = nil
 			  end
 			end
@@ -1783,9 +2148,20 @@ class Inv_Scene
 	     @grabbed_item[:stack][1] = amt
        else 
 	     remove(icon)
-	       icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	       remove(icon_text)
-		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
          @grabbed_item = nil
 	   end
 	  end 
@@ -1800,7 +2176,16 @@ class Inv_Scene
 	    if crafting_index == @grabbed_item[:index]
 	       icon = @grabbed_item[:icon]
 	       remove(icon)
-	       icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	       remove(icon_text)
            @grabbed_item = nil
 		   update_selected_tab
@@ -1827,10 +2212,20 @@ class Inv_Scene
 	             icon = @grabbed_item[:icon]
 	             remove(icon)
 	            
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
-		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 				 @grabbed_item = nil
 			  end
 			end
@@ -1849,9 +2244,20 @@ class Inv_Scene
 	     @grabbed_item[:stack][1] = amt
        else 
 	     remove(icon)
-	     icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	     
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	     remove(icon_text)
-		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
          @grabbed_item = nil
 	   end
 		
@@ -1880,14 +2286,24 @@ class Inv_Scene
 		 icon: icon,
          stack: new_stack,
          index: "held",
-		 craft: false}
+		 craft: false,
+		 pkmn_inv: false}
 	    end 
 
 
 	   else
       icon_old = @icons["#{crafting_index}_slottext"]
 	  remove(icon_old)
-	  icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	  
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	  remove(icon_text)
 	  new_icon3(@equip[crafting_index-100][0], @equip[crafting_index-100][1],"held", crafting_index)
 	  new_stack = [@equip[crafting_index-100][0],@equip[crafting_index-100][1]]
@@ -1898,7 +2314,8 @@ class Inv_Scene
 		icon: icon,
         stack: new_stack,
         index: "held",
-		craft: false}
+		craft: false,
+		pkmn_inv: false}
 	  end 
 	  end
 
@@ -1950,7 +2367,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: new_crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	     end 
 		 
@@ -1967,7 +2385,16 @@ class Inv_Scene
 	    if crafting_index == @grabbed_item[:index]
 	       icon = @grabbed_item[:icon]
 	       remove(icon)
-	       icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	       remove(icon_text)
            @grabbed_item = nil
 		   update_selected_tab
@@ -1994,9 +2421,20 @@ class Inv_Scene
 	             icon = @grabbed_item[:icon]
 	             remove(icon)
 	            
-	             icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	             remove(icon_text)
-			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		         @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
 				 @grabbed_item = nil
 			  end
 			end
@@ -2015,9 +2453,20 @@ class Inv_Scene
 	     @grabbed_item[:stack][1] = amt
        else 
 	     remove(icon)
-	     icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"]
+	     
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
 	     remove(icon_text)
-		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
          @grabbed_item = nil
 	   end
 		
@@ -2067,7 +2516,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: new_crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	     end 
 		 
@@ -2100,7 +2550,8 @@ class Inv_Scene
 		 icon: icon,
          stack: new_stack,
          index: "held",
-		 craft: false}
+		 craft: false,
+		 pkmn_inv: false}
 	    end 
 
 
@@ -2108,7 +2559,16 @@ class Inv_Scene
       icon_old = @icons["#{crafting_index}_slottext"]
 	  remove(icon_old)
 	  if @grabbed_item
-	  icon_text = @grabbed_item[:craft]==true ? @icons["#{@grabbed_item[:index]}_slottext"] : @icons["#{@grabbed_item[:index]}_text"] 
+	  
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end  
 	  remove(icon_text)
 	  end
 	  new_icon3(@craft[crafting_index][0], @craft[crafting_index][1],"held", crafting_index)
@@ -2120,7 +2580,8 @@ class Inv_Scene
 		icon: icon,
         stack: new_stack,
         index: "held",
-		craft: false}
+		craft: false,
+		pkmn_inv: false}
 	  end 
 	  end
 
@@ -2139,7 +2600,8 @@ class Inv_Scene
 		   icon: icon,
            stack: old_crafting_stack,
            index: crafting_index,
-		   craft: true
+		   craft: true,
+		   pkmn_inv: false
 		  }
 	    end 
 		@craft[crafting_index] = nil 
@@ -2155,7 +2617,158 @@ class Inv_Scene
 
 	 
      end 
-    
+    elsif !pkmninv_index.nil? && render_pokemon_inventory? 
+    if @grabbed_item.nil?
+      slot_item = @pokemon_inventory[pkmninv_index]
+	  if slot_item
+	   if @pokemon_inventory[pkmninv_index][1]>1
+	    item = slot_item[0]
+		   pocket = item.pocket
+	       @current_tab = pocket-1
+		   update_selected_tab
+	    new_icon_pokemon_inv_held(item, 1,"held", pkmn_col, pkmn_row)
+        icon = @icons["held_image"]
+	    text_icon = @icons["#{pkmninv_index}_text"]
+	    amt = (@pokemon_inventory[pkmninv_index][1] / 2.0).ceil
+	    @pokemon_inventory[pkmninv_index][1] -= amt
+	    if @pokemon_inventory[pkmninv_index][1]>1
+	      text = @pokemon_inventory[pkmninv_index][1].to_s
+	    else
+	      text = ""
+	    end
+	    @icons["#{pkmninv_index}_invtext"].text = text
+	    new_stack = [@pokemon_inventory[pkmninv_index][0],amt]
+	    if slot_item && icon
+         @grabbed_item = { 
+		 icon: icon,
+         stack: new_stack,
+         index: "held",
+		 craft: false,
+		 pkmn_inv: false}
+	    end 
+
+
+	   else
+      slot_item = @pokemon_inventory[pkmninv_index]
+      icon = @icons["#{pkmninv_index}_invimage"]
+		   pocket = slot_item[0].pocket
+	       @current_tab = pocket-1
+		   update_selected_tab
+	  if slot_item && icon
+        @grabbed_item = { 
+		icon: icon,
+        stack: @pokemon_inventory[pkmninv_index],
+        index: pkmninv_index,
+		craft: false,
+		pkmn_inv: true}
+	  end 
+	  end
+     end
+    else
+	 if true
+      slot_item = @pokemon_inventory[pkmninv_index]
+	  if slot_item
+	    if pkmninv_index == @grabbed_item[:index] && @grabbed_item[:pkmn_inv]==true
+	       icon = @grabbed_item[:icon]
+	       remove(icon)
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+	       remove(icon_text)
+           @grabbed_item = nil
+		   refresh_pokemon_inventory
+		elsif slot_item[0].is_a?(ItemData) && slot_item[0].identical(@grabbed_item[:stack][0])
+		  item = slot_item[0]
+		  amt = slot_item[1]
+
+
+
+		  
+		  if amt<item.stack_size
+			if @grabbed_item[:stack][1]>0
+	          @grabbed_item[:stack][1] -= 1
+		      slot_item[1] += 1
+	           text_icon = @icons["#{pkmninv_index}_invtext"]
+	           if slot_item[1]>1
+	            text = slot_item[1].to_s
+	           else
+	            text = ""
+	           end
+			   text_icon.text = text
+			   if @grabbed_item[:stack][1]==0
+	             icon = @grabbed_item[:icon]
+	             remove(icon)
+	            
+	             
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+	             remove(icon_text)
+			     current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		         @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+				 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
+				 @grabbed_item = nil
+			  end
+			end
+
+
+		  end
+
+
+
+
+		else
+		
+		
+		
+		
+		
+		end
+	  else
+	  icon = @grabbed_item[:icon]
+	  icon.z = 98
+	   item, amt = @grabbed_item[:stack]
+	   current_pocket[index] = [item, 1]
+	   new_icon(item, 1,index,col,row)
+		 
+	   amt -= 1 
+       if amt > 0
+	     @grabbed_item[:stack][1] = amt
+       else 
+	     remove(icon)
+	       
+		   craft = @grabbed_item[:craft]==true
+		   pkmn_inv = @grabbed_item[:pkmn_inv]==true
+		   icon_text = if craft
+		    @icons["#{@grabbed_item[:index]}_slottext"]
+		   elsif pkmn_inv
+		    @icons["#{@grabbed_item[:index]}_invtext"]
+		   else
+		    @icons["#{@grabbed_item[:index]}_text"]
+		   end 
+	       remove(icon_text)
+		 current_pocket[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==false
+		 @craft[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==true && @grabbed_item[:pkmn_inv]==false && @grabbed_item[:index]!="_result" && @grabbed_item[:index]!="_crafted"
+		 @pokemon_inventory[@grabbed_item[:index]] = nil if @grabbed_item[:index]!="held" && @grabbed_item[:craft]==false && @grabbed_item[:pkmn_inv]==true
+         @grabbed_item = nil
+	   end
+	  end 
+     end 
+	end
+
     end
   end
   
@@ -2198,8 +2811,8 @@ class Inv_Scene
       commands = []
       # Generate command list
       commands[cmdRead = commands.length] = _INTL("Read") if itm.is_mail?
-      commands[cmdEquip = commands.length]       = _INTL("Equip") if itm.is_tool? && $player.equipped_item.nil?
-      commands[cmdunEquip = commands.length]       = _INTL("Unequip") if itm.is_tool? && $player.equipped_item==itm 
+      commands[cmdEquip = commands.length]       = _INTL("Equip") if itm.is_tool? && $player.equipped_item==:PUNCH
+      commands[cmdunEquip = commands.length]       = _INTL("Unequip") if itm.is_tool? && $player.equipped_item==item 
       commands[cmdEat = commands.length]       = _INTL("Drink") if itm.is_water?
 	  commands[cmdEat = commands.length]       = _INTL("Eat") if (itm.is_foodwater? || itm.is_berry?) && !itm.is_water?
       commands[cmdMedicate = commands.length]       = _INTL("Use (Self)") if itm.is_medicine?
@@ -2231,22 +2844,19 @@ class Inv_Scene
           pbDisplayMail(Mail.new(item, "", ""))
         }
       elsif cmdEat >=0 && command==cmdEat   # Eat
-        ret = pbEating($bag,item)
+        ret = pbNeoEating(item)
+		$bag.remove(item, 1)
         break if ret==2   # End screen
         pbRefresh
         next
       elsif cmdEquip >=0 && command==cmdEquip   # Equip
         $player.equip(item)
-		decreaseStamina(1)
-	    $PokemonGlobal.ball_order=getCurrentItemOrder
-		$PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_order.index(item)
-		$PokemonGlobal.ball_hud_enabled=true
+	    sideDisplay(_INTL("You will now use #{item.name} instead of punching."))
         pbRefresh
         next
       elsif cmdunEquip >=0 && command==cmdunEquip   # Unequip
         $player.unequip
-		decreaseStamina(1)
-		$PokemonGlobal.ball_hud_enabled=false
+	    sideDisplay(_INTL("You are now unarmed."))
         pbRefresh
         next
       elsif cmdMedicate>=0 && command==cmdMedicate   # Medicate
@@ -2322,9 +2932,7 @@ class Inv_Scene
             params = ChooseNumberParams.new
             params.setRange(0, item.stack_size)
             params.setDefaultValue(qty)
-            newqty = pbChooseNumber(
-              _INTL("Choose new quantity of {1} (max. #{item.stack_size}).", itemplural), params
-            ) { pbUpdate }
+            newqty = pbChooseNumber(_INTL("Choose new quantity of {1} (max. #{item.stack_size}).", itemplural), item.stack_size) { pbUpdate }
             if newqty > qty
               $bag.add(item, newqty - qty)
             elsif newqty < qty
@@ -2348,6 +2956,34 @@ class Inv_Scene
 
   
   end
+  
+  def open_pokemon_inventory
+    
+    return if @grabbed_item
+	pokemon_index = pokemon_slot_from_mouse
+	return if pokemon_index.nil?
+    pkmn = @party[pokemon_index]
+	if pkmn && !pkmn.egg?
+    if render_pokemon_inventory? && @current_pokemon_for_inventory==pkmn
+	 pkmn.inventory = @pokemon_inventory if !pkmn.egg?
+	 @pokemon_inventory=nil 
+	 @current_pokemon_for_inventory=nil
+	 @current_pokemon_slot_for_inventory = nil
+	 refresh_pokemon_inventory
+	 return 
+	end 
+    @pokemon_inventory = pkmn.inventory
+	@current_pokemon_for_inventory = pkmn
+	@current_pokemon_slot_for_inventory = pokemon_index
+	elsif render_pokemon_inventory?
+	 pkmn.inventory = @pokemon_inventory if pkmn && !pkmn.egg?
+	 @pokemon_inventory=nil
+	 @current_pokemon_for_inventory=nil
+	 @current_pokemon_slot_for_inventory = nil
+	end 
+	refresh_pokemon_inventory
+  end 
+  
   def craft_empty_or_nil?
   @craft.empty? || @craft.all?(&:nil?)
   end
@@ -2357,6 +2993,20 @@ class Inv_Scene
     index, col, row = slot_from_mouse
 	crafting_index = crafting_slot_from_mouse
 	pokemon_index = pokemon_slot_from_mouse
+	pkmninv_index, pkmn_col, pkmn_row = pkmninv_slot_from_mouse
+	if render_pokemon_inventory? 
+	  icon2 = @sprites["#{@current_pokemon_slot_for_inventory}_slotimagepkmn"]
+	  if icon2 && icon2.visible==true
+       @sprites["highlight2"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
+	   @sprites["highlight2"].x = icon2.x 
+	   @sprites["highlight2"].y = icon2.y 
+	   @sprites["highlight2"].visible=true 
+	  else 
+	   @sprites["highlight2"].visible=false 
+	  end
+	else
+	  @sprites["highlight2"].visible=false 
+	end 
     if index
 	  icon = @sprites["slots#{index}"]
 	  if icon
@@ -2399,6 +3049,14 @@ class Inv_Scene
 	  end
 	elsif pokemon_index
 	  icon = @sprites["#{pokemon_index}_slotimagepkmn"]
+	  if icon
+       @sprites["highlight"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
+	   @sprites["highlight"].x = icon.x 
+	   @sprites["highlight"].y = icon.y 
+	   @sprites["highlight"].visible=true 
+	  end
+    elsif pkmninv_index && render_pokemon_inventory? 
+	  icon = @sprites["pkmn_slots#{pkmninv_index}"]
 	  if icon
        @sprites["highlight"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
 	   @sprites["highlight"].x = icon.x 
@@ -2462,6 +3120,16 @@ class Inv_Scene
 	end 
 
 	end 
+
+	pkmninv_index, pkmn_col, pkmn_row = pkmninv_slot_from_mouse
+	if pkmninv_index && render_pokemon_inventory? 
+	if pkmninv_index.is_a?(Integer)
+	  stack1 = @pokemon_inventory[pkmninv_index] 
+      return nil if stack1.nil?
+	  return stack1 if stack1
+	end 
+
+	end 
     index, col, row = slot_from_mouse
 	return nil if index.nil?
     stack = current_pocket[index]
@@ -2472,6 +3140,7 @@ class Inv_Scene
   
   def resize_item_for_slot(item)
   slot_size = 32
+  frame_size = 48
   path = GameData::Item.icon_filename(item)
   parts = path.split("/", 3)
   dir = parts[0..1].join("/") + "/"
@@ -2479,10 +3148,13 @@ class Inv_Scene
   original_bitmap = RPG::Cache.load_bitmap(dir,filename)
   resized_bitmap = Bitmap.new(slot_size, slot_size)
   
+  source_width = [original_bitmap.width, frame_size].min
+  source_height = [original_bitmap.height, frame_size].min
+  
   resized_bitmap.stretch_blt(
     Rect.new(0, 0, slot_size, slot_size),
     original_bitmap,                       
-    Rect.new(0, 0, original_bitmap.width, original_bitmap.height) 
+    Rect.new(0, 0, source_width, source_height) 
   )
   return resized_bitmap
   end
@@ -2546,6 +3218,21 @@ class Inv_Scene
 	slot_size = 36
     rel_x = mouse_x - @start_x
     rel_y = mouse_y - @start_y
+    return if rel_x < 0 || rel_y < 0 || rel_x >= cols * slot_size || rel_y >= rows * slot_size
+    col = rel_x / slot_size
+    row = rel_y / slot_size
+    index = row * cols + col
+    return index, col, row
+  
+  end 
+  def pkmninv_slot_from_mouse
+    mouse_x, mouse_y = Mouse.getMousePos
+	return if mouse_x.nil? || mouse_y.nil?
+    cols = 3
+    rows = 1
+	slot_size = 36
+    rel_x = mouse_x - (@sprites["pkmn_inventory"].x + 10)
+    rel_y = mouse_y - (@sprites["pkmn_inventory"].y + 9)
     return if rel_x < 0 || rel_y < 0 || rel_x >= cols * slot_size || rel_y >= rows * slot_size
     col = rel_x / slot_size
     row = rel_y / slot_size
@@ -2658,39 +3345,10 @@ class Inv_Scene
   
   end 
   
-
-  def pbSelectcraft
-    overlay=@sprites["overlay"].bitmap
-    overlay.clear
-    pbSetSystemFont(overlay)
-	end_item = nil
-    while true
-    Graphics.update
-	$PokemonGlobal.addNewFrameCount
-      Input.update
-	   if rand(100)==0 && @type==:GRINDER
-	    player_stamina_logic
-	   end 
-      self.update
-	  if Input.triggerex?(:O)
-	    puts current_pocket.inspect
-	  end
-	  if Input.triggerex?(:L)
-	    puts @pokemon.inspect
-	  end
-	  if Input.triggerex?(:M)
-	    puts @party.inspect
-	  end
-	  if Input.trigger?(Input::LEFT)
-	     @current_tab = (@current_tab - 1) % Settings::BAG_MAX_POCKET_SIZE.size
-		 update_selected_tab
-	  elsif Input.trigger?(Input::RIGHT)
-	     @current_tab = (@current_tab + 1) % Settings::BAG_MAX_POCKET_SIZE.size
-		 update_selected_tab
-	  end
-	  if (Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSEMIDDLE)) && !Input.trigger?(Input::MOUSELEFT)
-	    end_item = use_item
-	  elsif (Input.trigger?(Input::INVENTORY) || Input.trigger?(Input::BACK)) && !Input.trigger?(Input::MOUSERIGHT)
+  def exit_logic
+         
+         $player.party = @party.compact
+  	     @current_pokemon_for_inventory.inventory = @pokemon_inventory if @current_pokemon_for_inventory && !@current_pokemon_for_inventory.egg? && @pokemon_inventory
 	     @sprites.each do |key, sprite|
           remove(sprite)
         end
@@ -2704,11 +3362,70 @@ class Inv_Scene
           @icons = {}
           @objects = {}
 		  $bag.last_viewed_pocket = @current_tab+1
-        return -1
+  
+  end 
+
+  def pbSelectcraft
+    overlay=@sprites["overlay"].bitmap
+    overlay.clear
+    pbSetSystemFont(overlay)
+	end_item = nil
+    $game_temp.just_update_anyways=true
+    while true
+    Graphics.update
+    $PokemonGlobal.addNewFrameCount 
+	$OverworldMenu.update
+	$OverworldMenu.refresh
+	$OverworldMenu.hideSmallBallHUD
+	$sidedisplay.update
+      Input.update
+	  if @exiting==true 
+	   exit_logic 
+       $game_temp.just_update_anyways=false
+	   return @return_value
+	  end
+	   if rand(100)==0 && @type==:GRINDER
+	    player_stamina_logic
+	   end 
+      self.update
+	  if Input.triggerex?(:O)
+	    puts current_pocket.inspect
+	  end
+	  if Input.triggerex?(:L)
+	    puts @pokemon.inspect
+	  end
+	  if Input.triggerex?(:M)
+	    puts @party.inspect
+	  end
+	  if Input.triggerex?(:Y)
+	    view_item
+	  end
+	  if Input.trigger?(Input::LEFT)
+	     @current_tab = (@current_tab - 1) % Settings::BAG_MAX_POCKET_SIZE.size
+		 update_selected_tab
+	  elsif Input.trigger?(Input::RIGHT)
+	     @current_tab = (@current_tab + 1) % Settings::BAG_MAX_POCKET_SIZE.size
+		 update_selected_tab
+	  end
+	  if (Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSEMIDDLE)) && !Input.trigger?(Input::MOUSELEFT)
+	    end_item = use_item
+		unless end_item
+		  pbSEPlay("GUI sel decision", 80)
+		  open_pokemon_inventory
+		else 
+		 @return_value = end_item 
+		 @exiting = true 
+		end 
+	  elsif (Input.trigger?(Input::INVENTORY) || Input.trigger?(Input::BACK)) && !Input.trigger?(Input::MOUSERIGHT)
+		 @return_value = nil 
+        @exiting = true 
+        
       elsif Input.trigger?(Input::MOUSELEFT)
 	    left_click_tab
 		left_click_item
 	  elsif Input.time?(Input::MOUSELEFT)>10
+	  elsif Input.press?(Input::NOTEBOOK)
+        pbFadeOutIn(99999) {NoteOpen.openWindow}
 	  elsif Input.trigger?(Input::MOUSERIGHT)
 		right_click_item
 	  elsif Input.triggerex?(:F)
@@ -2819,6 +3536,128 @@ class Inv_Scene
 end
 
 class Inv_Scene
+   def render_pokemon_inventory?
+     return !@pokemon_inventory.nil?
+   end 
+   def setup_pokemon_inventory
+    @sprites["pkmn_inventory"]=IconSprite.new(0,0,@viewport)
+	@sprites["pkmn_inventory"].x= @sprites["pkmnside"].x + 8
+	@sprites["pkmn_inventory"].y= @sprites["pkmnside"].y + @sprites["pkmnside"].height + 2
+	bitmap = "Graphics/Pictures/craftingMenu/pokemoninventory"
+    @sprites["pkmn_inventory"].setBitmap(bitmap)
+    @sprites["pkmn_inventory"].z = 0 
+    @sprites["pkmn_inventory"].visible = false 
+    cols = 3
+    rows = 1
+	slot_size = 36
+	max_slots = 3
+	
+	max_slots.times do |i|
+     col = i % cols
+     row = i / cols
+     @sprites["pkmn_slots#{i}"]=IconSprite.new(0,0,@viewport)
+     bitmap = "Graphics/Pictures/craftingMenu/placeholder_slot"
+     @sprites["pkmn_slots#{i}"].setBitmap(bitmap)
+     @sprites["pkmn_slots#{i}"].z = 70
+     @sprites["pkmn_slots#{i}"].x = @sprites["pkmn_inventory"].x + 10 + col * slot_size
+     @sprites["pkmn_slots#{i}"].y = @sprites["pkmn_inventory"].y + 9 + row * slot_size
+     @sprites["pkmn_slots#{i}"].visible = false 
+     @sprites["pkmn_slots_star#{i}"]=IconSprite.new(0,0,@viewport)
+     bitmap = "Graphics/Pictures/craftingMenu/star"
+     @sprites["pkmn_slots_star#{i}"].setBitmap(bitmap)
+     @sprites["pkmn_slots_star#{i}"].z = 70
+     @sprites["pkmn_slots_star#{i}"].x = 26+@sprites["pkmn_slots#{i}"].x
+     @sprites["pkmn_slots_star#{i}"].y = 2+@sprites["pkmn_slots#{i}"].y
+     @sprites["pkmn_slots_star#{i}"].visible = false 
+	
+	end
+	
+   
+   
+   
+   
+   end 
+   
+   def new_icon_pokemon_inv(item, amt,index,col,row)
+	 @icons["#{index}_invimage"]=IconSprite.new(0,0,@viewport)
+	 @icons["#{index}_invimage"].bitmap = resize_item_for_slot(item)
+	 slot_x = @sprites["pkmn_inventory"].x + 10 + col * 36
+     slot_y = @sprites["pkmn_inventory"].y + 9 + row * 36
+     @icons["#{index}_invimage"].z = 98
+     @icons["#{index}_invimage"].x = slot_x + (36 - @icons["#{index}_invimage"].bitmap.width) / 2
+     @icons["#{index}_invimage"].y = slot_y + (36 - @icons["#{index}_invimage"].bitmap.height) / 2
+  
+     @icons["#{index}_invtext"]=Window_UnformattedTextPokemon.new
+	 @icons["#{index}_invtext"].contents.font.size = 18 
+	 @icons["#{index}_invtext"].refresh
+      pbPrepareWindow(@icons["#{index}_invtext"])
+	  if amt>1
+	  text = amt.to_s
+	  else
+	  text = ""
+	  end
+      @icons["#{index}_invtext"].resizeToFit(text)
+	  
+      @icons["#{index}_invtext"].x = @start_x + 20 #if i == 0
+	  
+	  
+      image_sprite = @icons["#{index}_invimage"]
+      text_sprite  = @icons["#{index}_invtext"]
+      usable_width = image_sprite.width - 12
+      center_x = image_sprite.x + 18 + usable_width / 2 
+      text_sprite.x = center_x - text_sprite.width / 2 #if i != 0
+	  
+	  
+	  
+      @icons["#{index}_invtext"].y=slot_y + 18 - @icons["#{index}_invtext"].contents.font.size
+      @icons["#{index}_invtext"].windowskin=nil
+      @icons["#{index}_invtext"].baseColor=Color.new(248, 248, 248)
+      @icons["#{index}_invtext"].shadowColor=Color.new(0, 0, 0)#nil
+      @icons["#{index}_invtext"].text=text
+      @icons["#{index}_invtext"].viewport=@viewport
+      @icons["#{index}_invtext"].z = 98
+      @icons["#{index}_invtext"].visible=true
+  end 
+
+   def refresh_pokemon_inventory
+    @icons.each do |key, icon| 
+	 remove(icon) if key.to_s.end_with?("_invimage") || key.to_s.end_with?("_invtext")
+	end 
+    @icons.delete_if { |key, _| key.to_s.end_with?("_invimage") || key.to_s.end_with?("_invtext")}
+    @sprites["pkmn_inventory"].visible =  render_pokemon_inventory? 
+    cols = 3
+    rows = 1
+	  3.times do |i|
+        @sprites["pkmn_slots#{i}"].visible =  render_pokemon_inventory? 
+	  end 
+	if render_pokemon_inventory? 
+	  3.times do |i|
+	    item, amt = @pokemon_inventory[i]
+		next if item.nil?
+        @sprites["pkmn_slots_star#{i}"].visible = $bag.registered?(item) && render_pokemon_inventory? 
+
+
+      end 
+	
+      if @pokemon_inventory
+	  @pokemon_inventory.each_with_index do |slot, index|
+	   next if slot.nil?
+	   item, amt = slot
+       col = index % cols
+       row = index / cols
+	   new_icon_pokemon_inv(item, amt,index,col,row)
+
+
+
+	  end 	
+	  end
+	
+
+    end 	
+    
+   end 
+
+
 
   def setup_ui
       case @type
@@ -3451,7 +4290,8 @@ class Inv_Scene
         update_inventory_ui
       else
     end 
-  end
+    
+ end
   
   def update_inventory_ui
     tab_name = Settings.bag_pocket_names[@current_tab]
@@ -3743,7 +4583,47 @@ class Inv_Scene
       @icons["#{index}_text"].z = 98
       @icons["#{index}_text"].visible=true
   end 
+   def new_icon_pokemon_inv_held(item, amt,index,col,row)
+	 @icons["#{index}_image"]=IconSprite.new(0,0,@viewport)
+	 @icons["#{index}_image"].bitmap = resize_item_for_slot(item)
+	 slot_x = @sprites["pkmn_inventory"].x + 10 + col * 36
+     slot_y = @sprites["pkmn_inventory"].y + 9 + row * 36
+     @icons["#{index}_image"].z = 98
+     @icons["#{index}_image"].x = slot_x + (36 - @icons["#{index}_image"].bitmap.width) / 2
+     @icons["#{index}_image"].y = slot_y + (36 - @icons["#{index}_image"].bitmap.height) / 2
   
+     @icons["#{index}_text"]=Window_UnformattedTextPokemon.new
+	 @icons["#{index}_text"].contents.font.size = 18 
+	 @icons["#{index}_text"].refresh
+      pbPrepareWindow(@icons["#{index}_text"])
+	  if amt>1
+	  text = amt.to_s
+	  else
+	  text = ""
+	  end
+      @icons["#{index}_text"].resizeToFit(text)
+	  
+      @icons["#{index}_text"].x = @start_x + 20 #if i == 0
+	  
+	  
+      image_sprite = @icons["#{index}_image"]
+      text_sprite  = @icons["#{index}_text"]
+      usable_width = image_sprite.width - 12
+      center_x = image_sprite.x + 18 + usable_width / 2 
+      text_sprite.x = center_x - text_sprite.width / 2 #if i != 0
+	  
+	  
+	  
+      @icons["#{index}_text"].y=slot_y + 18 - @icons["#{index}_text"].contents.font.size
+      @icons["#{index}_text"].windowskin=nil
+      @icons["#{index}_text"].baseColor=Color.new(248, 248, 248)
+      @icons["#{index}_text"].shadowColor=Color.new(0, 0, 0)#nil
+      @icons["#{index}_text"].text=text
+      @icons["#{index}_text"].viewport=@viewport
+      @icons["#{index}_text"].z = 98
+      @icons["#{index}_text"].visible=true
+  end 
+
   def new_icon_result(item, amt, index)
      slot_x = @sprites["craft_slots#{index}"].x + 8
 	 slot_y = @sprites["craft_slots#{index}"].y + 8
@@ -3827,6 +4707,9 @@ class Inv_Scene
   end 
  
 
+
+
+
   def pbDisplay(msg, brief = false)
     #raise "fuck"
     UIHelper.pbDisplayStatic2(@sprites["msgwindow"], msg)
@@ -3860,12 +4743,16 @@ class Inv_Scene
 
 
 
-  def CurrentColors(hp, totalhp)
-    if hp<(totalhp/4.0)
+  def CurrentColors(value, maxvalue)
+    quarter = maxvalue / 4.0
+    half = maxvalue / 2.0
+    if value < 1
+      return Color.new(139,0,0)
+    elsif value < quarter
       return Color.new(255,55,55)
-    elsif hp<=(totalhp/4.0)
+    elsif value < half
       return Color.new(255,125,55)
-    elsif hp<=(totalhp/2.0)
+    elsif value < half + quarter
       return Color.new(255,255,55)
     end
     return Color.new(55,255,55)

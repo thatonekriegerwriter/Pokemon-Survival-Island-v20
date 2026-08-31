@@ -1,7 +1,7 @@
 
 
 module NoteOpen  
-  def self.openWindow
+  def self.openWindowOld
 #  $DiscordRPC.details = "Cooking a Tasty Meal!"
 #  $DiscordRPC.update
   $game_temp.in_menu=true
@@ -578,7 +578,7 @@ destroy_pkmn_icons3 if !@pkmnicons3.empty?
 		if @selection4!=-1 && @cur_page==4 && @depth==3
        enc_array, currKey = getEncData if !@pkmnicons2.empty?
        thespecies = enc_array[@selection2]
-	    entry = pbFreeTextNoWindow(pbPokedexEntry(thespecies),false,256,Graphics.width,false)
+	    entry = pbFreeTextNoWindow(pbPokedexEntry(thespecies),false,256,Graphics.width,64,false)
 		pbSetPokedexEntry(thespecies,entry)
 		end 
 	  

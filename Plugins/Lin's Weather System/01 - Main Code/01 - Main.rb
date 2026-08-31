@@ -174,7 +174,8 @@ end
 
 def pbUpdateWeather(zone)
   startTime = pbGetStartTime
-  if startTime.to_i >= $WeatherSystem.actualWeather[zone].endTime.to_i
+  oldendTime = $WeatherSystem.actualWeather[zone].endTime
+  if startTime.to_i >= oldendTime.to_i
     $WeatherSystem.actualWeather[zone].startTime = startTime
     endTime = pbGetEndTime(startTime)
     $WeatherSystem.actualWeather[zone].endTime = endTime

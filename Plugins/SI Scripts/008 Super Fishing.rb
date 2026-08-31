@@ -110,7 +110,7 @@ class SuperFishingScene
     case(@score)
 	 when 0
       @totalScore+=2
-	  @zerochain+=1 if @oldscore==@score && !@score.nil?
+	  @zerochain+=2 if @oldscore==@score && !@score.nil?
       @totalScore+=@zerochain
 	  if @oldscore==@score && !@score.nil?
 	  pbExclaim($game_player,31) 
@@ -121,7 +121,10 @@ class SuperFishingScene
     when -1, -2
       @totalScore+=1
 	  pbSEPlay("Stylus1")
-    when -8, -9, -10, -11, -6, -7,-5,-4,-3
+	when -3, -4
+     @totalScore -= 1
+     pbSEPlay("glug")
+    when -8, -9, -10, -11, -6, -7,-5,
       @totalScore-=2
 	  pbSEPlay("glug")
     else
@@ -169,8 +172,11 @@ class SuperFishingScene
       @result = true if therand
 	  pbExclaim($game_player,32) if therand
 	  pbSEPlay("watersplash") if therand
-	  @pulls+=3 if !therand
-    elsif @totalScore<=-1
+	  if !therand
+	  @pulls+=3 
+	  pbSEPlay("Fishing Rod")
+	  end
+    elsif @totalScore <= -3
       @result = false
 	  pbExclaim($game_player,36) 
     end
@@ -271,7 +277,6 @@ def pbFishingEncounter(enc_type, bait_name = "", only_single = true)
 	end
 	end
   if $game_temp.in_safari==true
-    $PokemonGlobal.nextBattleBGM = "Normal Battle"
     pbSafariBattle(encounter1[0],encounter1[1])
   else
   if !only_single && $PokemonEncounters.have_double_wild_battle?
@@ -391,27 +396,46 @@ def theRods(item,level,encounter_type)
    pbBGMFade(0.8)
    pbBGMPlay(bgm) if testbgm
   $PokemonGlobal.fishing=true
+  $game_temp.no_moving = true 
+    $player.acting=true
+  $PokemonGlobal.cur_stored_fishing_rod = item
+  
+	pbSEPlay("GUI sel decision", 60) 
+  
+  
   encounter_type = $PokemonEncounters.find_valid_encounter_type_for_weather(encounter_type, encounter_type)
   encounter = $PokemonEncounters.has_encounter_type?(encounter_type)
   encounter_type = [encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,"item"][rand([encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,"item"].length)]
   bait = nil
-  if pbConfirmMessage(_INTL("Do you want to use any bait?"))
-    pbFadeOutIn(99999){
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      bait = screen.pbChooseItemScreen(proc { |item| (GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).is_berry?) && !GameData::Item.get(item).is_apricorn? && item!=:ACORN })
-    }
-
-	if !bait.nil?
-    if $bag.remove(bait,1)
-  bait_name = GameData::Item.get(bait).name
-    else
-	 bait = nil
-     bait_name = nil
-	 end
-   end
-  end
-
+  bait_name = nil
+  done = false 
+  loop do 
+    Graphics.update
+	Input.update
+	$scene.update
+    if Input.trigger?(Input::USE)
+	  bait = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+	  if bait == :NONE
+	   bait = nil 
+       bait_name = nil
+     #  $PokemonGlobal.cur_stored_fishing_rod = nil
+	   break
+	  end 
+	  if $bag.remove(bait,1)
+        bait_name = GameData::Item.get(bait).name
+       # $PokemonGlobal.cur_stored_fishing_rod = nil
+	    break
+	  end
+      bait = nil
+      bait_name = nil
+	elsif Input.trigger?(Input::BACK)
+      done = true 
+	  break 
+	end 
+  end 
+  
+  unless done 
+  $game_temp.in_menu = true 
   loop do
   pbSEPlay("Battle throw")
   result,score = pbFishing(encounter, level, bait, encounter_type)
@@ -421,68 +445,64 @@ def theRods(item,level,encounter_type)
     $stats.fishing_battles += 1
 	$game_temp.in_safari=true
      pbFishingEncounter(encounter_type,bait_name)
-	$game_temp.in_safari==false
+	$game_temp.in_safari=false
 	else
 	 
 	pbCollectionMain64
 	end
     when 2
 	if encounter_type !="item"
-  encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
-    level = encounter[1]
-	level = encounter+rand(5)+1 if $player.is_it_this_class?(:FISHER,false)
-    pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
-    $player.pokedex.set_seen(pokemon.species)
-	if !bait_name.nil?
-	if bait_name == "Poisonous Meat"
-	pokemon.status=:POISON 
-	pokemon.hp-=rand(10)+1
+     encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
+     level = encounter[1]
+	 level = encounter+rand(5)+1 if $player.is_it_this_class?(:FISHER,false)
+     pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
+     $player.pokedex.set_seen(pokemon.species)
+	 if !bait_name.nil?
+	  if bait_name == "Poisonous Meat"
+   	   pokemon.status=:POISON 
+	   pokemon.hp-=rand(10)+1
 	end
-	end
-	pbHeldItemDropOW(pokemon)
-    $player.pokedex.set_seen(pokemon.species)
-	pbPlayerEXP(pokemon,$player.able_party)
-	if !pokemon.fainted?
+	 end
+ 	 pbHeldItemDropOW(pokemon)
+     $player.pokedex.set_seen(pokemon.species)
+	 pbPlayerEXP(pokemon)
+	 if !pokemon.fainted?
 	loop do
-	commands=[]
-commands.push(_INTL("Catch"))
-commands.push(_INTL"Use for Food")
-commands.push(_INTL("Take Item"))  if !pokemon.item.nil?
-commands.push(_INTL("Throw it back")) 
-commands.push(_INTL("Check Stats")) 
-
-    msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("What do you want to do with #{pokemon.name}?\\wtnp[1]"))
-commandMail = pbShowCommandsssss($scene,nil,msgwindow,commands, -1)
-	pbDisposeMessageWindow(msgwindow)
- if commands[commandMail] == _INTL("Use for Food")
-	pbCookMeat(pokemon)
-	break
- elsif commands[commandMail] == _INTL("Catch")
- 
-	pokemon.poke_ball=:POKEBALLC
-	pokemon.calc_stats
-    pbAddPokemonSilent(pokemon)
-    pkmnAnim(pokemon)
-	break
- elsif commands[commandMail] == _INTL("Throw it back")
-   pbMessage(_INTL("You throw it back."))
-   break
- elsif commands[commandMail] == _INTL("Check Stats")
- 
+	 commands=[]
+     commands.push(_INTL("Catch"))
+     commands.push(_INTL"Use for Food")
+     commands.push(_INTL("Take Item"))  if !pokemon.item.nil?
+     commands.push(_INTL("Throw it back")) 
+     commands.push(_INTL("Check Stats")) 
+     msgwindow = pbCreateMessageWindow(nil,nil)
+     pbMessageDisplay(msgwindow,_INTL("What do you want to do with #{pokemon.name}?\\wtnp[1]"))
+     commandMail = pbShowCommandsssss($scene,nil,msgwindow,commands, -1)
+	 pbDisposeMessageWindow(msgwindow)
+ 	 if commands[commandMail] == _INTL("Use for Food")
+	  pbCookMeat(pokemon)
+	  break
+ 	 elsif commands[commandMail] == _INTL("Catch")
+	  pokemon.poke_ball=:POKEBALLC
+	  pokemon.calc_stats
+	  pbAddPokemonSilent(pokemon)
+	  pkmnAnim(pokemon)
+	  break
+ 	 elsif commands[commandMail] == _INTL("Throw it back")
+	  pbMessage(_INTL("You throw it back."))
+	  break
+ 	 elsif commands[commandMail] == _INTL("Check Stats")
           pbFadeOutIn {
             summary_scene = PokemonSummary_Scene.new
             summary_screen = PokemonSummaryScreen.new(summary_scene)
             summary_screen.pbStartScreen([pokemon], 0)
           }
- elsif commands[commandMail] == _INTL("Take Item")
-   pbTakeItemFromPokemon(pokemon,$scene)
- end
-  end
+ 	 elsif commands[commandMail] == _INTL("Take Item")
+	  pbTakeItemFromPokemonNoScene(pokemon)
+ 	 end
+	end
 
     else
-pbCollectionMain64
-
+	 pbCollectionMain64
     end
     else
 	if encounter_type !="item"
@@ -499,64 +519,65 @@ pbCollectionMain64
 	
 	end
 	end
-
   end
 
-	commands=[]
-commands.push(_INTL"With same bait")
-commands.push(_INTL("With different bait"))
-commands.push(_INTL("No")) 
-    msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("Do you want to fish again?\\wtnp[1]"))
-commandMail = pbShowCommandsssss($scene,nil,msgwindow,commands, -1)
-	pbDisposeMessageWindow(msgwindow)
- if commandMail == 0
-   if !bait.nil?
-   if $bag.remove(bait,1)
-   else
-    pbMessage(_INTL("You don't have anymore of that bait!.")) 
-	  bait = nil
+
+  $game_temp.in_menu = false 
+  bait = nil
   bait_name = nil
-   end
-   end
-  item.decrease_durability(1)
-  elsif commandMail == 1
-    if pbConfirmMessage(_INTL("Do you want to use any bait?"))
-    pbFadeOutIn(99999){
-      scene = PokemonBag_Scene.new
-      screen = PokemonBagScreen.new(scene,$bag)
-      bait = screen.pbChooseItemScreen(proc { |item| (GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).is_berry?) && !GameData::Item.get(item).is_apricorn? && item!=:ACORN })
-    }
-	if !bait.nil?
-    if $bag.remove(bait,1)
-  bait_name = GameData::Item.get(bait).name
-    else
-	 bait = nil
-     bait_name = nil
-	 end
-  item.decrease_durability(1)
-   end
-  end
-  else
-  item.decrease_durability(1)
+  loop do 
+    Graphics.update
+	Input.update
+	$scene.update
+    if Input.trigger?(Input::USE)
+	  bait = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+	  if bait == :NONE
+	   bait = nil 
+       bait_name = nil
+       item.decrease_durability(1)
+	   break
+	  end 
+	  if $bag.remove(bait,1)
+        bait_name = GameData::Item.get(bait).name
+       item.decrease_durability(1)
+	    break
+	  end
+      bait = nil
+      bait_name = nil
+
+	elsif Input.trigger?(Input::BACK)
+      done = true 
+	  break
+	end 
+	
+  end 
+
+	if item.durability==0
+	  sideDisplay(_INTL("Your {1} broke!", item.name))
+      pbFishingEnd
+      break 
+	end 
+  if done 
+    item.decrease_durability(1)
     pbFishingEnd
-		#  if $game_temp.memorized_bgm && $game_system.is_a?(Game_System)
-       #        pbBGMFade(0.8)
-       #        $game_system.bgm_pause
-         #      $game_system.bgm_position = $game_temp.memorized_bgm_position
-       #        $game_system.bgm_resume($game_temp.memorized_bgm)
-			#    $game_temp.memorized_bgm = nil
-		#	    $game_temp.memorized_bgm_position = nil
-		  #end
-    break
+    break 
+  else 
+  $game_temp.in_menu = true 
+  end 
+
   end
-  end
+
+
+
+ end 
 
   if $game_system.is_a?(Game_System) && $game_temp.memorized_bgm
    pbBGMFade(0.8)
    pbBGMPlay($game_temp.memorized_bgm)
   end
   $PokemonGlobal.fishing=false
+  $game_temp.no_moving = false 
+  $PokemonGlobal.cur_stored_fishing_rod = nil
 end
 
 
@@ -584,10 +605,41 @@ def fishingmodifiers(rodType,speedup,bait=nil)
 end
 
 
+def pbTakeItemFromPokemonNoScene(pkmn)
+  ret = false
+  if !pkmn.hasItem?
+    pbMessage(_INTL("{1} isn't holding anything.", pkmn.name))
+  elsif !$bag.can_add?(pkmn.item)
+    pbMessage(_INTL("The Bag is full. The Pokémon's item could not be removed."))
+  elsif pkmn.mail
+    if scene.pbConfirm(_INTL("Save the removed mail in your PC?"))
+      if pbMoveToMailbox(pkmn)
+        pbMessage(_INTL("The mail was saved in your PC."))
+        pkmn.item = nil
+        ret = true
+      else
+        pbMessage(_INTL("Your PC's Mailbox is full."))
+      end
+    elsif scene.pbConfirm(_INTL("If the mail is removed, its message will be lost. OK?"))
+      $bag.add(pkmn.item)
+      pbMessage(_INTL("Received the {1} from {2}.", pkmn.item.name, pkmn.name))
+      pkmn.item = nil
+      pkmn.mail = nil
+      ret = true
+    end
+  else
+    $bag.add(pkmn.item)
+    pbMessage(_INTL("Received the {1} from {2}.", pkmn.item.name, pkmn.name))
+    pkmn.item = nil
+    ret = true
+  end
+  return ret
+end
+
 
 def pbFishing(hasEncounter, rodType, bait=nil, item_or_encounter)
   $stats.fishing_count += 1
-  speedup = ($player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)  || $player.activeCharm?(:LURECHARM))
+  speedup = $player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)#($player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)  || $player.activeCharm?(:LURECHARM))
   biteChance, hookChance = fishingmodifiers(rodType,speedup,bait)
   bait_name = GameData::Item.get(bait).name if !bait.nil?
   pbFishingBegin

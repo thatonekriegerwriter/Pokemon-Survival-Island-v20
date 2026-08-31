@@ -99,7 +99,15 @@ module UnrealTime
   def self.initial_date
     return Time.local(2011,6,9, 7,0)
   end
+  def self.daysSinceInitial?(amount)
+   return false if amount < 0
+   return false if !UnrealTime::ENABLED
 
+   initial = UnrealTime.initial_date
+   current = pbCurrentTime
+
+   (current - initial).to_i >= (amount * 86_400).to_i
+  end
   # Advance to next time. If time already passed, advance 
   # into the time on the next day.
   # Hour is 0..23
@@ -129,7 +137,7 @@ module UnrealTime
   # Does the same thing as EXTRA_SECONDS variable.
   def self.add_seconds(seconds)
     raise "Method doesn't work when TIME_STOPS is false!" if !TIME_STOPS
-    $PokemonGlobal.newFrameCount+=seconds/PROPORTION.to_f
+    $PokemonGlobal.addNewFrameCount(seconds/PROPORTION.to_f)
     PBDayNight.sheduleToneRefresh
   end
 
@@ -171,58 +179,35 @@ module PBDayNight
 end
 
 def pbGetTimeNow
-  return Time.now if !$PokemonGlobal || !UnrealTime::ENABLED
-  day_seconds = 60*60*24
-  if UnrealTime::TIME_STOPS
-    # Sum the extra values to newFrameCount
-    if UnrealTime::EXTRA_SECONDS>0
+    day_seconds = 60*60*24
+    if UnrealTime::EXTRA_SECONDS>0 && pbGet(UnrealTime::EXTRA_SECONDS)>0 && $scene.is_a?(Scene_Map) && !$PokemonGlobal.nil?
       UnrealTime.add_seconds(pbGet(UnrealTime::EXTRA_SECONDS))
       $game_variables[UnrealTime::EXTRA_SECONDS]=0
     end  
-    if UnrealTime::EXTRA_DAYS>0
+    if UnrealTime::EXTRA_DAYS>0 && pbGet(UnrealTime::EXTRA_DAYS)>0 && $scene.is_a?(Scene_Map) && !$PokemonGlobal.nil?
       UnrealTime.add_seconds(day_seconds*pbGet(UnrealTime::EXTRA_DAYS))
       $game_variables[UnrealTime::EXTRA_DAYS]=0
     end
-  elsif UnrealTime::EXTRA_SECONDS>0 && UnrealTime::EXTRA_DAYS>0
-    # Checks to regulate the max/min values at UnrealTime::EXTRA_SECONDS
-    while pbGet(UnrealTime::EXTRA_SECONDS)>=day_seconds
-      $game_variables[UnrealTime::EXTRA_SECONDS]-=day_seconds
-      $game_variables[UnrealTime::EXTRA_DAYS]+=1
-    end
-    while pbGet(UnrealTime::EXTRA_SECONDS)<=-day_seconds
-      $game_variables[UnrealTime::EXTRA_SECONDS]+=day_seconds
-      $game_variables[UnrealTime::EXTRA_DAYS]-=1
-    end  
-  end  
-  start_time=UnrealTime.initial_date
-  if UnrealTime::TIME_STOPS
-    time_played=$PokemonGlobal.newFrameCount
-  end
-  time_played=(time_played*UnrealTime::PROPORTION)
-  time_jumped=0
-  if UnrealTime::EXTRA_SECONDS>-1 
-    time_jumped+=pbGet(UnrealTime::EXTRA_SECONDS)
-  end
-  if UnrealTime::EXTRA_DAYS>-1 
-    time_jumped+=pbGet(UnrealTime::EXTRA_DAYS)*day_seconds
-  end
-  time_ret = 0
-  # Before Essentials V19, there is a year limit. To prevent crashes due to this
-  # limit, every time that you reach in year 2036 the system will subtract 6
-  # years (to works with leap year) from your date and sum in 
-  # $PokemonGlobal.extraYears. You can sum your actual year with this extraYears
-  # when displaying years.
-  loop do
-    time_fix=0
-    if $PokemonGlobal.extraYears!=0
-      time_fix = $PokemonGlobal.extraYears*day_seconds*(365*6+1)/6
-    end
-    time_ret=start_time+(time_played+time_jumped-time_fix)
-    break if !UnrealTime::NEED_32_BIT_FIX || time_ret.year<2036
-    $PokemonGlobal.extraYears+=6
-  end
-  return time_ret
+    start_time=UnrealTime.initial_date
+	
+    time_played=!$PokemonGlobal.nil? ? $PokemonGlobal.newFrameCount : 0
+    time_played = time_played * UnrealTime::PROPORTION
+    time_ret = 0
+    time_ret = start_time + time_played
+    return time_ret
 end
+
+def pbCurrentTime
+
+    start_time=UnrealTime.initial_date
+	
+    time_played=!$PokemonGlobal.nil? ? $PokemonGlobal.newFrameCount : 0
+    time_played = time_played * UnrealTime::PROPORTION
+    time_ret = 0
+    time_ret = start_time + time_played
+    return time_ret
+
+end 
 
 
 def pbGetThisTime(time,type="add")
@@ -282,25 +267,76 @@ def pbGetTime(hours)
  return result
 end 
 
+EventHandlers.add(:on_new_day, :midnight_activations,
+  proc {
+    next if $player.nil?
+	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
+	$PokemonGlobal.collection_maps = {}
+  }
+)
 
+EventHandlers.add(:on_new_day, :ocean_crash,
+  proc {
+    next if $player.nil?
+	next unless UnrealTime.daysSinceInitial?(3)
+	next if $PokemonGlobal.three_days_message==true
+    pbMessage(_INTL("There was a loud crash coming from the ocean, followed by the sounds of a splash."))
+	$PokemonGlobal.three_days_message=true 
+  }
+)
 
 if UnrealTime::ENABLED
   class PokemonGlobalMetadata
     attr_accessor :newFrameCount # Became float when using extra values
     attr_accessor :extraYears 
-    
-    def addNewFrameCount
-      return if (UnrealTime::SWITCH_STOPS>0 && $game_switches[UnrealTime::SWITCH_STOPS])		
-	    if $game_temp.just_update_anyways==false
+	attr_accessor :last_time_check
+	attr_accessor :three_days_message
+   def last_time_check
+    @last_time_check ||= UnrealTime.initial_date
+	return @last_time_check
+   end 
+   def three_days_message
+    @three_days_message ||= false
+	return @three_days_message
+   end 
+   
+   
+   
+    def addNewFrameCount(amount = Graphics.delta)
+	  return if (UnrealTime::SWITCH_STOPS>0 && $game_switches[UnrealTime::SWITCH_STOPS])
+	  if $game_temp.just_update_anyways==false
 	   return if $game_temp.in_menu==true && !($DEBUG && Input.press?(Input::CTRL))
 	   return if $game_temp.message_window_showing==true && $PokemonGlobal.alternate_control_mode==false
-	     end
-        deposited = pbDayCareDeposited
-       if deposited==2 && day_care.egg_generated==0 && rand(10)==0
-        day_care.step_counter = 0 if !day_care.egg_generated
-        day_care.step_counter += Graphics.delta
-	   end
-      self.newFrameCount+=Graphics.delta
+	  end
+	  old_time = self.last_time_check
+	  self.newFrameCount+=amount
+	  
+      start_time=UnrealTime.initial_date
+	
+      time_played=!$PokemonGlobal.nil? ? $PokemonGlobal.newFrameCount : 0
+      time_played = time_played * UnrealTime::PROPORTION
+      time_ret = old_time
+      new_time = start_time + time_played
+	  if new_time.hour != old_time.hour
+	    EventHandlers.trigger(:on_new_hour, new_time.hour, old_time.hour)
+	  end
+
+	  if new_time.day != old_time.day || new_time.month != old_time.month || new_time.year != old_time.year
+ 	   EventHandlers.trigger(:on_new_day, new_time.day, old_time.day)
+	  end
+
+	  if new_time.wday < old_time.wday || (new_time - old_time).to_i >= 7 * 86_400
+ 	   EventHandlers.trigger(:on_new_week, new_time, old_time)
+	  end
+	  if new_time.month != old_time.month
+ 	   EventHandlers.trigger(:on_new_month, new_time.month, old_time.month)
+	  end
+
+	  if new_time.year != old_time.year
+ 	   EventHandlers.trigger(:on_new_year, new_time.year, old_time.year)
+	  end
+
+	  @last_time_check = new_time
     end
     
     def newFrameCount

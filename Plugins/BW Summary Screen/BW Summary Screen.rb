@@ -115,7 +115,37 @@
     SHOW_FAMILY_EGG = true 
     MARK_WIDTH  = 16
     MARK_HEIGHT = 16
+  def pbPokemonDebug(pkmn, pkmnid, heldpoke = nil, settingUpBattle = false)
+    # Get all commands
+    commands = CommandMenuList.new
+    MenuHandlers.each_available(:pokemon_debug_menu) do |option, hash, name|
+      next if settingUpBattle && !hash["always_show"].nil? && !hash["always_show"]
+      commands.add(option, hash, name)
+    end
+    # Main loop
+    command = 0
+    loop do
+      command = pbShowCommands("", commands.list, command)
+      if command < 0
+        parent = commands.getParent
+        break if !parent
+        commands.currentList = parent[0]
+        command = parent[1]
+      else
+        cmd = commands.getCommand(command)
+        if commands.hasSubMenu?(cmd)
+          commands.currentList = cmd
+          command = 0
+        elsif MenuHandlers.call(:pokemon_debug_menu, cmd, "effect", pkmn, pkmnid, heldpoke, settingUpBattle, self)
+          break
+        end
+      end
+    end
+  end
 
+   def pbRefreshSingle(arg)
+   end 
+   
     def pbUpdate
       pbUpdateSpriteHash(@sprites)
       # Sets the Moving Background
@@ -180,8 +210,8 @@
       @sprites["pokeicon"].y       = 92
       @sprites["pokeicon"].visible = false
       # Changed the position of the held Item icon
-      @sprites["itemicon"] = ItemIconSprite.new(485, 358, @pokemon.item_id, @viewport)
-      @sprites["itemicon"].blankzero = true
+    #  @sprites["itemicon"] = ItemIconSprite.new(485, 358, @pokemon.item_id, @viewport)
+    #  @sprites["itemicon"].blankzero = true
       @sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, @viewport)
       pbSetSystemFont(@sprites["overlay"].bitmap)
       @sprites["movepresel"] = MoveSelectionSprite.new(@viewport)
@@ -329,7 +359,7 @@
         @sprites["messagebox"].visible = false
         return ret
       end
-      def pbShowCommands(commands, index = 0)
+      def pbShowCommands(text, commands, index = 0)
         ret = -1
         using(cmdwindow = Window_CommandPokemon.new(commands)) {
           cmdwindow.z = @viewport.z + 1
@@ -354,6 +384,7 @@
         return ret
       end
       def drawMarkings(bitmap, x, y)
+	    return
         mark_variants = @markingbitmap.bitmap.height / MARK_HEIGHT
         markings = @pokemon.markings
         markrect = Rect.new(0, 0, MARK_WIDTH, MARK_HEIGHT)
@@ -478,7 +509,7 @@ end
         drawPageOneEgg
         return
       end
-      @sprites["itemicon"].item = @pokemon.item_id
+    #  @sprites["itemicon"].item = @pokemon.item_id
       overlay = @sprites["overlay"].bitmap
       overlay.clear
       # Changes the color of the text, to the one used in BW
@@ -531,7 +562,7 @@ end
                   _INTL("TRAINER MEMO"),
                   _INTL("SKILLS"),
                   _INTL("MOVES"),
-                  _INTL("HAPPINESS"),
+                  _INTL("INVENTORY"),
                   _INTL("RIBBON"),
                   _INTL("FAMILY TREE")][page - 1]
 
@@ -543,21 +574,15 @@ end
         textpos = [
           [@pokemon.name, 354, 52, 0, Color.new(90, 82, 82), Color.new(165, 165, 173)],
           ["#{@pokemon.level.to_s}/#{@pokemon.level_cap.to_s}", 346, 86, 0, Color.new(90, 82, 82), Color.new(165, 165, 173)],
-          [_INTL("Item"), 298, 326, 0, base, shadow]
+        #  [_INTL("Item"), 298, 326, 0, base, shadow]
         ]
       else
         textpos = [
           [pagename, 26, 6, 0, Color.new(255, 255, 255), Color.new(132, 132, 132)],
           [@pokemon.name, 354, 39, 0, Color.new(90, 82, 82), Color.new(165, 165, 173)],
           ["#{@pokemon.level.to_s}/#{@pokemon.level_cap.to_s}", 344, 76, 0, Color.new(90,82,82),Color.new(165,165,173)],
-          [_INTL("Item"), 298, 320, 0, base, shadow]
+        #  [_INTL("Item"), 298, 320, 0, base, shadow]
         ]
-      end
-      # Write the held item's name
-      if @pokemon.hasItem?
-        textpos.push([@pokemon.item.name, 290, 343, 0, base, shadow])
-      else
-        textpos.push([_INTL("None"), 290, 343, 0, base, shadow])
       end
       # Write the gender symbol
       if @pokemon.male?
@@ -759,7 +784,7 @@ end
     end
 
     def drawPageOneEgg
-      @sprites["itemicon"].item = @pokemon.item_id
+    #  @sprites["itemicon"].item = @pokemon.item_id
       overlay = @sprites["overlay"].bitmap
       overlay.clear
       # Changes the color of the text, to the one used in BW
@@ -783,13 +808,13 @@ end
       if SUMMARY_B2W2_STYLE
         textpos = [
           [@pokemon.name, 354, 52, 0, base, shadow],
-          [_INTL("Item"), 298, 326, 0, base, shadow]
+        #  [_INTL("Item"), 298, 326, 0, base, shadow]
         ]
       else
         textpos = [
           [_INTL("TRAINER MEMO"), 26, 14, 0, Color.new(255, 255, 255), Color.new(132, 132, 132)],
           [@pokemon.name, 354, 52, 0, base, shadow],
-          [_INTL("Item"), 298, 328, 0, base, shadow]
+        #  [_INTL("Item"), 298, 328, 0, base, shadow]
         ]
       end
       # Write the held item's name
@@ -863,14 +888,11 @@ end
         memo += _INTL("<c3=404040,B0B0B0>{1} {2}, {3} {4}.\n", date, month, year, mapname)
       end
       # Write map name Pokémon was received on
-	  if @pokemon.onAdventure == true && !@pokemon.location.nil?
-      memo += _INTL("Currently in <c3=0000d6,7394ff>{1}\n", pbGetMapNameFromId(@pokemon.location))
+	  if @pokemon.on_adventure == true && !@pokemon.current_map.nil?
+      memo += _INTL("Currently in <c3=0000d6,7394ff>{1}\n", pbGetMapNameFromId(@pokemon.current_map))
 	  end
       # Changed the color of the text, to the one used in BW
       # Write how Pokémon was obtained
-	  if @pokemon.starter == true
-      mettext = _INTL("Friends since Lv. 1")
-	  else
       mettext = [_INTL("Caught at Lv. {1}", @pokemon.obtain_level),
                  _INTL("Egg hatched"),
                  _INTL("Traded at Lv. {1}", @pokemon.obtain_level),
@@ -878,7 +900,6 @@ end
                  _INTL("Had a fateful encounter at Lv. {1}", @pokemon.obtain_level)
                 ][@pokemon.obtain_method]
                 # Changed the color of the text, to the one used in BW
-	 end
       if @pokemon.obtain_method == 1
         if @pokemon.timeEggHatched
           date  = @pokemon.timeEggHatched.day
@@ -894,11 +915,7 @@ end
 		  end
         end
       else
-	  if @pokemon.starter == true
-      memo += sprintf("<c3=404040,B0B0B0>%s!\n", mettext) if mettext && mettext!=""
-	  else
-      memo += sprintf("<c3=404040,B0B0B0>%s.\n", mettext) if mettext && mettext!=""
-	  end
+       memo += sprintf("<c3=404040,B0B0B0>%s.\n", mettext) if mettext && mettext!=""
       end
       # If Pokémon was hatched, write when and where it hatched
       # Write characteristic
@@ -1061,7 +1078,7 @@ end
                   Color.new(123, 8, 49)]   # Zero PP
       @sprites["pokemon"].visible  = true
       @sprites["pokeicon"].visible = false
-      @sprites["itemicon"].visible = true
+    #  @sprites["itemicon"].visible = true
       textpos  = []
       imagepos = []
       # Write move names, types and PP amounts for each known move
@@ -1192,7 +1209,7 @@ end
       @sprites["pokemon"].visible = false if @sprites["pokemon"]
       @sprites["pokeicon"].pokemon = @pokemon
       @sprites["pokeicon"].visible = true
-      @sprites["itemicon"].visible = false if @sprites["itemicon"]
+     # @sprites["itemicon"].visible = false if @sprites["itemicon"]
       textpos = []
       # Write power and accuracy values for selected move
       case selected_move.display_damage(@pokemon)
@@ -1222,40 +1239,80 @@ end
     @sprites["downarrow"].visible = false
     base   = Color.new(90,82,82)
     shadow = Color.new(165,165,173)
+	
+    base2   = Color.new(165,165,173)
+    shadow2 = Color.new(90,82,82)
     textColumn=300
     evColumn=390
     ivColumn=455
 	if @pokemon.loyalty.nil?
 	 @pokemon.loyalty = 75
-	endn.water = 100
 	end
     # Write various bits of text
 	verdict = ""
-	@pokemon.inventory.each_with_index do |item,index|
-	 next if item[0].nil?
-	 if index==0
-	   verdict+="#{GameData::Item.get(item[0]).name}"
-	  elsif index == @pokemon.inventory.length
-	   else
-	   verdict+=", #{GameData::Item.get(item[0]).name}"
-	  end
-	
-	end
+	inventory = @pokemon.inventory
     textpos = []
-    textpos << [_INTL("Happiness:"),10,62,0,base,shadow]
-    textpos << [_INTL("{1}/255",@pokemon.happiness{1}),126,62,0,base,shadow]
-    textpos << [_INTL("Loyalty:"),10,92,0,base,shadow]
-    textpos << [_INTL("{1}/255",@pokemon.loyalty{1}),126,92,0,base,shadow]
-    textpos << [_INTL("Age:"),10,122,0,base,shadow]
-    textpos << [_INTL("{1}",@pokemon.age{1}),126,122,0,base,shadow]
-    textpos << [_INTL("Inventory"),10,222,0,base,shadow] if verdict!=""
-    # Draw all text
-    pbDrawTextPositions(overlay,textpos)
-    # Show all ri
-	drawTextEx(overlay,126,222,0,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
     imagepos = []
+	3.times do |index|
+	 data = inventory[index]
+      if data
+      item = data[0] 
+      amount = data[1]
+      end 
+      
+
+      amt = amount.nil? ? "" : "x#{amount}"
+      name = item.nil? ? "None" : GameData::Item.get(item).name
+	  id = item.nil? ? "None" : item.id
+      x = 80
+	  x_img = 20
+      y = 102 + (index * 65)
+      y_img = 96 + (index * 65)
+      textpos << [
+        _INTL("{1} {2}", name, amt),
+        x,
+        y,
+        0,
+        base,
+        shadow
+      ]
+      imagepos << [
+        "Graphics/Pictures/Summary/Empty",
+        x_img,
+        y_img
+      ]
+	  if !item.nil?
+      imagepos << [
+        GameData::Item.icon_filename(item.id),
+        x_img,
+        y_img
+      ]
+	  end
+
+end
+	small_text = []
+
+	small_text << [_INTL("Happiness"),310,320,0,base,shadow]
+	small_text << [_INTL("Loyalty"),376,320,0,base,shadow]
+	small_text << [_INTL("Age"),446,320,0,base,shadow]
+	drawTextEx(overlay,126,222,0,3,verdict,Color.new(64,64,64),Color.new(176,176,176))
+	imagepos << ["Graphics/Pictures/Summary/Happiness#{@pokemon.happiness_state}",320, 346]
+
+	imagepos << ["Graphics/Pictures/Summary/Loyalty#{@pokemon.loyalty_state}",380, 346]
+	
+	if @pokemon.is_birthday?
+	imagepos << ["Graphics/Pictures/Summary/Birthday",440, 346] 
+	else
+	imagepos << ["Graphics/Pictures/Summary/Age",440, 346] 
+	end 
+    textpos << [_INTL("{1}",@pokemon.age),450,344,0,base2,shadow2]
     coord = 0
+old_size = overlay.font.size
+overlay.font.size = 16
+pbDrawTextPositions(overlay, small_text)
+overlay.font.size = old_size
     pbDrawImagePositions(overlay,imagepos)
+    pbDrawTextPositions(overlay,textpos)
 	
   end
 
@@ -1281,7 +1338,7 @@ end
       textpos=[
          [_INTL("TRAINER MEMO"),26,10,0,base,shadow],
          [@pokemon.name,46,56,0,base,shadow],
-         [_INTL("Item"),66,312,0,base,shadow]
+        # [_INTL("Item"),66,312,0,base,shadow]
       ]
       textpos.push([
         _INTL("None"),16,346,0,Color.new(192,200,208),Color.new(208,216,224)
@@ -1397,7 +1454,7 @@ end
     def pbChangePokemon
       @pokemon = @party[@partyindex]
       @sprites["pokemon"].setPokemonBitmap(@pokemon)
-      @sprites["itemicon"].item = @pokemon.item_id
+    #  @sprites["itemicon"].item = @pokemon.item_id
       pbSEStop
       @pokemon.play_cry
     if SHOW_FAMILY_EGG && @pokemon.egg? && @page==7
@@ -1669,38 +1726,34 @@ end
     def pbOptions
       dorefresh = false
       commands = []
-      cmdGiveItem = -1
-      cmdTakeItem = -1
-      cmdPokedex  = -1
+      cmdNickname = -1
+      cmdDebug  = -1
       cmdMark     = -1
-      if !@pokemon.egg?
-        commands[cmdGiveItem = commands.length] = _INTL("Give item")
-        commands[cmdTakeItem = commands.length] = _INTL("Take item") if @pokemon.hasItem?
-        commands[cmdPokedex = commands.length]  = _INTL("View Pokédex") if $player.has_pokedex
-      end
+      commands[cmdNickname = commands.length]       = _INTL("Nickname")
       commands[cmdMark = commands.length]       = _INTL("Mark")
+	  commands[cmdDebug = commands.length]      = _INTL("Debug") if $DEBUG
       commands[commands.length]                 = _INTL("Cancel")
-      command = pbShowCommands(commands)
-      if cmdGiveItem >= 0 && command == cmdGiveItem
-        item = nil
-        pbFadeOutIn {
-          scene = PokemonBag_Scene.new
-          screen = PokemonBagScreen.new(scene, $bag)
-          item = screen.pbChooseItemScreen(proc { |itm| GameData::Item.get(itm).can_hold? })
-        }
-        if item
-          dorefresh = pbGiveItemToPokemon(item, @pokemon, self, @partyindex)
-        end
-      elsif cmdTakeItem >= 0 && command == cmdTakeItem
-        dorefresh = pbTakeItemFromPokemon(@pokemon, self)
-      elsif cmdPokedex >= 0 && command == cmdPokedex
-        $player.pokedex.register_last_seen(@pokemon)
-        pbFadeOutIn {
-          scene = PokemonPokedexInfo_Scene.new
-          screen = PokemonPokedexInfoScreen.new(scene)
-          screen.pbStartSceneSingle(@pokemon.species)
-        }
-        dorefresh = true
+      command = pbShowCommands("", commands)
+      if cmdNickname >= 0 && command == cmdNickname
+        pkmn = @pokemon
+        species = pkmn.speciesName
+        pbSet(4, species)
+        pbTextEntry("#{species}'s nickname?",0, Pokemon::MAX_NAME_SIZE, 5)
+	    if pbGet(5) == pbGet(3) || (pbGet(5) == "" && pbGet(3) == pbGet(4))
+	      pbMessage(_INTL("You do not change its name",pkmn.name)) { @scene.pbUpdate }
+		  dorefresh = false
+	    elsif pbGet(5) == "" || pbGet(5) == pbGet(4)
+          pkmn.name = nil
+          pbSet(3, pkmn.name)
+          pbMessage(_INTL("It's name is now: {1}.",pkmn.name)) { @scene.pbUpdate }
+		  dorefresh = true
+	    else 
+          pkmn.name = pbGet(5)
+          pbMessage(_INTL("It's name is now: {1}.",pkmn.name)) { @scene.pbUpdate }
+		  dorefresh = true
+	    end
+      elsif cmdDebug >= 0 && command == cmdDebug
+        pbPokemonDebug(@pokemon, @partyindex)
       elsif cmdMark >= 0 && command == cmdMark
         dorefresh = pbMarking(@pokemon)
       end
@@ -1769,7 +1822,9 @@ end
             dorefresh = true
           elsif !@inbattle
             pbPlayDecisionSE
-            dorefresh = pbOptions
+      # Write the held item's name
+	  #puts Pokemon.instance_method(:initialize).source_location
+           # dorefresh = pbOptions
           end
         elsif Input.trigger?(Input::UP) && @partyindex > 0
           oldindex = @partyindex

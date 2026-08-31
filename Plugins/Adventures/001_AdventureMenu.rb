@@ -31,7 +31,7 @@ class Adventure_Scene
 	   when 3
 	    return pkmn.who_fighting if !pkmn.who_fighting.nil?
 	   else
-	    return pkmn.travelingpartners[i-1]
+	    return pkmn.traveling_partners[i-1]
 	  end
 	end
 	def setAreaBG(pokemon=nil)
@@ -289,7 +289,6 @@ class Adventure_Scene
 	def pbUpdateChangingGraphics
         $PokemonGlobal.addNewFrameCount 
 		12.times do |i|
-		 
 		 if i>5
 		  if @adventureparty[i-6]
 			@sprites["icon_#{i}"].pokemon=(@adventureparty[i-6])
@@ -316,11 +315,11 @@ class Adventure_Scene
 		  if @party[i]
 			@sprites["icon_#{i}"].pokemon=(@party[i])
 			@sprites["icon_#{i}"].visible = true
-			if @party[i].inventory.length==7
-				@sprites["apple_#{i}"].setBitmap("Graphics/Pictures/Pokeventures/gold_apple.png")
-			@sprites["apple_#{i}"].visible = true
-			elsif @party[i].inventory.length>0 && !@party[i].inventory[0][0].nil?
-				@sprites["apple_#{i}"].setBitmap("Graphics/Pictures/Pokeventures/apple.png")
+			@sprites["apple_#{i}"].setBitmap("Graphics/Pictures/Pokeventures/apple.png")
+			if @party[i].inventory.full?
+			  @sprites["apple_#{i}"].setBitmap("Graphics/Pictures/Pokeventures/gold_apple.png")
+			  @sprites["apple_#{i}"].visible = true
+			elsif @party[i].inventory.any?
 			@sprites["apple_#{i}"].visible = true
 			else
 			@sprites["apple_#{i}"].setBitmap("Graphics/Pictures/Pokeventures/apple.png")
@@ -389,21 +388,21 @@ class Adventure_Scene
 			answer2 = []
 			if @adventureparty.length > 0
 			pkmn = @adventureparty[pos]
-			if !pkmn.adventuringTypes.nil?
-			pkmn.adventuringTypes.each do |i|
+			if !pkmn.IQ.nil?
+			pkmn.IQ.each do |i|
 			answer2[answer2.length] = i.to_s
 			end
 			end
 			answer2[answer2.length] = "Cancel"
-			if pkmn.chosenAdvType.nil? || pkmn.chosenAdvType == "None"
+			if pkmn.chosenIQ.nil? || pkmn.chosenIQ == "None"
 			commands=pbMessage(_INTL("Choose how this Pokemon goes on adventures."), answer2,-1,nil,0)
 			else
-			commands=pbMessage(_INTL("This Pokemon is a {1} type Adventurer.",pkmn.chosenAdvType), answer2,-1,nil,0)
+			commands=pbMessage(_INTL("This Pokemon is a {1} type Adventurer.",pkmn.chosenIQ), answer2,-1,nil,0)
 			end
 			if commands != -1
-			pkmn.chosenAdvType = pkmn.adventuringTypes[commands]
-			if pkmn.chosenAdvType == "None"
-			pkmn.chosenAdvType = nil
+			pkmn.chosenIQ = pkmn.IQ[commands]
+			if pkmn.chosenIQ == "None"
+			pkmn.chosenIQ = nil
 			end
 			elsif commands == answer2.length || commands == -1
 			end
@@ -497,18 +496,18 @@ class Adventure_Scene
 			elsif answer == 3
 			answer2 = []
 			pkmn = @party[pos]
-			if !pkmn.adventuringTypes.nil?
-			pkmn.adventuringTypes.each do |i|
+			if !pkmn.IQ.nil?
+			pkmn.IQ.each do |i|
 			answer2[answer2.length] = i.to_s
 			end
 			answer2[answer2.length] = "Cancel"
-			if pkmn.chosenAdvType.nil? || pkmn.chosenAdvType == "None"
+			if pkmn.chosenIQ.nil? || pkmn.chosenIQ == "None"
 			commands=pbMessage(_INTL("Choose how this Pokemon goes on adventures."), answer2,-1,nil,0)
 			else
-			commands=pbMessage(_INTL("This Pokemon is a {1} type Adventurer.",pkmn.chosenAdvType), answer2,-1,nil,0)
+			commands=pbMessage(_INTL("This Pokemon is a {1} type Adventurer.",pkmn.chosenIQ), answer2,-1,nil,0)
 			end
 			if commands != -1
-			pkmn.chosenAdvType = pkmn.adventuringTypes[commands]
+			pkmn.chosenIQ = pkmn.IQ[commands]
 			elsif commands == answer2.length || commands == -1
 			end
             end
@@ -607,8 +606,8 @@ class Adventure_Scene
 			if @party[athome.index(@cursorpos)]
            @sprites["locationtext"].text="In Party"
            @sprites["locationtext"].resizeToFit("In Party")
-		    if !@party[athome.index(@cursorpos)].encounterLog.nil? && @party[athome.index(@cursorpos)].encounterLog.length>0
-		    text = @party[athome.index(@cursorpos)].encounterLog.to_s
+		    if !@party[athome.index(@cursorpos)].adventure_log.nil? && @party[athome.index(@cursorpos)].adventure_log.length>0
+		    text = @party[athome.index(@cursorpos)].adventure_log.to_s
 			else
 		    text = "In the Party!"
 			end
@@ -625,8 +624,8 @@ class Adventure_Scene
 			if @adventureparty[abroad.index(@cursorpos)]
            @sprites["locationtext"].text=""
            @sprites["locationtext"].resizeToFit("")
-		    if !@adventureparty[abroad.index(@cursorpos)].encounterLog.nil? && @adventureparty[abroad.index(@cursorpos)].encounterLog.length>0
-		    text = @adventureparty[abroad.index(@cursorpos)].encounterLog.to_s
+		    if !@adventureparty[abroad.index(@cursorpos)].adventure_log.nil? && @adventureparty[abroad.index(@cursorpos)].adventure_log.length>0
+		    text = @adventureparty[abroad.index(@cursorpos)].adventure_log.to_s
 			else
 		    text = "They are in a #{$map_factory.getMap(@adventureparty[abroad.index(@cursorpos)].location).name}."
 			end
@@ -799,9 +798,9 @@ class Adventure_Scene
 			@adventureparty[pos].location = nil
 			@adventureparty[pos].onAdventure = false
 			partymember = @adventureparty[pos].dup
-			partymember.travelingpartners = []
+			partymember.traveling_partners = []
 			@party.append(partymember)
-			@adventureparty[pos].travelingpartners.each do |pk|
+			@adventureparty[pos].traveling_partners.each do |pk|
 			   if !$player.party_full?
 			     @party.append(pk)
 			     pbMessage(_INTL("#{pk.name} was also added."))
@@ -854,24 +853,6 @@ class Adventure_Screen
     @scene.pbEncounter
     @scene.pbEndScene
   end
-end
-
-class PokemonStorage
-	attr_accessor	:party
-	
-	def party
-		return @party if !@party.nil?
-		return $player.party
-	
-	end
-	def party=(value)
-		@party = value
-	end
-
-	def party_full?
-		return @party.length >= Settings::MAX_PARTY_SIZE if !@party.nil?
-		return $player.party_full?
-	end
 end
 
 def pbStartAdventureMenu
@@ -957,4 +938,23 @@ def pbTakeItemFromPokemon2(pkmn, scene)
     ret = true
   end
   return ret
+end
+
+
+class PokemonStorage
+	attr_accessor	:party
+	
+	def party
+		return @party if !@party.nil?
+		return $player.party
+	
+	end
+	def party=(value)
+		@party = value
+	end
+
+	def party_full?
+		return @party.length >= Settings::MAX_PARTY_SIZE if !@party.nil?
+		return $player.party_full?
+	end
 end

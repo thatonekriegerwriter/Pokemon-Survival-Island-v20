@@ -6,7 +6,7 @@ class Game_Character
     alias :gc_reinit :initialize
 	def initialize(map = nil)
 	  gc_reinit(map)
-      @world_height = map.get_current_height(@x,@y) if map
+      @world_height = map.get_current_height(@x,@y) if map && map.is_a?(Game_Map)
     end
     
 	

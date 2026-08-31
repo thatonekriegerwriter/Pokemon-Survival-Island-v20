@@ -213,20 +213,20 @@ class ModularTitleScreen
     @sprites2["selectionbox"].z = 1000
     @sprites2["selectionbox"].visible = false
 	
-    @sprites2["craftResult"]=Window_UnformattedTextPokemon.new("Continue Game")
-    pbPrepareWindow(@sprites2["craftResult"])
-    @sprites2["craftResult"].z=1001
-    @sprites2["craftResult"].windowskin=nil
-    @sprites2["craftResult"].width=Graphics.width-48
-    @sprites2["craftResult"].height=Graphics.height
-	@sprites2["craftResult"].resizeToFit("")
-   # @sprites2["craftResult"].ox = @sprites2["craftResult"].width/2
-    @sprites2["craftResult"].x = (@viewport.rect.width/2)-85
-    @sprites2["craftResult"].y = (@viewport.rect.height*0.85)-34
-    @sprites2["craftResult"].baseColor=Color.new(232, 232, 232)
-    @sprites2["craftResult"].shadowColor=Color.new(136, 136, 136)
-    @sprites2["craftResult"].viewport=@viewport
-    @sprites2["craftResult"].visible=false
+    @sprites2["currentSelection"]=Window_UnformattedTextPokemon.new("Continue Game")
+    pbPrepareWindow(@sprites2["currentSelection"])
+    @sprites2["currentSelection"].z=1001
+    @sprites2["currentSelection"].windowskin=nil
+    @sprites2["currentSelection"].width=Graphics.width-48
+    @sprites2["currentSelection"].height=Graphics.height
+	@sprites2["currentSelection"].resizeToFit("")
+   # @sprites2["currentSelection"].ox = @sprites2["currentSelection"].width/2
+    @sprites2["currentSelection"].x = (@viewport.rect.width/2)-85
+    @sprites2["currentSelection"].y = (@viewport.rect.height*0.85)-34
+    @sprites2["currentSelection"].baseColor=Color.new(232, 232, 232)
+    @sprites2["currentSelection"].shadowColor=Color.new(136, 136, 136)
+    @sprites2["currentSelection"].viewport=@viewport
+    @sprites2["currentSelection"].visible=false
 	
     @sprites2["arrowl"] = Sprite.new(@viewport)
     @sprites2["arrowl"].bitmap = pbBitmap("Graphics/Pictures/selarrowl")
@@ -300,7 +300,7 @@ class ModularTitleScreen
     @sprites2[name].height=Graphics.height
 	@sprites2[name].resizeToFit("")
     @sprites2[name].resizeToFit(text) if !text.nil?
-   # @sprites2["craftResult"].ox = @sprites2["craftResult"].width/2
+   # @sprites2["currentSelection"].ox = @sprites2["currentSelection"].width/2
     @sprites2[name].x = x
     @sprites2[name].y = y
     @sprites2[name].baseColor=Color.new(232, 232, 232)
@@ -322,7 +322,7 @@ class ModularTitleScreen
     @sprites2[box].text = text
 	@sprites2[box].resizeToFit(text)
     @sprites2[box].visible = true if @sprites2[box].visible==false
-   # @sprites2["craftResult"].ox = @sprites2["craftResult"].width/2
+   # @sprites2["currentSelection"].ox = @sprites2["currentSelection"].width/2
    end
 
   
@@ -673,10 +673,12 @@ class ModularTitleScreen
   
   def updateElements
     for key in @sprites.keys
+	  next if @sprites[key].nil?
       @sprites[key].update if @sprites[key].respond_to?(:update)
     end
 	if @depth==0
     for key in @sprites2.keys
+	  next if @sprites2[key].nil?
 	  @sprites2[key].visible = false 
 	end
 	@sprites["start"].visible = true if @sprites["start"].visible == false
@@ -689,9 +691,14 @@ class ModularTitleScreen
 	
     @sprites2["update_ver_text"].visible = true
 	@sprites2["selectionbox"].visible = true if @sprites2["selectionbox"].visible == false
-    @sprites2["craftResult"].visible = true if @sprites2["craftResult"].visible == false
+    @sprites2["currentSelection"].visible = true if @sprites2["currentSelection"].visible == false
 	@sprites2["arrowl"].visible = true if @sprites2["arrowl"].visible == false
     @sprites2["arrowr"].visible = true if @sprites2["arrowr"].visible == false
+    6.times do |i|
+	  next if @sprites2["party#{i}"].nil?
+	  next unless @sprites2["party#{i}"].visible
+      @sprites2["party#{i}"].update
+    end
 	if @updatechecker==0 || $DEBUG && Input.press?(Input::CTRL)
     @sprites2["download"].visible = getUpdate
     @sprites2["mysterygift"].visible = isthereagift

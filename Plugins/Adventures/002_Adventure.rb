@@ -1,7 +1,8 @@
 EventHandlers.add(:on_frame_update, :increase_adventuring_stage,
   proc {
+	$Adventure.party.each(&:update)
     next if pbGetTimeNow.to_i<$Adventure.last_check+$Adventure.timer
-    #$Adventure.adventuring if pbGetTimeNow.to_i>=$Adventure.last_check+$Adventure.timer
+    $Adventure.adventuring if pbGetTimeNow.to_i>=$Adventure.last_check+$Adventure.timer
   }
 )
 
@@ -90,49 +91,9 @@ class PokemonEncounters
 end
 
 
-class Pokemon
-  attr_accessor :onAdventure #Pokemons Current Map ID
-  attr_accessor :location #Pokemons Current Map ID
-  attr_accessor :collectedItems #The Items the Pokemon has picked up.
-  attr_accessor :encounterLog #An array that logs what the POKeMON has done while adventuring.
-  attr_accessor :adventuringTypes #A list of learned types and focuses for how a POKeMON adventures.
-  attr_accessor :chosenAdvType #The chosen type in adventuringTypes
-  attr_accessor :travelswithEgg #has an egg with it.
-  attr_accessor :travelingpartners #has another with it.
-  attr_accessor :inDungeon #has another with it.
-  attr_accessor :advSteps #has another with it.
-  attr_accessor :who_fighting #has another with it.
-  attr_accessor :wait_time #has another with it.
-  attr_accessor :just_arrived #has another with it.
-  attr_accessor :called_back #has another with it.
-
-  
-  def travelingpartners
-   @travelingpartners = [] if @travelingpartners.nil?
-   return @travelingpartners
-  end
-  def who_fighting
-   return @who_fighting
-  end
-  def wait_time
-   @wait_time = 0 if @wait_time.nil?
-   return @wait_time
-  end
-  def just_arrived
-   @just_arrived = false if @just_arrived.nil?
-   return @just_arrived
-  end
-  def called_back
-   @called_back = false if @called_back.nil?
-   return @called_back
-  end
-  def called_back_map
-   @called_back_map = nil if @called_back_map.nil?
-   return @called_back_map
-  end
 
 
-end
+
 class Adventure #Set up
 	attr_accessor :party
 	attr_accessor :adventurerTypes
@@ -162,6 +123,10 @@ class Adventure #Set up
 	 @iq = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider","Exp. Elite","Coin Watcher","Sleeper","Parental Instinct","Unfortunate","Shadow Striker"] if @iq.nil?
 	 return @iq
 	end
+
+    def party
+	  @party
+	end 
 end
 
 class Adventure #Actions
@@ -171,16 +136,16 @@ class Adventure #Actions
       birth_actions
       death_actions
 	  @party.each_with_index do |pkmn,index|
-		pkmn.advSteps = 0 if pkmn.advSteps.nil?
-		pkmn.adventuringTypes = ["None"] if pkmn.adventuringTypes.nil? || pkmn.adventuringTypes.length==0
+		pkmn.steps_taken = 0 if pkmn.steps_taken.nil?
+		pkmn.IQ = ["None"] if pkmn.IQ.nil? || pkmn.IQ.length==0
 		  next if !pkmn.able?
 		  next if pkmn.permadeath
 		  next if pkmn.egg?
 		  next if !pkmn.who_fighting.nil?
-		pkmn.advSteps += 1
+		pkmn.steps_taken += 1
 		if pkmn.called_back==false
 		obtain_items if pkmn.location == $game_map.map_id && pkmn.who_fighting
-       life_actions(pkmn,index) if pkmn.location != $game_map.map_id && pkmn.advSteps >= PokeventureConfig::Updatesteps 
+       life_actions(pkmn,index) if pkmn.location != $game_map.map_id && pkmn.steps_taken >= PokeventureConfig::Updatesteps 
 	   else
 	    pkmn.wait_time=0
 		 pkmn.location = pkmn.called_back_map if !pkmn.called_back_map.nil?
@@ -207,9 +172,6 @@ class Adventure #Actions
 				speciesname = egg.speciesName
 				egg.name           = nil
 				egg.owner          = Pokemon::Owner.new_from_trainer($player)
-				egg.happiness      = 20
-				egg.loyalty        = 20
-                egg.lifespan = 50
                 egg.age = 1
 				egg.timeEggHatched = pbGetTimeNow
 				egg.obtain_method  = 1   # hatched from egg
@@ -229,14 +191,8 @@ class Adventure #Actions
   @party.each do |pkmn|
 	 next if !pkmn.who_fighting.nil?
     if pkmn.hp == 0 
-      pkmn.permadeath=true
-    end
-	pkmn.changeAge
-	pkmn.changeLifespan("age",pkmn)
-    if pkmn.lifespan == 0 
-      pkmn.permadeath=true
       pkmn.hp = 0
-	  next
+      pkmn.permadeath=true
     end
   end
   end
@@ -247,7 +203,7 @@ class Adventure #Actions
 		pbWalkingDowntheRoad(pkmn) if pkmn.wait_time==0
 		pkmn.wait_time = rand(3)+1 if pkmn.just_arrived==true
 		pbExplorersoftheIsland(pkmn,index) if pkmn.just_arrived==false && pkmn.wait_time>0
-	    pkmn.advSteps=0
+	    pkmn.steps_taken=0
    end
    def obtain_items
      pkmn.inventory.each_with_index do |item,index|
@@ -346,7 +302,7 @@ end
 		end
 		end
        when 6
-	    if pkmn.travelingpartners.length<2 && PokeventureConfig::FindFriends && 0 == rand(49)
+	    if pkmn.traveling_partners.length<2 && PokeventureConfig::FindFriends && 0 == rand(49)
 		  enctype = $PokemonEncounters.encounter_type_for_adventure(pkmn.location)
 		  if !enctype.nil?
 		  encounter = $PokemonEncounters.choose_wild_pokemon_for_map(pkmn.location,enctype)
@@ -387,7 +343,7 @@ end
 	    battle(pkmn,index,type="raid")
 	   when 7,17    #Team Battle!
 	    options = []
-	    pkmn.travelingpartners.each do |poke|
+	    pkmn.traveling_partners.each do |poke|
 	     next if poke.egg?
 		 options << poke
 	   end
@@ -423,7 +379,7 @@ end
             pkmn.hue = rand(360)
             pkmn.memento = :LOSTMARK
 			end
-		pkmn.travelingpartners.each do |p|
+		pkmn.traveling_partners.each do |p|
 		    if p.hue==0
             p.hue = rand(360)
             p.memento = :LOSTMARK
@@ -436,7 +392,7 @@ end
 	  end
 		pkmn.hp+=pkmn.totalhp/4
 		pkmn.hp=pkmn.totalhp if pkmn.hp>pkmn.totalhp
-		pkmn.travelingpartners.each do |p|
+		pkmn.traveling_partners.each do |p|
 		  p.hp+=p.totalhp/4
 		  p.hp=p.totalhp if p.hp>p.totalhp
 		end
@@ -449,7 +405,7 @@ end
 	    iqs = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider",
 		"Exp. Elite","Coin Watcher","Sleeper","Parental Instinct"]
         choice = rand(iqs.length)
-        pkmn.adventuringTypes.append(iqs[choice])
+        pkmn.IQ.append(iqs[choice])
 	    end
 	   else
 	   end
@@ -512,7 +468,7 @@ class Adventure #Remember to mark that a pokemon is battling. Remember to make t
 	 if rand(2)==1
 	 iqs = ["Dedicated Traveler","Collector","Acute Sniffer","Survivalist","Aggressor","Wary Fighter","House Avoider","Exp. Elite","Coin Watcher","Sleeper","Parental Instinct"]
      choice = rand(iqs.length)
-     pkmn.adventuringTypes.append(iqs[choice])
+     pkmn.IQ.append(iqs[choice])
 	 end
 	end
 
@@ -584,7 +540,7 @@ class Adventure #Remember to mark that a pokemon is battling. Remember to make t
 
 			if decision==2
 				allied = false
-				if PokeventureConfig::FindFriends && 0 == rand(PokeventureConfig::ChanceToFindFriend-1) && pkmn.travelingpartners.length<2
+				if PokeventureConfig::FindFriends && 0 == rand(PokeventureConfig::ChanceToFindFriend-1) && pkmn.traveling_partners.length<2
 				enemy = enemy[rand(enemy.length)] if enemy.is_a? Array
 				enemy.hp = enemy.totalhp
 				addAlly(enemy)
@@ -653,16 +609,11 @@ end
 	end
 
 def generateAlly(pkmn,encounter)
-  return false if pkmn.travelingpartners.length>1
+  return false if pkmn.traveling_partners.length>1
 poke = Pokemon.new(encounter[0],encounter[1])
 					poke.generateBrilliant if (PokeventureConfig::AreFoundFriendsBrilliant && defined?(poke.generateBrilliant))
 					poke.name= nil
 					poke.owner= Pokemon::Owner.new_from_trainer($player)
-					if poke.loyalty.nil?
-					    poke.loyalty = 70
-					end
-					poke.age = (rand(50)+1)
-					poke.lifespan = 50
 					if poke.age <= 10
 					    poke.ev[:DEFENSE] = rand(40)+10
 					    poke.ev[:SPECIAL_DEFENSE] = rand(40)+10
@@ -704,20 +655,18 @@ poke = Pokemon.new(encounter[0],encounter[1])
 					poke.timeReceived= pbGetTimeNow
 					$player.pokedex.register(poke)
 					$player.pokedex.set_owned(poke.species)
-					pkmn.travelingpartners.append(poke)
+					pkmn.traveling_partners.append(poke)
 
 
   return true
 end
 def addAlly(pkmn,poke)
-  return false if pkmn.travelingpartners.length>1
+  return false if pkmn.traveling_partners.length>1
 	poke.name= nil
 	poke.owner= Pokemon::Owner.new_from_trainer($player)
 	if poke.loyalty.nil?
 		poke.loyalty = 70
 	end
-	poke.age = (rand(50)+1)
-	poke.lifespan = 50
 	if poke.age <= 10
 					    poke.ev[:DEFENSE] = rand(40)+10
 					    poke.ev[:SPECIAL_DEFENSE] = rand(40)+10
@@ -759,7 +708,7 @@ def addAlly(pkmn,poke)
 	poke.timeReceived= pbGetTimeNow
 	$player.pokedex.register(poke)
 	$player.pokedex.set_owned(poke.species)
-	pkmn.travelingpartners.append(poke)
+	pkmn.traveling_partners.append(poke)
   return true
 end
 
@@ -1447,14 +1396,7 @@ end
 		pkmn.name           = _INTL("Egg")
 		pkmn.steps_to_hatch = pkmn.species_data.hatch_steps
 		pkmn.obtain_text    = "Found on an adventure"
-		
-					if pkmn.loyalty.nil?
-					    pkmn.loyalty = 70
-					end
-					pkmn.lifespan = 50
-					pkmn.age = 1
-					pkmn.water = (rand(100)+1)
-					pkmn.food = (rand(100)+1)
+		pkmn.age = 1
 		pkmn.calc_stats
 		pkmn.generateBrilliant if (PokeventureConfig::AreFoundFriendsBrilliant && defined?(poke.generateBrilliant))
 		# Add egg to party
@@ -1582,9 +1524,6 @@ class Adventure
       inherit_IVs(egg, mother, father)
       inherit_poke_ball(egg, mother_data, father_data)
       egg.age = 1
-      egg.lifespan = 50
-      egg.water = 100
-      egg.food = 100
       # Calculate other properties of the egg
       set_shininess(egg, mother, father)   # Masuda method and Shiny Charm
       set_pokerus(egg)

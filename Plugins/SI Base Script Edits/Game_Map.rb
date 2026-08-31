@@ -1,11 +1,13 @@
 class Game_Map
-  def check_event(x, y)
+  def check_event(x, y, self_event = nil)
     events = @events.values + $DynamicEvents.events_for_map
 	
     events.each do |event|
+	  next if self_event && self_event==event 
       return event.id if event.at_coordinate?(x, y)
     end
-      return $game_player if $game_player.x == x && $game_player.y == y
+    return $game_player if $game_player.x == x && $game_player.y == y && self_event!=$game_player
+	return nil
   end
   
   

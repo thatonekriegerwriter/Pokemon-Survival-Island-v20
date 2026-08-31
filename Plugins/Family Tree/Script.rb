@@ -46,7 +46,7 @@ end
 
 
 class PokemonFamily
-  MAX_GENERATIONS = 3 # Tree stored generation limit
+  MAX_GENERATIONS = 4 # Tree stored generation limit
 
   attr_reader :mother # PokemonFamily object
   attr_reader :father # PokemonFamily object

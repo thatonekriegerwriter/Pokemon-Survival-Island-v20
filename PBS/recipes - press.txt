@@ -6,6 +6,7 @@ Yield=1
 Recipe=REDSHARD,4
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -16,6 +17,7 @@ Yield=1
 Recipe=BLUESHARD,4
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -26,6 +28,7 @@ Yield=1
 Recipe=YELLOWSHARD,4
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -36,6 +39,7 @@ Yield=1
 Recipe=GREENSHARD,4
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -46,6 +50,7 @@ Yield=1
 Recipe=BLUESHARD,2,YELLOWSHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -56,6 +61,7 @@ Yield=1
 Recipe=REDSHARD,3,GREENSHARD,1
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -66,6 +72,7 @@ Yield=1
 Recipe=GREENSHARD,2,REDSHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -76,6 +83,7 @@ Yield=1
 Recipe=GREENSHARD,2,BLUESHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -86,6 +94,7 @@ Yield=1
 Recipe=GREENSHARD,2,YELLOWSHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -96,6 +105,7 @@ Yield=1
 Recipe=YELLOWSHARD,2,BLUESHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -106,6 +116,7 @@ Yield=1
 Recipe=GREENSHARD,2,YELLOWSHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -116,6 +127,7 @@ Yield=1
 Recipe=REDSHARD,2,YELLOWSHARD,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -126,6 +138,7 @@ Yield=1
 Recipe=REDSHARD,3,BLUESHARD,1
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -136,6 +149,7 @@ Yield=1
 Recipe=BLUESHARD,3,GREENSHARD,1
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -146,6 +160,7 @@ Yield=1
 Recipe=GREENSHARD,3,BLUESHARD,1
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
@@ -156,5 +171,6 @@ Yield=1
 Recipe=STONE,2
 Station=ELECTRICPRESS
 CookingTime=0
+Type = MATERIAL
 Locked=false
 Flags=

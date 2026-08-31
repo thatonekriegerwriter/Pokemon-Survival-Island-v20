@@ -1,9 +1,595 @@
 #===============================================================================
 # Move Calculations
 #===============================================================================
+
+
+
+class Pokemon
+  
+  def statStageAtMax?(stat)
+     @stages[stat] >= 6
+  end 
+  
+  def statStageAtMin?(stat)
+     @stages[stat] <= -6
+  end 
+  
+  def can_raise_stat_stage?(stat, user = nil, move = nil, failMessage = true, ignoreContrary = false)
+      return false if fainted?
+	  if self.hasAbility?(:CONTRARY) && !ignoreContrary && user && !user.hasAbility?(:MOLDBREAKER)
+	    return can_lower_stat_stage?(stat, user, move, failMessage, true)
+	  end 
+	  if statStageAtMax?(stat)
+	    if failMessage
+		  sideDisplay(_INTL("{1}'s {2} won't go any higher!", @name, GameData::Stat.get(stat).name))
+		end 
+        return false
+	  end 
+      return true
+  end 
+  
+  def can_lower_stat_stage?(stat, user = nil, move = nil, failMessage = true, ignoreContrary = false, ignoreMirrorArmor = false)
+      return false if fainted?
+      if user && !user.hasAbility?(:MOLDBREAKER)
+	   if self.hasAbility?(:CONTRARY) && !ignoreContrary && user && !user.hasAbility?(:MOLDBREAKER)
+	     return can_raise_stat_stage?(stat, user, move, failMessage, true)
+	   end 
+	   if self.hasAbility?(:MIRRORARMOR) && !ignoreMirrorArmor && user != self && !statStageAtMin?(stat)
+	     return true
+	   end 
+	  end 
+      if user && user!=self
+	    
+	  
+	  end 
+      if statStageAtMin?(stat)
+        if failMessage
+	 	  sideDisplay(_INTL("{1}'s {2} won't go any lower!", @name, GameData::Stat.get(stat).name))
+        end
+        return false
+      end
+      return true
+
+  end 
+  
+  def raise_stat_stage_basic(stat, amt, user = nil, ignoreContrary = false)
+    if user && !user.hasAbility?(:MOLDBREAKER)
+	  if self.hasAbility?(:CONTRARY) && !ignoreContrary
+	    return lower_stat_stage_basic(stat, amt, user, true)
+	  end 
+	  amt *= 2 if self.hasAbility?(:SIMPLE)
+	end 
+    amt = [amt, 6 - @stages[stat]].min
+	if amt > 0
+      stat_name = GameData::Stat.get(stat).name
+      new = @stages[stat] + amt
+	  @stages[stat] += amt
+	end 
+	return amt
+  
+  end 
+
+  
+  def lower_stat_stage_basic(stat, amt, user = nil, ignoreContrary = false)
+    if user && !user.hasAbility?(:MOLDBREAKER)
+	  if self.hasAbility?(:CONTRARY) && !ignoreContrary
+	    return raise_stat_stage_basic(stat, amt, user, true)
+	  end 
+	  amt *= 2 if self.hasAbility?(:SIMPLE)
+	end 
+    amt = [amt, 6 - @stages[stat]].min
+	if amt > 0
+      stat_name = GameData::Stat.get(stat).name
+      new = @stages[stat] - amt
+	  @stages[stat] -= amt
+	end 
+	return amt
+  
+  end 
+
+
+  def lower_stat_stage(stat, amt, user = nil, ignoreContrary = false, ignoreMirrorArmor = false)
+      if user && !user.hasAbility?(:MOLDBREAKER)
+	   if self.hasAbility?(:CONTRARY) && !ignoreContrary && user && !user.hasAbility?(:MOLDBREAKER)
+	     return raise_stat_stage(stat, amt, user, true)
+	   end 
+	   if self.hasAbility?(:MIRRORARMOR) && !ignoreMirrorArmor && user != self && !statStageAtMin?(stat)
+	     ret = false
+		 if user.can_lower_stat_stage?(stat, self, nil, true, ignoreContrary, true)
+		   ret = user.lower_stat_stage(stat, amt, self, ignoreContrary, true)
+		 end
+		 return ret 
+	   end 
+	  end 
+      amt = lower_stat_stage_basic(stat, amt, user, ignoreContrary)
+	  return false if amt <= 0
+    arrStatTexts = [
+      _INTL("{1}'s {2} fell!", self.name, GameData::Stat.get(stat).name),
+      _INTL("{1}'s {2} harshly fell!", self.name, GameData::Stat.get(stat).name),
+      _INTL("{1}'s {2} severely fell!", self.name, GameData::Stat.get(stat).name)
+    ]
+	sideDisplay(arrStatTexts[[amt - 1, 2].min])
+    move = self.moves.find { |m| m.id == :LASHOUT }
+    move ||= self.moves2.find { |m| m.id == :LASHOUT }
+	if move && move.pp > 0 
+	   attacker = self.event
+	  if user && user!=self
+        target = user.event
+	  else 
+	    enemies = opponents_in_range(target, pbOverworldCombat.OverworldCombat.sight_line(attacker))
+		target = enemies.sample
+	  end 
+	   if target
+	   
+	   sideDisplay(_INTL("{1} lashes out!", attacker.pokemon.name))
+       attacker.attacking=true if defined?(attacker.cannot_move)
+	   distance = (attacker.x - target.x).abs + (attacker.y - target.y).abs
+	   result = attacker.use_reaction_move(target, move)
+	   end 
+	end 
+
+    return true 
+  end 
+  def raise_stat_stage(stat, amt, user = nil , ignoreContrary = false)
+	  if self.hasAbility?(:CONTRARY) && !ignoreContrary && user && !user.hasAbility?(:MOLDBREAKER)
+	    return lower_stat_stage(stat, amt, user, true)
+	  end 
+      amt = raise_stat_stage_basic(stat, amt, user, ignoreContrary)
+	  return false if amt <= 0
+    arrStatTexts = [
+      _INTL("{1}'s {2} rose!", @name, GameData::Stat.get(stat).name),
+      _INTL("{1}'s {2} rose sharply!", @name, GameData::Stat.get(stat).name),
+      _INTL("{1}'s {2} rose drastically!", @name, GameData::Stat.get(stat).name)
+    ]
+	sideDisplay(arrStatTexts[[amt - 1, 2].min])
+	target = self.event
+	enemies = opponents_in_range(target, 7)
+	enemies.each do |attacker|
+	   next if !attacker.pokemon.hasMove?(:BURNINGJEALOUSY) && !attacker.pokemon.hasMove2?(:BURNINGJEALOUSY)
+       move = attacker.pokemon.moves.find { |m| m.id == :BURNINGJEALOUSY }
+      if !move
+        move = attacker.pokemon.moves2.find { |m| m.id == :BURNINGJEALOUSY }
+      end
+      next if !move
+	   sideDisplay(_INTL("{1}'s eyes enflame with jealousy!", attacker.pokemon.name))
+       attacker.attacking=true if defined?(attacker.cannot_move)
+	   distance = (attacker.x - target.x).abs + (attacker.y - target.y).abs
+	   result = attacker.use_reaction_move(target, move)
+	end 
+	
+    return true
+  
+  end 
+  
+def opponents_in_range(event, distance)
+  if event.is_a?(Game_PokeEventA)
+    pbOverworldCombat.participants_in_range(:ENEMIES, event, distance)
+  else
+    pbOverworldCombat.participants_in_range(:ALLIES, event, distance)
+  end
+end
+  
+  
+  def totalMoves
+    @moves + @moves2
+  end 
+end 
+class Substitute
+  attr_accessor :hp
+  attr_reader :totalhp
+  attr_reader :move
+  def initialize(move, hp = 20)
+    @move = move
+    @hp = hp
+    @totalhp = hp
+  end 
+
+end 
+
+
+class OverworldCombat::Scoring
+def self.get_ov_damage_score(score,move,user,target,skill)
+	 atk = OverworldCombat.pbGetAttackStat2(user,move)
+    dmg = ((move.base_damage+atk)/2).floor
+    if move.function_code == "AttackAndSkipNextTurn"
+	  dmg *= 2 / 3
+	end
+    damagePercentage = dmg * 100.0 / target.hp if target.is_a?(Pokemon)
+    damagePercentage = dmg * 100.0 / $player.playerhealth if !target.is_a?(Pokemon)
+	if target.is_a?(Pokemon)
+    damagePercentage *= 1.2 if user.level - 10 > target.level
+	else
+    damagePercentage *= 1.2 if dmg - 10 > $player.equipmentdefbuff
+	end
+	if skill > 160
+    damagePercentage = 120 if damagePercentage > 120   # Treat all lethal moves the same
+    damagePercentage += 40 if damagePercentage > 100   # Prefer moves likely to be lethal
+   end
+    score += damagePercentage.to_i
+    return score
+end
+def self.closer_score(attacker, distance)
+  return 20 - distance
+end
+def self.adjacent_score(attacker, target)
+  return 100 if OverworldCombat.attack_distance(attacker, target) == 1
+  return 0
+end
+def self.sightline_score(attacker, distance)
+  return 50 if OverworldCombat.sight_line(attacker) >= distance
+  return -50 if OverworldCombat.sight_line(attacker) <= distance
+  return 0
+end
+def self.hostility_score(attacker, target)
+  return 75 if attacker.angry_at.include?(target) if attacker.is_a?(Game_PokeEvent)
+  return 75 if attacker.targets.include?(target) if attacker.is_a?(Game_PokeEventA)
+  return 0
+end 
+def self.player_score(attacker, target)
+  return 100 if get_cur_player == target
+  return 0
+end 
+def self.last_attacked_score(attacker, target)
+  return 0 if attacker.last_attacked_by.nil?
+  return 100 if attacker.last_attacked_by == target.id
+  return 0
+end 
+
+
+def self.can_use_move_score(attacker, move, target)
+  score = 0
+    if move.projectile? || move.beam? || move.orbiting? || move.cone?#Projectiles like these care if an event is cardinal, and is within the moves range.
+	  score += 20 if OverworldCombat.within_range?(attacker, target, move, OverworldCombat.sight_line(attacker))
+	elsif move.cardinal? || move.disappearance? #These care about adjacency.
+	   score += 50 if OverworldCombat.adjacent?(attacker, target)
+	elsif move.rushdown? #Rushdown cares if an event is cardinal to them, but if its within the users sight cone.
+	   score += 40 if OverworldCombat.within_cardinal_sight?(attacker, target)
+	elsif move.ranged_target? || move.arc? #These really only care if you are within the users sightline at all.
+	   score += 30 if OverworldCombat.within_sight?(attacker, target)
+	elsif move.surrounding_user? #These care if you are within varying diamond shapes, so a 'nearby' is good.
+	   score += 30 if OverworldCombat.within_sight?(attacker, target)
+	elsif move.summoning? #These just wanna summon something.
+	   score += 10
+    end
+  score
+end 
+
+
+def self.movement_penalty(attacker, move, target) #NOT DONE
+  score = 0 
+
+    if move.projectile? || move.beam? || move.orbiting? || move.cone?
+      score -= 40 unless OverworldCombat.within_range?(attacker, target, move, OverworldCombat.sight_line(attacker))
+
+
+    elsif move.ranged_target? || move.arc?
+      score -= 60 unless OverworldCombat.adjacent?(attacker, target)
+
+    elsif move.rushdown?
+      score -= 60 unless OverworldCombat.within_cardinal_sight?(attacker, target)
+
+    elsif move.cardinal? || move.disappearance?
+      score -= 60 unless OverworldCombat.within_sight?(attacker, target)
+
+    elsif move.surrounding_user?
+      score -= 60 unless OverworldCombat.within_sight?(attacker, target)
+    end
+
+
+  score
+end 
+
+def self.type_match_score(attacker, target)
+  score = 0
+  attacker.pokemon.types.each do |type|
+    value = Effectiveness.calculate(type, *target.pokemon.types)
+    score += 50 if Effectiveness.super_effective?(value)
+    score -= 50 if Effectiveness.not_very_effective?(value)
+  end 
+  return 0
+end 
+
+
+end
+
+
+
+class OverworldCombat::Moves
+ def self.valid_targets(attacker, move)
+  target_data = OverworldCombat::Moves.target_data(move.id)
+   puts target_data.id
+   case target_data.id
+  when :User
+    return pbOverworldCombat.user(attacker)
+
+  when :NearAlly
+    return pbOverworldCombat.other_allies(attacker)
+
+  when :UserOrNearAlly, :UserAndAllies, :AllAllies, :UserSide
+    return pbOverworldCombat.ally(attacker)
+
+  when :NearFoe, :RandomNearFoe, :Foe, :AllFoes, :FoeSide, :Other, :AllNearOthers, :NearOther, :AllNearFoes
+    return pbOverworldCombat.foe(attacker)
+
+  when :AllBattlers, :BothSides
+   return pbOverworldCombat.ally(attacker) + pbOverworldCombat.foe(attacker)
+  else
+   raise 
+  end
+  return []
+ end 
+ 
+ def self.score_target(attacker, move, target, skill)
+    if attacker.is_a?(Game_PokeEvent)
+	  score = OverworldCombat::Opponent.score_target(attacker, move, target, skill)
+	else
+	  score = OverworldCombat::Ally.score_target(attacker, move, target, skill)
+	end 
+ end 
+ 
+
+  def self.score_move(attacker, move, skill)
+    user = attacker.pokemon
+    score = 100
+  if skill > 120
+
+    if user.status == :SLEEP
+      unless [:SNORE, :SLEEPTALK].any? { |m| user.moves.include?(m) }
+        score -= 60
+      end
+    end
+
+    if user.status == :FROZEN
+      if move.flags.any? { |f| f[/^ThawsUser$/i] }
+        score += 40
+      elsif user.moves.any? { |m| m.flags.any? { |f| f[/^ThawsUser$/i] } }
+        score -= 60
+      end
+    end
+
+    if user.hp <= user.totalhp / 4
+      if move.function_code == "FleeFromBattle" ||
+         move.function_code == "SwitchOutUserStatusMove"
+        score += 40
+      elsif move.function_code == "SwitchOutUserDamagingMove"
+        score += 60
+      end
+    end
+
+  end
+
+
+  if skill > 160
+    score -= 100 if move.function_code.include?("SwitchOut")
+    score += 30 if move.function_code == "TrapTargetInBattle"
+    score += 80 if move.function_code == "PursueSwitchingFoe"
+  end
+
+
+  if skill > 200
+    score += 30 if move.function_code == "DestroyTargetBerryOrGem"
+
+    if move.function_code == "HealUserHalfOfTotalHP"
+      score += 30
+    end
+
+    if ["FixedDamage20","FixedDamage40","FixedDamageHalfTargetHP","FixedDamageUserLevel"].include?(move.function_code)
+      score += 80
+    end
+  end
+
+
+  score -= 100 if move.function_code == "UserFaintsExplosive"
+
+  score -= 40 if move.category == 2
+
+  score 
+  
+  end 
+  def self.choose_target(attacker, move)
+    scored_targets = self.valid_targets(attacker, move)&.map do |target|
+      score = score_target(attacker, move, target, 999)
+      score += rand(-5..5) unless score.nil?
+      [target, score]
+    end
+	if attacker.is_a?(Game_PokeEventA)
+	puts scored_targets.nil?
+	puts scored_targets.empty?
+	end
+    return nil if scored_targets.nil?
+    return nil if scored_targets.empty?
+   best_target = scored_targets&.reject { |_, score| score.nil? }&.max_by { |_, score| score }
+   best_target&.first
+  end 
+  def self.choose_move(attacker, target)
+  skill = (($PokemonSystem.difficulty + 1) * $PokemonSystem.difficultymodifier) + (rand(80) + 1)
+  actions = []
+
+  attacker.pokemon.totalMoves.each do |move|
+    next unless OverworldCombat.can_choose_move?(attacker, move)
+
+    move_score = score_move(attacker, move, skill)
+    target_score = score_target(attacker, move, target, skill)
+    next if target_score.nil?
+
+    variance = skill > 200 ? 5 : 15
+    score = move_score + target_score + rand(-variance..variance)
+
+    actions << [move, target, score]
+  end
+
+  return nil if actions.empty?
+  actions.max_by { |action| action[2] }
+  
+  
+  
+  
+  end 
+  
+  def self.choose_action(attacker)
+    skill=(($PokemonSystem.difficulty+1)*$PokemonSystem.difficultymodifier)+(rand(80)+1)	
+    actions = []
+
+    attacker.pokemon.totalMoves.each do |move|
+    next unless OverworldCombat.can_choose_move?(attacker, move)
+    move_score = score_move(attacker, move, skill)
+
+    self.valid_targets(attacker, move)&.each do |target|
+	  score = score_target(attacker, move, target, skill)
+	 # puts "#{attacker.pokemon.name} targets #{target.pokemon.name} using #{move.name} - Score 1: #{score}"
+	  next if score.nil?
+      score += move_score
+	  variance = skill > 200 ? 5 : 15
+      score += rand(-variance..variance)
+	#  puts "#{attacker.pokemon.name} targets #{target.pokemon.name} using #{move.name} - Score 2: #{score}"
+      actions << [move, target, score]
+    end
+    end
+    return nil if actions.nil?
+    return nil if actions.empty?
+	#puts "Returning action"
+    actions.max_by { |action| action[2] }
+  end 
+
+
+def self.target_data(move_id)
+   moveData = GameData::Move.get(move_id)
+   GameData::Target.get(moveData.target)
+end 
+
+def self.targets_ally?(move_id)
+  target_data = OverworldCombat::Moves.target_data(move_id)
+  [:NearAlly, :UserOrNearAlly, :UserAndAllies, :AllAllies, :UserSide, :NearOther, :AllNearOthers, :Other, :AllBattlers, :BothSides].include?(target_data)
+
+end 
+
+def self.targets_user?(move_id)
+  target_data = OverworldCombat::Moves.target_data(move_id)
+  [:User, :UserOrNearAlly, :UserAndAllies, :UserSide, :NearOther, :AllNearOthers, :Other, :AllBattlers, :BothSides].include?(target_data)
+
+end 
+
+def self.targets_foe?(move_id)
+  target_data = OverworldCombat::Moves.target_data(move_id)
+  [:NearFoe, :RandomNearFoe, :AllNearFoes, :FoeSide, :Foe, :AllFoes, :NearOther, :AllNearOthers, :Other, :AllBattlers, :BothSides].include?(target_data)
+
+end 
+  def self.pbTypes(target, withType3 = false)
+    ret = target.types.uniq
+    # Burn Up erases the Fire-type.
+   # ret.delete(:FIRE) if @effects[PBEffects::BurnUp]
+    # Roost erases the Flying-type. If there are no types left, adds the Normal-
+    # type.
+   # if @effects[PBEffects::Roost]
+   #   ret.delete(:FLYING)
+   #   ret.push(:NORMAL) if ret.length == 0
+  #  end
+    # Add the third type specially.
+   # if withType3 && @effects[PBEffects::Type3] && !ret.include?(@effects[PBEffects::Type3])
+   #   ret.push(target.effects[PBEffects::Type3])
+   # end
+    return ret
+  end
+
+  #=============================================================================
+  # Type effectiveness calculation
+  #=============================================================================
+  def self.type_mod_single(moveType, defType, user, target)
+    ret = Effectiveness.calculate_one(moveType, defType)
+    if Effectiveness.ineffective_type?(moveType, defType)
+      # Ring Target
+    #  if target.hasActiveItem?(:RINGTARGET)
+    #    ret = Effectiveness::NORMAL_EFFECTIVE_ONE
+    #  end
+      # Foresight
+      if (user.hasAbility?(:SCRAPPY) || target.effects[PBEffects::Foresight]) &&
+         defType == :GHOST
+        ret = Effectiveness::NORMAL_EFFECTIVE_ONE
+      end
+      # Miracle Eye
+      if target.effects[PBEffects::MiracleEye] && defType == :DARK
+        ret = Effectiveness::NORMAL_EFFECTIVE_ONE
+      end
+    elsif Effectiveness.super_effective_type?(moveType, defType)
+      # Delta Stream's weather
+      if $game_screen.weather_type == :StrongWinds && defType == :FLYING
+        ret = Effectiveness::NORMAL_EFFECTIVE_ONE
+      end
+    end
+    # Grounded Flying-type Pokémon become susceptible to Ground moves
+    #if !target.airborne? && defType == :FLYING && moveType == :GROUND
+    #  ret = Effectiveness::NORMAL_EFFECTIVE_ONE
+    #end
+    return ret
+  end
+
+  def self.type_mod(moveType, user, target)
+    return Effectiveness::NORMAL_EFFECTIVE if !moveType
+    return Effectiveness::NORMAL_EFFECTIVE if moveType == :GROUND &&
+                                              target.pbHasType?(:FLYING) &&
+                                              target.hasActiveItem?(:IRONBALL)
+    # Determine types
+    tTypes = self.pbTypes(target, true)
+    # Get effectivenesses
+    typeMods = [Effectiveness::NORMAL_EFFECTIVE_ONE] * 3   # 3 types max
+    if moveType == :SHADOW
+      if target.shadowPokemon?
+        typeMods[0] = Effectiveness::NOT_VERY_EFFECTIVE_ONE
+      else
+        typeMods[0] = Effectiveness::SUPER_EFFECTIVE_ONE
+      end
+    else
+      tTypes.each_with_index do |type, i|
+        typeMods[i] = self.type_mod_single(moveType, type, user, target)
+      end
+    end
+    # Multiply all effectivenesses together
+    ret = 1
+    typeMods.each { |m| ret *= m }
+    #ret *= 2 if target.effects[PBEffects::TarShot] && moveType == :FIRE
+	#puts ret
+    return ret
+  end
+end 
+
 class OverworldCombat #Move Calculations
 
-def can_choose_move?(event,move,showMessages=false)
+def self.num_hits(move, user, target)
+ if user.hasAbility?(:PARENTALBOND) && move.category != 2 && !OverworldCombat.chargingattack?(move)
+  user.effects[PBEffects::ParentalBond] = 3
+  return move.num_hits + 1
+ else
+  return move.num_hits
+ end 
+end 
+
+def self.chargingattack?(move)
+  false 
+end 
+
+def self.sight_line(seer)
+  return seer.counter.to_i if defined?(seer.counter)
+     counter_match = seer.name.match(/surrounding\(\d+\)/)
+	 counter = counter_match[0] if counter_match
+	 number_match = counter.match(/\d+/) if counter
+	 number = number_match[0] if number_match
+
+  return number.to_i if number
+  return 3 
+end
+
+def participants_in_range(type, source, range)
+  pbOverworldCombat.getParticipants(type).values.select do |event|
+    next false unless event.map_id == source.map_id
+
+    dx = (event.x - source.x).abs
+    dy = (event.y - source.y).abs
+
+    dx + dy <= range
+  end
+end
+
+def self.can_choose_move?(event,move,showMessages=false)
   pkmn = event.pokemon
   if move.pp == 0 && move.total_pp > 0
 	  sideDisplay("There's no PP left for this move!") if showMessages
@@ -30,34 +616,24 @@ def can_choose_move?(event,move,showMessages=false)
   end
   return true
 end
-def adjacent?(a, b)
+def self.adjacent?(a, b)
    dx = (a.x - b.x).abs
    dy = (a.y - b.y).abs
   (dx + dy) == 1
 end
 
-def attack_movement_old(attacker,target,amt)
-    $game_temp.preventspawns=true
-	amt.times do |i|
-	  attacker.move_to_another_event(target)
-      attacker.turn_toward_event(target)
-	end 
-	moving = true
-    start_coord,landing_coord = getLandingCoords(amt,attacker)
-    startx = start_coord[0]
-    starty = start_coord[1]
-	moving = $game_map.check_event_and_adjacents2(attacker, target)
-	$game_temp.preventspawns=false
-    return moving
 
-end
-
-def within_cardinal_sight?(attacker, target)
+def self.within_cardinal_sight?(attacker, target)
   dx = (attacker.x - target.x).abs
   dy = (attacker.y - target.y).abs
-  (dx == 0 || dy == 0) && dx + dy <= sight_line(attacker)
+  (dx == 0 || dy == 0) && dx + dy <= OverworldCombat.sight_line(attacker)
 end
-def target_in_front?(attacker, target)
+def self.within_sight?(attacker, target)
+  dx = (attacker.x - target.x).abs
+  dy = (attacker.y - target.y).abs
+  Math.sqrt(dx * dx + dy * dy) <= OverworldCombat.sight_line(attacker)
+end
+def self.target_in_front?(attacker, target)
   case attacker.direction
   when 2 # down
     target.x == attacker.x && target.y == attacker.y + 1
@@ -72,7 +648,7 @@ def target_in_front?(attacker, target)
   end
 end
 
-def tile_in_front(event)
+def self.tile_in_front(event)
   x = event.x
   y = event.y
 
@@ -90,321 +666,173 @@ def tile_in_front(event)
   return x, y
 end
 
-def attack_movement(attacker,target,amt)
-   # $game_temp.preventspawns=true
-	moving = false
-	steps = 0 
-      attacker.turn_toward_event(target)
-	loop do
-	  break if steps>=sight_line(attacker)
-	  if target_in_front?(attacker, target)
-        moving = true
-        break
-      end
-	  if attacker.can_move_in_direction?(attacker.direction)
-	  attacker.move_forward  #move_to_another_event(target)
-	  loop do
-        update_package
-        break unless attacker.moving?
-      end
-	  steps+=1 if !within_cardinal_sight?(attacker, target)
-	  else 
-	    event = $game_map.check_event(*tile_in_front(attacker))
-		if event && event.is_a?(Game_PokeEvent) || event.is_a?(Game_PokeEventA)
-		 moving = event
-		else 
-         moving = :COLLIDED
-		end 
-        break
-	  end
-	end 
-#	$game_temp.preventspawns=false
-    return moving
-
-end
-
-def attack_special(attacker,target,move)
-   # $game_temp.preventspawns=true
-   
-	moving = false
-	steps = 0 
-      attacker.turn_toward_event(target)
-	  dx, dy = tile_in_front(attacker)
-	  event = $DynamicEvents.spawnTempEvent(dx,dy,move)
-	  event.counter = attacker.counter
-	  event.direction = attacker.direction
-	loop do
-	  break if steps>=sight_line(event)
-	  if target_in_front?(event, target)
-        moving = true
-        break
-      end
-	  if event.can_move_in_direction?(event.direction)
-	  event.move_forward  #move_to_another_event(target)
-	  loop do
-        update_package
-        break unless event.moving?
-      end
-	  steps+=1 if !within_cardinal_sight?(event, target)
-	  else 
-	    detected_event = $game_map.check_event(*tile_in_front(attacker))
-	   if detected_event && detected_event.is_a?(Game_PokeEvent) || detected_event.is_a?(Game_PokeEventA)
-		 moving = detected_event
-	   else
-        moving = false
-	   end 
-        break
-	  end
-	end 
-#	$game_temp.preventspawns=false
-    event.removeThisEventfromMap
-    return moving
-
-end
-
-def chooseMove(attacker,target,distance)
-   skill=(($PokemonSystem.difficulty+1)*$PokemonSystem.difficultymodifier)+(rand(80)+1)	
-   potato = []
-   potato2 = []
-   attacker.pokemon.moves.each do |m|
-      duris = get_ov_move_score(m,attacker.pokemon,target,skill,distance)
-      if can_choose_move?(attacker,m)
-      potato << duris
-	  else
-      potato << 0
-	  end
-   end
-
-   attacker.pokemon.moves2.each do |m|
-      duris = get_ov_move_score(m,attacker.pokemon,target,skill,distance)
-      if can_choose_move?(attacker,m)
-      potato2 << duris
-	  else
-      potato2 << 0
-	  end
-   end
-   if potato.empty?
-      potato << 0
-   end
-   if potato2.empty?
-      potato2 << 0
-   end
-   largest = potato.max
-   largest2 = potato2.max
-   largeroftwo = [largest,largest2].max
-   if largeroftwo==0
-    return false
-   else
-   max_index1 = [largest,largest2].index(largeroftwo)
-    if max_index1==0
-   max_index = potato.index(largest)
-   return attacker.pokemon.moves[max_index]
-    else
-   max_index = potato2.index(largest2)
-   return attacker.pokemon.moves2[max_index]
-    end
-   end
-
-end
-
-def sight_line(seer)
-  return seer.counter.to_i if defined?(seer.counter)
-     counter_match = seer.name.match(/surrounding\(\d+\)/)
-	 counter = counter_match[0] if counter_match
-	 number_match = counter.match(/\d+/) if counter
-	 number = number_match[0] if number_match
-
-  return number.to_i if number
-  return 3 
-end
-
-def move_physical(attacker,target,move,distance,target_x,target_y)
-     use_move(attacker,target,move,distance,target_x,target_y)
-end
-
-
-def move_physical_close(attacker,target,move,distance,target_x,target_y)
-      use_move(attacker,target,move,distance,target_x,target_y)
-end
-
-
-def move_special(attacker,target,move,distance,target_x,target_y)
-	  use_move(attacker,target,move,distance,target_x,target_y)
-end
-
-
-def move_other(attacker,target,move,distance,target_x,target_y)
-	  use_move(attacker,target,move,distance,target_x,target_y)
-end
-  
-  def movement_attack?(attacker,move,distance)
-  
-    return move.category == 0 && distance<=sight_line(attacker) && distance>1
-  
-  end
-  
-  def still_there?(target,target_x,target_y)
-    return [target.x,target.y]==[target_x,target_y]
-  
-    
-	
-	return target,target_x,target_y
-  end
  
-  def within_range?(user,target,move_id,distance=nil)
-      #distance = nil
-     move_id = move.id if defined?(move.id)
-     return true if overworld_aoe?(move_id)
-     distance = sight_line(user) if distance.nil?
-	 new_distance = pbAbsoluteDistance(target.x,target.y,user.x,user.y)
-	  result = new_distance<=distance
-   return result
-  
+  def self.within_range?(user, target, move, distance=OverworldCombat.sight_line(user))
+	 pbAbsoluteDistance(target.x,target.y,user.x,user.y) <= distance
   end
-  
-   def who_now?(attacker,target,target_x,target_y)
-  	       if (nutarget = who_am_i_hitting(attacker,target,target))
-		       return false if nutarget==false
-		       return false if target==nutarget
-		       if nutarget.is_a?(Array)
-			     target = nutarget[0]
-		       else
-			     target = nutarget
-		       end
-          else
-		      return false
-		   end
-    
-	
-	return target
+
+def execute_move(attacker, move, target)
+  context = { :user => attacker, :target => target, :move => move }
+  results = OverworldCombat::MoveExecution.apply(context)
+  return false if results.nil?
+  targets = results.compact.select do |result|
+    next false if result.is_a?(Symbol)
+    !outSpeeds?(attacker, result, move)
   end
- def within_cardinal_range?(a, b, range)
-  dx = (a.x - b.x).abs
-  dy = (a.y - b.y).abs
+  return false if targets.empty?
+  hit_targets = []
+  targets.each do |target|
+      next unless target
 
-  return false unless dx == 0 || dy == 0
+      accuracy = move.accuracy
+      accbonus = 0
 
-  dx + dy <= range
-end
- 
- def use_move(attacker,target,move,distance,target_x,target_y)
-       puts "#{move.category}(#{distance}).#{move.name}"
-	    attacker.cannot_move=false if defined?(attacker.cannot_move)
-	    if move.category == 2
-		  sideDisplay("#{attacker.pokemon.name} focused!")if !target.is_a?(Game_PokeEvent) 
-		  return
-		end
-		if !within_range?(attacker,target,move,distance)
-		   return
-		end
-        turning_prep(attacker,target)
-	    amt = sight_line(attacker)
-	    moving = false
-		if movement_attack?(attacker,move,distance)
-	     sideDisplay("#{attacker.pokemon.name} is rearing back for a dash!!") if !target.is_a?(Game_PokeEvent)
-	     moving = attack_movement(attacker,target,amt) 
-		 if moving == :COLLIDED
-	      sideDisplay("#{attacker.pokemon.name} was stunned by the collision!") if !target.is_a?(Game_PokeEvent)
-	      moving = false
-		  inflictStatus(nil, nil, attacker.pokemon, :PARALYSIS, 4)
-		  attacker.battle_timer = 200 if defined?(attacker.battle_timer)
-		 elsif moving.is_a?(Game_PokeEvent) || moving.is_a?(Game_PokeEventA)
-		   target = moving
-		   moving = true 
-		 end 
-		elsif move.category == 1 && within_cardinal_range?(attacker, target, sight_line(attacker))
-	     sideDisplay("#{attacker.pokemon.name} begins channeling its energy!") if !target.is_a?(Game_PokeEvent) && move.category == 1
-		 moving = attack_special(attacker,target,move) 
-		 if moving.is_a?(Game_PokeEvent) || moving.is_a?(Game_PokeEventA)
-		   target = moving
-		   moving = true 
-		 end 
-		elsif adjacent?(attacker,target)
-         attacker.turn_toward_event(target)
-	     moving = true
-		end 
-	    puts "#{attacker.pokemon.name} is trying to move and the result? #{moving}" if attacker.battle_timer<1
+      # TODO: accuracy stages later
+      # accbonus += attacker.stages[:ACCURACY]
+       
+      if target == $game_player
+        will_hit = rand(100) + ($player.shoespeed / 2) < (accuracy + accbonus)
+      else
+        will_hit = rand(100) < (accuracy + accbonus)
+      end
+        will_hit = true if accuracy == 0
+      next unless will_hit
 
-		if moving==false
-         sideDisplay("#{attacker.pokemon.name} missed!")
-         pbSEPlay("Miss")
-		 return false 
-		end
-		if outSpeeds?(attacker,target, move)
-			sideDisplay("#{attacker.pokemon.name} was outsped by #{target.pokemon.name}!!") if !target.is_a?(Game_PokeEvent)
-	       pbSEPlay("phenomenon_grass")
-		   return false
-		end
-	    start_glow(attacker)
-		offensive_turn_finishing(attacker,target,move,distance)
- end
-
-def offensive_turn_finishing(attacker,target,move,distance,evasionbonus=0)
-   accuracy   = move.accuracy
-   accbonus=0
-   if attacker.stages.key?(:ACCURACY)
-    
-   end
-    will_hit = rand(100)+($player.shoespeed/2) < (accuracy+accbonus) if target == $game_player
-    will_hit = rand(100)+evasionbonus < (accuracy+accbonus) if target != $game_player
-	
-    will_hit = false if !within_range?(attacker,target,move,distance)
-    move.record_move_use(attacker.pokemon, target.pokemon)
-	if will_hit==true
-	   move.pp -= 1
-	   move.pp = 0 if move.pp<0
-       is_hitting(attacker,target,move,distance)
-       @currentlyinbattle = false
-	   return true
-   else
-       @currentlyinbattle = false
-	   return false
-   end
-   
-   
-   
-
+      hit_targets << target
+  end
+  return false if hit_targets.empty?
+  move.pp -= 1 if move.pp>0
+  start_glow(attacker)
+  sound_from_move(move.id,attacker.pokemon)
+  sideDisplay("#{attacker.pokemon.name} used #{move.name}!")
+  hit_targets.each do |target|
+      move.record_move_use(attacker.pokemon, target.pokemon)
+      resolve_move(attacker, target, move)
+  end
+  return true
 end
 
+def resolve_move(attacker, target, move)
+  if move.category == 2
+    resolve_status_move(attacker, target, move)
+    return
+  end
+  
+  directionals = getdirissues(attacker, target)
+  backattack, sideattack, baddir = directionals 
+  multiplier = 1
+  multiplier = 1.5 if backattack
+  multiplier = 1.25 if sideattack
+  damage = getDamager(attacker, target, move, multiplier)
+  
+  if backattack
+    pbSEPlay("Battle damage super")
+  elsif sideattack
+    pbSEPlay("Battle damage normal")
+  else
+    pbSEPlay("Battle damage weak")
+  end
+  
+  effects = OverworldCombat::MoveEffects.apply_secondary({
+    move: move,
+    user_event: attacker,
+    target_event: target,
+    user: attacker.pokemon,
+    target: target.pokemon,
+    damage: damage
+  })
+  attacker.battle_timer = attacker.extend_battle_timer if attacker.respond_to?(:extend_battle_timer)
+  attacker.attack_opportunity = attacker.attack_opportunity + rand(Graphics.frame_rate) + 30 if attacker.respond_to?(:attack_opportunity)
+  attacker.attack_cooldowns.map! do |cooldown|
+    [cooldown - move.priority * 10, 20].max
+  end if defined?(attacker.attack_cooldowns) && move.priority != 0
+  effects = OverworldCombat::MoveOverworldState.apply({
+    move: move,
+    user_event: attacker,
+    target_event: target,
+    user: attacker.pokemon,
+    target: target.pokemon,
+    damage: damage
+  })
+  damage = effects[:damage_changes] if effects && effects[:damage_changes]
+  
+ #  puts "#{attacker.pokemon.name} Lv#{attacker.pokemon.level} uses #{move.category}. #{move.name} and does #{damage} damage."
+  resolve_attack(damage, target, attacker, move, directionals)
+  
+  if attacker.is_a?(Game_PokeEventA) &&
+     (target.nil? || target.pokemon.nil? || target.pokemon.fainted?)
+    attacker.last_attacked = false
+  end
+end 
+
+def resolve_status_move(attacker, target, move)
+  result = OverworldCombat::MoveEffects.apply_primary({
+    move: move,
+    user_event: attacker,
+    target_event: target,
+    user: attacker.pokemon,
+    target: target.pokemon
+  })
+  result 
+end 
+
+
+def resolve_attack(damage, target, attacker, move, directionals)
+  if target == $game_player
+    attacking_the_player(damage, attacker, move, directionals)
+  else
+    attacking_whatever_else(damage, target, attacker, move)
+  end
+end 
 
 
 
-
-  def overworld_aoe?(move_id)
-     return true if move_id  == :EARTHQUAKE || move_id == :MAGNITUDE
-	 return false
-  end
-  def get_aoe_targets(attacker)
-    
-     counter_match = attacker.name.match(/surrounding\(\d+\)/)
-	 counter = counter_match[0] if counter_match
-	 number_match = counter.match(/\d+/) if counter
-	 number = number_match[0] if number_match
-	 currentDistance = number if number
-	 currentDistance = currentDistance.to_i if !currentDistance.is_a?(Integer)
-	 results = get_events_in(currentDistance,attacker.x,attacker.y)
-    return results 
-  end
-  def oko_protection(damage)
-     return false if $game_temp.bossfight==true
-	 return $player.playerhealth==$player.playermaxhealth2 && damage>$player.playerhealth
-  end
- 
-
- 
-  def enemy_adv(damage,move)
-     return false if $game_temp.bossfight==true
-	 return true if ($player.playerhealth-damage<=get_threshold_for_hp) && $player.active_party.length>0
-	 return true if move.base_damage >=100
-	 return false
-  end
-  def get_threshold_for_hp
-	 threshold = $player.playermaxhealth2 * 0.2
-     return threshold
-  end
-  def get_threshold_damage
-    return $player.playerhealth - get_threshold_for_hp
+  def health_exclaimation(damage)
+	pbWait(6)
+    pbExclaim($game_player,17) if $player.playerhealth-damage >= 80
+    pbExclaim($game_player,16) if $player.playerhealth-damage >= 50 && $player.playerhealth-damage < 80
+    pbExclaim($game_player,15) if $player.playerhealth-damage >= 25 && $player.playerhealth-damage < 50
+    pbExclaim($game_player,14) if $player.playerhealth-damage <= 24
   end 
+  
+
+  def attacking_the_player(damage, attacker, move, directionals)
+        backattack, sideattack, baddir = directionals 
+		if $player.blocking && !backattack && !sideattack
+         current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+		 if current_selection.is_a?(ItemData)
+		  pbSEPlay("Anim/Knock")
+		  reduced_damage = damage/2
+		  current_selection.decrease_durability(reduced_damage)
+		  return 
+		 end
+		end
+        damage *= 1.5
+		health_exclaimation(damage)
+		damagePlayer(damage, true)
+		if should_knock_down_player?(damage, move)
+		  get_knocked_down(attacker)
+		end
+
+  end
+  def should_knock_down_player?(damage, move)
+    return false if $game_temp.bossfight
+    return false if $player.fainted?
+    return true if move.base_damage >= 100
+    return false
+  end
+  
+  def attacking_whatever_else(damage, target, attacker, move)
+	  target.turn_toward_target(attacker)
+	  start_attacked_glow(target,attacker)
+	  target.angry_at << attacker if defined?(target.angry_at) && !target.angry_at.include?(attacker)
+	  target.add_target(attacker.id, attacker) if defined?(target.add_target) && !target.targets.keys.include?(attacker.id)
+	  target.last_attacked_by = attacker.id
+	  damagePokemon(target,damage)
+  end
+
+
+
   def get_knocked_down(attacker)
 	      sideDisplay("#{attacker.pokemon.name} knocked #{$player.name} down!")
 		   
@@ -414,321 +842,22 @@ end
 	      $game_temp.encounter_type = $game_temp.encounter_type
 	      pbStoreTempForBattle()
 	      $PokemonGlobal.battlingSpawnedPokemon = true
-	      $game_temp.in_safari = true
-	      pbSingleOrDoubleWildBattle($game_map.map_id, attacker.x, attacker.y, attacker.pokemon)
-	      $game_temp.in_safari = false
+		  pbSafariBattle(nil,nil,attacker.pokemon)
+	      #pbSingleOrDoubleWildBattle($game_map.map_id, attacker.x, attacker.y, attacker.pokemon)
 	      $PokemonGlobal.battlingSpawnedPokemon = false
 	      pbResetTempAfterBattle()
           attacker.removeThisEventfromMap if attacker.is_a?(Game_PokeEvent)
   end
   
-  def attacking_the_player(damage, attacker , move)
-  
-		pbWait(6)
-		pbExclaim($game_player,17) if $player.playerhealth >= 80
-		pbExclaim($game_player,16) if $player.playerhealth >= 50 && $player.playerhealth < 80
-		pbExclaim($game_player,15) if $player.playerhealth >= 25 && $player.playerhealth < 50
-        pbExclaim($game_player,14) if $player.playerhealth <= 24
-		puts !oko_protection(damage)
-		puts !enemy_adv(damage,move)
-		if !oko_protection(damage) && !enemy_adv(damage,move)
-		  damagePlayer(damage,true)
-		else
-          damagePlayer(get_threshold_damage,true)
-	      get_knocked_down(attacker)
-		end
-  end
-  
-  def attacking_whatever_else(damage, target, attacker, move)
-  
-	  start_attacked_glow(target,attacker)
-	  returneffects = {}
-	  returneffects = applyStatus(attacker,target,move,attacker.pokemon,target.pokemon,damage) if rand(100) < 26
-	  damage = returneffects[:ABSOLUTEDAMAGE] if returneffects[:ABSOLUTEDAMAGE]
-	 
-	  target.angry_at << attacker if defined?(target.angry_at) && !target.angry_at.include?(attacker)
-	  damagePokemon(target,damage)
-  
-  end
-  
-  def get_base_damage(user,move)
-   baseDmg = move.base_damage
-    if move.function_code.include?("PowerHigherWithConsecutiveUse") || move.function_code.include?("PowerHigherWithConsecutiveUseOnUserSide")
-      oldVal = user.effects[PBEffects::FuryCutter]
-      multiplier = 1
-	   potato = [oldVal,3].min
-      (potato - 1).times do
-         multiplier *= 2
-       end
-      baseDmg = baseDmg * multiplier
-      maxMult = 1
-      if (baseDmg << (maxMult - 1)) < 160
-        maxMult += 1   # 1-4 for base damage of 20, 1-3 for base damage of 40
-      end
-	   if oldVal == 5
-	    user.effects[PBEffects::FuryCutter]=0
-		elsif oldVal >= 3
-      user.effects[PBEffects::FuryCutter] = 3
-		else
-      user.effects[PBEffects::FuryCutter] = oldVal + 1
-	   end
-	  puts user.effects[PBEffects::FuryCutter]
-    end
-  
-   
-   
-   return baseDmg
-  end
-  
-  
-  
- def is_hitting(attacker,target23,move,distance) 
-     sideDisplay("#{attacker.pokemon.name} used #{move.name}!") if !target.is_a?(Game_PokeEvent)
-     sound_from_move(move.id,attacker.pokemon)
-	  results = [target23] if !target23.is_a?(Array)
-	  results = target23 if target23.is_a?(Array)
-	   $game_temp.preventspawns=true
-	  results = get_aoe_targets(attacker) if overworld_aoe?(move.id)
-	  results.each do |target|
-	      puts (target23.is_a?(Array) && target == target23[0]) && (!target23.is_a?(Array) && target == target23)
-	   if (target23.is_a?(Array) && target == target23[0]) && (!target23.is_a?(Array) && target == target23)
-    return false if !within_range?(attacker,target,move,distance)
-	   end
-       backattack,sideattack,baddir = getdirissues(attacker,target)
-	   $game_temp.preventspawns=false
-	   multiplier = 1
-	   multiplier = 1.5 if backattack
-	   multiplier = 1.25 if sideattack
-        thedamage = getDamager(attacker,target,move,multiplier)
-		pbSEPlay("Battle damage super") if backattack
-		pbSEPlay("Battle damage normal") if sideattack
-		pbSEPlay("Battle damage weak") if !sideattack && !backattack
-	     if target==$game_player
-		   attacking_the_player(thedamage, attacker, move)
-		 else
-		   attacking_whatever_else(thedamage, target, attacker, move)
-		 end
-      attacker.last_attacked = false if attacker.is_a?(Game_PokeEventA) && (target.nil? || target.pokemon.nil? || target.pokemon.fainted?)
-	  
-	  end
-
- 
- 
-
-	 
- 
- 
- 
- 
- 
- 
- 
- 
- end
 
 
 
 
-
-
-
-
-
-
-def get_ov_move_score(move,user,target,skill,distance)
-   # 1*40 = 40
-   # 2*40 = 80
-   # 3*40 = 120
-   # 4*40 = 160
-    score = 100
-     if skill > 120
-      # If user is asleep, prefer moves that are usable while asleep
-      if user.status == :SLEEP && (move!=:SNORE||move!=:SLEEPTALK)
-        user.moves.each do |m|
-          next unless (m==:SNORE||m==:SLEEPTALK)
-          score -= 60
-          break
-        end
-      end
-      # If user is frozen, prefer a move that can thaw the user
-      if user.status == :FROZEN
-        if move.flags.any? { |f| f[/^ThawsUser$/i] }
-          score += 40
-        else
-          user.moves.each do |m|
-            next unless m.flags.any? { |f| f[/^ThawsUser$/i] }
-            score -= 60
-            break
-          end
-        end
-      end
-      # If target is frozen, don't prefer moves that could thaw them
-	  if target.is_a?(Pokemon)
-      if target.status == :FROZEN
-        user.moves.each do |m|
-          next if m.flags.any? { |f| f[/^ThawsUser$/i] }
-          score -= 60
-          break
-        end
-      end
-	  elsif target==$game_player
-      if $player.playerstateffect == :FROZEN
-        user.moves.each do |m|
-          next if m.flags.any? { |f| f[/^ThawsUser$/i] }
-          score -= 60
-          break
-        end
-       end
-     end	  
-	   
-	   if move.function_code.include?("SleepTarget")
-	      score += 40
-	   end
-
-	   if move.function_code.include?("ParalyzeTarget" )
-	      score += 40
-	   end
-	   
-	   
-	   if move.function_code.include?("PoisonTarget")
-	      score += 40
-	   end
-
-
-	   
-	   if move.function_code.include?("BurnTarget")
-	      score += 40
-	   end
-
-
-	   
-	   if move.function_code.include?("FreezeTarget")
-	      score += 40
-	   end
-
-
-	   if move.function_code == "GiveUserStatusToTarget"
-      if user.status == :NONE
-        score -= 90
-      else
-        score += 40
-	   end
-	   end
-	  end
-     if skill > 160
-	   	if move.function_code.include?("SwitchOut") 
-	   score -= 100
-	   end
-
-	   if move.function_code == "TrapTargetInBattle"
-	   score += 30
-	   end
-	   
-	   if move.function_code == "PursueSwitchingFoe"
-	   score += 80
-	   end
-	   
-
-	  end
-     if skill > 200
-	 	if move.function_code == "RemoveTargetItem"
-		  if target.is_a?(Pokemon)
-        score += 20 if target.item
-		  end
-	   end
-	   if move.function_code == "DestroyTargetBerryOrGem"
-	   score += 30
-	   end
-	   if move.function_code == "HealUserHalfOfTotalHP"
-	    score+30
-	   end
-
-	   if move.function_code == "FixedDamage20"
-	   score += 80
-	   end
-	   if move.function_code == "FixedDamage40"
-	   score += 80
-	   end
-	   if move.function_code == "FixedDamageHalfTargetHP"
-	   score += 80
-	   end
-	   if move.function_code == "FixedDamageUserLevel"
-	   score += 80
-	   end
-	   
-
-
-	  end
-
-	   if move.function_code == "UserFaintsExplosive"
-	    score -= user.hp * 100 / user.totalhp
-	   end
-
-
-
-        score -= 40 if move.category == 2
-        score += 80 if move.category == 1 && distance>1 #SPECIAL - HITTING WITH THE WAPOW
-        score += 40 if move.category == 1 && distance==1 #SPECIAL - HITTING WITH THE WAPOW
-        score += 80 if move.category == 0 && distance==1 #PHYSICAL _ IN YA FACE
-        score += 40 if move.category == 0 && distance>1 #PHYSICAL - RAMMING
-		get_ov_damage_score(score,move,user,target,skill)
-		   if target.is_a?(Pokemon)
-		   value = Effectiveness.calculate(move.type, *target.types)
-		   else
-		   value = Effectiveness.calculate(move.type, :NORMAL)
-		   end
-          score+=60 if Effectiveness.super_effective?(value)
-          score=0 if Effectiveness.ineffective?(value)
-          score-=60 if Effectiveness.not_very_effective?(value)
-          score-=60 if Effectiveness.resistant?(value)
-
-	   if move.function_code == "FleeFromBattle" 
-	   score = 0
-	   end
-
-    score = score.to_i
-	 if rand(2)==0
-	score+= rand(30)
-	 else
-	score-= rand(30)
-	 end
-    score = 0 if score < 0
-    return score
-
-end
-
-def get_ov_damage_score(score,move,user,target,skill)
-	 atk = pbGetAttackStat2(user,move)
-    dmg = ((move.base_damage+atk)/2).floor
-    if move.function_code == "AttackAndSkipNextTurn"
-	  dmg *= 2 / 3
-	end
-    damagePercentage = dmg * 100.0 / target.hp if target.is_a?(Pokemon)
-    damagePercentage = dmg * 100.0 / $player.playerhealth if !target.is_a?(Pokemon)
-	if target.is_a?(Pokemon)
-    damagePercentage *= 1.2 if user.level - 10 > target.level
-	else
-    damagePercentage *= 1.2 if dmg - 10 > $player.equipmentdefbuff
-	end
-	if skill > 160
-    damagePercentage = 120 if damagePercentage > 120   # Treat all lethal moves the same
-    damagePercentage += 40 if damagePercentage > 100   # Prefer moves likely to be lethal
-   end
-    score += damagePercentage.to_i
-    return score
-end
-
-def doesStatus?(move)
-   return true if move.function_code.include?("SleepTarget") || move.function_code.include?("ParalyzeTarget") || move.function_code.include?("PoisonTarget") ||
-   move.function_code.include?("BurnTarget") || move.function_code.include?("FreezeTarget") || move.function_code == "GiveUserStatusToTarget" || 
-   move.function_code == "BindTarget"
-   return false
-end
-def pbGetAttackStat2(user,move)
+def self.pbGetAttackStat2(user,move)
     if move.category == 1 
-      return user.spatk
+      return user.pokemon.spatk
     end
-    return user.attack
+    return user.pokemon.attack
   end
 
 

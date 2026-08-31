@@ -30,10 +30,10 @@ class DayCare
       inherit_ability(egg, mother_data, father_data)
       inherit_moves(egg, mother_data, father_data)
       inherit_IVs(egg, mother, father)
-		inherit_hptype(egg, mother, father)
+	  inherit_hptype(egg, mother, father)
       inherit_poke_ball(egg, mother_data, father_data)
-      egg.age = 1
-      egg.lifespan = 50
+      egg.age = set_birthday
+      egg.lifespan = egg.get_lifespan
       egg.water = 100
       egg.food = 100
       # Calculate other properties of the egg
@@ -360,6 +360,9 @@ class DayCare
   def get_compatibility2(pkmn1,pkmn2)
     return compatibility([pkmn1,pkmn2])
   end
+  def get_compatibility_between(pkmn1,pkmn2)
+    return compatibility([pkmn1,pkmn2])
+  end
   def generate_egg
     return nil if self.count != 2
     pkmn1, pkmn2 = pokemon_pair
@@ -551,17 +554,28 @@ class DayCare
       return 0 if self.count != 2
       pkmn1, pkmn2 = pokemon_pair
     end
+	
+	
     return 0 if pkmn1.shadowPokemon? || pkmn2.shadowPokemon?
     return 0 if pkmn1.celestial? || pkmn2.celestial?
+	
+	
     egg_groups1 = pkmn1.species_data.egg_groups
     egg_groups2 = pkmn2.species_data.egg_groups
+	
     return 0 if egg_groups1.include?(:Undiscovered) || egg_groups2.include?(:Undiscovered)
+	
     return 0 if egg_groups1.include?(:Ditto) && legendary_egg_group?(egg_groups2)
     return 0 if egg_groups2.include?(:Ditto) && legendary_egg_group?(egg_groups1)
+	
     return 0 if egg_groups1.include?(:Ancestor) && egg_groups2.include?(:Ultra)
     return 0 if egg_groups1.include?(:Ultra)    && egg_groups2.include?(:Ancestor)
-    return 0 if !fluid_egg_group?(egg_groups1 + egg_groups2) && (egg_groups1 & egg_groups2).length == 0
+	
+    shared_groups = egg_groups1 & egg_groups2
+	return 0 if shared_groups.empty? && !fluid_egg_group?(egg_groups1 + egg_groups2)
+	
     return 0 if !compatible_gender?(pkmn1, pkmn2)
+	
     ret = 1
     ret += 1 if pkmn1.species == pkmn2.species
     ret += 1 if pkmn1.owner.id != pkmn2.owner.id

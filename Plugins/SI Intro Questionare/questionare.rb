@@ -254,12 +254,11 @@ class Window_CommandPokemonEx2 < Window_DrawableCommand
   
   def scroll_down
      @trueindex = @truecommands.index(@commands[self.index])
-     return if @trueindex==@truecommands.length-1
+      next_index = (@trueindex + 1) % @truecommands.length
 	 
-    @downarrow2.visible = false if @trueindex+1==@truecommands.length-1
 	 nucommands = @commands.dup
 	 nucommands.delete_at(0)
-	 nucommands << @truecommands[@trueindex+1]
+	 nucommands << @truecommands[next_index]
 	 @commands = nucommands
     refresh
   end
@@ -267,11 +266,10 @@ class Window_CommandPokemonEx2 < Window_DrawableCommand
   
   def scroll_up
      @trueindex = @truecommands.index(@commands[self.index])
-     return if @trueindex==0
-    @downarrow2.visible = false if @trueindex+1!=@truecommands.length-1
+     prev_index = (@trueindex - 1) % @truecommands.length
 	 nucommands = @commands.dup
 	 nucommands.delete_at(@length)
-	 nucommands.insert(0,@truecommands[@trueindex-1])
+	 nucommands.insert(0,@truecommands[prev_index])
 	 @commands = nucommands
     refresh
   end
@@ -424,6 +422,7 @@ def pbStartGameIntro
       sscreen = PokemonIntro.new(sscene)
       ret = sscreen.pbStartScreen
 	   pbFullCustomization if $player&.character_ID == 11 || $player&.character_ID == 12
+	   $mouse.disable
   }
   return
 end
@@ -447,15 +446,13 @@ class PokemonIntroScene
 
 end
    if $PokemonSystem.difficulty < 2
-      $bag.add(:POTION,3)
+      $bag.add(ItemData.new(:POTION),3)
    end
-  
+   $mouse.enable
   
   end
   
   def update_player_sprites
-    puts @index+1
-	puts @index+1<9
       if @index+1<9
       meta = GameData::PlayerMetadata.get(@index+1)
 	   if meta
@@ -496,20 +493,20 @@ end
        _INTL("Gardener"),#11
        _INTL("Fisher"),#12
        _INTL("Hiker")]#13
-	 @descriptions = [_INTL("At any statue, you can take on the role of another Class, gaining their passive effects for the day. When not doing so, your POKeMON have a chance to not use PP."),#1
+	 @descriptions = [_INTL("At any statue, you can take on the role of another Class, gaining their passive effects for the day. When not doing so, your POKeMON have a chance to not use PP."),#0
 		  _INTL("You excel at movement, and have trained your body to use less Stamina, and move quicker by default. You'll never need Running Shoes."),#1
-         _INTL("All your POKeMON partake in your skills, letting them ignore Level Caps. Your Journal is filled with pages of POKeMON you have surely seen."),#3
-         _INTL("You can always flee from a fight with (non-special) Wild POKeMON, and owing to your profession you can obtain temporarily POKeMON without using POKeBALLs. ...Not that you are allowed to."),#4
-         _INTL("You can always use food to pacify the POKeMON you are fighting, and the food you make is of higher Quality."),#5 #Loyalty decays slower
-         _INTL("All your POKeMONs multihit moves will hit twice as much, and you can use various forms of punches."),#6
-         _INTL("You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme. Your POKeMON's Happiness decays slower."),#7
-         _INTL("You can craft most machines without Machine Boxes, use electric POKeMON as Generators, and all your POKeMON are immune to Electric Type moves."),#8
-         _INTL("You have a chance not to use an item, and will find twice as many items when scavenging."),#9
-         _INTL("You excel at working with Eggs, and have a higher chance to have them spawn. Eggs can appear when you sleep."),#10
-         _INTL("Sleeping and health items recover more health for both you and your POKeMON, and you passively heal while on the Overworld."),#11
-         _INTL("Plants you care for will always give a berry back if they die, or you dig them up. All Berries you have planted will grow slightly faster."),#12
-         _INTL("When fishing, you will encounter fish more frequently, which will be of higher level, and give more meat. You can even get meat off of a Magikarp."),#13
-         _INTL("You move around the Mountains with a Pole a little faster. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double.")#14
+         _INTL("All your POKeMON partake in your skills, letting them ignore Level Caps. Your Journal is filled with pages of POKeMON you have surely seen."),#2
+         _INTL("You can always flee from a fight with (non-special) Wild POKeMON, and owing to your profession you can obtain temporarily POKeMON without using POKeBALLs. ...Not that you are allowed to use POKeBALLs."),#3
+         _INTL("You can always use food to pacify the POKeMON you are fighting, and the food you make is of higher Quality."),#4 #Loyalty decays slower
+         _INTL("All your POKeMONs multihit moves will hit twice as much, and you can use various forms of punches."),#5
+         _INTL("You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme. Your POKeMON's Happiness decays slower."),#6
+         _INTL("You can craft most machines without Machine Boxes, use electric POKeMON as Generators, and all your POKeMON are immune to Electric Type moves."),#7
+         _INTL("You have a chance not to use an item, and will find twice as many items when scavenging."),#8
+         _INTL("You excel at working with Eggs, and have a higher chance to have them spawn. Eggs can appear when you sleep."),#9
+         _INTL("Sleeping and health items recover more health for both you and your POKeMON, and you passively heal while on the Overworld."),#10
+         _INTL("Plants you care for will always give a berry back if they die, or you dig them up. All Berries you have planted will grow slightly faster."),#11
+         _INTL("When fishing, you will encounter fish more frequently, which will be of higher level, and give more meat. You can even get meat off of a Magikarp."),#12
+         _INTL("You move around the Mountains with a Pole a little faster. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double.")#13
           ]
     helptext = "Name:"
     minlength = 1
@@ -572,6 +569,7 @@ end
       @sprites["heading"].z=@sprites["cmdwindow"].z+1
 	  @sprites["textbox"]=pbCreateMessageWindow
 	   @sprites["textbox"].height = (@sprites["textbox"].height*2)-43
+	   @sprites["textbox"].contents.font.size = 22
 	   @sprites["textbox"].y -= 52
       @sprites["textbox"].letterbyletter=false
       @sprites["textbox"].visible=false
@@ -608,7 +606,7 @@ end
 	pbPrepareWindow(@sprites["header"])
 	@sprites["header"].viewport=@viewport
 	@sprites["header"].windowskin=nil
-	@sprites["header"].x = @sprites["finishbutton"].x+20
+	@sprites["header"].x = @sprites["finishbutton"].x+16
 	@sprites["header"].y = @sprites["finishbutton"].y-7
 	@sprites["header"].width=Graphics.width-48
 	@sprites["header"].height=Graphics.height
@@ -660,22 +658,18 @@ end
       elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["charaleft"].x-5+$PokemonSystem.screenposx,@sprites["charaleft"].x+@sprites["charaleft"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["charaleft"].y+$PokemonSystem.screenposy,@sprites["charaleft"].y+@sprites["charaleft"].height+$PokemonSystem.screenposy))
 
         @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/b"))
-		 if @index-1>=0
             pbPlayCursorSE
-		@index-=1
+		  @index = (@index - 1) % 9
 		 update_player_sprites
 		  pbWait(5)
-		  end
         @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/a"))
       elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["chararight"].x-5+$PokemonSystem.screenposx,@sprites["chararight"].x+@sprites["chararight"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["chararight"].y+$PokemonSystem.screenposy,@sprites["chararight"].y+@sprites["chararight"].height+$PokemonSystem.screenposy))
 
         @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/d"))
-		if @index+1<=8
             pbPlayCursorSE
-		@index+=1
+		@index = (@index + 1) % 9
 		 update_player_sprites
 		  pbWait(5)
-		 end
         @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/c"))
       elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["entry"].x-5+$PokemonSystem.screenposx,@sprites["entry"].x+@sprites["entry"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["entry"].y-38+$PokemonSystem.screenposy,@sprites["entry"].y+@sprites["entry"].height-38+$PokemonSystem.screenposy))
       Input.text_input = true
@@ -881,7 +875,7 @@ end
 
 
 class Player < Trainer
- def is_it_this_class?(id,acting=true)
+ def is_it_this_class?(id, acting=true)
    return $player.playerclass == id if id.is_a? String
    return if $player.playerclass.is_a? String
   if acting==true

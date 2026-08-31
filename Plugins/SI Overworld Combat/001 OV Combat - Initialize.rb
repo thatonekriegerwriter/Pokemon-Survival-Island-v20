@@ -7,6 +7,206 @@ class Game_Player < Game_Character
   end
 end
 
+def pbGetTargetInDirection(unit, direction, target)
+   raise unit if unit.is_a?(Integer)
+   amt = OverworldCombat.sight_line(unit)
+   px, py = unit.x, unit.y
+  (1..amt).each do |i|
+    landing_coord = case direction
+    when 2 then [px, py + i]
+    when 4 then [px - i, py]
+    when 6 then [px + i, py]
+    when 8 then [px, py - i]
+    end
+	
+	
+    return i if target.x == landing_coord[0] && target.y == landing_coord[1]
+  end
+   return nil
+end
+
+def pbDetectTargetPokemon(source,target=$game_player)
+  potato=false
+  carrot=0
+  amt = OverworldCombat.sight_line(source)
+  amt.times do |i|
+  start_coord=[source.x,source.y]
+  landing_coord=[source.x,source.y]
+  case source.direction
+  when 2; landing_coord[1]+=i+1
+  when 4; landing_coord[0]-=i+1
+  when 6; landing_coord[0]+=i+1
+  when 8; landing_coord[1]-=i+1
+  end
+   if !target.nil?
+	if target.x==landing_coord[0] && target.y==landing_coord[1]
+      carrot=i+1
+	end
+   end
+  end
+
+
+  return carrot
+end
+class OverworldCombat
+end
+class OverworldCombat::ActiveState
+  attr_reader :effects
+  attr_accessor :defaultTerrain
+  attr_accessor :terrain
+  attr_accessor :terrainDuration
+  def initialize
+    @effects = {}
+  end 
+  
+  def init_effects
+    #Active Field
+    @effects[:AmuletCoin]      = false
+    @effects[:FairyLock]       = 0
+    @effects[:FusionBolt]      = false
+    @effects[:FusionFlare]     = false
+    @effects[:Gravity]         = 0
+    @effects[:HappyHour]       = false
+    @effects[:IonDeluge]       = false
+    @effects[:MagicRoom]       = 0
+    @effects[:MudSportField]   = 0
+    @effects[:PayDay]          = 0
+    @effects[:TrickRoom]       = 0
+    @effects[:WaterSportField] = 0
+    @effects[:WonderRoom]      = 0
+    #Active Position
+    @effects[:FutureSightCounter]        = 0
+    @effects[:FutureSightMove]           = nil
+    @effects[:FutureSightUserIndex]      = -1
+    @effects[:FutureSightUserPartyIndex] = -1
+    @effects[:HealingWish]               = false
+    @effects[:LunarDance]                = false
+    @effects[:Wish]                      = 0
+    @effects[:WishAmount]                = 0
+    @effects[:WishMaker]                 = -1
+	
+	#Active Side 
+    @effects[:AuroraVeil]                = 0
+    @effects[:CraftyShield]              = false
+    @effects[:EchoedVoiceCounter]        = 0
+    @effects[:EchoedVoiceUsed]           = false
+    @effects[:LastRoundFainted]          = -1
+    @effects[:LightScreen]               = 0
+    @effects[:LuckyChant]                = 0
+    @effects[:MatBlock]                  = false
+    @effects[:Mist]                      = 0
+    @effects[:QuickGuard]                = false
+    @effects[:Rainbow]                   = 0
+    @effects[:Reflect]                   = 0
+    @effects[:Round]                     = false
+    @effects[:Safeguard]                 = 0
+    @effects[:SeaOfFire]                 = 0
+    @effects[:Spikes]                    = 0
+    @effects[:StealthRock]               = false
+    @effects[:StickyWeb]                 = false
+    @effects[:Swamp]                     = 0
+    @effects[:Tailwind]                  = 0
+    @effects[:ToxicSpikes]               = 0
+    @effects[:WideGuard]                 = false
+    @defaultTerrain  = :None
+    @terrain         = :None
+    @terrainDuration = 0
+  end 
+  
+  
+  def [](key)
+    @effects[key]
+  end
+
+  def []=(key, value)
+    @effects[key] = value
+  end
+
+end 
+class OverworldCombat::DamageState
+  attr_accessor :typeMod         # Type effectiveness
+  attr_accessor :unaffected
+  attr_accessor :protected
+  attr_accessor :magicCoat
+  attr_accessor :magicBounce
+  attr_accessor :totalHPLost     # Like hpLost, but cumulative over all hits
+  attr_accessor :fainted         # Whether battler was knocked out by the move
+
+  attr_accessor :missed          # Whether the move failed the accuracy check
+  attr_accessor :affection_missed
+  attr_accessor :invulnerable    # If the move missed due to two turn move invulnerability
+  attr_accessor :calcDamage      # Calculated damage
+  attr_accessor :hpLost          # HP lost by opponent, inc. HP lost by a substitute
+  attr_accessor :critical        # Critical hit flag
+  attr_accessor :affection_critical
+  attr_accessor :substitute      # Whether a substitute took the damage
+  attr_accessor :focusBand       # Focus Band used
+  attr_accessor :focusSash       # Focus Sash used
+  attr_accessor :sturdy          # Sturdy ability used
+  attr_accessor :disguise        # Disguise ability used
+  attr_accessor :iceFace         # Ice Face ability used
+  attr_accessor :endured         # Damage was endured
+  attr_accessor :affection_endured
+  attr_accessor :berryWeakened   # Whether a type-resisting berry was used
+
+  def initialize; reset; end
+
+  def reset
+    @typeMod          = Effectiveness::INEFFECTIVE
+    @unaffected       = false
+    @protected        = false
+    @missed           = false
+    @affection_missed = false
+    @invulnerable     = false
+    @magicCoat        = false
+    @magicBounce      = false
+    @totalHPLost      = 0
+    @fainted          = false
+    resetPerHit
+  end
+
+  def resetPerHit
+    @calcDamage         = 0
+    @hpLost             = 0
+    @critical           = false
+    @affection_critical = false
+    @substitute         = false
+    @focusBand          = false
+    @focusSash          = false
+    @sturdy             = false
+    @disguise           = false
+    @iceFace            = false
+    @endured            = false
+    @affection_endured  = false
+    @berryWeakened      = false
+  end
+
+
+end 
+class OverworldCombat::PokemonActiveState
+    def initialize; reset; end
+    def reset
+      @lastAttacker          = []
+      @lastFoeAttacker       = []
+      @lastHPLost            = 0
+      @lastHPLostFromFoe     = 0
+      @droppedBelowHalfHP    = false
+      @statsDropped          = false
+      @tookDamageThisRound   = false
+      @tookPhysicalHit       = false
+      @statsRaisedThisRound  = false
+      @statsLoweredThisRound = false
+      @canRestoreIceFace     = false
+      @lastMoveUsed          = nil
+      @lastMoveUsedType      = nil
+      @lastRegularMoveUsed   = nil
+      @lastRegularMoveTarget = -1
+      @lastRoundMoved        = -1
+      @lastMoveFailed        = false
+      @lastRoundMoveFailed   = false
+      @movesUsed             = []
+    end 
+end 
 
 #===============================================================================
 # Core Combat Functions
@@ -26,7 +226,9 @@ class OverworldCombat
   attr_accessor :other_participants           
   attr_accessor :pokemona           
   attr_accessor :hard_hitting         
-  attr_accessor :youarealreadydead         
+  attr_accessor :youarealreadydead      
+  attr_reader :active_state
+  attr_reader :damage_state
  #
 #when 2 then event.move_down
 #when 4 then event.move_left
@@ -48,6 +250,21 @@ class OverworldCombat
 	  @backattack = nil
 	  @sideattack = nil
 	  @baddir = nil
+	  @active_state = ActiveState.new
+	  @damage_state = DamageState.new
+   end
+   def active_state 
+	@active_state = ActiveState.new if @active_state.nil?
+    return @active_state
+   end
+   def damage_state 
+	@damage_state = DamageState.new if @damage_state.nil?
+    return @damage_state
+   end
+   def self.update_package
+     Graphics.update           # Updates the screen and game visuals
+     Input.update              # Checks for player input
+     $scene.update
    end
    
 def initializeParticipants
@@ -148,9 +365,9 @@ end
       battler.effects[PBEffects::Substitute]        = 0
       battler.effects[PBEffects::Telekinesis]       = 0
     end
+	
+	
     battler.effects[PBEffects::Attract]             = -1
-	
-	
     battler.effects[PBEffects::BanefulBunker]       = false
     battler.effects[PBEffects::BeakBlast]           = false
     battler.effects[PBEffects::Bide]                = 0
@@ -351,6 +568,14 @@ def physics_update
 
 end
 
+def get_enemies
+getParticipants(:ENEMIES).values.select do |event|
+    next false if event.map_id != $game_map.map_id
+
+end 
+
+end 
+
 def any_enemies?
   return @participants[:ENEMIES].keys.length>0
 end
@@ -360,13 +585,42 @@ end
 def get_player_and_allies
   potato = []
   potato << @participants[:PLAYER] 
-  @participants[:ALLIES].delete_if { |key, value| value.pokemon.inworld == false }
+  $player.party.each do |pkmn|
+    next unless pkmn.associatedevent
+	event = $game_map.events[pkmn.associatedevent]
+	next if event.map_id!=$game_map.map_id 
+	addAlly(pkmn.associatedevent, event)
+  end 
+  @participants[:ALLIES].delete_if { |key, value| value.pokemon.associatedevent.nil? && value.pokemon.inworld==false }
   @participants[:ALLIES].each_value do |value|
-     next if value.pokemon.inworld==false 
+     next if value.pokemon.associatedevent.nil? && value.pokemon.inworld==false
+	 next if value.map_id != $game_map.map_id 
      potato << value
   end
   return potato
 end
+
+def angry_at_here(attacker)
+  attacker.angry_at.select do |event|
+    next false if event.map_id != $game_map.map_id
+  end
+end 
+
+def nearby_hostile_events(attacker)
+  events = $DynamicEvents.hostile_mobs.values
+
+  results = events.select do |event|
+    next false if event == attacker
+    next false if event.map_id != $game_map.map_id
+	next false if attacker.is_a?(Game_PokeEvent) && angry_at_here(attacker).include?(event)
+    #next false if pbOverworldCombat.hasEnemy?(event.id, event)
+    
+    OverworldCombat.within_range?(attacker, event, nil, OverworldCombat.sight_line(attacker))
+  end
+  #puts results.to_s
+  return results 
+end
+
 def get_allies
   potato = []
   @participants[:ALLIES].delete_if { |key, value| value.pokemon.inworld == false }
@@ -402,6 +656,9 @@ def turn_right(direction)
   when 8 then 4
   end
 end
+  def self.player_side?(unit)
+    unit.is_a?(Game_PokeEventA) || unit == $game_player
+  end
 
 def get_distance(unit)
     distances = []
@@ -415,7 +672,7 @@ def get_distance(unit)
 	targets.each do |event|
 	  directions_to_check = [unit.direction, turn_left(unit.direction), turn_right(unit.direction)]
 	  directions_to_check.each do |dir|
-	   amt = pbDetectTargetPokemonDirection(unit,dir,event)
+	   amt = pbGetTargetInDirection(unit,dir,event)
        if amt && amt > 0
 	     if min_distance.nil? || amt < min_distance
           min_distance = amt
@@ -472,7 +729,7 @@ def get_distance_alt(unit)
   targets = get_player_and_allies + unit.angry_at
   targets.compact!
   targets.uniq!
-  max_range = amt = sight_line(unit)
+  max_range = amt = OverworldCombat.sight_line(unit)
   cone_tiles = tiles_in_cone(unit, max_range)
   targets.compact.uniq!
 
@@ -495,9 +752,39 @@ def get_distance_alt(unit)
   target, distance, _ = visible.first
   return target, distance
 end
+ 
+ def in_battle?(unit)
+    optionsa = get_enemies
+    optionsb = nearby_hostile_events(unit).uniq
+    options = optionsa + optionsb
+    return options.length>0
+ end 
 
-
-
+ def foe(unit)
+   if OverworldCombat.player_side?(unit)
+    options = get_enemies + nearby_hostile_events(unit).uniq
+	puts options.to_s
+    return options
+   else
+    return get_player_and_allies + angry_at_here(unit).uniq
+   end 
+ 
+ end 
+ 
+ def ally(unit)
+   if OverworldCombat.player_side?(unit)
+    return get_player_and_allies + angry_at_here(unit).uniq
+   else
+    return get_enemies + nearby_hostile_events(unit).uniq
+   end 
+ end 
+def other_allies(unit)
+  ally(unit).reject { |target| target == unit }
+end
+ def user(unit)
+   return [unit]
+ end 
+ 
 
 def get_overworld_pokemon
 $player.party.each_with_index do |pkmn,index|
@@ -514,14 +801,20 @@ end
 
 
 
-  def fainted_check(event)
+  def self.fainted_check(event)
+    return if event == $game_player
     pkmn = event.pokemon
     if pkmn.fainted?
-	 $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false && event.is_a?(Game_PokeEvent)
+	 if event.is_a?(Game_PokeEvent)
+	 $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false 
      EventHandlers.trigger(:on_wild_ovbattle_end, pkmn, pkmn.level, 1)
-     event.removeThisEventfromMap
-     pbPlayerEXP(pkmn,$player.able_party) 
+     pbPlayerEXP(pkmn,$player.party_in_world) 
      pbHeldItemDropOW(pkmn,true)
+	 pbOverworldCombat.removeEnemy(event.id)
+	 elsif  event.is_a?(Game_PokeEventA)
+	 pbOverworldCombat.removeAlly(event.id)
+	 end 
+     event.removeThisEventfromMap
 	 return true
 	else
 	 return false
@@ -533,21 +826,16 @@ end
 end
 
 
+EventHandlers.add(:on_map_transfer, :clear_state,
+  proc { |old_map_id|   # previous map ID, is 0 if no map ID
+    next unless pbOverworldCombat.any_enemies?
+	pbOverworldCombat.participants[:ENEMIES] = {}
+}
+)
 
 
 
-def get_target_player(source)
 
-event, distance = pbDetectTarget(source,false)
-if !event.nil?
-if event.is_a? Array
- return nil
-end
-return event, distance
-else
-return nil
-end
-end
 
 
 def makeUnparalyzed(event)
@@ -652,7 +940,7 @@ EventHandlers.add(:on_step_taken, :overworldpkmnpoison,
 		  if pkmn.fainted? && event.is_a?(Game_PokeEvent)
 		  $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false
         event.removeThisEventfromMap
-        pbPlayerEXP(pkmn,$player.able_party)
+        pbPlayerEXP(pkmn,$player.party_in_world)
         pbHeldItemDropOW(pkmn,true)
 		  end
 		  

@@ -93,7 +93,7 @@ class MenuEntryResume < MenuEntry
 	def initialize
 		@icon = "menuBack"
 		@name = "Resume"
-       @text = "Z"
+       @text = "X"
 	end
 
 	def selected(menu)
@@ -307,7 +307,7 @@ class MenuEntrySave < MenuEntry
 
   def selectable?
      maps=[10,54,56,351,352,41,148,149,155,150,151,152,147,153,154,162]
-    return (!pbInBugContest? && $game_system && !$game_system.save_disabled && (maps.include?($game_map.map_id) || $PokemonSystem.playermode == 0)) 
+    return ($game_system && !$game_system.save_disabled && maps.include?($game_map.map_id)) 
   end
 end
 #-------------------------------------------------------------------------------

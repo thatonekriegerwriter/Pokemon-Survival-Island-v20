@@ -158,6 +158,8 @@ class DayCare
           egg.hue = rand(2) == 0 ? mother.hue : father.hue
         elsif PokemonColorVariants::HEREDITY_TYPE.downcase == "average"
           min, max = mother.hue, father.hue
+		  min = 0 if min.nil?
+		  max = 0 if max.nil?
           min, max = max, min if min > max
           egg.hue = (min + ((max - min) / 2)) % 360
         end

@@ -54,7 +54,7 @@ $InCommandLine = false
 
 
 # Custom Message Input Box Stuff
-def pbFreeTextNoWindow(currenttext, passwordbox, maxlength, width = 240,debuginput=true,viewport=nil)
+def pbFreeTextNoWindow(currenttext, passwordbox, maxlength, width = 240 ,height = 64,debuginput=true,viewport=nil)
   if currenttext.nil?
     currenttext=""
   else
@@ -64,8 +64,8 @@ def pbFreeTextNoWindow(currenttext, passwordbox, maxlength, width = 240,debuginp
   if $game_temp.lastcommand.length > 0
 	text2 = $game_temp.lastcommand.reverse.join("\n")
   end
-  window = Window_TextEntry_Keyboard_Terminal.new("", 0, 0, width, 64)
-  window2 = Window_UnformattedTextPokemon.newWithSize(text2, 0, 64, width, 128)
+  window = Window_TextEntry_Keyboard_Terminal.new("", 0, 0, width, height)
+  window2 = Window_UnformattedTextPokemon.newWithSize(text2, 0, 64, width, height*2)
   ret = ""
   window.viewport = viewport if viewport
   window2.viewport = viewport if viewport

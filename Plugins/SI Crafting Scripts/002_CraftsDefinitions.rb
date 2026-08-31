@@ -5,7 +5,6 @@ def pbCraftingBench(wari,data)
   Crafts.craftWindow(:GRINDER ,1, data) if wari == :GRINDER || wari == :ELECTRICGRINDER #GRINDER DONE, ELECTRIC GRINDER NOT DONE.
   Crafts.craftWindow(:POCKETCRAFTING ,2, data) if wari == :POCKETCRAFTING #DONE.
   #Crafts.craftWindow(:FURNACE ,2, data) if wari == :FURNACE || wari == :ELECTRICFURNACE #ELECTRIC FURNACE AND FURNACE COMPLETE.
-  Inventory.invWindow(wari, data)
   Crafts.craftWindow(:ELECTRICPRESS ,2, data) if wari == :ELECTRICPRESS
   Crafts.craftWindow(:CRAFTINGBENCH ,3, data) if wari == :CRAFTINGBENCH  #COMPLETE.
   Crafts.craftWindow(:CAULDRON ,3, data) if wari == :CAULDRON  
@@ -467,14 +466,7 @@ alias unlocked? has?
 
 end
 
-SaveData.register(:recipe_book) do
-  ensure_class :RecipeBook 
-  save_value { $recipe_book  }
-  load_value { |value| $recipe_book = value }
-  new_game_value {
-    RecipeBook.new
-  }
-end
+
 
 
 module GameData
@@ -493,6 +485,7 @@ module GameData
       "Station"       => [:station, "*e", :Item],
       "CookingTime"    => [:cookingtime, "u"],
       "Locked"       => [:locked, "b"],
+	  "Type" => [:type, "s"],
       "Flags"         => [:flags,       "*s"]
     }
 
@@ -511,9 +504,10 @@ module GameData
 		item, qty = Array(entry)
 		[item.to_sym, qty || 1]
 	  end.compact
-	  puts "#{@id} - #{@recipe}"
+	  #puts "#{@id} - #{@recipe}"
+	  @type                = (hash[:type] || "MATERIAL").to_sym
       @station             = hash[:station] || :CRAFTINGBENCH
-      @cookingtime          = hash[:cookingtime] || 0
+      @cookingtime          = hash[:cookingtime] || 2000
       @locked             = hash[:locked] || false
       @flags               = hash[:flags]       || []
     end
@@ -531,6 +525,13 @@ module GameData
       return @result
     end
 
+    def results
+      return @result[0]
+    end
+	
+    def type
+	  return @type
+	end 
     def recipe
       return @recipe
     end
@@ -542,12 +543,18 @@ module GameData
     def cookingtime
       return @cookingtime
     end
-
+    def time
+      return @cookingtime
+	end 
     def station
       return @station
     end
 
     def locked
+      return @locked
+    end
+
+    def locked?
       return @locked
     end
 
@@ -557,7 +564,16 @@ module GameData
 end
 end
 
-class RecipeData
+SaveData.register(:recipe_book) do
+  ensure_class :RecipeBook 
+  save_value { $recipe_book  }
+  load_value { |value| $recipe_book = value }
+  new_game_value {
+    RecipeBook.new
+  }
+end
+
+class Disease
   attr_accessor :disease
   attr_accessor :length
   attr_accessor :severity

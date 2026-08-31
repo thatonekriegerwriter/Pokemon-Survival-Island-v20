@@ -9,8 +9,12 @@
 #
 def new_set_enemy_level(encounter)
   difficulty = $PokemonSystem.difficulty+1
+ # puts difficulty #6
   bosses = $game_variables[234].to_i
+ # puts bosses #0
+#  puts encounter.to_s #60
   level = calculate_level(encounter, difficulty, bosses)
+#  puts "First Level: #{level}"
   rates = get_new_rate(bosses)
   level = handle_game_map_levels(level, rates, bosses,encounter,difficulty)
   $game_variables[4951] = level if level > $game_variables[4951]
@@ -25,7 +29,6 @@ def pbPersonalLevelCap(pkmn)
  level = pkmn.level
  caplevel = level
  encounter = [pkmn,obtainlevel,level]
- puts pkmn.obtain_map
  obtainmap = $map_factory.maps[pkmn.obtain_map]
   difficulty = $PokemonSystem.difficulty+1
   bosses = $game_variables[234].to_i
@@ -94,14 +97,14 @@ end
 def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
   map = $game_map if map.nil?
 	maps = [33,34,35,109,26,218,233]
-  $PokemonGlobal.bossesRefightAmt == {} if $PokemonGlobal.bossesRefightAmt.nil?
+  $PokemonGlobal.bossesRefightAmt = {} if $PokemonGlobal.bossesRefightAmt.nil?
   case map.name
   when "Temperate Coast", "Temperate Inland", "Temperate Shore", "Temperate Plains"
             #adjust_level(level, reroll_level,                           min_level,     max_level)
 			
     amt = 20 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[76]=false
+	amt0 += rand(7)+4 if $game_switches[76]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 10+amt0,amt)
 	
@@ -109,11 +112,11 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
 	
 	
-  when "Temperate Highlands"
+  when "Temperate Highlands", "Chilled Plains"
     amt = 30 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[83]=false
-	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+	amt0 += rand(7)+4 if $game_switches[83]==false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 15+amt0, amt)
 	
 	
@@ -126,8 +129,8 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
   when "Mountain Interior", "Temperate Forest"
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[76]=false
-	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+	amt0 += rand(7)+4 if $game_switches[76]==false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
     amt = 30 + rates[2] + $PokemonGlobal.bossesRefightAmt["Temperate Highlands"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
 	
@@ -139,8 +142,8 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
   when "Ice Cave", "Frigid Highlands"
     amt = 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[79]=false
-	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+	amt0 += rand(7)+4 if $game_switches[79]==false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
 	
 	
@@ -150,8 +153,8 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
   when "Ice Temple"
     amt = 40 + rates[1] + $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[79]=false
-	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
+	amt0 += rand(7)+4 if $game_switches[79]==false
+	amt0 += $PokemonGlobal.bossesRefightAmt["Frigid Highlands"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 35+amt0, amt)
 	
 	
@@ -163,13 +166,13 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
     if  maps.include?(map.map_id)
     amt = 35 + rates[1] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += rand(7)+4 if $game_switches[77]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 25+amt0, amt)
 	else
     amt = 40 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += rand(7)+4 if $game_switches[77]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 35+amt0, amt)
 	end
@@ -179,7 +182,7 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
   when "Water Temple"
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[77]=false
+	amt0 += rand(7)+4 if $game_switches[77]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     amt = 45 + rates[0] + $PokemonGlobal.bossesRefightAmt["Temperate Marsh"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 40+amt0, amt)
@@ -189,7 +192,7 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
   when "S.S Glittering Wreck", "Abandoned Cabin", "Kitchen", "Captain's Quarters"
 	amt0 = 0
-	amt0 = +rand(7)+4 if $game_switches[81]=false
+	amt0 = +rand(7)+4 if $game_switches[81]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     amt = 50 + rates[0] + $PokemonGlobal.bossesRefightAmt["S.S Glittering"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 45+amt0, amt)
@@ -198,7 +201,7 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
   when "Tropical Coast"
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += rand(7)+4 if $game_switches[81]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     amt = 60 + rates[0] + $PokemonGlobal.bossesRefightAmt["Tropical Coast"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 50+amt0, amt)
@@ -206,26 +209,27 @@ def handle_game_map_levels(level, rates, bosses,encounter, difficulty, map=nil)
 	
 	
 	
-  when "Tropical Highlands"
+  when "Northern Highlands"
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += rand(7)+4 if $game_switches[81]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
-    amt = 60 + rates[0] + $PokemonGlobal.bossesRefightAmt["Tropical Highlands"].to_i
+    amt = 60 + rates[0] + $PokemonGlobal.bossesRefightAmt["Northern Highlands"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 50+amt0, amt)
 	
 	
 	
   when "Deep Caves"
 	amt0 = 0
-	amt0 += rand(7)+4 if $game_switches[81]=false
+	amt0 += rand(7)+4 if $game_switches[81]==false
 	amt0 += $PokemonGlobal.bossesRefightAmt["Temperate Coast"].to_i
     amt = 50 + rates[0] + $PokemonGlobal.bossesRefightAmt["Deep Caves"].to_i
     level = adjust_level(level, calculate_reroll_level(encounter, difficulty), 45+amt0, amt)
 	
 	
 	
-  when "Temperate Ocean"
+  else
     level = adjust_for_bosses(level, bosses, rates, encounter, difficulty)
+
   end
   return level
 end
@@ -410,6 +414,7 @@ class PokemonEncounters
      level = 1 
     end
     # Return [species, level]
+	#puts "This one is picking level."
     return [encounter[1], level]
   end
 

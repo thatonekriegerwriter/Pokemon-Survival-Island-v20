@@ -1,0 +1,2 @@
+Name = SI Combat Sim
+Version = 0

@@ -24,7 +24,7 @@ class MTS_Element_BG0
 "splash16 copy","splash17 copy","splash18 copy","splash19 copy","splash20 copy",
 "splash21 copy","splash22 copy","splash23 copy"]
     @introBackgroundGameFrameCount = 0
-    @introBackgroundG_BFrameCount = 3 * 30
+    @introBackgroundG_BFrameCount = 4 * Graphics.frame_rate
 	@currentRand=0
   end
   # disposes of everything
@@ -45,9 +45,8 @@ class MTS_Element_BG0
     @introBackgroundGameFrameCount += 1
     if @sprites["bg"].y < 60
       @sprites["bg"].y += 1
-    elsif @sprites["bg"].y >= 60 && @introBackgroundGameFrameCount>@introBackgroundG_BFrameCount
+    elsif @sprites["bg"].y >= 60 && @introBackgroundGameFrameCount > @introBackgroundG_BFrameCount
       @introBackgroundGameFrameCount = 0
-      #@sprite.y = 0
       @tempRand = @currentRand
       @currentRand = rand(@introBackgroundList.length)
       if @currentRand != @tempRand
@@ -63,7 +62,7 @@ class MTS_Element_BG0
       @bg_index = 0 if @bg_index >= @introBackgroundList.length
 	  
       @sprites["bg"].setBitmap("Graphics/MODTS/Backgrounds/#{@introBackgroundList[@bg_index]}")
-      @sprites["bg"].y = 10
+      @sprites["bg"].y = 0
 
 
    end
@@ -651,3 +650,275 @@ class MTS_Element_BG12
   # end
 end
 #===============================================================================                           
+
+
+class SpriteWrapperOld < Sprite
+  def initialize(viewport=nil)
+    @sprite=Sprite.new(viewport)
+  end
+
+  def dispose
+    @sprite.dispose
+  end
+
+  def disposed?
+    return @sprite.disposed?
+  end
+
+  def viewport
+    return @sprite.viewport
+  end
+
+  def flash(color,duration)
+    return @sprite.flash(color,duration)
+  end
+
+  def update
+    return @sprite.update
+  end
+
+  def x
+    @sprite.x
+  end
+
+  def x=(value)
+    @sprite.x=value
+  end
+
+  def y
+    @sprite.y
+  end
+
+  def y=(value)
+    @sprite.y=value
+  end
+
+  def bitmap
+    @sprite.bitmap
+  end
+
+  def bitmap=(value)
+    @sprite.bitmap=value
+  end
+
+  def src_rect
+    @sprite.src_rect
+  end
+
+  def src_rect=(value)
+    @sprite.src_rect=value
+  end
+
+  def visible
+    @sprite.visible
+  end
+
+  def visible=(value)
+    @sprite.visible=value
+  end
+
+  def z
+    @sprite.z
+  end
+
+  def z=(value)
+    @sprite.z=value
+  end
+
+  def ox
+    @sprite.ox
+  end
+
+  def ox=(value)
+    @sprite.ox=value
+  end
+
+  def oy
+    @sprite.oy
+  end
+
+  def oy=(value)
+    @sprite.oy=value
+  end
+
+  def zoom_x
+    @sprite.zoom_x
+  end
+
+  def zoom_x=(value)
+    @sprite.zoom_x=value
+  end
+
+  def zoom_y
+    @sprite.zoom_y
+  end
+
+  def zoom_y=(value)
+    @sprite.zoom_y=value
+  end
+
+  def angle
+    @sprite.angle
+  end
+
+  def angle=(value)
+    @sprite.angle=value
+  end
+
+  def mirror
+    @sprite.mirror
+  end
+
+  def mirror=(value)
+    @sprite.mirror=value
+  end
+
+  def bush_depth
+    @sprite.bush_depth
+  end
+
+  def bush_depth=(value)
+    @sprite.bush_depth=value
+  end
+
+  def opacity
+    @sprite.opacity
+  end
+
+  def opacity=(value)
+    @sprite.opacity=value
+  end
+
+  def blend_type
+    @sprite.blend_type
+  end
+
+  def blend_type=(value)
+    @sprite.blend_type=value
+  end
+
+  def color
+    @sprite.color
+  end
+
+  def color=(value)
+    @sprite.color=value
+  end
+
+  def tone
+    @sprite.tone
+  end
+
+  def tone=(value)
+    @sprite.tone=value
+  end
+
+  def viewport=(value)
+    return if self.viewport==value
+    bitmap=@sprite.bitmap
+    src_rect=@sprite.src_rect
+    visible=@sprite.visible
+    x=@sprite.x
+    y=@sprite.y
+    z=@sprite.z
+    ox=@sprite.ox
+    oy=@sprite.oy
+    zoom_x=@sprite.zoom_x
+    zoom_y=@sprite.zoom_y
+    angle=@sprite.angle
+    mirror=@sprite.mirror
+    bush_depth=@sprite.bush_depth
+    opacity=@sprite.opacity
+    blend_type=@sprite.blend_type
+    color=@sprite.color
+    tone=@sprite.tone
+    @sprite.dispose
+    @sprite=Sprite.new(value)
+    @sprite.bitmap=bitmap
+    @sprite.src_rect=src_rect
+    @sprite.visible=visible
+    @sprite.x=x
+    @sprite.y=y
+    @sprite.z=z
+    @sprite.ox=ox
+    @sprite.oy=oy
+    @sprite.zoom_x=zoom_x
+    @sprite.zoom_y=zoom_y
+    @sprite.angle=angle
+    @sprite.mirror=mirror
+    @sprite.bush_depth=bush_depth
+    @sprite.opacity=opacity
+    @sprite.blend_type=blend_type
+    @sprite.color=color
+    @sprite.tone=tone
+  end
+end
+
+
+class IconSpriteOld < SpriteWrapperOld
+  attr_reader :name
+
+  def initialize(*args)
+    if args.length==0
+      super(nil)
+      self.bitmap=nil
+    elsif args.length==1
+      super(args[0])
+      self.bitmap=nil
+    elsif args.length==2
+      super(nil)
+      self.x=args[0]
+      self.y=args[1]
+    else
+      super(args[2])
+      self.x=args[0]
+      self.y=args[1]
+    end
+    @name=""
+    @_iconbitmap=nil
+  end
+
+  def dispose
+    clearBitmaps()
+    super
+  end
+
+  def update
+    super
+    if @_iconbitmap
+      @_iconbitmap.update
+      if self.bitmap!=@_iconbitmap.bitmap
+        oldrc=self.src_rect
+        self.bitmap=@_iconbitmap.bitmap
+        self.src_rect=oldrc
+      end
+    end
+  end
+
+  def clearBitmaps
+    @_iconbitmap.dispose if @_iconbitmap
+    @_iconbitmap=nil
+    self.bitmap=nil if !self.disposed?
+  end
+
+  # Sets the icon's filename.  Alias for setBitmap.
+  def name=(value)
+    setBitmap(value)
+  end
+
+  # Sets the icon's filename.
+  def setBitmap(file,hue=0)
+    oldrc=self.src_rect
+    clearBitmaps()
+    @name=file
+    return if file==nil
+    if file!=""
+      @_iconbitmap=AnimatedBitmap.new(file,hue)
+      # for compatibility
+      self.bitmap=@_iconbitmap ? @_iconbitmap.bitmap : nil
+      self.src_rect=oldrc
+    else
+      @_iconbitmap=nil
+    end
+  end
+end

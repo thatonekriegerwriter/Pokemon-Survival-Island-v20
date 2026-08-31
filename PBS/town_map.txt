@@ -3,17 +3,6 @@
 [0]
 Filename = mapRegion3.png
 Name = The Island
-Point = 13,15,Temperate Coast,Temperate Base,5,16,41,
-Point = 16,13,Temperate Inland,Stone Temple,9,37,15,
-Point = 15,11,Temperate Highlands,,24,19,33,
-Point = 18,12,Temperate Inland,Temperate Home,54,31,16,479
-Point = 21,12,Temperate Marsh,,34,23,34,
-Point = 24,13,Temperate Marsh,Deep Marsh,36,29,18,
-Point = 26,17,Tropical Coast,,111,26,12,
 Point = 26,9,Torrid Desert,,,,,
 Point = 17,4,Tropical Highlands,,,,,
 Point = 24,2,Tropical Highlands,,,,,
-Point = 13,7,Frigid Highlands,Xatu Village,80,1,12,465
-Point = 4,10,Tropical Jungle,,355,25,32,
-Point = 4,3,Atmosphere,,266,10,17,
-Point = 17,16,Temperate Island,Xatu Cave,58,33,28,

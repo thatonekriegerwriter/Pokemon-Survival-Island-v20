@@ -1,7 +1,7 @@
 #-------------------------------
 [MASTERBALLC]
 Name=Research
-HoursPerStage=1
+HoursPerStage=4
 StageAmt=5
 UnlockItem=PURPLEAPRICORN
 AssociatedRecipe=MASTERBALLC
@@ -25,17 +25,17 @@ Flags=
 #-------------------------------
 [MACHINEBOX_3]
 Name=Poke Generator
-HoursPerStage=1
+HoursPerStage=2
 StageAmt=5
 UnlockItem=MACHINEBOX
 AssociatedRecipe=POKEGENERATOR
 Flags=
 #-------------------------------
-[MACHINEBOX_4]
+[EXPSHARE]
 Name=Exp All
-HoursPerStage=1
+HoursPerStage=2
 StageAmt=5
-UnlockItem=MACHINEBOX
+UnlockItem=EXPSHARE
 AssociatedRecipe=EXPALL
 Flags=
 #-------------------------------
@@ -145,7 +145,7 @@ Flags=
 #-------------------------------
 [SUSPO]
 Name=Suspicious Potion
-HoursPerStage=1
+HoursPerStage=2
 StageAmt=5
 UnlockItem=ARGOSTBERRY
 AssociatedRecipe=SUSPO
@@ -177,7 +177,7 @@ Flags=
 #-------------------------------
 [FULLRESTORE]
 Name=Full Restore
-HoursPerStage=24
+HoursPerStage=4
 StageAmt=4
 UnlockItem=MAXPOTION
 AssociatedRecipe=FULLRESTORE

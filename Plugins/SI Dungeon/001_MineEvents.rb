@@ -17,123 +17,98 @@ class Game_MineEvent < Game_Event
   end
 end
 
- def invalid_mine_tiles(map_id)
-  return [[9,8],[16,8],[9,15],[16,15],[11,15],[12,15],[13,15],[12,14]] if map_id==76 || map_id==18
-  return [[9,15],[16,15],[16,8],[16,9],[16,10],[12,14],[15,15],[14,14],[14,15],[13,15]] if map_id==15
+ 
+  module MiningSpots
   
+  class << self 
+  
+   def setup
+     map_id = $game_map.map_id
+	 minedata = GameData::Mine.try_get(map_id)
+	 if minedata
+       ensure_timer(minedata, map_id)
+	   return if (pbGetTimeNow.to_i - $PokemonGlobal.mining_spot_timer[map_id]) < minedata.timer
+	   max_spots = minedata.max_mining_spots
+	   max_spots += 2 if $player.is_it_this_class?(:HIKER)
+	   min_spots = minedata.min_mining_spots
+	   minedata.area_amt.times do |i|
+	      spots = ([[rand(minedata.roll_times) + 1, max_spots].min, min_spots].max).to_i
+          base_x, base_y = minedata.offset_for(i)
+          tile_distance = minedata.distance_for(i)
+	      invalid_pos = []
+	      tile = nil
+	      spots.times do |j|
+		    ore = get_ore(minedata)
+			loop_amt = 0
+            loop do
+	         tile = [(base_x + rand(tile_distance)), (base_y + rand(tile_distance))]
+		  	 next if !minedata.valid_tile?(tile[0], tile[1])
+	         break if !invalid_pos.include?(tile)
+			 break if loop_amt>50
+			 loop_amt += 1
+            end
+            if tile
+			  pbPlaceOre(tile[0], tile[1], ore) 
+	          invalid_pos << tile 
+			
+			end 
+		  end
+	   end 
+	    $PokemonGlobal.mining_spot_timer[map_id] = pbGetTimeNow.to_i + rand(-minedata.rnd_amt..minedata.rnd_amt)
+	 end 
+   end
  
- 
+  
+  def ensure_timer(minedata, map_id)
+   if $PokemonGlobal.mining_spot_timer[map_id].nil?
+    $PokemonGlobal.mining_spot_timer[map_id] = pbGetTimeNow.to_i-minedata.timer
+   end
  end 
- 
- 
- 
- 
- def valid_mine_tiles(map_id)
-   return [9,8]
- 
- 
- end
- 
- def main_interior_mining_spots(index)
-    return [16,21] if index==0 #6,7
-    return [12,37] if index==0 #6,6
-    return [20,58] if index==0 #14,12
-    return [34,40] if index==0 #12,13
-    return [47,51] if index==0 #7,9
-    return [59,63] if index==0 #18,12
-    return [46,12] if index==0 #10,8
-    return [58,7] if index==0 #,11,23
- 
- end
 
- def invalid_mine_tiles2
-   return []
- 
- 
+
+  
+  def get_ore(minedata)
+	rarity = weighted_random([[:common_rewards, 70], [:uncommon_rewards, 25], [:rare_rewards, 5]])
+	ores = minedata.send(rarity)
+	return weighted_random(ores)
+  end 
+
+def weighted_random(weights)
+  total = weights.sum { |_, weight| weight }
+  roll = rand(total)
+
+  weights.each do |item, weight|
+    return item if roll < weight
+    roll -= weight
+  end
+end
+ end 
  end 
  
  
-EventHandlers.add(:on_enter_map, :setup_mining_spots2,
-  proc { |_old_map_id|
-    maps = [31]
-   next if !maps.include?($game_map.map_id)
-   if $PokemonGlobal.mining_spot_timer[$game_map.map_id].nil?
-    $PokemonGlobal.mining_spot_timer[$game_map.map_id] = pbGetTimeNow.to_i-3600
-   end
-   if (pbGetTimeNow.to_i - $PokemonGlobal.mining_spot_timer[$game_map.map_id]) < 3600
-    puts "Skip out."
-   next 
-   end
-   	amt = [rand(12),7].max
-	amt+=2 if $player.is_it_this_class?(:HIKER)
-	type = [:COMMON,:COMMON,:COMMON,:COMMON,:RARE].sample
-	if type==:COMMON
-	ore_type = [:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:TUMBLEROCK,:TUMBLEROCK,:IRONORE,:IRONORE,:IRONORE,:IRONORE,:IRONORE,:GOLDORE,:GOLDORE,:SILVERORE,:COPPERORE,:COPPERORE,:COPPERORE,
-	:COPPERORE,:COAL,:COAL,:COAL,:COAL,:COAL]
-	else
-	ore_type = [:FIRESTONE,:WATERSTONE,:THUNDERSTONE,:THUNDERSTONE,:THUNDERSTONE,:THUNDERSTONE,:LEAFSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:THUNDERSTONE,:LIGHTCLAY,:LIGHTCLAY,:THUNDERSTONE,:HARDSTONE,:EVIOLITE,:EVERSTONE]
-	end 
-    8.times do |i|
-    base_x, base_y = main_interior_mining_spots(i)
-	 invalid_pos = invalid_mine_tiles2
-	  tile = [0,0]
-	amt.times do |x|
-	  puts x
-	 ore = ore_type[rand(ore_type.length)]
-	    loop do
-	   tile = [(base_x+rand(7)),(base_y+rand(7))]
-	     break if !invalid_pos.include?(tile)
-	    end
-		if tile!=[0,0]
-	 pbPlaceOre(tile[0],tile[1],ore) 
-	 
-	 invalid_pos << tile 
-	  end
-	end
-     end
-    $PokemonGlobal.mining_spot_timer[$game_map.map_id] = pbGetTimeNow.to_i
-  }
-)
+ 
 
 EventHandlers.add(:on_enter_map, :setup_mining_spots,
   proc { |_old_map_id|
-    maps = [76,15,18]
-   next if !maps.include?($game_map.map_id)
-   if $PokemonGlobal.mining_spot_timer[$game_map.map_id].nil?
-    $PokemonGlobal.mining_spot_timer[$game_map.map_id] = pbGetTimeNow.to_i-3600
-   end
-   if (pbGetTimeNow.to_i - $PokemonGlobal.mining_spot_timer[$game_map.map_id]) < 3600
-    puts "Skip out."
-   next 
-   end
-   	amt = [rand(12),7].max
-	amt+=2 if $player.is_it_this_class?(:HIKER)
-	type = [:COMMON,:COMMON,:RARE].sample
-	if type==:COMMON
-	ore_type = [:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:TUMBLEROCK,:TUMBLEROCK,:IRONORE,:IRONORE,:IRONORE,:IRONORE,:IRONORE,:GOLDORE,:GOLDORE,:SILVERORE,:COPPERORE,:COPPERORE,:COPPERORE,
-	:COPPERORE,:COAL,:COAL,:COAL,:COAL,:COAL]
-	else
-	ore_type = [:FIRESTONE,:WATERSTONE,:THUNDERSTONE,:THUNDERSTONE,:LEAFSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:LIGHTCLAY,:LIGHTCLAY,:THUNDERSTONE,:HARDSTONE,:EVIOLITE,:EVERSTONE]
-	end 
-    base_x, base_y = [9,8]
-	 invalid_pos = invalid_mine_tiles($game_map.map_id)
-	  tile = [0,0]
-	amt.times do |x|
-	 ore = ore_type[rand(ore_type.length)]
-	    loop do
-	   tile = [(base_x+rand(7)),(base_y+rand(7))]
-	     break if !invalid_pos.include?(tile)
-	    end
-		if tile!=[0,0]
-	 pbPlaceOre(tile[0],tile[1],ore) 
-	 
-	 invalid_pos << tile 
-	  end
-	end
-    $PokemonGlobal.mining_spot_timer[$game_map.map_id] = pbGetTimeNow.to_i
+    MiningSpots.setup
   }
 )
 
+
+
+
+
+
+
+if false
+EventHandlers.add(:on_leave_map, :delete_mining_spots,
+  proc { |new_map_id, new_map|
+    maps = [71,76,15,18,31]
+   next if !maps.include?($game_map.map_id)
+  $DynamicEvents.delete_events_for_map
+  }
+)
+end 
 
 class PokemonGlobalMetadata
   attr_accessor :mining_spot_timer

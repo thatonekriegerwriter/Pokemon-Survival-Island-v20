@@ -1,38 +1,3 @@
-EventHandlers.add(:on_player_step_taken_can_transfer, :effefefefefehhttrfeeffeeffefej,
-  proc {
-  
-				party = $player.party
-                 for i in 0...party.length
-                 pkmn = party[i]
-				 loyalty2 = pkmn.loyalty
-				 if loyalty2.nil?
-				  pkmn.loyalty = 70
-				 end
-				 end
-  #Demo Mode moving over to main.
-  if $PokemonSystem.playermode == 0 
-     if $player.demotimer <= 0 && $game_temp.in_menu == false
-	     pbMessage(_INTL("Beep! Beep! Beep! Beep! Beep!"))
-	     pbMessage(_INTL("It sounds like an alarm."))
-    $game_temp.player_new_map_id    = 1
-    $game_temp.player_new_x         = 22
-    $game_temp.player_new_y         = 3
-    $game_temp.player_new_direction = 1
-    $scene.transfer_player(false)
-    $game_map.autoplay
-    $game_map.refresh
-	Game.save
-	$PokemonSystem.playermode = 1 
-	$scene = pbCallTitle
-    while $scene != nil
-      $scene.main
-    end
-    Graphics.transition(20)
-	 end
-end
-
-
-})
 
 
 

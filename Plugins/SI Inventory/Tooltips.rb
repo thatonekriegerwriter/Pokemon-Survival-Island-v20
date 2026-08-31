@@ -15,8 +15,7 @@ class Tooltip
     @sprites["bg"].visible = false
     mouse_x, mouse_y = $mouse.getMousePos
 	if mouse_x && mouse_y
-	bx = mouse_x + $mouse.width
-    by = mouse_y - @sprites["bg"].height/2
+	bx, by = tooltip_position(mouse_x, mouse_y)
     @sprites["bg"].x = bx
     @sprites["bg"].y = by
 	end
@@ -54,26 +53,6 @@ class Tooltip
       cursor_y += text_height + 4 
     end
 	
-	
-
-    if info_hash[:description].is_a?(Array)
-      description, icon_x, icon_y = info_hash[:description]
-      desc_sprite = create_text_sprite(description, 14, @width - (@padding * 2) - icon_x, Color.new(200, 200, 200))
-      desc_sprite.x = @padding + icon_x 
-      desc_sprite.y = cursor_y + icon_y
-	  desc_sprite.instance_variable_set(:@rel_x, @padding + icon_x)
-      desc_sprite.instance_variable_set(:@rel_y, cursor_y + icon_y)
-      @line_sprites << desc_sprite
-	  dims = [0, 0]
-      dims = getLineBrokenChunksHeight(
-        desc_sprite.contents,
-        description,
-        @width - (@padding * 2) - icon_x,
-        dims
-      )
-      text_height = dims[1]
-      cursor_y += text_height + 4
-    end
 
     combined_stats(info_hash).each do |key, value|
       next if [:name, :description, :item_icon].include?(key)
@@ -95,6 +74,29 @@ class Tooltip
       text_height = dims[1]
       cursor_y += text_height + 2
     end
+	
+
+    if info_hash[:description].is_a?(Array)
+      description, icon_x, icon_y = info_hash[:description]
+	  desc_width = @width - (@padding * 2) - icon_x
+	  description = wrap_text(description, desc_width, 14)
+
+      desc_sprite = create_text_sprite(description, 14, desc_width, Color.new(200, 200, 200))
+      desc_sprite.x = @padding + icon_x 
+      desc_sprite.y = cursor_y + icon_y
+	  desc_sprite.instance_variable_set(:@rel_x, @padding + icon_x)
+      desc_sprite.instance_variable_set(:@rel_y, cursor_y + icon_y)
+      @line_sprites << desc_sprite
+	  dims = [0, 0]
+      dims = getLineBrokenChunksHeight(
+        desc_sprite.contents,
+        description,
+        @width - (@padding * 2) - icon_x,
+        dims
+      )
+      text_height = dims[1]
+      cursor_y += text_height + 4
+    end
 
     if info_hash[:item_icon].is_a?(Array)
       icon_bitmap, icon_x, icon_y = info_hash[:item_icon]
@@ -112,7 +114,26 @@ class Tooltip
     @sprites["bg"].visible = true
   end
   
-  
+  def wrap_text(text, width, font)
+  words = text.to_s.split(/\s+/)
+  lines = []
+  line = ""
+
+  words.each do |word|
+    test = line.empty? ? word : "#{line} #{word}"
+
+    if font.text_size(test).width <= width
+      line = test
+    else
+      lines << line unless line.empty?
+      line = word
+    end
+  end
+
+  lines << line unless line.empty?
+  lines.join("\n")
+end
+
   def combined_stats(info_hash)
   combined = {}
 
@@ -131,26 +152,46 @@ class Tooltip
 
   combined
 end
+  def tooltip_position(mouse_x, mouse_y)
+  width  = @sprites["bg"].width
+  height = @sprites["bg"].height
   
+  
+  
+  bx = mouse_x + $mouse.width
+  by = mouse_y - height / 2
+
+  if bx + width > Graphics.width
+    bx = mouse_x - width - $mouse.width
+  end
+  if by < 0
+    by = 0
+  end
+  if by + height > Graphics.height
+    by = Graphics.height - height
+  end
+  return bx, by
+end
   
   def update
     mouse_x, mouse_y = $mouse.getMousePos
 	if mouse_x && mouse_y
-	bx = mouse_x + $mouse.width
-    by = mouse_y - @sprites["bg"].height/2
+	bx, by = tooltip_position(mouse_x, mouse_y)
     @sprites["bg"].x = bx
     @sprites["bg"].y = by
     @line_sprites.each do |s|
       s.x = bx - $mouse.width + s.instance_variable_get(:@rel_x)
       s.y = by - $mouse.height + s.instance_variable_get(:@rel_y)
-	   s.refresh
+	  s.refresh
     end
     @image_sprites.each do |s|
       s.x = bx - $mouse.width + s.instance_variable_get(:@rel_x)
       s.y = by - $mouse.height+ s.instance_variable_get(:@rel_y)
     end
     return unless @sprites["bg"].visible
-    (@line_sprites + @image_sprites).each { |s| s.visible = true }
+    (@line_sprites + @image_sprites).each do |s| 
+	 s.visible = true
+	end 
 	end 
   end
   
@@ -175,6 +216,30 @@ end
     @line_sprites.clear
     @image_sprites.clear
   end
+def wrap_text(text, width, size = 14)
+  bitmap = Bitmap.new(1, 1)
+  bitmap.font.size = size
+
+  words = text.to_s.split(/\s+/)
+  lines = []
+  line = ""
+
+  words.each do |word|
+    test = line.empty? ? word : "#{line} #{word}"
+
+    if bitmap.text_size(test).width <= width - 8
+      line = test
+    else
+      lines << line unless line.empty?
+      line = word
+    end
+  end
+
+  lines << line unless line.empty?
+  bitmap.dispose
+
+  lines.join("\n")
+end
 
    def create_text_sprite(text, size = 14, width = @width, color = MessageConfig::DARK_TEXT_MAIN_COLOR, shadow_color = nil)
     text_sprite=Window_UnformattedTextPokemon.new(text)

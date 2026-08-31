@@ -1,34 +1,4 @@
 
-EventHandlers.add(:on_leave_tile, :update_sprite_position,
-  proc {|event|
-    next if !$scene.is_a?(Scene_Map)
-    next if event != $game_player
-    if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
-    $player.held_item_object=nil
-    $player.held_item=nil
-	end
-	
-	
-    next if $player.held_item_object.nil?
-    next if $player.held_item.nil?
-	
-	
-	type = $player.held_item
-	key_id = $player.held_item_object
-	
-	
-    pbMoveRoute2($game_map.events[key_id], [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,
-	PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
-	
-	 if !$game_map.events[key_id].nil?
-	if type != :PORTABLECAMP
-      $game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
-   elsif type == :PORTABLECAMP
-      $game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
-   end
-    end
-  }
-)
 
 
 
@@ -165,30 +135,12 @@ EventHandlers.add(:on_enter_map, :populateextraevents, proc{
 })
 
 
+
 EventHandlers.add(:on_leave_map, :update_sprite_position2,
   proc {
     next
-    if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
-    $player.held_item_object=nil
-    $player.held_item=nil
-	end
-    next if $player.held_item_object.nil?
-    next if $player.held_item.nil?
-	key_id = $player.held_item_object
-	$game_map.events[key_id].moveto($game_player.x,$game_player.y-5)
-    pbMoveRoute($game_map.events[key_id], [PBMoveRoute::ThroughOff,PBMoveRoute::AlwaysOnTopOff])
-    $ExtraEvents.objects[key_id][1].x=$game_player.x
-	$ExtraEvents.objects[key_id][1].y=$game_player.y-5
-    $ExtraEvents.objects[key_id][1] = false
-    $ExtraEvents.objects[key_id][1] = false
-    $player.held_item_object=nil
-    $player.held_item=nil
-  }
-)
-EventHandlers.add(:on_leave_map, :update_sprite_position2,
-  proc {
-    next
-	$game_map.events.each do |id,event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    events.each do |event|
 	if event.name == "PlayerPkmn"
 	deletefromSISData(event.id,$game_map,map_id)
 	pbReturnPokemon(event.id)

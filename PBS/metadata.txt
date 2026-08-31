@@ -4,8 +4,9 @@ StartMoney = 0
 StartItemStorage = POTION
 Home = 10,12,11,2
 StorageCreator = Bill
-WildBattleBGM = NormalBattle
+WildBattleBGM = Original SI Battle
 TrainerBattleBGM = The Power to Fight
+WildVictoryBGM = Victory03
 SurfBGM = Ship
 BicycleBGM = Airship
 #-------------------------------

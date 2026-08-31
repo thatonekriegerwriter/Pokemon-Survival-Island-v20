@@ -1,0 +1,2 @@
+Name = SI Desk Changer
+Version = 1

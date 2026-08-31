@@ -409,66 +409,37 @@ end
 EventHandlers.add(:on_step_taken, :kill_party,
   proc { |event|
     next if !$scene.is_a?(Scene_Map)
-    next if $PokemonGlobal.stepcount % 4 != 0
-	if event == $game_player
-	duris = false
-	elsif event&.name.include?("PlayerPkmn")
-	duris = false
-	else
-	duris = true
-	end
-    next if duris
+    next if $PokemonGlobal.stepcount % 4 != 0 && event == $game_player
     flashed = false
-   indexes = []
-    data = Nuzlocke.rules; data = [] if data.nil?
     $player.party.each.each_with_index do |pkmn, index|
+	  next unless pkmn 
 	  next if !pkmn.fainted?
 	  next if pkmn.dead?
+	  next if event!=pkmn.event && event!= $game_player
+	  next if event== $game_player && pkmn.event
+      next if pkmn.stepcount % 4 != 0 && event == pkmn.event
       if !flashed
         pbFlash(Color.new(102, 3, 0, 128), 8)
 	     pbSEPlay("dying")
         flashed = true
       end
-      pkmn.lifespan -= 3
-	  pbShowTipCard(:CRITICALCONDITION) if !pbSeenTipCard?(:CRITICALCONDITION)
-	  puts "#{pkmn.name}'s lifespan is now #{pkmn.lifespan} wellness."
-      if pkmn.lifespan <= 0
-	     pbSEPlay("DeathDQ")
-        pkmn.changeHappiness("faint",pkmn)
-        pkmn.changeHappiness("powder",pkmn)
-        pkmn.changeLoyalty("faint",pkmn)
-        pkmn.hp = 0
-        pkmn.permaFaint=true
-        pbMessage(_INTL("{1} died...", pkmn.name))
-	  if data.include?(:PERMADEATH)
-	    indexes << index
-	  end
-      end
+      pkmn.changeLifespan("mortally_wounded")
+      pkmn.die 
 
 
     end
 
-	  if data.include?(:PERMADEATH)
-   indexes.each do |index|
-     $player.party.delete_at(index)
-   
-   end
-	  end
   }
 )
-
-
-
-
-# Poison party Pokémon
-EventHandlers.add(:on_player_step_taken_can_transfer, :poison_party,
-  proc { |handled|
-    # handled is an array: [nil]. If [true], a transfer has happened because of
-    # this event, so don't do anything that might cause another one
-    next if handled[0]
-    next if $PokemonGlobal.stepcount % 4 != 0
+EventHandlers.add(:on_step_taken, :poison_party,
+  proc { |event|
+    next if !$scene.is_a?(Scene_Map)
+    next if $PokemonGlobal.stepcount % 4 != 0 && event == $game_player
     flashed = false
-    $player.able_party.each do |pkmn|
+    $player.party.each.each_with_index do |pkmn, index|
+	  next if event!=pkmn.event && event!= $game_player
+	  next if event== $game_player && pkmn.event
+      next if pkmn.stepcount % 4 != 0 && event == pkmn.event
       next if pkmn.status != :POISON || pkmn.hasAbility?(:IMMUNITY)
       if !flashed
         pbFlash(Color.new(255, 0, 0, 128), 8)
@@ -478,7 +449,6 @@ EventHandlers.add(:on_player_step_taken_can_transfer, :poison_party,
 	  damage = 1
       pkmn.hp -= damage
         pkmn.changeHappiness("damaged",pkmn)
-        pkmn.changeLoyalty("damaged",pkmn)
       if pkmn.hp > 0 && rand(100)<1
         pkmn.status = :NONE
         sideDisplay(_INTL("{1} survived the poisoning.\\nThe poison faded away!\1", pkmn.name))
@@ -488,7 +458,22 @@ EventHandlers.add(:on_player_step_taken_can_transfer, :poison_party,
         pkmn.status = :NONE
 	    sideDisplay("#{pkmn.name} fainted from poison!")
       end
-    end
+	
+	
+	
+	end 
+
+
+
+  }
+)
+
+# Poison party Pokémon
+EventHandlers.add(:on_player_step_taken_can_transfer, :poison_party,
+  proc { |handled|
+    # handled is an array: [nil]. If [true], a transfer has happened because of
+    # this event, so don't do anything that might cause another one
+    next 
   }
 )
 

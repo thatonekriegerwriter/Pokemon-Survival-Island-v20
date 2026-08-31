@@ -83,7 +83,7 @@ end
 # Updates the array with all the tiles that are passable
 EventHandlers.add(:on_enter_map, :update_passable_tiles,
   proc { |_sender, e|
-    update_passable_tiles(true)
+    update_passable_tiles
   }
 )
 
@@ -92,7 +92,7 @@ EventHandlers.add(:on_enter_map, :update_passable_tiles,
 # Example: move_to_location(20,77,52,true)
 def move_to_location(event = nil, desired_x = 0, desired_y = 0, wait_for_completion = false)
   # Get the event from the specified event ID if specified
-  event = get_event_from_id(event) if event.is_a?(Integer)
+  event = get_event_from_id(event) if (event.is_a?(Integer) || event.is_a?(String))
   # Make event the current one if none is specified
   event = pbMapInterpreter.get_character(0) if event.nil? && pbMapInterpreter
   # Return if the event is already at the desired location
@@ -115,8 +115,8 @@ end
 # Example: move_to_event(20,34,true)
 def move_to_event(event_a = nil, event_b = nil, wait_for_completion = false)
   # Get the event from the specified event ID if specified
-  event_a = get_event_from_id(event_a) if event_a.is_a?(Integer)
-  event_b = get_event_from_id(event_b) if event_b.is_a?(Integer)
+  event_a = get_event_from_id(event_a) if (event_a.is_a?(Integer) || event_a.is_a?(String))
+  event_b = get_event_from_id(event_b) if (event_b.is_a?(Integer) || event_b.is_a?(String))
   # Sets a default event if none is specified
   event_a = pbMapInterpreter.get_character(0) if event_a.nil? && pbMapInterpreter
   event_b = pbMapInterpreter.get_character(-1) if event_b.nil? && pbMapInterpreter
@@ -177,7 +177,7 @@ end
 # destination = an array of the desired location [x,y]
 def calc_path2(event, destination)
   # Updates the array with all the tiles that are passable
-  update_passable_tiles
+  update_passable_tiles(event)
   # Starting point is always on the designated event
   initial_point = [event.x, event.y]
   # The bare minimum distance that needs to be traveled
@@ -241,7 +241,7 @@ end
 # destination = an array of the desired location [x,y]
 def calc_path(event, destination)
   # Updates the array with all the tiles that are passable
-  update_passable_tiles
+  update_passable_tiles(event)
   # Starting point is always on the designated event
   initial_point = [event.x, event.y]
   # The bare minimum distance that needs to be traveled
@@ -352,9 +352,10 @@ end
 # Turns towards the designated location
 def look_at_location(event,x,y)
   # Get the event from the specified event ID if specified
-  event = get_event_from_id(event) if event && event != $game_player
+  event = get_event_from_id(event) if event && !event.is_a?(Game_Event) && event != $game_player
   # Sets a default event if none is specified
-  event = get_character(0) if !event
+  return if !event
+  #event = get_character(0) if !event
   destination = [x, y]
   # Get distance between x values and y values
   distance_x = (event.x - x).abs
@@ -404,7 +405,7 @@ end
 
 
 # Updates the array with all the tiles that are passable
-def update_passable_tiles(full_reset = true)
+def update_passable_tiles(traveller = nil)
   # Initialize the impassable tiles array
   $impassable_tiles = [] if !$impassable_tiles
   # Reset the impassable tiles array
@@ -413,19 +414,17 @@ def update_passable_tiles(full_reset = true)
   for i in 0...$game_map.width
     for j in 0...$game_map.height
       # Checks whether the current tile is impassable or is a blocked terrain tag
-      next if $game_map.passable?(i, j, 0)
 	  event_id=$game_map.check_event(i, j)
 	  potato = $game_map.events[event_id]
-	   if !potato.nil?
-      next if potato.name.include?("inter")
-	  end
+      next if $game_map.passable?(i, j, 0)
+      next if potato && potato.name[/berryplant/i] && traveller && traveller.is_a?(Game_PokeEventA)
       next if TERRAIN_BLOCKS.include?($game_map.terrain_tag(i, j))
       # Add current tile to the array
       $impassable_tiles.push([i, j])
     end
   end
   # Add the player's location to the array
-  $impassable_tiles.push([$game_player.x, $game_player.y])
+  $impassable_tiles.push([$game_player.x, $game_player.y]) unless traveller && traveller.is_a?(Game_PokeEventA)
   # Add dependent events to impassable tiles
   if $PokemonGlobal && $PokemonGlobal.dependentEvents
     $PokemonGlobal.dependentEvents.each_with_index do |e, i|
@@ -464,7 +463,7 @@ end
 
 # Get event from event ID
 def get_event_from_id(id)
-  return $game_map.events.values.select { |e| e.id == id }[0]
+  return $game_map.events[id]
 end
 
 # New move route functionality

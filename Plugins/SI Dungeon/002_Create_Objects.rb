@@ -68,25 +68,25 @@ end
 def getObjectImage2(object)
 	case object #CAULDRON, CraftingStation, 
 	when :TUMBLEROCK
-	 image = "Legends_Tumblestone"
+	 image = "craftingStations/Legends_Tumblestone"
 	when :STONE
-	 image = "Object rock"
+	 image = "craftingStations/Object rock"
 	when :HARDSTONE
-	 image = "Object hardrock"
+	 image = "craftingStations/Object hardrock"
 	when :IRONORE
-	 image = "Object iron"
+	 image = "craftingStations/Object iron"
 	when :GOLDORE
-	 image = "Object gold"
+	 image = "craftingStations/Object gold"
 	when :SILVERORE
-	 image = "Object silver"
+	 image = "craftingStations/Object silver"
 	when :COPPERORE
-	 image = "Object copper"
+	 image = "craftingStations/Object copper"
 	when :COAL
-	 image = "Object coal"
+	 image = "craftingStations/Object coal"
 	when "MININGMINIGAME"
-	 image = "Object boulder"
+	 image = "craftingStations/Object boulder"
 	else
-	 image = "Object specialrock"
+	 image = "craftingStations/Object specialrock"
 	end
 
  return image

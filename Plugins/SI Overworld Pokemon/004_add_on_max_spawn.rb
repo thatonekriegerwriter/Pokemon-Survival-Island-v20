@@ -29,7 +29,8 @@ def pbCountPokeEvent
       end
     end
   else
-    for event in $game_map.events.values
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    for event in events
       if event.is_a?(Game_PokeEvent)
         currentCountPokeEvent = currentCountPokeEvent + 1
       end
@@ -41,7 +42,8 @@ end
 #Count spawned events in current map
 def pbCountPokeEventInMap
   currentCountPokeEvent = 0
-  $game_map.events.values.each { |event|
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+  events.each { |event|
     if event.is_a?(Game_PokeEvent)
       currentCountPokeEvent = currentCountPokeEvent + 1
     end

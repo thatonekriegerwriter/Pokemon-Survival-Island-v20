@@ -1,0 +1,3 @@
+Name = SI Pokemon
+Version = 1
+Essentials = 20

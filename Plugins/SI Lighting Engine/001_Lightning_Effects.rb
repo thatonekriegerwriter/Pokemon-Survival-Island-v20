@@ -47,179 +47,25 @@ EventHandlers.add(:on_new_spriteset_map, :add_light_effects,
 
 
 def pbCreateParticleEngine(viewport=Spriteset_Map.viewport,map=$game_map,spriteset=nil)
-   return if !$particle_engine.nil?
-   return if !$scene.is_a?(Scene_Map)
-   if spriteset.nil?
-    spriteset = $scene.spriteset(map.map_id)
-   end
-   return if spriteset.nil?
-	$particle_engine = Particle_Engine.new(viewport, map)
-    spriteset.addUserSprite($particle_engine)
-
+	return if !$particle_engine.nil? && !$particle_engine.disposed?
+    return if !$scene.is_a?(Scene_Map)
+   
+    spriteset ||= $scene.spriteset(map.map_id)
+    return if spriteset.nil?
+	
+	engine = Particle_Engine.new(viewport, map)
+    spriteset.addUserSprite(engine)
+	raise if !$particle_engine.nil?
+    $particle_engine = engine
 end
 
-EventHandlers.add(:on_map_or_spriteset_change, :reset_particle_engine_state,
-  proc { |scene, map_changed|
-    next if !scene || !scene.spriteset || !$particle_engine
-     $particle_engine.reset
-  }
-)
-EventHandlers.add(:on_leave_map, :change_particle_engine_state,
-  proc { |new_map_id, new_map|
-    next if new_map_id == 0 || !$particle_engine
-     $particle_engine.remove_particles
 
-  }
-)
+
 
 def isaaparticle(event)
    return ["fire"] if event.name.include?("naturaltorch") 
    return ["fire"] if event.name.include?("playertorch")
    return nil
-end
-
-class Particle_Engine
-  attr_accessor :firsttime
-  def initialize(viewport = nil, map = nil)
-    @map       = (map) ? map : $game_map
-    @viewport  = viewport
-    @effect    = {}
-    @disposed  = false
-    @lastRefreshFrame = Graphics.frame_count
-    @firsttime = true
-    @effects   = {
-      # PinkMan's Effects
-      "fire"         => Particle_Engine::Fire,
-      "water"         => Particle_Engine::Water,
-      "smoke"        => Particle_Engine::Smoke,
-      "teleport"     => Particle_Engine::Teleport,
-      "spirit"       => Particle_Engine::Spirit,
-      "explosion"    => Particle_Engine::Explosion,
-      "aura"         => Particle_Engine::Aura,
-      # BlueScope's Effects
-      "soot"         => Particle_Engine::Soot,
-      "sootsmoke"    => Particle_Engine::SootSmoke,
-      "rocket"       => Particle_Engine::Rocket,
-      "fixteleport"  => Particle_Engine::FixedTeleport,
-      "smokescreen"  => Particle_Engine::Smokescreen,
-      "flare"        => Particle_Engine::Flare,
-      "splash"       => Particle_Engine::Splash,
-      # By Peter O.
-      "starteleport" => Particle_Engine::StarTeleport
-    }
-  end
-  
-  def reset
-    dispose
-    @firsttime = true
-    @effect    = {}
-    @map = $game_map if @map!=$game_map
-  end
-  
-  def remove_particles
-    @effect.each_value do |particle|
-      next if particle.nil?
-      particle.dispose
-    end
-  
-  
-  end
-  
-  def dispose
-    return if disposed?
-    @effect.each_value do |particle|
-      next if particle.nil?
-      particle.dispose
-    end
-    @effect.clear
-    @map = nil
-    @disposed = true
-  end
-
-  def disposed?
-    return @disposed
-  end
-
-  def add_effect(event, particle=nil, type = nil)
-    return if event.id.nil?
-    event.has_a_particle=[true,type]
-    @effect[event.id] = pbParticleEffect(event, particle, type)
-  end
-
-  def remove_effect(event)
-    return if event.id.nil?
-    return if @effect[event.id].nil?
-    event.has_a_particle=[false,nil]
-    @effect[event.id].dispose
-    @effect.delete(event.id)
-  end
-  
-  def realloc_effect(event, particle = nil, type = nil)
-    type = pbShouldShowThisParticle(event, 1, "Particle Engine Type") if type.nil?
-	type = isaaparticle(event) if type.nil?
-    if type.nil?
-      particle&.dispose
-      return nil
-    end
-    type = type[0] if type.is_a? Array
-    type = type.downcase
-    cls = @effects[type]
-    if cls.nil?
-      particle&.dispose
-      return nil
-    end
-    if !particle || !particle.is_a?(cls)
-      particle&.dispose
-      particle = cls.new(event, @viewport)
-    end
-    return particle
-  end
-
-
-  def pbParticleEffect(event, particle = nil, type = nil)
-    return realloc_effect(event, particle, type)
-  end
-
-  def update
-    if @firsttime
-      @firsttime = false
-	  @map = $game_map if !@map
-      @map.events.each_value do |event|
-	   next if !event.has_particle? && !event.should_have_particle?
-       remove_effect(event)
-        add_effect(event)
-      
-	  end
-    end
-    @effect.values.each_with_index do |particle, i|
-      next if particle.nil?
-	  
-	   particle.event.pe_pause=false if particle.event.pe_pause.nil?
-      if particle.event.pe_refresh
-        event = particle.event
-        event.pe_refresh = false
-        particle = realloc_effect(event, particle)
-        @effect[i] = particle
-      end
-      particle&.update#tryUpdate
-    end
-  end
-
-
-  def showHUD?
-    return (
-      $player && $scene.is_a?(Scene_Map)
-    )
-  end
-
-  def tryUpdate
-      update if @lastRefreshFrame != Graphics.frame_count
-  end
-
-  def hasSprites?
-    return !@effect.empty?
-  end
-  
 end
 
 
@@ -291,7 +137,7 @@ def pbAddParticleEffecttoEvent(type="fire",event=nil)
   interp = pbMapInterpreter
   event = interp.get_self
   end
-  pbCreateParticleEngine
+  return if event.nil?
   return if !$scene
   return if !$scene.spriteset
   return if !$particle_engine
@@ -325,12 +171,16 @@ end
 def pbRemoveLightEffectfromThisEvent(event)
   return if !$scene
   return if !$scene.spriteset
-  return if event.currentcustomsprite.nil?
-  spriteset = $scene.spriteset($game_map.map_id)
-  spriteset.usersprites[event.currentcustomsprite].dispose
-  #spriteset.removeUserSprite(event.currentcustomsprite)
   event.has_a_light=[false,[1,1]]
+  custom = event.currentcustomsprite
   event.currentcustomsprite=nil
+  return if custom.nil?
+  spriteset = $scene.spriteset($game_map.map_id)
+  sprite = spriteset.usersprites[custom]
+  return if sprite.nil?
+  return if (!sprite.is_a?(LightEffect_DayNight) || (sprite.is_a?(LightEffect_DayNight) && sprite.event != event))
+  sprite.dispose
+  spriteset.removeUserSprite2(sprite)
 
 
 
@@ -358,7 +208,7 @@ def pbRemoveLightEffectfromEvent
   return if event.currentcustomsprite.nil?
   spriteset = $scene.spriteset($game_map.map_id)
   spriteset.usersprites[event.currentcustomsprite].dispose
-  #spriteset.removeUserSprite(event.currentcustomsprite)
+  spriteset.removeUserSprite2(spriteset.usersprites[custom])
   event.has_a_light=[false,[1,1]]
   event.currentcustomsprite=nil
 
@@ -379,15 +229,184 @@ class Spriteset_Map
 	return @usersprites.index(new_sprite)
   end
 
-
+  def getUserSprite(new_sprite)
+  
+  end 
   def removeUserSprite(index)
     @usersprites.delete_at(index)
   end
+  def removeUserSprite2(sprite)
+   return unless sprite
+   sprite.dispose unless sprite.disposed?
+   @usersprites.delete(sprite)
+  end
 
 end
+class Particle_Engine
+  attr_accessor :firsttime
+  LEGACY_PARTICLE_SCALE = 60
+  def initialize(viewport = nil, map = nil)
+   # puts "Particle Engine #{object_id} initialized"
+    @map       = (map) ? map : $game_map
+    @viewport  = viewport
+    @effect    = {}
+    @disposed  = false
+    @lastRefreshFrame = Graphics.frame_count
+    @firsttime = true
+    @effects   = {
+      # PinkMan's Effects
+      "fire"         => Particle_Engine::Fire,
+      "smoke"        => Particle_Engine::Smoke,
+      "teleport"     => Particle_Engine::Teleport,
+      "spirit"       => Particle_Engine::Spirit,
+      "explosion"    => Particle_Engine::Explosion,
+      "aura"         => Particle_Engine::Aura,
+      # BlueScope's Effects
+      "soot"         => Particle_Engine::Soot,
+      "sootsmoke"    => Particle_Engine::SootSmoke,
+      "rocket"       => Particle_Engine::Rocket,
+      "fixteleport"  => Particle_Engine::FixedTeleport,
+      "smokescreen"  => Particle_Engine::Smokescreen,
+      "flare"        => Particle_Engine::Flare,
+      "splash"       => Particle_Engine::Splash,
+      # By Peter O.
+      "starteleport" => Particle_Engine::StarTeleport,
+	  # By systeromen_
+      "combat_projectile"         => Particle_Engine::CombatProjectile,
+	  "cone_projectile"         => Particle_Engine::Cone,
+	  "beam_projectile"         => Particle_Engine::Beam,
+	  "cone"         => Particle_Engine::Cone
+    }
+  end
+  
+  def reset
+    dispose
+  end
+  
+  def remove_particles
+    @effect.each_value do |particle|
+      next if particle.nil?
+      particle.dispose
+    end
+  
+  
+  end
+  
+  def dispose
+    return if disposed?
+    return if !$scene.is_a?(Scene_Map)
+    @disposed = true
+    @effect.each_value do |particle|
+      next if particle.nil?
+      particle.dispose
+    end
+    @effect.clear
+    #@firsttime = true
+	#puts "Particle Engine #{object_id} disposed"
+    spriteset ||= $scene.spriteset(@map.map_id)
+    spriteset.removeUserSprite2($particle_engine) if spriteset
+    @map = nil
+	$particle_engine = nil if defined?($particle_engine) && $particle_engine == self
+  end
+
+  def disposed?
+    return @disposed
+  end
+
+  def add_effect(event, particle=nil, type = nil)
+    return if event.id.nil?
+    event.has_a_particle=[true,type]
+    @effect[event.id] = pbParticleEffect(event, particle, type)
+  end
+
+  def remove_effect(event)
+    return if event.id.nil?
+    return if @effect[event.id].nil?
+    event.has_a_particle=[false,nil]
+    @effect[event.id].dispose
+    @effect.delete(event.id)
+  end
+  
+  def realloc_effect(event, particle = nil, type = nil)
+    type = pbShouldShowThisParticle(event, 1, "Particle Engine Type") if type.nil?
+	type = isaaparticle(event) if type.nil?
+    if type.nil?
+      particle&.dispose
+      return nil
+    end
+    type = type[0] if type.is_a? Array
+    type = type.downcase
+    cls = @effects[type]
+    if cls.nil?
+      particle&.dispose
+      return nil
+    end
+    if !particle || !particle.is_a?(cls)
+      particle&.dispose
+      particle = cls.new(event, @viewport)
+    end
+    return particle
+  end
+
+
+  def pbParticleEffect(event, particle = nil, type = nil)
+    return realloc_effect(event, particle, type)
+  end
+
+  def update
+    return if @disposed
+    if @firsttime
+      @firsttime = false
+	  @map = $game_map if !@map
+	  events = @map.events.values + $DynamicEvents.events_for_map + [$game_player]
+      events.each do |event|
+	   next if event.nil?
+	   next if !event.has_particle? 
+	   next if !event.should_have_particle?
+       remove_effect(event)
+       add_effect(event)
+      
+	  end
+    end
+    @effect.each do |id, particle|
+      next if particle.nil?
+	  
+	   particle.event.pe_pause=false if particle.event.pe_pause.nil?
+      if particle.event.pe_refresh
+        event = particle.event
+        event.pe_refresh = false
+        particle = realloc_effect(event, particle)
+        @effect[id] = particle
+      end
+      particle&.update
+    end
+  end
+  def clear
+    @effect.each_value(&:dispose)
+    @effect.clear
+  end
+
+  def showHUD?
+    return (
+      $player && $scene.is_a?(Scene_Map)
+    )
+  end
+
+  def tryUpdate
+      return if @lastRefreshFrame == Graphics.frame_count
+	  @lastRefreshFrame = Graphics.frame_count
+      update if @lastRefreshFrame != Graphics.frame_count
+  end
+
+  def hasSprites?
+    return !@effect.empty?
+  end
+  
+end
+
 
 class ParticleSprite
-  attr_accessor :x, :y, :z, :ox, :oy, :opacity, :blend_type
+  attr_accessor :x, :y, :z, :ox, :oy, :opacity, :blend_type, :dead
   attr_reader :bitmap
 
   def initialize(viewport)
@@ -403,6 +422,7 @@ class ParticleSprite
     @blend_type = 0
     @minleft    = 0
     @mintop     = 0
+	@dead       = false 
   end
 
   def dispose
@@ -469,7 +489,8 @@ end
 class ParticleEffect_Event < ParticleEffect
   attr_accessor :event
   attr_accessor :visible
-
+  attr_accessor :complete 
+  
   def initialize(event, viewport = nil)
     @event     = event
     @viewport  = viewport
@@ -477,9 +498,12 @@ class ParticleEffect_Event < ParticleEffect
     @particles = []
     @lastRefreshFrame = Graphics.frame_count
     @visible = true
+	@complete = false 
     @bitmaps   = {}
   end
-
+def finished?
+  @particles.all?(&:dead)
+end
 
   def showHUD?
     return (
@@ -501,12 +525,23 @@ class ParticleEffect_Event < ParticleEffect
 
 
 
-  def setParameters(params)
-    @randomhue, @leftright, @fade,
-    @maxparticless, @hue, @slowdown,
-    @ytop, @ybottom, @xleft, @xright,
-    @xgravity, @ygravity, @xoffset, @yoffset,
-    @opacityvar, @originalopacity = params
+  def setParameters(params = {})
+    @randomhue        = params[:randomhue]        || 0
+    @leftright        = params[:leftright]        || 0
+    @fade             = params[:fade]             || 0
+    @maxparticless    = params[:maxparticles]     || 20
+    @hue              = params[:hue]              || 0
+    @slowdown         = params[:slowdown]         || 1
+    @ytop             = params[:ytop]             || -64
+    @ybottom          = params[:ybottom]          || Graphics.height
+    @xleft            = params[:xleft]            || -64
+    @xright           = params[:xright]           || Graphics.width
+    @xgravity         = params[:xgravity]         || 0
+    @ygravity         = params[:ygravity]         || 0
+    @xoffset          = params[:xoffset]          || 0
+    @yoffset          = params[:yoffset]          || 0
+    @opacityvar       = params[:opacityvar]       || 0
+    @originalopacity  = params[:originalopacity]  || 255
 	#@xoffset +=$PokemonSystem.screenposx
 	#@yoffset +=$PokemonSystem.screenposy
   end
@@ -532,6 +567,7 @@ class ParticleEffect_Event < ParticleEffect
     @screen_y  = self.y
     @real_x    = @event.real_x
     @real_y    = @event.real_y
+	#puts "INIT #{@event.id}: #{@event.real_x}, #{@event.real_y}"
     @filename  = filename
     @zoffset   = zOffset
     @bmwidth   = 32
@@ -558,11 +594,13 @@ class ParticleEffect_Event < ParticleEffect
   def x; return ScreenPosHelper.pbScreenX(@event); end
   def y; return ScreenPosHelper.pbScreenY(@event); end
   def z; return ScreenPosHelper.pbScreenZ(@event); end
-
+  
+  
   def update
     if @viewport &&
        (@viewport.rect.x >= Graphics.width ||
        @viewport.rect.y >= Graphics.height)
+	#  puts "SKIPPED VIEWPORT"
       return
     end
 	 time_now = Graphics.frame_count
@@ -594,16 +632,19 @@ class ParticleEffect_Event < ParticleEffect
       maxX += @bmwidth
       maxY += @bmheight
 	  
-      if maxX < 0 || maxY < 0 || minX >= Graphics.width || minY >= Graphics.height
+     offscreen =  maxX < 0 || maxY < 0 || minX >= Graphics.width || minY >= Graphics.height
 #        echo "skipped"
-        return
-      end
+ #       return
     end
     particleZ = selfZ + @zoffset
     @maxparticless.times do |i|
 	    next if @particles[i].nil?
-	   @particles[i].visible=true if @event.pe_pause==false
-	   @particles[i].visible=false if @event.pe_pause==true
+		if offscreen
+		  @particles[i].visible = false
+		  next
+		else
+	     @particles[i].visible=!@event.pe_pause
+		end 
       @particles[i].z = particleZ
       if @particles[i].y <= @ytop
         @particles[i].y = @startingy + @yoffset
@@ -644,6 +685,7 @@ class ParticleEffect_Event < ParticleEffect
         @particlex[i] = 0.0
         @particley[i] = 0.0
       end
+
       calcParticlePos(i)
       if @randomhue == 1
         @hue += 0.5
@@ -692,17 +734,59 @@ end
 class Particle_Engine::Fire < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 20, 40, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -13, 30, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 20,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -13,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("particle", 250)
   end
 end
-class Particle_Engine::Water < ParticleEffect_Event
+class Particle_Engine::CombatProjectile < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 20, 0, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -13, 30, 0])
-    initParticles("particle_water", 250)
+	type = "particle"
+    if event.respond_to?(:data) && event.data.is_a?(Pokemon::Move)
+      type = case event.data.type
+	    when :FIRE then "particle"
+	    when :WATER then "particle_water"
+		else 
+		 "smoke"
+	  end
+    end
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 20,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -13,
+  opacityvar: 30,
+  originalopacity: 0
+)
+  
+    initParticles(type, 250)
   end
 end
 
@@ -714,8 +798,24 @@ end
 class Particle_Engine::Smoke < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 0, 80, 20, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -15, 5, 80])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 80,
+  hue: 20,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -15,
+  opacityvar: 5,
+  originalopacity: 80
+)
     initParticles("smoke", 250)
   end
 end
@@ -725,8 +825,24 @@ end
 class Particle_Engine::Teleport < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([1, 1, 1, 10, rand(360), 1, -64,
-                   Graphics.height, -64, Graphics.width, 0, 3, -8, -15, 20, 0])
+    setParameters(
+  randomhue: 1,
+  leftright: 1,
+  fade: 1,
+  maxparticles: 10,
+  hue: rand(360),
+  slowdown: 1,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0,
+  ygravity: 3,
+  xoffset: -8,
+  yoffset: -15,
+  opacityvar: 20,
+  originalopacity: 0
+)
     initParticles("wideportal", 250)
     @maxparticless.times do |i|
       @particles[i].ox = 16
@@ -740,8 +856,24 @@ end
 class Particle_Engine::Spirit < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([1, 0, 1, 20, rand(360), 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -13, 30, 0])
+    setParameters(
+  randomhue: 1,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 20,
+  hue: rand(360),
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -13,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("particle", 250)
   end
 end
@@ -751,8 +883,24 @@ end
 class Particle_Engine::Explosion < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 20, 0, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -13, 30, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 20,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -13,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("explosion", 250)
   end
 end
@@ -762,8 +910,24 @@ end
 class Particle_Engine::Aura < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 20, 0, 1, -64,
-                   Graphics.height, -64, Graphics.width, 2, 2, -5, -13, 30, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 20,
+  hue: 0,
+  slowdown: 1,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 2,
+  ygravity: 2,
+  xoffset: -5,
+  yoffset: -13,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("particle", 250)
   end
 end
@@ -773,8 +937,24 @@ end
 class Particle_Engine::Soot < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 0, 20, 0, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -15, 5, 80])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 20,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -15,
+  opacityvar: 5,
+  originalopacity: 80
+)
     initParticles("smoke", 100, 0, 2)
   end
 end
@@ -784,8 +964,24 @@ end
 class Particle_Engine::SootSmoke < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 0, 30, 0, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0.10, -5, -15, 5, 80])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 30,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0.10,
+  xoffset: -5,
+  yoffset: -15,
+  opacityvar: 5,
+  originalopacity: 80
+)
     initParticles("smoke", 100, 0)
     @maxparticless.times do |i|
       @particles[i].blend_type = rand(6) < 3 ? 1 : 2
@@ -798,8 +994,24 @@ end
 class Particle_Engine::Rocket < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 0, 60, 0, 0.5, -64,
-                   Graphics.height, -64, Graphics.width, 0.5, 0, -5, -15, 5, 80])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 60,
+  hue: 0,
+  slowdown: 0.5,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.5,
+  ygravity: 0,
+  xoffset: -5,
+  yoffset: -15,
+  opacityvar: 5,
+  originalopacity: 80
+)
     initParticles("smoke", 100, -1)
   end
 end
@@ -809,8 +1021,24 @@ end
 class Particle_Engine::FixedTeleport < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([1, 0, 1, 10, rand(360), 1,
-                   -Graphics.height, Graphics.height, 0, Graphics.width, 0, 3, -8, -15, 20, 0])
+    setParameters(
+  randomhue: 1,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 10,
+  hue: rand(360),
+  slowdown: 1,
+  ytop: -Graphics.height,
+  ybottom: Graphics.height,
+  xleft: 0,
+  xright: Graphics.width,
+  xgravity: 0,
+  ygravity: 3,
+  xoffset: -8,
+  yoffset: -15,
+  opacityvar: 20,
+  originalopacity: 0
+)
     initParticles("wideportal", 250)
     @maxparticless.times do |i|
       @particles[i].ox = 16
@@ -825,8 +1053,24 @@ end
 class Particle_Engine::StarTeleport < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 10, 0, 1,
-                   -Graphics.height, Graphics.height, 0, Graphics.width, 0, 3, -8, -15, 10, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 10,
+  hue: 0,
+  slowdown: 1,
+  ytop: -Graphics.height,
+  ybottom: Graphics.height,
+  xleft: 0,
+  xright: Graphics.width,
+  xgravity: 0,
+  ygravity: 3,
+  xoffset: -8,
+  yoffset: -15,
+  opacityvar: 10,
+  originalopacity: 0
+)
     initParticles("star", 250)
     @maxparticless.times do |i|
       @particles[i].ox = 48
@@ -840,8 +1084,24 @@ end
 class Particle_Engine::Smokescreen < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 0, 250, 0, 0.2, -64,
-                   Graphics.height, -64, Graphics.width, 0.8, 0.8, -5, -15, 5, 80])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 250,
+  hue: 0,
+  slowdown: 0.2,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0.8,
+  ygravity: 0.8,
+  xoffset: -5,
+  yoffset: -15,
+  opacityvar: 5,
+  originalopacity: 80
+)
     initParticles(nil, 100)
     @maxparticless.times do |i|
       rnd = rand(3)
@@ -877,8 +1137,24 @@ end
 class Particle_Engine::Flare < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 30, 10, 1, -64,
-                   Graphics.height, -64, Graphics.width, 2, 2, -5, -12, 30, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 30,
+  hue: 10,
+  slowdown: 1,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 2,
+  ygravity: 2,
+  xoffset: -5,
+  yoffset: -12,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("particle", 255)
   end
 end
@@ -888,8 +1164,24 @@ end
 class Particle_Engine::Splash < ParticleEffect_Event
   def initialize(event, viewport)
     super
-    setParameters([0, 0, 1, 30, 255, 1, -64,
-                   Graphics.height, -64, Graphics.width, 4, 2, -5, -12, 30, 0])
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 1,
+  maxparticles: 30,
+  hue: 255,
+  slowdown: 1,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 4,
+  ygravity: 2,
+  xoffset: -5,
+  yoffset: -12,
+  opacityvar: 30,
+  originalopacity: 0
+)
     initParticles("smoke", 50)
   end
 
@@ -902,6 +1194,356 @@ class Particle_Engine::Splash < ParticleEffect_Event
     end
   end
 end
+
+class Particle_Engine::Cone < ParticleEffect_Event
+  def initialize(event, viewport)
+    super
+	particle_range = 5 
+    if event.respond_to?(:data) && event.data.is_a?(Pokemon::Move)
+      particle_range = event.data.overworld_range || 5
+    end
+    @max_distance = particle_range * 32
+    setParameters(
+  randomhue: 0,
+  leftright: 0,
+  fade: 0,
+  maxparticles: 40,
+  hue: 0,
+  slowdown: 1,
+  ytop: -64,
+  ybottom: Graphics.height,
+  xleft: -64,
+  xright: Graphics.width,
+  xgravity: 0,
+  ygravity: 0,
+  xoffset: 0,
+  yoffset: 0,
+  opacityvar: 0,
+  originalopacity: 255
+)
+
+    initParticles("particle", 250)
+  end
+
+
+def calcParticlePos(i)
+  spread = 16
+
+  if @particlex[i] == 0
+    @particlex[i] = 0#rand(1..5) * 32
+    @particley[i] = rand(-spread..spread)
+  end
+
+  distance = @particlex[i]
+  offset = rand(-distance / 2..distance / 2)
+
+  base_angle = case @event.direction
+  when 2 then 90
+  when 4 then 180
+  when 6 then 0
+  when 8 then 270
+  end
+
+  radians = base_angle * Math::PI / 180
+
+  x = Math.cos(radians) * distance
+  y = Math.sin(radians) * distance
+
+  side_angle = (base_angle + 90) * Math::PI / 180
+
+  x += Math.cos(side_angle) * offset
+  y += Math.sin(side_angle) * offset
+
+  @particles[i].x = @startingx + x
+  @particles[i].y = @startingy + y
+
+  @particlex[i] += 4
+  if @particlex[i] > @max_distance
+    @opacity[i] = 0
+	
+  end
+end
+
+def cone_offset
+  case @event.direction
+  when 2 # down
+    [-10, -8]
+  when 4 # left
+    [-12, -24]
+  when 6 # right
+    [12, -16]
+  when 8 # up
+    [-10, -40]
+  end
+end
+  def update
+    return if @complete
+    if @viewport &&
+       (@viewport.rect.x >= Graphics.width ||
+       @viewport.rect.y >= Graphics.height)
+      return
+    end
+	 time_now = Graphics.frame_count
+    time_delta = time_now.to_i - @time_last_updated
+    return if time_delta <= 0
+	 @time_last_updated = time_now.to_i
+    #delta_t = Graphics.delta
+    selfX = self.x
+    selfY = self.y
+    selfZ = self.z
+    newRealX = @event.real_x
+    newRealY = @event.real_y
+	offset_x, offset_y = cone_offset
+    @startingx = selfX + @xoffset + offset_x
+    @startingy = selfY + @yoffset + offset_y
+    @__offsetx = (@real_x == newRealX) ? 0 : selfX - @screen_x
+    @__offsety = (@real_y == newRealY) ? 0 : selfY - @screen_y
+    @screen_x = selfX
+    @screen_y = selfY
+    @real_x = newRealX
+    @real_y = newRealY
+    if @opacityvar > 0 && @viewport
+      opac = 255.0 / @opacityvar
+      minX = (opac * (-@xgravity.to_f / @slowdown).floor) + @startingx
+      maxX = (opac * (@xgravity.to_f / @slowdown).floor) + @startingx
+      minY = (opac * (-@ygravity.to_f / @slowdown).floor) + @startingy
+      maxY = @startingy
+      minX -= @bmwidth
+      minY -= @bmheight
+      maxX += @bmwidth
+      maxY += @bmheight
+	  
+      if maxX < 0 || maxY < 0 || minX >= Graphics.width || minY >= Graphics.height
+#        echo "skipped"
+        return
+      end
+    end
+    particleZ = selfZ + @zoffset
+    @maxparticless.times do |i|
+	    
+	    next if @particles[i].nil?
+		next if @particles[i].dead
+		if @particlex[i] >= @max_distance
+          @particles[i].dead = true
+          @particles[i].visible = false
+           next
+        end
+      @particles[i].z = particleZ
+      if @particles[i].y <= @ytop
+        @particles[i].y = @startingy + @yoffset
+        @particles[i].x = @startingx + @xoffset
+        @particlex[i] = 0.0
+        @particley[i] = 0.0
+      end
+      if @particles[i].x <= @xleft
+        @particles[i].y = @startingy + @yoffset
+        @particles[i].x = @startingx + @xoffset
+        @particlex[i] = 0.0
+        @particley[i] = 0.0
+      end
+      if @particles[i].y >= @ybottom
+        @particles[i].y = @startingy + @yoffset
+        @particles[i].x = @startingx + @xoffset
+        @particlex[i] = 0.0
+        @particley[i] = 0.0
+      end
+      if @particles[i].x >= @xright
+        @particles[i].y = @startingy + @yoffset
+        @particles[i].x = @startingx + @xoffset
+        @particlex[i] = 0.0
+        @particley[i] = 0.0
+      end
+      if @fade == 0
+        if @opacity[i] <= 0
+          @opacity[i] = @originalopacity
+          @particles[i].y = @startingy + @yoffset
+          @particles[i].x = @startingx + @xoffset
+          @particlex[i] = 0.0
+          @particley[i] = 0.0
+        end
+      elsif @opacity[i] <= 0
+        @opacity[i] = 255
+      end
+      calcParticlePos(i)
+      if @randomhue == 1
+        @hue += 0.5
+        @hue = 0 if @hue >= 360
+        @particles[i].bitmap = loadBitmap(@filename, @hue) if @filename
+      end
+      @opacity[i] = @opacity[i] - rand(@opacityvar)
+      @particles[i].opacity = @opacity[i]
+      @particles[i].update
+    end
+    
+    @complete = finished?
+  end
+
+end
+
+class Particle_Engine::Beam < ParticleEffect_Event
+  attr_reader :complete
+
+  def initialize(event, viewport)
+    super
+
+    @complete = false
+
+    @range = 5
+    @duration = 60
+    if event.respond_to?(:data) && event.data.is_a?(Pokemon::Move)
+      @range = event.data.overworld_range
+      @duration = event.data.beam_time
+    end
+
+    @current_length = 0
+	@last_length = @current_length
+    @speed = 8
+	
+    @max_length = @range * 32
+    @beam_width = 3
+
+    setParameters(
+      randomhue: 0,
+      leftright: 0,
+      fade: 0,
+      maxparticles: 120,
+      hue: 0,
+      slowdown: 1,
+      ytop: -64,
+      ybottom: Graphics.height,
+      xleft: -64,
+      xright: Graphics.width,
+      xgravity: 0,
+      ygravity: 0,
+      xoffset: 0,
+      yoffset: 0,
+      opacityvar: 0,
+      originalopacity: 255
+    )
+
+    initParticles("particle", 250)
+
+    @particle_distance = Array.new(@maxparticless, 0)
+    @particle_offset = Array.new(@maxparticless, 0)
+    @particle_initialized = Array.new(@maxparticless, false)
+	
+    @angle = case @event.direction
+    when 2 then 90
+    when 4 then 180
+    when 6 then 0
+    when 8 then 270
+    end
+
+    @radians = @angle * Math::PI / 180
+    @side_radians = (@angle + 90) * Math::PI / 180
+  end
+def cone_offset
+  case @event.direction
+  when 2 # down
+    [-10, -8]
+  when 4 # left
+    [-12, -24]
+  when 6 # right
+    [12, -24]
+  when 8 # up
+    [-10, -40]
+  end
+end
+
+
+  def resetParticle(i)
+    @particle_distance[i] = rand(0..[@current_length, 1].max)
+    @particle_offset[i] = rand(-@beam_width..@beam_width)
+    @particle_initialized[i] = true
+    @opacity[i] = rand(180..255)
+  end
+
+
+  def calcParticlePos(i)
+    resetParticle(i) unless @particle_initialized[i]
+
+    distance = @particle_distance[i]
+    offset = @particle_offset[i]
+
+    x = Math.cos(@radians) * distance
+    y = Math.sin(@radians) * distance
+
+    x += Math.cos(@side_radians) * offset
+    y += Math.sin(@side_radians) * offset
+
+	offset_x, offset_y = cone_offset
+    @particles[i].x = @startingx + x + offset_x
+    @particles[i].y = @startingy + y + offset_y
+
+    # subtle energy movement
+    @particle_distance[i] += rand(-1..1)
+    @particle_distance[i] += rand(0..2)
+	
+    if @particle_distance[i] < 0
+      @particle_distance[i] = @current_length
+    elsif @particle_distance[i] > @current_length
+      @particle_distance[i] = rand(0..@current_length)
+    end
+  end
+
+
+  def update
+    return if @complete
+	
+    @current_length += @speed
+    @current_length = @max_length if @current_length > @max_length
+	
+    if @current_length > @last_length
+      growth = @current_length - @last_length
+      new_particles = 5
+
+      @particle_initialized.each_with_index do |initialized, i|
+       next unless initialized
+
+    # chance to populate newly created space
+       if rand < 0.05
+        @particle_distance[i] = rand(@last_length..@current_length)
+        @particle_offset[i] = rand(-@beam_width..@beam_width)
+       end
+     end
+      @last_length = @current_length
+    end
+	
+	
+	
+    selfX = self.x
+    selfY = self.y
+
+    @startingx = selfX + @xoffset
+    @startingy = selfY + @yoffset
+
+    particleZ = self.z + @zoffset
+
+    @maxparticless.times do |i|
+      next if @particles[i].nil?
+
+      @particles[i].z = particleZ
+
+      calcParticlePos(i)
+
+      @particles[i].opacity = @opacity[i]
+      @particles[i].update
+    end
+
+    @duration -= 1
+
+    if @duration <= 0
+      @complete = true
+      @particles.each do |particle|
+        particle.opacity = 0
+        particle.visible = false
+      end
+    end
+  end
+
+
+end
+
 
 
 def pbShouldShowThisParticle(*args)
@@ -935,32 +1577,52 @@ end
 class LightEffect_DayNight < LightEffect
   attr_accessor :sizex
   attr_accessor :sizey
-  def initialize(event, viewport = nil, map = nil, sizex = 1, sizey = 1, light_effect = "LE")
+  def initialize(event, viewport = nil, map = nil, sizex = 1, sizey = 1, light_effect = "LETorch")
     filename = nil
     super(event, viewport, map, filename)
-    @light.ox = @light.bitmap.width / 2
-    @light.oy = @light.bitmap.height / 2
 	@sizex = sizex
 	@sizey = sizey
-	@basic_light_effect = light_effect
+	@basic_light_effect = light_effect  || "LETorch"
+	  size = GameData::Weather.get($game_screen.weather_type).category == :Rain ? (@sizex/2).floor : @sizex
+	bitmap = "#{@basic_light_effect}#{size}"
+    custom_bitmap = pbResolveBitmap("Graphics/Pictures/#{bitmap}")
+    if custom_bitmap
+      @light.setBitmap("Graphics/Pictures/#{bitmap}")
+      @light_scale = [1.0, 1.0]
+    else
+      @light.setBitmap("Graphics/Pictures/#{@basic_light_effect}")
+      @light_scale = [[@sizex,1.0].max, [@sizey,1.0].max]
+    end
+ 
+    @light.ox = @light.bitmap.width / 2
+    @light.oy = @light.bitmap.height / 2
   end
     
   def update
     return if !@light || !@event
     super
 	@basic_light_effect = "LE" if @basic_light_effect.nil?
-	@light.visible = false if @event.pe_pause==true
-	@light.visible = true if @event.pe_pause==false
+	@light.visible = !@event.pe_pause
+	
 	return if @event.pe_pause==true
-	if @light.name!="Graphics/Pictures/#{@basic_light_effect}#{@sizex}" 
-	  size = @sizex
-	  if @sizex > 3
-	   size=3
-	  end
- 
-	 if pbResolveBitmap("Graphics/Pictures/#{@basic_light_effect}#{size}")
-      @light.setBitmap("Graphics/Pictures/#{@basic_light_effect}#{size}")
-	 end
+	
+	
+	  size = GameData::Weather.get($game_screen.weather_type).category == :Rain ? (@sizex/2).floor : @sizex
+      bitmap = "#{@basic_light_effect}#{size}"
+	if @light.name!="Graphics/Pictures/Lights/#{bitmap}"
+	  custom_bitmap = pbResolveBitmap("Graphics/Pictures/Lights/#{bitmap}")
+
+      if custom_bitmap
+       @light.setBitmap("Graphics/Pictures/Lights/#{bitmap}")
+       @light_scale = [1.0, 1.0]
+	  
+	  else
+       bitmap = @basic_light_effect
+       @light.setBitmap("Graphics/Pictures/Lights/#{bitmap}")
+       @light_scale = [[@sizex,1.0].max, [@sizey,1.0].max]
+      end
+       @light.ox = @light.bitmap.width / 2
+       @light.oy = @light.bitmap.height / 2
 	end
     shade = PBDayNight.getShade
     if shade >= 144   # If light enough, call it fully day
@@ -973,10 +1635,15 @@ class LightEffect_DayNight < LightEffect
     @light.opacity = 255 - shade
     if @light.opacity > 0
       if (Object.const_defined?(:ScreenPosHelper) rescue false)
+	  
+	  
         @light.x      = ScreenPosHelper.pbScreenX(@event)
         @light.y      = ScreenPosHelper.pbScreenY(@event) - (@event.height * Game_Map::TILE_HEIGHT / 2)
-        @light.zoom_x = (ScreenPosHelper.pbScreenZoomX(@event))*@sizex
-        @light.zoom_y = (ScreenPosHelper.pbScreenZoomY(@event))*@sizey
+        @light.zoom_x = (ScreenPosHelper.pbScreenZoomX(@event)) * @light_scale[0]
+        @light.zoom_y = (ScreenPosHelper.pbScreenZoomY(@event)) * @light_scale[1]
+		
+		
+		
       else
         @light.x = @event.screen_x
         @light.y = @event.screen_y - (Game_Map::TILE_HEIGHT / 2)
@@ -998,10 +1665,15 @@ class Game_Event < Game_Character
   attr_accessor :has_a_light
    
    def has_particle?
-   
+     @has_a_particle = [false,nil] if @has_a_particle.nil?
+      return true if @event.name[/^playertorch$/i] 
+	  return true if @event.name[/^naturaltorch\((\d+),(\d+)\)/i]
+	  return true if @event.name[/^naturaltorch$/i] 
+	  return true if @event.name[/^playertorch\((\d+),(\d+)\)/i] 
      return @has_a_particle[0]
    end
    def should_have_particle?
+     @has_a_particle = [false,nil] if @has_a_particle.nil?
       return true if @event.name[/^playertorch$/i] 
 	  return true if @event.name[/^naturaltorch\((\d+),(\d+)\)/i]
 	  return true if @event.name[/^naturaltorch$/i] 
@@ -1009,7 +1681,8 @@ class Game_Event < Game_Character
 	  return true if (@has_a_particle[0]==true && !@has_a_particle[1].nil?)
 	  return false
    end
-   
+   alias nf_particles_game_map_initialize initialize unless private_method_defined?(:nf_particles_game_map_initialize)
+
    def initialize(map_id, event, map = nil)
     @pe_refresh = false
     @pe_pause = false
@@ -1045,6 +1718,80 @@ class Game_Event < Game_Character
    end
   end
 end
+class Game_Player < Game_Character
+  attr_accessor :pe_refresh
+  attr_accessor :pe_pause
+  attr_accessor :currentcustomsprite
+  attr_accessor :has_a_particle
+  attr_accessor :has_a_light
+   alias nf_particles_game_map_initialize2 initialize unless private_method_defined?(:nf_particles_game_map_initialize2)
+
+   def has_particle?
+     @has_a_particle = [false,nil] if @has_a_particle.nil?
+     return @has_a_particle[0]
+   end
+   def should_have_particle?
+     @has_a_particle = [false,nil] if @has_a_particle.nil?
+	  return true if (@has_a_particle[0]==true && !@has_a_particle[1].nil?)
+	  return false
+   end
+   
+   def initialize
+    @pe_refresh = false
+    @pe_pause = false
+    @currentcustomsprite = nil
+    @has_a_particle = [false,nil]
+    @has_a_light = [false,[1,1]]
+    nf_particles_game_map_initialize2
+
+  end
+
+  alias nf_particles_game_map_refresh_p refresh unless method_defined?(:nf_particles_game_map_refresh_p)
+
+  def refresh
+    nf_particles_game_map_refresh_p
+    @pe_refresh = true
+  end
+
+  alias lighting_engine_light_update update
+  def update
+    lighting_engine_light_update
+	spriteset = $scene.spriteset($game_map.map_id)
+    map_metadata = $game_map.metadata
+	if $bag.has?(:TORCH) && map_metadata.outdoor_map==true && PBDayNight.isNight?(pbCurrentTime)
+	   pbAddLightEffecttoThisEvent($game_player, 5, 5)
+	else
+	   pbRemoveLightEffectfromThisEvent($game_player)
+	end 
+  end 
+
+  def toggle_particles(forced=nil)
+   if forced.nil?
+   if @pe_pause == false
+    @pe_pause = true 
+   else
+    @pe_pause = false 
+   end
+   else
+    @pe_pause = forced
+   end
+  end
+end
+
+EventHandlers.add(:on_leave_map, :change_light,
+  proc { |new_map_id, new_map|
+    next if new_map_id == 0
+	next if !$scene.is_a?(Scene_Map)
+	old_map_spriteset = $scene.spriteset($game_map.map_id)
+	new_map_spriteset = $scene.spriteset(new_map_id)
+    if $game_player.has_a_light[0]==true
+        sizex, sizey = $game_player.has_a_light[1]
+	   old_map_spriteset.usersprites[$game_player.currentcustomsprite].dispose if old_map_spriteset.usersprites[$game_player.currentcustomsprite]
+	   index = new_map_spriteset.addUserSprite(LightEffect_DayNight.new($game_player, Spriteset_Map.viewport, $game_map, sizex, sizey))
+        $game_player.currentcustomsprite = index
+	end 
+  }
+)
 
 
   def pbGetCurrentTone(hour)

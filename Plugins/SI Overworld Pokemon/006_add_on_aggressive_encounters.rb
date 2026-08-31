@@ -141,7 +141,8 @@ alias o_pbOnStepTaken pbOnStepTaken
 
 def pbOnStepTaken(eventTriggered)
   if VisibleEncounterSettings::AGG_ON_DISTANCE > 0
-    for event in $game_map.events.values
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    for event in events
       if event.is_a?(Game_PokeEvent) && !event.pokemon.aggressive && !event.pokemon.chasing && (event.x - $game_player.x).abs <= VisibleEncounterSettings::AGG_ON_DISTANCE && (event.y - $game_player.y).abs <= VisibleEncounterSettings::AGG_ON_DISTANCE && (event.pokemon.status != :SLEEP || event.pokemon.status != :FROZEN) && rand(100)<26
         event.move_speed = VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[0] if VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[0]
         event.move_frequency = VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[1] if VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[1] if event.pokemon.status != :PARALYSIS
@@ -152,7 +153,8 @@ def pbOnStepTaken(eventTriggered)
     end
   end
   if PBDayNight.isNight?(pbGetTimeNow) && rand(100)<26
-    for event in $game_map.events.values
+	events = $game_map.events.values + $DynamicEvents.events_for_map
+    for event in events
       if event.is_a?(Game_PokeEvent) && !event.pokemon.aggressive && !event.pokemon.chasing && (event.x - $game_player.x).abs <= VisibleEncounterSettings::AGG_ON_DISTANCE && (event.y - $game_player.y).abs <= VisibleEncounterSettings::AGG_ON_DISTANCE && (event.pokemon.status != :SLEEP || event.pokemon.status != :FROZEN)
         event.move_speed = VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[0] if VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[0]
         event.move_frequency = VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[1] if VisibleEncounterSettings::AGG_ENC_SWITCH_MOVEMENT[1] if event.pokemon.status != :PARALYSIS

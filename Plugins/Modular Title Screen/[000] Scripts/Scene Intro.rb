@@ -187,7 +187,7 @@ class Scene_Intro
       commands[cmd_language = commands.length]  = _INTL('Language') if Settings::LANGUAGES.length >= 2
       commands[cmd_debug = commands.length]     = _INTL('Debug') if $DEBUG
       commands[cmd_options = commands.length]   = _INTL('Options')
-	   @screen.set_text("craftResult",commands[@index])
+	   @screen.set_text("currentSelection",commands[@index])
     loop do
       @screen.update
       Graphics.update
@@ -202,7 +202,7 @@ class Scene_Intro
 	 
 	 if @save_data.empty? && SaveData.get_all_saves.length < 2 && commands.include?(_INTL('Load Game'))
 	 commands.delete(_INTL('Load Game'))
-	@screen.generic_update("craftResult",commands[@index])
+	@screen.generic_update("currentSelection",commands[@index])
 	cmd_load_game = -1
 	cmd_new_game -= 1 if cmd_new_game > -1
 	cmd_update -= 1 if cmd_update > -1
@@ -214,7 +214,7 @@ class Scene_Intro
 	  end
      if @save_data.empty? && commands.include?(_INTL('Continue Game'))
 	 commands.delete(_INTL('Continue Game'))
-	@screen.generic_update("craftResult",commands[@index])
+	@screen.generic_update("currentSelection",commands[@index])
 	cmd_continue = -1
 	cmd_new_game -= 1 if cmd_new_game > -1
 	cmd_update -= 1 if cmd_update > -1
@@ -376,7 +376,7 @@ class Scene_Intro
     @index -= 1
 	end
 	pbPlayDecisionSE
-	@screen.move_arrowl("craftResult",commands[@index])
+	@screen.move_arrowl("currentSelection",commands[@index])
 	@screen.displayboxdisplaymeasavefile
 	     @demo_timer=0
 
@@ -390,7 +390,7 @@ class Scene_Intro
     @index += 1
 	end
 	pbPlayDecisionSE
-	@screen.move_arrowr("craftResult",commands[@index])
+	@screen.move_arrowr("currentSelection",commands[@index])
 	 @screen.displayboxdisplaymeasavefile
 	     @demo_timer=0
 
@@ -404,7 +404,7 @@ class Scene_Intro
     @index += 1
 	end
 	pbPlayDecisionSE
-	@screen.move_arrowr("craftResult",commands[@index])
+	@screen.move_arrowr("currentSelection",commands[@index])
 	 @screen.displayboxdisplaymeasavefile
 	     @demo_timer=0
 
@@ -416,7 +416,7 @@ class Scene_Intro
     @index -= 1
 	end
 	pbPlayDecisionSE
-	@screen.move_arrowl("craftResult",commands[@index])
+	@screen.move_arrowl("currentSelection",commands[@index])
 	@screen.displayboxdisplaymeasavefile
 	     @demo_timer=0
 
@@ -508,7 +508,7 @@ class Scene_Intro
 		  pbPlayDecisionSE
 		  result=select_difficulty
 		if result==true
-	     $mouse.hide
+	     $mouse.disable
 		  $PokemonSystem.playermode = 1
           Level_Cap.initialize
 			if Settings::LANGUAGES.length >= 2 && show_continue
@@ -517,15 +517,10 @@ class Scene_Intro
 			end
     pbSEPlay("GUI trainer card open", 100, 100)
 	    
-        $mouse.hide
         pbFadeOutIn do
-        $mouse.hide
 		  disposeTitle
-        $mouse.hide
 	     @main_loop = false
-        $mouse.hide
          Game.start_new
-        $mouse.hide
         end
         return
 		end

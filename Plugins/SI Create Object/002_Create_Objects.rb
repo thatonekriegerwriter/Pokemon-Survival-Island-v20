@@ -1,4 +1,85 @@
-def get_own_event
+
+
+
+def getObjectImage(object)
+	case object #CAULDRON, CraftingStation, 
+	when :CRAFTINGBENCH, :ELECTRICPRESS, :SEWINGMACHINE 
+	 image = "craftingStations/CraftingStation"
+	when :UPGRADEDCRAFTINGBENCH
+	 image = "craftingStations/UCraftingStation"
+	when :RESEARCHTABLE
+	 image = "craftingStations/ResearchTable"
+	when :APRICORNCRAFTING, :APRICORNMACHINE
+	 image = "craftingStations/PokeballStationUp"
+	when :FURNACE, :ELECTRICFURNACE
+	 image = "craftingStations/Furnace"
+	when :MACHINEBOX 
+	 image = "craftingStations/MachineBox"
+	when :GRINDER, :ELECTRICGRINDER
+	 image = "craftingStations/Grinder"
+	when :TORCH
+	 image = "craftingStations/Legends_Torch"
+	when :GARBAGEBIN
+	 image = "craftingStations/GarbageBin"
+	when :WARDINGTOTEM
+	 image = "craftingStations/WardingTotem"
+	when :CAULDRON
+	 image = "craftingStations/Cauldron"
+	when :SPRINKLER
+	 image = "craftingStations/sprink"
+	when :MEDICINEPOT
+	 image = "craftingStations/pot"
+	when :PETBED
+	 image = "craftingStations/pet bed"
+	when :PETBEDOUTDOOR
+	 image = "craftingStations/pet bedo"
+	when :BERRYPOT
+	 image = "craftingStations/BerryPot"
+	when :SILKSPINNER
+	 image = "craftingStations/Silkspinner"
+	when :APIARY
+	 image = "craftingStations/Apiary"
+	when :PORTABLECAMP
+	 image = "craftingStations/Tent"
+	when :PKMNCRATE
+	 image = "craftingStations/cratedown"
+	when :ITEMCRATE
+	 image = "craftingStations/crateidown"
+	when :ICEBOX, :ELECTRICICEBOX
+	 image = "craftingStations/IceBoxClosed"
+	when :ADVENTUREFLAG
+	 image = "craftingStations/AdventureFlag"
+	when :COALGENERATOR
+	 image = "craftingStations/Furnace"
+	when :SOLARGENERATOR
+	 image = "craftingStations/Furnace"
+	when :WINDGENERATOR
+	 image = "craftingStations/Furnace"
+	when :HYDROGENERATOR
+	 image = "craftingStations/Furnace"
+	when :POKEGENERATOR
+	 image = "craftingStations/Furnace"
+    when :BEDROLL
+	 image = "craftingStations/bed"
+    when "OvPot"
+	 image = "craftingStations/pot"
+    when "Egg"
+	 image = "craftingStations/egg"
+    when "CampsiteDoor"
+	 image = nil
+	else
+	 image = "craftingStations/CraftingStation"
+	# puts "002_Create_Objects line 83"
+	end
+
+ return image
+end
+
+
+
+
+
+ def get_own_event
 	interp = pbMapInterpreter
     this_event = interp.get_self
     return this_event
@@ -6,16 +87,20 @@ def get_own_event
  def get_own_interp
 	interp = pbMapInterpreter
     this_event = interp.get_self
-    statue = interp.getVariableOther(this_event.id)
-    return statue
+    data = interp.getVariableOther(this_event.id)
+    return data
  end
-
  def get_other_data(id)
 	interp = pbMapInterpreter
-    berryplant_data = interp.getVariableOther(id)
-    return berryplant_data
+    data = interp.getVariableOther(id)
+    return data
  end
+class Game_Event < Game_Character
+  attr_accessor :step_anime
+  attr_accessor :walk_anime
 
+
+end 
 
 
 def deletefromSIData(id,mapid=$game_map.map_id)
@@ -24,274 +109,4 @@ end
 def deletefromSISData(id,mapid)
   $ExtraEvents.removethisEvent(:SPECIAL,id,mapid)
 end
-
-
-
-def caniusethis(object,event)
-	 if object!="Campsite"
-	   pbGetObjectFunc(object,event)
-	 elsif object=="Campsite"
-	   pbGetObjectFunc(object,event)
-	 else
-	   pbMessage(_INTL("You cannot use #{object} here!"))
-	 end
-end
-def getObjectImage(object)
-	case object #CAULDRON, CraftingStation, 
-	when :CRAFTINGBENCH  || :ELECTRICPRESS  || :SEWINGMACHINE 
-	 image = "CraftingStation"
-	when :UPGRADEDCRAFTINGBENCH
-	 image = "CraftingStation"
-	when :RESEARCHTABLE
-	 image = "craftingStations/ResearchTable"
-	when :APRICORNCRAFTING || :APRICORNMACHINE
-	 image = "PokeballStationUp"
-	when :FURNACE || :ELECTRICFURNACE
-	 image = "FurnaceUp"
-	when :MACHINEBOX 
-	 image = "craftingStations/MachineBox"
-	when :GRINDER || :ELECTRICGRINDER || :TORCH
-	 image = "Furnace"
-	when :GARBAGEBIN
-	 image = "craftingStations/GarbageBin"
-	when :WARDINGTOTEM
-	 image = "craftingStations/WardingTotem"
-	when :CAULDRON
-	 image = "Cauldron"
-	when :SPRINKLER
-	 image = "sprink"
-	when :MEDICINEPOT
-	 image = "pot"
-	when :PORTABLECAMP
-	 image = "Tent"
-	when :PKMNCRATE
-	 image = "cratedown"
-	when :ITEMCRATE
-	 image = "crateidown"
-	when :ICEBOX || :ELECTRICICEBOX
-	 image = "craftingStations/IceBoxClosed"
-	when :ADVENTUREFLAG
-	 image = "craftingStations/AdventureFlag"
-	when :COALGENERATOR
-	 image = "FurnaceUp"
-	when :SOLARGENERATOR
-	 image = "FurnaceUp"
-	when :WINDGENERATOR
-	 image = "FurnaceUp"
-	when :HYDROGENERATOR
-	 image = "FurnaceUp"
-	when :POKEGENERATOR
-	 image = "FurnaceUp"
-    when :BEDROLL
-	 image = "bed"
-    when "OvPot"
-	 image = "pot"
-    when "Egg"
-	 image = "egg"
-    when "CampsiteDoor"
-	 image = nil
-	else
-	 image = "CraftingStation"
-	 puts "002_Create_Objects line 83"
-	end
-
- return image
-end
-
-def pbResetPlacing
-
-
-end
-
-def pbPlaceObject(x,y,object,aat=false,direction=nil)
-  if !(object=="OvPot" || pbObjectIsPossible(x,y))
-    sideDisplay(_INTL("You cannot place that there!"))
-    return false
-  end 
-    key_id = $DynamicEvents.generateEvent(x,y,object,aat,false,direction)
-    return true
-end
-
-def pbHoldingObject(x,y,object,aat=false)
-  if !pbObjectIsPossible(x,y)
-    sideDisplay(_INTL("You cannot place that there!"))
-    return false
-  end 
-    $player.held_item_object = $DynamicEvents.generateEvent(x,y,object,aat,true)
-    return true
-end
-
-def pbObjectIsPossible(x,y)
-  return false if !$game_map.valid?(x,y)
-  puts $game_map.events.values.to_s
-   
-  for event in $game_map.events.values
-    next if $player.held_item_object.nil?
-    next if event==$game_map.events[$player.held_item_object]
-    if event.x==x && event.y==y
-	  next if event.x != $game_map.events[$player.held_item_object].x && event.y != $game_map.events[$player.held_item_object].y
-      return false
-    end 
-  end
-
-  tile_terrain_tag = $game_map.terrain_tag(x,y)
-  return false if !tile_terrain_tag
-  return false if tile_terrain_tag.ice
-  return false if tile_terrain_tag.ledge
-  return false if tile_terrain_tag.waterfall
-  return false if tile_terrain_tag.waterfall_crest
-  return false if tile_terrain_tag.id == :Rock
-  return false if tile_terrain_tag.can_surf
-  return false if !$game_map.passableStrict?(x, y, 0) && !is_bedroll?
-  return true
-end
-
-
-def is_bedroll_or_camp?
- return ((GameData::Item.get($player.held_item).id == :BEDROLL || GameData::Item.get($player.held_item).id == :PORTABLECAMP ) && $game_player.direction==8)
-end
-def is_bedroll?
- return (GameData::Item.get($player.held_item).id == :BEDROLL && ($game_map.events[$player.held_item_object].direction==4||$game_map.events[$player.held_item_object].direction==6))
-end
-
-
-def pickMeUp(event,type)
-key_id = event
-$player.held_item=type
-$player.held_item_object=event
-if !$game_map.events[key_id].nil?
-
-
-if GameData::Item.get(type).id == :BEDROLL
-pbMoveRoute($game_map.events[key_id], [PBMoveRoute::Graphic,"Packed.png",0,$game_map.events[key_id].direction,0])
-end
-
-if GameData::Item.get(type).id == :PORTABLECAMP
-
-
-
-pbMoveRoute($game_map.events[key_id], [PBMoveRoute::Graphic,"Packed.png",0,$game_map.events[key_id].direction,0])
-campdoor = nil
-
-
-
-$ExtraEvents.objects.each_with_index do |(key, value),index|
-    type2 = value.type
-	if type2 == "CampsiteDoor"
-	  campdoor = key
-	  break
-	end
-end
-
-
-
-
-
-if !campdoor.nil?
-$game_map.events[campdoor].removeThisEventfromMap(campdoor)
-deletefromSIData(campdoor,$game_map.map_id)
-end
-
-end
-
-
-
-pbMoveRoute2($game_map.events[key_id], [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,
-PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
-
-if GameData::Item.get(type).id != :PORTABLECAMP
-$game_map.events[key_id].fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
-elsif type.id == :PORTABLECAMP
-$game_map.events[key_id].fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
-end
-end
-
-$game_temp.position_calling = true
-$game_system.save_disabled = true
-
-
-end
-
-def pbPlaceorHold(item=$player.held_item,x=nil,y=nil)
-if $player.held_item.nil?
-    $player.hold(item)
-	return true
-else
-   if $player.held_item_object.is_a?(Pokemon) &&  Input.trigger(Input::SHIFT) && x.nil? && y.nil? 
-    
-   start_coord=[$game_player.x,$game_player.y]
-   landing_coord=[$game_player.x,$game_player.y]
-   case $game_player.direction
-   when 2; landing_coord[1]+=3
-   when 4; landing_coord[0]-=3
-   when 6; landing_coord[0]+=3
-   when 8; landing_coord[1]-=3
-   end
-    $scene.spriteset.addUserSprite(OWThrowSpriteEgg.new([start_coord,landing_coord],"egg",$game_map,Spriteset_Map.viewport))
-	  pbMessage("\\ts[]" + (_INTL"#{$player.name} threw the Egg at the wall!\\wtnp[10]"))
-    $player.held_item_object.steps_to_hatch -= 1750
-    $player.held_item_object.happiness -= 25
-   $player.held_item_object.loyalty -= 50
-    $player.held_item_object.nature = :HATEFUL if rand(255)<=25 
-    
-   
-   
-   elsif x.nil? && y.nil?
-	case GameData::Item.get(item).id
-		when :PORTABLECAMP
-    x = $game_player.x-1
-	y = $game_player.y-1
-	
-		when :BEDROLL
-    case $game_player.direction
-    when 2 #then event.move_down
-	 x = $game_player.x
-	 y = $game_player.y+2
-    when 4 #then event.move_left
-	 x = $game_player.x-1
-	 y = $game_player.y
-    when 6 #then event.move_right
-	 x = $game_player.x+1
-	 y = $game_player.y
-    when 8 #then event.move_up
-	 x = $game_player.x
-	 y = $game_player.y-1
-    end
-
-	else
-		
-    case $game_player.direction
-    when 2 #then event.move_down
-	 x = $game_player.x
-	 y = $game_player.y+1
-    when 4 #then event.move_left
-	 x = $game_player.x-1
-	 y = $game_player.y
-    when 6 #then event.move_right
-	 x = $game_player.x+1
-	 y = $game_player.y
-    when 8 #then event.move_up
-	 x = $game_player.x
-	 y = $game_player.y-1
-    end
-
-		end
-    
-   
-   if $player.place(x,y)
-   
-   if GameData::Item.get(item).id == :PORTABLECAMP
-    pbPlaceObject(x+1,y,"CampsiteDoor")
-   end
-   
-	return true
-   else
-    return false
-   end
-   end
-end
-
-	return false
-end
-
 

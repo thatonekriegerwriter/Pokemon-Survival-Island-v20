@@ -103,6 +103,8 @@ RECIPE1=[
 [:FLYINGGEM,1,[:NOMELBERRY,1],nil, true],
 [:ASSAULTVEST,1,[:SMOKEBALL,1],nil, true]
 ]
+
+
 RECIPE2=[
 [:FULLINCENSE,1,[:STARPIECE,2],nil, true],
 [:LAXINCENSE,1,[:STARPIECE,2],nil, true],
@@ -113,10 +115,10 @@ RECIPE2=[
 [:ROSEINCENSE,1,[:STARPIECE,2],nil, true],
 [:ODDINCENSE,1,[:STARPIECE,2],nil, true],
 [:ROCKINCENSE,1,[:STARPIECE,2],nil, true],
-[:EVERSTONE,1,[:STARPIECE,2],nil, true],
-[:DESTINYKNOT,1,[:STARPIECE,20],nil, true],
-[:ABILITYCAPSULE,1,[:STARPIECE,4],nil, true]
+[:ABILITYCAPSULE,1,[:STARPIECE,5],nil, true],
+[:DESTINYKNOT,1,[:STARPIECE,10],nil, true]
 ]
+
 RECIPE3=[
 [:TM93,1,[:STARPIECE,2],nil, true],
 [:TM86,1,[:STARPIECE,2],nil, true],
@@ -165,15 +167,16 @@ RECIPE3=[
 
 
 RECIPE4=[
-[:POTION,1,[:STARPIECE,1],nil, true],
-[:SUPERPOTION,1,[:STARPIECE,5],nil, true],
-[:BLACKFLUTE,1,[:STARPIECE,2],nil, true],
-[:EVIOLITE,1,[:STARPIECE,3],nil, true],
-[:SACREDASH,1,[:STARPIECE,15],nil, true],
-[:LEFTOVERS,1,[:STARPIECE,6],nil, true],
+[:ORANBERRY,2,[:STARPIECE,1],nil, true],
 [:FRESHWATER,1,[:STARPIECE,2],nil, true],
-[:POKEDOLL,1,[:STARPIECE,1],nil, true],
-[:SNOWMAIL,1,[:STARPIECE,1],nil, true]
+[:EVERSTONE,1,[:STARPIECE,2],nil, true],
+[:BLACKFLUTE,1,[:STARPIECE,4],nil, true],
+[:WHITEFLUTE,1,[:STARPIECE,4],nil, true],
+[:EVIOLITE,1,[:STARPIECE,4],nil, true],
+[:FRESHWATER,1,[:STARPIECE,5],nil, true],
+[:LEFTOVERS,1,[:STARPIECE,6],nil, true],
+[:ARGOSTBERRY,1,[:STARPIECE,20],nil, true],
+[:WONDERORB,1,[:STARPIECE,20],nil, true]
 ]
 
 RECIPE5=[

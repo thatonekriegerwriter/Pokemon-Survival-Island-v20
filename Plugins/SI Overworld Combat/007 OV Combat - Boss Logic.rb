@@ -22,7 +22,7 @@ class OverworldCombat #Bosses
 
 
 def bossfight(event,boss)
-return if status_checks(event)
+return if OverworldCombat.fainted_check(event)
 	 event.remaining_steps=9999
 add_rule("Catchless")
  case boss
@@ -82,14 +82,16 @@ def boss_jorm(event,boss)
    else
    case choice
     when :RUSH
+	  
 	  boss_rush(event)
     when :MOVESET
 	  ov_combat_loop(event)
     when :MAGNITUDE
-
+      
 	  use_defined_move(event,:MAGNITUDE)
     when :EARTHQUAKE
 	 distances = []
+	  
 	  use_defined_move(event,:EARTHQUAKE)
    
    
@@ -115,6 +117,8 @@ def use_defined_move(attacker,move)
   for i in 0...4
     move2 = attacker.pokemon.moves2[i] if attacker.pokemon.moves2[i].id==move
   end
+      
+	  status_checks(target)
 	  move_physical_close(event,target,move2,nil,nil)
   
 end
@@ -150,7 +154,7 @@ def boss_attack_mid_rush(attacker,targets)
    move = :TACKLE
    times = 0
   loop do
-   update_package
+   OverworldCombat.update_package
    move3 = chooseMove(attacker,targets[0],1)
    if move3.category == 0
     move = move3
@@ -164,15 +168,17 @@ def boss_attack_mid_rush(attacker,targets)
   
   
    targets.each do |target|
-    update_package
+    OverworldCombat.update_package
     if target.y != attacker.y+1
 	  name = target.type.name
 	  sideDisplay("#{attacker.pokemon.name} whipped at #{name}!")
+	  status_checks(target)
 	  offensive_turn_finishing(attacker,target,move,1)
 
     else
 	  name = target.type.name
 	  sideDisplay("#{attacker.pokemon.name} barreled through #{name}!")
+	  status_checks(target)
 	  offensive_turn_finishing(attacker,target,move,1)
     end
    end
@@ -205,7 +211,7 @@ def move_to_coordinates_attack(event,nux,nuy)
     moveroute = calc_path(event,[nux, nuy])
     return if nux == x && nuy == y
 	moveroute.each do |move|
-     update_package
+     OverworldCombat.update_package
 	 pbAStarMoveRoute(event, [move])
 	 targets = who_am_i_hitting2(event)
 	 boss_attack_mid_rush(event,targets)
@@ -262,7 +268,7 @@ if @change_move_direction==false
  targetspaces = @track[nuindex]
   loop do
    
-     update_package
+     OverworldCombat.update_package
   if [event.x,event.y]!= @track[nuindex]
     move_to_coordinates_attack(event,@track[nuindex][0],@track[nuindex][1])
   else

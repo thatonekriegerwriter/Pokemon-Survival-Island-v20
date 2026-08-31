@@ -17,7 +17,10 @@ def capture_styler_touching(opponent)
 	
 	return 
 	end
-    move = chooseMove(opponent,$game_player,get_styler_distance(opponent))
+     action = OverworldCombat::Moves.choose_move(attacker, $game_player)
+     return false unless action
+  
+     move, target, score = action
 	amt = getDamager(opponent,$game_player,move,0)
 	$styler.styler_health-=amt
 	$styler.styler_health=0 if $styler.styler_health<0

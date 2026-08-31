@@ -1,15 +1,15 @@
 module InventoryScene
   module Stations
-    class OneSlotStation < BaseStation
+    class Warding_Totem < BaseStation
       def initialize(event_data:, container:)
         super
       end
 	  
 	  def initial_craft_contents = nil#event_data.internal_storage
       def slot_count = 1
-      def background_key = "OSS"
-	 # def bonus_slot_function = :READ
-      #def extra_slot_index = slot_count
+      def background_key = "WARDINGTOTEM"
+	  def bonus_slot_function = :WRITE
+      def extra_slot_index = 0
 
       # Matching the original's `if @type != :GARBAGEBIN` guard around the
       # "return craft contents to $bag" logic - whatever's dropped in

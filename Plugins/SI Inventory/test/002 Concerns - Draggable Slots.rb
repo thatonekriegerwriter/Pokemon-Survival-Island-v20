@@ -249,6 +249,7 @@ module InventoryScene
       
 	  def can_drop?(kind, index)
 	    return false if kind == :craft && index == extra_slot_index && bonus_slot_function==:READ
+	    return false if kind == :craft && index == extra_slot_index && background_key == "WARDINGTOTEM" && ![:REPEL, :SUPERREPEL, :MAXREPEL].include?(slot[0].id)
 	    return true 
 	  end 
 	  def can_pickup?(kind, index)

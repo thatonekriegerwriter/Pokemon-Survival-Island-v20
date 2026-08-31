@@ -98,6 +98,9 @@ class CraftingStationData
   def garbage_bin?
     item&.id == :GARBAGEBIN
   end 
+  def warding_totem?
+    item&.id == :WARDINGTOTEM
+  end 
 
   def spinner?
     item&.id == :SILKSPINNER
@@ -203,7 +206,28 @@ class CraftingStationData
 #	puts "result_slot: #{result_slot.inspect}"
 	decrease_workers_stamina(crafted) if crafted > 0
   end 
-  def update_garbage_bin
+  def update_warding_totem(time_delta)
+    @passed_time += time_delta
+    while @passed_time >= 1800
+     @passed_time -= 1800
+     @fuel -= 1.0 if @fuel > 0.0
+    end
+    @internal_storage = [nil] if @internal_storage.empty?
+    slot = recipe_slots[0]
+	return unless slot && slot.is_a?(Array)
+	if [:REPEL, :SUPERREPEL, :MAXREPEL].include?(slot[0].id)
+    while @internal_storage[0] && @internal_storage[0][1] > 0
+     @internal_storage[0][1]-=1
+	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
+	 amt = 4.0 if slot[0].id == :REPEL
+	 amt = 8.0 if slot[0].id == :SUPERREPEL
+	 amt = 16.0 if slot[0].id == :MAXREPEL
+	 @fuel += amt
+    end 
+	end 
+  end 
+
+  def update_garbage_bin(time_delta)
     @internal_storage = [nil] if @internal_storage.empty?
     slot = recipe_slots[0]
 	return unless slot && slot.is_a?(Array)
@@ -239,7 +263,7 @@ class CraftingStationData
 	update_grinder(time_delta) if grinder?
 	update_spinner(time_delta) if spinner?
 	update_garbage_bin(time_delta) if garbage_bin?
-	
+	update_warding_totem(time_delta) if warding_totem?
     @time_last_updated = time_now
   end
   

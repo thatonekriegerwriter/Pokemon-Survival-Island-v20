@@ -34,11 +34,11 @@ class CraftingStationData
 	@work_time = 0
 	@work_done = 0.0
 	@passed_time = 0
-    @internal_storage = [nil] if spinner? || garbage_bin?
+    @internal_storage = [nil] if spinner?
   end
   def internal_storage
    @internal_storage = [] if @internal_storage.nil?
-   @internal_storage = [nil] if spinner? || garbage_bin?
+   @internal_storage = [nil] if spinner?
    return @internal_storage
   end
   def work_time
@@ -100,6 +100,9 @@ class CraftingStationData
   end 
   def warding_totem?
     item&.id == :WARDINGTOTEM
+  end 
+  def butchering_table?
+    item&.id == :BUTCHERTABLE
   end 
 
   def spinner?
@@ -208,36 +211,37 @@ class CraftingStationData
   end 
   def update_warding_totem(time_delta)
     @passed_time += time_delta
+	#puts @fuel
     while @passed_time >= 1800
      @passed_time -= 1800
      @fuel -= 1.0 if @fuel > 0.0
     end
-    @internal_storage = [nil] if @internal_storage.empty?
     slot = recipe_slots[0]
 	return unless slot && slot.is_a?(Array)
 	if [:REPEL, :SUPERREPEL, :MAXREPEL].include?(slot[0].id)
-    while @internal_storage[0] && @internal_storage[0][1] > 0
-     @internal_storage[0][1]-=1
-	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
-	 amt = 4.0 if slot[0].id == :REPEL
+	 amt = 2.0 if slot[0].id == :REPEL
 	 amt = 8.0 if slot[0].id == :SUPERREPEL
 	 amt = 16.0 if slot[0].id == :MAXREPEL
+    if @internal_storage[0] && @internal_storage[0][1] > 0
+     @internal_storage[0][1]-=1
+	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
 	 @fuel += amt
     end 
 	end 
   end 
 
   def update_garbage_bin(time_delta)
-    @internal_storage = [nil] if @internal_storage.empty?
     slot = recipe_slots[0]
 	return unless slot && slot.is_a?(Array)
 	placed_item = slot[0]
-    while @internal_storage[0] && @internal_storage[0][1] > 0
+	#puts placed_item
+    if @internal_storage[0] && @internal_storage[0][1] > 0
      @internal_storage[0][1]-=1
 	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
 	 @work_done += 1
-	 next if placed_item.id == :BLACKSLUDGE
-	 next unless @work_done >= 10
+	#puts @work_done
+	 return if placed_item.id == :BLACKSLUDGE
+	 return unless @work_done >= 10
      itemdata = ItemData.new(:BLACKSLUDGE)
      amt = 1
 	 if result_slot && result_slot.is_a?(Array) && result_slot[0] && result_slot[0].identical(itemdata)
@@ -248,7 +252,104 @@ class CraftingStationData
 	 @work_done -= 10
     end 
   end 
- 
+  def update_butcher_table(time_delta)
+    if result_slot && result_slot.is_a?(Pokemon)
+	  pkmn = result_slot.dup
+	  @internal_storage[-1] = nil
+      food_item, amt = pbPrepareMeat(pkmn)
+	  items = []
+	  if food_item && amt && amt > 0
+	    items << [food_item, amt]
+	  end
+      if pkmn.species == :SLOWPOKE
+	    item = ItemData.new(:SLOWPOKETAIL)
+		amt = 1
+	    items << [item, amt]
+	  #if $bag.add(:SLOWPOKETAIL,1)
+		#itemAnim(:SLOWPOKETAIL,1) if !$game_temp.in_battle
+	  #end
+	  end 
+	  if rand(12)==0
+	    amt = rand(2)+1
+        item = ItemData.new(:RAREBONE)
+	    items << [item, amt]
+		#if $bag.add(bone,geoiag)
+		#  itemAnim(bone,geoiag) if !$game_temp.in_battle
+		#end
+	  end
+	  if pkmn.types.include?(:ROCK)
+	    amt = rand(2)+1
+        item = ItemData.new(:STONE)
+	    items << [item, amt]
+	  
+	  end 
+	  if pkmn.types.include?(:STEEL)
+	    amt = rand(2)+1
+        item = ItemData.new(:IRON2)
+	    items << [item, amt]
+	  
+	  end   
+	  if pkmn.types.include?(:FLYING)
+        feathers = [:PRETTYFEATHER, :PRETTYFEATHER, :PRETTYFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :MUSCLEFEATHER, :RESISTFEATHER, :GENIUSFEATHER, :CLEVERFEATHER, :SWIFTFEATHER] 
+	    amt = rand(2)+1
+	    item = ItemData.new(feathers.simple)
+	    items << [item, amt]
+	    
+	  end 
+	  if pkmn.wildHoldItems
+       wildDrop = pkmn.wildHoldItems
+       firstqty = rand(6)+1
+       secondqty = rand(4)+1
+       thirdqty = rand(2)+1
+       droprnd = rand(100)
+
+	if wildDrop[0] == wildDrop[1] && wildDrop[1] == wildDrop[2]
+  	  item = wildDrop[0].sample
+	  unless item.nil?
+        item = GameData::Item.get(item)
+		item = ItemData.new(item.id)
+	    items << [item, firstqty]
+	  end
+	else
+	  if droprnd < chances[0] + bonus
+        item = wildDrop[0].sample
+        unless item.nil?
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     items << [item, firstqty]
+        end
+	  end
+
+	  if droprnd < chances[1] + bonus
+        item = wildDrop[1].sample
+        unless item.nil?
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     items << [item, secondqty]
+        end
+	  end
+
+	  if droprnd < chances[2] + bonus
+        item = wildDrop[2].sample
+        unless item.nil?
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     items << [item, thirdqty]
+        end
+	  end
+	end
+
+	  end 
+	  if pkmn.poke_ball
+	    item = pkmn.poke_ball.is_a?(Symbol) ? ItemData.new(pkmn.poke_ball) : pkmn.poke_ball
+		amt = 1
+	    items << [item, amt]
+	  end 
+	  raise if items.length > 8
+      @internal_storage[0, items.length] = items
+	  pkmn = nil
+	end 
+  end 
   
   def update
     @internal_storage = [] if @internal_storage.nil?
@@ -264,6 +365,7 @@ class CraftingStationData
 	update_spinner(time_delta) if spinner?
 	update_garbage_bin(time_delta) if garbage_bin?
 	update_warding_totem(time_delta) if warding_totem?
+	update_butcher_table(time_delta) if butchering_table?
     @time_last_updated = time_now
   end
   

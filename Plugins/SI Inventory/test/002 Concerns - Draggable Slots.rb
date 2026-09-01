@@ -137,14 +137,22 @@ module InventoryScene
         snapshot = (@slot_visual_snapshot ||= {})
         key = "#{kind}:#{index}"
         last = snapshot[key]
-
+        if slot.is_a?(Pokemon)
+        current_item = slot
+        current_qty  = 1
+		else
         current_item = slot ? slot[0] : nil
         current_qty  = slot ? slot[1] : nil
-
+        end 
         if current_item.nil?
           remove_slot_icon(kind, index) unless last.nil?
         elsif last.nil? || !same_visual_item?(last[0], current_item)
+		  puts current_item.is_a?(Pokemon)
+		 if current_item.is_a?(Pokemon)
+		  render_pokemon_icon(kind, index, current_item)
+		 else
           render_slot_icon(kind, index, current_item, current_qty)
+		 end 
         elsif last[1] != current_qty
           update_slot_text(kind, index, current_qty)
         end
@@ -249,7 +257,7 @@ module InventoryScene
       
 	  def can_drop?(kind, index)
 	    return false if kind == :craft && index == extra_slot_index && bonus_slot_function==:READ
-	    return false if kind == :craft && index == extra_slot_index && background_key == "WARDINGTOTEM" && ![:REPEL, :SUPERREPEL, :MAXREPEL].include?(slot[0].id)
+	    return false if kind == :craft && index == extra_slot_index && background_key == "WARDINGTOTEM" && ![:REPEL, :SUPERREPEL, :MAXREPEL].include?(grabbed_item.item.id)
 	    return true 
 	  end 
 	  def can_pickup?(kind, index)
@@ -594,7 +602,16 @@ module InventoryScene
         elsif Input.trigger?(Input::MOUSERIGHT)
           dispatch_click(:right)
         elsif Input.press?(Input::NOTEBOOK)
-          pbFadeOutIn(99_999) { NoteOpen.openWindow }
+		  recipe = nil
+          pbFadeOutIn(99_999) { recipe = NoteOpen.openWindow }
+		  if recipe && !craft_slots_hold_pokemon?
+		    key = background_key=="Inventory" ? "POCKET" : background_key
+		    key = key.to_sym
+		   if recipe.station.include?(key)
+		     puts "Running down the avenue"
+			 autofill_recipe(recipe)
+		   end 
+		  end 
         elsif Input.triggerex?(:TAB)
           toggle_favorite_under_mouse
         elsif Input.triggerex?(:F)
@@ -607,7 +624,40 @@ module InventoryScene
 
         end
       end
+      
+	  def autofill_recipe(recipe)
+	    craft.each_with_index do |data, index|
+	      if data
+	        $bag.add(data[0], data[1])
+ 	        craft[index] = nil
+	        remove_slot_icon(:craft, index)
+ 	      end
+	    end
+		recipe.recipe.each_with_index do |ingredient, index|
+          item_id, required = ingredient
+          remaining = required
+           $bag.pockets.each do |pocket|
+              pocket.each_with_index do |stack, stack_index|
+                next unless stack
+                next unless stack[0].id == item_id
 
+                amount = [stack[1], remaining].min
+
+                craft[index] = [stack[0], amount]
+				render_slot_icon(:craft, index, stack[0], amount)
+                stack[1] -= amount
+				pocket[stack_index] = nil if stack[1] <= 0
+
+                remaining -= amount
+                break if remaining <= 0
+              end
+              break if remaining <= 0
+           end
+	    end 
+	    refresh_bag_grid
+	  
+	  end 
+	  
       # Determines what's under the cursor and routes to the right
       # handler, in the same priority order the original's giant
       # if/elsif chain used: bag slot, then party/box Pokemon slot (owned
@@ -654,7 +704,7 @@ module InventoryScene
         return unless slot_item
 
         item, amt = slot_item
-        target_kind = :bag == other_kind ? :craft : :bag
+        target_kind = kind == :bag ? :craft : :bag
         moved = target_kind == :bag ? distribute_into_bag(item, amt) : distribute_into_craft(item, amt)
         return if moved <= 0
 
@@ -1124,8 +1174,9 @@ module InventoryScene
         else
           icon = sprites["craft_slots#{index}"]
           return sprites["highlight"].visible = false unless icon
-
-          sprites["highlight"].setBitmap("Graphics/Pictures/craftingMenu/placeholder_slot_highlight")
+		  base_bitmap = "Graphics/Pictures/craftingMenu/"
+          bitmap = (index == extra_slot_index && extra_slot_result_sized?) ? "#{base_bitmap}placeholder_slot_highlight2" : "#{base_bitmap}placeholder_slot_highlight"
+          sprites["highlight"].setBitmap(bitmap)
           sprites["highlight"].x, sprites["highlight"].y = icon.x, icon.y
           sprites["highlight"].visible = true
         end

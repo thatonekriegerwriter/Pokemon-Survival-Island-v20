@@ -232,7 +232,10 @@ def pbTileIsPossible(x,y)
   else
     tile_terrain_tag = $game_map.terrain_tag(x,y)
   end
-  return false if pbTileIsWarded?(x, y)
+  if pbTileIsWarded?(x, y)
+   puts "Blocking spawn at (#{x}, #{y})"
+   return false 
+  end 
 	events = $game_map.events.values + $DynamicEvents.events_for_map
   for event in events
     if event.x==x && event.y==y

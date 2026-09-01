@@ -23,6 +23,8 @@ def getObjectImage(object)
 	 image = "craftingStations/GarbageBin"
 	when :WARDINGTOTEM
 	 image = "craftingStations/WardingTotem"
+	when :BUTCHERTABLE
+	 image = "craftingStations/ButcherTable"
 	when :CAULDRON
 	 image = "craftingStations/Cauldron"
 	when :SPRINKLER

@@ -718,7 +718,9 @@ Habitat = RoughTerrain
 Category = Mouse
 Pokedex = It burrows into the ground to create its nest. If hard stones impede its tunneling, it uses its sharp claws to shatter them and then carries on digging.
 Generation = 1
+WildItemCommon = SOFTSAND
 WildItemUncommon = GRIPCLAW
+WildItemRare = SOFTSAND
 Evolutions = SANDSLASH,Level,22
 #-------------------------------
 [SANDSLASH]
@@ -746,7 +748,9 @@ Habitat = RoughTerrain
 Category = Mouse
 Pokedex = It climbs trees by hooking on with its sharp claws. Sandslash shares the berries it gathers, dropping them down to Sandshrew waiting below the tree.
 Generation = 1
+WildItemCommon = SOFTSAND
 WildItemUncommon = GRIPCLAW
+WildItemRare = SOFTSAND
 #-------------------------------
 [NIDORANfE]
 Name = Nidoran♀
@@ -11853,6 +11857,9 @@ Habitat = RoughTerrain
 Category = Hippo
 Pokedex = It moves through the sands with its mouth open, swallowing sand along with its prey. It gets rid of the sand by spouting it from its nose.
 Generation = 4
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SOFTSAND
 Evolutions = HIPPOWDON,Level,34
 #-------------------------------
 [HIPPOWDON]
@@ -11877,6 +11884,9 @@ Color = Brown
 Shape = Quadruped
 Habitat = RoughTerrain
 Category = Heavyweight
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SOFTSAND
 Pokedex = Stones can get stuck in the ports on their bodies. Dwebble help dislodge such stones, so Hippowdon look after these Pokémon.
 Generation = 4
 #-------------------------------
@@ -11906,6 +11916,7 @@ Pokedex = After burrowing into the sand, it waits patiently for prey to come nea
 Generation = 4
 WildItemCommon = POISONBARB
 WildItemUncommon = POISONBARB
+WildItemRare = SOFTSAND
 Evolutions = DRAPION,Level,40
 #-------------------------------
 [DRAPION]
@@ -11934,6 +11945,7 @@ Pokedex = Its poison is potent, but it rarely sees use. This Pokémon prefers to
 Generation = 4
 WildItemCommon = POISONBARB
 WildItemUncommon = POISONBARB
+WildItemRare = SOFTSAND
 #-------------------------------
 [CROAGUNK]
 Name = Croagunk
@@ -14520,8 +14532,9 @@ Habitat = RoughTerrain
 Category = Desert Croc
 Pokedex = Sandile is small, but its legs and lower body are powerful. Pushing sand aside as it goes, Sandile moves through the desert as if it's swimming.
 Generation = 5
-WildItemCommon = LEATHER
-WildItemUncommon = BLACKGLASSES
+WildItemCommon = SOFTSAND
+WildItemUncommon = LEATHER
+WildItemRare = BLACKGLASSES
 Evolutions = KROKOROK,Level,29
 #-------------------------------
 [KROKOROK]
@@ -14548,8 +14561,9 @@ Habitat = RoughTerrain
 Category = Desert Croc
 Pokedex = Although this Pokémon has specialized eyes that allow it to see in the dark, Krokorok won't move much at night, the desert gets cold after sunset.
 Generation = 5
-WildItemCommon = LEATHER
-WildItemUncommon = BLACKGLASSES
+WildItemCommon = SOFTSAND
+WildItemUncommon = LEATHER
+WildItemRare = BLACKGLASSES
 Evolutions = KROOKODILE,Level,40
 #-------------------------------
 [KROOKODILE]
@@ -14576,7 +14590,9 @@ Habitat = RoughTerrain
 Category = Intimidation
 Pokedex = This Pokémon is known as the Bully of the Sands. Krookodile's mighty jaws can bite through heavy plates of iron with almost no effort at all.
 Generation = 5
-WildItemCommon = BLACKGLASSES
+WildItemCommon = SOFTSAND
+WildItemUncommon = LEATHER
+WildItemRare = BLACKGLASSES
 #-------------------------------
 [DARUMAKA]
 Name = Darumaka
@@ -20202,7 +20218,9 @@ Habitat = WatersEdge
 Category = Sand Heap
 Pokedex = Sandygast mainly inhabits beaches. It takes control of anyone who puts their hand into its mouth, forcing them to make its body bigger.
 Generation = 7
-WildItemUncommon = SPELLTAG
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SPELLTAG
 Evolutions = PALOSSAND,Level,42
 #-------------------------------
 [PALOSSAND]
@@ -20229,7 +20247,9 @@ Habitat = WatersEdge
 Category = Sand Castle
 Pokedex = Palossand is known as the Beach Nightmare. It pulls its prey down into the sand by controlling the sand itself, and then it sucks out their souls.
 Generation = 7
-WildItemUncommon = SPELLTAG
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SPELLTAG
 #-------------------------------
 [PYUKUMUKU]
 Name = Pyukumuku
@@ -22118,6 +22138,9 @@ Habitat = RoughTerrain
 Category = Sand Snake
 Pokedex = It spews sand from its nostrils. While the enemy is blinded, it burrows into the ground to hide.
 Generation = 8
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SOFTSAND
 Evolutions = SANDACONDA,Level,36
 #-------------------------------
 [SANDACONDA]
@@ -22142,6 +22165,9 @@ Color = Green
 Shape = Serpentine
 Habitat = RoughTerrain
 Category = Sand Snake
+WildItemCommon = SOFTSAND
+WildItemUncommon = SOFTSAND
+WildItemRare = SOFTSAND
 Pokedex = Its unique style of coiling allows it to blast sand out of its sand sac more efficiently.
 Generation = 8
 #-------------------------------

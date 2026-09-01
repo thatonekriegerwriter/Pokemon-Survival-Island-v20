@@ -3,9 +3,10 @@ module NoteOpen
   $game_temp.in_menu=true
   noteScene=PlayerJournal.new
   noteScene.pbStartScene
-  craft=noteScene.pbSelectMenu
+  craft = noteScene.pbSelectMenu
   noteScene.pbEndScene
   $game_temp.in_menu=false
+  return craft
  end
 end
 
@@ -156,15 +157,17 @@ CRAFTING_TYPES = {
  
  def pbSelectMenu
     pbSEPlay("page",50)
+	craft = nil 
     loop do
      $PokemonGlobal.addNewFrameCount 
      update
      Graphics.update
      Input.update
-	 handle_input
+	 craft = handle_input
 	 break if @end==true
 	 draw_page
 	end
+	return craft 
  end
  
 def draw_page
@@ -1443,7 +1446,6 @@ def load_new_recipe_data(recipe,force=false)
 	 
    # destroy_recipe_icons
 	#@recipe_icons = {}
-    recipe
     result = GameData::Item.get(recipe.results)
 	item_recipe = recipe.recipe
 	
@@ -2050,6 +2052,9 @@ end
     handle_q
   elsif Input.triggerex?(:E)
     handle_e
+  elsif Input.triggerex?(:V)
+    craft = handle_craft
+    return craft if craft
   elsif Input.trigger?(Input::LEFT)
     handle_left
   elsif Input.trigger?(Input::RIGHT)
@@ -2060,7 +2065,14 @@ end
     handle_down
   end
  end
-
+ 
+ def handle_craft
+  return unless @recipe
+  destroy_current_page
+  @end = true 
+  return @recipe 
+ end 
+ 
 def handle_previous_subtype
   return unless @cur_page == 3
   return unless @depth == 2

@@ -33,7 +33,7 @@ module InventoryScene
         sprites["craft_slots0"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots0"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/pocket/placeholder_slot")
         sprites["craft_slots0"].z = 1
-        sprites["craft_slots0"].x = x
+        sprites["craft_slots0"].x = x - 64
         sprites["craft_slots0"].y = y
         render_slot_icon(:craft, 0, *craft[0]) if craft[0]
 		
@@ -45,8 +45,8 @@ module InventoryScene
         sprites["craft_slots#{index}"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots#{index}"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/grinder/result_slot2")
         sprites["craft_slots#{index}"].z = 70
-        sprites["craft_slots#{index}"].x = sprites["craft_slots_result"].x + 64
-        sprites["craft_slots#{index}"].y = sprites["craft_slots_result"].y + 8
+        sprites["craft_slots#{index}"].x = sprites["craft_slots0"].x + 136
+        sprites["craft_slots#{index}"].y = sprites["craft_slots0"].y
         render_slot_icon(:craft, index, *craft[index]) if craft[index]
       end
       def station_update

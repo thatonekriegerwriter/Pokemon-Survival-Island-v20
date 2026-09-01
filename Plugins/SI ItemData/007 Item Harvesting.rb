@@ -20,11 +20,10 @@ Uncommon_SuperLuck_Chance=60
 Rare_SuperLuck_Chance=60
 
 end
-
-  def pbCookMeat(pkmn)
-    puts caller.join("\n")
+   
+  def pbPrepareMeat(pkmn)
     return if pkmn.types.include?(:GHOST)
-  
+
   
    if pkmn.species==:MAGIKARP && !$player.is_it_this_class?(:FISHER)
     if $player.party.include?(pkmn)
@@ -101,6 +100,17 @@ end
 	  
 	  
 	  end
+
+    return [food_item, amt]
+  end   
+   
+  
+  def pbCookMeat(pkmn)
+    puts caller.join("\n")
+    return if pkmn.types.include?(:GHOST)
+    food_item, amt = pbPrepareMeat(pkmn)
+	return unless food_item
+	return unless amt 
     if pkmn.species == :SLOWPOKE
 	  if $bag.add(:SLOWPOKETAIL,1)
 		itemAnim(:SLOWPOKETAIL,1) if !$game_temp.in_battle
@@ -217,6 +227,8 @@ return if pkmn.wildHoldItems.nil?
         end
 	  end
 	end
+
+
 end
 
 def pbItemThieving(pkmn)

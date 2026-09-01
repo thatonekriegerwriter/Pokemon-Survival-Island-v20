@@ -77,8 +77,9 @@ GameData::Placeable.register({ :id            => :BEDROLL, :placement_coordinate
 GameData::Placeable.register({ :id            => :CAULDRON})
 GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH})
 
-GameData::Placeable.register({ :id            => :STATUE})
+GameData::Placeable.register({ :id            => :STATUE, :usable_locations => [:ANY]})
 
+GameData::Placeable.register({ :id            => :BUTCHERTABLE, :usable_locations => [:BASE]})
 GameData::Placeable.register({ :id            => :SPRINKLER, :usable_locations => [:BASE]})
 GameData::Placeable.register({ :id            => :GARBAGEBIN, :usable_locations => [:BASE]})
 GameData::Placeable.register({ :id            => :ITEMCRATE, :usable_locations => [:BASE]})

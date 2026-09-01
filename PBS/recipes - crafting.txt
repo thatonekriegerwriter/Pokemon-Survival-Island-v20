@@ -53,6 +53,17 @@ Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
+[BUTCHERTABLE]
+Name=Recipe
+Result=CAULDRON
+Yield=1
+Recipe=IRON2,4,CRAFTINGBENCH,1,IRON2,4
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
 [GRINDER]
 Name=Recipe
 Result=GRINDER
@@ -256,6 +267,17 @@ Name=Recipe
 Result=APIARY
 Yield=1
 Recipe=WOODENLOG,5,WOODENPLANKS,4,HONEY,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
+[WARDINGTOTEM]
+Name=Recipe
+Result=WARDINGTOTEM
+Yield=1
+Recipe=CLAY2,3,IRON2,5,WOOL,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
 Type = PLACEABLE

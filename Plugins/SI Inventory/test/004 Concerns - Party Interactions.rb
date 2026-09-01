@@ -303,7 +303,13 @@ module InventoryScene
           return unless pkmn
 
           icon = icons[icon_key(kind, index, :image)]
-          self.grabbed_item = GrabbedItem.new(icon:, stack: [pkmn, 1], index:, source: kind)
+		  pkmn = pkmn.is_a?(Array) ? pkmn : [pkmn, 1]
+		  puts pkmn.inspect
+		  puts pkmn.is_a?(Array) && pkmn[0].is_a?(ItemData)
+          self.grabbed_item = GrabbedItem.new(icon:, stack: pkmn, index:, source: kind)
+		  if pkmn.is_a?(Array) && pkmn[0].is_a?(ItemData)
+		   switch_tab_to_item_pocket(pkmn[0])
+		  end 
         elsif grabbed_item.pokemon?
 		 if can_drop_pokemon?(kind, index)
           handle_pokemon_drop(kind, store, index) 
@@ -352,9 +358,10 @@ module InventoryScene
       end
 
       def use_item_on_slot_pokemon(pkmn)
-        return unless pkmn
+        return unless pkmn && pkmn.is_a?(Pokemon)
 
         item = grabbed_item.item
+		item = item[0] if item.is_a?(Array)
         itm = GameData::Item.get(item)
         return if pkmn.hyper_mode && !itm&.is_scent?
         return unless pbCanUseOnPokemon?(itm)

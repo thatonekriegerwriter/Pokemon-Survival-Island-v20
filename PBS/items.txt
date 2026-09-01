@@ -9882,6 +9882,15 @@ FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A simple wooden workbench for crafting tools and other essential items.
 #-------------------------------
+[BUTCHERTABLE]
+Name = Butcher Table
+NamePlural = Butcher Tables
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A workbench for butchering Pokemon into resources.
+#-------------------------------
 [POCKET]
 Name = Pocket Workbench
 NamePlural = Workbench

@@ -164,6 +164,7 @@ module InventoryScene
     def finalize_container          = craft.each { |data| $bag.add(data[0], data[1]) if data }
     def on_craft_consumed(_recipe)  = nil
     def has_party_sidebar?          = true
+    def extra_slot_result_sized?    = false
     def has_bag_grid?               = true
     def uses_recipe_grid?           = true
     def handle_station_click(_kind, _index) = nil

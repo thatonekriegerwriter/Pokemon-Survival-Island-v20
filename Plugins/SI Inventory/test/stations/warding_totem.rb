@@ -1,11 +1,14 @@
 module InventoryScene
   module Stations
-    class Warding_Totem < BaseStation
+    class WardingTotem < BaseStation
       def initialize(event_data:, container:)
+        needed = slot_count + 1
+        short_by = needed - event_data.internal_storage.length
+        event_data.internal_storage.concat(Array.new(short_by)) if short_by.positive?
         super
       end
 	  
-	  def initial_craft_contents = nil#event_data.internal_storage
+	  def initial_craft_contents = event_data.internal_storage
       def slot_count = 1
       def background_key = "WARDINGTOTEM"
 	  def bonus_slot_function = :WRITE
@@ -26,7 +29,7 @@ module InventoryScene
         sprites["craft_slots0"].z = 1
         sprites["craft_slots0"].x = x
         sprites["craft_slots0"].y = y
-        render_slot_icon(:craft, 0, *craft[0]) if craft[0]
+        render_slot_icon(:craft, 0, *craft[0]) if craft && craft[0]
 		
 		#render_bonus_slot
       end

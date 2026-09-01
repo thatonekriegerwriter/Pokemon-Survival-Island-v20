@@ -119,6 +119,17 @@ Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
+[COMPOSTER]
+Name=Recipe
+Result=COMPOSTER
+Yield=1
+Recipe=WOODENLOG,4,FERTILIZERMIX,2,WOODENLOG,4
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
 [PETBED]
 Name=Recipe
 Result=PETBED

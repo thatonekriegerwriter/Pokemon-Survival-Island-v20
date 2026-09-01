@@ -74,7 +74,7 @@ GameData::Placeable.register({ :id            => :CRAFTINGBENCH})
 GameData::Placeable.register({ :id            => :APRICORNCRAFTING})
 GameData::Placeable.register({ :id            => :MEDICINEPOT})
 GameData::Placeable.register({ :id            => :BEDROLL, :placement_coordinates =>  { 2 => [0,2], 4 => [-1,0], 6 => [+1,0], 8 => [0,-1]}})
-GameData::Placeable.register({ :id            => :CAULDRON})
+GameData::Placeable.register({ :id            => :CAULDRON, :usable_locations => [:BASE]})
 GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH})
 
 GameData::Placeable.register({ :id            => :STATUE, :usable_locations => [:ANY]})
@@ -110,7 +110,7 @@ GameData::Placeable.register({ :id            => :PORTABLECAMP, :usable_location
 
 GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true})
 GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true}) 
-GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks
+GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true, :usable_locations => [:ANY]}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks
 GameData::Placeable.register({ :id            => :GRINDER, :assignable => true})
 GameData::Placeable.register({ :id            => :ELECTRICGRINDER, :assignable => true, :needs_power => true})
 GameData::Placeable.register({ :id            => :COMPOSTER, :usable_locations => [:BASE], :assignable => true}) 

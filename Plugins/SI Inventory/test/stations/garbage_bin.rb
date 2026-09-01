@@ -56,3 +56,12 @@ module InventoryScene
     end
   end
 end
+
+
+module InventoryScene
+  module Stations
+    class Composter < GarbageBin
+      def background_key = "COMPOSTER"
+	end
+  end
+end 

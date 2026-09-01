@@ -58,6 +58,7 @@ class Inventory_Scene
     :PKMNCRATE => ->(e, c) { InventoryScene::Stations::PkmnCrate.new(event_data: e, container: c) },
     :RESEARCHTABLE => ->(e, c) { InventoryScene::Stations::ResearchTable.new(event_data: e, container: c) },
     :GARBAGEBIN => ->(e, c) { InventoryScene::Stations::GarbageBin.new(event_data: e, container: c) },
+    :COMPOSTER => ->(e, c) { InventoryScene::Stations::Composter.new(event_data: e, container: c) },
     :MACHINEBOX => ->(e, c) { InventoryScene::Stations::MachineBox.new(event_data: e, container: c) },
     :BEDROLL => ->(e, c) { InventoryScene::Stations::Bedroll.new(event_data: e, container: c) },
     :WARDINGTOTEM => ->(e, c) { InventoryScene::Stations::WardingTotem.new(event_data: e, container: c) },

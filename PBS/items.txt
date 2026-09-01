@@ -10212,6 +10212,15 @@ FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A bin to help organize your base by removing unwanted materials.
 #-------------------------------
+[COMPOSTER]
+Name = Composter
+NamePlural = Composter
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A composter that can take materials and convert them into fertilizer.
+#-------------------------------
 [ADVENTUREFLAG]
 Name = Adventure Flag
 NamePlural = Adventure Flag

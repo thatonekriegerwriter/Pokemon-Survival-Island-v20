@@ -104,6 +104,9 @@ class CraftingStationData
   def butchering_table?
     item&.id == :BUTCHERTABLE
   end 
+  def composter?
+    item&.id == :COMPOSTER
+  end 
 
   def spinner?
     item&.id == :SILKSPINNER
@@ -238,9 +241,9 @@ class CraftingStationData
     if @internal_storage[0] && @internal_storage[0][1] > 0
      @internal_storage[0][1]-=1
 	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
-	 @work_done += 1
 	#puts @work_done
 	 return if placed_item.id == :BLACKSLUDGE
+	 @work_done += 1
 	 return unless @work_done >= 10
      itemdata = ItemData.new(:BLACKSLUDGE)
      amt = 1
@@ -251,6 +254,7 @@ class CraftingStationData
      end
 	 @work_done -= 10
     end 
+
   end 
   def update_butcher_table(time_delta)
     if result_slot && result_slot.is_a?(Pokemon)
@@ -350,7 +354,29 @@ class CraftingStationData
 	  pkmn = nil
 	end 
   end 
-  
+  def update_composter(time_delta)
+    slot = recipe_slots[0]
+	return unless slot && slot.is_a?(Array)
+	placed_item = slot[0]
+	return unless placed_item.data.is_berry?
+	#puts placed_item
+    if @internal_storage[0] && @internal_storage[0][1] > 0
+     @internal_storage[0][1]-=1
+	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
+	#puts @work_done
+	 @work_done += 1
+	 return unless @work_done >= 10
+     itemdata = ItemData.new(:FERTILIZERMIX)
+     amt = 1
+	 if result_slot && result_slot.is_a?(Array) && result_slot[0] && result_slot[0].identical(itemdata)
+       result_slot[1] += amt
+     else
+      self.result_slot = [itemdata, amt]
+     end
+	 @work_done -= 10
+    end 
+
+  end  
   def update
     @internal_storage = [] if @internal_storage.nil?
     time_now = pbGetTimeNow.to_i
@@ -364,6 +390,7 @@ class CraftingStationData
 	update_grinder(time_delta) if grinder?
 	update_spinner(time_delta) if spinner?
 	update_garbage_bin(time_delta) if garbage_bin?
+	update_composter(time_delta) if composter?
 	update_warding_totem(time_delta) if warding_totem?
 	update_butcher_table(time_delta) if butchering_table?
     @time_last_updated = time_now

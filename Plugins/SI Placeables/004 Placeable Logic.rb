@@ -227,6 +227,7 @@ class Scene_Map
 	    if !$player.held_item.is_a?(Pokemon)
 		 $bag.last_viewed_pocket=Settings.bag_pocket_names.length
 		 $game_temp.position_calling = false
+	   $game_system.save_disabled = false
 	     inventory_logic 
 		end
 	elsif Input.triggerex?(:DOWN)

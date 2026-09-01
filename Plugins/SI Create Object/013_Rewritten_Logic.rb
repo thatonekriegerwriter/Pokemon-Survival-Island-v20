@@ -106,6 +106,7 @@ class Game_OVEvent < Game_Event
   
   def update
    super
+    if $game_map.map_id == self.map_id
     data = internal_data
     if data
 	  data.event_id = @event.id if data.event_id.nil? || data.event_id!=@event.id
@@ -113,6 +114,7 @@ class Game_OVEvent < Game_Event
 	end
 	workers.event_id = @event.id if workers.event_id.nil? || workers.event_id!=@event.id
 	workers.update 
+	end 
   end
 end
 

@@ -234,7 +234,7 @@ class PCItemStorage
     @items.delete_if do |slot|
        next false if slot.nil?
 	   item, amt = slot
-       item.durable? && item.durability <= 0
+       item.durable? && item.durability && item.durability <= 0
 	end 
     return unless active?
     @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?

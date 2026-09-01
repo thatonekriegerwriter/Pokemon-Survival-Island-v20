@@ -568,8 +568,8 @@ end
 	
     @following = nil if @movement_type != :FOLLOW && @movement_type != :MOVEBEHINDPLAYER
 	if @following && @movement_type == :FOLLOW 
-     self.move_frequency=following.move_frequency
-     self.move_speed=event.following.move_speed+0.25 
+     self.move_frequency=@following.move_frequency
+     self.move_speed=@following.move_speed+0.25 
 	
 	elsif @movement_type != :FOLLOW 
      self.move_speed=3 

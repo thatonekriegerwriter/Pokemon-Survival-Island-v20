@@ -18,7 +18,7 @@
 - [x] All types working at Research table provide Passive Bonus to research Speed, serious Pokemon give a greater boost
 - [ ] Rework Adventure screen.
 - [ ] Make sure pokemon working in stations return to work after combat. Make sure guards aren't locked to STANDING at their station.
-- [ ] Butchering table
+- [x] Butchering table
 
 ### Core Gameplay 
 - [ ] Overhaul Happiness to be ephemerial.

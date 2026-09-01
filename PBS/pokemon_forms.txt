@@ -203,6 +203,9 @@ Color = White
 Habitat = Mountain
 Pokedex = It lives in snowy mountains on southern islands. When a blizzard rolls in, this Pokémon hunkers down in the snow to avoid getting blown away.
 Generation = 7
+WildItemCommon = SNOWBALL
+WildItemUncommon = SNOWBALL
+WildItemRare = SNOWBALL
 Evolutions = SANDSLASH,Item,ICESTONE
 #-------------------------------
 [SANDSLASH,1]
@@ -218,6 +221,9 @@ Weight = 55.0
 Color = Blue
 Habitat = Mountain
 Pokedex = It uses large, hooked claws to cut a path through deep snow as it runs. On snowy mountains, this Sandslash is faster than any other Pokémon.
+WildItemCommon = SNOWBALL
+WildItemUncommon = SNOWBALL
+WildItemRare = SNOWBALL
 Generation = 7
 #-------------------------------
 [VULPIII,1]
@@ -231,9 +237,9 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = Alolan Vulpii have very little control over their movements, they slide along the ground like it is ice.
 Generation = 7
-WildItemCommon = LIGHTCLAY
+WildItemCommon = SNOWBALL
 WildItemUncommon = SNOWBALL
-WildItemRare = LIGHTCLAY
+WildItemRare = SNOWBALL
 Evolutions = NINETALES,Item,ICESTONE,VULPIX,Level,14
 #-------------------------------
 [VULPIX,1]
@@ -247,9 +253,9 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
-WildItemCommon = LIGHTCLAY
+WildItemCommon = SNOWBALL
 WildItemUncommon = SNOWBALL
-WildItemRare = LIGHTCLAY
+WildItemRare = SNOWBALL
 Evolutions = NINETALES,Item,ICESTONE,VULRECUR,HasMove,COLDFRONT
 #-------------------------------
 [VULRECUR,1]
@@ -263,9 +269,9 @@ EggMoves = HYPNOSIS,FLAIL,HOWL,HEATWAVE,BABYDOLLEYES,ROAR,FREEZEDRY,MOONBLAST
 Color = White
 Pokedex = After long years in the ever-snowcapped mountains of Alola, this Vulpix has gained power over ice.
 Generation = 7
-WildItemCommon = LIGHTCLAY
+WildItemCommon = SNOWBALL
 WildItemUncommon = SNOWBALL
-WildItemRare = LIGHTCLAY
+WildItemRare = SNOWBALL
 Evolutions = NINETALES,Item,ICESTONE
 #-------------------------------
 [NINETALES,1]
@@ -279,7 +285,9 @@ TutorMoves = AGILITY,AQUATAIL,ATTRACT,AURORAVEIL,AVALANCHE,BLIZZARD,BODYSLAM,CAL
 Color = Blue
 Pokedex = A deity resides in the snowy mountains where this Pokémon lives. In ancient times, it was worshiped as that deity's incarnation.
 Generation = 7
+WildItemCommon = SNOWBALL
 WildItemUncommon = SNOWBALL
+WildItemRare = SNOWBALL
 #-------------------------------
 [DIGLETT,1]
 FormName = Alolan Form

@@ -956,12 +956,11 @@ class BerryPlantData
   
   def event
    return $game_map.events[event_id] if event_id
-   interp = pbMapInterpreter
-   return interp.get_self
   end 
   
   def workers
-    event.workers.current_workers 
+    return event.workers.current_workers if event
+	return []
   end 
   
   def tending_multiplier
@@ -2332,7 +2331,7 @@ class BerryPlantSprite
   end
 
   def update_plant(berry_plant, initial = false)
-    berry_plant.update if berry_plant.planted?
+    #berry_plant.update if berry_plant.planted?
   end
 
   def update

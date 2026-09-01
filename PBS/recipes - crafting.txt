@@ -55,7 +55,7 @@ Flags=
 #-------------------------------
 [BUTCHERTABLE]
 Name=Recipe
-Result=CAULDRON
+Result=BUTCHERTABLE
 Yield=1
 Recipe=IRON2,4,CRAFTINGBENCH,1,IRON2,4
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH

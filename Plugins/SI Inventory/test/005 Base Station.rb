@@ -40,6 +40,7 @@ module InventoryScene
     BAG_COLS = InventoryScene::BAG_COLS
     BAG_ROWS = InventoryScene::BAG_ROWS
     SLOT_SIZE = InventoryScene::SLOT_SIZE
+    PARTY_SIZE = 6
 
 
     attr_reader :viewport, :sprites, :icons, :objects, :tooltip, :buttons
@@ -197,6 +198,34 @@ module InventoryScene
     # the player; every other station has no clickable objects.
     def handle_object_click(_object_key) = nil
 	def bonus_slot_function = nil
+    # Stub - what "select this item" actually does belongs to
+    # $OverworldMenu, not this scene. Fill this in (or override per-
+    # station if it should ever behave differently in one).
+    def handle_item_box_drop = nil
+
+    # Generic move-validation for Pokemon-holding slots (party sidebar,
+    # PkmnCrate, Pet Bed) - checked before a Pokemon can be picked up
+    # from a slot, or placed into one, respectively. Both default to
+    # "always allowed"; override per-station for rules like "can't move
+    # a Pokemon that's fainted" or "this slot is full."
+    def pokemon_leavable?(_kind, _index, _pokemon) = true
+    def pokemon_placeable?(_kind, _index, _pokemon) = true
+
+    # Side-effect hooks, called AFTER a move actually succeeds (unlike
+    # the two above, which gate whether it's allowed to happen at all).
+    # Needed for cases like Adventure setting current_map/on_adventure
+    # when a Pokemon lands in its adventuring-party grid - the generic
+    # swap logic only moves the reference, it has no idea a station
+    # might need field mutations alongside that.
+    def on_pokemon_placed(_kind, _index, _pokemon) = nil
+    def on_pokemon_removed(_kind, _index, _pokemon) = nil
+
+    # Hook for stations whose interaction model doesn't fit the standard
+    # slot-grid system at all - return true to consume a click and skip
+    # every other routing check for it. Checked first, before bag/craft/
+    # equipment/pokemon slot detection.
+    def handle_custom_click(_button) = false
+
     # ---- generic scene API expected by ItemHandlers/pbUseItem/etc ------
     # (item effect handlers call back into whatever scene invoked them,
     # so these need to exist on every station, not just the bag)
@@ -513,7 +542,20 @@ module InventoryScene
     end
 
     # ---- mouse geometry -----------------------------------------------
+      def adventure_slot_from_mouse
+        return nil unless self.is_a?(InventoryScene::Stations::AdventureFlag)
+        mouse_x, mouse_y = Mouse.getMousePos
+        return nil if mouse_x.nil?
 
+        InventoryScene::Stations::AdventureFlag::PARTY_SIZE.times do |i|
+          sprite = sprites["adv_slots#{i}"]
+          next unless sprite && within_sprite?(sprite, mouse_x, mouse_y)
+
+          return i
+        end
+        nil
+      end
+	  
     def slot_from_mouse
       mouse_x, mouse_y = Mouse.getMousePos
       return if mouse_x.nil?
@@ -592,7 +634,7 @@ module InventoryScene
       result = local_x >= 20 && local_x < 71 && local_y >= 15 && local_y < 65
 	  return result 
     end
-
+    
 
     def update_pokemon_icon_tones
       icons.each_value do |value|

@@ -5,7 +5,7 @@ module InventoryScene
   # replaces both and removes the three-way branch that appeared at every
   # call site in the original (~25 times).
   class GrabbedItem
-    SOURCES = %i[bag craft pokemon_inventory party pokemon_slot equipment held].freeze
+    SOURCES = %i[bag craft pokemon_inventory party pokemon_slot equipment held adventure_party].freeze
 
     attr_accessor :icon, :stack, :index, :store
     attr_reader :source
@@ -28,6 +28,7 @@ module InventoryScene
     end
 
     def pokemon? = item.is_a?(Pokemon)
+    def item? = item.is_a?(Array) && item[0].is_a?(ItemData)
 
     # Which array this came from, for the generic "put it back" / "clear
     # the source slot" logic in Concerns::DraggableSlots.
@@ -41,9 +42,11 @@ module InventoryScene
       return "_text" if source == :held
 
       case source
-      when :craft, :equipment, :pokemon_slot then "_slottext"
+      when :craft, :equipment, :pokemon_slot, :box then "_slottext"
       when :pokemon_inventory then "_invtext"
       when :party then "_partytext"
+      when :adventure_party then "_apartytext"
+      when :traveling_partner then "_tpartnertext"
       else "_text"
       end
     end
@@ -52,9 +55,11 @@ module InventoryScene
       return "_image" if source == :held
 
       case source
-      when :craft, :equipment, :pokemon_slot then "_slotimage"
+      when :craft, :equipment, :pokemon_slot, :box then "_slotimage"
       when :pokemon_inventory then "_invimage"
       when :party then "_partyimage"
+      when :adventure_party then "_apartyimage"
+      when :traveling_partner then "_tpartnerimage"
       else "_image"
       end
     end

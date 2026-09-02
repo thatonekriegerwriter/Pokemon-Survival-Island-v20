@@ -5,7 +5,7 @@ class DayCare
   module EggGenerator
     module_function
 
-    def generate(mother, father)
+    def generate(mother, father, bee = false, princess=false)
       # Determine which Pokémon is the mother and which is the father
       # Ensure mother is female, if the pair contains a female
       # Ensure father is male, if the pair contains a male
@@ -13,30 +13,29 @@ class DayCare
       if mother.male? || father.female? || mother.genderless?
         mother, father = father, mother
       end
-      mother_data = [mother, mother.species_data.egg_groups.include?(:Ditto)]
-      father_data = [father, father.species_data.egg_groups.include?(:Ditto)]
+      mother_data = [mother, fluid_egg_group?(mother.species_data.egg_groups)]
+      father_data = [father, fluid_egg_group?(father.species_data.egg_groups)]
       # Determine which parent the egg's species is based from
-      species_parent = (mother_data[1]) ? father : mother
-      # Determine the egg's species
-      baby_species = determine_egg_species(species_parent.species, mother, father)
+      genetic_source = determine_genetic_source(mother, father, bee, princess)
+      baby_species = determine_egg_species(genetic_source, mother, father, bee, princess)
+	
+	
       mother_data.push(mother.species_data.breeding_can_produce?(baby_species))
       father_data.push(father.species_data.breeding_can_produce?(baby_species))
       # Generate egg
-      egg = generate_basic_egg(baby_species)
+      egg = generate_basic_egg(baby_species, bee)
       # Inherit properties from parent(s)
       egg.family = PokemonFamily.new(egg, father, mother)
-      inherit_form(egg, species_parent, mother_data, father_data)
-      inherit_nature(egg, mother, father)
-      inherit_ability(egg, mother_data, father_data)
+	  
+      inherit_form(egg, genetic_source, mother_data, father_data)
+      inherit_nature(egg, genetic_source, mother, father)
+      inherit_ability(egg, genetic_source, mother_data, father_data)
       inherit_moves(egg, mother_data, father_data)
-      inherit_IVs(egg, mother, father)
-	  inherit_hptype(egg, mother, father)
+      inherit_IVs(egg, genetic_source, mother, father)
       inherit_poke_ball(egg, mother_data, father_data)
-      egg.age = set_birthday
-      egg.lifespan = egg.get_lifespan
-      egg.water = 100
-      egg.food = 100
+	
       # Calculate other properties of the egg
+      inherit_birthsign(egg, mother, father) if PluginManager.installed?("Pokémon Birthsigns")
       set_shininess(egg, mother, father)   # Masuda method and Shiny Charm
       set_pokerus(egg)
       # Recalculate egg's stats
@@ -56,22 +55,94 @@ class DayCare
       return babyspecies
     end
     
+  def determine_genetic_source(mother, father, bee, princess)
+    return mother if princess
 
+    gene_pool = []
 
-    def determine_egg_species(parent_species, mother, father)
-      ret = GameData::Species.get(parent_species).get_baby_species(true, mother.item_id, father.item_id)
-      offspring = GameData::Species.get(ret).offspring
-      ret = offspring.sample if offspring.length > 0
-      ret = egg_species_from_item(ret, mother.item_id, father.item_id)
-      return ret
+    if bee
+      collect_bee_gene_pool(mother, gene_pool)
+      collect_bee_gene_pool(father, gene_pool)
+    else
+      collect_gene_pool(mother, gene_pool)
+      collect_gene_pool(father, gene_pool)
+
+      # Bias toward the mother's genetics
+      gene_pool << mother
+      gene_pool << mother
     end
 
-    def generate_basic_egg(species)
-      egg = Pokemon.new(species, Settings::EGG_LEVEL)
-      egg.name           = _INTL("Egg")
-      egg.steps_to_hatch = egg.species_data.hatch_steps
-      egg.obtain_text    = _INTL("Day-Care Couple")
+    return gene_pool.sample
+  end
+
+
+  def collect_gene_pool(pokemon, gene_pool)
+    gene_pool << pokemon
+    return unless pokemon.family
+
+    collect_family_gene_pool(pokemon.family, gene_pool)
+  end
+
+
+  def collect_family_gene_pool(family, gene_pool)
+    gene_pool << family
+
+    collect_family_gene_pool(family[0], gene_pool) if family[0]
+    collect_family_gene_pool(family[1], gene_pool) if family[1]
+  end
+
+
+  def collect_bee_gene_pool(pokemon, gene_pool)
+    gene_pool << pokemon if pokemon.bee?
+
+    return unless pokemon.family
+
+    collect_bee_family(pokemon.family, gene_pool)
+  end
+
+
+  def collect_bee_family(family, gene_pool)
+    if family[0]
+      gene_pool << family[0] if GameData::Species.get(family[0].species).bee?
+      collect_bee_family(family[0], gene_pool)
+    end
+
+    if family[1]
+      gene_pool << family[1] if GameData::Species.get(family[1].species).bee?
+      collect_bee_family(family[1], gene_pool)
+    end
+  end
+
+
+  def determine_egg_species(genetic_source, mother, father, bee, princess)
+    # Princesses are always the mother's exact species.
+    return mother.species if princess
+
+    ret = genetic_source.species
+    ret = GameData::Species.get(ret).get_baby_species
+
+    offspring = GameData::Species.get(ret).offspring
+    ret = offspring.sample if offspring.length > 0
+
+    ret = egg_species_from_item(ret, mother.item_id, father.item_id)
+    return ret
+  end
+
+    def generate_basic_egg(species, bee = false)
+      egg = Pokemon.new(species, 1)
+	  unless bee 
+       egg.name           = _INTL("Egg")
+       egg.steps_to_hatch = egg.species_data.hatch_steps
+       egg.obtain_text    = _INTL("Raised from an Egg!")
+	  else
+       egg.obtain_text    = _INTL("Born with its hive!")
+	  end 
       egg.happiness      = 120
+      egg.loyalty      = 120
+      egg.age = egg.set_birthday
+      egg.lifespan = egg.get_lifespan
+      egg.water = 100
+      egg.food = 100
       egg.form           = 0 if species == :SINISTEA
       # Set regional form
       new_form = MultipleForms.call("getFormOnEggCreation", egg)
@@ -80,21 +151,29 @@ class DayCare
     end
 
 	
-    def inherit_form(egg, species_parent, mother, father)
-      if species_parent.species_data.has_flag?("InheritFormFromMother")
-        egg.form = species_parent.form
-      end
-      species_parent.species_data.flags.each do |flag|
-        egg.form = $~[1].to_i if flag[/^InheritForm_(\d+)$/i]
-      end
-      [mother, father].each do |parent|
-        next if !parent[2]
-        next if !parent[0].species_data.has_flag?("InheritFormWithEverStone")
-        next if !parent[0].hasItem?(:EVERSTONE)
-        egg.form = parent[0].form
-        break
-      end
-    end
+def inherit_form(egg, species_parent, mother, father)
+  species_data = GameData::Species.get(species_parent.species)
+
+  # Inherit the form from the selected genetic source.
+  if species_data.has_flag?("InheritFormFromMother")
+    form = species_parent.form
+    egg.form = form if !form.nil?
+  end
+
+  species_data.flags.each do |flag|
+    egg.form = $~[1].to_i if flag[/^InheritForm_(\d+)$/i]
+  end
+
+  # Normal Everstone inheritance still applies.
+  [mother, father].each do |parent|
+    next if !parent[2]
+    next if !parent[0].species_data.has_flag?("InheritFormWithEverStone")
+    next if !parent[0].hasItem?(:EVERSTONE)
+
+    egg.form = parent[0].form
+    break
+  end
+end
 	
     def get_moves_to_inherit(egg, mother, father)
       # mother = [mother, mother_ditto, mother_in_family]
@@ -149,74 +228,101 @@ class DayCare
       (first_move_index...moves.length).each { |i| egg.learn_move(moves[i]) }
     end
 
-    def inherit_nature(egg, mother, father)
-      new_natures = []
-      new_natures.push(mother.nature) if mother.hasItem?(:EVERSTONE)
-      new_natures.push(father.nature) if father.hasItem?(:EVERSTONE)
-      return if new_natures.empty?
-      egg.nature = new_natures.sample
+def inherit_nature(egg, genetic_source, mother, father)
+  new_natures = []
+
+  # The selected ancestor can pass its nature if it has one.
+  nature = genetic_source.nature
+  new_natures.push(nature) if !nature.nil? && rand(100) < 10
+
+  # Normal Everstone inheritance.
+  new_natures.push(mother.nature) if mother.hasItem?(:EVERSTONE)
+  new_natures.push(father.nature) if father.hasItem?(:EVERSTONE)
+
+  return if new_natures.empty?
+
+  egg.nature = new_natures.sample
+end
+
+# If a Pokémon is bred with a Ditto, that Pokémon can pass down its Hidden
+# Ability (60% chance). If neither Pokémon are Ditto, then the mother can pass
+# down its ability (60% chance if Hidden, 80% chance if not).
+def inherit_ability(egg, genetic_source, mother, father)
+   
+  parent = (mother[1]) ? father[0] : mother[0]
+  if parent.hasHiddenAbility?
+    egg.ability_index = parent.ability_index if rand(100) < 60
+  elsif !mother[1] && !father[1]
+    if rand(100) < 80
+      egg.ability_index = mother[0].ability_index
+    else
+      egg.ability_index = (mother[0].ability_index + 1) % 2
+    end
+  end
+
+  return if !genetic_source.ability_index
+  return if rand(100) >= 10
+  if genetic_source.hasHiddenAbility?
+      egg.ability_index = genetic_source.ability_index if rand(100) < 80
+  else
+      egg.ability_index = genetic_source.ability_index
+  end
+  
+end
+
+
+def inherit_IVs(egg, genetic_source, mother, father)
+  stats = []
+  GameData::Stat.each_main { |s| stats.push(s) }
+
+  inherit_count = 3
+  if Settings::MECHANICS_GENERATION >= 6
+    inherit_count = 5 if mother.hasItem?(:DESTINYKNOT) || father.hasItem?(:DESTINYKNOT)
+  end
+
+  # Inherit IV because of Power items.
+  power_items = [
+    [:POWERWEIGHT, :HP],
+    [:POWERBRACER, :ATTACK],
+    [:POWERBELT,   :DEFENSE],
+    [:POWERLENS,   :SPECIAL_ATTACK],
+    [:POWERBAND,   :SPECIAL_DEFENSE],
+    [:POWERANKLET, :SPEED]
+  ]
+
+  power_stats = []
+
+  [mother, father].each do |parent|
+    power_items.each do |item|
+      next if !parent.hasItem?(item[0])
+      power_stats.push(item[1], parent.iv[item[1]])
+      break
+    end
+  end
+
+  if power_stats.length > 0
+    power_stat = power_stats.sample
+    egg.iv[power_stat[0]] = power_stat[1]
+    stats.delete(power_stat[0])
+    inherit_count -= 1
+  end
+
+  # Remaining IVs can come from the selected genetic source or either parent.
+  inherit_count.times do
+    stat = stats.sample
+    stats.delete(stat)
+
+    sources = [mother, father]
+
+    if genetic_source.iv && genetic_source.iv[stat]
+      sources << genetic_source
     end
 
-    # If a Pokémon is bred with a Ditto, that Pokémon can pass down its Hidden
-    # Ability (60% chance). If neither Pokémon are Ditto, then the mother can
-    # pass down its ability (60% chance if Hidden, 80% chance if not).
-    # NOTE: This is how ability inheritance works in Gen 6+. Gen 5 is more
-    #       restrictive, and even works differently between BW and B2W2, and I
-    #       don't think that is worth adding in. Gen 4 and lower don't have
-    #       ability inheritance at all, and again, I'm not bothering to add that
-    #       in.
-    def inherit_ability(egg, mother, father)
-      # mother = [mother, mother_ditto, mother_in_family]
-      # father = [father, father_ditto, father_in_family]
-      parent = (mother[1]) ? father[0] : mother[0]   # The female or non-Ditto parent
-      if parent.hasHiddenAbility?
-        egg.ability_index = parent.ability_index if rand(100) < 60
-      elsif !mother[1] && !father[1]   # If neither parent is a Ditto
-        if rand(100) < 80
-          egg.ability_index = mother[0].ability_index
-        else
-          egg.ability_index = (mother[0].ability_index + 1) % 2
-        end
-      end
-    end
+    source = sources.sample
+    egg.iv[stat] = source.iv[stat]
+  end
+end
 
-    def inherit_IVs(egg, mother, father)
-      # Get all stats
-      stats = []
-      GameData::Stat.each_main { |s| stats.push(s) }
-      # Get the number of stats to inherit
-      inherit_count = 3
-      if Settings::MECHANICS_GENERATION >= 6
-        inherit_count = 5 if mother.hasItem?(:DESTINYKNOT) || father.hasItem?(:DESTINYKNOT)
-      end
-      # Inherit IV because of Power items (if both parents have a Power item,
-      # then only a random one of them is inherited)
-      power_items = [
-        [:POWERWEIGHT, :HP],
-        [:POWERBRACER, :ATTACK],
-        [:POWERBELT,   :DEFENSE],
-        [:POWERLENS,   :SPECIAL_ATTACK],
-        [:POWERBAND,   :SPECIAL_DEFENSE],
-        [:POWERANKLET, :SPEED]
-      ]
-      power_stats = []
-      [mother, father].each do |parent|
-        power_items.each do |item|
-          next if !parent.hasItem?(item[0])
-          power_stats.push(item[1], parent.iv[item[1]])
-          break
-        end
-      end
-      if power_stats.length > 0
-        power_stat = power_stats.sample
-        egg.iv[power_stat[0]] = power_stat[1]
-        stats.delete(power_stat[0])   # Don't try to inherit this stat's IV again
-        inherit_count -= 1
-      end
-      # Inherit the rest of the IVs
-      chosen_stats = stats.sample(inherit_count)
-      chosen_stats.each { |stat| egg.iv[stat] = [mother, father].sample.iv[stat] }
-    end
 
     # Poké Balls can only be inherited from parents that are related to the
     # egg's species.

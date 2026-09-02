@@ -1,10 +1,9 @@
 class Pokemon
   attr_reader :adventure_log #An array that logs what the POKeMON has done while adventuring.
-  attr_accessor :IQ #A list of learned types and focuses for how a POKeMON adventures.
-  attr_accessor :chosenIQ #The chosen type in adventuringTypes
   attr_reader :traveling_partners
   attr_accessor :in_dungeon
   attr_accessor :steps_taken
+  attr_accessor :current_map
   attr_accessor :on_adventure
   attr_accessor :time_spent
   attr_accessor :just_arrived #has another with it.
@@ -19,8 +18,6 @@ class Pokemon
     _SI_Adventures_init(*args)
 	@on_adventure = false 
 	@adventure_log = []
-    @IQ      = ["None"]
-	@chosenIQ = 0
 	@current_map = nil 
 	@steps_taken = 0
     @traveling_partners = []

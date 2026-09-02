@@ -220,11 +220,18 @@ module InventoryScene
 
         if (hit = slot_from_mouse)
           item = current_pocket[hit[0]]&.first
-          pbFadeOutIn { pbItemSummaryScreen(item) } if item
+          pbFadeOutIn { pbItemSummaryScreen(item) } if item 
         elsif (hit = crafting_slot_from_mouse)
           show_info_for_craft_slot(hit)
         elsif (idx = hit_pokemon_index)
-          pbFadeOutIn { pbSummary(idx, party) } if party[idx]
+		  object = party[idx]
+		  if object.is_a?(Pokemon)
+           pbFadeOutIn { pbSummary(idx, party) }
+		  else
+           item = object.first
+           pbFadeOutIn { pbItemSummaryScreen(item) } if item 
+		  
+		  end 
         end
       end
 

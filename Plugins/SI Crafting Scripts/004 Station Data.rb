@@ -296,7 +296,7 @@ class CraftingStationData
 	  if pkmn.types.include?(:FLYING)
         feathers = [:PRETTYFEATHER, :PRETTYFEATHER, :PRETTYFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :MUSCLEFEATHER, :RESISTFEATHER, :GENIUSFEATHER, :CLEVERFEATHER, :SWIFTFEATHER] 
 	    amt = rand(2)+1
-	    item = ItemData.new(feathers.simple)
+	    item = ItemData.new(feathers.sample)
 	    items << [item, amt]
 	    
 	  end 
@@ -307,6 +307,8 @@ class CraftingStationData
        thirdqty = rand(2)+1
        droprnd = rand(100)
 
+    chances = [ItemDropsConfig::Common_Item_Chance,ItemDropsConfig::Uncommon_Item_Chance,ItemDropsConfig::Rare_Item_Chance]
+	bonus = 0
 	if wildDrop[0] == wildDrop[1] && wildDrop[1] == wildDrop[2]
   	  item = wildDrop[0].sample
 	  unless item.nil?
@@ -1112,7 +1114,10 @@ class BerryPotData
     nil
   end 
   
-  
+
+  def dead?
+    false
+  end 
   
   def berry_yield
     data = GameData::BerryPlant.get(@berry.id)
@@ -1210,6 +1215,291 @@ def update_harvesting
     pokemon.inventory.add(@berry, cur_yield)
     reset
 	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
+  end
+end
+
+end 
+
+
+class BeehiveData
+  attr_accessor :event_id 
+  attr_reader :apiary
+  attr_accessor :time_last_updated
+  attr_accessor :queen
+  attr_accessor :breeder
+  attr_reader :comb
+  attr_reader :frames
+  attr_reader :internal_storage
+  def initialize(event_id, apiary = false)
+    @event_id = event_id
+    @apiary = apiary
+	@time_last_updated = pbGetTimeNow.to_i
+	@queen = nil
+	@breeder = nil
+	@comb = Array.new(7)
+	@frames = Array.new(3)
+	@internal_storage = []
+	@work_time = 0
+	@work_done = 0.0
+	@breeding_done = 0.0
+  end 
+  def event 
+    $game_map.events[@event_id]
+  end 
+  def inspect_storage(storage)
+  storage.map do |slot|
+    next nil if slot.nil?
+
+    if slot.is_a?(Array)
+      item = slot[0]
+      amount = slot[1]
+      [item.name, amount]
+    else
+      slot
+    end
+  end
+end
+  def workers
+    event.workers.current_workers 
+  end 
+  def update
+   @breeding_done ||= 0.0
+   @comb.map! { |slot| slot.is_a?(Array) && slot[1] == 0 ? nil : slot }
+   @internal_storage.delete_if { |slot| slot.is_a?(Array) && slot[1] == 0 }
+   @internal_storage.compact!
+    time_now = pbGetTimeNow.to_i
+    time_delta = time_now - @time_last_updated
+    return if time_delta <= 0
+	if Input.pressex?(:TAB)
+     puts "@queen: #{@queen.inspect}"
+     puts "@breeder: #{@breeder.inspect}"
+	 puts "@comb: #{inspect_storage(@comb).inspect}"
+     puts "@frames: #{inspect_storage(@frames).inspect}"
+     puts "@internal_storage: #{inspect_storage(@internal_storage).inspect}"
+	end 
+   @apiary ? update_apiary(time_delta) : update_beehive(time_delta)
+   update_breeding(time_delta)
+   move_storage_to_comb
+    @time_last_updated = time_now
+   
+   
+  end 
+  
+
+  def breeding?
+  @queen && @breeder
+  end
+
+  def kill(pkmn)
+      food_item, amt = pbPrepareMeat(pkmn)
+	  if food_item && amt && amt > 0
+	    store_comb_result([food_item, amt]) if amt > 0 
+	  end
+
+	  if rand(12)==0
+	    amt = rand(2)+1
+        item = ItemData.new(:RAREBONE)
+	    store_comb_result([item, amt]) if amt > 0 
+		#if $bag.add(bone,geoiag)
+		#  itemAnim(bone,geoiag) if !$game_temp.in_battle
+		#end
+	  end
+	  if pkmn.types.include?(:ROCK)
+	    amt = rand(2)+1
+        item = ItemData.new(:STONE)
+	    store_comb_result([item, amt]) if amt > 0 
+	  
+	  end 
+	  if pkmn.types.include?(:STEEL)
+	    amt = rand(2)+1
+        item = ItemData.new(:IRON2)
+	    @internal_storage << [item, amt] if amt > 0 
+	  
+	  end   
+	  if pkmn.types.include?(:FLYING)
+        feathers = [:PRETTYFEATHER, :PRETTYFEATHER, :PRETTYFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :HEALTHFEATHER, :MUSCLEFEATHER, :RESISTFEATHER, :GENIUSFEATHER, :CLEVERFEATHER, :SWIFTFEATHER] 
+	    amt = rand(2)+1
+	    item = ItemData.new(feathers.sample)
+	    store_comb_result([item, amt]) if amt > 0 
+	    
+	  end 
+	  if pkmn.wildHoldItems
+       wildDrop = pkmn.wildHoldItems
+       firstqty = rand(6)+1
+       secondqty = rand(4)+1
+       thirdqty = rand(2)+1
+       droprnd = rand(100)
+
+    chances = [ItemDropsConfig::Common_Item_Chance,ItemDropsConfig::Uncommon_Item_Chance,ItemDropsConfig::Rare_Item_Chance]
+	bonus = 0
+	if wildDrop[0] == wildDrop[1] && wildDrop[1] == wildDrop[2]
+  	  item = wildDrop[0].sample
+	  unless item.nil? || item == :HONEY
+        item = GameData::Item.get(item)
+		item = ItemData.new(item.id)
+	    store_comb_result([item, firstqty]) if firstqty > 0 
+	  end
+	else
+	  if droprnd < chances[0] + bonus
+        item = wildDrop[0].sample
+        unless item.nil? || item == :HONEY
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     store_comb_result([item, firstqty]) if firstqty > 0 
+        end
+	  end
+
+	  if droprnd < chances[1] + bonus
+        item = wildDrop[1].sample
+        unless item.nil? || item == :HONEY
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     store_comb_result([item, secondqty]) if secondqty > 0 
+        end 
+	  end
+
+	  if droprnd < chances[2] + bonus
+        item = wildDrop[2].sample
+        unless item.nil? || item == :HONEY
+         item = GameData::Item.get(item)
+		 item = ItemData.new(item.id)
+	     store_comb_result([item, thirdqty]) if thirdqty > 0 
+        end
+	  end
+	end
+
+	  end 
+	  if pkmn.poke_ball
+	    item = pkmn.poke_ball.is_a?(Symbol) ? ItemData.new(pkmn.poke_ball) : pkmn.poke_ball
+		amt = 1
+	     store_comb_result([item, amt]) if amt > 0 
+	  end 
+  
+  end 
+  
+  def kill_queen
+    pkmn = @queen.dup
+	@queen = nil
+    kill(pkmn)
+	pkmn = nil
+  end 
+  
+  def kill_breeder
+    pkmn = @breeder.dup
+	@breeder = nil
+    kill(pkmn)
+	pkmn = nil
+  
+  end 
+  
+
+  def update_breeding(time_delta)
+  unless breeding?
+    @breeding_done = 0.0
+    return
+  end
+
+  @breeding_done += time_delta * (100.0 / 6000.0)
+  
+  puts "@breeding_done: #{@breeding_done.inspect}"
+  return unless @breeding_done >= 100
+
+  @breeding_done = 0.0
+  produce_offspring
+  produce_product
+  kill_queen
+  kill_breeder
+  
+  end
+  
+  
+  def produce_offspring
+	mother = @queen
+	father = @breeder
+	princess = DayCare::EggGenerator.generate(mother, father, true, true)
+	princess.makeFemale 
+    store_comb_result(princess)
+    rand(1..3).times do
+	  pkmn = DayCare::EggGenerator.generate(mother, father, true)
+	  pkmn.makeMale
+      store_comb_result(pkmn)
+    end
+  end 
+ 
+
+  def produce_product
+    amt = rand(3)+1
+	honeycomb = ItemData.new(:HONEYCOMB)
+	amt.times do 
+	 hc_amt = rand(8)+1
+     store_comb_result([honeycomb, hc_amt])
+    end 
+  end  
+  def store_comb_result(item)
+  index = @comb.index(&:nil?)
+
+  if index
+    @comb[index] = item
+  else
+    @internal_storage << item
+  end
+  end  
+  
+ def move_storage_to_comb
+  @comb.each_with_index do |slot, index|
+    next unless slot.nil?
+    break if @internal_storage.empty?
+
+    @comb[index] = @internal_storage.shift
+  end
+end 
+
+
+  def update_apiary(time_delta)
+   return if @frames.all? { |frame| frame.nil? || frame.water >= 100 }
+   return unless can_forage?
+
+   @work_done += workers.length * time_delta * (100.0 / 3000.0)
+   puts "@work_done: #{@work_done.inspect}"
+
+   if @work_done >= 100
+     fill_frames
+     @work_done -= 100
+   end
+  end 
+  def fill_frames
+  amount = berry_plants.length
+
+  @frames.each do |frame|
+    next if frame.nil?
+    next if frame.water >= 100
+
+    amount_to_add = [amount, 100 - frame.water].min
+    frame.water += amount_to_add
+    amount -= amount_to_add
+
+    break if amount <= 0
+  end
+  end
+
+
+
+
+  def update_beehive(time_delta)
+  end 
+  
+def can_forage?
+  workers.any? && berry_plants.any?
+end
+
+def berry_plants
+  $DynamicEvents.get_berry_plants(event.map_id).select do |plant|
+    next false unless plant.planted?
+    next false if plant.dead?
+	
+    dx = plant.x - event.x
+    dy = plant.y - event.y
+    dx * dx + dy * dy <= 25
   end
 end
 

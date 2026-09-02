@@ -37,7 +37,7 @@ module InventoryScene
         slot_count.times do |i|
           sprites["craft_slots#{i}"] = IconSprite.new(0, 0, viewport)
           sprites["craft_slots#{i}"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/butchertable/placeholder_slot")
-          sprites["craft_slots#{i}"].z = 70
+          sprites["craft_slots#{i}"].z = -2
           x2 = x + i * SLOT_SIZE
           y2 = y
           sprites["craft_slots#{i}"].x = x2
@@ -54,7 +54,7 @@ module InventoryScene
         index = extra_slot_index
         sprites["craft_slots#{index}"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots#{index}"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/butchertable/result_slot")
-        sprites["craft_slots#{index}"].z = 70
+        sprites["craft_slots#{index}"].z = -2
         sprites["craft_slots#{index}"].x = x
         sprites["craft_slots#{index}"].y = y
         render_pokemon_icon(:craft, index, pokemon_box[index]) if pokemon_box[index]

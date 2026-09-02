@@ -313,6 +313,7 @@ Pokedex = It collects honey every day. It rubs honey onto the hairs on its legs 
 Generation = 1
 WildItemCommon = HONEY
 WildItemUncommon = SILVERPOWDER
+Flags = Bee
 #-------------------------------
 [WEEDLE]
 Name = Weedle
@@ -397,6 +398,7 @@ Pokedex = May appear in a swarm. Flies at violent speeds, all the while stabbing
 Generation = 1
 WildItemCommon = POISONBARB
 WildItemUncommon = POISONBARB
+Flags = Bee
 #-------------------------------
 [PIDGEY]
 Name = Pidgey
@@ -8287,6 +8289,7 @@ Category = Firefly
 Pokedex = It lives around clean ponds. At night, its rear lights up. It converses with others by flashing its light.
 Generation = 3
 WildItemUncommon = BRIGHTPOWDER
+Flags = Bee
 #-------------------------------
 [ILLUMISE]
 Name = Illumise
@@ -8313,6 +8316,7 @@ Category = Firefly
 Pokedex = With its sweet aroma, it guides Volbeat to draw signs with light in the night sky.
 Generation = 3
 WildItemUncommon = BRIGHTPOWDER
+Flags = Bee
 #-------------------------------
 [ROSELIA]
 Name = Roselia
@@ -10968,6 +10972,7 @@ Pokedex = The members of the trio spend all their time together. Each one has a 
 Generation = 4
 WildItemCommon = HONEY
 Evolutions = VESPIQUEN,LevelFemale,21
+Flags = Bee
 #-------------------------------
 [VESPIQUEN]
 Name = Vespiquen
@@ -10995,6 +11000,7 @@ Pokedex = It skillfully commands its grubs in battles with its enemies. The grub
 Generation = 4
 WildItemCommon = POISONBARB
 WildItemUncommon = POISONBARB
+Flags = Bee
 #-------------------------------
 [PACHIRISU]
 Name = Pachirisu
@@ -19508,6 +19514,7 @@ Pokedex = An opponent's aura can tell Cutiefly what that opponent's next move wi
 Generation = 7
 WildItemCommon = HONEY
 Evolutions = RIBOMBEE,Level,25
+Flags = Bee
 #-------------------------------
 [RIBOMBEE]
 Name = Ribombee
@@ -19534,6 +19541,7 @@ Category = Bee Fly
 Pokedex = It makes pollen puffs from pollen and nectar. The puffs' effects depend on the type of ingredients and how much of each one is used.
 Generation = 7
 WildItemCommon = HONEY
+Flags = Bee
 #-------------------------------
 [ROCKRUFF]
 Name = Rockruff

@@ -1,8 +1,8 @@
 EventHandlers.add(:on_frame_update, :increase_adventuring_stage,
   proc {
-	$Adventure.party.each(&:update)
     next if pbGetTimeNow.to_i<$Adventure.last_check+$Adventure.timer
-    $Adventure.adventuring if pbGetTimeNow.to_i>=$Adventure.last_check+$Adventure.timer
+	$Adventure.party.each { |pkmn| pkmn.update if pkmn }
+    $Adventure.adventuring
   }
 )
 
@@ -132,7 +132,7 @@ end
 class Adventure #Actions
 	def adventuring
 	  $Adventure.last_check = pbGetTimeNow.to_i
-	  return if @party.length == 0
+	  return if @party.compact.length == 0
       birth_actions
       death_actions
 	  @party.each_with_index do |pkmn,index|
@@ -148,8 +148,8 @@ class Adventure #Actions
        life_actions(pkmn,index) if pkmn.location != $game_map.map_id && pkmn.steps_taken >= PokeventureConfig::Updatesteps 
 	   else
 	    pkmn.wait_time=0
-		 pkmn.location = pkmn.called_back_map if !pkmn.called_back_map.nil?
-		 pkmn.location = $game_map.map_id if pkmn.called_back_map.nil?
+		 pkmn.current_map = pkmn.called_back_map if !pkmn.called_back_map.nil?
+		 pkmn.current_map = map_id if pkmn.called_back_map.nil?
 	   end
 	  end
 	   
@@ -160,6 +160,7 @@ class Adventure #Actions
    def birth_actions
    
 		for egg in @party
+			next unless egg
 			next if egg.steps_to_hatch <= 0
 			egg.steps_to_hatch -= 1
 			for i in @party
@@ -1253,23 +1254,6 @@ end
 
 
 
-	  #Dedicated Traveler: The Pokémon will focus on traveling. It will do other things less often. 
-	  #Collector: The Pokémon will focus on collecting more types of items. It will do other things less often. 
-	  #Acute Sniffer: The Pokémon will focus on collecting rare items. It will do other things less often. 
-	  #Survivalist: The Pokémon's food and water will be prioritized while traveling.
-	  #Aggressor: The Pokémon will focus on combat. It will do other things less often, but it will bring back meat. 
-	  #Wary Fighter: If the Pokémon's HP is low, it will not get into combat, but it will collect less items. 
-	  #House Avoider: This Pokémon will not go to Monster Houses.
-	  #Exp Elite: This Pokémon will gain more exp when it gets into combat.
-	  #Coin Watcher: This Pokémon will focus on primarily collecting Star Pieces.
-	  #Sleeper: This Pokémon will sleep more while collecting. It will do other things less often. 
-	  #Parental Instinct: This Pokémon will focus on locating Eggs. It will do other things less often. 
-	  #Unfortunate: This Pokémon gets lost often. 
-	  #Shadow Striker: This Pokémon will strike subtly, often winning combat without the enemy noticing. 	
-
-
-
-
 
 
 	def pbGainAventureExp(pkmn,defeatedBattler,multiplier)
@@ -1474,7 +1458,7 @@ class Adventure
 			return false
 		else
 			@party[pos].location = nil
-			@party[pos].onAdventure = false
+			@party[pos].on_adventure = false
 			$PokemonStorage.pbStoreCaught(@party[pos].dup)
 			remove_pokemon_at_index(pos)
 			return true
@@ -1486,7 +1470,7 @@ class Adventure
 			return false
 		else
 			pkmn.location = nil
-			pkmn.onAdventure = false
+			pkmn.on_adventure = false
 			$PokemonStorage.pbStoreCaught(pkmn)
 			return true
 		end
@@ -1740,3 +1724,21 @@ def giveAdventureItemList(itemlist)
   end
 end
 
+
+
+
+
+
+	  #Dedicated Traveler: The Pokémon will focus on traveling. It will do other things less often. 
+	  #Collector: The Pokémon will focus on collecting more types of items. It will do other things less often. 
+	  #Acute Sniffer: The Pokémon will focus on collecting rare items. It will do other things less often. 
+	  #Survivalist: The Pokémon's food and water will be prioritized while traveling.
+	  #Aggressor: The Pokémon will focus on combat. It will do other things less often, but it will bring back meat. 
+	  #Wary Fighter: If the Pokémon's HP is low, it will not get into combat, but it will collect less items. 
+	  #House Avoider: This Pokémon will not go to Monster Houses.
+	  #Exp Elite: This Pokémon will gain more exp when it gets into combat.
+	  #Coin Watcher: This Pokémon will focus on primarily collecting Star Pieces.
+	  #Sleeper: This Pokémon will sleep more while collecting. It will do other things less often. 
+	  #Parental Instinct: This Pokémon will focus on locating Eggs. It will do other things less often. 
+	  #Unfortunate: This Pokémon gets lost often. 
+	  #Shadow Striker: This Pokémon will strike subtly, often winning combat without the enemy noticing. 	

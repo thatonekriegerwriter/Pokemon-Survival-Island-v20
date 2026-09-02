@@ -1460,9 +1460,9 @@ class Scene_Map
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
     elsif Input.triggerex?(:TAB)
-	  #item = ItemData.new(:COMPOSTER)
+	#  item = ItemData.new(:APIARY)
 	  
-      #key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 

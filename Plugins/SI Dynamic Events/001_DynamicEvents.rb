@@ -1434,7 +1434,19 @@ update!
     data.is_a?(PetBedData) && !data.pokemon && !data.reserved_for_egg
    end
   end
-
+  
+  def get_berry_plants(map_id = $game_map.map_id)
+    if map_id != $game_map.map_id
+	 map = $map_factory.getMapNoAdd(map_id)
+    else
+	 map = $game_map 
+	end 
+	events = map.events.values + block_data_for_map(map_id)
+	events.select do |event|
+	  [:BERRYPOT, :BERRYPLANT].include?(event.type.id)
+	end
+  end 
+  
   def refresh
     @hostile_mobs.each_value do |event|
       event.refresh if $map_factory.areConnected?(event.map_id,$game_map.map_id) && $map_factory.hasMap?(event.map_id)

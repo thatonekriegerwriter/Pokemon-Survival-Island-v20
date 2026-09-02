@@ -109,7 +109,7 @@ GameData::Placeable.register({ :id            => :PORTABLECAMP, :usable_location
 
 
 GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true})
-GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true}) 
+GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true, :usable_locations => [:BASE]}) 
 GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true, :usable_locations => [:ANY]}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks
 GameData::Placeable.register({ :id            => :GRINDER, :assignable => true})
 GameData::Placeable.register({ :id            => :ELECTRICGRINDER, :assignable => true, :needs_power => true})
@@ -121,16 +121,12 @@ GameData::Placeable.register({ :id            => :FEEDER, :usable_locations => [
 
 GameData::Placeable.register({ :id            => :APIARY, :usable_locations => [:BASE_EXTERIOR], :assignable => true, 
  :assignable_check => proc { |item, pkmn|
-   [:COMBEE, :CUTIEFLY, :RIBOMBEE, :VESPIQUEN, :BEEDRILL, :BUTTERFREE, :VOLBEAT, :ILLUMISE].include?(pkmn.species)
+   pkmn.bee?
  } })
 
 
 GameData::Placeable.register({ :id            => :SILKSPINNER, :usable_locations => [:BASE], :assignable => true, 
  :assignable_check => proc { |item, pkmn|
-   puts pkmn.name 
-   puts pkmn.wildHoldItems.inspect 
-   puts pkmn.wildHoldItems.include?([:SILK])
-   puts pkmn.hasType?(:BUG)
    pkmn.wildHoldItems.include?([:SILK]) && pkmn.hasType?(:BUG)
  } })
 

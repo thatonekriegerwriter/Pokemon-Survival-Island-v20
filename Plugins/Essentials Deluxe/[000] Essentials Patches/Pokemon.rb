@@ -142,38 +142,6 @@ def egg_group_hash
 end
 
 
-#-------------------------------------------------------------------------------
-# Rewrites Egg Generator to include plugin mechanics.
-#-------------------------------------------------------------------------------
-class DayCare
-  module EggGenerator
-    module_function
-    
-    def generate(mother, father)
-      if mother.male? || father.female? || mother.genderless?
-        mother, father = father, mother
-      end
-      mother_data = [mother, fluid_egg_group?(mother.species_data.egg_groups)]
-      father_data = [father, fluid_egg_group?(father.species_data.egg_groups)]
-      species_parent = (mother_data[1]) ? father : mother
-      baby_species = determine_egg_species(species_parent.species, mother, father)
-      mother_data.push(mother.species_data.breeding_can_produce?(baby_species))
-      father_data.push(father.species_data.breeding_can_produce?(baby_species))
-      egg = generate_basic_egg(baby_species)
-      inherit_form(egg, species_parent, mother_data, father_data)
-      inherit_nature(egg, mother, father)
-      inherit_ability(egg, mother_data, father_data)
-      inherit_moves(egg, mother_data, father_data)
-      inherit_IVs(egg, mother, father)
-      inherit_poke_ball(egg, mother_data, father_data)
-      inherit_birthsign(egg, mother, father) if PluginManager.installed?("Pokémon Birthsigns")
-      set_shininess(egg, mother, father)
-      set_pokerus(egg)
-      egg.calc_stats
-      return egg
-    end
-  end
-end
 
 def fluid_egg_group?(groups)
   return groups.include?(:Ditto) || groups.include?(:Ancestor)

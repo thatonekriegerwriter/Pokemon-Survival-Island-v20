@@ -12,6 +12,9 @@ module GameData
     def shearable?
 	  return has_flag?("Shearable")
 	end 
+    def bee?
+	  return has_flag?("Bee")
+	end 
   end
 end 
 
@@ -53,6 +56,10 @@ class Pokemon
 
   def location
     @associatedevent.nil? ? @current_map : self.event.map_id
+  end 
+  
+  def bee?
+    self.species_data.bee?
   end 
   
 #alias _SI_Pokemon_species= species=

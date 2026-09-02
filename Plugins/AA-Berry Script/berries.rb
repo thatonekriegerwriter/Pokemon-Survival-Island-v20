@@ -942,7 +942,11 @@ class BerryPlantData
     @exposed_to_rain = false
     @stagnation_message = false
   end
-
+  
+  def dead?
+    @dead 
+  end 
+  
   def id
    return :BERRYPLANT
   end

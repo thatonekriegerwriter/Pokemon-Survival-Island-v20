@@ -8027,6 +8027,42 @@ FieldUse = Direct
 Flags = Fling_30,FoodWater
 Description = A sweet honey with a lush aroma that attracts wild Pokémon when used in tall grass, in caves, or elsewhere.
 #-------------------------------
+[HONEYCOMB]
+Name = Honeycomb
+NamePlural = Honeycombs
+Pocket = 1
+Price = 0
+FieldUse = Direct
+Flags = Fling_30
+Description = A refresh honeycomb that can be used to make Honey, or craft frames for an Apiary.
+#-------------------------------
+[BASICAPIARYFRAME]
+Name = Wooden Frame
+NamePlural = Wooden Frame
+Pocket = 1
+Price = 0
+FieldUse = Direct
+Flags = Fling_30, WaterDura, Durable, WaterDura100
+Description = A basic frame to be used in an Apiary.
+#-------------------------------
+[TREATEDAPIARYFRAME]
+Name = Treated Frame
+NamePlural = Treated Frame
+Pocket = 1
+Price = 0
+FieldUse = Direct
+Flags = Fling_30, WaterDura, Durable, WaterDura200
+Description = A more advanced frame to be used in the Apiary.
+#-------------------------------
+[PROVENAPIARYFRAME]
+Name = Proven Frame
+NamePlural = Proven Frame
+Pocket = 1
+Price = 0
+FieldUse = Direct
+Flags = Fling_30, WaterDura, Durable, WaterDura300
+Description = The most advanced frame to be used in the Apiary.
+#-------------------------------
 [BIRDMEAT]
 Name = Bird Meat
 NamePlural = Bird Meat

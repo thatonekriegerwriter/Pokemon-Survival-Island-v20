@@ -22,6 +22,7 @@ module InventoryScene
         when :bag then current_pocket
         when :craft then craft
         when :party then party
+        #when :box then pokemon_box
         when :box then pokemon_box
         when :equipment then equip
         when :pokemon_inventory then pokemon_inventory
@@ -46,8 +47,9 @@ module InventoryScene
       def slot_position(kind, index)
         case kind
         when :bag then sprite_xy(sprites["slots#{index}"])
-        when :craft, :equipment then sprite_xy(sprites["craft_slots#{index}"])
+        when :craft, :equipment, :box then sprite_xy(sprites["craft_slots#{index}"])
         when :pokemon_inventory then sprite_xy(sprites["pkmn_slots#{index}"])
+        when :adventure_party then sprite_xy(sprites["adv_slots#{index}"])
         when :result then s = sprites["craft_slots_result"]; s ? [s.x + 8, s.y + 8] : [0, 0]
         else [-128, -128]
         end
@@ -98,7 +100,8 @@ module InventoryScene
         icons[text_key].viewport = viewport
         icons[text_key].z = 98
         icons[image_key].visible = true 
-        icons[text_key].visible = true
+        icons[text_key].visible = true 
+		icons[text_key].contents_opacity = matches_search?(item) ? 255 : SEARCH_DIM_OPACITY
         update_star_visibility(kind, index, item)
         [icons[image_key], icons[text_key]]
       end
@@ -131,12 +134,13 @@ module InventoryScene
       # tracking out from under it.
       def sync_slot_visuals!(kind, index)
         return if grabbed_item && grabbed_item.from_fixed_slot? && grabbed_item.source == kind && grabbed_item.index == index
-
         store = backing_store_for(kind)
         slot = store[store_index_for(kind, index)]
         snapshot = (@slot_visual_snapshot ||= {})
         key = "#{kind}:#{index}"
         last = snapshot[key]
+		
+		
         if slot.is_a?(Pokemon)
         current_item = slot
         current_qty  = 1
@@ -144,10 +148,11 @@ module InventoryScene
         current_item = slot ? slot[0] : nil
         current_qty  = slot ? slot[1] : nil
         end 
+
+
         if current_item.nil?
           remove_slot_icon(kind, index) unless last.nil?
         elsif last.nil? || !same_visual_item?(last[0], current_item)
-		  puts current_item.is_a?(Pokemon)
 		 if current_item.is_a?(Pokemon)
 		  render_pokemon_icon(kind, index, current_item)
 		 else
@@ -156,6 +161,9 @@ module InventoryScene
         elsif last[1] != current_qty
           update_slot_text(kind, index, current_qty)
         end
+
+
+
 
         snapshot[key] = slot ? [current_item, current_qty] : nil
       end
@@ -295,6 +303,7 @@ module InventoryScene
         else
           pick_up(kind, index)
         end
+		switch_tab_to_item_pocket(item) unless kind == :bag
       end
 
       # The consolidated replacement for the original's repeated cleanup
@@ -309,6 +318,7 @@ module InventoryScene
 
         if grabbed_item.from_fixed_slot?
           store = grabbed_item.store
+          store = backing_store_for(grabbed_item.source) if store.nil?
 		  if store 
           idx = store_index_for(grabbed_item.source, grabbed_item.index)
 		  if store && within_bounds?(store, idx)
@@ -328,13 +338,12 @@ module InventoryScene
         store = backing_store_for(kind)
 		store_idx = store_index_for(kind, index)
         existing = store[store_idx]
-
+        
         if existing.nil?
           place_new_stack(store, kind, store_idx)
         elsif canteen_fillable?(existing)
           fill_canteen(existing)
         elsif existing[0].respond_to?(:identical) && existing[0].identical(grabbed_item.item)
-		 
           merge_stack(kind, store_idx, existing)
         else
           swap_stack(store, kind, store_idx, existing)
@@ -943,6 +952,7 @@ module InventoryScene
         end
       end
       def dispatch_click(button)
+        return if handle_custom_click(button)
         if (hit = slot_from_mouse)
           route(:bag, hit[0], button) if bag_slot_usable?(hit[0])
         elsif pokemon_slot_hit?
@@ -972,6 +982,7 @@ module InventoryScene
       def route(kind, index, button)
         button == :left ? handle_left_click(kind, index) : handle_right_click(kind, index)
       end
+	  
       # Matches the original's guard on bag-slot interaction: a slot
       # rendered with the "_2" (disabled/oversized-for-this-pocket)
       # bitmap was never actually clickable, only decorative. I'd missed
@@ -1141,6 +1152,8 @@ module InventoryScene
           highlight_craft_slot(hit)
         elsif (hit = equipment_slot_from_mouse)
           highlight_equipment_slot(hit)
+        elsif (hit = adventure_slot_from_mouse)
+          highlight_adv_slot(hit)
         elsif pokemon_slot_hit?
           highlight_pokemon_slot
         elsif (hit = pokemon_inventory_slot_hit?)
@@ -1148,6 +1161,17 @@ module InventoryScene
         else
           sprites["highlight"].visible = false
         end
+      end
+
+
+      def highlight_adv_slot(index)
+          icon = sprites["adv_slots#{index}"]
+          return sprites["highlight"].visible = false unless icon
+		  base_bitmap = "Graphics/Pictures/craftingMenu/"
+          bitmap = (index == extra_slot_index && extra_slot_result_sized?) ? "#{base_bitmap}placeholder_slot_highlight2" : "#{base_bitmap}placeholder_slot_highlight"
+          sprites["highlight"].setBitmap(bitmap)
+          sprites["highlight"].x, sprites["highlight"].y = icon.x, icon.y
+          sprites["highlight"].visible = true
       end
 
       def highlight_bag_slot(index)

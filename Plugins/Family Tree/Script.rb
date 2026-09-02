@@ -46,7 +46,7 @@ end
 
 
 class PokemonFamily
-  MAX_GENERATIONS = 4 # Tree stored generation limit
+  MAX_GENERATIONS = 6 # Tree stored generation limit
 
   attr_reader :mother # PokemonFamily object
   attr_reader :father # PokemonFamily object
@@ -55,7 +55,10 @@ class PokemonFamily
   attr_reader :form
   attr_reader :gender
   attr_reader :shiny
-  attr_reader :name # nickname
+  attr_reader :name 
+  attr_reader :iv
+  attr_reader :nature
+  attr_reader :ability_index # nickname
   # You can add more data here and on initialize class. Just
   # don't store the entire pokémon object.
 
@@ -87,8 +90,19 @@ class PokemonFamily
     @gender=pokemon.gender
     @shiny=pokemon.shiny?
     @name=pokemon.name
+    @iv=pokemon.iv
+    @nature=pokemon.nature
+    @ability_index=pokemon.ability_index
   end
-
+   def ability_index
+    return @ability_index
+  end 
+  
+  def hasHiddenAbility?
+   return false if ability_index.nil?
+    return ability_index >= 2
+  end
+  
   def apply_generation_limit(generation)
     if generation>1
       @father.apply_generation_limit(generation-1) if @father

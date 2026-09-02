@@ -271,7 +271,9 @@ module InventoryScene
       def render_pokemon_icon(kind, index, pokemon)
         image_key = icon_key(kind, index, :image)
         remove(icons[image_key]) if icons[image_key]
-        slot_x, slot_y = kind == :party ? sprite_xy(sprites["#{index}_slotimagepkmn"]) : slot_position(:craft, index)
+		position = :craft 
+		position = :adventure_party if kind == :adventure_party
+        slot_x, slot_y = kind == :party ? sprite_xy(sprites["#{index}_slotimagepkmn"]) : slot_position(position, index)
         icons[image_key] = PokemonIconSprite.new(pokemon, viewport)
         icons[image_key].zoom_x = icons[image_key].zoom_y = 0.5
         icons[image_key].z = kind == :party ? 1 : -1
@@ -288,9 +290,30 @@ module InventoryScene
 	  def reserved_for_egg?(kind, index)
 	    kind == :pokemon_slot && index == 0 && event_data.is_a?(PetBedData) && event_data.reserved_for_egg
 	  end 
+	  def bee_comb?(kind, index)
+	    kind == :pokemon_slot && [2,3,4,5,6,7,8,9,10,11].include?(index) && event_data.is_a?(BeehiveData)
+	  end 
+	  def can_place_in_queen_slot?(kind, index)
+        return true unless event_data.is_a?(BeehiveData)
+        return true unless kind == :pokemon_slot && [0].include?(index)
+	    return false unless grabbed_item
+	    pkmn = grabbed_item.item
+		evolutions = pkmn.species_data.get_evolutions
+	    pkmn.bee? && pkmn.female? && evolutions.empty?
+	  end 
+	  def can_place_in_breeder_slot?(kind, index)
+        return true unless event_data.is_a?(BeehiveData)
+        return true unless kind == :pokemon_slot && [1].include?(index)
+	    return false unless grabbed_item
+	    pkmn = grabbed_item.item
+	    pkmn.bee? && pkmn.male?
+	  end 
 	  
 	  def can_drop_pokemon?(kind, index)
 	    return false if reserved_for_egg?(kind, index)
+		return false if bee_comb?(kind, index)
+        return false unless can_place_in_queen_slot?(kind, index)
+        return false unless can_place_in_breeder_slot?(kind, index)
 		return true 
 	  end 
 	  
@@ -303,15 +326,20 @@ module InventoryScene
           return unless pkmn
 
           icon = icons[icon_key(kind, index, :image)]
-		  pkmn = pkmn.is_a?(Array) ? pkmn : [pkmn, 1]
-		  puts pkmn.inspect
-		  puts pkmn.is_a?(Array) && pkmn[0].is_a?(ItemData)
-          self.grabbed_item = GrabbedItem.new(icon:, stack: pkmn, index:, source: kind)
+		  pkmn2 = pkmn.is_a?(Array) ? pkmn : [pkmn, 1]
+          self.grabbed_item = GrabbedItem.new(icon:, stack: pkmn2, index:, source: kind, store: store)
+		  on_pokemon_removed(kind, index, pkmn)
 		  if pkmn.is_a?(Array) && pkmn[0].is_a?(ItemData)
 		   switch_tab_to_item_pocket(pkmn[0])
 		  end 
         elsif grabbed_item.pokemon?
 		 if can_drop_pokemon?(kind, index)
+          handle_pokemon_drop(kind, store, index) 
+		 elsif reserved_for_egg?(kind, index)
+		  sideDisplay(_INTL("You have a feeling you shouldn't put something there."))
+		 end 
+		elsif grabbed_item.item?
+		 if can_drop?(kind, index)
           handle_pokemon_drop(kind, store, index) 
 		 elsif reserved_for_egg?(kind, index)
 		  sideDisplay(_INTL("You have a feeling you shouldn't put something there."))
@@ -329,10 +357,12 @@ module InventoryScene
           remove(grabbed_item.icon)
           render_pokemon_icon(kind, index, grabbed_item.item)
           self.grabbed_item = nil
+		  on_pokemon_placed(kind, index, store[index])
         elsif target == grabbed_item.item
           remove(grabbed_item.icon)
           render_pokemon_icon(kind, index, target)
           self.grabbed_item = nil
+		  on_pokemon_placed(kind, index, target)
         else
           clear_pokemon_source
           remove(grabbed_item.icon)
@@ -341,6 +371,8 @@ module InventoryScene
           render_pokemon_icon(kind, index, incoming)
           held_icon = render_pokemon_icon(:held, "held", target)
           self.grabbed_item = GrabbedItem.new(icon: held_icon, stack: [target, 1], index: "held", source: :held)
+		  on_pokemon_placed(kind, index, incoming)
+		  on_pokemon_removed(kind, index, target)
         end
       end
 

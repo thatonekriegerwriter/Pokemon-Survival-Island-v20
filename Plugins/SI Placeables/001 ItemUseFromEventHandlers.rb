@@ -432,6 +432,22 @@ else
 end
 }
 )
+
+ItemHandlers::UseFromEvent.add(:APIARY, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(BeehiveData)
+localMeter=BeehiveData.new(key_id, true)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT)
+  Placeable.pick_up(key_id,item)
+else
+ pbCraftingBench(item.id, localMeter)
+end
+}
+)
+
 ItemHandlers::UseFromEvent.add(:TORCH, proc { |item, key_id|
 localMeter = item.internal_data
 if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
@@ -483,11 +499,22 @@ end
 
 
 ItemHandlers::UseFromEvent.add(:ADVENTUREFLAG, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
 if Input.press?(Input::SHIFT)
   Placeable.pick_up(key_id,item)
-  next
-end
-pbStartAdventureMenu
+else
+ pbCraftingBench(item.id, localMeter)
+end 
+#if Input.press?(Input::SHIFT)
+#  Placeable.pick_up(key_id,item)
+#  next
+#end
+#pbStartAdventureMenu
 }
 )
 

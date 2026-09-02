@@ -576,6 +576,21 @@ end
 
 end 
 
+
+def get_allies
+getParticipants(:ALLIES).values.select do |event|
+    next false if event.map_id != $game_map.map_id
+    next false if event.pokemon.associatedevent.nil? && event.pokemon.inworld==false
+
+end 
+
+end 
+
+
+def get_allied_pokemon
+  get_allies.map(&:pokemon)
+end
+
 def any_enemies?
   return @participants[:ENEMIES].keys.length>0
 end
@@ -808,7 +823,7 @@ end
 	 if event.is_a?(Game_PokeEvent)
 	 $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false 
      EventHandlers.trigger(:on_wild_ovbattle_end, pkmn, pkmn.level, 1)
-     pbPlayerEXP(pkmn,$player.party_in_world) 
+     pbPlayerEXP(pkmn, pbOverworldCombat.get_allied_pokemon) 
      pbHeldItemDropOW(pkmn,true)
 	 pbOverworldCombat.removeEnemy(event.id)
 	 elsif  event.is_a?(Game_PokeEventA)
@@ -940,7 +955,7 @@ EventHandlers.add(:on_step_taken, :overworldpkmnpoison,
 		  if pkmn.fainted? && event.is_a?(Game_PokeEvent)
 		  $PokemonGlobal.cur_challenge.beaten += 1 if $PokemonGlobal.cur_challenge!=false
         event.removeThisEventfromMap
-        pbPlayerEXP(pkmn,$player.party_in_world)
+        pbPlayerEXP(pkmn, pbOverworldCombat.get_allied_pokemon)
         pbHeldItemDropOW(pkmn,true)
 		  end
 		  

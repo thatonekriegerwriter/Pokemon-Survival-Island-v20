@@ -18,6 +18,9 @@
 - [x] All types working at Research table provide Passive Bonus to research Speed, serious Pokemon give a greater boost
 - [ ] Rework Adventure screen.
 - [ ] Make sure pokemon working in stations return to work after combat. Make sure guards aren't locked to STANDING at their station.
+- [ ] Fix middle mouse selection
+- [ ] Berry plant crossbreeding
+- [ ] Spawn Pest for Berry Plant
 - [x] Butchering table
 
 ### Core Gameplay 

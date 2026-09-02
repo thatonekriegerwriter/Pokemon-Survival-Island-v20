@@ -145,11 +145,13 @@ class CraftingStationData
       end
     end
     @work_done += progress * time_delta * (100.0 / time)
+	 event.grant_worker_exp(2)
 	crafted = 0 
     while @work_done >= 100.0
      break unless can_afford?(@current_recipe.recipe, recipe_slots)
      remove_amounts(@current_recipe.recipe)
      craft(@current_recipe)
+	 event.grant_worker_exp(100)
      @work_done -= 100.0
      @current_recipe = get_recipe(recipe_slots)
 	 crafted += 1 
@@ -166,6 +168,7 @@ class CraftingStationData
 	time = @current_recipe.time.to_f
 	time = 2000.0 if time <= 0.0
     @work_done += workers.length * time_delta * (100.0 / time)
+	event.grant_worker_exp(2)
 	puts "@work_done: #{@work_done}"
 	crafted = 0 
     while @work_done >= 100.0
@@ -173,6 +176,7 @@ class CraftingStationData
      remove_amounts(@current_recipe.recipe)
      craft(@current_recipe)
      @work_done -= 100.0
+	 event.grant_worker_exp(100)
      @current_recipe = get_recipe(recipe_slots)
 	 crafted += 1 
      break unless @current_recipe
@@ -184,6 +188,7 @@ class CraftingStationData
     return if @fuel == 0.0
 	@passed_time += time_delta
 	amt = get_fuel_consumption
+	event.grant_worker_exp(2)
 	@work_done += amt * time_delta / 1800.0
 	decrease = @work_done.round(10)
     @fuel = [@fuel - decrease, 0.0].max
@@ -195,10 +200,12 @@ class CraftingStationData
   def update_spinner(time_delta)
     return if workers.empty?
     @work_done += workers.length * time_delta * (100.0 / 4000.0)
+	event.grant_worker_exp(2)
 	crafted = 0 
 #	puts "@work_done: #{@work_done}"
     while @work_done >= 100.0
      @work_done -= 100.0
+	 event.grant_worker_exp(100)
      itemdata = ItemData.new(:SILK)
      amt = 1
 	 if result_slot && result_slot.is_a?(Array) && result_slot[0] && result_slot[0].identical(itemdata)
@@ -212,6 +219,32 @@ class CraftingStationData
 #	puts "result_slot: #{result_slot.inspect}"
 	decrease_workers_stamina(crafted) if crafted > 0
   end 
+  def update_composter(time_delta)
+    slot = recipe_slots[0]
+	return unless slot && slot.is_a?(Array)
+	placed_item = slot[0]
+	return unless placed_item.data.is_berry?
+	#puts placed_item
+    if @internal_storage[0] && @internal_storage[0][1] > 0
+     @internal_storage[0][1]-=1
+	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
+	#puts @work_done
+	 @work_done += 1
+	 return unless @work_done >= 10
+     itemdata = ItemData.new(:FERTILIZERMIX)
+     amt = 1
+	 if result_slot && result_slot.is_a?(Array) && result_slot[0] && result_slot[0].identical(itemdata)
+       result_slot[1] += amt
+     else
+      self.result_slot = [itemdata, amt]
+     end
+	 @work_done -= 10
+    end 
+
+  end  
+
+
+
   def update_warding_totem(time_delta)
     @passed_time += time_delta
 	#puts @fuel
@@ -356,29 +389,6 @@ class CraftingStationData
 	  pkmn = nil
 	end 
   end 
-  def update_composter(time_delta)
-    slot = recipe_slots[0]
-	return unless slot && slot.is_a?(Array)
-	placed_item = slot[0]
-	return unless placed_item.data.is_berry?
-	#puts placed_item
-    if @internal_storage[0] && @internal_storage[0][1] > 0
-     @internal_storage[0][1]-=1
-	 @internal_storage[0] = nil if @internal_storage[0][1] <= 0
-	#puts @work_done
-	 @work_done += 1
-	 return unless @work_done >= 10
-     itemdata = ItemData.new(:FERTILIZERMIX)
-     amt = 1
-	 if result_slot && result_slot.is_a?(Array) && result_slot[0] && result_slot[0].identical(itemdata)
-       result_slot[1] += amt
-     else
-      self.result_slot = [itemdata, amt]
-     end
-	 @work_done -= 10
-    end 
-
-  end  
   def update
     @internal_storage = [] if @internal_storage.nil?
     time_now = pbGetTimeNow.to_i
@@ -934,9 +944,10 @@ class PetBedData
 	 return if steps <= 0
 	 
 	 
+	 event.grant_worker_exp(10)
      pokemon.steps_to_hatch -= steps
      pokemon.steps_to_hatch = 0 if pokemon.steps_to_hatch < 0
-	 
+	 event.grant_worker_exp(1190) if pokemon.steps_to_hatch <= 0
      @resting_since += (steps_increment * 3600.0 / HATCH_STEPS_PER_HOUR).to_i
   end 
   
@@ -1028,7 +1039,7 @@ class PetBedData
      $player.pokedex.register(pokemon)
      $player.pokedex.set_owned(pokemon.species)
      $player.pokedex.set_seen_egg(pokemon.species)
-	 replace_pokemon(pokemon)
+	 spawned_event&.update_pokemon_sprite
 	end 
     if egg?
 	 update_egg
@@ -1150,6 +1161,10 @@ class BerryPotData
     min_yield = plant_data.minimum_yield
     time_per_stage = ((plant_data.hours_per_stage * 3600) * 1.5).floor
 	time_per_stage = (time_per_stage / tending_multiplier).floor
+	
+	
+	event.grant_worker_exp(2)
+	
     drying_per_hour = plant_data.drying_per_hour
     stages_growing = GameData::BerryPlant::NUMBER_OF_GROWTH_STAGES
     stages_fully_grown = GameData::BerryPlant::NUMBER_OF_FULLY_GROWN_STAGES
@@ -1195,6 +1210,7 @@ def update_watering
 
     water(move.base_damage)
     move.pp -= 1
+    pokemon.gain_exp_single(500)
     @watered_at = time_now
   end
 end
@@ -1213,6 +1229,7 @@ def update_harvesting
     next unless pokemon.inventory.can_add?(@berry, cur_yield)
    
     pokemon.inventory.add(@berry, cur_yield)
+    pokemon.gain_exp_single(250)
     reset
 	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
   end
@@ -1461,8 +1478,9 @@ end
 
    @work_done += workers.length * time_delta * (100.0 / 3000.0)
    puts "@work_done: #{@work_done.inspect}"
-
+   event.grant_worker_exp(2)
    if @work_done >= 100
+     event.grant_worker_exp(100)
      fill_frames
      @work_done -= 100
    end

@@ -68,20 +68,17 @@ class SelectionDisplay
     end_y = [y1, y2].max
 
 
-    followers = pokemon_in_world
+    followers = $DynamicEvents.allied_mobs_for_map
     return if followers.length == 0
     followers.each do |pkmn|
-	   if $PokemonGlobal.selected_pokemon.include?(pkmn) && pkmn.in_world==false
-	     $PokemonGlobal.selected_pokemon.delete(pkmn)
-	   end
-	   event = $game_map.events[getOverworldPokemonfromPokemon(pkmn)]
+	   event = pkmn.event
 	   next if event.nil?
-      if event.x.between?(start_x, end_x) && event.y.between?(start_y, end_y)
-        puts "#{event.pokemon.name} (#{event.id}) is inside the square!"
-        pbSelectThisPokemon(pkmn)
-	  else 
-	    pbDeselectThisPokemon(pkmn)
-      end
+       if event.x.between?(start_x, end_x) && event.y.between?(start_y, end_y)
+         puts "#{event.pokemon.name} (#{event.id}) is inside the square!"
+         pbSelectThisPokemon(pkmn)
+	   else 
+	     pbDeselectThisPokemon(pkmn)
+       end
 	  
 	  
     end

@@ -581,7 +581,7 @@ class OWBallThrowSprite
 		if @pkmn.fainted?
           EventHandlers.trigger(:on_wild_ovbattle_end, @pkmn, @pkmn.level, 1)
           @event.removeThisEventfromMap
-          pbPlayerEXP(@pkmn,$player.party_in_world)
+          pbPlayerEXP(@pkmn, pbOverworldCombat.get_allied_pokemon)
           pbHeldItemDropOW(@pkmn,true)
           @phase = 5
 		else 
@@ -616,8 +616,8 @@ class OWBallThrowSprite
         map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
          $PokemonGlobal.nuzlockeData[$game_map.map_id] = true unless static || shiny
        end
-       pbPlayerEXP(@pkmn,$player.party_in_world)
 	   @pkmn = @event.pokemon if !@pkmn.is_a?(Pokemon)
+       pbPlayerEXP(@pkmn, pbOverworldCombat.get_allied_pokemon)
 	   @pkmn.poke_ball = @ball_used
 	   @pkmn.calc_stats
 	   $scene.spriteset.addUserAnimation(BALL_SUCCESS_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)

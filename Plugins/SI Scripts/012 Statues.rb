@@ -104,148 +104,26 @@ end
 	  end
    end
 
-def pbDoLevelUps(pkmn, messages=false)
-	if pkmn.level == 20 && pkmn.shadowPokemon?
-      pbMessage(_INTL("{1} cannot go beyond this level because it is a Shadow Pokemon.", pkmn.name, curLevel)) if messages
-	   return
-	end
-	  potato1 = pkmn.exp.dup
-    expFinal = pkmn.stored_exp + pkmn.exp
-    growth_rate = pkmn.growth_rate
-    curLevel = pkmn.level
-    newLevel = growth_rate.level_from_exp(expFinal)
-	learnedmoves = []
-	level_cap = pkmn.level_cap
-	if level_cap.nil?
-    level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL 
-	end
-	level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
-	if curLevel>=level_cap
-     pkmn.stored_exp = 0
-	  if curLevel>level_cap
-     levelMinExp = growth_rate.minimum_exp_for_level(level_cap)
-	  pkmn.exp = levelMinExp
-	  end
-    return
-	end
-	newLevel = level_cap  if newLevel > level_cap
-   if newLevel <= curLevel
-	
-      pbMessage(_INTL("{1} has not gained enough experience to level up.", pkmn.name, curLevel)) if messages
-	  return false
-	else
-	
-    loop do   # For each level gained in turn...
-      # EXP Bar animation
-      levelMinExp = growth_rate.minimum_exp_for_level(curLevel)
-      levelMaxExp = growth_rate.minimum_exp_for_level(curLevel + 1)
-      tempExp2 = (levelMaxExp < expFinal) ? levelMaxExp : expFinal
-      pkmn.exp = tempExp2
-	   pkmn.stored_exp -= tempExp2
-      tempExp1 = tempExp2
-      curLevel += 1
-      if curLevel > newLevel
-        # Gained all the Exp now, end the animation
-        pkmn.calc_stats
-        break
-      end
-      # Levelled up
-      oldTotalHP = pkmn.totalhp
-      oldAttack  = pkmn.attack
-      oldDefense = pkmn.defense
-      oldSpAtk   = pkmn.spatk
-      oldSpDef   = pkmn.spdef
-      oldSpeed   = pkmn.speed
-      pkmn.changeHappiness("levelup",pkmn)
-      pkmn.changeLoyalty("levelup",pkmn)
-      if pkmn.shadowPokemon?
-         potato = pkmn.level
-         if potato == 12
-          if rand(100) <= 5
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 13
-          if rand(100) <= 10
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 14
-          if rand(100) <= 15
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 15
-          if rand(100) <= 20
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 16
-          if rand(100) <= 25
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 17
-          if rand(100) <= 30
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 18
-          if rand(100) <= 35
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato == 19
-          if rand(100) <= 40
-          pkmn.nature=:HATEFUL
-          end
-         elsif potato >= 20
-          if rand(100) <= 50
-          pkmn.nature=:HATEFUL
-          end
-         else
-       end
-      end
-      pkmn.calc_stats
-	  
-      moveList = pkmn.getMoveList
-      moveList.each { |m| learnedmoves << m[1] if m[0] == curLevel }
-      if curLevel+1 > level_cap
-        pkmn.calc_stats
-        # Gained all the Exp now, end the animation
-        break
-      end
-   end
-      pbMessage(_INTL("{1} grew to Lv. {2}!", pkmn.name, pkmn.level))
-      # Learn all moves learned at this level
-	  learnedmoves.each do |move|
-	    pbLearnMove(pkmn, move)
-	  end
-      newspecies=pkmn.check_evolution_on_level_up
-          old_item=pkmn.item
-          if newspecies
-            pbFadeOutInWithMusic(99999){
-            evo=PokemonEvolutionScene.new
-            evo.pbStartScreen(pkmn,newspecies)
-            evo.pbEvolution
-            evo.pbEndScreen
-          }
-          end
-
-    pkmn.stored_exp+=potato1 if pkmn.level!=pkmn.level_cap
-    pkmn.stored_exp=0 if pkmn.stored_exp<0 || pkmn.level==pkmn.level_cap
-    return true
-     end
 
 
 
-
+def pbDoLevelUps
+  $player.able_party.each do |pkmn|
+    next unless pkmn.can_level_up?
+    pkmn.apply_levels(true, true)
+  end
 end
+
+
 def pbCanLevelUp?
-    results = [] 
-      $player.able_party.each do |pkmn|
-           results << (pkmn.stored_exp > 0)
-      end
-	 
-	  if results.all? { |result| result == false }
-        pbMessage(_INTL("Your Pokemon have not experienced enough to grow like this."))
-		 return false
-	  end
-		 return true
+  return true if $player.able_party.any?(&:can_level_up?)
+
+  pbMessage(_INTL("Your Pokemon have not experienced enough to grow like this."))
+  false
 end
+
+
+
 
 def howmanystatues()
  return $PokemonGlobal.active_statues.length
@@ -704,10 +582,7 @@ command = 0
 	  elsif statue.power<=0
 	  this_event.turn_down
      end  
-
-      $player.able_party.each do |pkmn|
-        pbDoLevelUps(pkmn)
-      end
+     pbDoLevelUps
     else
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
 	  this_event.turn_down

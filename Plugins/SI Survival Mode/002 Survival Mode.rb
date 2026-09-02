@@ -2032,61 +2032,49 @@ end
 
   #ADD EVS
   def pbPlayerEXP(caughtmon,pkmnless=[])
-  
-    $player.playerclasslevel = 1 if $player.playerclasslevel==0
-    caughtmon_level=caughtmon.level
-	 caughtmon2 = caughtmon
-       pkmn = $player
-	   pkmn.exp=0 if pkmn.exp.nil?
-	   
-	   
-      exp=(caughtmon_level*caughtmon.base_exp)/2
-	  
-	  
-       exp /= 7
-       exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
-      expFinal =  ((pkmn.exp + exp).clamp(0, $player.get_max_exp))
-      expGained = expFinal-pkmn.exp
-	  puts "expGained: #{expGained}"
-      if expGained>0
-	  
-	  
-      curLevel = pkmn.playerclasslevel
-      newLevel = $player.level_from_exp(expFinal)
-      
-	  
-	  if newLevel>curLevel
-      loop do   # For each level gained in turn...
-        # EXP Bar animation
-        levelMaxExp = 100
-        tempExp2 = (levelMaxExp<expFinal) ? levelMaxExp : expFinal
-	     puts tempExp2
-        pkmn.exp = tempExp2
-        curLevel += 1
-		pbSEPlay("Pkmn exp gain")
-        if curLevel>newLevel
-          break
-        end
-    end
-      sideDisplay(_INTL"#{pkmn.name} leveled up to #{newLevel}!") if pkmn.playerclasslevel!=newLevel
-     end
+    $player.playerclasslevel = 1 if $player.playerclasslevel == 0
+
+    exp = (caughtmon.level * caughtmon.base_exp) / 2
+    exp /= 7
+    exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
+    exp_final = ($player.exp + exp).clamp(0, $player.get_max_exp)
+    exp_gained = exp_final - $player.exp
+    puts "expGained: #{expGained}"
+	
+  if exp_gained > 0
+    cur_level = $player.playerclasslevel
+    new_level = $player.level_from_exp(exp_final)
+
+    if new_level > cur_level
+      loop do
+        level_max_exp = 100
+        temp_exp2 = [level_max_exp, exp_final].min
+        puts temp_exp2
+
+        $player.exp = temp_exp2
+        cur_level += 1
+        pbSEPlay("Pkmn exp gain")
+
+        break if cur_level > new_level
       end
 
+      sideDisplay(_INTL("#{$player.name} leveled up to #{new_level}!")) if
+        $player.playerclasslevel != new_level
+    end
+  end
 
-	
+  $player.playerclasslevel = new_level
 
+  if !pkmnless.empty?
+    pkmnless.compact!
+    pkmnless = pkmnless.uniq { |person| person.pokemon.personalID }
+  end
 
-
-      pkmn.playerclasslevel=newLevel
-	  if !pkmnless.empty?
-	  pkmnless.compact!
-	  pkmnless = pkmnless.uniq { |person| person.pokemon.personalID }
-	  end
-
-	  pkmnless.each do |pokemon_event|
-	    pokemonEVs(pokemon_event.pokemon, caughtmon2)
-	    pokemonEXP([pokemon_event.pokemon],caughtmon2,pokemon_event.pokemon)
-	  end
+  pkmnless.each do |pokemon_event|
+    pokemon = pokemon_event.pokemon
+    pokemon.gain_ev(caughtmon)
+    pokemon.gain_exp_from_overworld(caughtmon)
+  end
   end
 
 

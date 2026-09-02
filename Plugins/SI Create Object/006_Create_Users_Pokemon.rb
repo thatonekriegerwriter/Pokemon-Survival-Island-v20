@@ -579,6 +579,32 @@ end
     super 
  end 
 
+  def update_pokemon_sprite
+    return unless pokemon
+
+    encounter = [pokemon.species, pokemon.level]
+    form = pokemon.form
+    gender = pokemon.gender
+    shiny = pokemon.shiny?
+    egg = pokemon.egg?
+
+    graphic_form = (VisibleEncounterSettings::SPRITES[0] && form != nil) ? form : 0
+    graphic_gender = (VisibleEncounterSettings::SPRITES[1] && gender != nil) ? gender : 0
+    graphic_shiny = (VisibleEncounterSettings::SPRITES[2] && shiny != nil) ? shiny : false
+
+    fname = ow_sprite_filename(
+      encounter[0].to_s,
+      graphic_form,
+      graphic_gender,
+      graphic_shiny
+    )
+
+    fname.gsub!("Graphics/Characters/", "")
+    fname = "Followers/egg" if egg
+
+    @event.pages[0].graphic.character_name = fname
+    refresh
+  end
 
   def get_event_distance(event,amt=3)
     distance = (self.x - event.x).abs + (self.y - event.y).abs

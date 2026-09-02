@@ -1068,6 +1068,7 @@ class BerryPlantData
 
      tps = [tps,3600].max
 	 tps = (tps / tending_multiplier).floor
+	 event.grant_worker_exp(2)
      return tps,dph,mr,sfg
   end
   
@@ -1315,6 +1316,7 @@ def update_watering
 
     water(move.base_damage)
     move.pp -= 1
+    pokemon.gain_exp_single(500)
     @watered_at = time_now
   end
 end
@@ -1334,6 +1336,7 @@ def update_harvesting
     next unless pokemon.inventory.can_add?(@berry, cur_yield)
    
     pokemon.inventory.add(@berry, cur_yield)
+    pokemon.gain_exp_single(250)
     reset
 	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
   end
@@ -1350,6 +1353,7 @@ def update_weeds
     next unless @weeds
     next unless pokemon
     next unless pokemon.types.include?(:GRASS)
+    pokemon.gain_exp_single(250)
     pullWeeds
   end
 end

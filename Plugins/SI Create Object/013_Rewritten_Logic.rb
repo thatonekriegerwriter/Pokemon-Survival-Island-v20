@@ -27,6 +27,13 @@ class EventWorkers
     end
   end 
   
+  def grant_worker_exp(exp)
+    current_workers.each do |id|
+      worker = $game_map.events[id]
+      worker.pokemon.gain_exp_single(exp)
+    end
+  end
+
   def add(id)
     @workers << id 
   end

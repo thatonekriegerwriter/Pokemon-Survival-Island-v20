@@ -83,6 +83,8 @@ class ResearchTableData
        next 0.0 unless worker&.pokemon
        worker&.pokemon&.nature == :SERIOUS ? 0.5 : 0.25
      end
+	 
+	 event.grant_worker_exp(20)
 	 time_delta *= multiplier
 	 
      new_time_alive = @time_alive + time_delta
@@ -92,6 +94,7 @@ class ResearchTableData
      @research_stage = 1 + (@time_alive / time_per_stage)
      @time_last_updated = time_now.to_i
 	 if complete?
+	    event.grant_worker_exp(2000)
 	    recipe = GameData::Recipe.get(@cur_research.associated_recipe)
 	    sideDisplay(_INTL("You have learned #{recipe.name}."))
 	    $recipe_book.add(@cur_research.associated_recipe)

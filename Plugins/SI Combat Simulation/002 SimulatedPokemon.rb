@@ -43,7 +43,7 @@ class SimulatedBlock
    !alive?
   end
   
-  def choose_action
+  def choose_action(target)
     return nil
   end 
 
@@ -133,12 +133,9 @@ class SimulatedPokemon
     @status = value 
   end 
   
-  def choose_action
-   moves = @moves.select { |move| move.pp > 0 && move.base_damage > 0 }
-   move = moves.sample
-   return nil unless move 
-   SimulatedAction.new(move)
-  end 
+  def choose_action(target)
+    AdventureBattleAI.choose_action(self, target)
+  end
   
   def apply
     @pokemon.totalMoves.each_with_index do |move, index|

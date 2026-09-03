@@ -1295,7 +1295,7 @@ DATA_HASH = {
   end 
   def changeHappiness(method,pkmn=self)
     return if method == "damaged"
-	puts "<#{Time.now}> - #{self.name} (Happiness) - #{method} (#{self.level} (#{self.exp} - #{self.stored_exp}))"
+	#puts "<#{Time.now}> - #{self.name} (Happiness) - #{method} (#{self.level} (#{self.exp} - #{self.stored_exp}))"
 	pkmn.happiness = 70 if @happiness.nil? 
     happiness_range = @happiness / 100
 	base = get_happiness_base(method, nature,happiness_range)
@@ -1315,7 +1315,7 @@ DATA_HASH = {
   # @param method [String] the happiness changing method (e.g. 'walking')
   def changeLoyalty(method,wari=self)
     return if method == "damaged"
-	puts "<#{Time.now}> - #{self.name} (Loyalty) - #{method} (#{self.level} (#{self.exp} - #{self.stored_exp}))"
+	#puts "<#{Time.now}> - #{self.name} (Loyalty) - #{method} (#{self.level} (#{self.exp} - #{self.stored_exp}))"
     gain = 0
     bonus = 0
     pkmn = wari

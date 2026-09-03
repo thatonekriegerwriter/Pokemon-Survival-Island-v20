@@ -93,7 +93,7 @@ def simulate_team_turn(team, targets)
 
     target = choose_target(attacker, targets)
     next unless target
-    action = attacker.choose_action
+    action = attacker.choose_action(target)
     next unless action
     result = action.execute(attacker, target)
     @results << result

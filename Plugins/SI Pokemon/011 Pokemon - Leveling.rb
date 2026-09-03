@@ -298,10 +298,11 @@ end
     loop do
       level_min_exp = growth.minimum_exp_for_level(cur_level)
       level_max_exp = growth.minimum_exp_for_level(cur_level + 1)
+	  old_exp = exp
       temp_exp = [level_max_exp, exp_final].min
 
       self.exp = temp_exp
-      self.stored_exp -= (temp_exp - level_min_exp)
+      self.stored_exp -= (temp_exp - old_exp)
 
       cur_level += 1
 
@@ -382,14 +383,14 @@ end
       end
     end
 
-    self.stored_exp = 0 if self.stored_exp < 0 || level == level_cap
+    self.stored_exp = 0 if self.stored_exp < 0
 	if $player.party.include?(self) && (statue || internal_battle)
     moves_to_learn.each do |move|
       pbLearnMove(self, move, true)
     end
 	end 
-    changeHappiness("levelup", self)
-    changeLoyalty("levelup", self)
+      changeHappiness("levelup", self)
+      changeLoyalty("levelup", self)
     true
 	
   end 

@@ -9,6 +9,8 @@ def getObjectImage(object)
 	 image = "craftingStations/UCraftingStation"
 	when :RESEARCHTABLE
 	 image = "craftingStations/ResearchTable"
+	when :GRAVE
+	 image = "craftingStations/Grave"
 	when :APRICORNCRAFTING, :APRICORNMACHINE
 	 image = "craftingStations/PokeballStationUp"
 	when :FURNACE, :ELECTRICFURNACE

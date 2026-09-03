@@ -90,6 +90,23 @@ def gain_exp_from_overworld(defeated_pkmn)
   gain_exp(defeated_pkmn,is_partic,num_partic,exp_share,exp_all, nil, false, false, true)
 end
   
+  
+  def gain_exp_adventure(defeated_pkmn, multiplier)
+    return if egg?
+  growth = growth_rate
+  return if exp >= growth.maximum_exp
+  return if level == 20 && shadowPokemon?
+
+  level = defeated_pkmn.level
+  exp = level * defeated_pkmn.base_exp
+
+  return if exp <= 0
+
+  exp *= multiplier
+
+  gain_exp_single(exp, false, false, false, nil)
+  end
+  
   def gain_exp(defeated_pkmn, is_partic, num_partic, exp_share, exp_all, initial_item = nil, trainer_battle = false, internal_battle = false, show_messages = false, battle = nil)
     return if egg?
 

@@ -195,6 +195,17 @@ CookingTime=0
 Type = PLACEABLE
 Locked=false
 #-------------------------------
+[GRAVE]
+Name=Recipe
+Result=GRAVE
+Yield=1
+Recipe=WOODENPLANKS,2,STONE,8
+Station=POCKET,CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
 [ICEBOX]
 Name=Recipe
 Result=ICEBOX

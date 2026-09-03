@@ -309,11 +309,21 @@ module InventoryScene
 	    pkmn.bee? && pkmn.male?
 	  end 
 	  
+	  def filled_grave?(kind, index)
+	    kind == :pokemon_slot && index == 0 && event_data.is_a?(CraftingStationData) && background_key == "GRAVE" && !event_data.result_slot.nil?
+	  end 
+	  def alive_in_grave?(kind, index)
+	    kind == :pokemon_slot && index == 0 && event_data.is_a?(CraftingStationData) && background_key == "GRAVE" && grabbed_item.pokemon? && !grabbed_item.item.dead?
+	  end 
+	  
 	  def can_drop_pokemon?(kind, index)
 	    return false if reserved_for_egg?(kind, index)
 		return false if bee_comb?(kind, index)
+		return false if filled_grave?(kind, index)
+		return false if alive_in_grave?(kind, index)
         return false unless can_place_in_queen_slot?(kind, index)
         return false unless can_place_in_breeder_slot?(kind, index)
+		
 		return true 
 	  end 
 	  

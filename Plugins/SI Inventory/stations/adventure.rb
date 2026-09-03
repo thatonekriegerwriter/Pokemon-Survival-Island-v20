@@ -371,11 +371,13 @@ module InventoryScene
       end
 
       def station_update
+	    event_data.update
+	    $Adventure.update_active_battles
+        @log&.update if @view_mode == :detail
+        sync_slots_visuals!(:craft, 0...slot_count) if @view_mode == :list
         unless pbGetTimeNow.to_i < $Adventure.last_check + $Adventure.timer
 	    $Adventure.party.each { |pkmn| pkmn.update if pkmn }
-        sync_slots_visuals!(:craft, 0...slot_count) if @view_mode == :list
         $Adventure.adventuring
-        @log&.update if @view_mode == :detail
 		end 
       end
     end

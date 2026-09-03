@@ -129,8 +129,7 @@ end
   end
  
    
-  def changeLifespan(method,pkmn=self)
-    raise if pkmn
+  def changeLifespan(method)
     gain = 0
     lifespan_range = @lifespan / 100
       case method
@@ -246,10 +245,7 @@ end
     @weight = species_data.weight + (rand(2).zero? ? -"#{0.rand(30)}".to_f : "#{0.rand(30)}".to_f) if @height.nil?
     return @weight
   end
- 
-  def stamina
-   return 100
-  end
+
  
 
   def food

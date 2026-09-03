@@ -76,6 +76,17 @@ CookingTime=0
 Locked=false
 Flags=
 #-------------------------------
+[NEVERMELTICE]
+Name=Recipe
+Result=NEVERMELTICE
+Yield=1
+Recipe=SNOWBALL,9
+Station=POCKET,CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+Type = MATERIAL
+CookingTime=0
+Locked=false
+Flags=
+#-------------------------------
 [TORCH_CHARCOAL]
 Name=Recipe
 Result=TORCH

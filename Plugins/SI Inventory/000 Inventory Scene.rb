@@ -58,6 +58,7 @@ class Inventory_Scene
     :BUTCHERTABLE => ->(e, c) { InventoryScene::Stations::ButcherTable.new(event_data: e, container: c) },
     :ADVENTUREFLAG => ->(e, c) { InventoryScene::Stations::AdventureFlag.new(event_data: e, container: c) },
     :APIARY => ->(e, c) { InventoryScene::Stations::BeeHive.new(event_data: e, container: c) },
+    :GRAVE => ->(e, c) { InventoryScene::Stations::Grave.new(event_data: e, container: c) },
 
     # These three had a get_slot_amount entry (1/2/3 slots respectively)
     # but NO setup_*_ui of their own in the source I was given - they fell

@@ -8,15 +8,29 @@
 - [ ] Quest to repair statue
 - [ ] Reputation System?
 
+
+### Pokemon
+- [ ] Overhaul Happiness to be ephemerial.
+- [ ] Pokemon Mood
+- [ ] Released Pokemon Array and Released Pokemon events
+
 ### Character
 
 ### Combat
+- [ ] Moves that need overworld state need it implmented.
+- [ ] Finish move effects. (Requires combat state)
+- [ ] Finish class effects
+- [ ] Rework player damage calculation, perhaps use the ethos behind the safari damage system.
+- [ ] Add natures to Safari Combat
+- [ ] Rebuild Boss fight logic
 
 
 
 ### Buildings
+- [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
+- [ ] Fix the map of the Chilled Plains and Temperate Highlands
 - [ ] Add Dungeon Under the Xatu Town
 - [ ] Overhaul the injured Xatu.
 - [ ] Lineage Collector Xatu, has items concerned with Pokemon growth, families, and inheritance, keep 1-2 items consistent.
@@ -27,8 +41,14 @@
 - [ ] The Dungeon Xatu, has dungeon stock.
 - [ ] Give the Xatu schedules.
 - [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
+- [ ] Move between two particular maps enough times and you get send to the Egg room.
+- [ ] Remap western temperate and bee forest
+- [ ] Rework Dungeons
 
 ### Misc Mechanics
+- [ ] Drop items on death?
+- [ ] Disease
+- [ ] Ambient Temp
 
 ### Items
  

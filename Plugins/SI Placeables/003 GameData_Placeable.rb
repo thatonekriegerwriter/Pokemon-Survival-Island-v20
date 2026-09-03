@@ -48,12 +48,15 @@ module GameData
 	    associated_base = map_metadata.associated_base
 	     if associated_base
 	      base = GameData::Base.get(associated_base)
+		  return true if base.outdoor_maps.include?(map_id) && @usable_locations.include?(:OUTSIDE)
+		  return false if base.indoor_maps.include?(map_id) && @usable_locations.include?(:OUTSIDE)
 		  return true if @usable_locations.include?(:BASE)
 		  return true if base.outdoor_maps.include?(map_id) && @usable_locations.include?(:BASE_EXTERIOR)
 		  return true if base.indoor_maps.include?(map_id) && @usable_locations.include?(:BASE_INTERIOR)
 		  return true if base.can_place_wilds && @usable_locations.include?(:WILDS)
 		 else
 	      return true if @usable_locations.include?(:WILDS)
+		  return true if @usable_locations.include?(:OUTSIDE) && map_metadata.outdoor_map
 		 end
 	   else
 	     return true if @usable_locations.include?(:WILDS)
@@ -88,7 +91,7 @@ GameData::Placeable.register({ :id            => :PKMNCRATE, :usable_locations =
 GameData::Placeable.register({ :id            => :TORCH, :usable_locations => [:ANY]})
 
 
-GameData::Placeable.register({ :id            => :GRAVE, :usable_locations => [:BASE_EXTERIOR]})
+GameData::Placeable.register({ :id            => :GRAVE, :usable_locations => [:OUTSIDE]})
 GameData::Placeable.register({ :id            => :ADVENTUREFLAG, :usable_locations => [:BASE_EXTERIOR]})
 GameData::Placeable.register({ :id            => :WARDINGTOTEM, :usable_locations => [:BASE_EXTERIOR]})
 

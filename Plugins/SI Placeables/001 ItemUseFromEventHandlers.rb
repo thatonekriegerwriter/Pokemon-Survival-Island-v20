@@ -317,6 +317,31 @@ end
 }
 )
 
+ItemHandlers::UseFromEvent.add(:GRAVE, proc { |item, key_id|
+localMeter = item.internal_data
+current_selection = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+
+if Input.press?(Input::SHIFT) && localMeter.result_slot.nil?
+  Placeable.pick_up(key_id,item)
+elsif current_selection.is_a?(ItemData) && current_selection.id == :SHOVEL && localMeter.result_slot
+ pbCraftingBench(item.id, localMeter)
+ current_selection.decrease_durability(1)
+elsif localMeter.result_slot.nil?
+ pbCraftingBench(item.id, localMeter)
+elsif localMeter.result_slot
+ pkmn = localMeter.result_slot
+ sideDisplay(_INTL("{1} is buried here.", pkmn.name))
+end
+
+}
+)
+
+
 ItemHandlers::UseFromEvent.add(:CAULDRON, proc { |item, key_id|
 localMeter = item.internal_data
 if localMeter.nil? || !localMeter.is_a?(CraftingStationData)

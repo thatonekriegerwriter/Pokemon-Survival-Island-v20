@@ -10004,7 +10004,7 @@ Description = A more rugged bed for POKéMON working outdoors to lay in. Any Egg
 #-------------------------------
 [SILKSPINNER]
 Name = Spinner
-NamePlural = Spinner
+NamePlural = Spinners
 Pocket = 7
 Price = 0
 FieldUse = Direct
@@ -10013,12 +10013,21 @@ Description = A spinner that can be used by specific bug POKéMON to freely prod
 #-------------------------------
 [APIARY]
 Name = Apiary
-NamePlural = Apiary
+NamePlural = Apiaries
 Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = An Apiary which can be used to produce honey and more effectively breed Bee-type POKéMON.
+#-------------------------------
+[GRAVE]
+Name = Grave
+NamePlural = Graves
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Grave for burying POKeMON. Can be dug up with a Shovel.
 #-------------------------------
 [UPGRADEDCRAFTINGBENCH]
 Name = Upgraded Workbench

@@ -95,6 +95,9 @@ class CraftingStationData
   def grinder?
     item&.id == :GRINDER
   end 
+  def grave?
+    item&.id == :GRINDER
+  end 
   def garbage_bin?
     item&.id == :GARBAGEBIN
   end 

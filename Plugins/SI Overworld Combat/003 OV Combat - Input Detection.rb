@@ -169,7 +169,7 @@ end
     if target.pokemon.owner == Pokemon::Owner.new_from_trainer($player)
 	   target.pokemon.iframes=5
 	end
-	target.movement_state = :WANDER if target.is_a?(Game_PokeEventA) && target.can_be_knocked_out_of_state?
+	target.movement_type = :WANDER if target.is_a?(Game_PokeEventA) && target.can_be_knocked_out_of_state?
 	puts "#{target.type.name} Lv#{target.type.level}: #{target.type.hp}/#{target.type.totalhp} - #{theamt}"
 	OverworldCombat.fainted_check(target) 
  end

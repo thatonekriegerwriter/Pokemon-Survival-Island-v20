@@ -617,6 +617,7 @@ class PetBedData
 	@bedtime = nil 
 	@work_check = nil 
 	@started_working_at = nil 
+	@stopped_working_at = nil 
 	@last_got_feather = pbGetTimeNow.to_i - 3600
   end
  
@@ -709,7 +710,21 @@ class PetBedData
     @pokemon_slot[0] = nil
     place_pokemon(new_pokemon)
   end 
-
+  
+  def respawn_pokemon
+    return unless spawned_event.nil?
+    if pbPlacePokemon(x, y, pokemon)
+	  if pokemon.egg? 
+      self.movement_type = :EGG 
+	  @pokemon_is_egg = true 
+	  else
+      self.movement_type = :INBED 
+	  end 
+	  spawned_event.pet_bed = @event_id
+	  @resting_since = pbGetTimeNow.to_i 
+	end 
+  end 
+  
   def place_pokemon(new_pokemon)
     return false unless new_pokemon
     return true if new_pokemon.equal?(pokemon) # already resting here
@@ -983,10 +998,14 @@ class PetBedData
 	  spawned_event.started_working_at = time_now
 	end 
 	end 
-    self.movement_type==:INBED ? update_in_bed : update_working
+     self.movement_type==:INBED ? update_in_bed : update_working
 	@work_check = time_now
   end 
-
+  
+  def should_update_left_bed?
+    !$PokemonGlobal.selected_pokemon.include?(pokemon) && !spawned_event&.in_battle
+  end 
+  
   def update_in_bed
     stamina = pokemon.stamina
     
@@ -1030,6 +1049,7 @@ class PetBedData
   def update
     return unless pokemon
 	return if pokemon.fainted?
+	respawn_pokemon if spawned_event.nil?
 	if @pokemon_is_egg && !egg?
 	 @pokemon_is_egg = false 
 	 pokemon.play_cry
@@ -1045,6 +1065,30 @@ class PetBedData
 	 update_egg
 	 return
 	end 
+	
+	unless [:INBED, :WORKING, :MOVING_TO_BED, :MOVING_TO_WORK].include?(self.movement_type) 
+	 @stopped_working_at = pbGetTimeNow.to_i if @stopped_working_at.nil?
+     time_now = pbGetTimeNow.to_i
+     time_delta = time_now - @stopped_working_at
+	 if time_delta >= 300
+	 if should_update_left_bed?
+	   if @assigned_job && !spawned_event&.sleeping? && !breeding
+	     if pokemon.stamina <= 0 || !should_go_to_work?
+	        self.movement_type = :MOVING_TO_BED
+		 
+		 else
+	        self.movement_type = :MOVING_TO_WORK
+		 end 
+	   else
+	     self.movement_type = :MOVING_TO_BED
+	   end 
+	   @stopped_working_at = nil
+	 else  
+	   @stopped_working_at = pbGetTimeNow.to_i
+	 end 
+     end
+	 return 
+	end
 	return if spawned_event.in_battle
 	if can_heal?
 	 update_bedtime

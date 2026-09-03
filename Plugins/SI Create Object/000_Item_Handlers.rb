@@ -1608,13 +1608,14 @@ ItemHandlers::UseInField.add(:WHISTLE,proc { |shears|
     next false if followers.empty?
 	pbSEPlay("whistle", 80)
     x,y = get_tile_mouse_on
-	$scene.spriteset.addUserAnimation(5,x,y,true,1)
+	$scene.spriteset.addUserAnimation(53,x,y,true,1)
 	followers.each do |event|
      pkmn = event.pokemon
      next if pkmn.nil?
+     next if !pkmn.able?
 
      distance = (x - event.x) ** 2 + (y - event.y) ** 2
-     if distance <= 16
+     if distance <= 9
 	  event.wake_up
       pbSelectThisPokemon(pkmn) 
 	 end 

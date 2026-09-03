@@ -126,16 +126,13 @@ class Game_Temp
     @bossfight = false if !@bossfight
     return @bossfight
   end
-  def following_ov_pokemon
-    @following_ov_pokemon = {} if !@following_ov_pokemon
-    @following_ov_pokemon = {} if @following_ov_pokemon.is_a?(FalseClass)
-    @following_ov_pokemon = {} if @following_ov_pokemon.is_a?(Array)
-    return @following_ov_pokemon
-  end
-  def overworld_pokemon
-    @following_ov_pokemon = @following_ov_pokemon if !@following_ov_pokemon
-    return @following_ov_pokemon
-  end
+  
+  
+  
+ 
+  
+  
+  
   def spawnqueue
     @spawnqueue = [] if !@spawnqueue
     return @spawnqueue
@@ -184,4 +181,9 @@ class Game_Temp
     @current_pkmn_controlled = false if !@current_pkmn_controlled
     return @current_pkmn_controlled
   end
+  def following_ov_pokemon
+    @following_ov_pokemon = FollowerPkmnManager.new if @following_ov_pokemon.nil? && !@following_ov_pokemon.is_a?(FollowerPkmnManager)
+    return @following_ov_pokemon
+  end
 end
+

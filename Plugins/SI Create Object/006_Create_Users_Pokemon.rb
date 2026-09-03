@@ -11,10 +11,6 @@ def perform_movement
 	decrease_attack_opportunity(2) if @attack_opportunity>0 && rand(10)<6
     return
   end
-#  puts "================"
-#  puts pokemon.name
-#  puts [self.x, self.y].inspect
-#  puts @movement_type 
   case @movement_type
   when :MOVEBEHINDPLAYER
     move_behind_player
@@ -44,65 +40,80 @@ def perform_movement
 end 
 
 def in_attacking_movement_state?
- return true if work_event && work_event.type == :GUARDPOST && @movement_state == :WORKING
- return false if [:EGG, :INBED, :MOVING_TO_WORK, :MOVING_TO_BED, :WORKING, :SEARCH].include?(@movement_state)
+ return true if work_event && work_event.type == :GUARDPOST && @movement_type == :WORKING
+ return false if [:EGG, :INBED, :MOVING_TO_WORK, :MOVING_TO_BED, :WORKING, :SEARCH].include?(@movement_type)
  return true 
 end 
  
  def can_be_knocked_out_of_state?
  return false if sleeping?
- return false if work_event && work_event.type == :GUARDPOST && @movement_state == :WORKING
- return false if [:EGG].include?(@movement_state)
+ return false if work_event && work_event.type == :GUARDPOST && @movement_type == :WORKING
+ return false if [:EGG].include?(@movement_type)
  return true 
  end 
  
-def move_behind_player
-  return if sleeping?
-  $game_temp.following_ov_pokemon[@id] = [@id, @type, self]
+ def set_following
+ 
+  @following = nil if @following &&  @following != $game_player && ($game_map.events[@following.id].nil? || !$game_map.events[@following.id].equal?(@following))
+  @following = $PokemonGlobal.follower_pkmn.get_follow_target(self) if @following.nil?
+ 
+ end 
 
-  if @following.nil?
-    if alreadyfollowing == false
-      if $game_temp.current_pkmn_controlled != false
-        @following = $game_temp.current_pkmn_controlled
-      else
-        @following = $game_player
-      end
-    elsif alreadyfollowingmon.id != @id
-      @following = alreadyfollowingmon
-    end
+  def moving?
+    return (@real_x != @x * Game_Map::REAL_RES_X ||
+           @real_y != @y * Game_Map::REAL_RES_Y)  
   end
 
+  def update_command
+	#puts "Pokemon: #{self.pokemon.name}"
+	#puts "@transitioned_map: #{@transitioned_map}"
+#	puts "Wait Don't: #{@wait_count > 0}"
+#	puts "Forcing: #{@move_route_forcing}"
+#	puts "Command New: #{!@starting && !lock? && !moving? && !jumping?} (#{!@starting}) (#{!lock?}) (#{!moving?}) (#{!jumping?})"
+    if @transitioned_map
+      @map = $map_factory.getMap(@transitioned_map[0])
+	  @x = @transitioned_map[1]
+	  @y = @transitioned_map[2]
+	  @real_x = @x * Game_Map::REAL_RES_X
+	  @real_y = @y * Game_Map::REAL_RES_Y
+	  @transitioned_map[3] ? follow_leader(@following) : move_with_maps(@map.id, @x, @y)
+	  @transitioned_map = nil
+	end 
+    if @wait_count > 0
+      @wait_count -= 1
+    elsif @move_route_forcing
+      move_type_custom
+    elsif !@starting && !lock? && !moving? && !jumping?
+      update_command_new
+    end
+  end 
+
+def move_behind_player
+  return if sleeping?
+  set_following 
+  $PokemonGlobal.follower_pkmn.add(@id)
   decrease_attack_opportunity(1) if @attack_opportunity > 0
-
+  #puts @following.inspect 
   self.move_toward_player(@following)
-
   @movement_type = :FOLLOW
 end
 
 def follow_movement
   return if sleeping?
-  decrease_attack_opportunity(1) if
-    @attack_opportunity > 0 && rand(10) < 6
-
-  if @playercoords != [@following.x, @following.y]
-    if @following.nil?
-      if alreadyfollowing == false
-        if $game_temp.current_pkmn_controlled != false
-          @following = $game_temp.current_pkmn_controlled
-        else
-          @following = $game_player
-        end
-      elsif alreadyfollowingmon.id != @id
-        @following = alreadyfollowingmon
-      end
-    end
-
-    follow_leader(@following)
-
-    look_at_location(@event.id, @following.x, @following.y)
-    @playercoords = [@following.x, @following.y]
+  decrease_attack_opportunity(1) if @attack_opportunity > 0 && rand(10) < 6
+  set_following
+  
+  leader_coords = [@following.map.map_id, @following.x, @following.y]
+  if @playercoords != leader_coords
+    target = follow_leader(@following)
+    look_at_location(@event.id, target[1], target[2])
+    @playercoords = leader_coords
+	@targetcoords = target
   end
 end
+
+
+
 
 def wander_movement
 	@started_working_at = nil if !@started_working_at.nil?
@@ -563,20 +574,33 @@ end
  def update
 	@type.deselecttimer-=1 if @type.deselecttimer>0
 	pokemon.associatedevent=@id if pokemon.associatedevent.nil? || pokemon.associatedevent!= @id
-	pbRemoveFollowerPokemon(@id) if $game_temp.following_ov_pokemon[@id] && $game_temp.following_ov_pokemon[@id][1]==@type && @movement_type != :FOLLOW 
-	$game_temp.following_ov_pokemon[@id]=[@id,@type,self] if !$game_temp.following_ov_pokemon[@id] && @movement_type == :FOLLOW 
-	
+	$PokemonGlobal.follower_pkmn.add(@id) if @movement_type == :FOLLOW
+	pbRemoveFollowerPokemon(@id) if $PokemonGlobal.follower_pkmn.include?(@id) && @movement_type != :FOLLOW 
     @following = nil if @movement_type != :FOLLOW && @movement_type != :MOVEBEHINDPLAYER
+	
 	if @following && @movement_type == :FOLLOW 
      self.move_frequency=@following.move_frequency
      self.move_speed=@following.move_speed+0.25 
-	
 	elsif @movement_type != :FOLLOW 
      self.move_speed=3 
      self.move_frequency=4
-	
 	end
     super 
+	if @following && self.map.map_id != @following.map.map_id
+	  puts "Running for #{self.pokemon.name}"
+      vector = $map_factory.getRelativePos(@following.map.map_id, 0, 0, self.map.map_id, @x, @y)
+      # NOTE: Can't use moveto because vector is outside the boundaries of the
+      #       map, and moveto doesn't allow setting invalid coordinates.
+    #  @x = vector[0]
+    #  @y = vector[1]
+   #   @real_x = @x * Game_Map::REAL_RES_X
+    #  @real_y = @y * Game_Map::REAL_RES_Y
+	 # self.map = @map
+	 # self.map_id = @map.map_id 
+   	  @transitioned_map = [@following.map.map_id, vector[0], vector[1], true]
+	  puts "Set up map_transition2"
+	  #follow_leader(@following)
+	end 
  end 
 
   def update_pokemon_sprite
@@ -841,8 +865,21 @@ end
       end
     end
   end
-
+ 
+ def moveto(x, y)
+    @x = x % self.map.width
+    @y = y % self.map.height
+    @real_x = @x * Game_Map::REAL_RES_X
+    @real_y = @y * Game_Map::REAL_RES_Y
+    @prelock_direction = 0
+    @moveto_happened = true
+    calculate_bush_depth
+    triggerLeaveTile
+	return true 
+  end
+  
   def fancy_moveto(new_x, new_y, leader=nil)
+    ret = false 
     if self.x - new_x == 1 && self.y == new_y
       move_fancy(4)
     elsif self.x - new_x == -1 && self.y == new_y
@@ -860,8 +897,9 @@ end
     elsif self.x == new_x && self.y - new_y == -2 && !leader.nil?
       jump_fancy(2, leader)
     elsif self.x != new_x || self.y != new_y
-      moveto(new_x, new_y)
+     ret = moveto(new_x, new_y)
     end
+	return ret 
   end
 
   #=============================================================================
@@ -876,6 +914,7 @@ end
 def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
     maps_connected = $map_factory.areConnected?(leader.map.map_id, self.map.map_id)
     target = nil
+	potato = false 
     # Get the target tile that self wants to move to
     if maps_connected
       behind_direction = 10 - leader.direction
@@ -892,21 +931,24 @@ def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
     # Move self to the target
     if self.map.map_id != target[0]
       vector = $map_factory.getRelativePos(target[0], 0, 0, self.map.map_id, @x, @y)
-      @map = $map_factory.getMap(target[0])
       # NOTE: Can't use moveto because vector is outside the boundaries of the
       #       map, and moveto doesn't allow setting invalid coordinates.
-      @x = vector[0]
-      @y = vector[1]
-      @real_x = @x * Game_Map::REAL_RES_X
-      @real_y = @y * Game_Map::REAL_RES_Y
+    #  @x = vector[0]
+    #  @y = vector[1]
+    #  @real_x = @x * Game_Map::REAL_RES_X
+    #  @real_y = @y * Game_Map::REAL_RES_Y
+   	  @transitioned_map = [target[0], vector[0], vector[1], true]
+	  puts "Set up map_transition1"
+	  return target
     end
- 
 
     if instant || !maps_connected
       moveto(target[1], target[2])
     else
-      fancy_moveto(target[1], target[2], leader)
+      ret = fancy_moveto(target[1], target[2], leader)
+
     end
+	target
   end
 
 def move_with_maps(mapA,x,y,dir=nil)
@@ -914,7 +956,7 @@ def move_with_maps(mapA,x,y,dir=nil)
       target = [mapA, x, y]
     if self.map.map_id != target[0]
       vector = $map_factory.getRelativePos(target[0], 0, 0, self.map.map_id, @x, @y)
-      @map = $map_factory.getMap(target[0])
+      map = $map_factory.getMap(target[0])
       # NOTE: Can't use moveto because vector is outside the boundaries of the
       #       map, and moveto doesn't allow setting invalid coordinates.
       @x = vector[0]

@@ -314,6 +314,7 @@ end
 	 $game_temp.radial_enabled=true
 	elsif type==:MULTISELECT
 	  @ball_hud_type_old = @ball_hud_type
+      @ball_hud_type=:PKMN
 	  $PokemonGlobal.alt_control_move=true
 	elsif type==:MOVES && !pkmn.nil?
 	  @ball_hud_type_old = @ball_hud_type
@@ -375,7 +376,7 @@ def pbTogglePokemonSelection(pkmn)
   end
 end
 def pbSelectThisPokemon(pkmn, forced=false)
-  return false if !pkmn.is_a?(Pokemon)
+  return false unless pkmn.is_a?(Pokemon)
   return false if $PokemonGlobal.selected_pokemon.include?(pkmn) && $PokemonGlobal.selected_pokemon.index(pkmn)!=0 && forced==false
   return false if $PokemonGlobal.selected_pokemon.count(pkmn) > 1 && forced==false
   $PokemonGlobal.selected_pokemon[$PokemonGlobal.selected_pokemon.length] = pkmn
@@ -391,6 +392,15 @@ def pbDeselectThisPokemon(pkmn)
   $selection_arrows.remove_sprite("Arrow#{pkmn.associatedevent}#{pkmn.name}")
   return true
 end
+
+def pbDeselectAllSelected
+  selected = $PokemonGlobal.selected_pokemon.dup
+  selected.each_with_index do |pkmn, index|
+    next unless pkmn.is_a?(Pokemon)
+	pbDeselectThisPokemon(pkmn)
+  end 
+
+end 
 
 
 EventHandlers.add(:on_enter_map, :selection_set, 

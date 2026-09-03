@@ -443,6 +443,7 @@ class Scene_Map
     end
     $game_player.straighten
     $game_temp.followers.map_transfer_followers
+    $PokemonGlobal.follower_pkmn.transfer_followers
     EventHandlers.trigger(:on_map_transfer, old_map_id)
     $game_map.update
     disposeSpritesets
@@ -498,6 +499,7 @@ class Scene_Map
 	
    $game_temp.inv_cooldown-=1 if $game_temp.inv_cooldown>0 && $game_temp.in_inventory==false
    $game_temp.relock_prevention-=1 if $game_temp.relock_prevention>0
+   $PokemonGlobal.alt_control_move = false if $PokemonGlobal.selected_pokemon_cleaned.length == 0
 	
 	
 	
@@ -560,10 +562,13 @@ class Scene_Map
 	    pokemon_assignment
       elsif $game_temp.current_pkmn_controlled!=false
 	    pokemon_controls
+		pbDeselectAllSelected if Input.triggerex?(:TAB)
       elsif $PokemonGlobal.ball_hud_enabled == true
 	    ball_hud_controls
+		pbDeselectAllSelected if Input.triggerex?(:TAB)
       else #Default Logic
 	    default_controls
+		pbDeselectAllSelected if Input.triggerex?(:TAB)
       end
   end
   
@@ -646,7 +651,6 @@ class Scene_Map
 	
  #   pbFadeOutIn { transfer_disc(1032, 0, 18, 6) }
 	elsif Input.trigger?(Input::AUX2)
-	    
 	elsif Input.triggerex?(Keys::CONTROLS_LIST["Home"])
 	    pbHistoryScreenshot
 	elsif Input.press?(Input::F9)
@@ -1012,11 +1016,12 @@ class Scene_Map
     end
     if Input.double_tap?(Input::TOGGLETYPE) && Input.mouse_in_window?
 	   current_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-	   multiselect = current_order == :MULTISELECT
+       selected = $PokemonGlobal.selected_pokemon_cleaned.dup
+	   multiselect = selected.length>0
 	   tiles = *get_tile_with_direction
 	   event_id = $game_map.check_event(tiles[0],tiles[1])
 	   selected_event = event_id.is_a?(Game_Player) ? event_id : $game_map.events[event_id]
-       if !multiselect && selected_event.is_a?(Game_PokeEventA) && selected_event.pokemon.deselecttimer==0
+       if !multiselect && selected_event.is_a?(Game_PokeEventA) && selected_event.pokemon.deselecttimer==0 && selected_event.pokemon.able?
          if $PokemonGlobal.selected_pokemon.include?(selected_event.pokemon)
             pbDeselectThisPokemon(selected_event.pokemon)
 		 else
@@ -1028,7 +1033,6 @@ class Scene_Map
 		active_directed=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 		pokemon_list = []
 		if multiselect
-         selected = $PokemonGlobal.selected_pokemon_cleaned
          return if selected.length <= 1
 		 pokemon_list = selected.reject { |pkmn| pkmn == 0 }.map { |pkmn| pkmn.associatedevent }
         elsif $PokemonGlobal.ball_hud_enabled && current_order.is_a?(Pokemon)
@@ -1038,9 +1042,8 @@ class Scene_Map
         elsif (single = $PokemonGlobal.get_single_selected_pokemon)
 		 pokemon_list << single.associatedevent
         end
-      #  puts pokemon_list.to_s
 		return if pokemon_list.empty?
-        pokemon_list.each do |list_event_id|
+        pokemon_list.each do |list_event_id| 
 		  next if list_event_id.nil?
           event = $game_map.events[list_event_id]
 		  next if event.nil?
@@ -1070,6 +1073,7 @@ class Scene_Map
 
           if event.direction != direction
             event.direction = direction
+			puts "#{event.pokemon.name} is turning"
             return
           end
   
@@ -1083,6 +1087,7 @@ class Scene_Map
 
 
 
+			puts "#{event.pokemon.name} is walking."
 		  if event.move_with_maps(event.map_id, tiles[0],tiles[1])
 		  
 		  
@@ -1459,7 +1464,7 @@ class Scene_Map
 	   
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
-    elsif Input.triggerex?(:TAB)
+    elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	#  item = ItemData.new(:APIARY)
 	  
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
@@ -1792,6 +1797,7 @@ def activate_item_box_item(passed_event)
     $player.acting=true
 	#This is to actually set the item box.
     active_item=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+	puts active_item.is_a?(String) && $PokemonGlobal.alt_control_move==true
 	return if active_item.nil?
 	 if active_item.is_a?(String) && $PokemonGlobal.alt_control_move==true
 	   direct_pokemon_movement_main
@@ -1832,8 +1838,8 @@ def activate_item_box_item(passed_event)
 
 	 elsif active_item.is_a?(String)
 	    if !$PokemonGlobal.cur_stored_pokemon.nil?
-		   event = $game_map.events[$PokemonGlobal.cur_stored_pokemon.associatedevent]
-	       direct_pokemon_sub(event,get_cur_player)
+		   event = $PokemonGlobal.cur_stored_pokemon.event 
+	       direct_pokemon_sub(event,get_cur_player) if event
 	     end
 	 else
 	ItemHandlers.triggerUseFromBox(active_item, passed_event)
@@ -1842,39 +1848,30 @@ def activate_item_box_item(passed_event)
 end
 
 
+
 def direct_pokemon_movement_main
     current_order =$PokemonGlobal.stored_ball_order
-    if current_order == :MULTISELECT
-         $PokemonGlobal.selected_pokemon.each_with_index do |pkmn, index|
-			  next if pkmn.is_a?(Symbol)
-		      next if pkmn==0
+    if $PokemonGlobal.alt_control_move==true
+	    selected = $PokemonGlobal.selected_pokemon.dup
+         selected.each_with_index do |pkmn, index|
+			  next unless pkmn.is_a?(Pokemon)
 			  next if pkmn.inworld==false
-	           event_id = pkmn.associatedevent
-			  next if event_id.nil?
-			   event = $game_map.events[event_id]
+			   event = pkmn.event
 			   next if !event
-			   next if event.map_id != 
-			  if (index==0 && pkmn!=0) || ($PokemonGlobal.selected_pokemon[0]==0 && index==1)
-		     direct_pokemon_sub(event,$game_player)
-			  elsif $PokemonGlobal.selected_pokemon[index-1]==0
-			  else
-		     direct_pokemon_sub($game_map.events[event_id],$game_map.events[$PokemonGlobal.selected_pokemon[index-1].associatedevent])
-			  end
+			   next if event.map_id != $game_map.map_id
+		       direct_pokemon_sub(event, get_cur_player)
 		  end
-    elsif !current_order.nil?
-	        event_id = current_order.associatedevent
-			return if event_id.nil?
-		    direct_pokemon_sub($game_map.events[event_id])
+    elsif current_order && current_order.is_a?(Pokemon)
+	        event = current_order.pokemon
+			return unless event
+		    direct_pokemon_sub(event, get_cur_player)
     end
 end
 
 def direct_pokemon_sub(event,target=nil)
-
     current_order=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
     case current_order
       when "Follow"
-	       if !target.nil?
-             event.following = target
              event.movement_type = :MOVEBEHINDPLAYER 
              DialogueSound.reset
 			 text = "#{event.type.name}, follow me!"
@@ -1886,7 +1883,6 @@ def direct_pokemon_sub(event,target=nil)
                DialogueSound.play_sound_effect(i, text)
 			  end
 		     sideDisplay("#{event.type.name} is now following.")
-	       end
       when "Wait"
           event.movement_type = :STILL 
           event.still_timer = -1

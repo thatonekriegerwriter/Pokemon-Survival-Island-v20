@@ -248,7 +248,7 @@ module InventoryScene
 	
 	
     def handle_item_box_drop 
-      return unless grabbed_item
+      return unless grabbed_item && grabbed_item.index != "held" && grabbed_item.index != "_crafted"
       item = grabbed_item.item
       $PokemonGlobal.set_hud_for(item)
 	  put_back_grabbed_item 

@@ -71,8 +71,9 @@ class SelectionDisplay
     followers = $DynamicEvents.allied_mobs_for_map
     return if followers.empty?
     followers.each do |event|
-	   pkmn = event.pokemon
 	   next if event.nil?
+	   pkmn = event.pokemon
+       next if !pkmn.able?
        if event.x.between?(start_x, end_x) && event.y.between?(start_y, end_y)
          puts "#{pkmn.name} (#{event.id}) is inside the square!"
          pbSelectThisPokemon(pkmn)

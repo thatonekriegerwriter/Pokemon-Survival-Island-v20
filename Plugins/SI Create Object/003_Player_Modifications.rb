@@ -222,36 +222,35 @@ end
 
 
 # Set up various data related to the new map
-EventHandlers.add(:on_enter_map, :recreate_follower_event,
+EventHandlers.add(:on_map_transfer, :recreate_follower_event,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
     next if old_map_id == 0 || old_map_id == $game_map.map_id
-    next if $game_temp.following_ov_pokemon.empty?
-	  $game_temp.following_ov_pokemon.keys.each do |key|
-	         event_id = key
-		     next if event_id.nil?
-		     theevent = $game_temp.following_ov_pokemon[key][2]
-			 next if theevent.nil?
-          if theevent.following != get_cur_player
-		     theevent.following=nil
-			 next 
-		   end
-			 puts "Hey this is running while map interpA" if $game_system.map_interpreter.running?
-			 $game_map.recreateEvent2(theevent) if theevent.movement_type == :FOLLOW
-			 pkmn.inworld=false if theevent.movement_type != :FOLLOW
-			 theevent.removeThisEventfromMap
-
-
-      end
+    next if $PokemonGlobal.follower_pkmn.empty?
+	followers = $PokemonGlobal.follower_pkmn.dup
+	puts "This is running."
+    followers.each do |event_id|
+	  event = $game_map.events[event_id]
+	  next unless event.movement_type == :FOLLOW
+	  event.x = $game_player.x 
+	  event.y = $game_player.y 
+	  event.map = $game_map
+	  event.map_id = $game_map.map_id
+	
+	end 
 
 }
 )
 
-EventHandlers.add(:on_map_transfer, :recreate_follower_event,
+EventHandlers.add(:on_map_transfer, :recreate_follower_event_old,
   proc { |old_map_id|   # previous map ID, is 0 if no map ID
-  
+    next 
   
     next if old_map_id == 0 || old_map_id == $game_map.map_id
     next if $game_temp.following_ov_pokemon.empty?
+	
+	
+	
+	
 	  $game_temp.following_ov_pokemon.keys.each do |key|
 	         event_id = key
 		     next if event_id.nil?
@@ -271,7 +270,7 @@ EventHandlers.add(:on_map_transfer, :recreate_follower_event,
 )
 
 def pbRemoveFollowerPokemon(id)
-  $game_temp.following_ov_pokemon.delete(id)
+  $PokemonGlobal.follower_pkmn.remove(id)
 end
 
 

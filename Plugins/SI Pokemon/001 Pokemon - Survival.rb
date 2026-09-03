@@ -49,7 +49,6 @@ class Pokemon
   attr_accessor :weight
   attr_accessor :birth_date
   attr_accessor :memory
-  attr_writer :current_map
   attr_accessor :item_timer
   attr_accessor :stamina 
 

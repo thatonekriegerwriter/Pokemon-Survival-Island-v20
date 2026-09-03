@@ -120,7 +120,8 @@ class PokemonItemSummary_Scene
 	
     @sprites["waterbarborder"] = BitmapSprite.new(width,height,@viewport)
 	@sprites["waterbarborder"].visible = false
-	if GameData::BerryPlant::WATERING_CANS.include?(@item.id) && @item.water != false
+	@item.water = nil if @item.water == false 
+	if @item.watering_can? && !@item.water.nil?
 	x=440
 	y=80
     @sprites["waterbarborder"] = BitmapSprite.new(width,height,@viewport)
@@ -141,8 +142,8 @@ class PokemonItemSummary_Scene
     @sprites["waterbarfill"] = BitmapSprite.new(fillWidth,fillHeight,@viewport)
     @sprites["waterbarfill"].zoom_x = 0.80
     @sprites["waterbarfill"].zoom_y = 0.80
-	 durability = 100 if @item.water==false
-	 durability = @item.water if @item.water!=false
+	 durability = 100 if @item.water.nil?
+	 durability = @item.water if @item.water
     fillAmount = durability==0  ? 0 : (
       durability*@sprites["waterbarfill"].bitmap.width/100
     )
@@ -165,8 +166,8 @@ class PokemonItemSummary_Scene
     @sprites["Water"].y = y-28+50
     @sprites["Water"].resizeToFit("Water:")
 	text = ""
-	text = "∞" if @item.water==false
-	text = "#{@item.water}/100" if @item.water!=false
+	text = "∞" if @item.water.nil?
+	text = "#{@item.water}/100" if @item.water
 	
     @sprites["Water1"]=Window_UnformattedTextPokemon.new(text)
     pbPrepareWindow(@sprites["Water1"])

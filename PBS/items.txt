@@ -4519,7 +4519,7 @@ Name = Iron Canteen
 NamePlural = Iron Canteen
 Pocket = 7
 Price = 0
-Flags = KeyItem,Tool,Overworld
+Flags = KeyItem,Tool,Overworld,WaterDura,WaterDura100
 Consumable = false
 Description = A durable canteen, that can store various liquids and make them safe to drink.
 #-------------------------------

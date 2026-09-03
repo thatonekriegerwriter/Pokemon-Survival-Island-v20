@@ -8,6 +8,8 @@
 - [-] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
 - [ ] Aerial Ace is broken
 - [ ] Bright Powder can be used to paralyze.
+- [ ] Update Options Menu and Controls Menu
+- [ ] Ponder button to tell you if a hovered item can be researched.
 - [x] At Berry Pots and Berry Plants, Water Types water the plant while working, Grass tends to and harvests plants, while all other types to the same as Grass but weaker.
 - [x] Fire Types can provide passive heat to furnaces.
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox
@@ -16,8 +18,9 @@
 - [ ] Graves, Cremation, etc
 - [x] All types working at Pet Bed provide Passive Bonus to egg growth, fire types give slightly greater, one of the parents gives slightly greater, fire type with that one ability gives a large boost on top of existing ones.
 - [x] All types working at Research table provide Passive Bonus to research Speed, serious Pokemon give a greater boost
-- [ ] Rework Adventure screen.
-- [ ] Make sure pokemon working in stations return to work after combat. Make sure guards aren't locked to STANDING at their station.
+- [-] Rework Adventure screen.
+- [x] Make sure pokemon working in stations return to work after combat. 
+- [ ] Make sure guards aren't locked to STANDING at their station.
 - [x] Fix middle mouse selection
 - [ ] Berry plant crossbreeding
 - [ ] Spawn Pest for Berry Plant

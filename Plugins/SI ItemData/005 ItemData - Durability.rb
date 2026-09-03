@@ -20,9 +20,11 @@ class ItemData
 	@durability = 100 if durable? && durability.nil?
     @max_durability  = @durability
     @water      = water
-    @water      = 0 if watering_can? && water.nil? || @id == :WATERBOTTLE
+    @water      = 0 if watering_can? && water.nil? 
 	@liquid_type = nil
   end
+ 
+  
     def durability
 	 @durability = nil if @durability==false 
 	 return @durability 
@@ -133,7 +135,7 @@ end
     default_durability_item?(@id)
   end 
   def watering_can?
-    (GameData::BerryPlant::WATERING_CANS.include?(@id) || @id == :WATERBOTTLE)
+    (GameData::BerryPlant::WATERING_CANS.include?(@id) || data.has_water_meter?)
   end 
 end 
 

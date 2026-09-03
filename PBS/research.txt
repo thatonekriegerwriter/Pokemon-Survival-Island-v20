@@ -11,7 +11,7 @@ Flags=
 Name=Sprinkler
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=SPRINKLER
 Flags=
 #-------------------------------
@@ -19,7 +19,7 @@ Flags=
 Name=Electric Grinder
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=ELECTRICGRINDER
 Flags=
 #-------------------------------
@@ -27,7 +27,7 @@ Flags=
 Name=Poke Generator
 HoursPerStage=2
 StageAmt=5
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=POKEGENERATOR
 Flags=
 #-------------------------------
@@ -43,7 +43,7 @@ Flags=
 Name=Exp Share
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=EXPSHARE
 Flags=
 #-------------------------------
@@ -51,7 +51,7 @@ Flags=
 Name=Hydro Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=HYDROGENERATOR
 Flags=
 #-------------------------------
@@ -59,7 +59,7 @@ Flags=
 Name=Wind Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=WINDGENERATOR
 Flags=
 #-------------------------------
@@ -67,7 +67,7 @@ Flags=
 Name=Solar Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=SOLARGENERATOR
 Flags=
 #-------------------------------
@@ -75,7 +75,7 @@ Flags=
 Name=Coal Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=COALGENERATOR
 Flags=
 #-------------------------------
@@ -83,7 +83,7 @@ Flags=
 Name=Wood Saw 
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=CUTTER
 Flags=
 #-------------------------------
@@ -91,7 +91,7 @@ Flags=
 Name=Electric Icebox
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=ELECTRICICEBOX
 Flags=
 #-------------------------------
@@ -216,7 +216,7 @@ AssociatedRecipe=MAXREPEL
 Flags=
 #-------------------------------
 [PPUP]
-Name=Max Repel
+Name=PP Up
 HoursPerStage=2
 StageAmt=3
 UnlockItem=LEPPABERRY

@@ -230,6 +230,10 @@ module GameData
     def is_pokeball?;            return has_flag?("PokeBall"); end
     def is_apricorn?;            return has_flag?("Apricorn"); end
     def is_styler?;            return has_flag?("CaptureStyler"); end
+    def has_water_meter?;            return has_flag?("WaterDura"); end
+  
+  
+  
   
       TOOLS = [:IRONPICKAXE,:SHOVEL,:MACHETE,:IRONAXE,:IRONHAMMER,:POLE,:OLDROD,:GOODROD,:SUPERROD,:RAFT,:PARAGLIDER]
 

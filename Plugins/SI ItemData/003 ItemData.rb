@@ -40,7 +40,7 @@ class ItemData
 	 return 1 if data.is_machine?
 	 return 1 if (data.is_weapon? && !data.is_dart? && @id!=:STONE && @id!=:BAIT)  || GameData::BerryPlant::WATERING_CANS.include?(@id) 
 	 return 1 if data.is_medicine? 
-	 return 3 if @id==:WATERBOTTLE || (data.is_foodwater? && !data.is_berry?)
+	 return 3 if (data.is_foodwater? && !data.is_berry?)
 	 return 6 if data.is_dart? || @id==:GLASSBOTTLE
 	 return 12 if data.is_pokeball?
 	 return 24 if data.is_berry? && !data.is_apricorn?
@@ -147,7 +147,18 @@ class ItemData
 
 
    end 
-
+   
+   def ponder
+	itemname = self.name
+    if GameData::Research.can_research?(@id) 
+	  word = itemname.starts_with_vowel? ? "an" : "a"
+	  sideDisplay(_INTL("You have a gut feeling you can use #{word} #{itemname} for something."))
+	else
+	  word = itemname.starts_with_vowel? ? "an" : "a"
+	  sideDisplay(_INTL("You can't even get an inkling of an idea for what to do with #{word} #{itemname}."))
+	end 
+   end 
+   
 end
 
 

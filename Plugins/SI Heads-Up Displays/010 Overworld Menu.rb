@@ -694,7 +694,7 @@ end
        @sprites["durawindow"].resizeToFit(text4)
 
 	   text5 = ""   
-       text5 = "#{current_selection.water}" if GameData::BerryPlant::WATERING_CANS.include?(current_selection.id) || (!current_selection.water.nil? && current_selection.id!=:GLASSBOTTLE)
+       text5 = "#{current_selection.water}" if current_selection.watering_can?
 	   @sprites["waterwindow"].text = text5
        @sprites["waterwindow"].resizeToFit(text5)
 	   return name 

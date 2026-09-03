@@ -76,6 +76,10 @@ class Game_OVEvent < Game_Event
 	return @workers 
   end 
   
+  def grant_worker_exp(exp)
+    @workers = EventWorkers.new(@event.id) if @workers.nil?
+    @workers.grant_worker_exp(exp)
+  end
   def station_name
     return "Statue" if @type==:STATUE
     return "Berry Plant" if @type==:BERRYPLANT

@@ -372,6 +372,17 @@ Type = TOOL
 Locked=false
 Flags=
 #-------------------------------
+[WHISTLE]
+Name=Recipe
+Result=WHISTLE
+Yield=1
+Recipe=IRON2,4,TUMBLEROCK,2
+Station=POCKET,CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = TOOL
+Locked=false
+Flags=
+#-------------------------------
 [HOE]
 Name=Recipe: Hoe
 Result=HOE

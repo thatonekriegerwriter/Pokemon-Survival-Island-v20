@@ -192,15 +192,31 @@ end
     return if exp_amt <= 0
 
     growth = growth_rate
+    old_exp = exp
+    cur_level = level
 
-    # At/above level cap: only receive 10% of the normal EXP.
-    exp_amt = (exp_amt * 0.1).floor if level >= level_cap
+    if level >= level_cap
+    stored_gain = (exp_amt * 0.1).floor
+    return if stored_gain <= 0
 
-    return if exp_amt <= 0
+    self.stored_exp += stored_gain
 
-    # Store the full amount received.
-    self.stored_exp += exp_amt
+    if show_messages
+      if internal_battle && battle
+        if is_outsider
+          battle.pbDisplayPaused(
+            _INTL("{1} got a boosted {2} Exp. Points!", name, stored_gain)
+          )
+        else
+          battle.pbDisplayPaused(
+            _INTL("{1} got {2} Exp. Points!", name, stored_gain)
+          )
+        end
+      end
+    end
 
+    return [old_exp, exp, cur_level, cur_level, 0]
+    end
     cap_exp = growth.minimum_exp_for_level(level_cap)
     exp_final = growth.add_exp(exp, exp_amt)
 	exp_final = [exp_final, cap_exp].min
@@ -220,7 +236,6 @@ end
 	 end 
     end
 
-    cur_level = level
     new_level = growth.level_from_exp(exp_final)
 
     if new_level < cur_level
@@ -232,7 +247,6 @@ end
       )
     end
 
-    old_exp = exp
     self.exp = exp_final
     $stats.total_exp_gained += exp_gained
 
@@ -303,9 +317,6 @@ end
       old_sp_def   = spdef
       old_speed    = speed
 
-      changeHappiness("levelup", self)
-      changeLoyalty("levelup", self)
-
       if shadowPokemon?
         chance = case level
                 when 12 then 5
@@ -353,7 +364,7 @@ end
     newspecies = check_evolution_on_level_up
     moves_to_learn = []
     if newspecies
-      if $player.party.include?(self)
+      if $player.party.include?(self) && (statue || internal_battle)
         pbFadeOutInWithMusic(99999) {
           evo = PokemonEvolutionScene.new
           evo.pbStartScreen(self, newspecies)
@@ -361,21 +372,24 @@ end
           evo.pbEndScreen
         }
       else
+	   old_name = name
        moves_to_learn = evolve_to(newspecies)
-	   if self.inworld && self.map_id == $game_map.map_id && !internal_battle && !statue 
+	   if self.inworld && self.event && self.event.map_id == $game_map.map_id && !internal_battle && !statue 
         Pokemon.play_cry(newspecies, self.form)
         newspeciesname = GameData::Species.get(newspecies).name
-        sideDisplay(_INTL("{1} evolved into {2}!", name, newspeciesname))
+        sideDisplay(_INTL("{1} evolved into {2}!", old_name, newspeciesname))
        end 
       end
     end
 
-    stored_exp = 0 if stored_exp < 0 || level == level_cap
+    self.stored_exp = 0 if self.stored_exp < 0 || level == level_cap
 	if $player.party.include?(self) && (statue || internal_battle)
     moves_to_learn.each do |move|
       pbLearnMove(self, move, true)
     end
 	end 
+    changeHappiness("levelup", self)
+    changeLoyalty("levelup", self)
     true
 	
   end 
@@ -407,12 +421,11 @@ def evolve_to(newspecies)
     moves_to_learn.push(i[1])
   end
 
-  moves_to_learn.each do |move|
-    pbLearnMove(self, move, true)
-  end
-
   $stats.evolution_count += 1
-  self.event.update_pokemon_sprite if self.event 
+  if self.event 
+   $scene.spriteset.addUserAnimation(7, self.event.x, self.event.y, true, 1) if self.event.map_id == $game_map.map_id 
+   self.event.update_pokemon_sprite 
+  end 
   return moves_to_learn
 end
 

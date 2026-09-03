@@ -581,8 +581,6 @@ end
 
   def update_pokemon_sprite
     return unless pokemon
-
-    encounter = [pokemon.species, pokemon.level]
     form = pokemon.form
     gender = pokemon.gender
     shiny = pokemon.shiny?
@@ -593,7 +591,7 @@ end
     graphic_shiny = (VisibleEncounterSettings::SPRITES[2] && shiny != nil) ? shiny : false
 
     fname = ow_sprite_filename(
-      encounter[0].to_s,
+      pokemon.species.to_s,
       graphic_form,
       graphic_gender,
       graphic_shiny
@@ -603,6 +601,7 @@ end
     fname = "Followers/egg" if egg
 
     @event.pages[0].graphic.character_name = fname
+    @character_name       = @event.pages[0].graphic.character_name
     refresh
   end
 

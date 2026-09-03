@@ -1603,6 +1603,24 @@ if facingEvent && facingEvent.pokemon && facingEvent.pokemon.is_a?(Pokemon) && c
 end
 })
 
+ItemHandlers::UseInField.add(:WHISTLE,proc { |shears|
+    followers = $DynamicEvents.allied_mobs_for_map
+    next false if followers.empty?
+	pbSEPlay("whistle", 80)
+    x,y = get_tile_mouse_on
+	$scene.spriteset.addUserAnimation(5,x,y,true,1)
+	followers.each do |event|
+     pkmn = event.pokemon
+     next if pkmn.nil?
+
+     distance = (x - event.x) ** 2 + (y - event.y) ** 2
+     if distance <= 16
+	  event.wake_up
+      pbSelectThisPokemon(pkmn) 
+	 end 
+    end
+ 
+})
 
 
 ItemHandlers::UseInField.add(:GLASSBOTTLE,proc { |container|

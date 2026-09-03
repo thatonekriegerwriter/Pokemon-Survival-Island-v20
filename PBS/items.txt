@@ -4295,6 +4295,18 @@ Move = SLASH
 Flags = Tool,Overworld,Durable
 Description = A pair of scissors used for safely parting a POKeMON from its wool.
 #-------------------------------
+[WHISTLE]
+Name = Whistle
+NamePlural = Whistle
+Pocket = 7
+Price = 0
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 30
+Move = GRASSWHISTLE
+Flags = Tool,Overworld,Durable
+Description = A Whistle used to call all Pokemon on the map to attention.
+#-------------------------------
 [BUCKLER]
 Name = Buckler
 NamePlural = Bucklers

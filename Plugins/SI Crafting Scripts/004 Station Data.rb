@@ -145,7 +145,7 @@ class CraftingStationData
       end
     end
     @work_done += progress * time_delta * (100.0 / time)
-	 event.grant_worker_exp(2)
+	 event.grant_worker_exp(0.025  * time_delta)
 	crafted = 0 
     while @work_done >= 100.0
      break unless can_afford?(@current_recipe.recipe, recipe_slots)
@@ -168,7 +168,7 @@ class CraftingStationData
 	time = @current_recipe.time.to_f
 	time = 2000.0 if time <= 0.0
     @work_done += workers.length * time_delta * (100.0 / time)
-	event.grant_worker_exp(2)
+	event.grant_worker_exp(0.025  * time_delta)
 	puts "@work_done: #{@work_done}"
 	crafted = 0 
     while @work_done >= 100.0
@@ -188,7 +188,7 @@ class CraftingStationData
     return if @fuel == 0.0
 	@passed_time += time_delta
 	amt = get_fuel_consumption
-	event.grant_worker_exp(2)
+	event.grant_worker_exp(0.025  * time_delta)
 	@work_done += amt * time_delta / 1800.0
 	decrease = @work_done.round(10)
     @fuel = [@fuel - decrease, 0.0].max
@@ -200,7 +200,7 @@ class CraftingStationData
   def update_spinner(time_delta)
     return if workers.empty?
     @work_done += workers.length * time_delta * (100.0 / 4000.0)
-	event.grant_worker_exp(2)
+	event.grant_worker_exp(0.025 * time_delta)
 	crafted = 0 
 #	puts "@work_done: #{@work_done}"
     while @work_done >= 100.0
@@ -944,10 +944,10 @@ class PetBedData
 	 return if steps <= 0
 	 
 	 
-	 event.grant_worker_exp(10)
+	 event.grant_worker_exp(0.05 * time_delta)
      pokemon.steps_to_hatch -= steps
      pokemon.steps_to_hatch = 0 if pokemon.steps_to_hatch < 0
-	 event.grant_worker_exp(1190) if pokemon.steps_to_hatch <= 0
+	 event.grant_worker_exp(500) if pokemon.steps_to_hatch <= 0
      @resting_since += (steps_increment * 3600.0 / HATCH_STEPS_PER_HOUR).to_i
   end 
   
@@ -1163,7 +1163,7 @@ class BerryPotData
 	time_per_stage = (time_per_stage / tending_multiplier).floor
 	
 	
-	event.grant_worker_exp(2)
+	event.grant_worker_exp(0.025 * time_delta)
 	
     drying_per_hour = plant_data.drying_per_hour
     stages_growing = GameData::BerryPlant::NUMBER_OF_GROWTH_STAGES
@@ -1210,7 +1210,7 @@ def update_watering
 
     water(move.base_damage)
     move.pp -= 1
-    pokemon.gain_exp_single(500)
+    pokemon.gain_exp_single(250)
     @watered_at = time_now
   end
 end
@@ -1229,7 +1229,7 @@ def update_harvesting
     next unless pokemon.inventory.can_add?(@berry, cur_yield)
    
     pokemon.inventory.add(@berry, cur_yield)
-    pokemon.gain_exp_single(250)
+    pokemon.gain_exp_single(100)
     reset
 	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
   end
@@ -1478,7 +1478,7 @@ end
 
    @work_done += workers.length * time_delta * (100.0 / 3000.0)
    puts "@work_done: #{@work_done.inspect}"
-   event.grant_worker_exp(2)
+   event.grant_worker_exp(0.025 * time_delta)
    if @work_done >= 100
      event.grant_worker_exp(100)
      fill_frames

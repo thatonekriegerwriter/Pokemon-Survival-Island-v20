@@ -740,17 +740,17 @@ end
         if SUMMARY_B2W2_STYLE
           textpos.push([_INTL("Exp. Points"), 34, 229, 0, base, shadow])
           # Changed the Positon of No. of Exp
-          textpos.push(["#{(@pokemon.exp).to_s_formatted} + #{(@pokemon.stored_exp).to_s_formatted}", 200, 261, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
+          textpos.push(["#{(@pokemon.exp.round(2)).to_s_formatted} + #{(@pokemon.stored_exp.round(2)).to_s_formatted}", 200, 261, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
           textpos.push([_INTL("To Next Lv."), 34, 293, 0, base, shadow])
           # Changed the Positon of No. of Exp to Next Level
-          textpos.push([(endexp-@pokemon.exp).to_s_formatted, 177, 325, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
+          textpos.push([(endexp-@pokemon.exp).round(2).to_s_formatted, 177, 325, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
         else
           textpos.push([_INTL("Exp. Points (Stored)"), 34, 226, 0, base, shadow])
           # Changed the Positon of No. of Exp
-          textpos.push(["#{(@pokemon.exp).to_s_formatted} (#{(@pokemon.stored_exp).to_s_formatted})", 200, 257, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
+          textpos.push(["#{(@pokemon.exp).round(2).to_s_formatted} (#{(@pokemon.stored_exp).round(2).to_s_formatted})", 200, 257, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
           # Changed the Positon of No. of Exp to Next Level
           textpos.push([_INTL("To Next Lv."), 34, 288, 0, base, shadow])
-          textpos.push(["#{(endexp-@pokemon.exp-@pokemon.stored_exp).to_s_formatted}", 177, 322, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
+          textpos.push(["#{(endexp-@pokemon.exp-@pokemon.stored_exp).round(2).to_s_formatted}", 177, 322, 2, Color.new(90, 82, 82), Color.new(165, 165, 173)])
         end
       end
       # Draw all text

@@ -18,7 +18,7 @@
 - [x] All types working at Research table provide Passive Bonus to research Speed, serious Pokemon give a greater boost
 - [ ] Rework Adventure screen.
 - [ ] Make sure pokemon working in stations return to work after combat. Make sure guards aren't locked to STANDING at their station.
-- [ ] Fix middle mouse selection
+- [x] Fix middle mouse selection
 - [ ] Berry plant crossbreeding
 - [ ] Spawn Pest for Berry Plant
 - [x] Butchering table
@@ -97,7 +97,7 @@
 
 ### Items
 - [x] Grooming Brush
-- [ ] Whistle item that automatically selects all Pokemon
+- [x] Whistle item that automatically selects all Pokemon
 - [x] Bottle type items milk cows
 - [x] Make sure food and water feed pokemon in harder modes.
 - [x] Make Bait no longer a plant, but a crafted item from meat, when bait is thrown, it should cause a Crisis Battle if its on a Pokemon, if not, it should spawn a bait encounter.

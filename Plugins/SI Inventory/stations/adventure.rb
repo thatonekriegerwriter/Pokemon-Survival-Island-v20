@@ -376,8 +376,8 @@ module InventoryScene
         @log&.update if @view_mode == :detail
         sync_slots_visuals!(:craft, 0...slot_count) if @view_mode == :list
         unless pbGetTimeNow.to_i < $Adventure.last_check + $Adventure.timer
-	    $Adventure.party.each { |pkmn| pkmn.update if pkmn }
-        $Adventure.adventuring
+	     $Adventure.party.each { |pkmn| pkmn.update if pkmn }
+         $Adventure.adventuring
 		end 
       end
     end

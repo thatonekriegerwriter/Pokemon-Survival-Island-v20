@@ -46,7 +46,7 @@ class Adventure # Setup - unchanged
       next unless pkmn
 
       pkmn.steps_taken ||= 0
-      next if !pkmn.able? || pkmn.permadeath || pkmn.egg? || pkmn.offscreen_fight
+      next if !pkmn.able? || pkmn.permaFaint || pkmn.egg? || pkmn.offscreen_fight
 
       pkmn.steps_taken += 1
 
@@ -241,7 +241,7 @@ class Adventure # Setup - unchanged
       next unless pkmn.hp == 0
 
       pkmn.hp = 0
-      pkmn.permadeath = true
+      pkmn.permaFaint = true
     end
   end
 end
@@ -475,7 +475,7 @@ class Adventure # Encounters - IQ/chosenAdvType checks removed throughout, curre
     rarer = rand(999)
     case rand(21)
     when 1
-      next if !GameData::MapMetadata.get(pkmn.current_map.to_i).outdoor_map || rarer > 10
+      return if !GameData::MapMetadata.get(pkmn.current_map.to_i).outdoor_map || rarer > 10
 
       [pkmn, *pkmn.traveling_partners].each do |p|
         next unless p.hue.zero?

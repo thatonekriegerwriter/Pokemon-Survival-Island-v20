@@ -328,12 +328,12 @@ localMeter.event_id = key_id if localMeter.event_id!=key_id
 
 if Input.press?(Input::SHIFT) && localMeter.result_slot.nil?
   Placeable.pick_up(key_id,item)
-elsif current_selection.is_a?(ItemData) && current_selection.id == :SHOVEL && localMeter.result_slot
+elsif current_selection.is_a?(ItemData) && current_selection.id == :SHOVEL && localMeter.result_slot && localMeter.result_slot.dead?
  pbCraftingBench(item.id, localMeter)
  current_selection.decrease_durability(1)
-elsif localMeter.result_slot.nil?
+elsif localMeter.result_slot.nil? || localMeter.result_slot && !localMeter.result_slot.dead?
  pbCraftingBench(item.id, localMeter)
-elsif localMeter.result_slot
+elsif localMeter.result_slot && localMeter.result_slot.dead?
  pkmn = localMeter.result_slot
  sideDisplay(_INTL("{1} is buried here.", pkmn.name))
 end

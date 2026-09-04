@@ -30,7 +30,7 @@ module InventoryScene
         y = bonus_2 + 60
         sprites["craft_slots0"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots0"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/pocket/placeholder_slot")
-        sprites["craft_slots0"].z = 1
+        sprites["craft_slots0"].z = -2
         sprites["craft_slots0"].x = x
         sprites["craft_slots0"].y = y
         render_pokemon_icon(:craft, 0, pokemon_box[0]) if pokemon_box[0]

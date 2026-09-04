@@ -96,7 +96,7 @@ class CraftingStationData
     item&.id == :GRINDER
   end 
   def grave?
-    item&.id == :GRINDER
+    item&.id == :GRAVE
   end 
   def garbage_bin?
     item&.id == :GARBAGEBIN
@@ -127,8 +127,36 @@ class CraftingStationData
   def fueled?
     @fuel > 0.0
   end 
-
-
+  
+  def update_grave(time_delta)
+	pkmn = result_slot
+    return unless pkmn && pkmn.dead? && !pkmn.types.include?(:GHOST)
+    @passed_time += time_delta
+    return if @passed_time < 86_400
+	@passed_time -= 86_400
+	
+    chance = pkmn.loyalty / 255.0 * 0.0025
+    return unless rand < chance
+	excluded_species = [:SHEDINJA, :DRIFLOON, :ROTOM, :GIRATINA, :HOOPA, :LUNALA, :MARSHADOW, :BLACEPHALON, :SPECTRIER, :BIPULLA, :YOGEIST]
+	type_required_species = [:SPIRITOMB, :FROSLASS, :FRILLISH, :LITWICK, :GOLETT, :HONEDGE, :PHANTUMP, :PUMPKABOO, :SANDYGAST, :MIMIKYU, :DHELMISE, :DREEPY]
+	species = GameData::Species.keys.select do |id|
+       data = GameData::Species.get(id)
+       next false unless data.types.include?(:GHOST)
+	   next false unless data.get_baby_species == data.id
+	   next false if excluded_species.include?(id)
+	   next (data.types & pkmn.types).any? if type_required_species.include?(id)
+	   next true 
+    end.sample
+	return unless species
+	name = pkmn.name 
+    pkmn.species = species
+    pkmn.calc_stats
+	pkmn.heal
+	pkmn.permaFaint = false 
+    $player.pokedex.register(pkmn)
+	sideDisplay(_INTL("You get a feeling you should check {1}'s grave.", name))
+  end 
+  
   def update_grinder(time_delta)
     return if workers.empty?
     @current_recipe ||= get_recipe(recipe_slots)
@@ -408,6 +436,7 @@ class CraftingStationData
 	update_composter(time_delta) if composter?
 	update_warding_totem(time_delta) if warding_totem?
 	update_butcher_table(time_delta) if butchering_table?
+	update_grave(time_delta) if grave?
     @time_last_updated = time_now
   end
   

@@ -36,6 +36,7 @@
 ### Pokemon
 
 ### Placeables
+- [x] Graves have a low chance of respawning as a Ghost Type
 - [x] Pet bed 
 - [x] Berry Pot 
 - [x] Figure out how Research Works

@@ -79,6 +79,7 @@ GameData::Placeable.register({ :id            => :MEDICINEPOT})
 GameData::Placeable.register({ :id            => :BEDROLL, :placement_coordinates =>  { 2 => [0,2], 4 => [-1,0], 6 => [+1,0], 8 => [0,-1]}})
 GameData::Placeable.register({ :id            => :CAULDRON, :usable_locations => [:BASE]})
 GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH})
+GameData::Placeable.register({ :id            => :MODIFICATIONTABLE})
 
 GameData::Placeable.register({ :id            => :STATUE, :usable_locations => [:ANY]})
 

@@ -617,7 +617,7 @@ module InventoryScene
         elsif Input.press?(Input::NOTEBOOK)
 		  recipe = nil
           pbFadeOutIn(99_999) { recipe = NoteOpen.openWindow }
-		  if recipe && !craft_slots_hold_pokemon?
+		  if recipe && recipe.is_a?(GameData::Recipe) && !craft_slots_hold_pokemon?
 		    key = background_key=="Inventory" ? "POCKET" : background_key
 		    key = key.to_sym
 		   if recipe.station.include?(key)

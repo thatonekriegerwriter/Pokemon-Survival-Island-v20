@@ -480,7 +480,7 @@ NamePlural = Bright Powders
 Pocket = 1
 Price = 3000
 SellPrice = 2000
-Flags = Fling_10
+Flags = Fling_10,Tool,Weapon
 Description = An item to be held by a Pokémon. It boosts the holder's focus while in the Evasion style.
 #-------------------------------
 [EVIOLITE]
@@ -10037,6 +10037,33 @@ Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A wooden workbench reinforced with silver for crafting advanced items.
+#-------------------------------
+[MODIFICATIONTABLE]
+Name = Modification Workbench
+NamePlural = Modification Workbenches
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A highly advanced workbench for the detailed modification of already crafted items.
+#-------------------------------
+[GUARDPOST]
+Name = Guard Post
+NamePlural = Guard Posts
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A Post for POKeMON to be placed in that puts them on guard against hostile POKeMON.
+#-------------------------------
+[FEEDER]
+Name = Feeder
+NamePlural = Feeder
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A station a POKeMON can be assigned to that will hand out Food and Water to needy POKeMON.
 #-------------------------------
 [GRINDER]
 Name = Grinder

@@ -1,14 +1,14 @@
 #-------------------------------
 [MASTERBALLC]
-Name=Research
-HoursPerStage=4
-StageAmt=5
+Name=Master Ball
+HoursPerStage=3
+StageAmt=16
 UnlockItem=PURPLEAPRICORN
 AssociatedRecipe=MASTERBALLC
 Flags=
 #-------------------------------
 [MACHINEBOX]
-Name=Sprinkler
+Name=Placeable: Sprinkler
 HoursPerStage=1
 StageAmt=2
 UnlockItem=JACKETEDCABLE
@@ -16,7 +16,7 @@ AssociatedRecipe=SPRINKLER
 Flags=
 #-------------------------------
 [MACHINEBOX_2]
-Name=Electric Grinder
+Name=Placeable: Electric Grinder
 HoursPerStage=1
 StageAmt=2
 UnlockItem=JACKETEDCABLE
@@ -24,17 +24,17 @@ AssociatedRecipe=ELECTRICGRINDER
 Flags=
 #-------------------------------
 [MACHINEBOX_3]
-Name=Poke Generator
+Name=Placeable: Poke Generator
 HoursPerStage=2
 StageAmt=5
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=POKEGENERATOR
 Flags=
 #-------------------------------
 [EXPSHARE]
 Name=Exp All
-HoursPerStage=2
-StageAmt=5
+HoursPerStage=3
+StageAmt=8
 UnlockItem=EXPSHARE
 AssociatedRecipe=EXPALL
 Flags=
@@ -43,44 +43,44 @@ Flags=
 Name=Exp Share
 HoursPerStage=1
 StageAmt=2
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=EXPSHARE
 Flags=
 #-------------------------------
 [MACHINEBOX_6]
-Name=Hydro Generator
+Name=Placeable: Hydro Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=HYDROGENERATOR
 Flags=
 #-------------------------------
 [MACHINEBOX_7]
-Name=Wind Generator
+Name=Placeable: Wind Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=WINDGENERATOR
 Flags=
 #-------------------------------
 [MACHINEBOX_8]
-Name=Solar Generator
+Name=Placeable: Solar Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=SOLARGENERATOR
 Flags=
 #-------------------------------
 [MACHINEBOX_9]
-Name=Coal Generator
+Name=Placeable: Coal Generator
 HoursPerStage=1
 StageAmt=2
-UnlockItem=JACKETEDCABLE
+UnlockItem=MACHINEBOX
 AssociatedRecipe=COALGENERATOR
 Flags=
 #-------------------------------
 [MACHINEBOX_10]
-Name=Wood Saw 
+Name=Placeable: Wood Saw 
 HoursPerStage=1
 StageAmt=2
 UnlockItem=JACKETEDCABLE
@@ -88,7 +88,7 @@ AssociatedRecipe=CUTTER
 Flags=
 #-------------------------------
 [MACHINEBOX_11]
-Name=Electric Icebox
+Name=Placeable: Electric Icebox
 HoursPerStage=1
 StageAmt=2
 UnlockItem=JACKETEDCABLE
@@ -96,40 +96,40 @@ AssociatedRecipe=ELECTRICICEBOX
 Flags=
 #-------------------------------
 [MACHINEBOX_12]
-Name=Sewing Machine
+Name=Placeable: Sewing Machine
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=SEWINGMACHINE
 Flags=
 #-------------------------------
 [MACHINEBOX_13]
-Name=Apricorn Machine
+Name=Placeable: Apricorn Machine
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=APRICORNMACHINE
 Flags=
 #-------------------------------
 [MACHINEBOX_14]
-Name=Electric Press
+Name=Placeable: Electric Press
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=ELECTRICPRESS
 Flags=
 #-------------------------------
 [MACHINEBOX_15]
-Name=Electric Furnace
+Name=Placeable: Electric Furnace
 HoursPerStage=1
 StageAmt=2
-UnlockItem=MACHINEBOX
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=ELECTRICFURNACE
 Flags=
 #-------------------------------
 [MEGARING]
 Name=Megaring
-HoursPerStage=1
+HoursPerStage=2
 StageAmt=5
 UnlockItem=MEGASTONE
 AssociatedRecipe=MEGARING
@@ -137,16 +137,16 @@ Flags=
 #-------------------------------
 [SNATCHER]
 Name=Snatcher
-HoursPerStage=1
+HoursPerStage=2
 StageAmt=5
-UnlockItem=IRON2
+UnlockItem=JACKETEDCABLE
 AssociatedRecipe=SNATCHER
 Flags=
 #-------------------------------
 [SUSPO]
 Name=Suspicious Potion
-HoursPerStage=2
-StageAmt=5
+HoursPerStage=3
+StageAmt=8
 UnlockItem=ARGOSTBERRY
 AssociatedRecipe=SUSPO
 Flags=
@@ -232,7 +232,7 @@ AssociatedRecipe=SQUIRTBOTTLE
 Flags=
 #-------------------------------
 [PORTABLECAMP]
-Name=Portable Camp
+Name=Placeable: Portable Camp
 HoursPerStage=2
 StageAmt=3
 UnlockItem=WOOL
@@ -240,16 +240,16 @@ AssociatedRecipe=PORTABLECAMP
 Flags=
 #-------------------------------
 [ADVENTUREFLAG]
-Name=Adventure Flag
-HoursPerStage=2
-StageAmt=3
+Name=Placeable: Adventure Flag
+HoursPerStage=3
+StageAmt=8
 UnlockItem=WOOL
 AssociatedRecipe=ADVENTUREFLAG
 Flags=
 #-------------------------------
 [UPGRADEDCRAFTINGBENCH]
-Name=Upgraded Crafting Bench
-HoursPerStage=1
+Name=Placeable: Upgraded Crafting Bench
+HoursPerStage=2
 StageAmt=3
 UnlockItem=CRAFTINGBENCH
 AssociatedRecipe=UPGRADEDCRAFTINGBENCH
@@ -277,4 +277,20 @@ HoursPerStage=1
 StageAmt=2
 UnlockItem=WOODENSTICKS
 AssociatedRecipe=CROPSTICKS
+Flags=
+#-------------------------------
+[MODIFICATIONTABLE]
+Name=Placeable: Modification Workbench
+HoursPerStage=4
+StageAmt=6
+UnlockItem=MODIFICATIONTABLE
+AssociatedRecipe=MODIFICATIONTABLE
+Flags=
+#-------------------------------
+[GUARDPOST]
+Name=Placeable: Guard Post
+HoursPerStage=4
+StageAmt=6
+UnlockItem=GUARDPOST
+AssociatedRecipe=GUARDPOST
 Flags=

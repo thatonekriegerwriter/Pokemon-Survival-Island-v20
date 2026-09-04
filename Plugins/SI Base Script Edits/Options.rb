@@ -455,33 +455,42 @@ end
 
 
 def build_menu(menu)
-options = []
-hashes = []
-option_ids = []
+  entries = []
 
+  # Collect every entry belonging to this menu, tagging each with its
+  # registration order so ties sort predictably (Array#sort_by is not
+  # guaranteed stable) and its declared "order" so authors can control
+  # where it appears without relying on definition order.
+  MenuHandlers.each_available(:options_menu) do |option_id, hash, name|
+    hash["parent"] = :main if hash["parent"].nil?
 
-MenuHandlers.each_available(:options_menu) do |option_id, hash, name|
-  hash["parent"] = :main if hash["parent"].nil?
+    next if hash["parent"] != menu
 
-  next if hash["parent"] != menu
+    entries << [hash["order"] || 0, entries.length, option_id, hash, name]
+  end
 
-  parameters = get_unique_parameters(hash, option_id)
+  entries.sort_by! { |order, seq, *| [order, seq] }
 
-  options << hash["type"].new(
-    name,
-    hash["parent"],
-    parameters,
-    hash["get_proc"],
-    hash["set_proc"]
-  )
+  options    = []
+  hashes     = []
+  option_ids = []
 
-  hashes << hash
-  option_ids << option_id
-end
+  entries.each do |_order, _seq, option_id, hash, name|
+    parameters = get_unique_parameters(hash, option_id)
 
-return [options, hashes, option_ids]
+    options << hash["type"].new(
+      name,
+      hash["parent"],
+      parameters,
+      hash["get_proc"],
+      hash["set_proc"]
+    )
 
+    hashes << hash
+    option_ids << option_id
+  end
 
+  return [options, hashes, option_ids]
 end
 
 
@@ -847,9 +856,9 @@ index = -1
       if option_id == :controls_menu
         pbPlayDecisionSE
 
-        pbFadeOutIn(99999) do
-          open_set_controls_ui
-        end
+        #pbFadeOutIn(99999) do
+        open_set_controls_ui
+        #end
 
         index = -1
         next
@@ -1596,9 +1605,7 @@ MenuHandlers.add(:options_menu, :challenges_menu, {
   "name"        => _INTL("Challenge Options..."),
   "parent"      => :main,
   "condition"   => proc {
-    next $player
-    next Nuzlocke.definedrules? == false
-    next Nuzlocke.on? == false
+    next $player && !Nuzlocke.definedrules? && !Nuzlocke.on?
   },
   "type"        => SelectOption,
   "order"       => 37,
@@ -2387,20 +2394,6 @@ MenuHandlers.add(:options_menu, :pkmnfoodandwater, {
     end
   }
 })
-
-  MenuHandlers.add(:options_menu, :disable_fogs, {
-    "name"        => _INTL("Reduced Lighting Effects"),
-    "parent"      => :ui_menu,
-    "order"       => 80,
-    "type"        => EnumOption,
-    "parameters"  => [_INTL("Off"), _INTL("On")],
-    "description" => _INTL("Reduces lighting effects in certain areas of the game in order to aid visibility."),
-    "get_proc"    => proc { next $PokemonSystem.disable_fogs },
-    "set_proc"    => proc { |value, _sceme| $PokemonSystem.disable_fogs = value }
-  })
-
-
-
 
 #[_INTL("Classic SI"), _INTL("Kanto"), _INTL("Johto"), _INTL("Hoenn"), _INTL("Sinnoh"), _INTL("Unova"), _INTL("Stadium"),_INTL("Colosseum")]
 #[_INTL("Default"), _INTL("Map Theme"), _INTL("Wild Arms"), _INTL("Chrono Trigger"), _INTL("Stadium"),_INTL("Colosseum")]

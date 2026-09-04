@@ -20,6 +20,17 @@ Type = MATERIAL
 Locked=false
 Flags=
 #-------------------------------
+[BEDROLL]
+Name=Recipe
+Result=BEDROLL
+Yield=1
+Recipe=WOODENPLANKS,2,WOODENPLANKS,2,WOOL,3
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
 [APRICORNCRAFTING]
 Name=Recipe
 Result=APRICORNCRAFTING
@@ -86,17 +97,6 @@ Type = PLACEABLE
 Locked=false
 Flags=
 #-------------------------------
-[BEDROLL]
-Name=Recipe
-Result=BEDROLL
-Yield=1
-Recipe=WOODENPLANKS,2,WOODENPLANKS,2,WOOL,3
-Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
-CookingTime=0
-Type = PLACEABLE
-Locked=false
-Flags=
-#-------------------------------
 [GARBAGEBIN]
 Name=Recipe
 Result=GARBAGEBIN
@@ -149,7 +149,40 @@ Recipe=LEATHER,2,WOOL,1,LEATHER,2
 Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
 CookingTime=0
 Type = PLACEABLE
+Locked=true
+Flags=
+#-------------------------------
+[GUARDPOST]
+Name=Recipe: Guard Post
+Result=GUARDPOST
+Yield=1
+Recipe=IRON2,2,PETBEDOUTDOOR,1,IRON2,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=true
+Flags=
+#-------------------------------
+[FEEDER]
+Name=Recipe
+Result=FEEDER
+Yield=1
+Recipe=WOODENLOG,2,ITEMCRATE,1,WOODENLOG,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
 Locked=false
+Flags=
+#-------------------------------
+[MODIFICATIONTABLE]
+Name=Recipe: Modification Workbench
+Result=MODIFICATIONTABLE
+Yield=1
+Recipe=SILVER2,2,IRON2,2,UPGRADEDCRAFTINGBENCH,1,IRON2,2,SILVER2,2
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=true
 Flags=
 #-------------------------------
 [WOODENPAIL]

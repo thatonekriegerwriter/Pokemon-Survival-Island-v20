@@ -10,16 +10,14 @@
 ### UI
 - [ ] Machine Box UI
 - [ ] Electronics UI
-- [ ] Update Options Menu and Controls Menu <<<< DO THIS A LOT SO WE CAN REBIND MOST CONTROLS
+- [ ] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
 
 ### Pokemon
-- [ ] Possible relearnable move storage
 
 ### Placeables
-- [ ] Feeder
-- [ ] Make sure guards aren't locked to STANDING at their station, and build Guard Post Placable.
-- [ ] Modifier Application Station
+- [ ] Feeder functionality + UI, Modifier Station Functionality  + UI
+- [ ] Make sure guards aren't locked to STANDING at their station, and build Guard Post UI + Functionality.
 - [ ] Berry plant crossbreeding
 - [ ] Spawn Pest for Berry Plant
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox
@@ -30,7 +28,6 @@
 
 ### Combat
 - [ ] Check if Aerial Ace is broken
-- [ ] Bright Powder can be used to paralyze.
 - [ ] Charm moves invert targets team
 
 ### Buildings

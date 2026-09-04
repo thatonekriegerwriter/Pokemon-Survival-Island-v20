@@ -127,6 +127,18 @@ ItemHandlers::UseFromEvent.add(:ITEMCRATE, proc { |item, key_id|
 }
 )
 
+ItemHandlers::UseFromEvent.add(:FEEDER, proc { |item, key_id|
+ if Input.press?(Input::SHIFT)
+  storage = item.crate_storage
+  storage.active = false if storage && storage.is_a?(PCItemStorage)
+  Placeable.pick_up(key_id,item)
+ else
+  item_crates(item, key_id)
+ end
+}
+)
+
+
 ItemHandlers::UseFromEvent.add(:PKMNCRATE, proc { |item, key_id|
  if Input.press?(Input::SHIFT)
   storage = item.crate_storage
@@ -167,7 +179,7 @@ def item_crates(item, key_id)
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateileft.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
  pbSEPlay("Voltorb Flip tile")
- Inventory.invWindow(:ITEMCRATE, localMeter, storage)
+ Inventory.invWindow(item.id, localMeter, storage)
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateidown.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
 end
@@ -192,7 +204,7 @@ def icebox_crates(item, key_id)
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateileft.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
  pbSEPlay("Voltorb Flip tile")
- Inventory.invWindow(:ICEBOX,localMeter,item.crate_storage)
+ Inventory.invWindow(item.id,localMeter,item.crate_storage)
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateidown.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
 end
@@ -216,7 +228,7 @@ def pokemon_crates(item, key_id)
   @move_route_waiting = true if !$game_temp.in_battle
   pbSEPlay("Voltorb Flip tile")
   item.crate_storage.active = true 
-  Inventory.invWindow(:PKMNCRATE,localMeter,item.crate_storage)
+  Inventory.invWindow(item.id,localMeter,item.crate_storage)
   pbMoveRoute(this_event, [PBMoveRoute::Graphic,"cratedown.png",0,this_event.direction,0])
   @move_route_waiting = true if !$game_temp.in_battle
  end 

@@ -1158,6 +1158,40 @@ next false
 )
 
 
+ItemHandlers::UseFromBox.add(:BRIGHTPOWDER, proc { |item, event|
+     facingEvent = event
+	 facingEvent = $game_player.pbFacingEventIgnoreOverTrigger if event.nil?
+	 next false if facingEvent.nil?
+   can_do = decreaseStamina(5)
+	next false if can_do == false
+   start_end = getLandingCoords(1)
+   id=$game_map.check_event(*start_end[1])
+   dir = 0
+   x_plus = start_end[1][0] - start_end[0][0]
+   y_plus = start_end[1][1] - start_end[0][1]
+   if x_plus != 0 || y_plus != 0
+      if x_plus.abs > y_plus.abs
+        dir = ((x_plus < 0) ? 1 : 2)
+      else
+        dir = ((y_plus < 0) ? 3 : 0)
+      end
+   end
+   if id
+   event = $game_map.events[id]
+   if event.is_a?(Game_PokeEvent)
+	 thefight = pbOverworldCombat
+	 thefight.player_action(event,item,dir)
+	 next true
+   end
+   end
+
+
+next false
+  }
+)
+
+
+
 ItemHandlers::UseFromBox.add(:IRONPICKAXE,proc{|item, event|
      facingEvent = event
 	 facingEvent = $game_player.pbFacingEventIgnoreOverTrigger if event.nil?

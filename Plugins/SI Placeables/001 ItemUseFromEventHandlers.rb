@@ -194,6 +194,24 @@ class HandlerHash2
 
 end
 
+
+ItemHandlers::UseFromEvent.add(:GUARDPOST, proc { |item, key_id|
+
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(GuardStationData)
+localMeter=GuardStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.pokemon.nil?
+  Placeable.pick_up(key_id,item)
+else
+ pbCraftingBench(item.id, localMeter)
+end
+}
+)
+
+
 ItemHandlers::UseFromEvent.add(:PETBEDOUTDOOR, proc { |item, key_id|
 
 localMeter = item.internal_data
@@ -482,6 +500,21 @@ end
 localMeter.event_id = key_id if localMeter.event_id!=key_id
 if Input.press?(Input::SHIFT)
   Placeable.pick_up(key_id,item)
+end
+}
+)
+
+ItemHandlers::UseFromEvent.add(:MODIFICATIONTABLE, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT)
+  Placeable.pick_up(key_id,item)
+else
+ pbCraftingBench(item.id, localMeter)
 end
 }
 )

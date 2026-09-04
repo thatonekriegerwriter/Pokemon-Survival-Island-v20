@@ -91,6 +91,7 @@ end
   
   def tool?(item)
 	return true if item.id==:SNATCHER
+	return true if item.id==:BRIGHTPOWDER
 	return false 
   end 
    
@@ -184,11 +185,22 @@ end
     case item.id
 	  when :SNATCHER 
 	   snatcher(event)
+	  when :BRIGHTPOWDER 
+	   brightpowder(event)
 	end 
  
  
  end 
 
+  def brightpowder(event)
+     pkmn = event.pokemon
+     if pkmn.status==:NONE
+       	inflictStatus(move,$player,pkmn,:PARALYSIS, rand(4)+1) if !pkmn.pbHasType?(:GROUND)
+	    makeAggressive(event)
+		event.angry_at << $game_player if !event.angry_at.include?($game_player)
+		event.battle_timer += 100
+	 end
+  end
   def snatcher(event)
 	return false if @battle_rules.include?("Theftless")
    pkmn = event.pokemon

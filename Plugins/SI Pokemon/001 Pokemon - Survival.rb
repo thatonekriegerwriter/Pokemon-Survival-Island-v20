@@ -83,6 +83,7 @@ def initialize(*args)
 	@memory       = _INTL("Press [ALT] to write more.")
     @shiny_leaf = 0
     @hidden_modifiers = []
+	@extra_moves = []
 	@handled_aging = false 
 	@item_timer = pbGetTimeNow.to_i - 3600
 	@last_interacted_with = pbGetTimeNow.to_i
@@ -94,6 +95,27 @@ end
     @stamina = 7 if @stamina.nil?
     return @stamina
   end 
+  def extra_moves
+    @extra_moves = [] if @extra_moves.nil?
+    return @extra_moves
+  end 
+  
+  def add_extra_species_moves
+    @extra_moves = [] if @extra_moves.nil?
+    movelist = getMoveList
+	movelist.each do |i|
+       next if i[0] > level
+       next if hasMove?(i[1])
+       next if @extra_moves.include?(i[1])
+       @extra_moves.push(i[1])
+    end
+    species_data.tutor_moves.each do |m|
+     next if hasMove?(m)
+     next if @extra_moves.include?(m)
+     @extra_moves.push(m)
+    end
+  end 
+  
   def last_interacted_with
     @last_interacted_with = pbGetTimeNow.to_i if @last_interacted_with.nil?
     return @last_interacted_with

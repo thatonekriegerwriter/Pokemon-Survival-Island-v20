@@ -33,10 +33,16 @@ def getObjectImage(object)
 	 image = "craftingStations/sprink"
 	when :MEDICINEPOT
 	 image = "craftingStations/pot"
+	when :MODIFICATIONTABLE
+	 image = "craftingStations/ModificationTable"
 	when :PETBED
 	 image = "craftingStations/pet bed"
 	when :PETBEDOUTDOOR
 	 image = "craftingStations/pet bedo"
+	when :GUARDPOST
+	 image = "craftingStations/guard station"
+	when :FEEDER
+	 image = "craftingStations/Feeder"
 	when :BERRYPOT
 	 image = "craftingStations/BerryPot"
 	when :COMPOSTER

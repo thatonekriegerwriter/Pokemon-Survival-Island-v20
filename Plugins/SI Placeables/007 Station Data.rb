@@ -148,6 +148,7 @@ class CraftingStationData
 	   next true 
     end.sample
 	return unless species
+	pkmn.add_extra_species_moves
 	name = pkmn.name 
     pkmn.species = species
     pkmn.calc_stats
@@ -622,6 +623,68 @@ class CraftingStationData
   
 end
 
+class GuardStationData
+  attr_accessor :event_id
+  attr_accessor :started_working_at  
+  def initialize(event_id)
+    @event_id = event_id
+    @pokemon_slot = [nil]
+	@resting_since = nil
+	
+  end 
+  def event = $game_map.events[@event_id]
+  def x = event.x 
+  def y = event.y 
+  def pokemon = @pokemon_slot[0]
+  def pokemon_slot = @pokemon_slot
+  
+  
+  def replace_pokemon(new_pokemon)
+    spawned_event&.removeThisEventfromMap
+    @pokemon_slot[0] = nil
+    place_pokemon(new_pokemon)
+  end 
+  
+  def respawn_pokemon
+    return unless spawned_event.nil?
+    if pbPlacePokemon(x, y, pokemon)
+      self.movement_type = :INBED 
+	  spawned_event.pet_bed = @event_id
+	  @resting_since = pbGetTimeNow.to_i 
+	end 
+  end 
+  
+  def place_pokemon(new_pokemon)
+    return false unless new_pokemon
+    return false if !new_pokemon.able?
+    return true if new_pokemon.equal?(pokemon) # already resting here
+
+    if pbPlacePokemon(x, y, new_pokemon)
+      @pokemon_slot[0] = new_pokemon
+      self.movement_type = :INBED 
+	  spawned_event.pet_bed = @event_id
+	  @resting_since = pbGetTimeNow.to_i 
+      return true
+    else
+      return false
+    end
+  end
+
+  def remove_pokemon
+    spawned_event&.removeThisEventfromMap
+    @pokemon_slot[0] = nil
+  end
+
+  def spawned_event
+    return nil unless pokemon&.event
+    pokemon.event 
+  end
+  
+
+  def update
+  end 
+
+end 
 
 class PetBedData
   attr_accessor :event_id

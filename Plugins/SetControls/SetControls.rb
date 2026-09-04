@@ -35,10 +35,10 @@ end
 def open_set_controls_ui(menu_to_refresh=nil)
   scene=PokemonControls_Scene.new
   screen=PokemonControlsScreen.new(scene)
-  pbFadeOutIn {
+ # pbFadeOutIn {
     screen.start_screen
     menu_to_refresh.pbRefresh if menu_to_refresh
-  }
+#  }
 end
 
 
@@ -292,7 +292,7 @@ module Input
         when Input::ALTMENU # F, F5, Tab
 #          return $PokemonSystem.game_control_code("Direct Group")
         when Input::PUNCH # F, F5, Tab
-          return $PokemonSystem.game_control_code("Punch")
+          return $PokemonSystem.game_control_code("Quick Use")
         #when Input::CYCLEMOUSETYPE # F, F5, Tab
         #  return $PokemonSystem.game_control_code("Cycle Mouse Mode")
         when Input::NOTEBOOK # F, F5, Tab
@@ -339,7 +339,7 @@ module Keys
       ControlConfig.new("Menu", "Esc"),
       ControlConfig.new("Menu", "Enter"),
       ControlConfig.new("Running", "Shift"),
-      ControlConfig.new("Punch", "F"),
+      ControlConfig.new("Quick Use", "F"),
     #  ControlConfig.new("Selection Mouse Mode", "Shift"),
       ControlConfig.new("Open Notebook", "V"),
       ControlConfig.new("Show HUD", "R"),
@@ -500,6 +500,17 @@ module Keys
     return ret
   end 
 
+  # The default key code for the Nth binding of +action+ (0 = the first
+  # ControlConfig for that action in default_controls, 1 = the second,
+  # and so on). Falls back to the last matching default if +occurrence+
+  # runs past the end, and to "None" if the action has no default at all.
+  def self.default_key_code_for(action, occurrence = 0)
+    matches = default_controls.select { |control| control.control_action == action }
+    return key_code("None") if matches.empty?
+    chosen = matches[occurrence] || matches.last
+    return chosen.key_code
+  end
+
   def self.detect_key
     loop do
       Graphics.update
@@ -543,72 +554,184 @@ end
 
 
 
+#===============================================================================
+# Control Categories
+#-------------------------------------------------------------------------------
+# A small registry so the Set Controls screen can be split into tabs, and so
+# new tabs/actions can be added from any other script without touching this
+# one. Two calls are all that's needed:
+#
+#   ControlCategories.add(:combat, _INTL("Turn-Based Combat"), 30)
+#   ControlCategories.assign("Switch Pokemon", :combat)
+#
+# "add" registers a tab (or updates the name/order of one that already
+# exists). "order" controls left-to-right tab position; lower goes first.
+# "assign" slots a control action into a tab. Calling assign with a category
+# id that hasn't been added yet creates it automatically, so a plugin that
+# only cares about its own action doesn't have to call "add" at all.
+# Any action that's never assigned falls back to the :misc tab.
+#===============================================================================
+module ControlCategories
+  CategoryDef = Struct.new(:id, :name, :order)
+
+  @categories   = []
+  @action_to_id = {}
+
+  def self.add(id, name, order = 100)
+    id = id.to_sym
+    existing = @categories.find { |cat| cat.id == id }
+    if existing
+      existing.name  = name
+      existing.order = order
+    else
+      @categories << CategoryDef.new(id, name, order)
+    end
+    return id
+  end
+
+  # All registered categories, sorted for display.
+  def self.all
+    return @categories.sort_by { |cat| [cat.order, cat.id.to_s] }
+  end
+
+  def self.exists?(id)
+    return @categories.any? { |cat| cat.id == id.to_sym }
+  end
+
+  def self.name_for(id)
+    cat = @categories.find { |c| c.id == id.to_sym }
+    return cat ? cat.name : _INTL("Misc")
+  end
+
+  def self.assign(action, id)
+    id = id.to_sym
+    add(id, id.to_s.capitalize, 100) if !exists?(id)
+    @action_to_id[action] = id
+  end
+
+  def self.for_action(action)
+    return @action_to_id[action] || :misc
+  end
+end
+
+# Built-in tabs. Add more from any script with ControlCategories.add.
+ControlCategories.add(:overworld, _INTL("Overworld"), 10)
+ControlCategories.add(:inventory, _INTL("Inventory"), 20)
+#ControlCategories.add(:combat,    _INTL("Turn-Based Combat"), 30)
+ControlCategories.add(:misc,      _INTL("Misc"), 999)
+
+# Built-in action -> tab assignments. Every action currently defined in
+# Keys.default_controls is Overworld, per how the game is set up today.
+# Move an action to a different tab (or make a new tab for it) with a
+# single line, e.g.:
+#   ControlCategories.assign("Inventory", :inventory)
+#   ControlCategories.assign("Debug Menu", :misc)
+[
+  "Down", "Left", "Right", "Up", "Running", "Action", "Cancel", "Menu", "Inventory",
+  "Quick Use", "Scroll Up", "Scroll Down", "Open Notebook", "Show HUD", "Expand HUD",
+  "Combat HUD", "Show Grid", "Lock On", "Quick Access", "Direct Pokemon", "Check"
+].each { |action| ControlCategories.assign(action, :overworld) }
+
+["Aux 1", "Aux 2", "Debug Menu"].each { |action| ControlCategories.assign(action, :misc) }
+
+
+#===============================================================================
+# The list of key bindings for a single tab.
+#===============================================================================
 class Window_PokemonControls < Window_DrawableCommand
   attr_reader :reading_input
   attr_reader :deleting_input
   attr_reader :default_input
   attr_reader :controls
   attr_reader :changed
+  attr_accessor :refresh_controls
 
   DEFAULT_EXTRA_INDEX = 0
-  EXIT_EXTRA_INDEX = 1
+  EXIT_FULL_RESET_INDEX    = 1
+  EXIT_EXTRA_INDEX    = 2
 
-  def initialize(controls,x,y,width,height)
-    @controls = controls
-    @name_base_color   = Color.new(88,88,80)
-    @name_shadow_color = Color.new(168,184,184)
-    @sel_base_color    = Color.new(24,112,216)
-    @sel_shadow_color  = Color.new(136,168,208)
-    @reading_input = false
+  # Same palette as Options' Window_PokemonOption, so the two screens read
+  # as one continuous UI.
+  SEL_NAME_BASE_COLOR    = Color.new(192, 120, 0)
+  SEL_NAME_SHADOW_COLOR  = Color.new(248, 176, 80)
+  SEL_VALUE_BASE_COLOR   = Color.new(248, 48, 24)
+  SEL_VALUE_SHADOW_COLOR = Color.new(248, 136, 128)
+  NAME_BASE_COLOR        = Color.new(88, 88, 80)
+  NAME_SHADOW_COLOR      = Color.new(168, 184, 184)
+
+  def initialize(controls, x, y, width, height)
+    @controls       = controls
+    @reading_input  = false
     @deleting_input = false
-    @default_input = false
-    @changed = false
-    super(x,y,width,height)
+    @default_input  = false
+    @changed        = false
+    @refresh_controls        = false
+    super(x, y, width, height)
+  end
+
+  # Swaps in a different tab's controls (the same underlying ControlConfig
+  # objects as the master list, just filtered) without losing edits made on
+  # other tabs.
+  def set_controls(controls)
+    @controls = controls
+    @reading_input  = false
+    @deleting_input = false
+    @default_input  = false
+    self.index = 0
+    self.top_row = 0
+    refresh
   end
 
   def itemCount
-    return @controls.length+EXIT_EXTRA_INDEX+1
+    return @controls.length + EXIT_EXTRA_INDEX + 1
   end
 
   def set_new_input(new_input)
     @reading_input = false
-	 puts new_input
-    return if @controls[@index].key_code==new_input
-    #for control in @controls # Remove the same input for the same array
-    #  control.key_code = 0 if control.key_code==new_input
-    #end
-    @controls[@index].key_code=new_input
+    return if @controls[@index].key_code == new_input
+    @controls[@index].key_code = new_input
     @changed = true
-	
     refresh
   end
 
   def remove_input
     @deleting_input = false
-    @controls[@index].key_code=0
+    @controls[@index].key_code = 0
     @changed = true
-	
     refresh
+  end
+
+  # How many earlier rows in +list+ share the same action as the row at
+  # +idx+. Used to line a binding up with the matching entry in
+  # Keys.default_controls when an action has more than one binding (e.g.
+  # "Action" is bound to both Space and the left mouse button by default).
+  def occurrence_index(list, idx)
+    action = list[idx].control_action
+    count = 0
+    list[0...idx].each { |control| count += 1 if control.control_action == action }
+    return count
   end
 
   def default_the_input
     @default_input = false
-	key_code = 0
-	if Keys.default_controls[@index].control_action == @controls[@index].control_action
-	key_code = Keys.default_controls[@index].key_code
-	else
-	  Keys.default_controls.each do |control|
-	     next if control.control_action != @controls[@index].control_action
-	     #next if control.key_code == @controls[@index].key_code
-	     key_code = control.key_code
-	  end
-	end
-    @controls[@index].key_code=key_code
+    control = @controls[@index]
+    control.key_code = Keys.default_key_code_for(
+      control.control_action, occurrence_index(@controls, @index)
+    )
     @changed = true
-	
     refresh
   end
 
+  # Resets every binding on this tab back to its default.
+  def reset_tab_to_default
+    @controls.each_with_index do |control, i|
+      control.key_code = Keys.default_key_code_for(
+        control.control_action, occurrence_index(@controls, i)
+      )
+    end
+    @changed = true
+    refresh
+  end
 
   def on_exit_index?
     return @controls.length + EXIT_EXTRA_INDEX == @index
@@ -617,20 +740,21 @@ class Window_PokemonControls < Window_DrawableCommand
   def on_default_index?
     return @controls.length + DEFAULT_EXTRA_INDEX == @index
   end
-  
-  
+  def on_full_reset_index?
+    return @controls.length + EXIT_FULL_RESET_INDEX == @index
+  end
+
   def item_description
-    ret=nil
-    if on_exit_index?
-      ret=_INTL("Exit. If you changed anything, asks if you want to keep changes.")
-    elsif on_default_index?
-      ret=_INTL("Restore the default controls.")
-    else
-      ret= control_description(@controls[@index].control_action)
+    return _INTL("Close. If you changed anything, asks if you want to keep changes.") if on_exit_index?
+	if on_full_reset_index?
+      return _INTL("Restore every control to its default.")
+	end 
+    if on_default_index?
+      return _INTL("There are no controls on this tab to reset.") if @controls.empty?
+      return _INTL("Restore every control on this tab to its default.")
     end
-    return ret
-  end 
-  
+    return control_description(@controls[@index].control_action)
+  end
 
   def control_description(control_action)
     hash = {}
@@ -639,220 +763,304 @@ class Window_PokemonControls < Window_DrawableCommand
     hash["Right"] = hash["Down"]
     hash["Up"] = hash["Down"]
     hash["Running"] = _INTL("An optional key which can be assigned to run. The default behavior is double tap to run.")
-    hash["Action"] = _INTL("Confirm a choice, check things, talk to people, and move through text.")
-    hash["Cancel"] = _INTL("Exit, cancel a choice or mode, and move at field in a different speed.")
-    hash["Menu"] = _INTL("Open the menu. Also has various functions depending on context.")
-    hash["Show HUD"] = _INTL("Disables and Enables the Overworld HUD.")
+    hash["Action"] = _INTL("Confirm a choice, interact with things, and move through text.")
+    hash["Cancel"] = _INTL("Exit, cancel a choice or mode.")
+    hash["Menu"] = _INTL("Open the pause menu. Also has various functions depending on context.")
+    hash["Show HUD"] = _INTL("Toggles visibility of the Overworld HUD.")
     hash["Scroll Up"] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
-    hash["Scroll Down"] = hash[ "Scroll Up"]
+    hash["Scroll Down"] = hash["Scroll Up"]
     hash["Toggle HUD Contents"] = _INTL("Changes the HUD between it's various content types.")
-    hash["Expand HUD"] = _INTL("Shows the full version of the Pokemon HUD Type.")
-    hash["Lock On"] = _INTL("Lock on to an Overworld Pokemon.")
-    hash["Punch"] = _INTL("Punch whatever is in front of you.")
+    hash["Expand HUD"] = _INTL("Toggles visibility of the other items in the Overworld HUD.")
+    hash["Combat HUD"] = _INTL("A key dedicated to opening the Moves/Multiselect section of the Overworld HUD.")
+    hash["Show Grid"] = _INTL("Shows a grid on the Overworld for use in directing and selecting events.")
+    hash["Lock On"] = _INTL("Focuses the Camera on an Overworld Object.")
+    hash["Quick Use"] = _INTL("Uses a binded item, if no item is bound, performs a punch.")
+    hash["Quick Access"] = _INTL("Binds or Unbinds an item for Quick Use.")
     hash["Cycle Mouse Mode"] = _INTL("Cycle your mouse through it's different controls states.")
-    hash["Open Notebook"] = _INTL("Opens Player Notebook.")
+    hash["Open Notebook"] = _INTL("A dedicated key for opening your Notebook.")
     hash["Debug Menu"] = _INTL("Open the Debug Menu if accessible.")
     hash["Direct Group"] = _INTL("Direct a large group of Overworld Pokemon.")
     hash["Display Moves"] = _INTL("Display currently selected Overworld Pokemon's Moves.")
     hash["Selection Mouse Mode"] = _INTL("Immediately change to Selection Mouse Mode.")
-    hash["Direct Pokemon"] = _INTL("Opens a Menu to allow for finer direction of Overworld Pokemon.")
+    hash["Direct Pokemon"] = _INTL("Used to select/unselect an Overworld Pokemon, and direct them. Hold to select multiple Pokemon.")
+    hash["Check"] = _INTL("Can be used when Locked On to get information about an object.")
+    hash["Inventory"] = _INTL("Opens your Inventory Window.")
     hash["Aux 1"] = _INTL("Anxillary Control: Currently unused.")
     hash["Aux 2"] = _INTL("Anxillary Control: Currently unused.")
     return hash.fetch(control_action, _INTL("Set the controls."))
   end
 
+  def drawItem(index, _count, rect)
+    rect = drawCursor(index, rect)
+    name = case index - @controls.length
+           when DEFAULT_EXTRA_INDEX then _INTL("Reset Tab")
+           when EXIT_FULL_RESET_INDEX then _INTL("Reset All")
+           when EXIT_EXTRA_INDEX    then _INTL("Close")
+           else @controls[index].control_action
+           end
 
+    width = rect.width * 9 / 20
+    sel = (index == self.index)
 
-  def drawItem(index,count,rect)
-    rect=drawCursor(index,rect)
-    name = case index-@controls.length
-      when DEFAULT_EXTRA_INDEX   ; _INTL("Default")
-      when EXIT_EXTRA_INDEX      ; _INTL("Exit")
-      else                       ; @controls[index].control_action
-    end
-    width= rect.width*9/20
     pbDrawShadowText(
-      self.contents,rect.x,rect.y,width,rect.height,
-      name,@name_base_color,@name_shadow_color
+      self.contents, rect.x, rect.y, width, rect.height,
+      name,
+      sel ? SEL_NAME_BASE_COLOR : NAME_BASE_COLOR,
+      sel ? SEL_NAME_SHADOW_COLOR : NAME_SHADOW_COLOR
     )
-    self.contents.draw_text(rect.x,rect.y,width,rect.height,name)
-    return if index>=@controls.length
+
+    return if index >= @controls.length
+
     value = _INTL(@controls[index].key_name)
-    xpos = width+rect.x
+    xpos = width + rect.x
     pbDrawShadowText(
-      self.contents,xpos,rect.y,width,rect.height,
-      value,@sel_base_color,@sel_shadow_color
+      self.contents, xpos, rect.y, width, rect.height,
+      value, SEL_VALUE_BASE_COLOR, SEL_VALUE_SHADOW_COLOR
     )
-    self.contents.draw_text(xpos,rect.y,width,rect.height,value)
   end
 
   def update
-    oldindex=self.index
+    oldindex = self.index
     super
-    do_refresh=self.index!=oldindex
-    if self.active && self.index<=@controls.length
+    do_refresh = self.index != oldindex
+
+    if self.active && self.index <= @controls.length + 1
       if Input.trigger?(Input::C)
         if on_default_index?
-          if pbConfirmMessage(_INTL("Are you sure? Anyway, you can exit this screen without keeping the changes."))
-            pbPlayDecisionSE()
-            @controls = Keys.default_controls
-            @changed = true
+          if !@controls.empty? && pbConfirmMessage(_INTL("Reset every control on this tab to default? Anyway, you can exit this screen without keeping the changes."))
+            pbPlayDecisionSE
+            reset_tab_to_default
             do_refresh = true
           end
-        elsif self.index<@controls.length
-	
-          commands = []
-		   command = -1
-          cmdGiveItem = -1
-          cmdPokedex  = -1
-          cmdMark     = -1
-          commands[cmdGiveItem = commands.length]       = _INTL("Change Key")
-          commands[cmdMark = commands.length]       = _INTL("Delete Key")
-          commands[cmdPokedex = commands.length]       = _INTL("Default Key")
-          commands[commands.length]                 = _INTL("Cancel")
-		   puts command
-             msgwindow = pbCreateMessageWindow(nil,nil)
-             pbMessageDisplay(msgwindow,_INTL("What will you do?\\wtnp[1]"))
+        elsif on_full_reset_index?
+          if pbConfirmMessage(_INTL("Are you sure? Anyway, you can exit this screen without keeping the changes."))
+            pbPlayDecisionSE
+            @refresh_controls        = true 
+			@changed = true
+            do_refresh = true
+          end
+        elsif self.index < @controls.length
+          commands   = []
+          cmdChange  = commands.length; commands.push(_INTL("Change Key"))
+          cmdDelete  = commands.length; commands.push(_INTL("Delete Key"))
+          cmdDefault = commands.length; commands.push(_INTL("Default Key"))
+          commands.push(_INTL("Cancel"))
+
+          msgwindow = pbCreateMessageWindow(nil, nil)
+          pbMessageDisplay(msgwindow, _INTL("What will you do?\\wtnp[1]"))
           command = pbShowCommands(msgwindow, commands)
-             pbDisposeMessageWindow(msgwindow)
-          if cmdGiveItem >= 0 && command == cmdGiveItem	 
-          @reading_input = true
-		   elsif cmdMark >= 0 && command == cmdMark	 
-          @deleting_input = true
-		   elsif cmdPokedex >= 0 && command == cmdPokedex	 
-          @default_input = true
-          end	
+          pbDisposeMessageWindow(msgwindow)
+
+          if command == cmdChange
+            @reading_input = true
+          elsif command == cmdDelete
+            @deleting_input = true
+          elsif command == cmdDefault
+            @default_input = true
+          end
         end
       end
     end
+
     refresh if do_refresh
   end
-
-
 end
 
 class PokemonControls_Scene
+  # Same palette as the tab text uses when selected/unselected, so the tab
+  # bar and the list below it look like one piece.
+  TAB_BASE_COLOR       = Color.new(88, 88, 80)
+  TAB_SHADOW_COLOR     = Color.new(168, 184, 184)
+  TAB_SEL_BASE_COLOR   = Color.new(192, 120, 0)
+  TAB_SEL_SHADOW_COLOR = Color.new(248, 176, 80)
+  TAB_HEIGHT           = 32
 
   def start_scene
-    @sprites={}
-    @viewport=Viewport.new(0,0,Graphics.width,Graphics.height)
-    @viewport.z=99999
-	
-	
-	
-    @sprites["title"]=Window_UnformattedTextPokemon.newWithSize(
-      _INTL("Controls"),0,0,Graphics.width,64,@viewport
+    @sprites  = {}
+    @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
+    @viewport.z = 99999
+
+    # Same background as the main Options screen.
+    addBackgroundOrColoredPlane(
+      @sprites, "bg", "optionsbg", Color.new(192, 200, 208), @viewport
     )
-	
-	
-	
-	
-    @sprites["textbox"]=pbCreateMessageWindow
-    @sprites["textbox"].letterbyletter=false
-	
-	
-	
-    game_controls = $PokemonSystem.game_controls.map{|c| c.clone}
-    @sprites["controlwindow"]=Window_PokemonControls.new(
-      game_controls,0,@sprites["title"].height,Graphics.width,
-      Graphics.height-@sprites["title"].height-@sprites["textbox"].height
+
+    @sprites["title"] = Window_UnformattedTextPokemon.newWithSize(
+      _INTL("Controls"), 0, -16, Graphics.width, 64, @viewport
     )
-	
-	
-	
-	
-    @sprites["controlwindow"].viewport=@viewport
-    @sprites["controlwindow"].visible=true
+    @sprites["title"].back_opacity = 0
+
+    tab_top = @sprites["title"].y + @sprites["title"].height - 16
+
+    @categories = ControlCategories.all
+    @tab_index  = 0
+
+    @sprites["tabs"] = Sprite.new(@viewport)
+    @sprites["tabs"].x = 0
+    @sprites["tabs"].y = tab_top
+    @sprites["tabs"].bitmap = Bitmap.new(Graphics.width, TAB_HEIGHT)
+
+    @sprites["textbox"] = pbCreateMessageWindow
+    @sprites["textbox"].letterbyletter = false
+    pbSetSystemFont(@sprites["textbox"].contents)
+
+    @all_controls = $PokemonSystem.game_controls.map { |c| c.clone }
+
+    list_y = tab_top + TAB_HEIGHT
+    @sprites["controlwindow"] = Window_PokemonControls.new(
+      controls_for_tab(@tab_index),
+      0, list_y,
+      Graphics.width,
+      Graphics.height - list_y - @sprites["textbox"].height
+    )
+    @sprites["controlwindow"].viewport = @viewport
+    @sprites["controlwindow"].visible  = true
+
+    @tab_positions = {}
     @changed = false
+
+    draw_tabs
     pbDeactivateWindows(@sprites)
     pbFadeInAndShow(@sprites) { update }
-	
-	
-	
+  end
+
+  # Every control assigned to the category at +tab_index+, pulled from the
+  # shared master list so edits persist when switching tabs.
+  def controls_for_tab(tab_index)
+    category = @categories[tab_index]
+    return [] if category.nil?
+    return @all_controls.select { |c| ControlCategories.for_action(c.control_action) == category.id }
+  end
+
+  def draw_tabs
+    bitmap = @sprites["tabs"].bitmap
+    bitmap.clear
+    return if @categories.empty?
+    pbSetSystemFont(bitmap)
+
+    tab_width = bitmap.width / @categories.length
+    @categories.each_with_index do |category, i|
+      selected = (i == @tab_index)
+      pbDrawShadowText(
+        bitmap, i * tab_width, 0, tab_width, bitmap.height,
+        category.name,
+        selected ? TAB_SEL_BASE_COLOR : TAB_BASE_COLOR,
+        selected ? TAB_SEL_SHADOW_COLOR : TAB_SHADOW_COLOR,
+        1
+      )
+    end
+  end
+
+  def current_tab_empty?
+    return controls_for_tab(@tab_index).empty?
+  end
+
+  def change_tab(tab_index)
+    return if @categories.empty?
+
+    # Remember where the cursor was on the tab we're leaving.
+    @tab_positions[@tab_index] = @sprites["controlwindow"].index
+
+    @tab_index = tab_index % @categories.length
+    draw_tabs
+
+    @sprites["controlwindow"].set_controls(controls_for_tab(@tab_index))
+    saved = @tab_positions[@tab_index]
+    @sprites["controlwindow"].index = saved if saved
+  end
+
+  def current_description
+    return _INTL("No controls are assigned to this tab yet.") if current_tab_empty?
+    return @sprites["controlwindow"].item_description
   end
 
   def update
     pbUpdateSpriteHash(@sprites)
   end
 
-
-
-
   def main
-    last_index=-1
+    last_index = -1
     should_refresh_text = false
-    pbActivateWindow(@sprites,"controlwindow"){
-    loop do
-      Graphics.update
-      Input.update
-      update
-      should_refresh_text = @sprites["controlwindow"].index!=last_index
-      if @sprites["controlwindow"].reading_input
-        @sprites["textbox"].text=_INTL("Press a new key.")
-        @sprites["controlwindow"].set_new_input(Keys.detect_key)
-        should_refresh_text = true
-        @changed = true
-	  elsif @sprites["controlwindow"].deleting_input
-        @sprites["textbox"].text=_INTL("Unbinding Key.")
-        @sprites["controlwindow"].remove_input
-        should_refresh_text = true
-        @changed = true
-	  elsif @sprites["controlwindow"].default_input
-        @sprites["textbox"].text=_INTL("Setting key to default.")
-        @sprites["controlwindow"].default_the_input
-        should_refresh_text = true
-        @changed = true
-      else
-        if Input.trigger?(Input::B) || (
-          Input.trigger?(Input::C) && @sprites["controlwindow"].on_exit_index?
-        )
-          if(
-            @sprites["controlwindow"].changed && 
-            pbConfirmMessage(_INTL("Keep changes?"))
+
+    pbActivateWindow(@sprites, "controlwindow") {
+      loop do
+        Graphics.update
+        Input.update
+        update
+        should_update_controls = @sprites["controlwindow"].refresh_controls
+        should_refresh_text = @sprites["controlwindow"].index != last_index
+        if should_update_controls
+		 
+         @all_controls = Keys.default_controls.map { |c| c.clone }
+         draw_tabs
+         @sprites["controlwindow"].set_controls(controls_for_tab(@tab_index))
+		 should_refresh_text = true 
+		 @sprites["controlwindow"].refresh_controls = false 
+		 @changed = true 
+		end 
+        if @sprites["controlwindow"].reading_input
+          @sprites["textbox"].text = _INTL("Press a new key.")
+          @sprites["controlwindow"].set_new_input(Keys.detect_key)
+          should_refresh_text = true
+          @changed = true
+        elsif @sprites["controlwindow"].deleting_input
+          @sprites["textbox"].text = _INTL("Unbinding Key.")
+          @sprites["controlwindow"].remove_input
+          should_refresh_text = true
+          @changed = true
+        elsif @sprites["controlwindow"].default_input
+          @sprites["textbox"].text = _INTL("Setting key to default.")
+          @sprites["controlwindow"].default_the_input
+          should_refresh_text = true
+          @changed = true
+        else
+          if Input.trigger?(Input::LEFT) && @categories.length > 1
+            pbPlayCursorSE
+            change_tab(@tab_index - 1)
+            should_refresh_text = true
+          elsif Input.trigger?(Input::RIGHT) && @categories.length > 1
+            pbPlayCursorSE
+            change_tab(@tab_index + 1)
+            should_refresh_text = true
+          elsif Input.trigger?(Input::B) || (
+            Input.trigger?(Input::C) && @sprites["controlwindow"].on_exit_index?
           )
-            should_refresh_text = true # Visual effect
-			  controls = @sprites["controlwindow"].controls.reject { |control| control.control_action == "Debug Menu" }
-			  siSaveControls(controls)
-              $PokemonSystem.game_controls = @sprites["controlwindow"].controls
+            if @sprites["controlwindow"].changed &&
+               pbConfirmMessage(_INTL("Keep changes?"))
+              should_refresh_text = true # Visual effect
+              controls = @all_controls.reject { |control| control.control_action == "Debug Menu" }
+              siSaveControls(controls)
+              $PokemonSystem.game_controls = @all_controls
               break
-          else
-            break
+            else
+              break
+            end
           end
         end
-      end
-      if should_refresh_text
-        if @sprites["textbox"].text!=@sprites["controlwindow"].item_description
-          @sprites["textbox"].text = @sprites["controlwindow"].item_description
+
+        if should_refresh_text
+          new_text = current_description
+          @sprites["textbox"].text = new_text if @sprites["textbox"].text != new_text
+          last_index = @sprites["controlwindow"].index
         end
-        last_index = @sprites["controlwindow"].index
       end
-    end
     }
   end
-
-
-
-
-
-
 
   def end_scene
     pbFadeOutAndHide(@sprites) { update }
     pbDisposeMessageWindow(@sprites["textbox"])
+    if @sprites["tabs"] && @sprites["tabs"].bitmap && !@sprites["tabs"].bitmap.disposed?
+      @sprites["tabs"].bitmap.dispose
+    end
     pbDisposeSpriteHash(@sprites)
     @viewport.dispose
   end
-
-
-
 end
-
-
-
 
 class PokemonControlsScreen
   def initialize(scene)
-    @scene=scene
+    @scene = scene
   end
 
   def start_screen
@@ -867,18 +1075,30 @@ end
 
 
 
-
-
-
-
 class PokemonSystem
   attr_writer :game_controls
   def game_controls
-    @game_controls = siLoadControls
+    @game_controls = merge_controls(siLoadControls)
 	@game_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
     return @game_controls
   end
-  
+  def merge_controls(saved_controls)
+  used = Array.new(saved_controls.length, false)
+
+  Keys.default_controls.map do |default_control|
+    index = saved_controls.each_index.find do |i|
+      !used[i] &&
+        saved_controls[i].control_action == default_control.control_action
+    end
+
+    if index
+      used[index] = true
+      saved_controls[index]
+    else
+      default_control
+    end
+  end
+end
   
   def has_debug_menu?
     @game_controls.each do |control|

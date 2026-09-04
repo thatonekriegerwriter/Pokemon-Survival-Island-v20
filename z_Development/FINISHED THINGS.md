@@ -31,9 +31,11 @@
 - [x] Right clicking with an item on its original position just places it back down.
 - [x] Prevent placables from stacking
 - [x] Fix Middle Mouse Selection
+- [x] Update Options Menu and Controls Menu
 
 
 ### Pokemon
+- [x] Possible relearnable move storage
 
 ### Placeables
 - [x] Graves have a low chance of respawning as a Ghost Type
@@ -45,6 +47,7 @@
 ### Combat
 - [x] Rework moveexecution to be within OverworldCombat::MoveExecution.
 - [x] Combat state in battle_data, last used move, resetting counters, etc.
+- [x] Bright Powder can be used to paralyze.
 - [x] Rework loyalty and disobedience.
 
 ### Buildings

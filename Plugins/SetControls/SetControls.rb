@@ -62,6 +62,18 @@ module Input
 	INVENTORY = 55
 	SHOWGRID = 56
 	QUICKACCESSREGISTER = 57
+	HISTORYSCREENSHOT = 58
+	DESELECTALL = 59
+	PONDERINVENTORY = 60
+	FAVORITEINVENTORY = 61
+	QUICKACCESSINVENTORY = 62
+	INFOINVENTORY = 63
+	SEARCHINVENTORY = 64
+	INVENTORYTOGGLE = 65
+	
+	
+	
+	
 	
   @key_last_pressed = {}
   @key_press_time = {}
@@ -307,6 +319,22 @@ module Input
           return $PokemonSystem.game_control_code("Inventory")
         when Input::SHOWGRID
           return $PokemonSystem.game_control_code("Show Grid")
+        when Input::HISTORYSCREENSHOT
+          return $PokemonSystem.game_control_code("History")
+        when Input::DESELECTALL
+          return $PokemonSystem.game_control_code("Deselect")
+        when Input::PONDERINVENTORY # X, ESC
+          return $PokemonSystem.game_control_code("Ponder")
+        when Input::FAVORITEINVENTORY # X, ESC
+          return $PokemonSystem.game_control_code("Toggle Favorite")
+        when Input::QUICKACCESSINVENTORY # X, ESC
+          return $PokemonSystem.game_control_code("Toggle QA")
+        when Input::INFOINVENTORY # X, ESC
+          return $PokemonSystem.game_control_code("Show Info")
+        when Input::SEARCHINVENTORY # X, ESC
+          return $PokemonSystem.game_control_code("Search Inventory")
+        when Input::INVENTORYTOGGLE # X, ESC
+          return $PokemonSystem.game_control_code("Interact Inventory")
         else
           return nil
       end
@@ -353,10 +381,17 @@ module Keys
       ControlConfig.new("Aux 1", "J"),
       ControlConfig.new("Aux 2", "Y"),
       ControlConfig.new("Direct Pokemon", "MouseMiddle"),
-      ControlConfig.new("Check", "I")
+      ControlConfig.new("Check", "I"),
+      ControlConfig.new("History", "Home"),
+      ControlConfig.new("Deselect", "Tab"),
+      ControlConfig.new("Ponder", "P"),
+      ControlConfig.new("Toggle Favorite", "Tab"),
+      ControlConfig.new("Toggle QA", "F"),
+      ControlConfig.new("Show Info", "I"),
+      ControlConfig.new("Search Inventory", "S"),
+      ControlConfig.new("Interact Inventory", "MouseMiddle")
     ]
   end 
-
   # Available keys
   CONTROLS_LIST = {
     # Mouse buttons
@@ -616,9 +651,9 @@ end
 
 # Built-in tabs. Add more from any script with ControlCategories.add.
 ControlCategories.add(:overworld, _INTL("Overworld"), 10)
-ControlCategories.add(:inventory, _INTL("Inventory"), 20)
-#ControlCategories.add(:combat,    _INTL("Turn-Based Combat"), 30)
-ControlCategories.add(:misc,      _INTL("Misc"), 999)
+ControlCategories.add(:inventory, _INTL("Inventory"), 30)
+ControlCategories.add(:combat,    _INTL("Combat"), 20)
+ControlCategories.add(:misc,      _INTL("Other"), 999)
 
 # Built-in action -> tab assignments. Every action currently defined in
 # Keys.default_controls is Overworld, per how the game is set up today.
@@ -626,13 +661,10 @@ ControlCategories.add(:misc,      _INTL("Misc"), 999)
 # single line, e.g.:
 #   ControlCategories.assign("Inventory", :inventory)
 #   ControlCategories.assign("Debug Menu", :misc)
-[
-  "Down", "Left", "Right", "Up", "Running", "Action", "Cancel", "Menu", "Inventory",
-  "Quick Use", "Scroll Up", "Scroll Down", "Open Notebook", "Show HUD", "Expand HUD",
-  "Combat HUD", "Show Grid", "Lock On", "Quick Access", "Direct Pokemon", "Check"
-].each { |action| ControlCategories.assign(action, :overworld) }
-
-["Aux 1", "Aux 2", "Debug Menu"].each { |action| ControlCategories.assign(action, :misc) }
+["Down", "Left", "Right", "Up", "Running", "Action", "Cancel", "Menu", "Inventory", "Open Notebook"].each { |action| ControlCategories.assign(action, :overworld) }
+["Show HUD", "Expand HUD", "Combat HUD", "Show Grid", "Direct Pokemon", "Deselect", "Lock On", "Check", "Quick Access", "Quick Use"].each { |action| ControlCategories.assign(action, :combat) }
+["Aux 1", "Aux 2", "Scroll Up", "Scroll Down", "Debug Menu"].each { |action| ControlCategories.assign(action, :misc) }
+["Ponder", "Toggle Favorite", "Toggle QA", "Show Info", "Search Inventory", "Interact Inventory"].each { |action| ControlCategories.assign(action, :inventory) }
 
 
 #===============================================================================
@@ -667,6 +699,47 @@ class Window_PokemonControls < Window_DrawableCommand
     @changed        = false
     @refresh_controls        = false
     super(x, y, width, height)
+  end
+  def control_description(control_action)
+    hash = {}
+    hash["Down"] = _INTL("Moves the character. Select entries and navigate menus.")
+    hash["Left"] = hash["Down"]
+    hash["Right"] = hash["Down"]
+    hash["Up"] = hash["Down"]
+    hash["Running"] = _INTL("An optional key which can be assigned to run. The default behavior is double tap to run.")
+    hash["Action"] = _INTL("Confirm a choice, interact with things, and move through text.")
+    hash["Cancel"] = _INTL("Exit, cancel a choice or mode.")
+    hash["Menu"] = _INTL("Open the pause menu. Also has various functions depending on context.")
+    hash["Show HUD"] = _INTL("Toggles visibility of the Overworld HUD.")
+    hash["Scroll Up"] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
+    hash["Scroll Down"] = hash["Scroll Up"]
+    hash["Toggle HUD Contents"] = _INTL("Changes the HUD between it's various content types.")
+    hash["Expand HUD"] = _INTL("Toggles visibility of the other items in the Overworld HUD.")
+    hash["Combat HUD"] = _INTL("A key dedicated to opening the Moves/Multiselect section of the Overworld HUD.")
+    hash["Show Grid"] = _INTL("Shows a grid on the Overworld for use in directing and selecting events.")
+    hash["Lock On"] = _INTL("Focuses the Camera on an Overworld Object.")
+    hash["Quick Use"] = _INTL("Uses a binded item, if no item is bound, performs a punch.")
+    hash["Quick Access"] = _INTL("Binds or Unbinds an item for Quick Use.")
+    hash["Cycle Mouse Mode"] = _INTL("Cycle your mouse through it's different controls states.")
+    hash["Open Notebook"] = _INTL("A dedicated key for opening your Notebook.")
+    hash["Debug Menu"] = _INTL("Open the Debug Menu if accessible.")
+    hash["Direct Group"] = _INTL("Direct a large group of Overworld Pokemon.")
+    hash["Display Moves"] = _INTL("Display currently selected Overworld Pokemon's Moves.")
+    hash["Selection Mouse Mode"] = _INTL("Immediately change to Selection Mouse Mode.")
+    hash["Direct Pokemon"] = _INTL("Used to select/unselect an Overworld Pokemon, and direct them. Hold to select multiple Pokemon.")
+    hash["Check"] = _INTL("Can be used when Locked On to get information about an object.")
+    hash["Inventory"] = _INTL("Opens your Inventory Window.")
+    hash["History"] = _INTL("Allows you to store this moment to be recounting to you on loading of a save.")
+    hash["Deselect"] = _INTL("Unselect all currently selected Pokemon.")
+    hash["Ponder"] = _INTL("Ponder hovered item.")
+    hash["Toggle Favorite"] = _INTL("Toggle Favorite status for hovered object.")
+    hash["Toggle QA"] = _INTL("Toggle Quick Access status for hovered object.")
+    hash["Show Info"] = _INTL("Show more detail about the hovered object.")
+    hash["Search Inventory"] = _INTL("Opens up prompt to allow you to search inventory for given name.")
+    hash["Interact Inventory"] = _INTL("Allows you to use an item/open Pokemon inventory.")
+    hash["Aux 1"] = _INTL("Anxillary Control: Currently unused.")
+    hash["Aux 2"] = _INTL("Anxillary Control: Currently unused.")
+    return hash.fetch(control_action, _INTL("Set the controls."))
   end
 
   # Swaps in a different tab's controls (the same underlying ControlConfig
@@ -756,39 +829,6 @@ class Window_PokemonControls < Window_DrawableCommand
     return control_description(@controls[@index].control_action)
   end
 
-  def control_description(control_action)
-    hash = {}
-    hash["Down"] = _INTL("Moves the character. Select entries and navigate menus.")
-    hash["Left"] = hash["Down"]
-    hash["Right"] = hash["Down"]
-    hash["Up"] = hash["Down"]
-    hash["Running"] = _INTL("An optional key which can be assigned to run. The default behavior is double tap to run.")
-    hash["Action"] = _INTL("Confirm a choice, interact with things, and move through text.")
-    hash["Cancel"] = _INTL("Exit, cancel a choice or mode.")
-    hash["Menu"] = _INTL("Open the pause menu. Also has various functions depending on context.")
-    hash["Show HUD"] = _INTL("Toggles visibility of the Overworld HUD.")
-    hash["Scroll Up"] = _INTL("Advance quickly in menus, and navigate Overworld HUD.")
-    hash["Scroll Down"] = hash["Scroll Up"]
-    hash["Toggle HUD Contents"] = _INTL("Changes the HUD between it's various content types.")
-    hash["Expand HUD"] = _INTL("Toggles visibility of the other items in the Overworld HUD.")
-    hash["Combat HUD"] = _INTL("A key dedicated to opening the Moves/Multiselect section of the Overworld HUD.")
-    hash["Show Grid"] = _INTL("Shows a grid on the Overworld for use in directing and selecting events.")
-    hash["Lock On"] = _INTL("Focuses the Camera on an Overworld Object.")
-    hash["Quick Use"] = _INTL("Uses a binded item, if no item is bound, performs a punch.")
-    hash["Quick Access"] = _INTL("Binds or Unbinds an item for Quick Use.")
-    hash["Cycle Mouse Mode"] = _INTL("Cycle your mouse through it's different controls states.")
-    hash["Open Notebook"] = _INTL("A dedicated key for opening your Notebook.")
-    hash["Debug Menu"] = _INTL("Open the Debug Menu if accessible.")
-    hash["Direct Group"] = _INTL("Direct a large group of Overworld Pokemon.")
-    hash["Display Moves"] = _INTL("Display currently selected Overworld Pokemon's Moves.")
-    hash["Selection Mouse Mode"] = _INTL("Immediately change to Selection Mouse Mode.")
-    hash["Direct Pokemon"] = _INTL("Used to select/unselect an Overworld Pokemon, and direct them. Hold to select multiple Pokemon.")
-    hash["Check"] = _INTL("Can be used when Locked On to get information about an object.")
-    hash["Inventory"] = _INTL("Opens your Inventory Window.")
-    hash["Aux 1"] = _INTL("Anxillary Control: Currently unused.")
-    hash["Aux 2"] = _INTL("Anxillary Control: Currently unused.")
-    return hash.fetch(control_action, _INTL("Set the controls."))
-  end
 
   def drawItem(index, _count, rect)
     rect = drawCursor(index, rect)
@@ -875,6 +915,15 @@ class PokemonControls_Scene
   TAB_SEL_SHADOW_COLOR = Color.new(248, 176, 80)
   TAB_HEIGHT           = 32
 
+
+  def has_debug_menu?
+    @all_controls.each do |control|
+	  if control.control_action == "Debug Menu"
+	    return false
+	  end
+	end
+    return true
+  end
   def start_scene
     @sprites  = {}
     @viewport = Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -905,7 +954,8 @@ class PokemonControls_Scene
     pbSetSystemFont(@sprites["textbox"].contents)
 
     @all_controls = $PokemonSystem.game_controls.map { |c| c.clone }
-
+    @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
+	
     list_y = tab_top + TAB_HEIGHT
     @sprites["controlwindow"] = Window_PokemonControls.new(
       controls_for_tab(@tab_index),
@@ -992,6 +1042,7 @@ class PokemonControls_Scene
         if should_update_controls
 		 
          @all_controls = Keys.default_controls.map { |c| c.clone }
+         @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
          draw_tabs
          @sprites["controlwindow"].set_controls(controls_for_tab(@tab_index))
 		 should_refresh_text = true 

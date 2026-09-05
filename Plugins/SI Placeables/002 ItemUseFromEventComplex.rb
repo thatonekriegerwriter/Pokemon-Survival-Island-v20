@@ -108,10 +108,16 @@ end
 )
 
 ItemHandlers::UseFromEvent.add(:MACHINEBOX, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerTransmitters(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
@@ -538,15 +544,11 @@ end
 
 end
 
-def powerTransmitters(type)
+def powerTransmitters(item)
 action = []
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new(key_id)
-item.internal_data=localMeter
-end
 
-localMeter.event_id = key_id if localMeter.event_id!=key_id
+
+if false 
 commands=[]
 commands.push(_INTL("Check Power")) 
 commands.push(_INTL("Connect")) 
@@ -576,7 +578,7 @@ end
 else
 	 return -1
 end
-
+end 
 
 
 

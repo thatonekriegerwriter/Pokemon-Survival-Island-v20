@@ -143,7 +143,8 @@ end
 # Screen class for handling game logic
 #===============================================================================
 class MoveRelearnerScreen
-  def pbGetRelearnableMoves(pkmn)
+  #This also needs to be updated in move_relearner.
+  def self.pbGetRelearnableMoves(pkmn)
     return [] if !pkmn || pkmn.egg? || pkmn.shadowPokemon?
     moves = []
     pkmn.getMoveList.each do |m|
@@ -168,7 +169,7 @@ class MoveRelearnerScreen
   end
 
   def pbStartScreen(pkmn)
-    moves = pbGetRelearnableMoves(pkmn)    #by Kota
+    moves = MoveRelearnerScreen.pbGetRelearnableMoves(pkmn)    #by Kota
     @scene.pbStartScene(pkmn, moves)
     loop do
       move = @scene.pbChooseMove
@@ -191,12 +192,14 @@ end
 #===============================================================================
 #
 #===============================================================================
-def pbRelearnMoveScreen(pkmn)
+def pbRelearnMoveScreen(pkmn = nil)
   retval = true
-  pbFadeOutIn {
-    scene = MoveRelearner_Scene.new
-    screen = MoveRelearnerScreen.new(scene)
-    retval = screen.pbStartScreen(pkmn)
-  }
+  pkmn = [pkmn] if pkmn && pkmn.is_a?(Pokemon)
+#  pbFadeOutIn {
+#    scene = MoveRelearner_Scene.new
+#    screen = MoveRelearnerScreen.new(scene)
+ #   retval = screen.pbStartScreen(pkmn)
+ # }
+  retval = Inventory.invWindow(:MOVERELEARNER, pkmn)
   return retval
 end

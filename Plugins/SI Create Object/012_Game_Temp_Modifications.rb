@@ -39,6 +39,9 @@ class Game_Temp
   attr_accessor :assignment_mode 
   attr_accessor :assignment_source 
   attr_accessor :assignment_cooldown
+  attr_accessor :connection_mode 
+  attr_accessor :connection_source 
+  attr_accessor :connection_cooldown
   
   def in_inventory
     @in_inventory = false if @in_inventory.nil?
@@ -51,6 +54,14 @@ class Game_Temp
   def assignment_cooldown
     @assignment_cooldown = 0 if @assignment_cooldown.nil?
     return @assignment_cooldown
+  end
+  def connection_mode
+    @connection_mode = false if @connection_mode.nil?
+    return @connection_mode
+  end
+  def connection_cooldown
+    @connection_cooldown = 0 if @connection_cooldown.nil?
+    return @connection_cooldown
   end
   def inv_cooldown
     @inv_cooldown = 0 if @inv_cooldown.nil?

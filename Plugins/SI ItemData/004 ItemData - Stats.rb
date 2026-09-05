@@ -12,6 +12,15 @@ class ItemData
 	@stats = ItemStats.new(self)
   end 
   
+  def initialize_copy(original)
+    super
+    @modifiers  = original.modifiers.dup
+    @stats  = original.stats.dup
+    @modifiers.item = self
+    @stats.item     = self 
+  
+  end 
+  
   def stats 
 	@stats = ItemStats.new(self) if @stats.nil?
     return @stats 
@@ -40,10 +49,12 @@ end
 
 
 class ItemStats
+  attr_accessor :item
   attr_reader :berry
   attr_reader :consumable
   attr_reader :pokeball
   attr_reader :capture_styler
+  attr_reader :weapon
   
   attr_accessor :damage
   attr_accessor :defense
@@ -57,12 +68,27 @@ class ItemStats
     @consumable = ConsumableStats.new(item) if item.data.is_berry? || item.data.is_foodwater?
     @pokeball = PokeBallStats.new(item) if item.data.is_pokeball?
     @capture_styler = CaptureStylerStats.new(item) if item.data.is_styler?
-	
+	@weapon = WeaponStats.new(item) if item.data.is_weapon?
 	@damage = 0
 	@defense = 0
 	@speed = 0
   end 
   
+  def initialize_copy(original)
+    super 
+    
+    @berry          = original.berry.dup if original.berry
+    @consumable     = original.consumable.dup if original.consumable
+    @pokeball       = original.pokeball.dup if original.pokeball
+    @capture_styler = original.capture_styler.dup if original.capture_styler
+    @weapon = original.weapon.dup if original.weapon
+
+    @berry.item          = self.item if @berry
+    @consumable.item     = self.item if @consumable
+    @pokeball.item       = self.item if @pokeball
+    @capture_styler.item = self.item if @capture_styler
+    @weapon.item = self.item if @weapon
+  end
   
   def quality
     if @item.data.is_pokeball?
@@ -105,7 +131,18 @@ class ItemStats
   def restores=(value)
     @consumable.restores=value
   end 
-
+  
+  def weapon 
+    @weapon = WeaponStats.new(@item) if @weapon.nil?
+	return @weapon 
+  end 
+  
+  def stat_bonus=(value)
+    weapon.stat_bonus=value
+  end 
+  def stat_bonus
+    weapon.stat_bonus
+  end 
 
 
   def growth
@@ -201,9 +238,27 @@ class ItemStats
 
 
 end 
+class WeaponStats
+  attr_accessor :item
+  attr_accessor :stat_bonus 
+  def initialize(item)
+    @item = @item
+    @stat_bonus = 0
+  
+  
+  
+  
+  end 
+  def initialize_copy(original)
+    super
+  end
 
+
+
+end 
 
 class BerryStats
+  attr_accessor :item
   attr_accessor :growth # effects the growth rate of plants
   attr_accessor :resistance # effects how resistant the plant is to weeds, and pests, rang: 0-4
   attr_accessor :flavor #effects how a pokemon likes a berry
@@ -219,7 +274,9 @@ class BerryStats
 	@gain = 0
 	@quality = 1
   end 
-  
+  def initialize_copy(original)
+    super
+  end
   
   def berry_data
     GameData::BerryPlant.get(@item.id)
@@ -228,6 +285,7 @@ end
 
 
 class ConsumableStats
+  attr_accessor :item
   attr_accessor :spoiling_rate 
   attr_accessor :priority 
   attr_accessor :servings 
@@ -242,6 +300,10 @@ class ConsumableStats
 	@restores = 0 # effects how much the food restores, range: negative to postive
 	@quality = 1 #  effects it's price, and the amount of food/water restored by it, rang: 1-5
   end 
+  def initialize_copy(original)
+    super
+    @flavor = original.instance_variable_get(:@flavor).dup
+  end
   
   def quality
     if @item.data.is_berry?
@@ -280,6 +342,7 @@ class ConsumableStats
 end 
 
 class PokeBallStats
+  attr_accessor :item
   attr_accessor :catch_rate # effects the catch rate of the POKeBALL
   attr_accessor :recoverable # effects if the POKeBALL can be recovered after being thrown, percentage chance of recovery.
   attr_accessor :ease_of_use # effects if this POKeBALL takes up your turn to use while in a Command Battle, and the stamina use on the Overworld, percentage chance of occurance.
@@ -291,7 +354,9 @@ class PokeBallStats
 	@ease_of_use = 0
 	@quality = 1
   end 
-
+  def initialize_copy(original)
+    super
+  end
     def get_catch_rate
 	  return 1 if @item.id==:POKEBALLC
 	  return 1.5 if @item.id==:GREATBALLC
@@ -301,6 +366,7 @@ end
 
 
 class CaptureStylerStats
+  attr_accessor :item
   attr_accessor :health # effects the health of the Capture Styler. If damaged, the durability will decrease and the player will take damage.
   attr_accessor :power # effects the strength of the Capture Styler. The damage inflicted upon the Pokémon for each successful rotation is increased.
   attr_accessor :line # effects  the possible length of the line your Capture Styler leaves behind. The longer the line, the bigger the circles you can use to capture the Pokémon.
@@ -317,7 +383,9 @@ class CaptureStylerStats
 	@latent_power = 0
   end 
   
-  
+  def initialize_copy(original)
+    super
+  end
   def assists
   
   

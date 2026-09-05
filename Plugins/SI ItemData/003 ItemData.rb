@@ -8,17 +8,21 @@ class ItemData
     @display_name = self.data.real_name
     @flags      = []
   end
-
+  
+  
 
 	
 
    def data
     return GameData::Item.get(@id)
    end
-	
+	def name=(value)
+	 @name = value 
+	 @name = nil if @name && @name.to_s.strip.empty?
+	end 
 	
 	def name
-	  return data.name
+	  return (@name.nil? || @name.empty?) ? data.name : @name
 	end
 	def name_plural
 	  return data.name_plural

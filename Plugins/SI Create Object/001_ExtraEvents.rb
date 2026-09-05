@@ -170,14 +170,8 @@ def pbShowCommandsssss(statuewindow,statue,msgwindow,commands=nil,cmdIfCancel=0,
     Graphics.update
     Input.update
     cmdwindow.update
-	 if statue==$scene
-	 else
-    statue.update if statue
-	 end
-	 if statuewindow==$scene
-	 else
-    statuewindow.update if statuewindow
-	 end
+    statue.update if statue && statue!=$scene
+    statuewindow.update if statuewindow && statuewindow!=$scene
     msgwindow.update if msgwindow
 	$PokemonGlobal.addNewFrameCount
 	 $scene.mouse_detection if $PokemonGlobal.alternate_control_mode==true

@@ -3,10 +3,10 @@ EffectManager::OnFailCatch.add(:BARBED, proc { |ball, battler, battle|
   if battle
     battle.scene.pbDamageAnimation(battler,0)
     battler.pbReduceHP((battler.totalhp/16).floor)
-    battle.pbDisplayBrief(_INTL("{1} was hurt by the Barbed Ball!",battler.name))
+    battle.pbDisplayBrief(_INTL("{1} was hurt by the barbs!",battler.name))
   else
     battler.damage((battler.hp/16).floor)
-    sideDisplay(_INTL("{1} was hurt by the Barbed Ball!", battler.name))
+    sideDisplay(_INTL("{1} was hurt by the barbs!", battler.name))
   end 
 })
 
@@ -159,7 +159,6 @@ EffectManager::ModifyCatchRate.add(:LURE, proc { |ball, catchRate, battle, battl
   next [catchRate, 255].min
 })
 
-
 EffectManager::ModifyCatchRate.add(:HEAVY, proc { |ball, catchRate, battle, battler|
   next 0 if catchRate == 0
   if battle
@@ -220,7 +219,6 @@ EffectManager::ModifyCatchRate.add(:MOON, proc { |ball, catchRate, battle, battl
   end
   next catchRate
 })
-
 
 EffectManager::ModifyCatchRate.add(:DREAM, proc { |ball, catchRate, battle, battler|
   if battle

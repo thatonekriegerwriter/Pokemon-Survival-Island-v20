@@ -10,6 +10,8 @@ class CraftingStationData
 	
 	
     attr_accessor :power
+    attr_accessor :internal_battery_limit
+    attr_accessor :average_power_output
     attr_accessor :connected_to
     attr_accessor :time_running
     attr_accessor :network
@@ -26,7 +28,11 @@ class CraftingStationData
     @fuel = 0.0
     @active = false
 	
-    @power = 0
+    @power = 0.0
+	@internal_battery_limit = 0.0
+	@internal_battery_limit = 390.0 if electric?
+	@internal_battery_limit = mbox_energy if machine_box?
+	@average_power_output = 32.0
     @connected_to = nil
     @time_running       = 0
     @network = {}
@@ -36,6 +42,11 @@ class CraftingStationData
 	@passed_time = 0
     @internal_storage = [nil] if spinner?
   end
+  
+  def mbox_energy
+    return 4000.0
+  end 
+  
   def internal_storage
    @internal_storage = [] if @internal_storage.nil?
    @internal_storage = [nil] if spinner?
@@ -110,9 +121,18 @@ class CraftingStationData
   def composter?
     item&.id == :COMPOSTER
   end 
+  def feeder?
+    item&.id == :FEEDER
+  end 
+  def modifier?
+    item&.id == :MODIFICATIONTABLE
+  end 
 
   def spinner?
     item&.id == :SILKSPINNER
+  end  
+  def machine_box?
+    item&.id == :MACHINEBOX
   end  
   def electric?
     return false unless item 
@@ -421,6 +441,25 @@ class CraftingStationData
 	  pkmn = nil
 	end 
   end 
+  def update_modifier(time_delta)
+  end
+  def update_feeder(time_delta)
+  end 
+  
+  def update_machine_box(time_delta)
+    if Input.triggerex?(0xDD) || Input.repeatex?(0xDD)
+      @power += (10.0 * time_delta)
+	  puts "Increased Power: #{@power}"
+	elsif Input.triggerex?(0xDB) || Input.repeatex?(0xDB) 
+      @power -= (10.0 * time_delta)
+	  puts "Decreased Power: #{@power}"
+	end 
+	
+	@power = [@power, @internal_battery_limit].min
+	@power = [@power, 0.0].max
+	@power = @power.to_f 
+  end 
+  
   def update
     @internal_storage = [] if @internal_storage.nil?
     time_now = pbGetTimeNow.to_i
@@ -437,6 +476,9 @@ class CraftingStationData
 	update_composter(time_delta) if composter?
 	update_warding_totem(time_delta) if warding_totem?
 	update_butcher_table(time_delta) if butchering_table?
+	update_machine_box(time_delta) if machine_box?
+	update_feeder(time_delta) if feeder?
+	update_modifier(time_delta) if modifier?
 	update_grave(time_delta) if grave?
     @time_last_updated = time_now
   end
@@ -600,7 +642,8 @@ class CraftingStationData
   end 
   
 
-  
+ 
+
   def get_fuel_consumption
     amt = 1.0
     amt -= 0.20 * workers.length
@@ -626,10 +669,12 @@ end
 class GuardStationData
   attr_accessor :event_id
   attr_accessor :started_working_at  
+  attr_reader :assigned_job
   def initialize(event_id)
     @event_id = event_id
     @pokemon_slot = [nil]
 	@resting_since = nil
+    @assigned_job = event_id
 	
   end 
   def event = $game_map.events[@event_id]
@@ -638,6 +683,9 @@ class GuardStationData
   def pokemon = @pokemon_slot[0]
   def pokemon_slot = @pokemon_slot
   
+  def give_feather
+    nil
+  end 
   
   def replace_pokemon(new_pokemon)
     spawned_event&.removeThisEventfromMap
@@ -679,8 +727,26 @@ class GuardStationData
     return nil unless pokemon&.event
     pokemon.event 
   end
-  
 
+  def movement_type
+    return nil unless pokemon
+    return nil unless spawned_event
+	return spawned_event.movement_type
+  end 
+  def movement_type=(value)
+    return nil unless pokemon
+    return nil unless spawned_event
+	spawned_event.movement_type = value
+  end   
+
+  def work_name
+    return "" if event.nil?
+    event.station_name
+  end 
+  
+  def breeding = false
+  def remove_worker = false
+  
   def update
   end 
 

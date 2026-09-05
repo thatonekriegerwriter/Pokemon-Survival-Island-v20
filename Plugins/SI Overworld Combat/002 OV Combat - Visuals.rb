@@ -606,7 +606,7 @@ class OWBallThrowSprite
 
     when 2
       @frames+=1
-      @phase=(@catch ? 3 : 4) if @frames>=BALL_CATCH_WAIT_FRAMES
+      @phase=(@catch >= 4 ? 3 : 4) if @frames>=BALL_CATCH_WAIT_FRAMES
     when 3
 	   pbSEPlay("Battle catch click")
 	   sideDisplay("The capture was a success!")
@@ -633,7 +633,20 @@ class OWBallThrowSprite
 	   @event.transparent = false
 	   pbSEPlay("Battle recall")
 	   $scene.spriteset.addUserAnimation(BALL_RELEASE_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
-	   sideDisplay("#{@pkmn.name} broke free!")
+	   text = case @catch
+	    when 0
+		 text = _INTL("It's like the ball didn't even exist!", @pkmn.name)
+	    when 1
+		 text = _INTL("{1} broke free easily!", @pkmn.name)
+	    when 2
+		 text = _INTL("Aargh! Almost had it!", @pkmn.name)
+	    when 3
+		 text = _INTL("Gah! It broke out, and it's not happy!", @pkmn.name)
+		else
+		 raise 
+	   end
+	   sideDisplay(text)
+	   @ball_used.effects.trigger(:onFailCatch, @pkmn, nil)
 	   makeAggressive(@event)
 	   @phase=5
     when 5

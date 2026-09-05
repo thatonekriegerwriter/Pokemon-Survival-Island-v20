@@ -226,7 +226,7 @@ class Battle
   end
 end
 
-
+# YOU ARE LOOKING FOR POKEMON STORAGE, HUN.
 module Battle::CatchAndStoreMixin
   #-----------------------------------------------------------------------------
   # Mid-battle triggers during the capture process.
@@ -258,7 +258,6 @@ module Battle::CatchAndStoreMixin
     end
   end
 end
-
 
 class Battle::Battler
   #-----------------------------------------------------------------------------

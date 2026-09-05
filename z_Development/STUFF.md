@@ -40,7 +40,6 @@
 - [ ] The Mining Xatu, has random stones, ores, etc.
 - [ ] The Dungeon Xatu, has dungeon stock.
 - [ ] Give the Xatu schedules.
-- [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
 - [ ] Move between two particular maps enough times and you get send to the Egg room.
 - [ ] Remap western temperate and bee forest
 - [ ] Rework Dungeons
@@ -48,7 +47,6 @@
 ### Misc Mechanics
 - [ ] Drop items on death?
 - [ ] Disease
-- [ ] Ambient Temp
 
 ### Items
  

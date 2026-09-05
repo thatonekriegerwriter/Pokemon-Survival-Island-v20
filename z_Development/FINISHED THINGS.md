@@ -32,6 +32,7 @@
 - [x] Prevent placables from stacking
 - [x] Fix Middle Mouse Selection
 - [x] Update Options Menu and Controls Menu
+- [x] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
 
 ### Pokemon
@@ -54,13 +55,17 @@
 - [x] Add Shoreline equipment
 
 ### World
+- [x] FIX THE RENDERING PROBLEM ASSHOLE.
 - [x] Fix Berry Plant updating
 - [x] Check to see if crafting stations are working as intended.
 - [x] Rework Berry Plants to work off of the Hotbar, rather than pbBerryPlant.
+- [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
 
 
 ### Misc Mechanics
 - [x] Statues still eat energy if you back out of saving.
+- [x] Renamable Items
+- [x] Ambient Temp
 
 ### Items
 - [x] Grooming Brush

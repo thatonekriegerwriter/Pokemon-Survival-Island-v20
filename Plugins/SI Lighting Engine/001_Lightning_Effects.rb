@@ -47,16 +47,16 @@ EventHandlers.add(:on_new_spriteset_map, :add_light_effects,
 
 
 def pbCreateParticleEngine(viewport=Spriteset_Map.viewport,map=$game_map,spriteset=nil)
-	return if !$particle_engine.nil? && !$particle_engine.disposed?
     return if !$scene.is_a?(Scene_Map)
-   
+ 
     spriteset ||= $scene.spriteset(map.map_id)
     return if spriteset.nil?
-	
-	engine = Particle_Engine.new(viewport, map)
-    spriteset.addUserSprite(engine)
-	raise if !$particle_engine.nil?
-    $particle_engine = engine
+    if $particle_engine.nil? || $particle_engine.disposed?
+      $particle_engine = Particle_Engine.new(viewport, map)
+    else
+      $particle_engine.reset_for_map(map)
+    end
+    spriteset.addUserSprite($particle_engine)
 end
 
 
@@ -282,7 +282,10 @@ class Particle_Engine
   def reset
     dispose
   end
-  
+ def reset_for_map(map)
+  @map = map
+  @firsttime = true
+end 
   def remove_particles
     @effect.each_value do |particle|
       next if particle.nil?

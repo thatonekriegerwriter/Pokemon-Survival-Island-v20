@@ -14,7 +14,7 @@ module Inventory
   item=craftScene.pbSelectcraft
   $game_temp.in_inventory = false 
   $game_temp.in_menu = false
-  if item
+  if item && item.is_a?(ItemData)
    intret = ItemHandlers.triggerUseFromBag(item)
    itm = GameData::Item.get(item)
     if intret >= 0
@@ -26,6 +26,8 @@ module Inventory
 	  end
     end
    return item
+  elsif item.is_a?(TrueClass) || item.is_a?(FalseClass)
+    return item 
   end 
 
   end
@@ -47,6 +49,7 @@ class Inventory_Scene
     :APRICORNCRAFTING => ->(e, c) { InventoryScene::Stations::ApricornMachine.new(event_data: e, container: c, machine: false) },
     :APRICORNMACHINE => ->(e, c) { InventoryScene::Stations::ApricornMachine.new(event_data: e, container: c, machine: true) },
     :ITEMCRATE => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
+    :FEEDER => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
     :ICEBOX => ->(e, c) { InventoryScene::Stations::Icebox.new(event_data: e, container: c) },
     :PKMNCRATE => ->(e, c) { InventoryScene::Stations::PkmnCrate.new(event_data: e, container: c) },
     :RESEARCHTABLE => ->(e, c) { InventoryScene::Stations::ResearchTable.new(event_data: e, container: c) },
@@ -59,6 +62,8 @@ class Inventory_Scene
     :ADVENTUREFLAG => ->(e, c) { InventoryScene::Stations::AdventureFlag.new(event_data: e, container: c) },
     :APIARY => ->(e, c) { InventoryScene::Stations::BeeHive.new(event_data: e, container: c) },
     :GRAVE => ->(e, c) { InventoryScene::Stations::Grave.new(event_data: e, container: c) },
+    :MODIFICATIONTABLE => ->(e, c) { InventoryScene::Stations::ModificationTable.new(event_data: e, container: c) },
+    :MOVERELEARNER => ->(e, c) { InventoryScene::Stations::MoveRelearner.new(event_data: e, container: c) },
 
     # These three had a get_slot_amount entry (1/2/3 slots respectively)
     # but NO setup_*_ui of their own in the source I was given - they fell

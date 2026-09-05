@@ -530,6 +530,69 @@ def update_text_centered(key, text)
   s.y = s.instance_variable_get(:@center_text_y) - 16 - s.contents.font.size
 end 
 
+def create_text_centered_wrapped(key, text, x, y, width,
+                                 color = MessageConfig::DARK_TEXT_MAIN_COLOR,
+                                 shadowcolor = nil, size = 14)
+  sprites[key] = Window_UnformattedTextPokemon.new("")
+  s = sprites[key]
+
+  s.contents.font.size = size
+  
+  wrapped = wrap_text(text, width, s.contents)
+
+  s.text = wrapped
+  s.refresh
+  pbPrepareWindow(s)
+
+  s.resizeToFit(wrapped)
+
+  s.x = x - (s.width / 2)
+  s.y = y - 16 - s.contents.font.size
+  s.instance_variable_set(:@text_width, width)
+  s.instance_variable_set(:@center_text_x, x)
+  s.instance_variable_set(:@center_text_y, y)
+
+  s.windowskin = nil
+  s.baseColor = color
+  s.shadowColor = shadowcolor
+  s.viewport = viewport
+  s.z = 10
+  s.visible = true
+end
+def wrap_text(text, width, bitmap)
+  words = text.split
+  lines = []
+  line = ""
+
+  words.each do |word|
+    test = line.empty? ? word : "#{line} #{word}"
+
+    if bitmap.text_size(test).width > width
+      lines << line unless line.empty?
+      line = word
+    else
+      line = test
+    end
+  end
+
+  lines << line unless line.empty?
+  lines.join("\n")
+end
+def update_text_centered_wrapped(key, text)
+  s = sprites[key]
+  width = s.instance_variable_get(:@text_width)
+
+  wrapped = wrap_text(text, width, s.contents)
+
+  s.text = wrapped
+  s.refresh
+  pbPrepareWindow(s)
+
+  s.resizeToFit(wrapped)
+
+  s.x = s.instance_variable_get(:@center_text_x) - (s.width / 2)
+  s.y = s.instance_variable_get(:@center_text_y) - 16 - s.contents.font.size
+end
 
     end
   end

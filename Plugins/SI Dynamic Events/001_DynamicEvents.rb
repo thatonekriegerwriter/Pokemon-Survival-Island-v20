@@ -175,6 +175,36 @@ class Game_Event < Game_Character
   attr_accessor :height
 end
 
+
+class Game_Player < Game_Character
+  def update
+    last_real_x = @real_x
+    last_real_y = @real_y
+    super
+    update_stop if $game_temp.in_menu && @stopped_last_frame
+    update_screen_position(last_real_x, last_real_y)
+    # Update dependent events
+    if (!@moved_last_frame || @stopped_last_frame ||
+       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
+      $game_temp.followers.move_followers
+    end
+    $game_temp.followers.update
+    if (!@moved_last_frame || @stopped_last_frame ||
+       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
+    end
+    # Count down the time between allowed bump sounds
+    @bump_se -= 1 if @bump_se && @bump_se > 0
+    # Finish up dismounting from surfing
+    if $game_temp.ending_surf && !moving?
+      pbCancelVehicles
+      $game_temp.surf_base_coords = nil
+      $game_temp.ending_surf = false
+    end
+    update_event_triggering
+  end
+end
+
+
 class PokemonMapFactory
 def map_offset(map_from, map_to)
   id_from = map_from.is_a?(Integer) ? map_from : map_from.map_id
@@ -372,34 +402,6 @@ class Spriteset_Global
   
 end 
 
-class Game_Player < Game_Character
-  def update
-    last_real_x = @real_x
-    last_real_y = @real_y
-    super
-    update_stop if $game_temp.in_menu && @stopped_last_frame
-    update_screen_position(last_real_x, last_real_y)
-    # Update dependent events
-    if (!@moved_last_frame || @stopped_last_frame ||
-       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
-      $game_temp.followers.move_followers
-    end
-    $game_temp.followers.update
-    if (!@moved_last_frame || @stopped_last_frame ||
-       (@stopped_this_frame && $PokemonGlobal.sliding)) && (moving? || jumping?)
-    end
-    # Count down the time between allowed bump sounds
-    @bump_se -= 1 if @bump_se && @bump_se > 0
-    # Finish up dismounting from surfing
-    if $game_temp.ending_surf && !moving?
-      pbCancelVehicles
-      $game_temp.surf_base_coords = nil
-      $game_temp.ending_surf = false
-    end
-    update_event_triggering
-  end
-end
-
 class OverworldSprites
   def initialize(viewport)
     @viewport    = viewport
@@ -428,14 +430,14 @@ class OverworldSprites
   def refresh
     existing = @sprites.map(&:character)
   $DynamicEvents.each_value_in_connected_map do |event, index|
-    next if existing.include?(event) && !$map_factory.hasMap?(event.map_id)
+    next if existing.include?(event)
 	#puts event.pokemon.name
     @sprites << Sprite_Multimap.new(@viewport, event)
   end
   visible = $DynamicEvents.events_for_connected_map($game_map.map_id)
   @sprites.delete_if do |sprite|
     keep = visible.include?(sprite.character)
-    sprite.dispose unless keep && $map_factory.hasMap?(sprite.character.map_id)
+    sprite.dispose unless keep
     !keep
   end
   end
@@ -1493,6 +1495,8 @@ update!
   
   
 end 
+
+
 #$DynamicEvents ||= DynamicEventFactory.new
 SaveData.register(:dynamic_events) do
   ensure_class :DynamicEventFactory 

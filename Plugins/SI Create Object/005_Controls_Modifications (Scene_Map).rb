@@ -460,6 +460,7 @@ class Scene_Map
 
   def update
    $PokemonGlobal.addNewFrameCount
+   $ambienttemperature.update 
     loop do
       pbMapInterpreter.update
       $game_player.update
@@ -562,13 +563,13 @@ class Scene_Map
 	    pokemon_assignment
       elsif $game_temp.current_pkmn_controlled!=false
 	    pokemon_controls
-		pbDeselectAllSelected if Input.triggerex?(:TAB)
+		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
       elsif $PokemonGlobal.ball_hud_enabled == true
 	    ball_hud_controls
-		pbDeselectAllSelected if Input.triggerex?(:TAB)
+		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
       else #Default Logic
 	    default_controls
-		pbDeselectAllSelected if Input.triggerex?(:TAB)
+		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
       end
   end
   
@@ -651,7 +652,7 @@ class Scene_Map
 	
  #   pbFadeOutIn { transfer_disc(1032, 0, 18, 6) }
 	elsif Input.trigger?(Input::AUX2)
-	elsif Input.triggerex?(Keys::CONTROLS_LIST["Home"])
+	elsif Input.trigger?(Input::HISTORYSCREENSHOT)
 	    pbHistoryScreenshot
 	elsif Input.press?(Input::F9)
        $game_temp.debug_calling = true if $DEBUG
@@ -1465,18 +1466,41 @@ class Scene_Map
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
-	#  item = ItemData.new(:APIARY)
+	# test_cloning
+	#  pbRelearnMoveScreen
+	  item = ItemData.new(:MACHINEBOX)
+	#  item = ItemData.new(:MODIFICATIONTABLE)
 	  
-    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 
   end
 
 
+def test_cloning
+iron = ItemData.new(:IRON2)
+original_ball = ItemData.new(:POKEBALLC)
+original_ball.modifiers.add(iron)
+original_ball.stats.catch_rate = 5.0
+cloned_ball = original_ball.dup
+cloned_ball.modifiers.remove(iron.id)
+cloned_ball.stats.catch_rate = 1.2
+puts "Original Ball Catch Rate: #{original_ball.stats.catch_rate}"
+puts "Cloned Ball Catch Rate: #{cloned_ball.stats.catch_rate}"    
+puts "Original Ball Effects: #{original_ball.effects.get_effects}"
+puts "Cloned Ball Effects: #{cloned_ball.effects.get_effects}"  
+hardstone = ItemData.new(:HARDSTONE)
+machete = ItemData.new(:MACHETE)
+machete.modifiers.add(hardstone)
+puts "Original Weapon Bonus: #{machete.stats.stat_bonus}"
+cloned_machete = machete.dup
+cloned_machete.modifiers.remove(hardstone.id)
+puts "Original Weapon Bonus after clone removal: #{machete.stats.stat_bonus}"
+puts "Cloned Weapon Bonus after removal: #{cloned_machete.stats.stat_bonus}"
+end 
 
 end
-
 
 
 def within_one_tile?(x1, y1, x2, y2)

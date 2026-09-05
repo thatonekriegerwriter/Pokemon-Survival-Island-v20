@@ -242,9 +242,9 @@ module InventoryScene
       # called with it.
       def open_search_prompt
         return unless shows_search_ui?
-        toggle_legend
+        toggle_legend if shows_legend?
         result = pbMessageFreeText(_INTL("Search for an item..."), search_query, false, 20)
-		toggle_legend
+		toggle_legend if shows_legend?
         self.search_query = result if result
       end
 
@@ -568,13 +568,13 @@ module InventoryScene
           @drag_distribute_item = nil
           @drag_distribute_origin = nil
         end
-        if Input.triggerex?(:O)
+        if Input.triggerex?(:O) && !relearner?
           puts current_pocket.inspect
           puts party.inspect
-        elsif Input.triggerex?(:N)
+        elsif Input.triggerex?(:N) && !relearner?
 		  puts craft.inspect if craft && !craft.empty?
 		  puts pokemon_box.inspect if pokemon_box && !pokemon_box.empty?
-        elsif Input.triggerex?(:Y)
+        elsif Input.triggerex?(:Y) && !relearner?
 	      view_item
         elsif Input.trigger?(Input::LEFT)
 		  unless grabbed_item
@@ -586,7 +586,7 @@ module InventoryScene
           self.current_tab = (current_tab + 1) % Settings::BAG_MAX_POCKET_SIZE.size
           refresh_bag_grid
 		  end 
-        elsif (Input.trigger?(Input::USE) || Input.trigger?(Input::MOUSEMIDDLE)) && !Input.trigger?(Input::MOUSELEFT)
+        elsif (Input.trigger?(Input::USE) || Input.trigger?(Input::INVENTORYTOGGLE)) && !Input.trigger?(Input::MOUSELEFT)
           end_item = use_item
           if end_item
             exit!(end_item)
@@ -614,7 +614,7 @@ module InventoryScene
           continue_drag_distribute
         elsif Input.trigger?(Input::MOUSERIGHT)
           dispatch_click(:right)
-        elsif Input.press?(Input::NOTEBOOK)
+        elsif Input.press?(Input::NOTEBOOK) && !relearner?
 		  recipe = nil
           pbFadeOutIn(99_999) { recipe = NoteOpen.openWindow }
 		  if recipe && recipe.is_a?(GameData::Recipe) && !craft_slots_hold_pokemon?
@@ -625,16 +625,16 @@ module InventoryScene
 			 autofill_recipe(recipe)
 		   end 
 		  end 
-        elsif Input.triggerex?(:P)
+        elsif Input.trigger?(Input::PONDERINVENTORY) && !relearner?
           ponder_under_mouse
-        elsif Input.triggerex?(:TAB)
+        elsif Input.trigger?(Input::FAVORITEINVENTORY) && !relearner?
           toggle_favorite_under_mouse
-        elsif Input.triggerex?(:F)
+        elsif Input.trigger?(Input::QUICKACCESSINVENTORY) && !relearner?
           toggle_quick_access_under_mouse
 		  refresh_bag_grid
-        elsif Input.triggerex?(:I)
+        elsif Input.trigger?(Input::INFOINVENTORY) && !relearner?
           show_info_under_mouse
-        elsif Input.triggerex?(:S)
+        elsif Input.trigger?(Input::SEARCHINVENTORY) && !relearner?
           open_search_prompt
 
         end
@@ -1069,6 +1069,7 @@ module InventoryScene
           return pkmn if pkmn
         end
         if (hit = slot_from_mouse)
+		  return nil unless has_bag_grid?
           return current_pocket[hit[0]]
         end
         if (hit = equipment_slot_from_mouse)
@@ -1079,6 +1080,7 @@ module InventoryScene
       end
 
       def update_hover_tooltip
+	    return show_empty_tooltip unless @show_tooltip
         stack = item_hovered?
         return show_empty_tooltip if stack.nil?
 

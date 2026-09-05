@@ -77,6 +77,13 @@ class PokemonSystem
     @currentList = :main
   end
   
+  def disease=(value)
+    @temperaturemeasurement = value 
+  end 
+  def disease
+    @temperaturemeasurement
+  end 
+  
   def entries
     @entries   = 0 if @entries.nil?
 	return @entries
@@ -1617,6 +1624,36 @@ MenuHandlers.add(:options_menu, :challenges_menu, {
 # Overworld Gameplay
 #-------------------------------------------------------------------------------
 
+def should_have_temperature?
+  $PokemonSystem.temperature == 0
+end 
+def should_have_disease?
+  $PokemonSystem.disease == 0
+end 
+MenuHandlers.add(:options_menu, :ambient_temperature, {
+  "name"        => _INTL("Ambient Temperature"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 35,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether or not the game has an in-depth system for hot and cold environments, and their effects."),
+  "get_proc"    => proc { next $PokemonSystem.temperature },
+  "set_proc"    => proc { |value, _scene|
+    $PokemonSystem.temperature = value
+  }
+})
+MenuHandlers.add(:options_menu, :disease, {
+  "name"        => _INTL("Disease"),
+  "parent"      => :gameplay_menu2,
+  "order"       => 35,
+  "type"        => EnumOption,
+  "parameters"  => [_INTL("On"), _INTL("Off")],
+  "description" => _INTL("Choose whether or not your character can become sick, or suffer injuries."),
+  "get_proc"    => proc { next $PokemonSystem.disease },
+  "set_proc"    => proc { |value, _scene|
+    $PokemonSystem.disease = value
+  }
+})
 MenuHandlers.add(:options_menu, :autotarget, {
   "name"        => _INTL("Auto-Target"),
   "parent"      => :gameplay_menu2,

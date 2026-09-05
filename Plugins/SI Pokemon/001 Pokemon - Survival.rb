@@ -100,6 +100,12 @@ end
     return @extra_moves
   end 
   
+  def add_move_at_index(move_id, index)
+    old_move = @moves[index]
+	@moves[index] = Pokemon::Move.new(move_id)
+	return old_move
+  end 
+  
   def add_extra_species_moves
     @extra_moves = [] if @extra_moves.nil?
     movelist = getMoveList

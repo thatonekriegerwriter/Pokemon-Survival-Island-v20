@@ -41,7 +41,9 @@ module InventoryScene
       def pokemon_box
         @pokemon_box_proxy ||= SlotProxy.new(event_data)
       end
-
+      
+	  def should_render_assign? = true 
+	  
       # Nothing item-based to save - PetBed only ever holds the one
       # Pokemon, and PetBedData already owns that directly.
       def finalize_container = nil
@@ -155,12 +157,14 @@ module InventoryScene
 
 
       def render_assign_button
+	    if should_render_assign?
         objects["assign_button"] = IconSprite.new(0, 0, viewport)
         objects["assign_button"].x = bonus_1 + 123
         objects["assign_button"].y = bonus_2 + 104
         objects["assign_button"].z = 0
         objects["assign_button"].visible = event_data.pokemon && !event_data.pokemon.egg?
         #text = assigning_from_this_bed? ? "Assigning..." : assigned? ? "Assigned" : "Assign"
+		end 
         create_text_centered("current_task_label", get_current_action, sprites["craft_slots0"].x + 180, sprites["craft_slots0"].y - 20)
         create_text_centered("assigned_to_label", "", sprites["craft_slots0"].x + 20, sprites["craft_slots0"].y - 16, MessageConfig::DARK_TEXT_MAIN_COLOR, nil, 11)
         refresh_assign_button
@@ -169,6 +173,7 @@ module InventoryScene
 
 	  
       def toggle_assignment_mode
+	    return unless should_render_assign?
         return unless event_data.pokemon # nothing to assign if the bed's empty
         return unless event_data.pokemon.able?
  
@@ -199,9 +204,8 @@ module InventoryScene
       # assignment_mode gets cleared some other way (completed by
       # walking up to a station, or cancelled below).
       def refresh_assign_button
+        pokemon = event_data.pokemon
 	    pokemon_grabbed = grabbed_item && event_data.pokemon && event_data.pokemon == grabbed_item.item
-        bitmap = (assigned? || assigning_from_this_bed?) ? "smallbutton_down" : "smallbutton_up"
-        objects["assign_button"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/petbed/#{bitmap}")
        # text = assigning_from_this_bed? ? "Assigning..." : assigned? ? "Assigned" : "Assign"
 	    if event_data.pokemon && !pokemon_grabbed
 		  update_text_centered("current_task_label", get_current_action)
@@ -209,18 +213,25 @@ module InventoryScene
 		  update_text_centered("current_task_label", "")
 		end 
 		if event_data.pokemon && assigned? && !pokemon_grabbed
+		  if event_data.work_name == "Guard Post"
+		  assignment_text = "Guarding"
+		  else
 		  assignment_text = "Works at #{event_data.work_name}"
+		  end 
 		  update_text_centered("assigned_to_label", assignment_text)
 		elsif event_data.pokemon && !event_data.pokemon.egg? && !pokemon_grabbed
 		  update_text_centered("assigned_to_label", "Unassigned")
 		else 
 		  update_text_centered("assigned_to_label", "")
 		end 
-        pokemon = event_data.pokemon
+		if should_render_assign?
+        bitmap = (assigned? || assigning_from_this_bed?) ? "smallbutton_down" : "smallbutton_up"
+        objects["assign_button"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/petbed/#{bitmap}")
 		if pokemon && !pokemon.egg? && !pokemon_grabbed
         objects["assign_button"].visible = true 
 		else
         objects["assign_button"].visible = false 
+		end 
 		end 
       end
       
@@ -260,6 +271,15 @@ module InventoryScene
   module Stations
     class PetBedOutdoor < PetBed
       def background_key = "PETBEDOUTDOOR"
+	end
+  end
+end 
+
+module InventoryScene
+  module Stations
+    class GuardPost < PetBed
+	  def should_render_assign? = false 
+      def background_key = "GUARDPOST"
 	end
   end
 end 

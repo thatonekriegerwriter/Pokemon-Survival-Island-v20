@@ -1736,19 +1736,16 @@ overlay.font.size = old_size
       command = pbShowCommands("", commands)
       if cmdNickname >= 0 && command == cmdNickname
         pkmn = @pokemon
+		cur_name = pkmn.name 
         species = pkmn.speciesName
-        pbSet(4, species)
-        pbTextEntry("#{species}'s nickname?",0, Pokemon::MAX_NAME_SIZE, 5)
-	    if pbGet(5) == pbGet(3) || (pbGet(5) == "" && pbGet(3) == pbGet(4))
+		name = pbMessageFreeText(_INTL("{1}'s nickname?", species), species, false, 20)
+		name = name.strip
+        #pbTextEntry("#{species}'s nickname?",0, Pokemon::MAX_NAME_SIZE, 5)
+	    if cur_name == name || name.empty?
 	      pbMessage(_INTL("You do not change its name",pkmn.name)) { @scene.pbUpdate }
 		  dorefresh = false
-	    elsif pbGet(5) == "" || pbGet(5) == pbGet(4)
-          pkmn.name = nil
-          pbSet(3, pkmn.name)
-          pbMessage(_INTL("It's name is now: {1}.",pkmn.name)) { @scene.pbUpdate }
-		  dorefresh = true
 	    else 
-          pkmn.name = pbGet(5)
+          pkmn.name = name
           pbMessage(_INTL("It's name is now: {1}.",pkmn.name)) { @scene.pbUpdate }
 		  dorefresh = true
 	    end

@@ -35,7 +35,7 @@ STATUE_MAP_POSITIONS = {
   :STATUE_07 => [26, 14, "Frigid Highlands", "Xatu Village"],
   :STATUE_08 => [50, 30, "Tropical Coast", "Oil Tanker"],
  # :STATUE_09 => [26, 17],
-  :STATUE_10 => [26, 14, "Northern Highlands", ""],
+  :STATUE_10 => [26, 14, "Northern Highlands", ""],#THIS IS IN TEH WRONG POSITION
   :STATUE_11 => [8, 6, "Atmosphere", "Mountain Skies"],
   :STATUE_99 => [9, 19, "Tropical Jungle", "Temple Tech Lab"]
 }
@@ -131,8 +131,11 @@ end
 
 
 class StatueData
+    BASE_POWER_CAP       = 100
+    STAR_PIECE_POWER_CAP = 200
+
     attr_accessor :event
-    attr_accessor :star_pieces
+    attr_accessor :star_pieces_placed
     attr_accessor :health
     attr_accessor :power
     attr_accessor :charging
@@ -158,9 +161,9 @@ class StatueData
   
   def initialize(event = nil)
     @event = event if !event.nil?
-    @star_pieces = [0,0]
+    @star_pieces_placed = false
     @health = 20
-    @power = 100
+    @power = BASE_POWER_CAP
     @charging = false
     @evo_stones = []
     @power_at_charge_start = @power
@@ -195,20 +198,34 @@ class StatueData
     @evo_stones = [] if @evo_stones.nil?
     return @evo_stones
   end
+
+  # Reads true whenever the upgrade is active. Also migrates old saves that
+  # still carry the retired two-slot @star_pieces array ([0,0]/[1,0]/[0,1]/[1,1]) -
+  # any save where both eyes were already filled is treated as upgraded.
+  def star_pieces_placed
+    if @star_pieces_placed.nil?
+      @star_pieces_placed = defined?(@star_pieces) && @star_pieces == [1, 1]
+    end
+    @star_pieces_placed
+  end
+
+  def power_cap
+    star_pieces_placed ? STAR_PIECE_POWER_CAP : BASE_POWER_CAP
+  end
   
   def reset 
-    @star_pieces = [0,0]
     @health = 20
-    @power = 100
+    @power = BASE_POWER_CAP
     @charging = false
     @time_last_updated = pbGetTimeNow
     @time_recharging = 0
     @broken = false
+    # star_pieces_placed is a permanent upgrade and intentionally survives a reset/repair.
   end
 
   def update
     return if @health==0
-	 return if @broken == true && @power>=100
+	 return if @broken == true && @power>=BASE_POWER_CAP
     time_now = pbGetTimeNow
     time_delta = time_now.to_i - @time_last_updated.to_i
 	 tps = 0.5 if @charging==true
@@ -219,23 +236,56 @@ class StatueData
 	  time = time_delta/3600
 	  time = [time,1].max
     if @charging==true
-	  if @power+(10*time)>175
-	   @power=175
+	  if @power+(10*time)>power_cap
+	   @power=power_cap
       return 
 	  end
 	   @power +=(10*time)
 	 else
   #  puts @power
-	  @power +=(5*time) if @power<100
+	  @power +=(5*time) if @power<BASE_POWER_CAP
   #  puts @power
 	 
 	 end
-	 if @power>=100 && @broken == true
-	    @power=100
+	 if @power>=BASE_POWER_CAP && @broken == true
+	    @power=BASE_POWER_CAP
 	 end
-     if @power>175
-	   @power=175
+     if @power>power_cap
+	   @power=power_cap
 	 end
+  end
+
+  # --- Eyes-glow mechanic (replaces the old power-window readout) ---
+
+  def glow_tier
+    return :none if @power <= 0
+    pct = @power.to_f / power_cap
+    return :intense if pct >= 0.75
+    return :bright  if pct >= 0.4
+    :dim
+  end
+
+  def glow_message
+    case glow_tier
+    when :intense
+      _INTL("The Statue's eyes blaze with power.")
+    when :bright
+      _INTL("The Statue's eyes glow brightly.")
+    when :dim
+      _INTL("The Statue's eyes glow faintly.")
+    else
+      _INTL("The Statue's eyes are dark.")
+    end
+  end
+
+  # Character direction constants: 2=down, 4=left, 6=right, 8=up
+  def glow_direction
+    case glow_tier
+    when :intense then 4
+    when :bright  then 2
+    when :dim     then 6
+    else 8
+    end
   end
 
   def puzzle
@@ -352,6 +402,7 @@ end
    end
  end
 def pbDisplayStatueWindow(msgwindow,statue)
+  return nil unless $DEBUG && Input.press?(Input::CTRL)
   powerwindow = EnergyWindow.new(msgwindow,statue,"Energy")
   return powerwindow
 end
@@ -498,21 +549,12 @@ command = 0
 	  statue.health=-1
      pbMessage(_INTL("The Statue is crackling with untethered energy."))
 	end
-    if statue.star_pieces==[0,0]
-	  if statue.power>0 && statue.power<75
-	   if statue.event.direction!=2&&statue.event.direction!=6
-	   if rand(2)==0
-         this_event.turn_down
-	   else
-	     this_event.turn_right
-	   end
-	   end
-     elsif statue.power>=75
-	  this_event.turn_left 
-	 else 
-	  #this_event.turn_up
-     end 
-   end
+    case statue.glow_direction
+    when 4 then this_event.turn_left
+    when 2 then this_event.turn_down
+    when 6 then this_event.turn_right
+    when 8 then this_event.turn_up
+    end
 
 
 
@@ -524,7 +566,6 @@ command = 0
     msgwindow = pbCreateMessageWindow(nil,nil)
     pbMessageDisplay(msgwindow,_INTL("What do you want to do?\\wtnp[1]"))
 	statuewindow = pbDisplayStatueWindow(msgwindow,statue)
-	#statuewindow.update
 	 
     command = pbShowCommandsssss(statuewindow,statue,msgwindow,
                     [_INTL("Use Statue"),
@@ -532,7 +573,6 @@ command = 0
                     _INTL("Place Star Pieces"),
                     _INTL("Return its Power"),
                     _INTL("Exit")],-1)
-	#statuewindow.update
 	
 	
 	
@@ -558,7 +598,7 @@ command = 0
       commands[cmd_present_pokemon = commands.length] = _INTL('Learn Move') if $player.party.length>0
       commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.playerclass.id==:ACTOR
       commands[cmd_evolve = commands.length]  = _INTL('Use Evo Stone') if statue.evo_stones.length > 0
-      commands[cmd_new_game = commands.length]  = _INTL('Try to Rest') if PBDayNight.isNight?(pbGetTimeNow)
+      commands[cmd_rest = commands.length]  = _INTL('Try to Rest') if PBDayNight.isNight?(pbGetTimeNow)
       commands[cmd_quit = commands.length]      = _INTL('Cancel')
 	  
     msgwindow = pbCreateMessageWindow(nil,nil)
@@ -576,9 +616,9 @@ command = 0
 	 if statue.power-10>=0
 	   statue.power-=10
 
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
 	  elsif statue.power<=0
 	  this_event.turn_down
      end  
@@ -587,9 +627,9 @@ command = 0
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
 	  this_event.turn_down
 
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
      end
     end
      end
@@ -607,10 +647,10 @@ command = 0
 	  statue.power-=100 if statue.power-100>=0
 	  
 	  
-	  if statue.power<=0 && [[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)
+	  if statue.power<=0 && statue.star_pieces_placed
 	   this_event.turn_down
        pbMessage(_INTL("The Star Pieces crumble to dust."))
-       statue.star_pieces = [0,0]
+       statue.star_pieces_placed = false
 	  end
 	  
 	  
@@ -619,7 +659,6 @@ command = 0
 	else
      pbMessage(_INTL("The Statue doesn't have the energy to move you somewhere."))
 	  this_event.turn_down
-      statue.star_pieces = [0,0]
     end
    end
 	elsif cmd_present_pokemon >= 0 && commands2 == cmd_present_pokemon
@@ -632,36 +671,20 @@ command = 0
 	 if statue.power-50>=0
 	   statue.power-=50
 
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
 	  elsif statue.power<=0
 	  this_event.turn_down
      end  
-       pkmn = pbReturnTradablePokemon(proc { |pkmn|
-    next !MoveRelearnerScreen.pbGetRelearnableMoves(pkmn).empty?
-       })
-
-
-        if pkmn
-	   form = pkmn.form
-        if MoveRelearnerScreen.pbGetRelearnableMoves(pkmn).empty?
-          pbMessage(_INTL("The Statue seems to not be reacting to #{pkmn.name} right now."))
-        else
-		   pbMessage(_INTL("As you lift #{pkmn.name} to the Statue, you can feel memories and possiblities flow from within #{pkmn.name}."))
-         
-          pbMessage(_INTL("The Statue can definitely teach #{pkmn.name} a move."))
-          pbRelearnMoveScreen(pkmn) 
-	     pbMessage(_INTL("Nothing is different about it physically, but something feels different."))
-        end
-        end
+      pbRelearnMoveScreen
     else
      pbMessage(_INTL("The Statue doesn't have the energy to make your pokemon recall moves!"))
 	  this_event.turn_down
 
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
      end
     end
 
@@ -680,30 +703,23 @@ command = 0
 	 cmd12 << _INTL("Cancel")
     commands3 = pbShowCommands(msgwindow,cmd12,-1)
 	pbDisposeMessageWindow(msgwindow)
-	  case commands3 
-	   when commands3.length
+	  cancel_index = cmd12.length - 1
+	  has_remove = ($player.playerclass.acted_class!=:NONE)
+	  selected_class = nil
+	  selected_class = has_remove ? $PokemonGlobal.unlocked_classes[commands3-1] : $PokemonGlobal.unlocked_classes[commands3] if !(has_remove && commands3==0) && commands3 != cancel_index
+	  if commands3 == cancel_index
 	     break
-	   when $PokemonGlobal.unlocked_classes[commands3]==$player.playerclass.id
-	    pbMessage(_INTL("You do not change your acted class."))
-	   when $player.playerclass.acted_class!=:NONE && commands3==0
+	   elsif has_remove && commands3==0
 	      pbMessage(_INTL("You do not change your acted class."))
 	      $player.playerclass.acted_class=:NONE
 	   
-	   when $player.playerclass.acted_class!=:NONE && commands3>0
-	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3-1].getName)}?"))
-		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3-1].getName)}."))
-		  $player.playerclass.acted_class = $PokemonGlobal.unlocked_classes[commands3-1]
-		 else 
+	   elsif selected_class==$player.playerclass.id
 	    pbMessage(_INTL("You do not change your acted class."))
-	     break
-		 end
-
-	   
 	   else
 	   
-	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3].getName)}?"))
-		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName($PokemonGlobal.unlocked_classes[commands3].getName)}."))
-		  $player.playerclass.acted_class = $PokemonGlobal.unlocked_classes[commands3]
+	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName(selected_class.getName)}?"))
+		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName(selected_class.getName)}."))
+		  $player.playerclass.acted_class = selected_class
 		 else 
 	    pbMessage(_INTL("You do not change your acted class."))
 	     break
@@ -725,8 +741,7 @@ command = 0
 	 cmd12 << _INTL("Cancel")
     commands3 = pbShowCommands(msgwindow,cmd12,-1)
 	pbDisposeMessageWindow(msgwindow)
-	  case commands3 
-	   when commands3.length
+	  if commands3 == cmd12.length - 1
 	     break
 	   else
 	     if pbConfirmMessage(_INTL("Are you sure you want to use #{GameData::Item.get(statue.evo_stones[commands3]).name}?"))
@@ -769,9 +784,9 @@ command = 0
 	if statue.power-5<1
      pbMessage(_INTL("The Statue doesn't have enough energy to store your memories!"))
 	  this_event.turn_down
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
 	  elsif statue.power<=0
 	  this_event.turn_down
      end	
@@ -780,15 +795,14 @@ command = 0
     scene = PokemonSave_Scene.new
     screen = PokemonSaveScreen.new(scene)
     statue.power-=5 
-	status.power+=5 unless screen.pbSaveScreen==true
-	  if ([[1, 1], [1, 0], [0, 1]].include?(statue.star_pieces)) && statue.power<=0
+	statue.power+=5 unless screen.pbSaveScreen==true
+	  if statue.star_pieces_placed && statue.power<=0
       pbMessage(_INTL("The Star Pieces crumble to dust."))
-      statue.star_pieces = [0,0]
+      statue.star_pieces_placed = false
 	  elsif statue.power<=0
 	  this_event.turn_down
      end	
 	end
-
 
 
 
@@ -800,86 +814,18 @@ command = 0
 	 if true
     pbDisposeMessageWindow(msgwindow)
 	statuewindow.dispose if statuewindow
-	if $bag.has?(:STARPIECE, 2) && (statue.star_pieces != [0,1] || statue.star_pieces != [1,0]  || statue.star_pieces != [1,1]) 
+	if statue.star_pieces_placed
+     pbMessage(_INTL("The Statue's eyes already hold their Star Pieces."))
+	elsif $bag.has?(:STARPIECE, 2)
      pbMessage(_INTL("The Star Pieces in your bag seem like they would fit in its eyes."))
-	 if pbConfirmMessage(_INTL("Do you wish to place Star Pieces in its eyes?"))
+	 if pbConfirmMessage(_INTL("Do you wish to place two Star Pieces in its eyes?"))
 	    $bag.remove(:STARPIECE,2)
+	    statue.star_pieces_placed = true
 	    this_event.turn_left
-        statue.power+=20
-	   pbMessage(_INTL("The Statue feels complete, but physically and spiritually."))
-		 statue.star_pieces = [1,1]
-	 end
-	elsif $bag.has?(:STARPIECE, 1)
-     pbMessage(_INTL("The Star Pieces in your bag seem like they would fit in its eyes."))
-	 if pbConfirmMessage(_INTL("Do you wish to place Star Pieces in its eyes?"))
-    msgwindow = pbCreateMessageWindow(nil,nil)
-    pbMessageDisplay(msgwindow,_INTL("Which eye do you wish to place your Star Piece in?\\wtnp[1]"))
-    command = pbShowCommands(msgwindow,
-                                   [_INTL("Left"),
-                                    _INTL("Right"),
-                                    _INTL("Cancel")])
-	     
-          case command
-          when 0
-             pbMessage(_INTL("You place a Star Piece in its left eye."))
-			 
-			 
-			 if statue.star_pieces == [0,1]
-	        $bag.remove(:STARPIECE,1)
-             this_event.turn_down
-             statue.power+=10
-	   pbMessage(_INTL("The Statue feels complete, but physically and spiritually."))
-		      statue.star_pieces = [1,1]
-			 elsif statue.star_pieces == [1,1]
-	        $bag.remove(:STARPIECE,1)
-             statue.power+=10
-			  if statue.power>175
-	           pbMessage(_INTL("The Statue is taking the energy, but it looks a little unstable."))
-			  else 
-			  pbMessage(_INTL("The Statue is teeming with energy."))
-			  end
-			 else
-             this_event.turn_right
-	        $bag.remove(:STARPIECE,1)
-             statue.power+=10
-	        pbMessage(_INTL("The Statue feels more full."))
-		     statue.star_pieces = [1,0]
-			 end
-			 
-			 
-          when 1
-             pbMessage(_INTL("You place a Star Piece in its right eye."))
-			 
-			 
-			 if statue.star_pieces == [1,0]
-	        $bag.remove(:STARPIECE,1)
-             this_event.turn_down
-             statue.power+=10
-	         pbMessage(_INTL("The Statue feels complete, but physically and spiritually."))
-		     statue.star_pieces = [1,1]
-			 elsif statue.star_pieces == [1,1]
-             statue.power+=10
-			  if statue.power>175
-	           pbMessage(_INTL("The Statue is taking the energy, but it looks a little unstable."))
-			  else 
-			  pbMessage(_INTL("The Statue is teeming with energy."))
-			  end
-	        $bag.remove(:STARPIECE,1)
-             statue.power+=10
-			 else
-             this_event.turn_up
-	        $bag.remove(:STARPIECE,1)
-             statue.power+=10
-	         pbMessage(_INTL("The Statue feels more full."))
-		     statue.star_pieces = [0,1]
-			 end
-			 
-			 
-			 
-          end
+	   pbMessage(_INTL("The Statue feels complete. Its power capacity doubles."))
 	 end
 	else 
-     pbMessage(_INTL("It looks like something would fit in its eyes."))
+     pbMessage(_INTL("It looks like a pair of Star Pieces would fit in its eyes."))
 	end
      end
 	when 3  # Return its Power
@@ -957,6 +903,14 @@ command = 0
 
 
 def pbTeleportStatues3(home=false)
+	interp = pbMapInterpreter
+    this_event = interp.get_self
+    statue = interp.getVariable
+    if !statue || statue.is_a?(Array)
+       statue = StatueData.new(this_event)
+       interp.setVariable(statue)
+	   statue.reset
+    end
 command = 0
   loop do
     msgwindow = pbCreateMessageWindow(nil,nil)
@@ -972,7 +926,7 @@ command = 0
     scene = PokemonSave_Scene.new
     screen = PokemonSaveScreen.new(scene)
     statue.power-=5 
-	status.power+=5 unless screen.pbSaveScreen
+	statue.power+=5 unless screen.pbSaveScreen
    else
       break
       pbDisposeMessageWindow(msgwindow)
@@ -1025,7 +979,7 @@ command = 0
     scene = PokemonSave_Scene.new
     screen = PokemonSaveScreen.new(scene)
     statue.power-=5 
-	status.power+=5 unless screen.pbSaveScreen
+	statue.power+=5 unless screen.pbSaveScreen
     else
       break
       pbDisposeMessageWindow(msgwindow)
@@ -1035,26 +989,3 @@ end
 
 
 end
-
-
-def getRevealedStatueAmt
-  revealamt=0
-  revealamt+=1 if $game_self_switches[[5, 6, "A"]] == true
-  revealamt+=1 if $game_self_switches[[9, 17, "A"]] == true
-  revealamt+=1 if $game_self_switches[[24, 13, "A"]] == true
-  revealamt+=1 if $game_self_switches[[34, 1, "A"]] == true
-  revealamt+=1 if $game_self_switches[[36, 2, "A"]] == true
-  revealamt+=1 if $game_self_switches[[111, 8, "A"]] == true
-  revealamt+=1 if $game_self_switches[[207, 2, "A"]] == true
-  revealamt+=1 if $game_self_switches[[266, 1, "A"]] == true
-  revealamt+=1 if $game_self_switches[[207, 2, "A"]] == true
-  revealamt+=1 if $game_self_switches[[355, 1, "A"]] == true
-  revealamt+=1 if $game_self_switches[[54, 49, "A"]] == true
-  return revealamt
-
-  
-  
-  end
-
-#    loctext += _INTL("Statues<r><c3={1}>{2}</c3><br>", textColor, getRevealedStatueAmt)
-

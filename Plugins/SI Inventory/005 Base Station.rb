@@ -64,6 +64,7 @@ module InventoryScene
       @exiting = false
       @return_value = nil
       @search_query = ""
+	  @show_tooltip = true 
       @item_hovered = nil
       @pokemon_inventory = nil
       @current_pokemon_for_inventory = nil
@@ -80,8 +81,8 @@ module InventoryScene
       build_offsets
       build_shared_chrome
       build_background
-      build_tabs
-	  @legend_visible = true 
+      build_tabs if has_bag_grid?
+	  @legend_visible = shows_legend? 
 	  build_legend if @legend_visible
       if has_party_sidebar?
         build_party_sidebar
@@ -95,7 +96,11 @@ module InventoryScene
     end
 
     # ---- shared update/exit loop -----------------------------------
-
+    
+	def relearner?
+	 background_key == "MOVERELEARNER"
+	end 
+	
     def update
       tooltip.update
       pbUpdateSpriteHash(sprites)
@@ -170,6 +175,7 @@ module InventoryScene
     def uses_recipe_grid?           = true
     def handle_station_click(_kind, _index) = nil
     def shows_search_ui?            = true
+    def shows_legend? = true
     def search_query=(value)
       @search_query = value.to_s
       reapply_search_dim
@@ -177,7 +183,7 @@ module InventoryScene
     end
 
     def legend_entries
-      entries = [["Middle-Click", "Interact"], ["I", "Summary"], ["P", "Ponder"], ["V", "Notebook"], ["F", "Quick Access"], ["Tab", "Favorite"]]
+      entries = [[get_keyname("Interact Inventory"), "Interact"], [get_keyname("Show Info"), "Summary"], [get_keyname("Ponder"), "Ponder"], [get_keyname("Open Notebook"), "Notebook"], [get_keyname("Toggle QA"), "Quick Access"], [get_keyname("Toggle Favorite"), "Favorite"]]
       entries
     end
 
@@ -226,9 +232,6 @@ module InventoryScene
     # equipment/pokemon slot detection.
     def handle_custom_click(_button) = false
 
-    # ---- generic scene API expected by ItemHandlers/pbUseItem/etc ------
-    # (item effect handlers call back into whatever scene invoked them,
-    # so these need to exist on every station, not just the bag)
 
     def pbDisplay(msg, _brief = false) = UIHelper.pbDisplayStatic2(sprites["msgwindow"], msg)
     def pbDisplayStatic2(msg)          = UIHelper.pbDisplayStatic2(sprites["msgwindow"], msg)
@@ -256,11 +259,6 @@ module InventoryScene
 	
     private
 
-    # ---- shared geometry / background -------------------------------
-
-    # Matches the original's magic numbers - untouched so every station's
-    # slot math (ported straight from the setup_*_ui methods) still lines
-    # up against the same background art.
     def build_offsets
       @mamtx = 66
       @mamty = 30
@@ -286,9 +284,6 @@ module InventoryScene
       sprites["background"].y = @bonus_2 - @mamty
     end
 
-    # Position is a guess (top-left corner of the tab bar area) - move it
-    # wherever actually fits your background art. Shows a hint when
-    # empty, the live query once you've typed something.
     def build_search_ui
       sprites["searchtab"] = IconSprite.new(0, 0, viewport)
       sprites["searchtab"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/poptab2")
@@ -303,14 +298,6 @@ module InventoryScene
       search_query.empty? ? "[S] Search..." : "Search: #{search_query}"
     end
 
-
-    # Bottom-left of the WHOLE screen (absolute Graphics coordinates,
-    # not bonus_1/bonus_2 - that region is inside the background art and
-    # is already cramped), same "poptab" bitmap/text convention as the
-    # Grinder's stamina readout, just stacked one per hotkey instead of
-    # one per stat. Toggled on/off rather than always shown, since a
-    # permanent legend doesn't fit and this is meant to answer "what do
-    # my keys do" on demand rather than sit there as clutter.
     def toggle_legend
       @legend_visible = !@legend_visible
       @legend_visible ? build_legend : clear_legend
@@ -374,12 +361,6 @@ module InventoryScene
       sprites["overlay"].z = 99
     end
 
-    # Pocket tabs are always built, even for Bedroll - the original built
-    # them unconditionally too (only `left_click_tab` special-cased Bedroll
-    # to ignore clicks on them). Kept as-is rather than "fixed", since I
-    # can't tell from the source alone whether that's deliberate (tabs
-    # visible-but-inert while sleeping) or an oversight - worth you
-    # confirming in-engine.
     def build_tabs
       Settings.bag_pocket_names.each_with_index do |name, i|
         sprites["#{name}_image"] = IconSprite.new(0, 0, viewport)
@@ -422,6 +403,7 @@ module InventoryScene
     end
 
     def update_tab_highlight
+	  return unless has_bag_grid?
       Settings.bag_pocket_names.each_with_index do |name, i|
         selected = current_tab == i
         sprites["#{name}_image"].setBitmap(selected ? "Graphics/Pictures/notebooktab" : "Graphics/Pictures/notebooktabu")
@@ -432,6 +414,7 @@ module InventoryScene
     end
 
     def left_click_tab
+	  return unless has_bag_grid?
       tabs = Settings.bag_pocket_names.map { |name| sprites["#{name}_image"] }.sort_by { |s| -s.z }
       tabs.each do |sprite|
         next unless tab_clicked?(sprite)

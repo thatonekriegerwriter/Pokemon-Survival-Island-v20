@@ -23,19 +23,22 @@ module InventoryScene
         itemname = itm.name
         sprites["msgwindow"].visible = false
         
-        toggle_legend
+        toggle_legend if shows_legend?
+	    @show_tooltip = false  
         loop do
           command = pbShowCommands(_INTL("{1} is selected.", itemname), commands)
           ret = run_item_command(ids, command, item, itm, itemname)
           break if ret == :cancel
 		  if ret == :close_bag
-           toggle_legend
+           toggle_legend if shows_legend?
+	       @show_tooltip = true   
            return item 
 		  end
           itemname = itm.name # may have pluralized during Toss
         end
+	    @show_tooltip = true   
 		
-        toggle_legend
+        toggle_legend if shows_legend?
         nil
       end
 
@@ -46,6 +49,7 @@ module InventoryScene
         ids = {}
         add_command = ->(key, text) { ids[key] = commands.length; commands << text }
 
+        add_command.call(:name, _INTL("Rename"))
         add_command.call(:read, _INTL("Read")) if itm.is_mail?
         add_command.call(:equip, _INTL("Equip")) if itm.is_tool? && $player.equipped_item == :PUNCH
         add_command.call(:unequip, _INTL("Unequip")) if itm.is_tool? && $player.equipped_item == item
@@ -70,6 +74,8 @@ module InventoryScene
 
       def run_item_command(ids, command, item, itm, itemname)
         case ids.key(command)
+        when :name 
+           item.name = pbMessageFreeText(_INTL("Rename {1} what?", item.name), item.name, false, 20)
         when :read
           pbFadeOutIn { pbDisplayMail(Mail.new(item, "", "")) }
         when :drink, :eat
@@ -131,6 +137,8 @@ module InventoryScene
       end
 
       def run_debug_menu(item, itm, itemname)
+	    
+	    @show_tooltip = false   
         loop do
           command = pbShowCommands(_INTL("Do what with {1}?", itemname),
                                     [_INTL("Change quantity"), _INTL("Make Mystery Gift"), _INTL("Cancel")])
@@ -147,6 +155,8 @@ module InventoryScene
             break
           end
         end
+ 
+	    @show_tooltip = true    
       end
 
       public

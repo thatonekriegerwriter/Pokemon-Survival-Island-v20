@@ -10,18 +10,21 @@
 ### UI
 - [ ] Machine Box UI
 - [ ] Electronics UI
-- [ ] Make Relearn Screen a conventional Inventory screen, just without inventory.
+- [ ] Record Demo
 
 
 ### Pokemon
 
 ### Placeables
-- [ ] Feeder functionality + UI, Modifier Station Functionality  + UI
 - [ ] Make sure guards aren't locked to STANDING at their station, and build Guard Post UI + Functionality.
 - [ ] Berry plant crossbreeding
 - [ ] Spawn Pest for Berry Plant
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox
 - [ ] Electric Types can provide electricity to PokeGenerators.
+
+
+- [ ] Feeder functionality + UI
+- [ ] Modifier Station Functionality  + UI, modifiers are highly complex if  they have stacks, and need their internal data deep cloned.
 - [-] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
 
@@ -33,7 +36,7 @@
 ### Buildings
 
 ### World
-- [-] FIX THE RENDERING PROBLEM ASSHOLE.
+- [ ] Fix held item across map boundries.
 - [ ] Add cooldowns for Iron Axe and Trees + Collecting Acorns.
 - [-] Make simulated combat system
 - [-] Raids
@@ -44,5 +47,6 @@
 ### Misc Mechanics
 
 ### Items
+- [ ] Reshellable Balls
 
  

@@ -437,9 +437,21 @@ if Settings::SUMMARY_MODERN_QoL
       commands[commands.length] = _INTL("Cancel")
       command = pbShowCommands("", commands)
       if cmdNickname >= 0 && command == cmdNickname
-        nickname = pbEnterPokemonName(_INTL("{1}'s nickname?", @pokemon.name), 0, Pokemon::MAX_NAME_SIZE, "", @pokemon, true)
-        @pokemon.name = nickname
-        dorefresh = true
+        pkmn = @pokemon
+		cur_name = pkmn.name 
+        species = pkmn.speciesName
+		name = pbMessageFreeText(_INTL("{1}'s nickname?", species), cur_name, false, 20)
+		name = name.strip
+        #pbTextEntry("#{species}'s nickname?",0, Pokemon::MAX_NAME_SIZE, 5)
+	    if cur_name == name || name.empty?
+	      pbMessage(_INTL("You do not change its name",pkmn.name))
+		  dorefresh = false
+	    else 
+          pkmn.name = name
+          pbMessage(_INTL("It's name is now: {1}.",pkmn.name))
+		  dorefresh = true
+	    end
+ 
       elsif cmdJournal >= 0 && command == cmdJournal
         pbOpenJournalBasic(@pokemon.birthsign.month)
         dorefresh = true
@@ -463,6 +475,7 @@ if Settings::SUMMARY_MODERN_QoL
       end
       return dorefresh
     end
+
   end
 end
 

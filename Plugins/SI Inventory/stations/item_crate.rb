@@ -53,6 +53,13 @@ module InventoryScene
         sprites["cover"].x = bonus_1 - mamtx
         sprites["cover"].y = bonus_2 - (mamty + 12)
       end
+
+      def station_update
+	    container.update
+		event_data.update
+        sync_slots_visuals!(:craft, 0..slot_count)
+      end
     end
   end
 end
+

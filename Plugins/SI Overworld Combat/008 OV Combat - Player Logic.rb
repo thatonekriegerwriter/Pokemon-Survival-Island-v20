@@ -66,7 +66,7 @@ class OverworldCombat
   
   def capture_calcs(event, ball, dir)
      catch_rate = capturecalc(event, ball, dir)
-	 return catch_rate>=4
+	 return catch_rate
   end
   
   

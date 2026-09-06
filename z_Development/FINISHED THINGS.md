@@ -19,6 +19,9 @@
 - [x] You can assign Pokemon to tasks around the base.
 
 ### UI
+- [x] Machine Box UI
+- [x] Modifier Station Functionality  + UI, modifiers are highly complex if  they have stacks, and need their internal data deep cloned.
+- [x] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
 - [x] Summary Screen Happiness, Loyalty, and Inventory rework.
 - [x] Inventory Screen middle mouse click to open Pokemon inventory.
 - [x] Slow the title screen pan down fuckwad its too fast (I can't.)
@@ -60,6 +63,7 @@
 - [x] Check to see if crafting stations are working as intended.
 - [x] Rework Berry Plants to work off of the Hotbar, rather than pbBerryPlant.
 - [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
+- [x] Make simulated combat system
 
 
 ### Misc Mechanics

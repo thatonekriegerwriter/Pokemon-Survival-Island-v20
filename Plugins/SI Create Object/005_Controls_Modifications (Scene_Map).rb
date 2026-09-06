@@ -1468,10 +1468,10 @@ class Scene_Map
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	  item = ItemData.new(:MACHINEBOX)
+	#  item = ItemData.new(:MACHINEBOX)
 	#  item = ItemData.new(:MODIFICATIONTABLE)
 	  
-      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 
@@ -1498,6 +1498,7 @@ cloned_machete = machete.dup
 cloned_machete.modifiers.remove(hardstone.id)
 puts "Original Weapon Bonus after clone removal: #{machete.stats.stat_bonus}"
 puts "Cloned Weapon Bonus after removal: #{cloned_machete.stats.stat_bonus}"
+pbItemSummaryScreen(machete)
 end 
 
 end
@@ -1594,18 +1595,6 @@ EventHandlers.add(:on_player_interact, :interact_with_through_trees,
   }
 )
 
-EventHandlers.add(:on_player_interact, :interact_with_tree,
-  proc {
-   next false unless $game_player.pbFacingTerrainTag.can_knockdown
-     message=(_INTL("Want to collect some acorns?"))
-    if pbConfirmMessage(message)
-       item.decrease_durability(1)
-       $bag.add(:ACORN,(rand(4)+1))
-	    next true
-	end
-	
-  }
-)
 
  def can_use_in_overworld?(item_id)
    [:SHEARS,:WATERBOTTLE,:GLASSBOTTLE,:POKEMONBRUSH].include?(item_id)

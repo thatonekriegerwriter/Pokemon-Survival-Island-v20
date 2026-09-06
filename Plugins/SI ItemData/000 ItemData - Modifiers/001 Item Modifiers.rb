@@ -19,8 +19,8 @@ class ItemModifiers
   def add(modifier_item)
     return false if @modifiers.length >= @modifiers_length
     return false if @modifiers.keys.include?(modifier_item.id)
-	if ModifierManager.trigger(modifier_item, @item)
-     @modifiers[modifier_item.id] = modifier_item
+	if (result = ModifierManager.trigger(modifier_item, @item))
+     @modifiers[modifier_item.id] = modifier_item unless result == :remove 
 	 return true 
 	else
 	 return false 
@@ -40,7 +40,9 @@ class ItemModifiers
   def get_modifiers
     @modifiers.keys 
   end 
-  
+  def get_modifier_names
+    @modifiers.keys.map { |modifier| GameData::Item.get(modifier).name }
+  end 
   def get_itemdata
     @modifiers.values 
   end 

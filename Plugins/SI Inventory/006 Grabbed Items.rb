@@ -7,8 +7,7 @@ module InventoryScene
   class GrabbedItem
     SOURCES = %i[bag craft pokemon_inventory party pokemon_slot equipment held adventure_party].freeze
 
-    attr_accessor :icon, :stack, :index, :store
-    attr_reader :source
+    attr_accessor :icon, :stack, :index, :store, :source
 
     def initialize(icon:, stack:, index:, source:, store: nil)
       raise ArgumentError, "unknown source #{source.inspect}" unless SOURCES.include?(source)
@@ -26,7 +25,13 @@ module InventoryScene
     def qty=(v)
       stack[1] = v
     end
-
+    
+	def set_to_held
+     @index  = "held"
+     @source = :held
+	 @store = nil
+	end 
+	
     def pokemon? = item.is_a?(Pokemon)
     def item? = item.is_a?(Array) && item[0].is_a?(ItemData)
 

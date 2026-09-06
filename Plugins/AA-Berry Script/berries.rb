@@ -1072,32 +1072,30 @@ class BerryPlantData
   end
   
   def detriment_effects(time_now)
-  
+    return unless @event && cropsticks
   
 
-        if @event && @weeds_timer && !@weeds && @growth_stage > 1 && cropsticks==true
+        if @weeds_timer && !@weeds && @growth_stage > 1
             weed_delta = time_now.to_i - @weeds_timer
             time_for_checks = 4 * 3600
             rolls = (weed_delta / time_for_checks).floor
-			 rolls-=1
 			 if rolls>0
             rolls.times do 
-                @weeds = true if rand(100) < getWeedGrowthChance
+                @weeds = true if rand(100) < getWeedGrowthChance #15
                 @weeds_timer += time_for_checks
                 break if @weeds
             end   
 			 end
         end
         #Pests
-        if @event && @pests_timer && cropsticks==true
+        if @event && @pests_timer
             if !@pests && @growth_stage > 2
                 pests_delta = time_now.to_i - @pests_timer
                 time_for_checks = 8 * 3600
                 rolls = (pests_delta / time_for_checks).floor
-			     rolls-=1
 			     if rolls>0
                 rolls.times do 
-                    @pests = true if rand(100) < getPestAppearChance
+                    @pests = true if rand(100) < getPestAppearChance #1 
                     @pests_timer += time_for_checks
                     break if @pests
                 end  

@@ -56,10 +56,6 @@ class ItemStats
   attr_reader :capture_styler
   attr_reader :weapon
   
-  attr_accessor :damage
-  attr_accessor :defense
-  attr_accessor :speed
-  
   
   
   def initialize(item)
@@ -69,9 +65,6 @@ class ItemStats
     @pokeball = PokeBallStats.new(item) if item.data.is_pokeball?
     @capture_styler = CaptureStylerStats.new(item) if item.data.is_styler?
 	@weapon = WeaponStats.new(item) if item.data.is_weapon?
-	@damage = 0
-	@defense = 0
-	@speed = 0
   end 
   
   def initialize_copy(original)
@@ -137,6 +130,30 @@ class ItemStats
 	return @weapon 
   end 
   
+  def stat_bonus=(value)
+    weapon.stat_bonus=value
+  end 
+  def stat_bonus
+    weapon.stat_bonus
+  end 
+  def attack=(value)
+    weapon.stat_bonus=value
+  end 
+  def attack
+    weapon.stat_bonus
+  end 
+  def defense=(value)
+    weapon.stat_bonus=value
+  end 
+  def defense
+    weapon.stat_bonus
+  end 
+  def stat_bonus=(value)
+    weapon.stat_bonus=value
+  end 
+  def stat_bonus
+    weapon.stat_bonus
+  end 
   def stat_bonus=(value)
     weapon.stat_bonus=value
   end 
@@ -241,14 +258,42 @@ end
 class WeaponStats
   attr_accessor :item
   attr_accessor :stat_bonus 
+  attr_accessor :accuracy 
+  attr_accessor :speed 
   def initialize(item)
     @item = @item
     @stat_bonus = 0
+    @accuracy = 0
+    @speed = 0
   
   
   
   
   end 
+  
+  def stat_bonus
+    @stat_bonus = 0 if @stat_bonus.nil?
+	return @stat_bonus
+  end 
+  def accuracy
+    @accuracy = 0 if @accuracy.nil?
+	return @stat_bonus
+  end 
+  def speed
+    @speed = 0 if @speed.nil?
+	return @speed
+  end 
+  
+  def stat_bonus=(value)
+    @stat_bonus = value
+  end 
+  def accuracy=(value)
+    @accuracy = value
+  end 
+  def speed=(value)
+    @speed = value
+  end 
+  
   def initialize_copy(original)
     super
   end

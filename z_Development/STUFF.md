@@ -23,6 +23,7 @@
 - [ ] Rework player damage calculation, perhaps use the ethos behind the safari damage system.
 - [ ] Add natures to Safari Combat
 - [ ] Rebuild Boss fight logic
+- [ ] Create Modifier and Effects
 
 
 

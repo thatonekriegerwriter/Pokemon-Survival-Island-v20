@@ -9,10 +9,9 @@ class OverworldCombat
   def capturecalc(event, ball, dir)
     pkmn = event.pokemon
     catch_rate = pkmn.species_data.catch_rate
-	puts catch_rate 
+    return 99 if $player.pokedex.owned_count<1
       if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
          catch_rate = ball.effects.trigger(:modifyCatchRate, catch_rate, nil, pkmn)
-	puts catch_rate 
          #catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
       else
          catch_rate /= 10
@@ -95,11 +94,10 @@ end
 	return false 
   end 
    
-  def hitcalc(ball,pkmn)
+  def hitcalc(item, pkmn)
     x = pkmn.speed
     x = x.floor
     x = 1 if x < 1
-    return 99 if $player.pokedex.owned_count<2
     return 99 if pkmn.status == :SLEEP || pkmn.status == :FROZEN
 	return 99 if $DEBUG && Input.press?(Input::CTRL)
     y = x-($player.shoespeed/2)
@@ -115,10 +113,9 @@ end
 
  def hits?(event,item)
         return true if item.id == :BAIT || item.id == :STONE
-		
         pkmn = event.pokemon
 		
-        hit_rate=hitcalc(item,pkmn)
+        hit_rate = hitcalc(item, pkmn)
 		
         hit_rate+=4 if event.direction == $game_player.direction
         hit_rate+=2 if (event.direction == 4 || event.direction == 6) && ($game_player.direction == 8 || $game_player.direction == 2)
@@ -225,7 +222,7 @@ end
   moveType = move.type 
   baseDmg = move.base_damage
   
-  damage = calculate_weapon_damage(pkmn, moveType, baseDmg)
+  damage = calculate_weapon_damage(pkmn, moveType, baseDmg, item)
   deal_weapon_damage(event, damage)
   if item_meta.is_dart?
        case item.id
@@ -259,7 +256,7 @@ end
 
  end  
  
- def calculate_weapon_damage(pkmn, move_type, base_damage)
+ def calculate_weapon_damage(pkmn, move_type, base_damage, item=nil)
   damage = ((((2.0 * pkmn.level / 5) + 2).floor * base_damage).floor / 50).floor + 2
 
   pkmn.types.each do |type|
@@ -269,7 +266,11 @@ end
     damage /= 2 if Effectiveness.resistant?(value)
     damage = 0 if Effectiveness.ineffective?(value)
   end
-
+  
+  if item && item.is_a?(ItemData)
+    damage *= 1.0 + (item.stat.stat_bonus.to_f * 0.10)
+  end
+  
   damage += $player.equipmentatkbuff.to_i
   damage.floor
  end

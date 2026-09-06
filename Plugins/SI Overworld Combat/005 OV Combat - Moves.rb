@@ -799,11 +799,11 @@ end
   def attacking_the_player(damage, attacker, move, directionals)
         backattack, sideattack, baddir = directionals 
 		if $player.blocking && !backattack && !sideattack
-         current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-		 if current_selection.is_a?(ItemData)
+         shield=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+		 if shield.is_a?(ItemData)
 		  pbSEPlay("Anim/Knock")
-		  reduced_damage = damage/2
-		  current_selection.decrease_durability(reduced_damage)
+		  reduced_damage = damage * 3.0 / (3.0 + shield.stat.stat_bonus)
+		  shield.decrease_durability(reduced_damage)
 		  return 
 		 end
 		end

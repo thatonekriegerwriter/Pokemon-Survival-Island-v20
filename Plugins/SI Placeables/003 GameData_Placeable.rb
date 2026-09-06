@@ -6,6 +6,7 @@ module GameData
     attr_reader :size
     attr_reader :needs_power
     attr_reader :produces_power
+    attr_reader :battery_box
 
     DATA = {}
     extend ClassMethodsSymbols
@@ -22,6 +23,7 @@ module GameData
       @assignable_check       = hash[:assignable_check] || proc { |item, pkmn| true }
 	  @needs_power = hash[:needs_power] || false 
 	  @produces_power = hash[:produces_power] || false 
+	  @battery_box = hash[:battery_box] || false 
     end
     
 	
@@ -96,7 +98,7 @@ GameData::Placeable.register({ :id            => :GRAVE, :usable_locations => [:
 GameData::Placeable.register({ :id            => :ADVENTUREFLAG, :usable_locations => [:BASE_EXTERIOR]})
 GameData::Placeable.register({ :id            => :WARDINGTOTEM, :usable_locations => [:BASE_EXTERIOR]})
 
-GameData::Placeable.register({ :id            => :MACHINEBOX, :needs_power => true})
+GameData::Placeable.register({ :id            => :MACHINEBOX, :battery_box => true})
 GameData::Placeable.register({ :id            => :ELECTRICPRESS, :needs_power => true})
 GameData::Placeable.register({ :id            => :ELECTRICFURNACE, :needs_power => true})
 GameData::Placeable.register({ :id            => :APRICORNMACHINE, :needs_power => true})

@@ -226,7 +226,7 @@ class PokemonItemSummary_Scene
     @sprites["Modifiers"].resizeToFit("Modifiers (#{@item.modifiers.length}/#{@item.modifiers.max_length}): ")
 	
 	
-	theflags = @item.modifiers.get_modifiers.join("\n")
+	theflags = @item.modifiers.get_modifier_names.join("\n")
 	theflags = "None" if theflags== ""
     @sprites["Modifiers2"]=Window_UnformattedTextPokemon.new(theflags)
     pbPrepareWindow(@sprites["Modifiers2"])

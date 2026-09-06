@@ -281,7 +281,7 @@ module InventoryScene
 	    return unless can_pickup?(kind, index)
         store = backing_store_for(kind)
         slot_item = store[store_index_for(kind, index)]
-
+        puts slot_item.inspect
         return unless slot_item
 
         icon = icons[icon_key(kind, index, :image)]
@@ -347,6 +347,8 @@ module InventoryScene
           place_new_stack(store, kind, store_idx)
         elsif canteen_fillable?(existing)
           fill_canteen(existing)
+        elsif grabbed_item.from_fixed_slot? && grabbed_item.source == kind && grabbed_item.index == index
+          put_back_grabbed_item
         elsif existing[0].respond_to?(:identical) && existing[0].identical(grabbed_item.item)
           merge_stack(kind, store_idx, existing)
         else
@@ -391,10 +393,12 @@ module InventoryScene
           store[index] = [grabbed_item.item, 1]
           render_slot_icon(kind, index, grabbed_item.item, 1)
           shrink_grabbed_by(1)
+		  set_grabbed_to_held
         elsif existing[0].respond_to?(:identical) && existing[0].identical(grabbed_item.item) && existing[1] < existing[0].stack_size
           existing[1] += 1
           update_slot_text(kind, index, existing[1])
           shrink_grabbed_by(1)
+		  set_grabbed_to_held
         end
       end
       
@@ -410,6 +414,7 @@ module InventoryScene
           store[index] = [grabbed_item.item, 1]
           render_slot_icon(kind, index, grabbed_item.item, 1)
           shrink_grabbed_by(1)
+		  set_grabbed_to_held
         elsif existing[0].respond_to?(:identical) && existing[0].identical(grabbed_item.item) && existing[1] < existing[0].stack_size
 		 if existing[1]==1
 		  put_back_grabbed_item
@@ -417,8 +422,24 @@ module InventoryScene
           existing[1] += 1
           update_slot_text(kind, index, existing[1])
           shrink_grabbed_by(1)
+		  set_grabbed_to_held
 		 end 
         end
+	  
+	  
+	  end 
+	  
+	  def set_grabbed_to_held
+	    return if @grabbed_item.index=="held"
+		store = @grabbed_item.store
+		kind = @grabbed_item.source
+		index = @grabbed_item.index
+		store = backing_store_for(kind) unless store
+	    remove(@grabbed_item.icon)
+        remove(icons[icon_key(kind, index, :text)])
+		@grabbed_item.set_to_held
+        store[index] = nil
+        @grabbed_item.icon, = render_slot_icon(:held, "held", @grabbed_item.item, @grabbed_item.qty)
 	  
 	  
 	  end 

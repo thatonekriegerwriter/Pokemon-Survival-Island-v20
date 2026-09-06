@@ -18,6 +18,17 @@ module InventoryScene
 	  
       def craft = event_data.internal_storage
 	  
+	  def can_drop?(kind, index)
+	    puts kind
+	    item = grabbed_item.item
+        stack = craft[extra_slot_index]
+        store = backing_store_for(kind)
+        slot = store[index]
+	    return false if kind == :craft && index!=extra_slot_index && stack.nil?
+	    return false if kind == :craft && item.is_a?(ItemData) && event_data.recipe_has?(item.id) && ( slot && slot[0].id != item.id)
+		return true 
+	  end 
+	  
       def finalize_container
         apply_batch_modifications
         eject_everything_to_bag
@@ -38,20 +49,28 @@ module InventoryScene
           stack = craft[extra_slot_index]
           return unless stack
 
-          commit_modifiers_to_item(stack[0])
+          commit_modifiers_to_item
           pick_up(:craft, extra_slot_index)
+          switch_tab_to_item_pocket(stack[0])
         else
           existing = craft[extra_slot_index]
-          commit_modifiers_to_item(existing[0]) if existing
+          commit_modifiers_to_item if existing && !existing[0].identical(grabbed_item.item)
           drop_onto(:craft, extra_slot_index)
-          prefill_modifier_slots(craft[extra_slot_index][0]) if craft[extra_slot_index]
+          prefill_modifier_slots(craft[extra_slot_index][0])
         end
       end
       def prefill_modifier_slots(item)
-        slot_count.times { |i| clear_modifier_slot(i) }
-        return unless item.respond_to?(:modifiers)
+	    modifiers = item.modifiers.to_a
+        return if modifiers.empty?
 
-        item.modifiers.to_a.each_with_index do |(modifier_id, modifier_item), i|
+        slot_count.times do |i|
+          stack = craft[i]
+          next unless stack
+          $bag.add(stack[0], stack[1])
+          clear_modifier_slot(i)
+        end
+
+        modifiers.each_with_index do |(modifier_id, modifier_item), i|
           break if i >= slot_count
           craft[i] = [modifier_item, 1]
           render_slot_icon(:craft, i, modifier_item, 1)
@@ -60,21 +79,76 @@ module InventoryScene
 	  
       def clear_modifier_slot(i)
         return unless craft[i]
-
         craft[i] = nil
         remove_slot_icon(:craft, i)
       end
 	  
-      def commit_modifiers_to_item(item)
-        return unless item.respond_to?(:modifiers)
+      def consume_modifiers
+	    stack = craft[extra_slot_index]
+		return unless stack
+		total_qty = stack[1]
+        slot_count.times do |i|
+          next unless craft[i]
+		  
+          used = [craft[i][1], total_qty].min
+          craft[i][1] -= used
 
-        desired_items = slot_count.times.filter_map { |i| craft[i]&.first }
-        desired_ids = desired_items.map(&:id)
-        current_items = item.modifiers.to_a
-       current_ids = current_items.map(&:id)
+          if craft[i][1] <= 0
+            clear_modifier_slot(i)
+          else
+            update_slot_text(:craft, i, craft[i][1])
+          end
+        end
+      end
+	  
+      def commit_modifiers_to_item
+        stack = craft[extra_slot_index]
+        return unless stack
+ 
+        item, total_qty = stack
+ 
+        variants = Array.new(total_qty) { item.dup }
+        variants.each { |v| v.modifiers.to_a.each { |id| v.modifiers.remove(id) } if v.respond_to?(:modifiers) }
+		
 
-       (current_ids - desired_ids).each { |id| item.modifiers.remove(id) }
-       (desired_ids - current_ids).each { |id| item.modifiers.add(desired_items.find { |modifier| modifier.id == id }) }
+        successful_applications = []
+        slot_count.times do |i|
+          next unless craft[i]
+          mod_item, mod_qty = craft[i]
+          applied = 0
+
+          variants.each do |variant|
+            break if applied >= mod_qty
+
+            applied += 1 if variant.modifiers.add(mod_item.dup)
+          end
+
+          successful_applications[i] = applied
+        end
+ 
+ 
+ 
+ 
+        puts successful_applications.inspect
+ 
+ 
+ 
+ 
+        craft[extra_slot_index] = nil
+ 
+        slot_count.times do |i|
+          next unless craft[i]
+          success = successful_applications[i]
+		  puts success.inspect
+		  puts total_qty.inspect
+          used = [success, total_qty].min
+          remaining = craft[i][1] - used
+          craft[i] = remaining.positive? ? [craft[i][0], remaining] : nil
+        end
+        new_variants = variants.group_by { |v| v.modifiers.to_a.sort }.values.map { |g| [g.first, g.length] }
+		return if new_variants.empty?
+        craft[extra_slot_index] = new_variants.shift
+		event_data.extra_storage = new_variants unless new_variants.empty?
       end
 
 
@@ -84,24 +158,41 @@ module InventoryScene
         return unless stack
  
         item, total_qty = stack
-        modifier_slots = slot_count.times.filter_map { |i| craft[i] }
-        return if modifier_slots.empty?
  
         variants = Array.new(total_qty) { item.dup }
         variants.each { |v| v.modifiers.to_a.each { |id| v.modifiers.remove(id) } if v.respond_to?(:modifiers) }
  
-        modifier_slots.each do |mod_item, mod_qty|
-          applied = [mod_qty, total_qty].min
-          applied.times { |i| variants[i].modifiers.add(mod_item.dup) }
+		
+        successful_applications = []
+        slot_count.times do |i|
+          next unless craft[i]
+          mod_item, mod_qty = craft[i]
+          applied = 0
+
+          variants.each do |variant|
+            break if applied >= mod_qty
+
+            applied += 1 if variant.modifiers.add(mod_item.dup)
+          end
+
+          successful_applications[i] = applied
         end
+ 
+ 
+
+ 
+ 
+ 
+ 
  
         craft[extra_slot_index] = nil
         @modified_output = variants.group_by { |v| v.modifiers.to_a.sort }.values.map { |g| [g.first, g.length] }
  
         slot_count.times do |i|
           next unless craft[i]
+          success = successful_applications[i]
  
-          used = [craft[i][1], total_qty].min
+          used = [success, total_qty].min
           remaining = craft[i][1] - used
           craft[i] = remaining.positive? ? [craft[i][0], remaining] : nil
         end

@@ -16,6 +16,7 @@ class CraftingStationData
     attr_accessor :time_running
     attr_accessor :network
     attr_reader :internal_storage
+    attr_accessor :extra_storage
 
 
 	
@@ -36,7 +37,8 @@ class CraftingStationData
     @connected_to = nil
     @time_running       = 0
     @network = {}
-    @internal_storage = [nil]
+    @internal_storage = []
+    @extra_storage = []
 	@work_time = 0
 	@work_done = 0.0
 	@passed_time = 0
@@ -137,6 +139,10 @@ class CraftingStationData
   def electric?
     return false unless item 
     GameData::Placeable.get(item.id).needs_power
+  end 
+  def batbox?
+    return false unless item 
+    GameData::Placeable.get(item.id).battery_box
   end 
   
   def generator?
@@ -441,8 +447,14 @@ class CraftingStationData
 	  pkmn = nil
 	end 
   end 
-  def update_modifier(time_delta)
+  def update_modifier
+    @extra_storage = [] if @extra_storage.nil? 
+    return unless self.result_slot.nil?
+    return if @extra_storage.empty?
+	self.result_slot = @extra_storage.shift
   end
+
+
   def update_feeder(time_delta)
   end 
   
@@ -462,6 +474,7 @@ class CraftingStationData
   
   def update
     @internal_storage = [] if @internal_storage.nil?
+	update_modifier if modifier?
     time_now = pbGetTimeNow.to_i
     time_delta = time_now - @time_last_updated
     return if time_delta <= 0
@@ -478,7 +491,6 @@ class CraftingStationData
 	update_butcher_table(time_delta) if butchering_table?
 	update_machine_box(time_delta) if machine_box?
 	update_feeder(time_delta) if feeder?
-	update_modifier(time_delta) if modifier?
 	update_grave(time_delta) if grave?
     @time_last_updated = time_now
   end
@@ -662,6 +674,10 @@ class CraftingStationData
   
   def recipe_slots
     @internal_storage[0...-1]
+  end 
+  
+  def recipe_has?(item_id)
+    recipe_slots.any? { |item, amt| item && item_id == item.id }
   end 
   
 end

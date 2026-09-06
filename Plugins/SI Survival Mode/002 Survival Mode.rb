@@ -585,8 +585,8 @@ class Player < Trainer #SECONDARY DEFINITIONS
 	end
   end 
   
-  def equipmentatkbuff(item_id = nil)
-    return 0 if item_id.nil?
+  def equipmentatkbuff
+    return 0
   end 
   
   def equipmentdefbuff
@@ -612,15 +612,7 @@ class Player < Trainer #SECONDARY DEFINITIONS
 
 
   def speed
-      bonus = 0
-   @party.each do |pkmn|
-     next if pkmn.egg?
-    bonus += pkmn.speed
-   end
-   if bonus!=0
-     bonus = (bonus/@party.length).to_i
-   end
-    return shoespeed + bonus
+    return shoespeed 
   end
   
   

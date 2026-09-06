@@ -99,6 +99,8 @@ module ItemHandlers
 
   def self.CanUseFromEvent?(item, *args)
     return false if $game_temp.assigning?
+    return false if $game_temp.connecting?
+	
     return false if $game_temp.current_pkmn_controlled != false
     return false if $game_temp.position_calling == true
 	return true 

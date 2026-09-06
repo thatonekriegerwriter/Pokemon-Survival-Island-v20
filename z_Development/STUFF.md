@@ -14,6 +14,11 @@
 - [ ] Pokemon Mood
 - [ ] Released Pokemon Array and Released Pokemon events
 
+
+### Placeables
+- [ ] Ice Types can provide passive cold to Icebox/Electric Icebox. This requires a rewriting of IceBox data I don't want to do.
+
+
 ### Character
 
 ### Combat
@@ -24,6 +29,8 @@
 - [ ] Add natures to Safari Combat
 - [ ] Rebuild Boss fight logic
 - [ ] Create Modifier and Effects
+- [ ] Check if Aerial Ace is broken
+- [ ] Charm moves invert targets team
 
 
 
@@ -44,6 +51,7 @@
 - [ ] Move between two particular maps enough times and you get send to the Egg room.
 - [ ] Remap western temperate and bee forest
 - [ ] Rework Dungeons
+- [-] Raids
 
 ### Misc Mechanics
 - [ ] Drop items on death?

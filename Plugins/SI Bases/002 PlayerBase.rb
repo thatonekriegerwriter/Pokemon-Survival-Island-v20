@@ -26,7 +26,7 @@ class WorldBases
   end 
   
   def ongoing_raid?
-    @bases.any? { |base| base.ongoing_raid? }
+    @bases.each_value.any?(&:ongoing_raid?)
   end 
 end 
 
@@ -79,11 +79,19 @@ class PlayerBase
     return base
   end 
   
+  # NOTE: this is fully functional now, but nothing calls it yet - I've
+  # left it that way since we hadn't settled on the trigger. Whatever
+  # decides "this base should now be under attack" (a world tick,
+  # a scripted event, etc.) should call this once can_start_raid? is true.
   def begin_raid
-     return unless can_start_raid?
+    return nil unless can_start_raid?
+    raid = Raid.new(@id)
+    raid.activate
+    @ongoing_raid = raid
   end 
   
   def end_raid
+    return unless @ongoing_raid
     @ongoing_raid.cleanup
     @ongoing_raid = nil
   end 
@@ -126,10 +134,14 @@ class PlayerBase
     current_time = pbGetTimeNow.to_i
     time_delta = current_time - @time_last_updated
     return if time_delta <= 0
-    @blockdata.update(time_delta)
     update_blockdata(time_delta)
     update_pokemon(time_delta)
     @ongoing_raid&.update(time_delta)
+    # Background (player-absent) raids resolve themselves here once the
+    # simulation has a winner. Raids being fought manually on-map should
+    # be finished by whatever ends that battle instead - Raid#update
+    # already no-ops while state != :active, so this won't fight it.
+    end_raid if @ongoing_raid&.finished?
     @time_last_updated = current_time
   end 
   
@@ -137,7 +149,7 @@ class PlayerBase
 end 
 
 def pbWorldBasesAdd(id)
-  return $bases[id] if $bases.has?[id]
+  return $bases[id] if $bases.has?(id)
   base = PlayerBase.new(id)
   $bases.register(base)
   base

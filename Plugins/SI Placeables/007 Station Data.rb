@@ -12,13 +12,15 @@ class CraftingStationData
     attr_accessor :power
     attr_accessor :internal_battery_limit
     attr_accessor :average_power_output
+    attr_accessor :average_power_input
     attr_accessor :connected_to
     attr_accessor :time_running
     attr_accessor :network
     attr_reader :internal_storage
     attr_accessor :extra_storage
 
-
+    FUEL_TO_EU = 100.0
+    FUEL_BURN_RATE = 0.01
 	
   def initialize(event_id)
     @event_id = event_id 
@@ -30,10 +32,9 @@ class CraftingStationData
     @active = false
 	
     @power = 0.0
-	@internal_battery_limit = 0.0
-	@internal_battery_limit = 390.0 if electric?
-	@internal_battery_limit = mbox_energy if machine_box?
-	@average_power_output = 32.0
+	@internal_battery_limit = get_energy
+	@average_power_output = get_power_output
+	@average_power_input = get_power_input
     @connected_to = nil
     @time_running       = 0
     @network = {}
@@ -45,115 +46,8 @@ class CraftingStationData
     @internal_storage = [nil] if spinner?
   end
   
-  def mbox_energy
-    return 4000.0
-  end 
-  
-  def internal_storage
-   @internal_storage = [] if @internal_storage.nil?
-   @internal_storage = [nil] if spinner?
-   return @internal_storage
-  end
-  def work_time
-   @work_time = 0 if @work_time.nil?
-   return @work_time
-  end
-  def work_done
-   @work_done = 0.0 if @work_done.nil?
-   return @work_done
-  end
-  def passed_time
-   @passed_time = 0 if @passed_time.nil?
-   return @passed_time
-  end
-  def active
-   @active = false if @active.nil?
-   return @active
-  end
-  def crafting_data
-    GameData::Recipe::DATA.values.select do |recipe|
-       recipe.station.include?(item.id) && (!recipe.locked || $recipe_book.unlocked?(recipe.id))
-    end
-  end
-  
-  def decreaseStamina(worker_id, amt)
-    worker = $game_map.events[worker_id]
-	return unless worker
-	pkmn = worker.pokemon
-	return unless pkmn && pkmn.is_a?(Pokemon)
-	pkmn.stamina = [pkmn.stamina - amt, 0].max
-  end 
-  
-  def decrease_workers_stamina(amt = 1)
-    return if amt == 0
-    workers.each do |worker_id|
-	  decreaseStamina(worker_id, amt)
-	end 
-  end 
-  
-  def still_me?
-  end
-  
-  def event 
-    $game_map.events[@event_id]
-  end 
-  
-  def item
-    event&.type
-  end 
-  
-  def furnace?
-    item&.id == :FURNACE
-  end 
-  def grinder?
-    item&.id == :GRINDER
-  end 
-  def grave?
-    item&.id == :GRAVE
-  end 
-  def garbage_bin?
-    item&.id == :GARBAGEBIN
-  end 
-  def warding_totem?
-    item&.id == :WARDINGTOTEM
-  end 
-  def butchering_table?
-    item&.id == :BUTCHERTABLE
-  end 
-  def composter?
-    item&.id == :COMPOSTER
-  end 
-  def feeder?
-    item&.id == :FEEDER
-  end 
-  def modifier?
-    item&.id == :MODIFICATIONTABLE
-  end 
 
-  def spinner?
-    item&.id == :SILKSPINNER
-  end  
-  def machine_box?
-    item&.id == :MACHINEBOX
-  end  
-  def electric?
-    return false unless item 
-    GameData::Placeable.get(item.id).needs_power
-  end 
-  def batbox?
-    return false unless item 
-    GameData::Placeable.get(item.id).battery_box
-  end 
-  
-  def generator?
-    return false unless item 
-    GameData::Placeable.get(item.id).produces_power
-  end 
-  
-  def fueled?
-    @fuel > 0.0
-  end 
-  
+
   def update_grave(time_delta)
 	pkmn = result_slot
     return unless pkmn && pkmn.dead? && !pkmn.types.include?(:GHOST)
@@ -301,7 +195,21 @@ class CraftingStationData
 
   end  
 
-
+  
+  def update_machine_box(time_delta)
+    if Input.triggerex?(0xDD) || Input.repeatex?(0xDD)
+      @power += (10.0 * time_delta)
+	  puts "Increased Power: #{@power}"
+	elsif Input.triggerex?(0xDB) || Input.repeatex?(0xDB) 
+      @power -= (10.0 * time_delta)
+	  puts "Decreased Power: #{@power}"
+	end 
+	
+	@power = [@power, @internal_battery_limit].min
+	@power = [@power, 0.0].max
+	@power = @power.to_f 
+  end 
+  
 
   def update_warding_totem(time_delta)
     @passed_time += time_delta
@@ -455,23 +363,85 @@ class CraftingStationData
   end
 
 
+
+  
+
   def update_feeder(time_delta)
   end 
   
-  def update_machine_box(time_delta)
-    if Input.triggerex?(0xDD) || Input.repeatex?(0xDD)
-      @power += (10.0 * time_delta)
-	  puts "Increased Power: #{@power}"
-	elsif Input.triggerex?(0xDB) || Input.repeatex?(0xDB) 
-      @power -= (10.0 * time_delta)
-	  puts "Decreased Power: #{@power}"
-	end 
-	
-	@power = [@power, @internal_battery_limit].min
-	@power = [@power, 0.0].max
-	@power = @power.to_f 
+  
+  
+  def update_network(time_delta, time_now)
+   @network.each do |type, events|
+    events.select! { |event_id| $game_map.events[event_id] }
+   end
+
+  @network.each_value do |event_ids|
+    event_ids.each do |event_id|
+      event = $game_map.events[event_id]
+      next unless event
+
+      event.internal_data.update_machine(time_delta)
+    end
+  end
+   
+   
+  end
+  def update_consumption(time_delta)
+   return if @average_power_input <= 0
+   return if @power >= @internal_battery_limit
+
+   eu_needed = @average_power_input * time_delta
+   eu_needed = [eu_needed, @internal_battery_limit - @power].min
+   [:producer, :batbox].each do |type|
+    network_events(type).each do |event|
+      break if eu_needed <= 0
+
+      data = event.type.internal_data
+      available = data.power
+      next if available <= 0
+
+      eu_taken = [available, eu_needed].min
+
+      data.power -= eu_taken
+      @power += eu_taken
+      eu_needed -= eu_taken
+    end
+   end
+  end 
+  def update_production(time_delta)
+   return if fuel <= 0
+   return if power >= internal_battery_limit
+
+   eu_to_generate = @average_power_output * time_delta
+   eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
+
+
+   fuel_burned = eu_to_generate / FUEL_TO_EU
+   fuel_burned = [fuel_burned, fuel].min
+   
+   @fuel -= fuel_burned
+   power_generated = fuel_burned * FUEL_TO_EU
+   @power = [@power + power_generated, @internal_battery_limit].min
+  end 
+  def update_batbox(time_delta)
+    update_consumption(time_delta)
+	update_production(time_delta)
   end 
   
+  def update_machine(time_delta, time_now = nil)
+  
+    update_consumption(time_delta) if needs_power?
+    update_production(time_delta) if power_generator?
+    update_batbox(time_delta) if batbox?
+    @time_last_updated = time_now if time_now 
+  
+  end 
+
+  def update_electronics(time_delta, time_now)
+	update_network(time_delta, time_now)
+	update_machine(time_delta)
+  end 
   def update
     @internal_storage = [] if @internal_storage.nil?
 	update_modifier if modifier?
@@ -482,7 +452,14 @@ class CraftingStationData
     @work_done ||= 0.0 
 	@passed_time ||= 0
 	@work_time += time_delta if workers.length > 0
-	update_furnace(time_delta) if furnace?
+	update_data(time_delta, time_now)
+    @time_last_updated = time_now
+  end
+  
+  
+  def update_data(time_delta, time_now)
+    update_electronics(time_delta, time_now) if electric?
+	update_furnace(time_delta) if furnace? || coal_generator?
 	update_grinder(time_delta) if grinder?
 	update_spinner(time_delta) if spinner?
 	update_garbage_bin(time_delta) if garbage_bin?
@@ -492,8 +469,9 @@ class CraftingStationData
 	update_machine_box(time_delta) if machine_box?
 	update_feeder(time_delta) if feeder?
 	update_grave(time_delta) if grave?
-    @time_last_updated = time_now
-  end
+  
+  
+  end 
   
   def refresh
     @time_last_updated = pbGetTimeNow.to_i
@@ -507,6 +485,164 @@ class CraftingStationData
     @time_running       = 0
     @network = {}
   end 
+
+  
+end
+
+class CraftingStationData
+
+  def needs_power?
+    return false unless item 
+    GameData::Placeable.get(item.id).needs_power
+  end 
+  def batbox?
+    return false unless item 
+    GameData::Placeable.get(item.id).battery_box
+  end 
+  
+  def power_generator?
+    return false unless item 
+    GameData::Placeable.get(item.id).produces_power
+  end 
+  
+  def furnace?
+    item&.id == :FURNACE
+  end 
+  def grinder?
+    item&.id == :GRINDER
+  end 
+  def grave?
+    item&.id == :GRAVE
+  end 
+  def garbage_bin?
+    item&.id == :GARBAGEBIN
+  end 
+  def warding_totem?
+    item&.id == :WARDINGTOTEM
+  end 
+  def butchering_table?
+    item&.id == :BUTCHERTABLE
+  end 
+  def composter?
+    item&.id == :COMPOSTER
+  end 
+  def feeder?
+    item&.id == :FEEDER
+  end 
+  def modifier?
+    item&.id == :MODIFICATIONTABLE
+  end 
+  def coal_generator?
+    item&.id == :COALGENERATOR
+  end 
+  
+  def spinner?
+    item&.id == :SILKSPINNER
+  end  
+  def machine_box?
+    item&.id == :MACHINEBOX
+  end  
+  
+  def electric?
+    batbox? || power_generator? || needs_power?
+  end 
+  
+  def electric_furnace?
+    item&.id == :ELECTRICFURNACE
+  end 
+  
+  def fueled?
+    @fuel > 0.0
+  end 
+  
+
+end 
+class CraftingStationData #Electric
+  def station_type
+    return :producer if power_generator?
+	return :batbox if batbox?
+	return :consumer if needs_power?
+    return false 
+  end 
+  
+  def add_to_network(event)
+    event_id = event.id
+	type = event.type.internal_data.station_type
+	return unless [:producer, :batbox, :consumer].include?(type)
+	@network[type] ||= []
+	@network[type] << event_id unless @network[type].include?(event_id)
+  end 
+  
+  def add_to_network_by_id(event_id)
+    event = $game_map.events[event_id]
+	return unless event 
+	type = event.type.internal_data.station_type
+	return unless [:producer, :batbox, :consumer].include?(type)
+	@network[type] ||= []
+	@network[type] << event_id unless @network[type].include?(event_id)
+  end 
+  
+  def remove_from_network_by_id(event_id)
+    @network.each_value { |events| events.delete(event_id) }
+  end 
+
+def available_power
+  total = 0.0
+
+  network_events(:producer).each do |event|
+    data = event.type.internal_data
+    total += data.power
+  end
+
+  network_events(:batbox).each do |event|
+    data = event.type.internal_data
+    total += data.power
+  end
+
+  total
+end
+
+  def remove_from_network(event)
+    event_id = event.id
+	type = event.type.internal_data.station_type
+	return unless [:producer, :batbox, :consumer].include?(type)
+	@network[type] ||= []
+	@network[type].delete(event_id)
+  end 
+  
+  def network_events(type)
+    @network[type]||=[]
+    @network[type].filter_map { |event_id| $game_map.events[event_id] }
+  end
+  
+  
+  def get_power_output
+    return 10.0 if coal_generator?
+    return 32.0 if machine_box?
+    return 0.0
+  end 
+  
+  def get_power_input
+    return 32.0 if machine_box?
+    return 3.0 if electric_furnace?
+    return 0.0
+  end
+  
+  def get_energy
+    return 4000.0 if batbox?
+    return 400.0 if coal_generator?
+    return 390.0 if needs_power?
+    return 400.0 if power_generator?
+	return 0.0
+  end 
+  
+
+
+
+  
+end
+
+class CraftingStationData
 
   def collect_silk
     unless result_slot && result_slot.is_a?(Array) && result_slot[0].id == :SILK && result_slot[1] > 0
@@ -654,6 +790,59 @@ class CraftingStationData
   end 
   
 
+  
+  def internal_storage
+   @internal_storage = [] if @internal_storage.nil?
+   @internal_storage = [nil] if spinner?
+   return @internal_storage
+  end
+  def work_time
+   @work_time = 0 if @work_time.nil?
+   return @work_time
+  end
+  def work_done
+   @work_done = 0.0 if @work_done.nil?
+   return @work_done
+  end
+  def passed_time
+   @passed_time = 0 if @passed_time.nil?
+   return @passed_time
+  end
+  def active
+   @active = false if @active.nil?
+   return @active
+  end
+  def crafting_data
+    GameData::Recipe::DATA.values.select do |recipe|
+       recipe.station.include?(item.id) && (!recipe.locked || $recipe_book.unlocked?(recipe.id))
+    end
+  end
+  
+  def decreaseStamina(worker_id, amt)
+    worker = $game_map.events[worker_id]
+	return unless worker
+	pkmn = worker.pokemon
+	return unless pkmn && pkmn.is_a?(Pokemon)
+	pkmn.stamina = [pkmn.stamina - amt, 0].max
+  end 
+  
+  def decrease_workers_stamina(amt = 1)
+    return if amt == 0
+    workers.each do |worker_id|
+	  decreaseStamina(worker_id, amt)
+	end 
+  end 
+  
+  def still_me?
+  end
+  
+  def event 
+    $game_map.events[@event_id]
+  end 
+  
+  def item
+    event&.type
+  end 
  
 
   def get_fuel_consumption
@@ -679,8 +868,12 @@ class CraftingStationData
   def recipe_has?(item_id)
     recipe_slots.any? { |item, amt| item && item_id == item.id }
   end 
-  
-end
+
+
+
+end 
+
+
 
 class GuardStationData
   attr_accessor :event_id

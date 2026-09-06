@@ -55,6 +55,7 @@ class Game_Temp
     @assignment_cooldown = 0 if @assignment_cooldown.nil?
     return @assignment_cooldown
   end
+  
   def connection_mode
     @connection_mode = false if @connection_mode.nil?
     return @connection_mode
@@ -63,6 +64,12 @@ class Game_Temp
     @connection_cooldown = 0 if @connection_cooldown.nil?
     return @connection_cooldown
   end
+  
+  
+  def connecting?
+    self.connection_mode == true && !self.connection_source.nil?
+  end 
+  
   def inv_cooldown
     @inv_cooldown = 0 if @inv_cooldown.nil?
     return @inv_cooldown

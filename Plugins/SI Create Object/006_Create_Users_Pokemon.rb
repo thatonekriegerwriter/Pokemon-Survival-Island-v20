@@ -505,6 +505,7 @@ end
 
 
 def movement_logic
+   return if $game_temp.connecting?
    return if pokemon.fainted?
    update_confused
    update_combat

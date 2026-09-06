@@ -5,7 +5,6 @@
 class WeatherSystem
   attr_accessor :actualWeather
   attr_accessor :nextWeather
-  attr_accessor :zoneMaps
   attr_accessor :currentZone
   attr_accessor :seasons
   attr_accessor :seasonSplash
@@ -13,7 +12,6 @@ class WeatherSystem
   def initialize
     @actualWeather	= []
     @nextWeather	= []
-    @zoneMaps		= WeatherConfig::ZONE_MAPS || []
     @currentZone	= nil
     @seasons		= {
       :outdoor => false,
@@ -23,6 +21,9 @@ class WeatherSystem
       :spring => false
     }
     @seasonSplash	= false
+  end
+  def zoneMaps
+    return GameData::Zone.all.map { |zone| zone.maps }
   end
 end
 
@@ -116,42 +117,48 @@ def pbGetEndTime(startTime)
 end
 
 def pbInitializeWeather
-  zoneWeather = WeatherConfig::ZONE_WEATHER_SUMMER if pbIsSummer
-  zoneWeather = WeatherConfig::ZONE_WEATHER_AUTUMN if pbIsAutumn
-  zoneWeather = WeatherConfig::ZONE_WEATHER_WINTER if pbIsWinter
-  zoneWeather = WeatherConfig::ZONE_WEATHER_SPRING if pbIsSpring
-  for i in 0...$WeatherSystem.zoneMaps.length
+  zones = GameData::Zone.all
+  for i in 0...zones.length
+    zoneWeather = zones[i].weather
     chance = 0
     last = 0
     prob = []
-    for j in 0...zoneWeather[i].length
-      chance += zoneWeather[i][j]
-      newprob = zoneWeather[i][j] + last
+    for j in 0...zoneWeather.length
+      chance += zoneWeather[j]
+      newprob = zoneWeather[j] + last
       prob.push(newprob)
       last = newprob
     end
     for j in 0...prob.length
-      prob[j] = 0 if zoneWeather[i][j] == 0
+      prob[j] = 0 if zoneWeather[j] == 0
     end
     main = 0
-	weatherChance = 1 + rand(chance)
-    for j in 0...zoneWeather[i].length
-      break if weatherChance <= prob[j]
-      main += 1
+    if chance == 0
+      mainType = :None
+    else
+      weatherChance = 1 + rand(chance)
+      for j in 0...zoneWeather.length
+        break if weatherChance <= prob[j]
+        main += 1
+      end
+      mainType = GameData::Weather.get(main).id
     end
-    mainType = GameData::Weather.get(main).id
     secondType = pbValidSecondWeather(i, mainType)
     startTime = pbGetStartTime
     endTime = pbGetEndTime(startTime)
     newWeather = WeatherSystemData.new(startTime, endTime, mainType, secondType)
     $WeatherSystem.actualWeather.push(newWeather)
     main = 0
-	weatherChance = 1 + rand(chance)
-    for j in 0...zoneWeather[i].length
-      break if weatherChance <= prob[j]
-      main += 1
+    if chance == 0
+      mainType = :None
+    else
+      weatherChance = 1 + rand(chance)
+      for j in 0...zoneWeather.length
+        break if weatherChance <= prob[j]
+        main += 1
+      end
+      mainType = GameData::Weather.get(main).id
     end
-    mainType = GameData::Weather.get(main).id
     secondType = pbValidSecondWeather(i, mainType)
     newWeather = WeatherSystemData.new(startTime, endTime, mainType, secondType)
     $WeatherSystem.nextWeather.push(newWeather)
@@ -223,29 +230,30 @@ end
 
 
 def pbSetNewWeather(zone)
-  zoneWeather = WeatherConfig::ZONE_WEATHER_SUMMER if pbIsSummer
-  zoneWeather = WeatherConfig::ZONE_WEATHER_AUTUMN if pbIsAutumn
-  zoneWeather = WeatherConfig::ZONE_WEATHER_WINTER if pbIsWinter
-  zoneWeather = WeatherConfig::ZONE_WEATHER_SPRING if pbIsSpring
+  zoneWeather = GameData::Zone.all[zone].weather
   chance = 0
   last = 0
   prob = []
-  for j in 0...zoneWeather[zone].length
-    chance += zoneWeather[zone][j]
-    newprob = zoneWeather[zone][j] + last
+  for j in 0...zoneWeather.length
+    chance += zoneWeather[j]
+    newprob = zoneWeather[j] + last
     prob.push(newprob)
     last = newprob
   end
   for j in 0...prob.length
-    prob[j] = 0 if zoneWeather[zone][j] == 0
+    prob[j] = 0 if zoneWeather[j] == 0
   end
-  main = 0
-  weatherChance = 1 + rand(chance)
-  for j in 0...zoneWeather[zone].length
-    break if weatherChance <= prob[j]
-    main += 1
+  if chance == 0
+    mainType = :None
+  else
+    main = 0
+    weatherChance = 1 + rand(chance)
+    for j in 0...zoneWeather.length
+      break if weatherChance <= prob[j]
+      main += 1
+    end
+    mainType = GameData::Weather.get(main).id
   end
-  mainType = GameData::Weather.get(main).id
   secondType = pbValidSecondWeather(zone, mainType)
   startTime = pbGetStartTime
   $WeatherSystem.nextWeather[zone].startTime = startTime

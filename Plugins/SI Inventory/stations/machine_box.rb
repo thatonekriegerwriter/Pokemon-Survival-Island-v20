@@ -98,6 +98,7 @@ module InventoryScene
 	  def connecting_power?
         $game_temp.connection_mode && $game_temp.connection_source.equal?(event_data)
 	  end 
+	  
       def render_power_display
         x = bonus_1 + 110
         y = bonus_2 + 48
@@ -118,7 +119,7 @@ module InventoryScene
         sprites["power_bar_fill"].z = 71
         sprites["power_bar_fill"].x = x + 10
         sprites["power_bar_fill"].y = y + 10
-		create_text_centered("power_text", "#{event_data.power}/#{event_data.internal_battery_limit}", x + 40, y - 2)
+		create_text_centered("power_text", "#{event_data.power.round(2)}/#{event_data.internal_battery_limit}", x + 40, y - 2)
         create_text_centered("output_text", "Out: #{event_data.average_power_output} EU/s", x + 116, y + 60)
 		update_power_display
       end
@@ -145,7 +146,7 @@ module InventoryScene
 
 		width = (138 * ratio).to_i
         bitmap.fill_rect(0,0,width,24,Color.new(255, 16, 0)) if width > 0
-        update_text_centered("power_text", "#{power} / #{limit}")
+        update_text_centered("power_text", "#{power.round(2)} / #{limit}")
         update_text_centered("output_text", "Out: #{event_data.average_power_output} EU/s")
       end
 

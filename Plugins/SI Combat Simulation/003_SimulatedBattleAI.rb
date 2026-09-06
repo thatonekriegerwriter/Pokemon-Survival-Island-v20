@@ -19,12 +19,28 @@ module SimulatedBattleAI
   def choose_action(user, target)
     scored = user.moves.select { |m| can_choose_move?(user, m) }
                  .map { |m| [m, score_move(m, user, target, calculate_skill)] }
-    return nil if scored.empty?
+    return struggle_action(user) if scored.empty?
 
-    best = scored.max_by { |(_, s)| s }
-    return nil if best[1] <= 0 && scored.all? { |(_, s)| s <= 0 } # nothing worth doing at all
+    best_score = scored.map { |(_, s)| s }.max
+    return struggle_action(user) if best_score <= 0 # nothing worth doing at all
+
+    # Pick randomly among everything tied for best, rather than always
+    # taking whichever move happens to come first in user.moves.
+    best = scored.select { |(_, s)| s == best_score }.sample
 
     SimulatedAction.new(best[0])
+  end
+
+  # Standard Essentials Struggle - used when a Pokemon has no usable
+  # move (out of PP) or nothing worth doing. Adjust the Move
+  # construction below if this codebase builds Struggle differently.
+  # NOTE: this gets Struggle dealing its normal damage via the existing
+  # calculate_damage path, but SimulatedAction#execute has no case for
+  # Struggle's recoil function code, so the user won't take recoil
+  # damage from it yet - flagging rather than guessing at that function
+  # code's exact name in this codebase.
+  def struggle_action(user)
+    SimulatedAction.new(Pokemon::Move.new(:STRUGGLE))
   end
 
   def calculate_skill

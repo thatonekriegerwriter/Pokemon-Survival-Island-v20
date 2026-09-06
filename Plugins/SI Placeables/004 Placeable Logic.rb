@@ -49,6 +49,20 @@ def assignable?(item, pkmn)
    return GameData::Placeable.get(item.id).assignable?(item, pkmn)
 end 
 
+def connectable?(data_a, data_b)
+  return true if data_a.batbox? || data_b.batbox?
+  return true if data_a.power_generator? && data_b.needs_power?
+  return true if data_b.power_generator? && data_a.needs_power?
+  return false 
+end 
+
+def electronic?(item)
+  return false unless item.is_a?(ItemData)
+  data = GameData::Placeable.get(item.id)
+  return false unless data
+  data.needs_power || data.produces_power || data.battery_box
+end 
+
 def place_or_hold(item = $player.held_item, x = nil, y = nil)
   if item.id==:PORTABLECAMP 
     held_event = $player.held_item_event

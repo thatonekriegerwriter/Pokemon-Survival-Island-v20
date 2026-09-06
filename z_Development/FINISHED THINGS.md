@@ -64,6 +64,7 @@
 - [x] Rework Berry Plants to work off of the Hotbar, rather than pbBerryPlant.
 - [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
 - [x] Make simulated combat system
+- [x] Update weather for GameData::Zones
 
 
 ### Misc Mechanics

@@ -467,7 +467,6 @@ class Scene_Map
       updateMaps
       $game_system.update
       $game_screen.update
-	  #$ExtraEvents.update_objects_remotely
       break unless $game_temp.player_transferring
       transfer_player(false)
       break if $game_temp.transition_processing
@@ -522,7 +521,7 @@ class Scene_Map
         $game_temp.ready_menu_calling = false
         $game_player.straighten
         pbUseKeyItem
-      elsif $game_temp.interact_calling && !$game_temp.assigning? && $game_temp.assignment_cooldown==0
+      elsif $game_temp.interact_calling && !$game_temp.connecting? && !$game_temp.assigning? && $game_temp.assignment_cooldown==0
         $game_temp.interact_calling = false
         $game_player.straighten
         EventHandlers.trigger(:on_player_interact)
@@ -557,10 +556,18 @@ class Scene_Map
 	  end
   end
   def behavior_type
+      if @ball_hud_was_enabled && !$game_temp.connecting?
+       $PokemonGlobal.ball_hud_enabled = @ball_hud_was_enabled
+	   @ball_hud_was_enabled = nil
+	  end 
       if $game_temp.position_calling == true #Input Logic for Placing Overworld Objects
 	    positioning_controls
       elsif $game_temp.assigning?
 	    pokemon_assignment
+      elsif $game_temp.connecting?
+	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
+		$PokemonGlobal.ball_hud_enabled = false 
+	    power_linking
       elsif $game_temp.current_pkmn_controlled!=false
 	    pokemon_controls
 		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
@@ -572,6 +579,63 @@ class Scene_Map
 		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
       end
   end
+
+
+  def power_linking
+   if @assignment_marker.nil?
+    @assignment_marker = PositionMarker.new($game_player.x, $game_player.y)
+   end
+   @assignment_marker.update 
+   eventdata = $game_temp.connection_source
+   item = eventdata.item 
+   text = _INTL("Connecting #{item.name}...")
+   x = $game_player.x
+   y = $game_player.y
+   
+   case $game_player.direction
+   when 2 then y += 1
+   when 4 then x -= 1
+   when 6 then x += 1
+   when 8 then y -= 1
+   end
+
+   @assignment_marker.x = x
+   @assignment_marker.y = y
+   
+   event_id = $game_map.check_event(x, y)
+   event = $game_map.events[event_id]
+   if event && event.is_a?(Game_OVEvent) && Placeable.electronic?(event.type) && event.type.internal_data.nil?
+     localMeter=CraftingStationData.new(event_id)
+     event.type.internal_data = localMeter
+   end 
+   can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.electronic?(event.type) && Placeable.connectable?(eventdata, event.type.internal_data)
+   text = _INTL("Connect #{item.name} to #{event.station_name}?") if can_connect
+   if Input.press?(Input::USE)
+    if can_connect
+    source_data = $game_temp.connection_source
+    target_data = event.type.internal_data
+    source_data.add_to_network(event)
+    target_data.add_to_network(source_data.event)
+
+
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+    $game_temp.connection_source = nil
+    $game_temp.connection_mode = false
+    text = _INTL("Connected #{item.name} to #{event.station_name}.") if event && event.is_a?(Game_OVEvent)
+	$game_temp.assignment_cooldown = 20
+	end 
+   elsif Input.press?(Input::BACK)
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+    $game_temp.connection_source = nil
+    $game_temp.connection_mode = false
+    text = _INTL("Cancelled Connection for #{item.name}.")
+   end 
+   $sidedisplay.clear_text
+   sideDisplay(text, true)
+  end 
+  
   
   def pokemon_assignment
    if @assignment_marker.nil?
@@ -1468,10 +1532,14 @@ class Scene_Map
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	#  item = ItemData.new(:MACHINEBOX)
 	#  item = ItemData.new(:MODIFICATIONTABLE)
+	  item = ItemData.new(:ELECTRICFURNACE)
 	  
-    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:MACHINEBOX)
+      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:COALGENERATOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 

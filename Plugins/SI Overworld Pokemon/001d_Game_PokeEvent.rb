@@ -606,6 +606,7 @@ class Game_PokeEvent < Game_Event
   end
   
   def thinking
+   return if $game_temp.connecting?
    $PokemonGlobal.ov_combat.ov_combat_loop(self)
   end
   def screen_x
@@ -921,6 +922,8 @@ class Game_PokeEvent < Game_Event
   end
 
    def pkmnmovement2
+     
+     return if $game_temp.connecting?
      return if @being_caught
      confused = self.pokemon.effects[PBEffects::Confusion]>0
     if confused
@@ -1045,8 +1048,8 @@ end
    end
    
 
-  alias original_update update
   def update
+    super 
     if !$game_temp.in_menu
 
       for anim in VisibleEncounterSettings::Perma_Enc_Animations
@@ -1078,7 +1081,6 @@ end
   end
 
 
-    original_update
   end
    
 def my_sight_line

@@ -72,7 +72,8 @@ class Inventory_Scene
     # closest faithful guess, but there's no original rendering to check
     # this against - flag if these types are actually used and look wrong
     # in-engine.
-    :ELECTRICFURNACE => ->(e, c) { InventoryScene::Stations::Furnace.new(event_data: e, container: c, slots: 1, bg: "ELECTRICFURNACE") },
+    :ELECTRICFURNACE => ->(e, c) { InventoryScene::Stations::ElectricFurnace.new(event_data: e, container: c) },
+    :COALGENERATOR => ->(e, c) { InventoryScene::Stations::CoalGenerator.new(event_data: e, container: c) },
     :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 2, bg: "ELECTRICPRESS") },
     :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE") },
   }.freeze

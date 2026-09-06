@@ -31,7 +31,7 @@ def pbBerryPlant
   this_event = interp.get_self
   berry_plant = interp.getVariable
   if !berry_plant.is_a?(BerryPlantData)
-    berry_plant = BerryPlantData.new(this_event)
+    berry_plant = BerryPlantData.new(this_event.id)
     interp.setVariable(berry_plant)
   end
   berry = berry_plant.berry
@@ -365,7 +365,7 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   this_event = interp.get_self
   berry_plant = interp.getVariable
   if !berry_plant
-    berry_plant = BerryPlantData.new(this_event)
+    berry_plant = BerryPlantData.new(this_event.id)
     interp.setVariable(berry_plant)
     berry_plant.berry = berry
   end
@@ -830,6 +830,8 @@ class BerryTileData
 end
 
 
+
+
 class BerryPlantData
   attr_accessor :event
   attr_accessor :tile_data
@@ -878,15 +880,14 @@ class BerryPlantData
   attr_accessor :stagnation_message
 
 	
-  def initialize(event = nil)
-     @event = event if !event.nil?
-     @event = pbMapInterpreter.get_self if @event.nil?
-	 @tile_data = BerryTileData.new(@event.x,@event.y)
+  def initialize(event_id)
+     @event_id = event_id 
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y)
 	 @centered = false
 	 @jit = false
-	 @centered = true if @event.name.include?("center") if !event.nil?
-    @moisture_level     = 100
-    reset
+	 @centered = true if self.event.name.include?("center")
+     @moisture_level     = 100
+     reset
   end
   def cropsticks 
     return @tile_data.cropsticks
@@ -952,6 +953,7 @@ class BerryPlantData
   end
   
   def event_id
+    @event_id = @event.id if @event 
     @event_id 
   end 
   def event_id=(value)
@@ -959,7 +961,8 @@ class BerryPlantData
   end 
   
   def event
-   return $game_map.events[event_id] if event_id
+   @event_id = @event.id if @event 
+   $game_map.events[event_id] if event_id
   end 
   
   def workers
@@ -1072,7 +1075,7 @@ class BerryPlantData
   end
   
   def detriment_effects(time_now)
-    return unless @event && cropsticks
+    return unless self.event && cropsticks
   
 
         if @weeds_timer && !@weeds && @growth_stage > 1
@@ -1088,7 +1091,7 @@ class BerryPlantData
 			 end
         end
         #Pests
-        if @event && @pests_timer
+        if self.event && @pests_timer
             if !@pests && @growth_stage > 2
                 pests_delta = time_now.to_i - @pests_timer
                 time_for_checks = 8 * 3600
@@ -1101,8 +1104,8 @@ class BerryPlantData
                 end  
 			     end
             end
-            @event.move_speed = @pests ? 6 : 3
-            $game_map.events[@event.id].move_speed = @event.move_speed if $game_map.map_id == @event.map_id
+            self.event.move_speed = @pests ? 6 : 3
+            $game_map.events[self.event.id].move_speed = self.event.move_speed if $game_map.map_id == self.event.map_id
         end
 
 
@@ -1113,7 +1116,7 @@ class BerryPlantData
   end
   
   def is_raining?
-    zone = pbGetZone(@event.map_id)
+    zone = pbGetZone(self.event.map_id)
     weather = $WeatherSystem.nextWeather[zone].mainWeather
 	return false if $WeatherSystem.actualWeather[zone].mainWeather.nil?
     return true if weather == :Rain || weather == :HeavyRain || weather == :Storm
@@ -1127,9 +1130,20 @@ class BerryPlantData
    return @exposed_to_rain == false && @tile_data.beside_water == false && @growth_stage >= 2 && @watered_this_stage == false
   end
 
+def nearby_apiaries?
+  events = $DynamicEvents.block_data_for_type(:APIARY)
+  return false if events.empty?
+  events.count do |apiary|
+    dx = apiary.x - self.event.x
+    dy = apiary.y - self.event.y
+    next false if dx * dx + dy * dy > 49
+    data = apiary.internal_data
+	data.workers.length > 0
+  end
+end
 
   def update
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
     @exposed_to_rain = false if @exposed_to_rain.nil?
     @jit = false if @jit.nil?
     @stagnation_message = false if @stagnation_message.nil?
@@ -1236,8 +1250,8 @@ class BerryPlantData
 	end
     @time_last_updated = time_now.to_i
 	  
-      @weeds_timer += tps*2 if @event && @weeds_timer && cropsticks==true && @growth_stage > old_growth_stage
-      @pests_timer += tps*4 if @event && @pests_timer && cropsticks==true && @growth_stage > old_growth_stage && old_growth_stage >= 2
+      @weeds_timer += tps*2 if self.event && @weeds_timer && cropsticks==true && @growth_stage > old_growth_stage
+      @pests_timer += tps*4 if self.event && @pests_timer && cropsticks==true && @growth_stage > old_growth_stage && old_growth_stage >= 2
 		
 		
 	
@@ -1259,7 +1273,7 @@ class BerryPlantData
 
 
 	@exposed_to_preferred_weather = true if checkPreferredWeather
-    return if !planted? || !@event || @mutated_berry_tried || @growth_stage < 2
+    return if !planted? || !self.event || @mutated_berry_tried || @growth_stage < 2
     checkNearbyPlantsForMutation
 	
 	update_watering
@@ -1377,27 +1391,27 @@ end
 class BerryPlantData
    
     def soil_dryness
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  return @tile_data.soil_dryness
 	end
     def overall_soil_quality
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  return @tile_data.overall_soil_quality
 	end
     def planted_crops_array
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  return @tile_data.planted_crops_array.to_a
 	end
     def add_berry_to_array(berry)
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  return @tile_data.add_berry_to_array(berry)
 	end
     def beside_water
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  return @tile_data.beside_water
 	end
     def beside_water=(value)
-	 @tile_data = BerryTileData.new(@event.x,@event.y) if @tile_data.nil?
+	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
 	  @tile_data.beside_water=value
 	end
 
@@ -1405,7 +1419,7 @@ class BerryPlantData
     def getWeedGrowthChance
         return 0 unless cropsticks==true
         weeds_chance =  15
-        #weeds_chance += getWateringCansUsedTraits(:weed_chance) if @event
+        #weeds_chance += getWateringCansUsedTraits(:weed_chance) if self.event
         return weeds_chance
     end
 
@@ -1543,7 +1557,7 @@ class BerryPlantData
 
 
     def propagate
-        return if !@event
+        return if !self.event
         propagation = []
         berry = @berry_id
         qty = berry_yield
@@ -1562,7 +1576,7 @@ class BerryPlantData
 
 
     def pbGetNeighbors(position_array = nil, map = nil)
-        position = position_array || [@event.map_id, @event.x, @event.y]
+        position = position_array || [self.event.map_id, self.event.x, self.event.y]
         map = map || $map_factory.getMap(position[0])
         neighbors = []
         neighbors[0] = $PokemonGlobal.eventvars[[position[0],map.check_event(position[1], position[2]-1)]]
@@ -1578,10 +1592,11 @@ class BerryPlantData
         $PokemonGlobal.compilePlantMutationParents if !$PokemonGlobal.berry_plant_mutation_parents
         @mutated_berry_tried = true
 		 return if cropsticks==false
-        return if !@event || !$PokemonGlobal.berry_plant_mutation_parents.include?(@berry_id)
+        return if !self.event || !$PokemonGlobal.berry_plant_mutation_parents.include?(@berry_id)
         mutation_chance = Settings::BERRY_MULCHES_IMPACTING_MUTATIONS[@mulch,id] || Settings::BERRY_BASE_MUTATION_CHANCE
+		mutation_chance *= (1.0 + (nearby_apiaries? * 0.5))
         return if mutation_chance <= 0 || rand(100) >= mutation_chance
-        #position = [@event.map_id, @event.x, @event.y]
+        #position = [self.event.map_id, self.event.x, self.event.y]
         #map = $map_factory.getMap(position[0])
         neighbors = pbGetNeighbors
         possible = []
@@ -1949,7 +1964,7 @@ class Game_Map
             if plant && !pick
                 berry_plant = $PokemonGlobal.eventvars[[map_id, event[1].id]]
                 if !berry_plant
-                    berry_plant = BerryPlantData.new(event[1])
+                    berry_plant = BerryPlantData.new(event[1].id)
                     $PokemonGlobal.eventvars[[map_id, event[1].id]] = berry_plant
                 end
             end

@@ -22,6 +22,9 @@ class Player < Trainer #HELD ITEM
 	  $game_map.events[self.held_item_event_id]
 	end 
 	
+	def held_item?
+	  return @held_item && @held_item_object
+	end 
 	
     def held_item=(value)
        @held_item = value

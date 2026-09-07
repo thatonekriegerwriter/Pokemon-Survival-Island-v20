@@ -369,7 +369,29 @@ class CraftingStationData
   def update_feeder(time_delta)
   end 
   
-  
+  def get_current_power_output
+    output = @average_power_output
+	if windmill?
+	 output = event.map.get_current_height(event.x, event.y).to_f
+	 output = 1.0 if output <= 0.0
+	 output *= 0.5
+     output *= 1.75 if $game_screen.weather_type == :Storm
+     output *= 1.50 if $game_screen.weather_type == :HeavyRain
+     output *= 1.20 if $game_screen.weather_type == :Rain
+	end 
+	if solarpanel? && PBDayNight.isDay?
+    map_metadata = GameData::MapMetadata.try_get(event.map_id)
+	if map_metadata.outdoor_map
+	 output = 0.75 
+     output /= 1.50 if $game_screen.weather_type == :Storm || $game_screen.weather_type == :Sandstorm || $game_screen.weather_type == :Fog
+     output /= 1.05 if $game_screen.weather_type == :HeavyRain || $game_screen.weather_type == :Blizzard
+     output /= 1.005 if $game_screen.weather_type == :Rain || $game_screen.weather_type == :Snow
+     output *= 2.0 if $game_screen.weather_type == :Sun
+	end 
+	 
+	end 
+    return output
+  end 
   
   def update_network(time_delta, time_now)
    @network.each do |type, events|
@@ -413,7 +435,7 @@ class CraftingStationData
    return if fuel <= 0
    return if power >= internal_battery_limit
 
-   eu_to_generate = @average_power_output * time_delta
+   eu_to_generate = get_current_power_output * time_delta
    eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
 
 
@@ -429,6 +451,7 @@ class CraftingStationData
 	update_production(time_delta)
   end 
   
+  
   def update_machine(time_delta, time_now = nil)
   
     update_consumption(time_delta) if needs_power?
@@ -438,9 +461,14 @@ class CraftingStationData
   
   end 
 
+  def update_fuelless
+    @fuel = 100
+  end 
   def update_electronics(time_delta, time_now)
 	update_network(time_delta, time_now)
+	update_fuelless if solarpanel? || windmill? || watermill?
 	update_machine(time_delta)
+	update_machine_box(time_delta) if machine_box?
   end 
   def update
     @internal_storage = [] if @internal_storage.nil?
@@ -466,7 +494,6 @@ class CraftingStationData
 	update_composter(time_delta) if composter?
 	update_warding_totem(time_delta) if warding_totem?
 	update_butcher_table(time_delta) if butchering_table?
-	update_machine_box(time_delta) if machine_box?
 	update_feeder(time_delta) if feeder?
 	update_grave(time_delta) if grave?
   
@@ -532,6 +559,9 @@ class CraftingStationData
   def modifier?
     item&.id == :MODIFICATIONTABLE
   end 
+  def machine_box?
+    item&.id == :MACHINEBOX
+  end  
   def coal_generator?
     item&.id == :COALGENERATOR
   end 
@@ -539,8 +569,17 @@ class CraftingStationData
   def spinner?
     item&.id == :SILKSPINNER
   end  
-  def machine_box?
-    item&.id == :MACHINEBOX
+  def watermill?
+    item&.id == :HYDROGENERATOR
+  end  
+  def windmill?
+    item&.id == :WINDGENERATOR
+  end  
+  def solarpanel?
+    item&.id == :SOLARGENERATOR
+  end  
+  def pokegenerator?
+    item&.id == :POKEGENERATOR
   end  
   
   def electric?
@@ -614,10 +653,13 @@ end
     @network[type]||=[]
     @network[type].filter_map { |event_id| $game_map.events[event_id] }
   end
-  
+
   
   def get_power_output
     return 10.0 if coal_generator?
+    return 0.010 if watermill? && event.terrain_tag.id == :StillWater
+    return 1.0 if watermill? && event.terrain_tag.id == :Water
+    return 2.0 if watermill? && event.terrain_tag.id == :DeepWater
     return 32.0 if machine_box?
     return 0.0
   end 
@@ -631,6 +673,7 @@ end
   def get_energy
     return 4000.0 if batbox?
     return 400.0 if coal_generator?
+    return 20.0 if solarpanel?  || watermill? || windmill?
     return 390.0 if needs_power?
     return 400.0 if power_generator?
 	return 0.0

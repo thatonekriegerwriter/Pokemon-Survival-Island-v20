@@ -76,16 +76,10 @@ end
 	  @y = @transitioned_map[2]
 	  @real_x = @x * Game_Map::REAL_RES_X
 	  @real_y = @y * Game_Map::REAL_RES_Y
-	  @transitioned_map[3] ? follow_leader(@following) : move_with_maps(@map.id, @x, @y)
+	  @transitioned_map[3] ? follow_leader(@following) : move_with_maps(@map.map_id, @x, @y)
 	  @transitioned_map = nil
 	end 
-    if @wait_count > 0
-      @wait_count -= 1
-    elsif @move_route_forcing
-      move_type_custom
-    elsif !@starting && !lock? && !moving? && !jumping?
-      update_command_new
-    end
+    super
   end 
 
 def move_behind_player
@@ -604,6 +598,8 @@ end
 	end 
  end 
 
+
+
   def update_pokemon_sprite
     return unless pokemon
     form = pokemon.form
@@ -953,31 +949,28 @@ def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
   end
 
 def move_with_maps(mapA,x,y,dir=nil)
-    if self.x!=x || self.y!=y
-      target = [mapA, x, y]
-    if self.map.map_id != target[0]
-      vector = $map_factory.getRelativePos(target[0], 0, 0, self.map.map_id, @x, @y)
-      map = $map_factory.getMap(target[0])
-      # NOTE: Can't use moveto because vector is outside the boundaries of the
-      #       map, and moveto doesn't allow setting invalid coordinates.
-      @x = vector[0]
-      @y = vector[1]
-      @real_x = @x * Game_Map::REAL_RES_X
-      @real_y = @y * Game_Map::REAL_RES_Y
+  if self.map.map_id != mapA
+    # Crossing maps - same deferred mechanism as follow_leader (queued
+    # @transitioned_map, applied + real_x/y forced next update_command tick).
+    # move_to_location can't be used here: it only pathfinds within whatever
+    # self.map already is, using that map's own tile/passability data.
+    vector = $map_factory.getRelativePos(mapA, 0, 0, self.map.map_id, @x, @y)
+    @transitioned_map = [mapA, vector[0], vector[1], false]
+    return true
+  end
+  puts self.x != x || self.y != y
+  if self.x != x || self.y != y
+    if x < 0 || y < 0 || x >= self.map.width || y >= self.map.height
+      fancy_moveto(x, y)
+    elsif self.x < 0 || self.y < 0 || self.x >= self.map.width || self.y >= self.map.height
+      fancy_moveto(x, y)
+    else
+      move_to_location(self, x, y)
     end
-    if move_to_location(self,target[1], target[2])
-	end
-   # if !pbMoveTowardCoordinates(self,target[1],target[2])
-	#  fancy_moveto(target[1], target[2])
-	#end
-	else
-	if !dir.nil?
-	 if dir!=self.direction
-	   turn_generic(dir)
-	 end
-	end
-    end
-	return true
+  elsif !dir.nil? && dir != self.direction
+    turn_generic(dir)
+  end
+  return true
 end
 
 
@@ -1379,7 +1372,7 @@ end
 
 
 pbSEPlay("Battle recall")
-pbRemoveFollowerPokemon(key_id) if $game_temp.following_ov_pokemon[key_id] && $game_temp.following_ov_pokemon[key_id][1]==pkmn
+pbRemoveFollowerPokemon(key_id) if $PokemonGlobal.follower_pkmn.include?(key_id)
 deletefromSISData(key_id,$game_map.map_id)
 event.removeThisEventfromMap
 $game_temp.preventspawns=false

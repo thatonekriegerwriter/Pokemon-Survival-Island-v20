@@ -7,6 +7,17 @@ module GameData
     attr_reader :needs_power
     attr_reader :produces_power
     attr_reader :battery_box
+    attr_reader :width
+    attr_reader :height
+    attr_reader :center
+    attr_reader :image
+    attr_reader :packable
+    attr_reader :through
+    attr_reader :trigger
+    attr_reader :step_anime
+    attr_reader :script
+    attr_reader :animates_unless_stored
+    attr_reader :internal_data
 
     DATA = {}
     extend ClassMethodsSymbols
@@ -18,18 +29,32 @@ module GameData
     def initialize(hash)
       @id           = hash[:id]
       @usable_locations    = hash[:usable_locations]         || [:BASE_INTERIOR]  #Options are :BASE_INTERIOR, :BASE_EXTERIOR, :BASE, :WILDS, and :ANY
-      @placement_coordinates    = hash[:placement_coordinates]         || { 2 => [0,1], 4 => [-1,0], 6 => [+1,0], 8 => [0,-1]}
+      @placement_coordinates    = hash[:placement_coordinates]         || { 2 => [0,0], 4 => [0,0], 6 => [0,0], 8 => [0,0]}
 	  @assignable = hash[:assignable] || false 
       @assignable_check       = hash[:assignable_check] || proc { |item, pkmn| true }
 	  @needs_power = hash[:needs_power] || false 
 	  @produces_power = hash[:produces_power] || false 
 	  @battery_box = hash[:battery_box] || false 
+	  @width = hash[:width] || 1
+	  @height = hash[:height] || 1
+	  @center = hash[:center] || false
+	  @image = hash[:image] || "craftingStations/CraftingStation"
+	  @packable = hash[:packable] || false
+	  @through = hash[:through] || false
+	  @trigger = hash[:trigger] || 0
+	  @step_anime = hash[:step_anime] || false
+	  @script = hash[:script] || ["object = get_own_event", "ItemHandlers.triggerUseFromEvent(object.type,'[REPLACE_WITH_KEY_ID]') if defined?(object.type)"]
+	  @animates_unless_stored = hash[:animates_unless_stored] || false
+	  @internal_data = hash[:internal_data] || []
     end
-    
 	
     def name
       return GameData::Item.try_get(@id).name
     end
+	
+	def initialize_internal_data?
+	  !@internal_data.empty?
+	end 
 	
 	def assignable?(item, pkmn)
 	   @assignable && @assignable_check.call(item, pkmn)
@@ -39,10 +64,35 @@ module GameData
     DATA.values
    end 
    
-   def placement_offset(direction)
-    @placement_coordinates[direction] || [0, 1]
+   def placement_offset(direction, player_direction = $game_player.direction)
+    return [0, 0] unless @placement_coordinates
+    data = @placement_coordinates[direction]
+ 
+    if data.is_a?(Hash)
+	 # puts direction
+	 # puts player_direction
+	 # puts data[player_direction].to_s
+      data[player_direction] || [0, 0]
+   else
+     data || [0, 0]
    end
-
+   end
+    
+	def event_name(direction = nil, store = false )
+	  return "Size(2,1).noshadow" if @id == :BEDROLL && !store && direction && (direction == 4 || direction == 6)
+	  return "playertorch(5,5)" if @id == :TORCH
+	  base = ""
+	  base += "Size(#{@width},#{@height})" if @width > 1 || @height > 1
+	  base += ".center" if @center 
+	  base += ".noshadow"
+	  return base 
+	end 
+   
+   def get_image(direction = nil, store = false )
+     return "craftingStations/bedsideways" if @id == :BEDROLL && !store && [4, 6].include?(direction)
+	 return @image
+   end 
+   
     def usable_here?(map_id = $game_map.map_id)
 	   return true if @usable_locations.include?(:ANY)
        map_metadata = GameData::MapMetadata.try_get(map_id)
@@ -76,62 +126,90 @@ end
 
 
 GameData::Placeable.register({ :id            => :CRAFTINGBENCH})
-GameData::Placeable.register({ :id            => :APRICORNCRAFTING})
-GameData::Placeable.register({ :id            => :MEDICINEPOT})
-GameData::Placeable.register({ :id            => :BEDROLL, :placement_coordinates =>  { 2 => [0,2], 4 => [-1,0], 6 => [+1,0], 8 => [0,-1]}})
-GameData::Placeable.register({ :id            => :CAULDRON, :usable_locations => [:BASE]})
-GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH})
-GameData::Placeable.register({ :id            => :MODIFICATIONTABLE})
+GameData::Placeable.register({ :id            => :OVPOT, :usable_locations => [:ANY], :image => "craftingStations/pot", :script => []})
+GameData::Placeable.register({ :id            => :EGG, :usable_locations => [:ANY], :image => "craftingStations/egg", :script => []})
+GameData::Placeable.register({ :id            => :CAMPSITEDOOR, :usable_locations => [:ANY], :image => "", :trigger => 1, :script => ["campsiteDoorEntry"]})
+GameData::Placeable.register({ :id            => :APRICORNCRAFTING, :image => "craftingStations/PokeballStationUp"})
+GameData::Placeable.register({ :id            => :MEDICINEPOT, :image => "craftingStations/pot"})
+GameData::Placeable.register({ :id            => :BEDROLL, :width => 1, :height => 2, :packable => true, :image => "craftingStations/bed", :placement_coordinates =>   { 
+    2 => {
+      2 => [0, 1],
+      4 => [-1, 0],
+      6 => [1, 0],
+      8 => [0, -1]
+    },
+  4 => {
+    2 => [-1, 1],
+    4 => [-2, 0],
+    6 => [-2, 0],
+    8 => [-1, -1]
+  },
+  6 => {
+    2 => [0, 1],
+    4 => [1, 0],
+    6 => [1, 0],
+    8 => [0, -1]
+  },
+    8 => {
+      2 => [0, 2],
+      4 => [-1, 1],
+      6 => [1, 1],
+      8 => [0, -1]
+    }
+  }})
+GameData::Placeable.register({ :id            => :CAULDRON, :image => "craftingStations/Cauldron", :usable_locations => [:BASE]})
+GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH, :image => "craftingStations/UCraftingStation"})
+GameData::Placeable.register({ :id            => :MODIFICATIONTABLE, :image => "craftingStations/ModificationTable"})
 
 GameData::Placeable.register({ :id            => :STATUE, :usable_locations => [:ANY]})
 
-GameData::Placeable.register({ :id            => :BUTCHERTABLE, :usable_locations => [:BASE]})
-GameData::Placeable.register({ :id            => :SPRINKLER, :usable_locations => [:BASE]})
-GameData::Placeable.register({ :id            => :GARBAGEBIN, :usable_locations => [:BASE]})
-GameData::Placeable.register({ :id            => :ITEMCRATE, :usable_locations => [:BASE]})
-GameData::Placeable.register({ :id            => :PKMNCRATE, :usable_locations => [:BASE]})
+GameData::Placeable.register({ :id            => :BUTCHERTABLE, :usable_locations => [:BASE], :image => "craftingStations/ButcherTable"})
+GameData::Placeable.register({ :id            => :SPRINKLER, :usable_locations => [:BASE], :image => "craftingStations/sprink"})
+GameData::Placeable.register({ :id            => :GARBAGEBIN, :usable_locations => [:BASE], :image => "craftingStations/GarbageBin"})
+GameData::Placeable.register({ :id            => :ITEMCRATE, :usable_locations => [:BASE], :image => "craftingStations/crateidown"})
+GameData::Placeable.register({ :id            => :PKMNCRATE, :usable_locations => [:BASE], :image => "craftingStations/cratedown"})
 
-GameData::Placeable.register({ :id            => :TORCH, :usable_locations => [:ANY]})
-
-
-GameData::Placeable.register({ :id            => :GRAVE, :usable_locations => [:OUTSIDE]})
-GameData::Placeable.register({ :id            => :ADVENTUREFLAG, :usable_locations => [:BASE_EXTERIOR]})
-GameData::Placeable.register({ :id            => :WARDINGTOTEM, :usable_locations => [:BASE_EXTERIOR]})
-
-GameData::Placeable.register({ :id            => :MACHINEBOX, :battery_box => true})
-GameData::Placeable.register({ :id            => :ELECTRICPRESS, :needs_power => true})
-GameData::Placeable.register({ :id            => :ELECTRICFURNACE, :needs_power => true})
-GameData::Placeable.register({ :id            => :APRICORNMACHINE, :needs_power => true})
-GameData::Placeable.register({ :id            => :SEWINGMACHINE, :needs_power => true})
-
-GameData::Placeable.register({ :id            => :ELECTRICLIGHT, :usable_locations => [:ANY], :needs_power => true})
-
-GameData::Placeable.register({ :id            => :COALGENERATOR, :usable_locations => [:BASE], :produces_power => true })
-GameData::Placeable.register({ :id            => :HYDROGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true })
-GameData::Placeable.register({ :id            => :WINDGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true })
-GameData::Placeable.register({ :id            => :SOLARGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true })
-
-GameData::Placeable.register({ :id            => :PORTABLECAMP, :usable_locations => [:WILDS], :placement_coordinates =>  { 2 => [-1,-1], 4 => [-1,-1], 6 => [-1,-1], 8 => [-1,-1]}})
+GameData::Placeable.register({ :id            => :TORCH, :usable_locations => [:ANY], :image => "craftingStations/Legends_Torch"})
 
 
-GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true})
-GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true, :usable_locations => [:BASE]}) 
+GameData::Placeable.register({ :id            => :GRAVE, :usable_locations => [:OUTSIDE], :image => "craftingStations/Grave"})
+GameData::Placeable.register({ :id            => :ADVENTUREFLAG, :animates_unless_stored => true , :width => 1, :height => 3, :through => true, :packable => true, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/AdventureFlag"})
+GameData::Placeable.register({ :id            => :WARDINGTOTEM, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/WardingTotem"})
+
+GameData::Placeable.register({ :id            => :MACHINEBOX, :battery_box => true, :image => "craftingStations/MachineBox"})
+GameData::Placeable.register({ :id            => :ELECTRICPRESS, :needs_power => true, :image => "craftingStations/MachineBox"})
+GameData::Placeable.register({ :id            => :ELECTRICFURNACE, :needs_power => true, :image => "craftingStations/ElectricFurnace"})
+GameData::Placeable.register({ :id            => :APRICORNMACHINE, :needs_power => true, :image => "craftingStations/PokeballMachine"})
+GameData::Placeable.register({ :id            => :SEWINGMACHINE, :needs_power => true, :image => "craftingStations/MachineBox"})
+
+GameData::Placeable.register({ :id            => :ELECTRICLIGHT, :usable_locations => [:ANY], :needs_power => true, :image => "craftingStations/MachineBox"})
+
+GameData::Placeable.register({ :id            => :COALGENERATOR, :usable_locations => [:BASE], :produces_power => true, :image => "craftingStations/generator" })
+GameData::Placeable.register({ :id            => :HYDROGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/waterwheel" })
+GameData::Placeable.register({ :id            => :WINDGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/windmill" })
+GameData::Placeable.register({ :id            => :SOLARGENERATOR, :width => 3, :height => 4, :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/SolarPanel" })
+
+GameData::Placeable.register({ :id            => :PORTABLECAMP, :width => 3, :height => 3, :packable => true, :usable_locations => [:WILDS], :image => "craftingStations/Tent", :placement_coordinates =>  { 2 => [-1,-1], 4 => [-1,-1], 6 => [-1,-1], 8 => [-1,-1]}})
+
+
+GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true, :image => "craftingStations/ResearchTable"})
+GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true, :image => "craftingStations/BerryPot", :usable_locations => [:BASE]}) 
 GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true, :usable_locations => [:ANY]}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks
-GameData::Placeable.register({ :id            => :GRINDER, :assignable => true})
+GameData::Placeable.register({ :id            => :GRINDER, :assignable => true, :image => "craftingStations/Grinder"})
 GameData::Placeable.register({ :id            => :ELECTRICGRINDER, :assignable => true, :needs_power => true})
-GameData::Placeable.register({ :id            => :COMPOSTER, :usable_locations => [:BASE], :assignable => true}) 
-GameData::Placeable.register({ :id            => :GUARDPOST, :usable_locations => [:BASE], :assignable => true}) #Needs a Pokemon to guard base.
-GameData::Placeable.register({ :id            => :FEEDER, :usable_locations => [:BASE], :assignable => true}) #Needs a Pokemon to distribute food.
+GameData::Placeable.register({ :id            => :COMPOSTER, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/Composter"}) 
+GameData::Placeable.register({ :id            => :GUARDPOST, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/guard station"}) #Needs a Pokemon to guard base.
+GameData::Placeable.register({ :id            => :FEEDER, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/Feeder"}) #Needs a Pokemon to distribute food.
 
 
 
-GameData::Placeable.register({ :id            => :APIARY, :usable_locations => [:BASE_EXTERIOR], :assignable => true, 
+GameData::Placeable.register({ :id            => :APIARY, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/Apiary", :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    pkmn.bee?
  } })
 
 
-GameData::Placeable.register({ :id            => :SILKSPINNER, :usable_locations => [:BASE], :assignable => true, 
+GameData::Placeable.register({ :id            => :SILKSPINNER, :usable_locations => [:BASE], :image => "craftingStations/Silkspinner", :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    pkmn.wildHoldItems.include?([:SILK]) && pkmn.hasType?(:BUG)
  } })
@@ -140,33 +218,33 @@ GameData::Placeable.register({ :id            => :SILKSPINNER, :usable_locations
    
 
 GameData::Placeable.register({ :id            => :ICEBOX, 
- :assignable => true, 
+ :assignable => true, :image => "craftingStations/IceBoxClosed", 
  :assignable_check => proc { |item, pkmn|
    pkmn.types.include?(:ICE)
  } })
 GameData::Placeable.register({ :id            => :ELECTRICICEBOX, :needs_power => true, 
- :assignable => true, 
+ :assignable => true, :image => "craftingStations/IceBoxClosed", 
  :assignable_check => proc { |item, pkmn|
    pkmn.types.include?(:ICE)
  } })
 
-GameData::Placeable.register({ :id            => :MILKINGSTATION, :usable_locations => [:BASE], :assignable => true, 
+GameData::Placeable.register({ :id            => :MILKINGSTATION, :usable_locations => [:BASE], :image => "craftingStations/Feeder", :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    pkmn.species_data.egg_groups.include?(:Humanlike)
  } }) #Needs a humanoid Pokemon
-GameData::Placeable.register({ :id            => :POKEGENERATOR, :produces_power => true ,
+GameData::Placeable.register({ :id            => :POKEGENERATOR, :produces_power => true, :image => "craftingStations/pokegenerator",
  :usable_locations => [:BASE], 
  :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    pkmn.types.include?(:ELECTRIC)
  }})
-GameData::Placeable.register({ :id            => :FURNACE, 
+GameData::Placeable.register({ :id            => :FURNACE, :image => "craftingStations/Furnace", 
  :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    pkmn.types.include?(:FIRE)
  } 
  })
-GameData::Placeable.register({ :id            => :PETBED,
+GameData::Placeable.register({ :id            => :PETBED, :internal_data => [PetBedData], :through => true, :image => "craftingStations/pet bed",
  :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    localMeter = item.internal_data
@@ -182,7 +260,7 @@ GameData::Placeable.register({ :id            => :PETBED,
      localMeter.pokemon.egg?
    end 
  }})
-GameData::Placeable.register({ :id            => :PETBEDOUTDOOR, :usable_locations => [:BASE_EXTERIOR],
+GameData::Placeable.register({ :id            => :PETBEDOUTDOOR, :internal_data => [PetBedData], :through => true, :image => "craftingStations/pet bedo", :usable_locations => [:BASE_EXTERIOR],
  :assignable => true, 
  :assignable_check => proc { |item, pkmn|
    localMeter = item.internal_data

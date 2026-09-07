@@ -25,7 +25,7 @@ class Game_Map
  def get_current_height(x,y,z=0)
     z = 0 if z.nil?
     z = z.clamp(0,2)
-    return @map.height_map[x,y,z]
+    return @map.height_map[x,y,z] || 1
  end
 end
 

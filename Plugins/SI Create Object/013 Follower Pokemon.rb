@@ -57,7 +57,6 @@ class FollowerPkmnManager
   end 
   
   def get_follow_target(self_event)
-    puts @followers.inspect
     @followers.reverse_each do |event_id|
       next if event_id == self_event.id
       event = $game_map.events[event_id]

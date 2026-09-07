@@ -39,9 +39,10 @@ end
 
 def coordinates
   item_id = $player.held_item.id
+  event = $player.held_item_event
   player_event = get_cur_player
-  direction = $game_player.direction
-  offset = GameData::Placeable.get(item_id).placement_offset(direction)
+  direction = player_event.direction
+  offset = GameData::Placeable.get(item_id).placement_offset(event.direction, direction)
   return [player_event.x + offset[0], player_event.y + offset[1]]
 end
 
@@ -80,7 +81,14 @@ def place_or_hold(item = $player.held_item, x = nil, y = nil)
     throw
 	return false 
   end
-  
+
+
+  placeable = GameData::Placeable.get(item.id)
+  unless placeable.usable_here?
+	sideDisplay(_INTL("You can't use that here."))
+	return false
+  end 
+
   x,  y = coordinates if x.nil? || y.nil?
   
   
@@ -208,7 +216,8 @@ def pbObjectIsPossible(x,y)
 end
 
 def can_map_transition?
-    return true if $game_temp.position_calling == false && !$player.held_item? && !$game_temp.assigning?
+   # return true if $game_temp.position_calling == false && !$player.held_item? && !$game_temp.assigning?
+    return true if !$game_temp.assigning?
 	return false
 
 
@@ -306,35 +315,10 @@ EventHandlers.add(:on_leave_tile, :update_held_item,
 	item_id = $player.held_item.id
 	event = $player.held_item_event
 	next if event.nil?
+	new_x = item_id == :PORTABLECAMP ? $game_player.x-1 : $game_player.x
+	new_y = $game_player.y-1
+	next if event.nil?
     pbMoveRoute2(event, [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
-	if item_id != :PORTABLECAMP
-      event.fancy_moveto2($game_player.x,$game_player.y-1,$game_player)
-    elsif item_id == :PORTABLECAMP
-      event.fancy_moveto2($game_player.x-1,$game_player.y-1,$game_player)
-    end
-  }
-)
-
-
-
-EventHandlers.add(:on_leave_map, :update_held_item,
-  proc {
-    #THIS HAS BEEN DISABLED FOR UNCLEAR REASONS
-    next
-    if ($player.held_item_object.nil? && !$player.held_item.nil?) || (!$player.held_item_object.nil? && $player.held_item.nil?)
-    $player.held_item_object=nil
-    $player.held_item=nil
-	end
-    next if $player.held_item_object.nil?
-    next if $player.held_item.nil?
-	key_id = $player.held_item_object
-	$game_map.events[key_id].moveto($game_player.x,$game_player.y-5)
-    pbMoveRoute($game_map.events[key_id], [PBMoveRoute::ThroughOff,PBMoveRoute::AlwaysOnTopOff])
-    $ExtraEvents.objects[key_id][1].x=$game_player.x
-	$ExtraEvents.objects[key_id][1].y=$game_player.y-5
-    $ExtraEvents.objects[key_id][1] = false
-    $ExtraEvents.objects[key_id][1] = false
-    $player.held_item_object=nil
-    $player.held_item=nil
+    event.fancy_moveto2(new_x, new_y, $game_player)
   }
 )

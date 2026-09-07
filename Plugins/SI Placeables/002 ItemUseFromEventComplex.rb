@@ -50,15 +50,6 @@ end
 }
 )
 
-ItemHandlers::UseFromEvent.add(:ELECTRICGRINDER, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
-else
-  powerConsumersCrafting(item)
-end
-}
-)
-
 ItemHandlers::UseFromEvent.add(:COALGENERATOR, proc { |item, key_id|
 localMeter = item.internal_data
 if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
@@ -80,46 +71,76 @@ end
 )
 
 ItemHandlers::UseFromEvent.add(:SOLARGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerGenerators(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:WINDGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerGenerators(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:HYDROGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerGenerators(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:POKEGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerGenerators(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:HYDROGENERATOR, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerGenerators(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )

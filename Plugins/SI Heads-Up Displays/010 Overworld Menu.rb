@@ -675,6 +675,30 @@ end
   
   
   end 
+
+  def refreshItemCustom(item_id)
+	   clearPokemonSelection
+       @sprites["waterwindow"].baseColor  = Color.new(0, 84, 119)
+       @sprites["waterwindow"].shadowColor=get_shadow_color(:FIRE)
+	   object = GameData::Item.try_get(item_id) 
+	   @sprites["ball_icon"].item=nil if @sprites["ball_icon"].item!=item_id
+	   name = object.name
+	   name = name.slice(0, 10) if name.length > 10
+	   @sprites["ball_icon"].item=item_id
+	   @sprites["pkmn_icon"].pokemon=nil
+	   @sprites["other_icon"].name=nil
+       @sprites["durawindow"].baseColor  = Color.new(255,182,66)
+	   text4 = ""    
+	   @sprites["durawindow"].text = text4
+       @sprites["durawindow"].resizeToFit(text4)
+
+	   text5 = ""   
+	   @sprites["waterwindow"].text = text5
+       @sprites["waterwindow"].resizeToFit(text5)
+	   return name 
+  end 
+  
+  
   def refreshItem(current_selection)
 	   clearPokemonSelection
        @sprites["waterwindow"].baseColor  = Color.new(0, 84, 119)
@@ -774,7 +798,7 @@ end
 	 return nil
   end 
   
-  def refreshText(current_selection, name)
+  def refreshText(current_selection, name, showzero = false )
     if current_selection.is_a?(ItemData)
 	  cur_qty=$bag.quantity(current_selection) 
 	  if cur_qty > 0
@@ -788,13 +812,17 @@ end
 		end
 	  end
 	end 
-
+    if $game_temp.connecting? && !$game_temp.in_inventory
+	  cur_qty=$bag.quantity(:JACKETEDCABLE) 
+	  showzero = true
+	end
 
 	@sprites["namewindow"].text=name if name && @sprites["namewindow"].text!=name
 	
 	if !cur_qty.nil?
 	  @sprites["amt"].text = "x#{cur_qty}" if cur_qty>0 && @sprites["namewindow"].text!="x#{cur_qty}"
-	  @sprites["amt"].text = "" if cur_qty==0 && @sprites["namewindow"].text!=""
+	  @sprites["amt"].text = "" if cur_qty==0 && @sprites["namewindow"].text!="" && showzero == false 
+	  @sprites["amt"].text = "x#{cur_qty}" if showzero == true && @sprites["namewindow"].text!="x#{cur_qty}"
 	else
 	  @sprites["amt"].text = ""
 	end
@@ -818,15 +846,25 @@ end
      refreshString("Pick Up")
   end
   
+  def refreshConnecting
+    refreshItemCustom(:JACKETEDCABLE)
+  end 
+  
+  
   def refreshBox
 	refresh_window
 	if !$game_temp.in_inventory && (override? || (Input.press?(Input::PUNCH) && $player.quick_access != $PokemonGlobal.cur_stored_pokemon))
-	 if Input.press?(Input::PUNCH) && $player.quick_access != $PokemonGlobal.cur_stored_pokemon
+	 if $game_temp.connecting?
+	  name =  refreshConnecting
+	  cur_qty = refreshText(nil, name)
+	    
+	 elsif Input.press?(Input::PUNCH) && $player.quick_access != $PokemonGlobal.cur_stored_pokemon
 	  name =  refreshPunchQuickAccess
+	  cur_qty = refreshText($player.quick_access, name)
 	 else
 	  name =  refreshInteractQuickAccess
+	  cur_qty = refreshText(nil, name)
 	 end
-	  cur_qty = refreshText($player.quick_access, name)
 	else
     current_selection = getCurrentSelection
     case current_selection
@@ -886,6 +924,7 @@ end
   end 
  
   def override?
+   return true if $game_temp.connecting?
    return false if !Input.press?(Input::RUNNING)
    player = get_cur_player
    x = player.x

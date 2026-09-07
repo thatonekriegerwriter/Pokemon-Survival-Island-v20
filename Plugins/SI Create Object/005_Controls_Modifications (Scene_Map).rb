@@ -415,6 +415,8 @@ def breathing_sound?
   return ret
 end
 
+
+
 class Scene_Map
 
   def transfer_player(cancel_swimming = true)
@@ -464,6 +466,7 @@ class Scene_Map
     loop do
       pbMapInterpreter.update
       $game_player.update
+	  $player.held_item_event.check_held_item_map_transition if $player.held_item?
       updateMaps
       $game_system.update
       $game_screen.update
@@ -471,6 +474,7 @@ class Scene_Map
       transfer_player(false)
       break if $game_temp.transition_processing
     end
+	
     updateSpritesets
     if $game_temp.title_screen_calling
       SaveData.mark_values_as_unloaded
@@ -485,9 +489,11 @@ class Scene_Map
         Graphics.transition(40, "Graphics/Transitions/" + $game_temp.transition_name)
       end
     end
-
+   
     return if $game_temp.message_window_showing && $PokemonGlobal.alternate_control_mode==false
     return if $game_system.map_interpreter.running?
+	
+	update_pending_pokemon_arrivals
     activate_target_event if $game_switches[556]==true
     lock_on_target_behavior if $game_temp.lockontarget!=false
     behavior_type
@@ -556,17 +562,29 @@ class Scene_Map
 	  end
   end
   def behavior_type
-      if @ball_hud_was_enabled && !$game_temp.connecting?
+      if @ball_hud_was_enabled && !$game_temp.assigning?  && !$game_temp.position_calling && !$game_temp.connecting? 
        $PokemonGlobal.ball_hud_enabled = @ball_hud_was_enabled
 	   @ball_hud_was_enabled = nil
 	  end 
+      if @ball_ehud_was_enabled && !$game_temp.assigning?  && !$game_temp.position_calling && !$game_temp.connecting? 
+       $PokemonGlobal.set_extended_hud = @ball_ehud_was_enabled
+	   @ball_ehud_was_enabled = nil
+	  end 
       if $game_temp.position_calling == true #Input Logic for Placing Overworld Objects
+	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
+	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
+		$PokemonGlobal.ball_hud_enabled = false 
 	    positioning_controls
       elsif $game_temp.assigning?
+	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
+	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
+		$PokemonGlobal.ball_hud_enabled = false 
 	    pokemon_assignment
       elsif $game_temp.connecting?
 	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
-		$PokemonGlobal.ball_hud_enabled = false 
+	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
+	    $PokemonGlobal.set_extended_hud = false 
+	    $PokemonGlobal.ball_hud_enabled = true 
 	    power_linking
       elsif $game_temp.current_pkmn_controlled!=false
 	    pokemon_controls
@@ -585,6 +603,9 @@ class Scene_Map
    if @assignment_marker.nil?
     @assignment_marker = PositionMarker.new($game_player.x, $game_player.y)
    end
+   $game_temp.just_update_anyways = true 
+   $game_temp.connection_counter ||= 0
+   $OverworldMenu.hideSmallBallHUD
    @assignment_marker.update 
    eventdata = $game_temp.connection_source
    item = eventdata.item 
@@ -604,14 +625,17 @@ class Scene_Map
    
    event_id = $game_map.check_event(x, y)
    event = $game_map.events[event_id]
+   amount = $game_temp.connection_counter + 1
    if event && event.is_a?(Game_OVEvent) && Placeable.electronic?(event.type) && event.type.internal_data.nil?
      localMeter=CraftingStationData.new(event_id)
      event.type.internal_data = localMeter
    end 
    can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.electronic?(event.type) && Placeable.connectable?(eventdata, event.type.internal_data)
-   text = _INTL("Connect #{item.name} to #{event.station_name}?") if can_connect
+   text = _INTL("Connect #{item.name} to #{event.station_name} for #{amount} Cable?") if can_connect
    if Input.press?(Input::USE)
-    if can_connect
+    if can_connect && false#$bag.quantity(:JACKETEDCABLE) < amount
+    text = _INTL("You do not have enough Cable!")
+    elsif can_connect
     source_data = $game_temp.connection_source
     target_data = event.type.internal_data
     source_data.add_to_network(event)
@@ -620,17 +644,22 @@ class Scene_Map
 
     @assignment_marker.dispose
     @assignment_marker = nil 
+	$game_temp.connection_counter = nil
     $game_temp.connection_source = nil
     $game_temp.connection_mode = false
+	#$bag.remove(:JACKETEDCABLE, amount)
     text = _INTL("Connected #{item.name} to #{event.station_name}.") if event && event.is_a?(Game_OVEvent)
 	$game_temp.assignment_cooldown = 20
+    $game_temp.just_update_anyways = false 
 	end 
    elsif Input.press?(Input::BACK)
     @assignment_marker.dispose
     @assignment_marker = nil 
+	$game_temp.connection_counter = nil
     $game_temp.connection_source = nil
     $game_temp.connection_mode = false
     text = _INTL("Cancelled Connection for #{item.name}.")
+    $game_temp.just_update_anyways = false 
    end 
    $sidedisplay.clear_text
    sideDisplay(text, true)
@@ -1001,6 +1030,8 @@ class Scene_Map
   def punching_controls
     return if $game_temp.current_pkmn_controlled != false
     return if $game_temp.position_calling == true
+    return if $game_temp.connecting?
+    return if $game_temp.assigning?
     $player.punch_cooldown-=1 if $player.punch_cooldown>0
     $player.weapon_cooldown-=1 if $player.weapon_cooldown>0
     if Input.trigger?(Input::PUNCH)
@@ -1071,22 +1102,44 @@ class Scene_Map
 		#   end
           if Input.press?(Input::CTRL) && $DEBUG 
 		     if $DEBUG	  
-		     nuevent = $game_map.events[event_in_question]
+		     nuevent = $game_map.events[event_id]
 		      puts "You are clicking on: #{nuevent.name}" if $DEBUG
-		      puts "You are clicking on: #{nuevent.event.pages[0].move_route.list[0].code}" if event_in_question.name=="PlayerPkmn" && $DEBUG
+		      puts "You are clicking on: #{nuevent.event.pages[0].move_route.list[0].code}" if nuevent.name=="PlayerPkmn" && $DEBUG
 		     end
 		   
 		  end
 	     end
     end
+
     if Input.double_tap?(Input::TOGGLETYPE) && Input.mouse_in_window?
+       selected = $PokemonGlobal.selected_pokemon_cleaned.dup
+	   tiles = *get_tile_with_direction
+	   map = tiles[3]
+	   event_id = map.check_event(tiles[0],tiles[1])
+       puts "You are clicking on Map #{map.map_id}: X: #{tiles[0]}, Y: #{tiles[1]} in mouse_detection" if $DEBUG
+	   selected_event = event_id.is_a?(Game_Player) ? event_id : map.events[event_id]
+       if selected_event && selected_event.is_a?(Game_PokeEventA) && selected_event.pokemon.deselecttimer<=0 && selected_event.pokemon.able?
+         if $PokemonGlobal.selected_pokemon.include?(selected_event.pokemon)
+            pbDeselectThisPokemon(selected_event.pokemon)
+		 else
+	        selected_event.pokemon.deselecttimer = 50
+	        pbSelectThisPokemon(selected_event.pokemon)
+		 end 
+		 return
+       end 
+    
+	end 
+    if Input.trigger?(Input::TOGGLETYPE) && Input.mouse_in_window?
 	   current_order = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
        selected = $PokemonGlobal.selected_pokemon_cleaned.dup
-	   multiselect = selected.length>0
+	   multiselect = selected.length>1
 	   tiles = *get_tile_with_direction
-	   event_id = $game_map.check_event(tiles[0],tiles[1])
-	   selected_event = event_id.is_a?(Game_Player) ? event_id : $game_map.events[event_id]
-       if !multiselect && selected_event.is_a?(Game_PokeEventA) && selected_event.pokemon.deselecttimer==0 && selected_event.pokemon.able?
+	   
+	   map = tiles[3]
+	   event_id = map.check_event(tiles[0],tiles[1])
+       puts "You are clicking on Map #{map.map_id}: X: #{tiles[0]}, Y: #{tiles[1]} in mouse_detection" if $DEBUG && Input.press?(Input::CTRL)
+	   selected_event = event_id.is_a?(Game_Player) ? event_id : map.events[event_id]
+       if !multiselect && selected_event && selected_event.is_a?(Game_PokeEventA) && selected_event.pokemon.deselecttimer<=0 && selected_event.pokemon.able?
          if $PokemonGlobal.selected_pokemon.include?(selected_event.pokemon)
             pbDeselectThisPokemon(selected_event.pokemon)
 		 else
@@ -1110,10 +1163,12 @@ class Scene_Map
 		return if pokemon_list.empty?
         pokemon_list.each do |list_event_id| 
 		  next if list_event_id.nil?
-          event = $game_map.events[list_event_id]
+          event = map.events[list_event_id]
+	      puts event.inspect
 		  next if event.nil?
 		  next if !event.respond_to?("pokemon")
 		  pkmn = event.pokemon
+	      puts pkmn.inspect
 		  next if pkmn.nil?
 		  process_pokemon(tiles,event,selected_event,pkmn,event_id)
 		end
@@ -1152,14 +1207,21 @@ class Scene_Map
 
 
 
+
+            return if [event.x, event.y, event.map.map_id] == [tiles[0], tiles[1], tiles[3].map_id]
+
 			puts "#{event.pokemon.name} is walking."
-		  if event.move_with_maps(event.map_id, tiles[0],tiles[1])
-		  
-		  
-		  
+			
+		  if event.move_with_maps(tiles[3].map_id, tiles[0],tiles[1])
             event.movement_type = :STILL
             event.still_timer=-1
-            loops = 0
+            return if [event.x, event.y, event.map.map_id] == [tiles[0], tiles[1], tiles[3].map_id]
+			@pending_pokemon_arrivals ||= {}
+            @pending_pokemon_arrivals[event.id] = {
+               event: event, tiles: tiles, target_event: target_event, event_id: event_id, stuck_frames: 0
+            }
+			
+			if false 
             if [event.x, event.y]!=[tiles[0],tiles[1]]
 			   while !within_one_tile?(event.x, event.y, tiles[0],tiles[1])
 	             Input.update
@@ -1195,7 +1257,7 @@ class Scene_Map
 	             end
               end
             end
-
+            end
 
 
 
@@ -1206,11 +1268,44 @@ class Scene_Map
             puts "It's failing"
 		  end
 
+
+
+
         end 
         #puts event.movement_type if $DEBUG
   end
   
-  
+  def update_pending_pokemon_arrivals
+  return if @pending_pokemon_arrivals.nil? || @pending_pokemon_arrivals.empty?
+  @pending_pokemon_arrivals.each do |id, pending|
+    event, tiles = pending[:event], pending[:tiles]
+	map = tiles[3]
+    pending[:stuck_frames] += 1 unless event.moving?
+
+    arrived = within_one_tile?(event.x, event.y, tiles[0], tiles[1]) && event.map_id == map.map_id 
+    next unless arrived || pending[:stuck_frames] >= 60
+
+    resolve_pokemon_arrival(event, pending[:target_event], pending[:event_id]) if arrived
+    @pending_pokemon_arrivals.delete(id)
+  end
+end
+
+def resolve_pokemon_arrival(event, target_event, event_id)
+ if event_id.is_a?(Integer) || event_id.is_a?(String)
+  look_at_location(event.id, target_event.x, target_event.y)
+  if target_event.is_a?(Game_PokeEvent)
+    event.add_target(event_id, target_event)
+    event.following = target_event
+    event.movement_type = :FOLLOW
+  end
+  return unless target_event.name.include?("inter") && !event.moving?
+  target_event.interaction_source = event
+  target_event.start
+  look_at_location(event.id, target_event.x, target_event.y)
+ elsif event_id == $game_player
+ 
+ end 
+end
    # positioning_controls is in 004 Placeable Logic. 
   
 
@@ -1533,13 +1628,24 @@ class Scene_Map
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#  item = ItemData.new(:MODIFICATIONTABLE)
-	  item = ItemData.new(:ELECTRICFURNACE)
-	  
+	  item = ItemData.new(:WINDGENERATOR)
       key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:COALGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y+1, item, false, false, $game_player.direction)
+	  
+	  
+	  item = ItemData.new(:HYDROGENERATOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)
+	  item = ItemData.new(:MACHINEBOX)
+      key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y+2, item, false, false, $game_player.direction)
+	  
+	  
+	  item = ItemData.new(:SOLARGENERATOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x+4, $game_player.y-1, item, false, false, $game_player.direction)
+	  
+	  
+	  item = ItemData.new(:MACHINEBOX)
+      key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 
@@ -1571,6 +1677,17 @@ end
 
 end
 
+EventHandlers.add(:on_map_transfer, :update_held_item_on_transfer,
+  proc { |old_map_id|
+    next if $player.held_item_object.nil?
+    event = $player.held_item_event
+    next unless event
+    event.map    = $game_map
+    event.map_id = $game_map.map_id
+    offset_x = ($player.held_item&.id == :PORTABLECAMP) ? -1 : 0
+    event.moveto($game_player.x + offset_x, $game_player.y - 1)
+  }
+)
 
 def within_one_tile?(x1, y1, x2, y2)
   return (x2 - x1).abs + (y2 - y1).abs == 1
@@ -1623,13 +1740,13 @@ def get_screen_from_tile_pos(x, y)
    return screen_x, screen_y
 end
 
-def get_tile_with_direction
+def get_tile_with_direction_old 
    x = (((Input.mouse_x * Game_Map::X_SUBPIXELS) + $game_map.display_x)/Game_Map::REAL_RES_X).floor
    y = (((Input.mouse_y * Game_Map::Y_SUBPIXELS) + $game_map.display_y)/Game_Map::REAL_RES_Y).floor
    tile_x = Input.mouse_x % Game_Map::TILE_WIDTH
    tile_y = Input.mouse_y  % Game_Map::TILE_HEIGHT
 
-  puts "You are clicking on: X: #{x}, Y: #{y} in get_tile_with_direction" if $DEBUG
+  puts "You are clicking on: X: #{x}, Y: #{y} in get_tile_with_direction_old" if $DEBUG
    if tile_x < Game_Map::TILE_WIDTH / 2 && tile_y < Game_Map::TILE_HEIGHT / 2
      dir = 2  # Down
 	direc = "Down"
@@ -1643,8 +1760,48 @@ def get_tile_with_direction
      dir = 8  # Up
 	direc = "Up"
    end
-   return x,y,dir
+   return x,y,dir, $game_map 
  end
+
+def get_tile_with_direction
+  map = nil
+  mouse_x = Input.mouse_x
+  mouse_y = Input.mouse_y
+  $map_factory.maps.each do |candidate|
+    map_x = ( mouse_x * Game_Map::X_SUBPIXELS) + candidate.display_x
+    map_y = ( mouse_y * Game_Map::Y_SUBPIXELS) + candidate.display_y
+
+    next if map_x < 0
+    next if map_y < 0
+    next if map_x >= candidate.width * Game_Map::REAL_RES_X
+    next if map_y >= candidate.height * Game_Map::REAL_RES_Y
+
+    map = candidate
+    break
+  end
+  
+  map =  $game_map unless map 
+
+  x = (((mouse_x * Game_Map::X_SUBPIXELS) + map.display_x) / Game_Map::REAL_RES_X).floor
+  y = (((mouse_y * Game_Map::Y_SUBPIXELS) + map.display_y) / Game_Map::REAL_RES_Y).floor
+
+  tile_x = mouse_x % Game_Map::TILE_WIDTH
+  tile_y = mouse_y % Game_Map::TILE_HEIGHT
+
+  if tile_x < Game_Map::TILE_WIDTH / 2 && tile_y < Game_Map::TILE_HEIGHT / 2
+    dir = 2
+  elsif tile_x >= Game_Map::TILE_WIDTH / 2 && tile_y < Game_Map::TILE_HEIGHT / 2
+    dir = 4
+  elsif tile_x < Game_Map::TILE_WIDTH / 2 && tile_y >= Game_Map::TILE_HEIGHT / 2
+    dir = 6
+  else
+    dir = 8
+  end
+
+
+  return x, y, dir, map
+end 
+
 
 EventHandlers.add(:on_player_interact, :interact_with_through_trees,
   proc {

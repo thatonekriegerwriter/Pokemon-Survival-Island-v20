@@ -17,6 +17,7 @@
 
 ### Core Gameplay 
 - [x] You can assign Pokemon to tasks around the base.
+- [x] Electronics Connections and Electrical System
 
 ### UI
 - [x] Machine Box UI
@@ -46,6 +47,7 @@
 - [x] Pet bed 
 - [x] Berry Pot 
 - [x] Figure out how Research Works
+- [x] Apiaries improve likelihood of berry plant crossbreeding
 
 
 ### Combat

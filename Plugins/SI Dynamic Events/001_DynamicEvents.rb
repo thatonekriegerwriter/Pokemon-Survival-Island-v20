@@ -640,6 +640,8 @@ end
   end
 
   end 
+
+
   def spawnPokeEvent(x,y,pokemon,dir=false)
 	if $game_switches[556]==true
 	events = $game_map.events.values + $DynamicEvents.events_for_map
@@ -915,7 +917,7 @@ end
 	
 	
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, $game_map)
+    gameEvent = Game_PokeEvent.new(mapId, event, pokemon, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     gameEvent.direction = dir if dir!=false
@@ -953,7 +955,7 @@ end
     event.name = "vanishingEncounter.surrounding(#{amt})" 
     #--- nessassary properties ----------------------------------------
 	amtofkeysinroom = 0
-    key_id = (@events.keys.max || -1) + 1
+    key_id = "MOB_#{pokemon.personalID}"
     event.id = key_id if spawn_now
     event.x = x if spawn_now
     event.y = y if spawn_now
@@ -1006,7 +1008,7 @@ end
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_PokeEvent ------------------------------------
-    gameEvent = Game_PokeEvent.new(@map_id, event, pokemon, $game_map)
+    gameEvent = Game_PokeEvent.new(mapId, event, pokemon, $game_map)
     gameEvent.id = key_id
     gameEvent.moveto(x,y)
     for step in VisibleEncounterSettings::Add_Steps_Before_Vanish
@@ -1044,58 +1046,24 @@ update!
   end 
   
   def generateEvent(x,y,object,aat=false,store=false,direction=nil)
-    true_object = nil
-    true_object = object if object.is_a?(ItemData)
-    true_object = ItemStorageHelper.get_item_data(object) if object.is_a?(Symbol)
-    object = object.id if object.is_a?(ItemData)
+    object = ItemStorageHelper.get_item_data(object) if object.is_a?(Symbol)
+	
+	obj_id = object.is_a?(String) ? object.upcase.to_sym : object.id
+	placeable_data = GameData::Placeable.get(obj_id)
+
+
     #--- generating a new event ---------------------------------------
     event = RPG::Event.new(x,y)
     #--- nessassary properties ----------------------------------------
     key_id_r = highest_key(@block_data) + 1
     key_id = "BLOCK_#{key_id_r.to_s}"
     event.id = key_id
-	if object == :PORTABLECAMP
-    event.name = "Size(3,3).noshadow"
-	elsif object == :BEDROLL
-    event.name = "Size(1,2).noshadow"
-	elsif object == :ADVENTUREFLAG
-    event.name = "Size(1,3).center.noshadow"
-	elsif object == :TORCH
-    event.name = "playertorch(3,3)"
-	elsif object == "CampsiteDoor"
-    event.name = ".noshadow"
-	else 
-    event.name = ".noshadow"
-	end
-    image = getObjectImage(object)
-	fname = "#{image}.png"
-	if store==true && (object==:BEDROLL||object==:PORTABLECAMP||object==:HOME||object==:ADVENTUREFLAG )
-	fname = "Packed.png"
-	end
+    event.name = placeable_data.event_name(direction, store)
 	
-	if !direction.nil?
-	if object == :BEDROLL && (direction == 4 || direction == 6)
-    case $game_player.direction
-    when 2 #then event.move_down
-	 x = $game_player.x
-	 y = $game_player.y+1
-    when 4 #then event.move_left
-	 x = $game_player.x-1
-	 y = $game_player.y
-    when 6 #then event.move_right
-	 x = $game_player.x+1
-	 y = $game_player.y
-    when 8 #then event.move_up
-	 x = $game_player.x
-	 y = $game_player.y-1
-    end
-    event.name = "Size(2,1).noshadow"
-	fname = "bedsideways.png"
-    event.x = x
-    event.y = y
-	end
-    end
-    event.pages[0].graphic.character_name = fname
+	packing = store && placeable_data.packable
+
+    image = packing ? "Packed.png" : placeable_data.get_image(direction, store)
+    event.pages[0].graphic.character_name = "#{image}.png"
     #--- movement of the event --------------------------------
     event.pages[0].move_speed = 0 #Sets movement speed.
     event.pages[0].move_frequency = 0 #Sets movement frequency.
@@ -1104,55 +1072,44 @@ update!
     event.pages[0].walk_anime = false #Sets movement type.
     event.pages[0].always_on_top = aat #Sets movement type.
 	through = aat 
-	through = true if object==:ADVENTUREFLAG || object==:PETBED || object==:PETBEDOUTDOOR
+	through = true if placeable_data.through
     event.pages[0].through = through #Sets movement type.
-    event.pages[0].step_anime = true if object==:ADVENTUREFLAG && store==false
-    event.pages[0].trigger = 0 if object != "CampsiteDoor"
-    event.pages[0].trigger = 1 if object == "CampsiteDoor"
+    event.pages[0].step_anime = placeable_data.step_anime
+    event.pages[0].step_anime = true if store == false && placeable_data.animates_unless_stored
+    event.pages[0].trigger = placeable_data.trigger
     #--- event commands of the event -------------------------------------
     mapId = $game_map.map_id
-	if object == "CampsiteDoor"
-    Compiler::push_script(event.pages[0].list,sprintf("campsiteDoorEntry"))
-	elsif object == "OvPot"
-	elsif object == "Egg"
-    Compiler::push_script(event.pages[0].list,sprintf("leggomyeggo"))
-	else
-    Compiler::push_script(event.pages[0].list,("object = get_own_event"))
-    Compiler::push_script(event.pages[0].list,("ItemHandlers.triggerUseFromEvent(object.type,'#{key_id}') if defined?(object.type)"))
-    end
+	placeable_data.script.each do |script|
+     script = script.gsub("[REPLACE_WITH_KEY_ID]", key_id.to_s)
+     Compiler::push_script(event.pages[0].list,sprintf(script))
+	end 
 	
     #Compiler::push_script(event.pages[0].list,sprintf(parameter),1)
     #  - finally push end command
     Compiler::push_end(event.pages[0].list)
     #--- creating and adding the Game_Event ------------------------------------
-	true_object = object if true_object.nil?
-	
-	if object == :PORTABLECAMP && store==true
-    event.x = x-1
-    event.y = y
-	end
-	if object == :PETBED || object == :PETBEDOUTDOOR
-	 localMeter = true_object.internal_data
-	 if localMeter.nil? || !localMeter.is_a?(PetBedData)
-	 localMeter=PetBedData.new(key_id)
-	 true_object.internal_data=localMeter
+	if placeable_data.initialize_internal_data?
+	 localMeter = object.internal_data
+	 data_type = placeable_data.internal_data.first
+	 if localMeter.nil? || !localMeter.is_a?(data_type)
+	  localMeter = data_type.new(key_id)
+	  object.internal_data = localMeter
 	 end
-	
-	
 	end 
 	
-    gameEvent = Game_OVEvent.new(true_object, mapId, event,$game_map)
+    gameEvent = Game_OVEvent.new(object, mapId, event,$game_map)
     gameEvent.id = key_id
     gameEvent.direction = direction if !direction.nil?
-	if object == :PORTABLECAMP && store==true
-    gameEvent.moveto(x-1,y)
-	else 
-    gameEvent.moveto(x,y)
-	end
+	
+	
+	
     #$ExtraEvents.objects[key_id] = [mapId,event,true_object,x,y]
 	
-	$ExtraEvents.objects[[mapId,key_id]] = StoredEvent.new(mapId,event,true_object)
-	 $ExtraEvents.objects[[mapId,key_id]].eventdata = gameEvent
+	
+	
+	
+	$ExtraEvents.objects[[mapId,key_id]] = StoredEvent.new(mapId,event,object)
+	$ExtraEvents.objects[[mapId,key_id]].eventdata = gameEvent
 	@block_data[key_id] = gameEvent
     #--- updating the sprites --------------------------------------------------------
 
@@ -1163,7 +1120,7 @@ update!
 	update!
 	if store==true
 	$player.held_item_object = key_id
-	$player.held_item = true_object
+	$player.held_item = object
 	$game_temp.position_calling = true
 	$game_system.save_disabled = true
 	end
@@ -1197,30 +1154,31 @@ update!
     Compiler::push_script(event.pages[0].list,sprintf("pbBerryPlant"))
     Compiler::push_end(event.pages[0].list)
 	
-    gameEvent = Game_OVEvent.new(:BERRYPLANT, @map_id, event, $game_map)
+    gameEvent = Game_OVEvent.new(:BERRYPLANT, mapId, event, $game_map)
     gameEvent.id = key_id
-	#$ExtraEvents.objects[[@map_id,key_id]] = StoredEvent.new(@map_id,event,:BERRYPLANT)
-	# $ExtraEvents.objects[[@map_id,key_id]].eventdata = gameEvent
-	@events[key_id] = gameEvent
-    berry_plant = $PokemonGlobal.eventvars[[@map_id, key_id]]
+    gameEvent.moveto(x,y)
+	#$ExtraEvents.objects[[mapId,key_id]] = StoredEvent.new(mapId,event,:BERRYPLANT)
+	# $ExtraEvents.objects[[mapId,key_id]].eventdata = gameEvent
+	@block_data[key_id] = gameEvent
+    berry_plant = $PokemonGlobal.eventvars[[mapId, key_id]]
     if !berry_plant
-       berry_plant = BerryPlantData.new(@events[key_id])
+       berry_plant = BerryPlantData.new(@block_data[key_id])
        berry_plant.jit=true
 	   berry_plant.beside_water=any_acceptable_water_tiles_for_hoe(x,y)
-       $PokemonGlobal.eventvars[[@map_id, key_id]] = berry_plant
+       $PokemonGlobal.eventvars[[mapId, key_id]] = berry_plant
     end
-	    map = @map_id
+	    map = mapId
 		 viewport = Spriteset_Map.viewport
-        sprite = Sprite_Character.new(Spriteset_Map.viewport,@events[key_id])
-        $scene.spritesets[self.map_id].character_sprites.push(sprite)
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantGroundSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantMoistureSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantMulchSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantSprite.new(@events[key_id], map, viewport))
-       $scene.spritesets[self.map_id].addUserSprite(BerryPlantWeedSprite.new(@events[key_id], map, viewport))
+        sprite = Sprite_Character.new(Spriteset_Map.viewport,@block_data[key_id])
+        $scene.spritesets[mapId].character_sprites.push(sprite)
+       $scene.spritesets[mapId].addUserSprite(BerryPlantGroundSprite.new(@block_data[key_id], map, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantMoistureSprite.new(@block_data[key_id], map, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantMulchSprite.new(@block_data[key_id], map, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantSprite.new(@block_data[key_id], map, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantWeedSprite.new(@block_data[key_id], map, viewport))
   
-  
-    return @events[key_id]
+    update!
+    return @block_data[key_id]
   end
 
   def generatePokemon(x,y,pokemon)

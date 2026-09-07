@@ -74,6 +74,9 @@ class Inventory_Scene
     # in-engine.
     :ELECTRICFURNACE => ->(e, c) { InventoryScene::Stations::ElectricFurnace.new(event_data: e, container: c) },
     :COALGENERATOR => ->(e, c) { InventoryScene::Stations::CoalGenerator.new(event_data: e, container: c) },
+    :HYDROGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
+    :WINDGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
+    :SOLARGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 2, bg: "ELECTRICPRESS") },
     :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE") },
   }.freeze

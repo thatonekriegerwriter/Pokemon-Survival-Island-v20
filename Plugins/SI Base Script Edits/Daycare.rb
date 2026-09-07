@@ -4,7 +4,36 @@ class DayCare
   #=============================================================================
   module EggGenerator
     module_function
+   
+    def same_species?(mother, father)
+     return true if mother == father
+     return true if mother == :DITTO && father == :DITTO
+     return false if mother == :DITTO || father == :DITTO
+      family = [mother]
+      checked = []
+      until family.empty?
+          species = family.shift
+          next if checked.include?(species)
 
+          checked << species
+          data = GameData::Species.get(species)
+
+          data.evolutions.each do |evo|
+            family << evo[0] unless checked.include?(evo[0])
+          end
+      end
+
+   
+	
+     checked.include?(father)
+	end 
+    
+	def same_type?(mother, father)
+	  return true if can_milk?(mother.species) && can_milk?(father.species)
+	  return true if can_shear?(mother.species) && can_shear?(father.species)
+	  return false 
+	end 
+	
     def generate(mother, father, bee = false, princess=false)
       # Determine which Pokémon is the mother and which is the father
       # Ensure mother is female, if the pair contains a female
@@ -24,6 +53,14 @@ class DayCare
       father_data.push(father.species_data.breeding_can_produce?(baby_species))
       # Generate egg
       egg = generate_basic_egg(baby_species, bee)
+	  unless bee 
+	   egg.steps_to_hatch /= 2 if same_species?(mother, father)
+	   egg.steps_to_hatch /= 2 if same_type?(mother, father)
+      end 
+	  
+	  
+	  
+	  
       # Inherit properties from parent(s)
       egg.family = PokemonFamily.new(egg, father, mother)
 	  
@@ -43,6 +80,29 @@ class DayCare
       return egg
     end
 
+    def generate_basic_egg(species, bee = false)
+      egg = Pokemon.new(species, 1)
+	  unless bee 
+       egg.name           = _INTL("Egg")
+       egg.steps_to_hatch = egg.species_data.hatch_steps
+       egg.obtain_text    = _INTL("Raised from an Egg!")
+	  else
+       egg.obtain_text    = _INTL("Born with its hive!")
+	  end 
+      egg.happiness      = 120
+      egg.loyalty      = 120
+      egg.age = egg.set_birthday
+      egg.lifespan = egg.get_lifespan
+      egg.water = 100
+      egg.food = 100
+      egg.form           = 0 if species == :SINISTEA
+      # Set regional form
+      new_form = MultipleForms.call("getFormOnEggCreation", egg)
+      egg.form = new_form if new_form
+      return egg
+    end
+
+	
     
     def egg_species_from_item(babyspecies, mother_item, father_item)
       egg_species = Settings::EGG_SPECIES_ITEM[babyspecies]
@@ -128,29 +188,6 @@ class DayCare
     return ret
   end
 
-    def generate_basic_egg(species, bee = false)
-      egg = Pokemon.new(species, 1)
-	  unless bee 
-       egg.name           = _INTL("Egg")
-       egg.steps_to_hatch = egg.species_data.hatch_steps
-       egg.obtain_text    = _INTL("Raised from an Egg!")
-	  else
-       egg.obtain_text    = _INTL("Born with its hive!")
-	  end 
-      egg.happiness      = 120
-      egg.loyalty      = 120
-      egg.age = egg.set_birthday
-      egg.lifespan = egg.get_lifespan
-      egg.water = 100
-      egg.food = 100
-      egg.form           = 0 if species == :SINISTEA
-      # Set regional form
-      new_form = MultipleForms.call("getFormOnEggCreation", egg)
-      egg.form = new_form if new_form
-      return egg
-    end
-
-	
 def inherit_form(egg, species_parent, mother, father)
   species_data = GameData::Species.get(species_parent.species)
 

@@ -52,6 +52,7 @@
 - [ ] Remap western temperate and bee forest
 - [ ] Rework Dungeons
 - [-] Raids
+- [-] Fix held item across map boundries, there is slight visual jitter, but its fine
 
 ### Misc Mechanics
 - [ ] Drop items on death?

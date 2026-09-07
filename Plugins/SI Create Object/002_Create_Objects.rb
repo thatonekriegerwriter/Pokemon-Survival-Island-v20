@@ -17,7 +17,7 @@ def getObjectImage(object)
 	 image = "craftingStations/Furnace"
 	when :MACHINEBOX 
 	 image = "craftingStations/MachineBox"
-	when :GRINDER, :ELECTRICGRINDER
+	when :GRINDER
 	 image = "craftingStations/Grinder"
 	when :TORCH
 	 image = "craftingStations/Legends_Torch"

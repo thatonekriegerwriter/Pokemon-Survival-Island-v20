@@ -1,3 +1,11 @@
+EventHandlers.add(:on_player_step_taken, :connection_counter,
+  proc {
+    next unless $game_temp.connection_counter
+    $game_temp.connection_counter += 1
+
+  }
+)
+
 class Game_Temp
   attr_accessor :position_calling
   attr_accessor :in_throwing
@@ -42,6 +50,7 @@ class Game_Temp
   attr_accessor :connection_mode 
   attr_accessor :connection_source 
   attr_accessor :connection_cooldown
+  attr_accessor :connection_counter
   
   def in_inventory
     @in_inventory = false if @in_inventory.nil?

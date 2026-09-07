@@ -114,8 +114,55 @@ class Game_OVEvent < Game_Event
 	 end 
   end
   
+  def fancy_moveto(new_x, new_y, leader=nil)
+    ret = false 
+    if self.x - new_x == 1 && self.y == new_y
+      move_fancy(4)
+    elsif self.x - new_x == -1 && self.y == new_y
+      move_fancy(6)
+    elsif self.x == new_x && self.y - new_y == 1
+      move_fancy(8)
+    elsif self.x == new_x && self.y - new_y == -1
+      move_fancy(2)
+    elsif self.x - new_x == 2 && self.y == new_y && !leader.nil?
+      jump_fancy(4, leader)
+    elsif self.x - new_x == -2 && self.y == new_y && !leader.nil?
+      jump_fancy(6, leader)
+    elsif self.x == new_x && self.y - new_y == 2 && !leader.nil?
+      jump_fancy(8, leader)
+    elsif self.x == new_x && self.y - new_y == -2 && !leader.nil?
+      jump_fancy(2, leader)
+    elsif self.x != new_x || self.y != new_y
+     ret = moveto(new_x, new_y)
+    end
+	return ret 
+  end
+  
+  def update_command
+    if @transitioned_map
+      @map    = $map_factory.getMap(@transitioned_map[0])
+      @map_id = @transitioned_map[0]
+      @x      = @transitioned_map[1]
+      @y      = @transitioned_map[2]
+      @real_x = @x * Game_Map::REAL_RES_X
+      @real_y = @y * Game_Map::REAL_RES_Y
+      @transitioned_map = nil
+	  new_x = self.type.id == :PORTABLECAMP ? $game_player.x-1 : $game_player.x
+	  new_y = $game_player.y-1
+      fancy_moveto2(new_x, new_y, $game_player)
+    end
+    super
+  end
+  
+  def check_held_item_map_transition
+    return unless $player.held_item_object == @id
+    return if $game_map.map_id == self.map_id
+    offset_x = ($player.held_item&.id == :PORTABLECAMP) ? -1 : 0
+    @transitioned_map = [$game_map.map_id, $game_player.x + offset_x, $game_player.y - 1]
+  end
   
   def update
+    check_held_item_map_transition
    super
     if $game_map.map_id == self.map_id
     data = internal_data
@@ -126,6 +173,9 @@ class Game_OVEvent < Game_Event
 	workers.event_id = @event.id if workers.event_id.nil? || workers.event_id!=@event.id
 	workers.update 
 	end 
+	
+	
+	
   end
 end
 

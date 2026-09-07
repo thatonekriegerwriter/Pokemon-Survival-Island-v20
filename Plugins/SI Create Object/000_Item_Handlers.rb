@@ -60,7 +60,7 @@ end
 
 class PositionMarker
   def initialize(x,y,viewport = Spriteset_Map.viewport, map = $game_map)
-	 @map = map
+	@map = map
     @real_x = x * Game_Map::REAL_RES_X
     @real_y = y * Game_Map::REAL_RES_Y
     @image1 = IconSprite.new(0, 0, viewport)
@@ -92,19 +92,12 @@ class PositionMarker
   end
   
   def screen_x
-    
-	if @map.nil?
-	@map=$game_map
-	end
     ret = ((@real_x - @map.display_x) / Game_Map::X_SUBPIXELS).round
     #ret += 1 * Game_Map::TILE_WIDTH / 2
     return ret
   end
   
   def screen_y
-	if @map.nil?
-	@map=$game_map
-	end
     ret = ((@real_y - @map.display_y) / Game_Map::Y_SUBPIXELS).round
     #ret += Game_Map::TILE_HEIGHT
     return ret
@@ -125,6 +118,7 @@ class PositionMarker
 
   def update
     return if !@image1 || !@image2 || @disposed
+	@map = $game_map if @map.nil? || @map!=$game_map
     @image1.update
     @image2.update
     @image1.x = self.screen_x

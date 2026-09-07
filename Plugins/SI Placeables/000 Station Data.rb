@@ -373,8 +373,8 @@ class CraftingStationData
     output = @average_power_output
 	if windmill?
 	 output = event.map.get_current_height(event.x, event.y).to_f
-	 output = 1.0 if output <= 0.0
-	 output *= 0.5
+	 output = 0.5 if output <= 0.0
+	 output *= 0.00175
      output *= 1.75 if $game_screen.weather_type == :Storm
      output *= 1.50 if $game_screen.weather_type == :HeavyRain
      output *= 1.20 if $game_screen.weather_type == :Rain
@@ -382,7 +382,7 @@ class CraftingStationData
 	if solarpanel? && PBDayNight.isDay?
     map_metadata = GameData::MapMetadata.try_get(event.map_id)
 	if map_metadata.outdoor_map
-	 output = 0.75 
+	 output = 0.025 
      output /= 1.50 if $game_screen.weather_type == :Storm || $game_screen.weather_type == :Sandstorm || $game_screen.weather_type == :Fog
      output /= 1.05 if $game_screen.weather_type == :HeavyRain || $game_screen.weather_type == :Blizzard
      output /= 1.005 if $game_screen.weather_type == :Rain || $game_screen.weather_type == :Snow
@@ -392,14 +392,31 @@ class CraftingStationData
 	end 
     return output
   end 
-  
+
+  def update_production(time_delta)
+   return if fuel <= 0
+   return if power >= internal_battery_limit
+
+   eu_to_generate = get_current_power_output * time_delta
+   eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
+
+
+   fuel_burned = eu_to_generate / FUEL_TO_EU
+   fuel_burned = [fuel_burned, fuel].min
+   
+   @fuel -= fuel_burned
+   power_generated = fuel_burned * FUEL_TO_EU
+   @power = [@power + power_generated, @internal_battery_limit].min
+  end 
+
+
   def update_network(time_delta, time_now)
    @network.each do |type, events|
-    events.select! { |event_id| $game_map.events[event_id] }
+    events.select! { |event_id, _amount| $game_map.events[event_id] }
    end
 
-  @network.each_value do |event_ids|
-    event_ids.each do |event_id|
+  @network.each_value do |events|
+    events.each do |event_id, _amount|
       event = $game_map.events[event_id]
       next unless event
 
@@ -431,21 +448,7 @@ class CraftingStationData
     end
    end
   end 
-  def update_production(time_delta)
-   return if fuel <= 0
-   return if power >= internal_battery_limit
 
-   eu_to_generate = get_current_power_output * time_delta
-   eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
-
-
-   fuel_burned = eu_to_generate / FUEL_TO_EU
-   fuel_burned = [fuel_burned, fuel].min
-   
-   @fuel -= fuel_burned
-   power_generated = fuel_burned * FUEL_TO_EU
-   @power = [@power + power_generated, @internal_battery_limit].min
-  end 
   def update_batbox(time_delta)
     update_consumption(time_delta)
 	update_production(time_delta)
@@ -604,25 +607,27 @@ class CraftingStationData #Electric
     return false 
   end 
   
-  def add_to_network(event)
+  def add_to_network(event, amount)
     event_id = event.id
 	type = event.type.internal_data.station_type
 	return unless [:producer, :batbox, :consumer].include?(type)
 	@network[type] ||= []
-	@network[type] << event_id unless @network[type].include?(event_id)
+	@network[type] << [event_id, amount] unless @network[type].any? { |id, _amount| id == event_id }
   end 
   
-  def add_to_network_by_id(event_id)
+  def add_to_network_by_id(event_id, amount)
     event = $game_map.events[event_id]
 	return unless event 
 	type = event.type.internal_data.station_type
 	return unless [:producer, :batbox, :consumer].include?(type)
 	@network[type] ||= []
-	@network[type] << event_id unless @network[type].include?(event_id)
+	@network[type] << [event_id, amount] unless @network[type].any? { |id, _amount| id == event_id }
   end 
   
   def remove_from_network_by_id(event_id)
-    @network.each_value { |events| events.delete(event_id) }
+   @network.each_value do |events|
+    events.reject! { |id, _amount| id == event_id }
+   end
   end 
 
 def available_power
@@ -646,20 +651,22 @@ end
 	type = event.type.internal_data.station_type
 	return unless [:producer, :batbox, :consumer].include?(type)
 	@network[type] ||= []
-	@network[type].delete(event_id)
+    @network[type].reject! { |id, _amount| id == event_id }
   end 
   
   def network_events(type)
     @network[type]||=[]
-    @network[type].filter_map { |event_id| $game_map.events[event_id] }
+    @network[type].filter_map do |event_id, _amount|
+      $game_map.events[event_id]
+    end
   end
 
   
   def get_power_output
     return 10.0 if coal_generator?
     return 0.010 if watermill? && event.terrain_tag.id == :StillWater
-    return 1.0 if watermill? && event.terrain_tag.id == :Water
-    return 2.0 if watermill? && event.terrain_tag.id == :DeepWater
+    return 0.015 if watermill? && event.terrain_tag.id == :Water
+    return 0.025 if watermill? && event.terrain_tag.id == :DeepWater
     return 32.0 if machine_box?
     return 0.0
   end 

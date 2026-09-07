@@ -638,8 +638,8 @@ class Scene_Map
     elsif can_connect
     source_data = $game_temp.connection_source
     target_data = event.type.internal_data
-    source_data.add_to_network(event)
-    target_data.add_to_network(source_data.event)
+    source_data.add_to_network(event, amount)
+    target_data.add_to_network(source_data.event, amount)
 
 
     @assignment_marker.dispose

@@ -21,6 +21,7 @@ class CraftingStationData
     attr_reader :internal_storage
     attr_accessor :extra_storage
     attr_accessor :clicked
+    attr_accessor :power_transmitted
 
     FUEL_TO_EU = 100.0
     FUEL_BURN_RATE = 0.01
@@ -49,6 +50,7 @@ class CraftingStationData
 	@work_done = 0.0
 	@passed_time = 0
 	@clicked = false 
+	@power_transmitted = 0.0
     @internal_storage = [nil] if spinner?
   end
   
@@ -492,21 +494,60 @@ class CraftingStationData
   end 
 
   def update_production(time_delta)
-   return if fuel <= 0
-   return if power >= internal_battery_limit
-
+   if @fuel <= 0
+   @active = false  
+   return 
+   end 
+   if @power >= internal_battery_limit
+   @active = true 
+   return 
+   end 
    eu_to_generate = get_current_power_output * time_delta
    eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
 
 
    fuel_burned = eu_to_generate / FUEL_TO_EU
-   fuel_burned = [fuel_burned, fuel].min
+   fuel_burned = [fuel_burned, @fuel].min
    
    @fuel -= fuel_burned
    power_generated = fuel_burned * FUEL_TO_EU
    @power = [@power + power_generated, @internal_battery_limit].min
+   @active = (@power > 0)
   end 
 
+
+  def update_consumption(time_delta)
+   return if @average_power_input <= 0
+   if @power >= @internal_battery_limit
+   @active = true 
+   return 
+   end 
+   eu_needed = @average_power_input * time_delta
+   eu_needed = [eu_needed, @internal_battery_limit - @power].min
+   [:producer, :batbox].each do |type|
+    network_events(type).shuffle.each do |event|
+      break if eu_needed <= 0
+
+      data = event.type.internal_data
+      available = data.power
+      next if available <= 0
+      output_limit = data.get_current_power_output * time_delta
+	  output_remaining = output_limit - data.power_transmitted
+      next if output_remaining <= 0
+      eu_taken = [available, eu_needed, output_limit].min
+
+      data.power -= eu_taken
+      @power += eu_taken
+      eu_needed -= eu_taken
+	  data.power_transmitted += eu_taken
+    end
+   end
+   if @active  
+     @active = @power > 0
+   else
+     @active = (eu_needed <= 0)
+   end 
+  end 
 
   def update_network(time_delta, time_now)
    @network.each do |type, events|
@@ -524,37 +565,13 @@ class CraftingStationData
    
    
   end
-  def update_consumption(time_delta)
-   return if @average_power_input <= 0
-   return if @power >= @internal_battery_limit
-
-   eu_needed = @average_power_input * time_delta
-   eu_needed = [eu_needed, @internal_battery_limit - @power].min
-   [:producer, :batbox].each do |type|
-    network_events(type).each do |event|
-      break if eu_needed <= 0
-
-      data = event.type.internal_data
-      available = data.power
-      next if available <= 0
-
-      eu_taken = [available, eu_needed].min
-
-      data.power -= eu_taken
-      @power += eu_taken
-      eu_needed -= eu_taken
-    end
-   end
-  end 
-
   def update_batbox(time_delta)
     update_consumption(time_delta)
-	update_production(time_delta)
   end 
   
   
   def update_machine(time_delta, time_now = nil)
-  
+    @power_transmitted = 0.0 unless time_now
     update_consumption(time_delta) if needs_power?
     update_production(time_delta) if power_generator?
     update_batbox(time_delta) if batbox?
@@ -569,8 +586,64 @@ class CraftingStationData
 	update_network(time_delta, time_now)
 	update_fuelless if solarpanel? || windmill? || watermill?
 	update_machine(time_delta)
+	return unless @active
 	update_machine_box(time_delta) if machine_box?
+    update_sifter(time_delta) if electric_sifter? || sifter?
+	update_panner(time_delta) if panner?
+	update_quarry(time_delta) if quarry?
   end 
+  
+  def update_quarry(time_delta)
+    @extra_storage.each do |stack|
+      next unless stack.is_a?(Array) && stack[0].is_a?(ItemData)
+
+      existing = @internal_storage.find do |internal_stack|
+        internal_stack.is_a?(Array) &&
+          internal_stack[0].is_a?(ItemData) &&
+          internal_stack[0].id == stack[0].id
+      end
+
+      if existing
+        existing[1] += stack[1]
+        stack[1] = 0
+      end
+    end
+
+    @extra_storage.reject! { |stack| stack[1] <= 0 }
+
+    while (index = @internal_storage.index(nil)) && !@extra_storage.empty?
+      @internal_storage[index] = @extra_storage.shift
+    end
+    return if @power < 10
+	return unless event.terrain_tag.can_mine
+	@work_time += time_delta
+    while @work_time >= 1800
+	break if @power < 10
+	@work_time -= 1800
+	@power -= 10
+	mineitems = [:FIRESTONE,:FIRESTONE,:FIRESTONE,:WATERSTONE,:WATERSTONE,:WATERSTONE,:THUNDERSTONE,:THUNDERSTONE,:THUNDERSTONE,:LEAFSTONE,:LEAFSTONE,:MOONSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:NEVERMELTICE, :NEVERMELTICE, :EVIOLITE,:EVIOLITE,:RAREBONE,:RAREBONE,:LIGHTCLAY,:HARDSTONE,:THUNDERSTONE,:THUNDERSTONE,:HEARTSCALE,:IRONBALL,:ODDKEYSTONE,:HEATROCK,:DAMPROCK,:SMOOTHROCK,:ICYROCK,:REDSHARD,:GREENSHARD,:YELLOWSHARD,:BLUESHARD,:INSECTPLATE,:DREADPLATE,:DRACOPLATE,:ZAPPLATE,:FISTPLATE,:FLAMEPLATE,:MEADOWPLATE,:EARTHPLATE,:ICICLEPLATE,:TOXICPLATE,:MINDPLATE,:STONEPLATE,:SKYPLATE,:SPOOKYPLATE,:IRONPLATE,:SPLASHPLATE,:COAL,:STONE,:COPPERORE,:COPPERORE,:SILVERORE,:SILVERORE,:GOLDORE,:GOLDORE,:IRONORE,:IRONORE,:IRONORE,:IRONORE]
+	new_item = ItemData.new(mineitems.sample)
+    amount = rand(4) + 1
+    existing = @internal_storage.find do |stack|
+      stack.is_a?(Array) &&
+        stack[0].is_a?(ItemData) &&
+        stack[0].id == new_item.id
+    end
+
+    if existing
+      existing[1] += amount
+    else
+      index = @internal_storage.index(nil)
+      if index
+        @internal_storage[index] = [new_item, amount]
+      else
+        @extra_storage << [new_item, amount]
+      end
+    end
+    end 
+  end 
+  
+  
   def update
     @internal_storage = [] if @internal_storage.nil?
 	update_modifier if modifier?
@@ -597,8 +670,6 @@ class CraftingStationData
 	update_butcher_table(time_delta) if butchering_table?
 	update_feeder(time_delta) if feeder?
 	update_grave(time_delta) if grave?
-    update_sifter(time_delta) if electric_sifter? || sifter?
-	update_panner(time_delta) if panner?
   
   end 
   
@@ -628,6 +699,13 @@ class CraftingStationData
   def panner?
     item&.id == :ELECTRICOREWASHER
   end
+  def quarry?
+    item&.id == :ELECTRICQUARRY
+  end
+  
+  
+  
+  
   def power_generator?
     return false unless item 
     GameData::Placeable.get(item.id).produces_power
@@ -838,6 +916,7 @@ end
   end 
   
   def get_power_input
+    return 80.0 if quarry?
     return 32.0 if machine_box?
     return 3.0 if electric_furnace?
     return 3.0 if electric_sifter?
@@ -849,6 +928,7 @@ end
   def get_energy
     return 4000.0 if batbox?
     return 400.0 if coal_generator?
+    return 60.0 if quarry?
     return 20.0 if solarpanel?  || watermill? || windmill?
     return 390.0 if needs_power?
     return 400.0 if power_generator?

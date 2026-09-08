@@ -1630,20 +1630,24 @@ end
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	  $bag.add(:SOFTSAND, 64)
+	#  $bag.add(:SOFTSAND, 64)
 	#  item = ItemData.new(:SIFTER)
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+2, item, false, false, $game_player.direction)
 	#  item = ItemData.new(:WINDGENERATOR)
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	
-	  item = ItemData.new(:ELECTRICOREWASHER)
+	  item = ItemData.new(:ELECTRICQUARRY)
       key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
 
 	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y+1, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:MACHINEBOX)
+      key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:MACHINEBOX)
+      key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
 
 	  item = ItemData.new(:COALGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x-5, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 	#  item = ItemData.new(:HYDROGENERATOR)
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)

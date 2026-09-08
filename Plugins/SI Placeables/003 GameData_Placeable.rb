@@ -213,8 +213,8 @@ GameData::Placeable.register({ :id            => :SOLARGENERATOR, :usable_locati
 GameData::Placeable.register({ :id            => :PORTABLECAMP, :width => 3, :height => 3, :packable => true, :usable_locations => [:WILDS], :image => "craftingStations/Tent", :placement_coordinates =>  { 2 => [-1,-1], 4 => [-1,-1], 6 => [-1,-1], 8 => [-1,-1]}})
 
 
-GameData::Placeable.register({ :id            => :ELECTRICQUARRY, :correct_terrain => [:Stone, :Rock], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/bigmachine" })
-GameData::Placeable.register({ :id            => :ELECTRICPUMP, :correct_terrain => [:StillWater, :Water, :DeepWater], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :produces_water => true, :image => "craftingStations/bigmachine2" })
+GameData::Placeable.register({ :id            => :ELECTRICQUARRY, :width => 3, :height => 3, :correct_terrain => [:Stone, :Rock], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/bigmachine" })
+GameData::Placeable.register({ :id            => :ELECTRICPUMP, :width => 3, :height => 3, :correct_terrain => [:StillWater, :Water, :DeepWater], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :produces_water => true, :image => "craftingStations/bigmachine2" })
 GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true, :image => "craftingStations/ResearchTable"})
 GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true, :image => "craftingStations/BerryPot", :usable_locations => [:BASE]}) 
 GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true, :usable_locations => [:ANY]}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks

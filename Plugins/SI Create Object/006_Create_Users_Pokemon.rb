@@ -1,4 +1,120 @@
 class Game_PokeEventA < Game_Event
+  def move_type_custom
+    return if jumping? || moving?
+    while @move_route_index < @move_route.list.size
+      command = @move_route.list[@move_route_index]
+      if command.code == 0
+        if @move_route.repeat
+          @move_route_index = 0
+        else
+          if @move_route_forcing
+            @move_route_forcing = false
+            @move_route       = @original_move_route
+            @move_route_index = @original_move_route_index
+            @original_move_route = nil
+          end
+          @stop_count = 0
+        end
+        return
+      end
+      if command.code <= 14
+        case command.code
+        when 1  then move_down
+        when 2  then move_left
+        when 3  then move_right
+        when 4  then move_up
+        when 5  then move_lower_left
+        when 6  then move_lower_right
+        when 7  then move_upper_left
+        when 8  then move_upper_right
+        when 9  then move_random
+        when 10 then move_toward_player
+        when 11 then move_away_from_player
+        when 12 then move_forward
+        when 13 then move_backward
+        when 14 then jump(command.parameters[0], command.parameters[1])
+        end
+        @move_route_index += 1 if @move_route.skippable || moving? || jumping?
+        return
+      end
+      if command.code == 15   # Wait
+        @wait_count = (command.parameters[0] * Graphics.frame_rate / 20) - 1
+        @move_route_index += 1
+        return
+      end
+      if command.code >= 16 && command.code <= 26
+        case command.code
+        when 16 then turn_down
+        when 17 then turn_left
+        when 18 then turn_right
+        when 19 then turn_up
+        when 20 then turn_right_90
+        when 21 then turn_left_90
+        when 22 then turn_180
+        when 23 then turn_right_or_left_90
+        when 24 then turn_random
+        when 25 then turn_toward_player
+        when 26 then turn_away_from_player
+        end
+        @move_route_index += 1
+        return
+      end
+      if command.code >= 27
+        case command.code
+        when 27
+          $game_switches[command.parameters[0]] = true
+          self.map.need_refresh = true
+        when 28
+          $game_switches[command.parameters[0]] = false
+          self.map.need_refresh = true
+        when 29 then self.move_speed = command.parameters[0]
+        when 30 then self.move_frequency = command.parameters[0]
+        when 31 then @walk_anime = true
+        when 32 then @walk_anime = false
+        when 33 then @step_anime = true
+        when 34 then @step_anime = false
+        when 35 then @direction_fix = true
+        when 36 then @direction_fix = false
+        when 37 then @through = true
+        when 38 then @through = false
+        when 39
+          old_always_on_top = @always_on_top
+          @always_on_top = true
+          calculate_bush_depth if @always_on_top != old_always_on_top
+        when 40
+          old_always_on_top = @always_on_top
+          @always_on_top = false
+          calculate_bush_depth if @always_on_top != old_always_on_top
+        when 41
+          old_tile_id = @tile_id
+          @tile_id = 0
+          @character_name = command.parameters[0]
+          @character_hue = command.parameters[1]
+          if @original_direction != command.parameters[2]
+            @direction = command.parameters[2]
+            @original_direction = @direction
+            @prelock_direction = 0
+          end
+          if @original_pattern != command.parameters[3]
+            @pattern = command.parameters[3]
+            @original_pattern = @pattern
+          end
+          calculate_bush_depth if @tile_id != old_tile_id
+        when 42 then @opacity = command.parameters[0]
+        when 43 then @blend_type = command.parameters[0]
+        when 44 then pbSEPlay(command.parameters[0])
+        when 45 then eval(command.parameters[0])
+        when 46  then move_fancy(2)
+        when 47  then move_fancy(4)
+        when 48  then move_fancy(6)
+        when 49  then move_fancy(8)
+        end
+		
+		
+        @move_route_index += 1
+      end
+    end
+  end
  module FollowerMovement
 
  
@@ -567,6 +683,7 @@ end
 
 
  def update
+    advance_multi_map_route(self)
 	@type.deselecttimer-=1 if @type.deselecttimer>0
 	pokemon.associatedevent=@id if pokemon.associatedevent.nil? || pokemon.associatedevent!= @id
 	$PokemonGlobal.follower_pkmn.add(@id) if @movement_type == :FOLLOW
@@ -958,15 +1075,16 @@ def move_with_maps(mapA,x,y,dir=nil)
     @transitioned_map = [mapA, vector[0], vector[1], false]
     return true
   end
-  puts self.x != x || self.y != y
   if self.x != x || self.y != y
     if x < 0 || y < 0 || x >= self.map.width || y >= self.map.height
-      fancy_moveto(x, y)
+	  puts "MultimapA"
+	  move_to_location_multi_map(self, mapA, x, y)
     elsif self.x < 0 || self.y < 0 || self.x >= self.map.width || self.y >= self.map.height
-      fancy_moveto(x, y)
+	  puts "MultimapB"
+	  move_to_location_multi_map(self, mapA, x, y)
     else
       move_to_location(self, x, y)
-    end
+	end
   elsif !dir.nil? && dir != self.direction
     turn_generic(dir)
   end

@@ -51,6 +51,7 @@ class Inventory_Scene
     :ITEMCRATE => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
     :FEEDER => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
     :ICEBOX => ->(e, c) { InventoryScene::Stations::Icebox.new(event_data: e, container: c) },
+    :ELECTRICICEBOX => ->(e, c) { InventoryScene::Stations::Icebox.new(event_data: e, container: c) },
     :PKMNCRATE => ->(e, c) { InventoryScene::Stations::PkmnCrate.new(event_data: e, container: c) },
     :RESEARCHTABLE => ->(e, c) { InventoryScene::Stations::ResearchTable.new(event_data: e, container: c) },
     :GARBAGEBIN => ->(e, c) { InventoryScene::Stations::GarbageBin.new(event_data: e, container: c) },
@@ -65,20 +66,17 @@ class Inventory_Scene
     :MODIFICATIONTABLE => ->(e, c) { InventoryScene::Stations::ModificationTable.new(event_data: e, container: c) },
     :MOVERELEARNER => ->(e, c) { InventoryScene::Stations::MoveRelearner.new(event_data: e, container: c) },
 
-    # These three had a get_slot_amount entry (1/2/3 slots respectively)
-    # but NO setup_*_ui of their own in the source I was given - they fell
-    # through setup_ui's `else` to the generic crafting-bench layout.
-    # I've mapped them onto CraftingBench with matching slot counts as the
-    # closest faithful guess, but there's no original rendering to check
-    # this against - flag if these types are actually used and look wrong
-    # in-engine.
+    :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::Panner.new(event_data: e, container: c) },
+    :SIFTER => ->(e, c) { InventoryScene::Stations::Sifter.new(event_data: e, container: c, machine: false) },
+    :ELECTRICSIFTER => ->(e, c) { InventoryScene::Stations::Sifter.new(event_data: e, container: c, machine: true) },
     :ELECTRICFURNACE => ->(e, c) { InventoryScene::Stations::ElectricFurnace.new(event_data: e, container: c) },
     :COALGENERATOR => ->(e, c) { InventoryScene::Stations::CoalGenerator.new(event_data: e, container: c) },
     :HYDROGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :WINDGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :SOLARGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
-    :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 2, bg: "ELECTRICPRESS") },
-    :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::CraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE") },
+    :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "ELECTRICPRESS", power_cost: 60) },
+    :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE", power_cost: 20) },
+    :CUTTER => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 1, bg: "CUTTER", power_cost: 60) },
   }.freeze
 
   def self.new(type, event_data, container)

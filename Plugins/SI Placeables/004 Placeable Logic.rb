@@ -5,6 +5,12 @@ ItemHandlers::UseFromBag.addIf(proc { |item| GameData::Item&.try_get(item).is_pl
 	 sideDisplay(_INTL("You can't use that here."))
 	 next 0 
 	end 
+	
+  x,  y = Placeable.starter_coordinates
+  unless placeable.correct_terrain?(x, y)
+	sideDisplay(_INTL("You can't use that here."))
+	next 0 
+  end 
     if Placeable.begin_place(item)
 	next 2 
 	end
@@ -37,6 +43,12 @@ def begin_place(item)
   return false
 end 
 
+def starter_coordinates(item_id)
+  player_event = get_cur_player
+  direction = player_event.direction
+  offset = GameData::Placeable.get(item_id).placement_offset(2, direction)
+  return [player_event.x + offset[0], player_event.y + offset[1]]
+end
 def coordinates
   item_id = $player.held_item.id
   event = $player.held_item_event
@@ -90,7 +102,10 @@ def place_or_hold(item = $player.held_item, x = nil, y = nil)
   end 
 
   x,  y = coordinates if x.nil? || y.nil?
-  
+  unless placeable.correct_terrain?(x, y)
+	sideDisplay(_INTL("You can't use that here."))
+	return false
+  end 
   
   return false unless $player.place(x, y)
   place(x + 1, y, "CampsiteDoor") if item.id == :PORTABLECAMP
@@ -116,25 +131,27 @@ def pick_up(event_id, item)
  pbSEPlay("pickup")
  $player.held_item = item
  $player.held_item_object = event_id
- event = $player.held_item_event 
+ event = $player.hefld_item_event 
  return unless event 
  event.width = 1
  event.height = 1
  item_id = item.id
- if item_id == :BEDROLL
-   pbMoveRoute(event, [PBMoveRoute::Graphic,"Packed.png",0,event.direction,0])
- end 
- if item_id == :ADVENTURECAMP
-   pbMoveRoute(event, [PBMoveRoute::Graphic,"Packed.png",0,event.direction,0])
+ placeable_data = GameData::Placeable.get(item_id)
+ packable = placeable_data.packable
+ if packable
+   image = placeable_data.get_image(event.direction, true)
+   pbMoveRoute(event, [PBMoveRoute::Graphic,"#{image}.png",0,event.direction,0])
  end 
  if item_id == :PORTABLECAMP
-   pbMoveRoute(event, [PBMoveRoute::Graphic,"Packed.png",0,event.direction,0])
    $DynamicEvents.block_data_for_map.each do |placeable|
        next unless placeable.type == "CampsiteDoor"
        placeable.removeThisEventfromMap
        deletefromSIData(placeable, $game_map.map_id)
    end 
  end
+
+
+
  pbMoveRoute2(event, [PBMoveRoute::ThroughOn,PBMoveRoute::AlwaysOnTopOn,PBMoveRoute::ChangeSpeed,$game_player.move_speed,PBMoveRoute::ChangeFreq,2])
  if item_id != :PORTABLECAMP
    event.fancy_moveto2($game_player.x,$game_player.y-1,$game_player)

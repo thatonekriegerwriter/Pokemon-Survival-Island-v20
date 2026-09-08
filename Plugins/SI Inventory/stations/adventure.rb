@@ -46,7 +46,7 @@ module InventoryScene
         @view_mode = :list
         @detail_pokemon_index = nil
         @log = nil
-        super
+        super(event_data:, container:)
       end
 
       def open_pokemon_inventory

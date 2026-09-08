@@ -1059,11 +1059,7 @@ update!
     key_id = "BLOCK_#{key_id_r.to_s}"
     event.id = key_id
     event.name = placeable_data.event_name(direction, store)
-	
-	packing = store && placeable_data.packable
-
-    image = packing ? "Packed.png" : placeable_data.get_image(direction, store)
-    event.pages[0].graphic.character_name = "#{image}.png"
+    event.pages[0].graphic.character_name = "#{placeable_data.get_image(direction, store)}.png"
     #--- movement of the event --------------------------------
     event.pages[0].move_speed = 0 #Sets movement speed.
     event.pages[0].move_frequency = 0 #Sets movement frequency.

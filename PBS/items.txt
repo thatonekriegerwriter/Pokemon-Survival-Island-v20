@@ -4559,6 +4559,14 @@ Price = 0
 Flags = Fling_10,Tool
 Description = Copper Cables for wiring up machines.
 #-------------------------------
+[COPPERPIPE]
+Name = Copper Pipe
+NamePlural = Copper Pipes
+Pocket = 7
+Price = 0
+Flags = Fling_10,Tool
+Description = Copper Cables for wiring up machines.
+#-------------------------------
 [MASTERBALL]
 Name = Master Ball
 NamePlural = Master Balls
@@ -10237,13 +10245,75 @@ Flags = Fling_10,Overworld,PlacingItem
 Description = A motorized ice-filled crate to maintain freshness of perishable goods within.
 #-------------------------------
 [CUTTER]
-Name = Wood Saw
-NamePlural = Wood Saw
+Name = Electric Saw
+NamePlural = Electric Saw
 Pocket = 7
 Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = An electric saw for efficiently shaping logs and planks.
+#-------------------------------
+[SIFTER]
+Name = Sifter
+NamePlural = Sifter
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A station that allows you to efficiently sift sand into various other materials.
+#-------------------------------
+[ELECTRICSIFTER]
+Name = Sifter (Electric)
+NamePlural = Sifter (Electric)
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A powered station that allows you to efficiently sift sand into various other materials.
+#-------------------------------
+[ELECTRICOREWASHER]
+Name = Ore Washer 
+NamePlural = Ore Washer 
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A powered station that allows you to efficiently wash sifted ore.
+#-------------------------------
+[ELECTRICPURIFIER]
+Name = Water Purifier
+NamePlural = Water Purifier
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A powered station that allows you to purify pumped in or water placed inside.
+#-------------------------------
+[ELECTRICQUARRY]
+Name = Quarry
+NamePlural = Quarries
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A powered station that allows you to extract resources directly from hills.
+#-------------------------------
+[ELECTRICPUMP]
+Name = Water Pump
+NamePlural = Water Pump
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A powered station that allows you pump water into a water network.
+#-------------------------------
+[SIFTEDORE]
+Name = Sifted Ore
+NamePlural = Sifted Ore
+Pocket = 1
+Price = 0
+Flags = Fling_10
+Description = A chunk of mixed ore that can be sifted further into various types of dust.
 #-------------------------------
 [MACHINEBOX]
 Name = Machine Box
@@ -10262,12 +10332,12 @@ Flags = Fling_10,PlacingItem,Overworld
 Description = A torch that lights the area.
 #-------------------------------
 [ELECTRICLIGHT]
-Name = Electric Light
-NamePlural = Electric Lights
+Name = Lamp
+NamePlural = Lamps
 Pocket = 7
 Price = 0
 Flags = Fling_10,PlacingItem,Overworld
-Description = A powered light that illuminates your base and deters Pokémon.
+Description = A powered light that illuminates your base.
 #-------------------------------
 [WARDINGTOTEM]
 Name = Repelling Totem

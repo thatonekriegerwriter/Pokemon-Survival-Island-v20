@@ -1,36 +1,110 @@
 
 ItemHandlers::UseFromEvent.add(:ELECTRICPRESS, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerConsumersCrafting(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:ELECTRICICEBOX, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+  storage = item.crate_storage
+  storage.active = false if storage && storage.is_a?(IceBoxStorage)
+ Placeable.pick_up(key_id,item)
 else
-  powerConsumersCrafting(item)
+  icebox_crates(item, key_id)
 end
 }
 )
 
 ItemHandlers::UseFromEvent.add(:SEWINGMACHINE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerConsumersCrafting(item)
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
 
-ItemHandlers::UseFromEvent.add(:APRICORNMACHINE, proc { |item, key_id|
-if Input.press?(Input::SHIFT)
-Placeable.pick_up(key_id,item)
+
+ItemHandlers::UseFromEvent.add(:CUTTER, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
 else
-  powerConsumersCrafting(item)
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+ItemHandlers::UseFromEvent.add(:ELECTRICSIFTER, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+ItemHandlers::UseFromEvent.add(:ELECTRICOREWASHER, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+
+
+ItemHandlers::UseFromEvent.add(:APRICORNMACHINE, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
 end
 }
 )
@@ -130,20 +204,6 @@ end
 }
 )
 
-ItemHandlers::UseFromEvent.add(:HYDROGENERATOR, proc { |item, key_id|
-localMeter = item.internal_data
-if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
-localMeter=CraftingStationData.new(key_id)
-item.internal_data=localMeter
-end
-localMeter.event_id = key_id if localMeter.event_id!=key_id
-if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
- Placeable.pick_up(key_id,item)
-else
- Inventory.invWindow(item.id,localMeter)
-end
-}
-)
 
 ItemHandlers::UseFromEvent.add(:MACHINEBOX, proc { |item, key_id|
 localMeter = item.internal_data

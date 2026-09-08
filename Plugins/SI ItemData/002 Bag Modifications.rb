@@ -165,7 +165,7 @@ class PokemonBag
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
-	  if itm.is_tool?  || item.name.to_s.include?("Bottle")
+	  if itm.is_tool?  || item.name.to_s.include?("Bottle")  || itm.id == :SOFTSAND
       items << item
 	  end
 	end
@@ -182,7 +182,7 @@ class PokemonBag
 	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
 	  item = i[0] 
       itm = GameData::Item.get(item)
-	  if itm.is_weapon? || itm.is_pokeball?
+	  if itm.is_weapon? || itm.is_pokeball?  || itm.id == :BRIGHTPOWDER
       items << item
 	  end
 	end

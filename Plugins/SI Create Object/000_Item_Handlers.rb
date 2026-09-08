@@ -1676,6 +1676,23 @@ end
 	next false
 })
 
+ItemHandlers::UseInField.add(:SOFTSAND,proc { |item|
+if $game_player.pbFacingTerrainTag.can_surf
+    if rand(4) < 3
+      sideDisplay(_INTL("You wash some sand and get some Sifted Ore."))
+      $bag.remove(item, 1)
+	  sifted = ItemData.new(:SIFTEDORE)
+      itemAnim(sifted,1)
+	  $bag.add(sifted, 1)
+      next true
+	else 
+      sideDisplay(_INTL("You wash some sand but don't get anything."))
+      $bag.remove(item, 1)
+	end 
+end
+	next false
+})
+
 ItemHandlers::UseInField.add(:IRONAXE,proc { |item|
 
 })

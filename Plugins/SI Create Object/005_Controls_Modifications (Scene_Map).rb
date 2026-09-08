@@ -818,8 +818,8 @@ class Scene_Map
 	omniacted = false 
 	(0...8).each do |i|
 	 next if omniacted
-     next unless Input.triggerex?(Keys::CONTROLS_LIST[(i + 1).to_s])
-     next if Input.press?(Input::SHIFT)
+     next unless Input.triggerex?(Keys::CONTROLS_LIST[(i + 1).to_s]) && !Input.press?(Input::SHIFT)
+	 puts i
      move = i < 4 ?  selected_pkmn.pokemon.moves[i] : selected_pkmn.pokemon.moves2[i - 4]
 	 next if move.nil?
      omniacted = handle_pokemon_interaction(selected_pkmn, move, facingEvent, coords, terrain)
@@ -1180,8 +1180,8 @@ class Scene_Map
 			sideDisplay("#{pkmn.name} is confused! It won't listen!")
 			return
 		end
-		puts "#{pkmn.name} is on: X: #{event.x}, Y: #{event.y}" if $DEBUG
-		
+		puts "#{pkmn.name} is on: X: #{event.x}, Y: #{event.y} MapID: #{event.map.map_id}" if $DEBUG
+		if event.map.map_id == tiles[3].map_id
 		  x_plus = tiles[0] - event.x
           y_plus = tiles[1] - event.y
 
@@ -1196,7 +1196,7 @@ class Scene_Map
 			puts "#{event.pokemon.name} is turning"
             return
           end
-  
+        end
 		if true
 		  if get_cur_player == target_event
             event.following = get_cur_player
@@ -1211,8 +1211,8 @@ class Scene_Map
             return if [event.x, event.y, event.map.map_id] == [tiles[0], tiles[1], tiles[3].map_id]
 
 			puts "#{event.pokemon.name} is walking."
-			
-		  if event.move_with_maps(tiles[3].map_id, tiles[0],tiles[1])
+		    moved = event.move_with_maps(tiles[3].map_id, tiles[0], tiles[1])
+		  if moved
             event.movement_type = :STILL
             event.still_timer=-1
             return if [event.x, event.y, event.map.map_id] == [tiles[0], tiles[1], tiles[3].map_id]
@@ -1258,16 +1258,15 @@ class Scene_Map
               end
             end
             end
-
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
+ 
 		  else
             puts "It's failing"
 		  end
-
 
 
 
@@ -1283,6 +1282,8 @@ class Scene_Map
     pending[:stuck_frames] += 1 unless event.moving?
 
     arrived = within_one_tile?(event.x, event.y, tiles[0], tiles[1]) && event.map_id == map.map_id 
+
+
     next unless arrived || pending[:stuck_frames] >= 60
 
     resolve_pokemon_arrival(event, pending[:target_event], pending[:event_id]) if arrived
@@ -1572,6 +1573,8 @@ end
 
 
   end
+
+
   def default_controls
     return if $PokemonGlobal.ball_hud_enabled == true
     return if $game_temp.current_pkmn_controlled == true
@@ -1627,25 +1630,33 @@ end
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	#  item = ItemData.new(:MODIFICATIONTABLE)
-	  item = ItemData.new(:WINDGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+	  $bag.add(:SOFTSAND, 64)
+	#  item = ItemData.new(:SIFTER)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+2, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:WINDGENERATOR)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+	
+	  item = ItemData.new(:ELECTRICOREWASHER)
+      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
+
 	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y+1, item, false, false, $game_player.direction)
+      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y+1, item, false, false, $game_player.direction)
+
+	  item = ItemData.new(:COALGENERATOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y, item, false, false, $game_player.direction)
+	  
+	#  item = ItemData.new(:HYDROGENERATOR)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:MACHINEBOX)
+   #   key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y+2, item, false, false, $game_player.direction)
 	  
 	  
-	  item = ItemData.new(:HYDROGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)
-	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y+2, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:SOLARGENERATOR)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x+4, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 	  
-	  item = ItemData.new(:SOLARGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x+4, $game_player.y-1, item, false, false, $game_player.direction)
-	  
-	  
-	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:MACHINEBOX)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
 	  #Placeable.begin_place(item)
     end
 

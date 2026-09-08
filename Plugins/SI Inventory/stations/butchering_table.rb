@@ -65,5 +65,7 @@ module InventoryScene
         sync_slots_visuals!(:craft, 0..slot_count)
       end
     end
+
+
   end
 end

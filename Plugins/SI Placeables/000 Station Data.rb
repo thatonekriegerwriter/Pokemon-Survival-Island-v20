@@ -10,14 +10,17 @@ class CraftingStationData
 	
 	
     attr_accessor :power
+    attr_accessor :water
     attr_accessor :internal_battery_limit
     attr_accessor :average_power_output
     attr_accessor :average_power_input
     attr_accessor :connected_to
     attr_accessor :time_running
     attr_accessor :network
+    attr_accessor :water_network
     attr_reader :internal_storage
     attr_accessor :extra_storage
+    attr_accessor :clicked
 
     FUEL_TO_EU = 100.0
     FUEL_BURN_RATE = 0.01
@@ -32,17 +35,20 @@ class CraftingStationData
     @active = false
 	
     @power = 0.0
+    @water = 0.0
 	@internal_battery_limit = get_energy
 	@average_power_output = get_power_output
 	@average_power_input = get_power_input
     @connected_to = nil
     @time_running       = 0
     @network = {}
+    @water_network = {}
     @internal_storage = []
     @extra_storage = []
 	@work_time = 0
 	@work_done = 0.0
 	@passed_time = 0
+	@clicked = false 
     @internal_storage = [nil] if spinner?
   end
   
@@ -355,6 +361,98 @@ class CraftingStationData
 	  pkmn = nil
 	end 
   end 
+  def update_sifter(time_delta)
+    return unless result_slot
+	return unless @clicked || electric_sifter?
+    item, qty = result_slot.dup
+	qty = [qty, (@power / 60).floor].min if electric_sifter?
+	qty = 1 if @clicked 
+	return if qty <= 0
+    if item.is_a?(ItemData) && item.id == :SIFTEDORE
+	  @internal_storage[-1][1] -= qty
+	  @internal_storage[-1] = nil if @internal_storage[-1][1]<=0
+	  items = []
+	  dustitems = [
+      [:IRONDUST,   40.0],
+      [:COPPERDUST, 25.0],
+      [:SHOALSALT,   10.0],
+      [:CLAYDUST,   8.9],
+      [:GOLDDUST,   8.0],
+      [:BONEDUST,   4.0],
+      [:SILVERDUST, 4.0],
+      [:STARDUST,   0.1]
+      ]
+	  qty.times do |i|
+	    roll = rand(100.0)
+	    total = 0
+	    dust = dustitems.find do |item, weight|
+	      total += weight
+	      roll < total
+	    end[0]
+	  
+	  
+	  
+	    items << [dust, 1]
+	    items << [:STONE, 1]
+	  end 
+	  items = items.group_by(&:first).map do |id, stacks|
+        item = ItemData.new(id)
+        [item, stacks.sum { |_, amount| amount }]
+      end
+	  raise if items.length > 8
+	  items.each do |item, amount|
+ 	   existing = @internal_storage[0...-1].find do |stack|
+       stack.is_a?(Array) && stack[0].is_a?(ItemData) && stack[0].id == item.id
+       end
+
+ 	   if existing
+ 	     existing[1] += amount
+ 	   else
+        index = @internal_storage[0...-1].index(nil)
+  	    raise if index.nil?
+  	    @internal_storage[index] = [item, amount]
+ 	   end
+	  end
+	  @clicked = false 
+	  @power -= (60 * qty) if electric_sifter?
+	end 
+	
+  end 
+  def update_panner(time_delta)
+    return unless result_slot
+	return unless panner?
+    item, qty = result_slot.dup
+	qty = [qty, (@power / 60).floor].min
+	return if qty <= 0
+    if item.is_a?(ItemData) && item.id == :SOFTSAND
+	  @internal_storage[-1][1] -= qty
+	  @internal_storage[-1] = nil if @internal_storage[-1][1]<=0
+	  items = []
+	  qty.times do |i|
+	    items << [:SIFTEDORE, 1]
+	  end 
+	  items = items.group_by(&:first).map do |id, stacks|
+        item = ItemData.new(id)
+        [item, stacks.sum { |_, amount| amount }]
+      end
+	  raise if items.length > 1
+	  items.each do |item, amount|
+ 	   existing = @internal_storage[0...-1].find do |stack|
+       stack.is_a?(Array) && stack[0].is_a?(ItemData) && stack[0].id == item.id
+       end
+
+ 	   if existing
+ 	     existing[1] += amount
+ 	   else
+        index = @internal_storage[0...-1].index(nil)
+  	    raise if index.nil?
+  	    @internal_storage[index] = [item, amount]
+ 	   end
+	  end
+	  @power -= (60 * qty)
+	end 
+	
+  end 
   def update_modifier
     @extra_storage = [] if @extra_storage.nil? 
     return unless self.result_slot.nil?
@@ -499,7 +597,8 @@ class CraftingStationData
 	update_butcher_table(time_delta) if butchering_table?
 	update_feeder(time_delta) if feeder?
 	update_grave(time_delta) if grave?
-  
+    update_sifter(time_delta) if electric_sifter? || sifter?
+	update_panner(time_delta) if panner?
   
   end 
   
@@ -520,7 +619,19 @@ class CraftingStationData
 end
 
 class CraftingStationData
-
+  def electric_sifter?
+    item&.id == :ELECTRICSIFTER
+  end
+  def sifter?
+    item&.id == :SIFTER
+  end
+  def panner?
+    item&.id == :ELECTRICOREWASHER
+  end
+  def power_generator?
+    return false unless item 
+    GameData::Placeable.get(item.id).produces_power
+  end 
   def needs_power?
     return false unless item 
     GameData::Placeable.get(item.id).needs_power
@@ -530,11 +641,14 @@ class CraftingStationData
     GameData::Placeable.get(item.id).battery_box
   end 
   
-  def power_generator?
+  def produces_water?
     return false unless item 
-    GameData::Placeable.get(item.id).produces_power
+    GameData::Placeable.get(item.id).produces_water
   end 
-  
+  def needs_water?
+    return false unless item 
+    GameData::Placeable.get(item.id).needs_water
+  end 
   def furnace?
     item&.id == :FURNACE
   end 
@@ -606,6 +720,11 @@ class CraftingStationData #Electric
 	return :consumer if needs_power?
     return false 
   end 
+  def waterstation_type
+    return :producer if produces_water?
+	return :consumer if needs_water?
+    return false 
+  end 
   
   def add_to_network(event, amount)
     event_id = event.id
@@ -630,6 +749,45 @@ class CraftingStationData #Electric
    end
   end 
 
+  def remove_from_network(event)
+    event_id = event.id
+	type = event.type.internal_data.station_type
+	return unless [:producer, :batbox, :consumer].include?(type)
+	@network[type] ||= []
+    @network[type].reject! { |id, _amount| id == event_id }
+  end 
+  
+  def add_to_water_network(event, amount)
+    event_id = event.id
+	type = event.type.internal_data.waterstation_type
+	return unless [:producer, :consumer].include?(type)
+	@water_network[type] ||= []
+	@water_network[type] << [event_id, amount] unless @water_network[type].any? { |id, _amount| id == event_id }
+  end 
+  
+  def add_to_water_network_by_id(event_id, amount)
+    event = $game_map.events[event_id]
+	return unless event 
+	type = event.type.internal_data.waterstation_type
+	return unless [:producer, :consumer].include?(type)
+	@water_network[type] ||= []
+	@water_network[type] << [event_id, amount] unless @water_network[type].any? { |id, _amount| id == event_id }
+  end 
+  
+  def remove_from_water_network_by_id(event_id)
+   @water_network.each_value do |events|
+    events.reject! { |id, _amount| id == event_id }
+   end
+  end 
+
+  def remove_from_water_network(event)
+    event_id = event.id
+	type = event.type.internal_data.waterstation_type
+	return unless [:producer, :consumer].include?(type)
+	@water_network[type] ||= []
+    @water_network[type].reject! { |id, _amount| id == event_id }
+  end 
+  
 def available_power
   total = 0.0
 
@@ -645,22 +803,30 @@ def available_power
 
   total
 end
+def available_water
+  total = 0.0
 
-  def remove_from_network(event)
-    event_id = event.id
-	type = event.type.internal_data.station_type
-	return unless [:producer, :batbox, :consumer].include?(type)
-	@network[type] ||= []
-    @network[type].reject! { |id, _amount| id == event_id }
-  end 
-  
+  waternetwork_events(:producer).each do |event|
+    data = event.type.internal_data
+    total += data.water
+  end
+
+
+  total
+end
+
   def network_events(type)
     @network[type]||=[]
     @network[type].filter_map do |event_id, _amount|
       $game_map.events[event_id]
     end
   end
-
+  def waternetwork_events(type)
+    @water_network[type]||=[]
+    @water_network[type].filter_map do |event_id, _amount|
+      $game_map.events[event_id]
+    end
+  end
   
   def get_power_output
     return 10.0 if coal_generator?
@@ -674,6 +840,9 @@ end
   def get_power_input
     return 32.0 if machine_box?
     return 3.0 if electric_furnace?
+    return 3.0 if electric_sifter?
+    return 3.0 if panner?
+    #return 3.0 if needs_power?
     return 0.0
   end
   

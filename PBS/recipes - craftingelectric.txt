@@ -8,3 +8,25 @@
 #CookingTime=0
 #Locked=false
 #Flags=
+#-------------------------------
+[WOODENPLANKS_LOG_2]
+Name=Recipe
+Result=WOODENPLANKS
+Yield=8
+Recipe=WOODENLOG,1
+Station=CUTTER
+Type = MATERIAL
+CookingTime=0
+Locked=false
+Flags=
+#-------------------------------
+[WOODENSTICKS_2]
+Name=Recipe
+Result=WOODENSTICKS
+Yield=4
+Recipe=WOODENPLANKS,1
+Station=CUTTER
+Type = MATERIAL
+CookingTime=0
+Locked=false
+Flags=

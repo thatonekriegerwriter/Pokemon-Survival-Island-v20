@@ -42,12 +42,43 @@
 ### Pokemon
 - [x] Possible relearnable move storage
 
+
+
+### Sprites
+- [x] Berry Pot 
+- [x] Hydro Generator
+- [x] Wind Generator
+- [x] Solar Generator
+- [x] Electric Icebox
+- [x] Apricorn Machine, will autofill recipes, but also needs Pokemon assigned to work properly.
+- [x] Sewing Machine
+- [x] Panner 
+- [x] Electric Press: Presses items into prates.
+- [x] Electric Sawmill: Cuts wood more effectively.
+- [x] Electric Miner: A 3x3 rig that automines, but ruins soil quality around it. Cannot be placed within 4 tiles of water, and the noise increases Pokemon spawns, and cancels out warding totems. Can only be used on stone.
+- [x] Sprinklers: Waters Berry Plants automatically.
+- [x] Electric Pump: Pumps water out of water sources.
+- [x] Sifter: Turns sand into other materials commonly found in sand.
+- [x] Electric Sifter: Turns sand into other materials commonly found in sand.
+- [x] Electric Water Purifier: Turns Water pumped in into Purified water.
+
 ### Placeables
 - [x] Graves have a low chance of respawning as a Ghost Type
 - [x] Pet bed 
 - [x] Berry Pot 
+- [x] Hydro Generator
+- [x] Wind Generator
+- [x] Solar Generator
 - [x] Figure out how Research Works
 - [x] Apiaries improve likelihood of berry plant crossbreeding
+- [x] Sewing Machine
+- [x] Electric Press: Presses items into plates.
+- [x] Electric Sawmill: Cuts wood more effectively.
+- [x] Apricorn Machine, will autofill recipes, but also needs Pokemon assigned to work properly.
+- [x] Sifter: Turns sand into other materials commonly found in sand.
+- [x] Electric Sifter: Turns sand into other materials commonly found in sand.
+- [x] Sifted Ore.
+- [x] Panner 
 
 
 ### Combat

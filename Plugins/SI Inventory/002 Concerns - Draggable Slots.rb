@@ -77,8 +77,14 @@ module InventoryScene
         icons[image_key].visible = false 
         icons[image_key].bitmap = resize_item_for_slot(item)
         icons[image_key].z = 98
-        icons[image_key].x = slot_x + (SLOT_SIZE - icons[image_key].bitmap.width) / 2
-        icons[image_key].y = slot_y + (SLOT_SIZE - icons[image_key].bitmap.height) / 2
+		bonus_x = 0
+		bonus_y = 0
+		if extra_slot_index && extra_slot_result_sized? && index == extra_slot_index && kind == :craft 
+		bonus_x = 8
+		bonus_y = 8
+		end 
+        icons[image_key].x = slot_x + bonus_x + (SLOT_SIZE - icons[image_key].bitmap.width) / 2
+        icons[image_key].y = slot_y + bonus_y + (SLOT_SIZE - icons[image_key].bitmap.height) / 2
         icons[image_key].opacity = matches_search?(item) ? 255 : SEARCH_DIM_OPACITY
 
 
@@ -92,7 +98,7 @@ module InventoryScene
         usable_width = icons[image_key].width - 12
         center_x = icons[image_key].x + 18 + usable_width / 2
         icons[text_key].x = center_x - icons[text_key].width / 2
-        icons[text_key].y = slot_y + 18 - icons[text_key].contents.font.size
+        icons[text_key].y = slot_y + bonus_y + 18 - icons[text_key].contents.font.size
         icons[text_key].windowskin = nil
         icons[text_key].baseColor = Color.new(248, 248, 248)
         icons[text_key].shadowColor = Color.new(0, 0, 0)

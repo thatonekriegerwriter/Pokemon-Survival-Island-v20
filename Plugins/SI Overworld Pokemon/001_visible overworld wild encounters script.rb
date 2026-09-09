@@ -125,6 +125,7 @@ def current_max_encounter
 end 
 
 def pbSpawnOnStepTaken(repel_active)
+  return
   return if $game_temp.in_menu
   return if $game_system.menu_disabled
   return false if !VisibleEncounterTimeGate.allow_spawn?

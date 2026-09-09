@@ -26,7 +26,7 @@ if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.acti
   storage.active = false if storage && storage.is_a?(IceBoxStorage)
  Placeable.pick_up(key_id,item)
 else
-  icebox_crates(item, key_id)
+  icebox_crates(item, key_id, true)
 end
 }
 )
@@ -306,12 +306,12 @@ end
 
 
 
-def icebox_crates(item, key_id)
+def icebox_crates(item, key_id, electronic=false)
  storage = item.crate_storage
  storage.active = true
  this_event = $game_map.events[key_id]
  if storage.empty? || storage.nil?
-  storage = IceBoxStorage.new
+  storage = IceBoxStorage.new(electronic)
   item.crate_storage = storage
  end
  localMeter = item.internal_data

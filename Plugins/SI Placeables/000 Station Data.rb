@@ -22,6 +22,8 @@ class CraftingStationData
     attr_accessor :extra_storage
     attr_accessor :clicked
     attr_accessor :power_transmitted
+    attr_accessor :minimum_power_input
+    attr_accessor :fuel_item
 
     FUEL_TO_EU = 100.0
     FUEL_BURN_RATE = 0.01
@@ -29,7 +31,7 @@ class CraftingStationData
   def initialize(event_id)
     @event_id = event_id 
     @time_last_updated = pbGetTimeNow.to_i
-    @time_active         = 0
+    @time_active         = pbGetTimeNow.to_i
 	
     @reset = false
     @fuel = 0.0
@@ -40,6 +42,7 @@ class CraftingStationData
 	@internal_battery_limit = get_energy
 	@average_power_output = get_power_output
 	@average_power_input = get_power_input
+	@minimum_power_input = get_minimum_power_input
     @connected_to = nil
     @time_running       = 0
     @network = {}
@@ -50,6 +53,7 @@ class CraftingStationData
 	@work_done = 0.0
 	@passed_time = 0
 	@clicked = false 
+	@fuel_item = nil
 	@power_transmitted = 0.0
     @internal_storage = [nil] if spinner?
   end
@@ -205,17 +209,7 @@ class CraftingStationData
 
   
   def update_machine_box(time_delta)
-    if Input.triggerex?(0xDD) || Input.repeatex?(0xDD)
-      @power += (10.0 * time_delta)
-	  puts "Increased Power: #{@power}"
-	elsif Input.triggerex?(0xDB) || Input.repeatex?(0xDB) 
-      @power -= (10.0 * time_delta)
-	  puts "Decreased Power: #{@power}"
-	end 
-	
-	@power = [@power, @internal_battery_limit].min
-	@power = [@power, 0.0].max
-	@power = @power.to_f 
+
   end 
   
 
@@ -463,7 +457,11 @@ class CraftingStationData
   end
 
 
-
+  def should_generate?
+    return false if @power >= @internal_battery_limit
+    return false if @fuel >= 100.0
+    return true 
+  end 
   
 
   def update_feeder(time_delta)
@@ -490,107 +488,161 @@ class CraftingStationData
 	end 
 	 
 	end 
+    if poke_generator?
+	  active_workers = workers.select do |worker_id|
+      worker = $game_map.events[worker_id]
+      worker && worker.pokemon && worker.pokemon.stamina > 0.0
+     end
+	 if active_workers.length > 0
+     base_power_gen = 3.0
+	 base_power_gen += active_workers.sum do |worker_id|
+	   worker = $game_map.events[worker_id]
+       next 0.0 unless worker
+       next 0.0 unless worker&.pokemon
+	   1.0
+     end
+     output = base_power_gen
+    end 
+    end 
     return output
   end 
-
-  def update_production(time_delta)
-   if @fuel <= 0
-   @active = false  
-   return 
-   end 
-   if @power >= internal_battery_limit
-   @active = true 
-   return 
-   end 
-   eu_to_generate = get_current_power_output * time_delta
-   eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
-
-
-   fuel_burned = eu_to_generate / FUEL_TO_EU
-   fuel_burned = [fuel_burned, @fuel].min
-   
-   @fuel -= fuel_burned
-   power_generated = fuel_burned * FUEL_TO_EU
-   @power = [@power + power_generated, @internal_battery_limit].min
-   @active = (@power > 0)
-  end 
-
-
-  def update_consumption(time_delta)
-   return if @average_power_input <= 0
-   if @power >= @internal_battery_limit
-   @active = true 
-   return 
-   end 
-   eu_needed = @average_power_input * time_delta
-   eu_needed = [eu_needed, @internal_battery_limit - @power].min
-   [:producer, :batbox].each do |type|
-    network_events(type).shuffle.each do |event|
-      break if eu_needed <= 0
-
-      data = event.type.internal_data
-      available = data.power
-      next if available <= 0
-      output_limit = data.get_current_power_output * time_delta
-	  output_remaining = output_limit - data.power_transmitted
-      next if output_remaining <= 0
-      eu_taken = [available, eu_needed, output_limit].min
-
-      data.power -= eu_taken
-      @power += eu_taken
-      eu_needed -= eu_taken
-	  data.power_transmitted += eu_taken
+  def update_pokemon_generator(time_delta)
+    return if @power >= @internal_battery_limit
+    return if @fuel >= 100.0
+	 active_workers = workers.select do |worker_id|
+      worker = $game_map.events[worker_id]
+      worker && worker.pokemon && worker.pokemon.stamina > 0.0
+     end
+	if active_workers.length > 0
+     base_power_gen = 2.0
+	 base_power_gen += active_workers.sum do |worker_id|
+	   worker = $game_map.events[worker_id]
+       next 0.0 unless worker
+       next 0.0 unless worker&.pokemon
+	   pokemon = worker.pokemon
+	   move = pokemon.moves.find do |move|
+         move && move.type == :ELECTRIC && move.pp > 0
+      end
+       move ? 1.5 : 1.0
+     end
+	 amount = (base_power_gen * time_delta)
+     @fuel = [@fuel + amount, 100.0].min
     end
-   end
-   if @active  
-     @active = @power > 0
-   else
-     @active = (eu_needed <= 0)
-   end 
+  end 
+  
+def update_production(time_delta)
+  if @power <= 0 && (@fuel<=0 || machine_box?)
+    @active = false
+	#puts "This one?" if item&.id == :COALGENERATOR
+    return
+  end
+  if @fuel > 0 && @power < @internal_battery_limit
+    eu_to_generate = get_current_power_output * time_delta
+    eu_to_generate = [eu_to_generate, @internal_battery_limit - @power].min
+
+    fuel_burned = eu_to_generate / FUEL_TO_EU
+    fuel_burned = [fuel_burned, @fuel].min
+
+    @fuel -= fuel_burned
+    power_generated = fuel_burned * FUEL_TO_EU
+    @power = [@power + power_generated, @internal_battery_limit].min
+  end
+  output_remaining = get_current_power_output * time_delta
+  @active = (@power > 0)
+  full_events = (network_events(:batbox) + network_events(:consumer)).shuffle
+  full_events.each do |nevent|
+    break if @power <= 0
+
+    other_data = nevent.type.internal_data
+	start_power = other_data.power
+    next if other_data.average_power_input <= 0
+    next if other_data.power >= other_data.internal_battery_limit
+
+    eu_needed = other_data.average_power_input * time_delta
+    eu_needed = [eu_needed, other_data.internal_battery_limit - other_data.power].min
+
+	#puts output_remaining <= 0
+    next if output_remaining <= 0
+
+    eu_taken = [@power, eu_needed, output_remaining].min
+
+    @power -= eu_taken
+	output_remaining -= eu_taken
+    other_data.power += eu_taken
+	if other_data.active 
+	  other_data.active = other_data.power > 0
+	else
+	  other_data.active = start_power + eu_taken >= other_data.minimum_power_input * time_delta
+	end 
+  end
+
+end
+  
+  
+  def update_consumption(time_delta)
+  return if @average_power_input <= 0
+  power_input = @average_power_input
+  eu_needed = power_input * time_delta
+
+  if @active
+    eu_used = [@power, eu_needed].min
+    @power -= eu_used
+	@power = 0 if @power < 0
+    @active = @power > 0
+  else
+    @active = (@power >= eu_needed)
+  end
   end 
 
-  def update_network(time_delta, time_now)
+  def update_network(time_delta, time_now, visited)
    @network.each do |type, events|
     events.select! { |event_id, _amount| $game_map.events[event_id] }
    end
 
   @network.each_value do |events|
     events.each do |event_id, _amount|
-      event = $game_map.events[event_id]
-      next unless event
-
-      event.internal_data.update_machine(time_delta)
+      nevent = $game_map.events[event_id]
+      next unless nevent
+      next if visited[event_id]
+      nevent.internal_data.update_machine(time_delta, time_now, visited)
     end
   end
    
-   
   end
-  def update_batbox(time_delta)
-    update_consumption(time_delta)
-  end 
-  
-  
-  def update_machine(time_delta, time_now = nil)
-    @power_transmitted = 0.0 unless time_now
+  def update_machine(time_delta, time_now = nil, visited = {})
+	visited[@event_id] = true
+	update_fuelless if solarpanel? || windmill? || watermill?
+	update_pokemon_generator(time_delta) if poke_generator?
     update_consumption(time_delta) if needs_power?
     update_production(time_delta) if power_generator?
     update_batbox(time_delta) if batbox?
-    @time_last_updated = time_now if time_now 
+    @time_active = time_now if time_now 
+	update_network(time_delta, time_now, visited)
   
   end 
-
-  def update_fuelless
-    @fuel = 100
-  end 
-  def update_electronics(time_delta, time_now)
-	update_network(time_delta, time_now)
-	update_fuelless if solarpanel? || windmill? || watermill?
-	update_machine(time_delta)
-	return unless @active
+  
+  def update_electronics(time_delta)
+	if @active
 	update_machine_box(time_delta) if machine_box?
     update_sifter(time_delta) if electric_sifter? || sifter?
 	update_panner(time_delta) if panner?
 	update_quarry(time_delta) if quarry?
+	end 
+    time_now = pbGetTimeNow.to_i
+    time_delta_active = time_now - @time_active
+    return if time_delta_active <= 0
+	update_machine(time_delta_active, time_now)
+    @time_active = time_now
+  end 
+
+
+  def update_fuelless
+    @fuel = 100
+  end 
+
+
+  def update_batbox(time_delta)
+	update_production(time_delta)
   end 
   
   def update_quarry(time_delta)
@@ -614,16 +666,16 @@ class CraftingStationData
     while (index = @internal_storage.index(nil)) && !@extra_storage.empty?
       @internal_storage[index] = @extra_storage.shift
     end
-    return if @power < 10
+    return if @power < 20
 	return unless event.terrain_tag.can_mine
 	@work_time += time_delta
-    while @work_time >= 1800
-	break if @power < 10
-	@work_time -= 1800
-	@power -= 10
+    while @work_time >= 300
+	break if @power < 40
+	@work_time -= 300
+	@power -= 40
 	mineitems = [:FIRESTONE,:FIRESTONE,:FIRESTONE,:WATERSTONE,:WATERSTONE,:WATERSTONE,:THUNDERSTONE,:THUNDERSTONE,:THUNDERSTONE,:LEAFSTONE,:LEAFSTONE,:MOONSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:NEVERMELTICE, :NEVERMELTICE, :EVIOLITE,:EVIOLITE,:RAREBONE,:RAREBONE,:LIGHTCLAY,:HARDSTONE,:THUNDERSTONE,:THUNDERSTONE,:HEARTSCALE,:IRONBALL,:ODDKEYSTONE,:HEATROCK,:DAMPROCK,:SMOOTHROCK,:ICYROCK,:REDSHARD,:GREENSHARD,:YELLOWSHARD,:BLUESHARD,:INSECTPLATE,:DREADPLATE,:DRACOPLATE,:ZAPPLATE,:FISTPLATE,:FLAMEPLATE,:MEADOWPLATE,:EARTHPLATE,:ICICLEPLATE,:TOXICPLATE,:MINDPLATE,:STONEPLATE,:SKYPLATE,:SPOOKYPLATE,:IRONPLATE,:SPLASHPLATE,:COAL,:STONE,:COPPERORE,:COPPERORE,:SILVERORE,:SILVERORE,:GOLDORE,:GOLDORE,:IRONORE,:IRONORE,:IRONORE,:IRONORE]
 	new_item = ItemData.new(mineitems.sample)
-    amount = rand(4) + 1
+    amount = 1
     existing = @internal_storage.find do |stack|
       stack.is_a?(Array) &&
         stack[0].is_a?(ItemData) &&
@@ -660,7 +712,7 @@ class CraftingStationData
   
   
   def update_data(time_delta, time_now)
-    update_electronics(time_delta, time_now) if electric?
+    update_electronics(time_delta) if electric?
 	update_furnace(time_delta) if furnace? || coal_generator?
 	update_grinder(time_delta) if grinder?
 	update_spinner(time_delta) if spinner?
@@ -759,6 +811,9 @@ class CraftingStationData
   end  
   def coal_generator?
     item&.id == :COALGENERATOR
+  end 
+  def poke_generator?
+    item&.id == :POKEGENERATOR
   end 
   
   def spinner?
@@ -916,8 +971,8 @@ end
   end 
   
   def get_power_input
-    return 80.0 if quarry?
     return 32.0 if machine_box?
+    return 6.0 if quarry?
     return 3.0 if electric_furnace?
     return 3.0 if electric_sifter?
     return 3.0 if panner?
@@ -925,10 +980,19 @@ end
     return 0.0
   end
   
+  def get_minimum_power_input
+    return 80.0 if quarry?
+    return 1.0 if electric_furnace?
+    return 1.0 if electric_sifter?
+    return 1.0 if panner?
+    #return 3.0 if needs_power?
+    return 0.0
+  end
+  
   def get_energy
     return 4000.0 if batbox?
     return 400.0 if coal_generator?
-    return 60.0 if quarry?
+    return 120.0 if quarry?
     return 20.0 if solarpanel?  || watermill? || windmill?
     return 390.0 if needs_power?
     return 400.0 if power_generator?
@@ -1331,6 +1395,13 @@ class PetBedData
     return if pokemon.nil?
 	work_event.workers.remove(pokemon.associatedevent)
   end 
+  def petbeditem
+    event&.type
+  end 
+  
+  def petbeditem_id 
+    petbeditem&.id 
+  end 
   
   def work_event
     $game_map.events[@assigned_job]
@@ -1344,6 +1415,10 @@ class PetBedData
   def work_y
     return nil if work_event.nil?
     work_event.y
+  end 
+  def work_map
+    return nil if work_event.nil?
+    work_event.map.map_id
   end 
   
   def work_name
@@ -1471,6 +1546,10 @@ class PetBedData
     return false if current_job.id != :RESEARCHTABLE
 	return job_data.researching?
   end 
+  def generating?
+    return false if current_job.id != :POKEGENERATOR
+	return job_data.should_generate?
+  end 
   def fueled?
     return false if current_job.id != :FURNACE && current_job.id != :COALGENERATOR 
 	return job_data.fueled?
@@ -1491,6 +1570,7 @@ class PetBedData
     return fueled? if current_job.id == :FURNACE || current_job.id == :COALGENERATOR 
 	return planted? if current_job.id == :BERRYPOT || current_job.id == :BERRYPLANT 
 	return workable? if current_job.id == :GRINDER
+	return generating? if current_job.id == :POKEGENERATOR
 	return true 
   end 
   
@@ -1517,6 +1597,13 @@ class PetBedData
   
   def should_breed?
     return rand(100) < 69
+  end 
+  
+  def outdoor_petbed?
+    petbeditem_id == :PETBEDOUTDOOR
+  end 
+  def guard_station?
+    petbeditem_id == :GUARDPOST
   end 
   
   def breeding_opportunity
@@ -1677,7 +1764,6 @@ class PetBedData
   
   def update_in_bed
     stamina = pokemon.stamina
-    
     return if stamina <= 0
 	return if !should_go_to_work?
 	
@@ -1689,7 +1775,7 @@ class PetBedData
     end
     chance = [chance, 100].min
     self.movement_type = :MOVING_TO_WORK if rand(100) < chance
-
+   
   end 
   
   def update_working
@@ -1765,6 +1851,8 @@ class PetBedData
 	else 
      @bedtime = nil 
 	end 
+
+
 	if @assigned_job && !spawned_event.sleeping? && !breeding#&& @assigned_job!=@event_id  This was intended to be 'assigned job is caring for egg' but that doesnt work.
 	 if cancel_assignment?
 	  cancel_assignment
@@ -1775,7 +1863,7 @@ class PetBedData
 	end 
 	#You cannot breed if you have a job assigned currently. Maybe I exclude this for Breeders.
 	
-	update_breeding
+	update_breeding unless guard_station?
   end 
 end
 

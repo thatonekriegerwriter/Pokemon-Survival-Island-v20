@@ -32,7 +32,7 @@ module GameData
     def initialize(hash)
       @id           = hash[:id]
       @usable_locations    = hash[:usable_locations]         || [:BASE_INTERIOR]  #Options are :BASE_INTERIOR, :BASE_EXTERIOR, :BASE, :WILDS, and :ANY
-      @placement_coordinates    = hash[:placement_coordinates]         || { 2 => [0,0], 4 => [0,0], 6 => [0,0], 8 => [0,0]}
+      @placement_coordinates    = hash[:placement_coordinates]         || { 2 => [0,1], 4 => [-1,0], 6 => [+1,0], 8 => [0,-1]}
 	  @assignable = hash[:assignable] || false 
       @assignable_check       = hash[:assignable_check] || proc { |item, pkmn| true }
 	  @needs_power = hash[:needs_power] || false 
@@ -71,16 +71,14 @@ module GameData
    end 
    
    def placement_offset(direction, player_direction = $game_player.direction)
-    return [0, 0] unless @placement_coordinates
     data = @placement_coordinates[direction]
- 
     if data.is_a?(Hash)
 	 # puts direction
 	 # puts player_direction
 	 # puts data[player_direction].to_s
-      data[player_direction] || [0, 0]
+      data[player_direction] || [0, 1]
    else
-     data || [0, 0]
+     @placement_coordinates[player_direction] || [0, 1]
    end
    end
     
@@ -263,7 +261,7 @@ GameData::Placeable.register({ :id            => :MILKINGSTATION, :usable_locati
  :assignable_check => proc { |item, pkmn|
    pkmn.species_data.egg_groups.include?(:Humanlike) || pkmn.types.include?(:PSYCHIC)
  } }) #Needs a humanoid Pokemon
-GameData::Placeable.register({ :id            => :POKEGENERATOR, :produces_power => true, :image => "craftingStations/pokegenerator",
+GameData::Placeable.register({ :id            => :POKEGENERATOR, :width => 3, :height => 2, :produces_power => true, :image => "craftingStations/pokegenerator",
  :usable_locations => [:BASE], 
  :assignable => true, 
  :assignable_check => proc { |item, pkmn|

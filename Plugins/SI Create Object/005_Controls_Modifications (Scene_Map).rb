@@ -1180,7 +1180,7 @@ class Scene_Map
 			sideDisplay("#{pkmn.name} is confused! It won't listen!")
 			return
 		end
-		puts "#{pkmn.name} is on: X: #{event.x}, Y: #{event.y} MapID: #{event.map.map_id}" if $DEBUG
+		puts "#{pkmn.name} is on: X: #{event.x}, Y: #{event.y} in MapID: #{event.map.map_id}, and wants to go to X: #{tiles[0]}, Y: #{tiles[1]} in MapID: #{tiles[3].map_id}" if $DEBUG
 		if event.map.map_id == tiles[3].map_id
 		  x_plus = tiles[0] - event.x
           y_plus = tiles[1] - event.y
@@ -1627,10 +1627,17 @@ end
 	   
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
+    elsif Input.triggerex?(Keys::CONTROLS_LIST["/?"])
+	   pbAddPokemonSilent(:ELEKID)
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#  $bag.add(:SOFTSAND, 64)
+	
+	  15.times do 
+	   item = ItemData.new(:PETBEDOUTDOOR)
+	   $bag.add(item, 1)
+	  end
 	#  item = ItemData.new(:SIFTER)
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+2, item, false, false, $game_player.direction)
 	#  item = ItemData.new(:WINDGENERATOR)
@@ -1641,13 +1648,13 @@ end
 
 	  item = ItemData.new(:MACHINEBOX)
       key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y-1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:MACHINEBOX)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:MACHINEBOX)
+    #  key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
 
-	  item = ItemData.new(:COALGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x-5, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:POKEGENERATOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x-6, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 	#  item = ItemData.new(:HYDROGENERATOR)
     #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)

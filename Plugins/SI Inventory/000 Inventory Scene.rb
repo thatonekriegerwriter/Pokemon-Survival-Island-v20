@@ -74,6 +74,7 @@ class Inventory_Scene
     :HYDROGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :WINDGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :SOLARGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
+    :POKEGENERATOR => ->(e, c) { InventoryScene::Stations::FuellessGenerators.new(event_data: e, container: c) },
     :ELECTRICQUARRY => ->(e, c) { InventoryScene::Stations::Quarry.new(event_data: e, container: c) },
     :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "ELECTRICPRESS", power_cost: 60) },
     :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE", power_cost: 20) },

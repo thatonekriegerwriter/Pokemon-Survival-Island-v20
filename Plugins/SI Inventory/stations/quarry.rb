@@ -46,7 +46,7 @@ module InventoryScene
       private
 
       def render_station
-        x = bonus_1 + 38
+        x = bonus_1 + 40
         y = bonus_2 + 74
         x2 = y2 = 0
 
@@ -67,7 +67,7 @@ module InventoryScene
         sprites["craft_slots_equals"].z = 70
         sprites["craft_slots_equals"].x = x2 + 47 - 16
         sprites["craft_slots_equals"].y = y2 - 88
-        create_text_centered("output_text", "In: #{event_data.average_power_input} EU/s", 60, 60)
+        create_text_centered("output_text", "In: #{event_data.average_power_input} EU/s\nPower: #{event_data.power} EU", 74, 54)
 		render_assign_button
       end
 
@@ -92,6 +92,7 @@ module InventoryScene
         )
 
         fuel = [[event_data.power, 0].max, 20].min
+		fuel = 0 unless event_data.active
         height = (burning.height * fuel / 20.0).ceil
 
         if height > 0
@@ -130,6 +131,7 @@ module InventoryScene
         objects["assign_button"].setBitmap("Graphics/Pictures/craftingMenu/#{bitmap}")
         objects["assign_button"].visible = true 
 		update_text_centered("current_task_label", text)
+        update_text_centered("output_text", "In: #{event_data.average_power_input} EU/s\nPower: #{event_data.power.round(2)} EU")
       end
 
       def toggle_connection_mode

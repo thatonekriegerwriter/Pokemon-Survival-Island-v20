@@ -1,6 +1,8 @@
 class Game_PokeEventA < Game_Event
   def move_type_custom
     return if jumping? || moving?
+	
+	@move_route_index = 0 if @move_route.list[0].code ==52879 && @move_route_index > 0
     while @move_route_index < @move_route.list.size
       command = @move_route.list[@move_route_index]
       if command.code == 0
@@ -17,6 +19,10 @@ class Game_PokeEventA < Game_Event
         end
         return
       end
+	  if command.code == 52879
+		eval(command.parameters[0])
+        @move_route_index = 0
+	  end
       if command.code <= 14
         case command.code
         when 1  then move_down
@@ -34,7 +40,28 @@ class Game_PokeEventA < Game_Event
         when 13 then move_backward
         when 14 then jump(command.parameters[0], command.parameters[1])
         end
-        @move_route_index += 1 if @move_route.skippable || moving? || jumping?
+        
+        if @move_route.skippable || moving? || jumping?
+          @move_route_index += 1
+          @move_route_stall_count = 0
+        elsif @move_route_forcing
+          # The command above didn't actually move/jump the event (most
+          # likely blocked - e.g. a tile A* considered passable but the
+          # real directional passability check rejects). Without this,
+          # @move_route_index never advances, the route never reaches
+          # its terminator, and @move_route_forcing - which suppresses
+          # normal control input - is stuck true forever. Bail out after
+          # ~2 seconds so control returns instead of freezing the event.
+          @move_route_stall_count = (@move_route_stall_count || 0) + 1
+          if @move_route_stall_count > 120
+            puts "Move route stalled on command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
+            @move_route_forcing = false
+            @move_route         = @original_move_route
+            @move_route_index   = @original_move_route_index
+            @original_move_route = nil
+            @move_route_stall_count = 0
+          end
+        end
         return
       end
       if command.code == 15   # Wait
@@ -57,6 +84,29 @@ class Game_PokeEventA < Game_Event
         when 26 then turn_away_from_player
         end
         @move_route_index += 1
+        return
+      end
+      if command.code >= 46 && command.code <= 49
+        case command.code
+        when 46 then move_map_fancy(8)
+        when 47 then move_map_fancy(6)
+        when 48 then move_map_fancy(4)
+        when 49 then move_map_fancy(2)
+        end
+        if @move_route.skippable || moving? || jumping?
+          @move_route_index += 1
+          @move_route_stall_count = 0
+        elsif @move_route_forcing
+          @move_route_stall_count = (@move_route_stall_count || 0) + 1
+          if @move_route_stall_count > 120
+            puts "Move route stalled on fancy command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
+            @move_route_forcing = false
+            @move_route         = @original_move_route
+            @move_route_index   = @original_move_route_index
+            @original_move_route = nil
+            @move_route_stall_count = 0
+          end
+        end
         return
       end
       if command.code >= 27
@@ -104,10 +154,6 @@ class Game_PokeEventA < Game_Event
         when 43 then @blend_type = command.parameters[0]
         when 44 then pbSEPlay(command.parameters[0])
         when 45 then eval(command.parameters[0])
-        when 46  then move_fancy(2)
-        when 47  then move_fancy(4)
-        when 48  then move_fancy(6)
-        when 49  then move_fancy(8)
         end
 		
 		
@@ -115,11 +161,130 @@ class Game_PokeEventA < Game_Event
       end
     end
   end
+  def passable_ignore_same_type?(x, y, d, strict = false)
+    new_x = x + (d == 6 ? 1 : d == 4 ? -1 : 0)
+    new_y = y + (d == 2 ? 1 : d == 8 ? -1 : 0)
+    return false unless self.map.valid?(new_x, new_y)
+    return true if @through
+    if strict
+      return false unless self.map.passableStrict?(x, y, d, self)
+      return false unless self.map.passableStrict?(new_x, new_y, 10 - d, self)
+    else
+      return false unless self.map.passable?(x, y, d, self)
+      return false unless self.map.passable?(new_x, new_y, 10 - d, self)
+    end
+    events_list = self.map.events.values + $DynamicEvents.events_for_map(self.map.map_id)
+    events_list.each do |event|
+      next if self == event || !event.at_coordinate?(new_x, new_y) || event.through || (self.is_a?(Game_PokeEventA) && event.is_a?(Game_PokeEventA)) || (self.is_a?(Game_PokeEventA) && event.name[/berryplant/i])
+      return false if self != $game_player || event.character_name != ""
+    end
+    if $game_player.x == new_x && $game_player.y == new_y &&
+       !$game_player.through && @character_name != ""
+      return false
+    end
+    return true
+  end
+
+  def can_move_in_direction_work?(dir, strict = false)
+    return can_move_from_coordinate_work?(@x, @y, dir, strict)
+  end
+  def can_move_from_coordinate_work?(start_x, start_y, dir, strict = false)
+    case dir
+    when 2, 8   # Down, up
+      y_diff = (dir == 8) ? @height - 1 : 0
+      (start_x...(start_x + @width)).each do |i|
+        return false if !passable_ignore_same_type?(i, start_y - y_diff, dir, strict)
+      end
+      return true
+    when 4, 6   # Left, right
+      x_diff = (dir == 6) ? @width - 1 : 0
+      ((start_y - @height + 1)..start_y).each do |i|
+        return false if !passable_ignore_same_type?(start_x + x_diff, i, dir, strict)
+      end
+      return true
+    when 1, 3   # Down diagonals
+      # Treated as moving down first and then horizontally, because that
+      # describes which tiles the character's feet touch
+      (start_x...(start_x + @width)).each do |i|
+        return false if !passable_ignore_same_type?(i, start_y, 2, strict)
+      end
+      x_diff = (dir == 3) ? @width - 1 : 0
+      ((start_y - @height + 1)..start_y).each do |i|
+        return false if !passable_ignore_same_type?(start_x + x_diff, i + 1, dir + 3, strict)
+      end
+      return true
+    when 7, 9   # Up diagonals
+      # Treated as moving horizontally first and then up, because that describes
+      # which tiles the character's feet touch
+      x_diff = (dir == 9) ? @width - 1 : 0
+      ((start_y - @height + 1)..start_y).each do |i|
+        return false if !passable_ignore_same_type?(start_x + x_diff, i, dir - 3, strict)
+      end
+      x_tile_offset = (dir == 9) ? 1 : -1
+      (start_x...(start_x + @width)).each do |i|
+        return false if !passable_ignore_same_type?(i + x_tile_offset, start_y - @height + 1, 8, strict)
+      end
+      return true
+    end
+    return false
+  end
+  
+  def move_down_pokemon(turn_enabled = true)
+    move_generic_work(2, turn_enabled)
+  end
+
+  def move_left_pokemon(turn_enabled = true)
+    move_generic_work(4, turn_enabled)
+  end
+
+  def move_right_pokemon(turn_enabled = true)
+    move_generic_work(6, turn_enabled)
+  end
+
+  def move_up_pokemon(turn_enabled = true)
+    move_generic_work(8, turn_enabled)
+  end
+  
+  
+  def move_generic_work(dir, turn_enabled = true)
+    turn_generic(dir) if turn_enabled
+    if can_move_in_direction_work?(dir)
+      turn_generic(dir)
+      @x += (dir == 4) ? -1 : (dir == 6) ? 1 : 0
+      @y += (dir == 8) ? -1 : (dir == 2) ? 1 : 0
+      increase_steps
+      return true 
+    else
+      check_event_trigger_touch(dir)
+      return false
+    end
+  end
+
+
+  def moving?
+    return (@real_x != @x * Game_Map::REAL_RES_X ||
+           @real_y != @y * Game_Map::REAL_RES_Y)  
+  end
+
+  def update_command
+	#puts "Pokemon: #{self.pokemon.name}"
+	#puts "@transitioned_map: #{@transitioned_map}"
+#	puts "Wait Don't: #{@wait_count > 0}"
+#	puts "Forcing: #{@move_route_forcing}"
+#	puts "Command New: #{!@starting && !lock? && !moving? && !jumping?} (#{!@starting}) (#{!lock?}) (#{!moving?}) (#{!jumping?})"
+    if @transitioned_map
+      @map = $map_factory.getMap(@transitioned_map[0])
+	  @x = @transitioned_map[1]
+	  @y = @transitioned_map[2]
+	  @real_x = @x * Game_Map::REAL_RES_X
+	  @real_y = @y * Game_Map::REAL_RES_Y
+	  @transitioned_map[3] ? follow_leader(@following) : move_with_maps(@map.map_id, @x, @y)
+	  @transitioned_map = nil
+	end 
+    super
+  end 
+
  module FollowerMovement
-
- 
-
-
 def perform_movement
   update_movement_animation
   if confused?
@@ -174,29 +339,6 @@ end
   @following = $PokemonGlobal.follower_pkmn.get_follow_target(self) if @following.nil?
  
  end 
-
-  def moving?
-    return (@real_x != @x * Game_Map::REAL_RES_X ||
-           @real_y != @y * Game_Map::REAL_RES_Y)  
-  end
-
-  def update_command
-	#puts "Pokemon: #{self.pokemon.name}"
-	#puts "@transitioned_map: #{@transitioned_map}"
-#	puts "Wait Don't: #{@wait_count > 0}"
-#	puts "Forcing: #{@move_route_forcing}"
-#	puts "Command New: #{!@starting && !lock? && !moving? && !jumping?} (#{!@starting}) (#{!lock?}) (#{!moving?}) (#{!jumping?})"
-    if @transitioned_map
-      @map = $map_factory.getMap(@transitioned_map[0])
-	  @x = @transitioned_map[1]
-	  @y = @transitioned_map[2]
-	  @real_x = @x * Game_Map::REAL_RES_X
-	  @real_y = @y * Game_Map::REAL_RES_Y
-	  @transitioned_map[3] ? follow_leader(@following) : move_with_maps(@map.map_id, @x, @y)
-	  @transitioned_map = nil
-	end 
-    super
-  end 
 
 def move_behind_player
   return if sleeping?
@@ -306,7 +448,7 @@ def find_enemy_movement
             # Player-specific behavior goes here.
 
           else
-            self.move_toward_the_coordinate(
+            move_toward_work(
               @target2.x,
               @target2.y
             )
@@ -395,6 +537,29 @@ def inbed_movement
   end
 end
 
+
+  def move_toward_work(x,y)
+    sx = @x + (@width / 2.0) - (x)
+    sy = @y - (@height / 2.0) - (y)
+    return if sx == 0 && sy == 0
+    abs_sx = sx.abs
+    abs_sy = sy.abs
+    if abs_sx == abs_sy
+      (rand(2) == 0) ? abs_sx += 1 : abs_sy += 1
+    end
+    if abs_sx > abs_sy
+      (sx > 0) ? move_left_pokemon : move_right_pokemon
+      if !moving? && sy != 0
+        (sy > 0) ? move_up_pokemon : move_down_pokemon
+      end
+    else
+      (sy > 0) ? move_up_pokemon : move_down_pokemon
+      if !moving? && sx != 0
+        (sx > 0) ? move_left_pokemon : move_right_pokemon
+      end
+    end
+  end
+
 def to_work_movement
   return if sleeping?
   if pokemon.stamina <= 0
@@ -411,25 +576,32 @@ def to_work_movement
 
   work_x = owner_pet_bed.work_x
   work_y = owner_pet_bed.work_y
-  work_spots = [
-    [work_x + 1, work_y],
-    [work_x - 1, work_y],
-    [work_x, work_y + 1],
-    [work_x, work_y - 1]
-  ]
+  width = owner_pet_bed.work_event.width
+  height = owner_pet_bed.work_event.height
+  work_spots = []
+  (0...width).each do |x|
+    work_spots << [work_x + x, work_y - height]
+  end
+  (0...width).each do |x|
+    work_spots << [work_x + x, work_y + 1]
+  end
+  (0...height).each do |y|
+    work_spots << [work_x - 1, work_y - height + 1 + y]
+    work_spots << [work_x + width, work_y - height + 1 + y]
+  end
   work_spot = work_spots.find do |x, y|
     next false unless $game_map.passablenoevents?(x, y, 0)
     event_id = $game_map.check_event(x, y)
 	event = $game_map.events[event_id]
 	!event || event == self || !(event.is_a?(Game_PokeEventA) || event.is_a?(Game_OVEvent))
   end
-
+  puts work_spot.inspect
   return @movement_type = :MOVING_TO_BED if work_spot.nil?
 #  puts work_spot.inspect
   if [self.x, self.y] == work_spot
     @movement_type = :WORKING
   else
-    move_toward_the_coordinate(work_spot[0], work_spot[1])
+    move_toward_work(work_spot[0], work_spot[1])
   end
 end 
 
@@ -442,7 +614,7 @@ def to_bed_movement
   if owner_pet_bed.x == self.x && owner_pet_bed.y == self.y
     @movement_type = :INBED
   else 
-    move_toward_the_coordinate(owner_pet_bed.x, owner_pet_bed.y)
+    move_toward_work(owner_pet_bed.x, owner_pet_bed.y)
   end 
 end 
 
@@ -615,7 +787,6 @@ end
 
 
 def movement_logic
-   return if $game_temp.connecting?
    return if pokemon.fainted?
    update_confused
    update_combat
@@ -683,7 +854,6 @@ end
 
 
  def update
-    advance_multi_map_route(self)
 	@type.deselecttimer-=1 if @type.deselecttimer>0
 	pokemon.associatedevent=@id if pokemon.associatedevent.nil? || pokemon.associatedevent!= @id
 	$PokemonGlobal.follower_pkmn.add(@id) if @movement_type == :FOLLOW
@@ -937,18 +1107,55 @@ end
     end
     @through = old_through
   end
-
+  
+  def move_map_fancy(direction)
+    map_id = self.instance_variable_get(:@new_map_id)
+	raise if map_id.nil?
+	
+    target = $map_factory.getFacingTile(direction, self)
+	map = $map_factory.getMapNoAdd(map_id)
+    vector = $map_factory.getRelativePos(map_id, 0, 0, self.map.map_id, self.x, self.y)
+	self.map = map
+	self.map_id = map.map_id
+	@x = vector[0]
+    @y = vector[1]
+	@real_x = self.x * Game_Map::REAL_RES_X
+	@real_y = self.y * Game_Map::REAL_RES_Y
+	fancy_movetomap(target[1], target[2])
+  end 
+  
+  def fancy_movetomap(new_x, new_y)
+    if self.x - new_x == 1 && self.y == new_y
+      move_fancy(4)
+    elsif self.x - new_x == -1 && self.y == new_y
+      move_fancy(6)
+    elsif self.x == new_x && self.y - new_y == 1
+      move_fancy(8)
+    elsif self.x == new_x && self.y - new_y == -1
+      move_fancy(2)
+    elsif self.x != new_x || self.y != new_y
+      moveto(new_x, new_y)
+    end
+  end 
+  
+  
   def move_fancy(direction)
     delta_x = (direction == 6) ? 1 : (direction == 4) ? -1 : 0
     delta_y = (direction == 2) ? 1 : (direction == 8) ? -1 : 0
     new_x = self.x + delta_x
     new_y = self.y + delta_y
+    player_there   = ($game_player.x == new_x && $game_player.y == new_y)
+    dest_passable  = location_passable?(new_x, new_y, 10 - direction)
+    self_impassable = !location_passable?(self.x, self.y, direction)
+    puts "move_fancy(#{direction}): from (#{self.x},#{self.y}) map#{self.map.map_id} to (#{new_x},#{new_y}) - player_there=#{player_there} dest_passable=#{dest_passable} self_impassable=#{self_impassable}"
     # Move if new position is the player's, or the new position is passable,
     # or self's current position is not passable
-    if ($game_player.x == new_x && $game_player.y == new_y) ||
-       location_passable?(new_x, new_y, 10 - direction) ||
-       !location_passable?(self.x, self.y, direction)
+    if player_there || dest_passable || self_impassable
+      puts "move_fancy(#{direction}): calling move_through"
       move_through(direction)
+      puts "move_fancy(#{direction}): after move_through, now at (#{self.x},#{self.y}) map#{self.map.map_id}"
+    else
+      puts "move_fancy(#{direction}): all three checks failed, not moving"
     end
   end
 
@@ -1066,28 +1273,27 @@ def follow_leader(leader, instant = false, leaderIsTrueLeader = true)
   end
 
 def move_with_maps(mapA,x,y,dir=nil)
-  if self.map.map_id != mapA
+  if self.map.map_id != mapA 
     # Crossing maps - same deferred mechanism as follow_leader (queued
     # @transitioned_map, applied + real_x/y forced next update_command tick).
     # move_to_location can't be used here: it only pathfinds within whatever
     # self.map already is, using that map's own tile/passability data.
-    vector = $map_factory.getRelativePos(mapA, 0, 0, self.map.map_id, @x, @y)
-    @transitioned_map = [mapA, vector[0], vector[1], false]
-    return true
-  end
-  if self.x != x || self.y != y
-    if x < 0 || y < 0 || x >= self.map.width || y >= self.map.height
+ #   vector = $map_factory.getRelativePos(mapA, 0, 0, self.map.map_id, @x, @y)
+ #   self.map = $map_factory.getMap(mapA)
+#	self.map_id = mapA
+#	@x = vector[0]
+#	@y = vector[1]
+#	@real_x = @x * Game_Map::REAL_RES_X
+#	@real_y = @y * Game_Map::REAL_RES_Y
+ #   return true
 	  puts "MultimapA"
 	  move_to_location_multi_map(self, mapA, x, y)
-    elsif self.x < 0 || self.y < 0 || self.x >= self.map.width || self.y >= self.map.height
-	  puts "MultimapB"
-	  move_to_location_multi_map(self, mapA, x, y)
-    else
+  elsif self.x != x || self.y != y
       move_to_location(self, x, y)
-	end
   elsif !dir.nil? && dir != self.direction
     turn_generic(dir)
   end
+  
   return true
 end
 
@@ -1297,10 +1503,26 @@ end
 
 class Game_Event < Game_Character
   def cardinal?(event)
-  dx = (self.x - event.x).abs
-  dy = (self.y - event.y).abs
-  dx + dy == 1
+  self_left   = self.x
+  self_right  = self.x + self.width - 1
+  self_top    = self.y - self.height + 1
+  self_bottom = self.y
 
+  event_left   = event.x
+  event_right  = event.x + event.width - 1
+  event_top    = event.y - event.height + 1
+  event_bottom = event.y
+
+  horizontal_overlap = self_left <= event_right && self_right >= event_left
+  vertical_overlap   = self_top <= event_bottom && self_bottom >= event_top
+
+  touching_left  = self_left == event_right + 1
+  touching_right = self_right + 1 == event_left
+  touching_above = self_top == event_bottom + 1
+  touching_below = self_bottom + 1 == event_top
+
+  (horizontal_overlap && (touching_above || touching_below)) ||
+    (vertical_overlap && (touching_left || touching_right))
   end
   def pbGetSurroundingEvent(ignoreInterpreter = false)
     return nil if $game_system.map_interpreter.running? && !ignoreInterpreter 

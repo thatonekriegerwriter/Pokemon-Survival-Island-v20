@@ -79,6 +79,8 @@
 - [x] Electric Sifter: Turns sand into other materials commonly found in sand.
 - [x] Sifted Ore.
 - [x] Panner 
+- [x] Electric Miner: A 3x3 rig that automine. Can only be used on stone.
+- [-] Electric Icebox
 
 
 ### Combat

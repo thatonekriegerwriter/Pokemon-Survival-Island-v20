@@ -55,11 +55,13 @@ class PathfindingTile
   attr_writer :h_cost
   attr_writer :f_cost
   attr_writer :parent
+  attr_writer :direction
 
-  def initialize(x, y, map_id = nil)
+  def initialize(x, y, map_id = nil, direction = nil)
     @x = x
     @y = y
     @map_id = map_id
+    @direction = direction
     @g_cost = self.g_cost
     @h_cost = self.h_cost
     @f_cost = self.f_cost
@@ -69,6 +71,9 @@ class PathfindingTile
   def x; return @x; end
   def y; return @y; end
   def map_id; return @map_id; end
+  # Compass direction (:down/:left/:right/:up) this tile was reached from
+  # its parent by. Only meaningful for tiles produced by get_neighbours.
+  def direction; return @direction; end
 
   def g_cost; return @g_cost; end
 
@@ -307,18 +312,17 @@ def calc_sorted_tile_path(closed_tiles)
 end
 
 # Calculates the pathfinding (A*), across as many connected maps as
-# needed, but returns it split into one route PER MAP CROSSED. This
-# matters because ordinary stepping (Game_Character#passable?) hard-blocks
-# ever leaving self.map's own bounds - a single force_move_route handed a
-# route that crosses a seam doesn't fail loudly, it silently no-ops
-# through every remaining command (pbAStarMoveRoute sets skippable=true),
-# meaning the event never appears to move at all. Each returned segment
-# is guaranteed to be executable as one force_move_route on one map; the
-# caller is responsible for reparenting the event onto the next segment's
-# map_id (at its start_x/start_y) before playing it - see
-# move_to_location_multi_map/advance_multi_map_route below for the
-# reference implementation of that.
+# needed. Returns a single continuous route: crossing a map connection
+# doesn't require reparenting the event onto a different Map object -
+# move_with_maps' own self.x < 0 || ... branch already establishes that
+# an event can carry an out-of-bounds x/y relative to its current map
+# indefinitely, and move_fancy (see fancy_move_code below) is what
+# actually walks it through such a step. Kept as a single-element array
+# (rather than returning the route directly) for compatibility with
+# calc_path's `segments.first[:route]` access below.
 def calc_path_segments(event, destination, destination_map_id = nil)
+  
+  event.instance_variable_set(:@new_map_id, destination_map_id) if event && destination_map_id
   destination_map_id ||= event.map.map_id
   resolved = $map_factory.getRealTilePos(destination_map_id, destination[0], destination[1])
   return [] unless resolved
@@ -328,35 +332,36 @@ def calc_path_segments(event, destination, destination_map_id = nil)
   tile_path = calc_sorted_tile_path(run_astar_search(event, dest_map_id, dest_x, dest_y))
   return [] if tile_path.empty?
 
-  runs = []
-  current_map_id = tile_path[0].map_id
-  current_run = [tile_path[0]]
-  tile_path[1..-1].each do |tile|
-    if tile.map_id != current_map_id
-      runs.push([current_map_id, current_run])
-      current_run = [tile]
-      current_map_id = tile.map_id
+  # The event's own @map is never reparented mid-route - crossing a map
+  # connection is just move_fancy walking through an x/y that's briefly
+  # out of the "current" map's own bounds, exactly like move_with_maps
+  # itself already tolerates (its self.x < 0 || ... branch). So this is
+  # one continuous route for the whole path, not per-map segments.
+  entered_other_map = false 
+  route = (1...tile_path.length).map do |i|
+    a = tile_path[i - 1]
+    b = tile_path[i]
+    code = calc_move_route_inverted(b, a)
+    # move_fancy is only needed for a step whose source or destination
+    # tile is out of bounds for its OWN reported map - the same condition
+    # move_with_maps itself uses (self.x < 0 || self.y < 0 || ...).
+    other_map = [a, b].any? do |t|
+      m = $map_factory.getMapNoAdd(t.map_id)
+      m.map_id != event.map.map_id
+    end
+    if other_map && !entered_other_map
+     entered_other_map = true
+     fancy_move_code(code)
     else
-      current_run.push(tile)
+     code
     end
   end
-  runs.push([current_map_id, current_run])
 
-  runs.each_with_index.map do |(map_id, tiles), idx|
-    route = (1...tiles.length).map { |i| calc_move_route_inverted(tiles[i], tiles[i - 1]) }
-    # Every run except the last ends at the map-connection seam - the
-    # tile right before the event gets reparented onto the next map.
-    # Ordinary move_down/left/right/up refuse that step (the same reason
-    # move_fancy/move_through exist for followers crossing maps), so swap
-    # the final command in the run for its move_fancy equivalent.
-    if idx < runs.length - 1 && !route.empty?
-      route[-1] = fancy_move_code(route[-1])
-    end
-    { map_id: map_id, route: route,
-      start_x: tiles.first.x, start_y: tiles.first.y,
-      end_x: tiles.last.x, end_y: tiles.last.y }
-  end
+  [{ map_id: event.map.map_id, route: route,
+     start_x: tile_path.first.x, start_y: tile_path.first.y,
+     end_x: tile_path.last.x, end_y: tile_path.last.y }]
 end
+
 # Maps a plain PBMoveRoute direction code to the custom move_fancy command
 # code Game_PokeEventA#move_type_custom understands (46-49). Falls back to
 # returning the code unchanged if it isn't one of the four directions.
@@ -379,52 +384,27 @@ def calc_path(event, destination, destination_map_id = nil)
   # map and may overflow onto a connected one - same convention
   # fancy_moveto/getRealTilePos already use elsewhere.
   #
-  # Only returns the FIRST segment - see calc_path_segments above for why
-  # a route can never safely span more than one map in one go. Existing
-  # callers (calc_path_through's own translation, move_to_event) only
-  # ever needed one segment's worth anyway; callers that actually need to
-  # walk across a seam should use calc_path_segments directly instead.
+  # calc_path_segments now always returns at most one segment, whose route
+  # already spans the whole path (see its comment above), so this is just
+  # a thin unwrapper.
   segments = calc_path_segments(event, destination, destination_map_id)
-  return [] if segments.empty?
+  if segments.empty?
+  event.instance_variable_set(:@new_map_id, nil) 
+  return [] 
+  end 
   segments.first[:route]
 end
 
-# Starts (or continues towards) a destination that may be multiple
-# connected maps away. Issues the first segment now and remembers the
-# rest on the event itself; advance_multi_map_route (below) plays them
-# out one at a time as each prior segment naturally finishes. Returns
+# Starts a walk toward a destination that may be on a connected map -
+# calc_path_segments already produces one continuous route (plain and
+# move_fancy commands mixed as needed), so this just forces it. Returns
 # false only if no path exists at all.
 def move_to_location_multi_map(event, destination_map_id, x, y)
-  segments = calc_path_segments(event, [x, y], destination_map_id)
-  return false if segments.empty?
-  event.instance_variable_set(:@pending_multi_map_segments, segments[1..-1] || [])
-  pbAStarMoveRoute(event, segments.first[:route]) unless segments.first[:route].empty?
+  route = calc_path(event, [x, y], destination_map_id)
+  return false if route.empty?
+  pbAStarMoveRoute(event, route) unless route.empty?
   true
 end
-
-# Call once a route issued by move_to_location_multi_map has fully
-# finished (event not moving/jumping/move_route_forcing) but the overall
-# destination hasn't been reached yet. Reparents onto the next segment's
-# map via the same deferred @transitioned_map mechanism move_with_maps'
-# cross-map branch already uses (so real_x/real_y stay bundled with the
-# reparent, avoiding the visual drift bug that mechanism exists to
-# prevent), then plays that segment's already-precomputed route - no
-# fresh pathfind happens here, so this is cheap to call every time a
-# segment completes. Returns false once there's nothing left queued.
-def advance_multi_map_route(event)
-  segments = event.instance_variable_get(:@pending_multi_map_segments)
-  return false if segments.nil? || segments.empty?
-  return true if event.moving? || event.jumping? || event.move_route_forcing
-
-  segment = segments.shift
-  if event.map.map_id != segment[:map_id] || event.x != segment[:start_x] || event.y != segment[:start_y]
-    event.instance_variable_set(:@transitioned_map, [segment[:map_id], segment[:start_x], segment[:start_y], false])
-  end
-  pbAStarMoveRoute(event, segment[:route]) unless segment[:route].empty?
-  return true
-end
-
-
 
 # Sort a reversed path
 # closed_tiles = Array containing the path backwards
@@ -509,9 +489,10 @@ end
 def get_neighbours(tile, closed_tiles, open_tiles, traveller = nil)
   # Array containing all the neighbouring tiles
   neighbours = []
-  checking_tiles = [[1,0], [0,1], [-1,0], [0,-1]]
+  # [dx, dy, compass direction of travel for that step]
+  checking_tiles = [[1,0,:right], [0,1,:down], [-1,0,:left], [0,-1,:up]]
   checking_tiles.each do |new_tile|
-    x = new_tile[0]; y = new_tile[1]
+    x = new_tile[0]; y = new_tile[1]; dir = new_tile[2]
     # Resolve the candidate coordinate - may land on a different, connected
     # map if it's off the edge of tile's own map
     resolved = $map_factory.getRealTilePos(tile.map_id, tile.x + x, tile.y + y)
@@ -523,7 +504,7 @@ def get_neighbours(tile, closed_tiles, open_tiles, traveller = nil)
     next if closed_tiles.any? { |closed_tile| closed_tile.same_tile?(map_id, check_x, check_y) }
     next if open_tiles.any? { |open_tile| open_tile.same_tile?(map_id, check_x, check_y) }
     # Add the neighbouring tile to the array
-    neighbours.push(PathfindingTile.new(check_x, check_y, map_id))
+    neighbours.push(PathfindingTile.new(check_x, check_y, map_id, dir))
   end
   return neighbours
 end
@@ -680,6 +661,8 @@ end
   route.repeat    = false
   route.skippable = true
   route.list.clear
+  was_building = event.instance_variable_get(:@vasp_building_route)
+  event.instance_variable_set(:@vasp_building_route, true) if event
   i = 0
   while i<commands.length
     Graphics.update
@@ -708,6 +691,7 @@ end
     end
     i += 1
   end
+  event.instance_variable_set(:@vasp_building_route, was_building) if event
    
   route.list.push(RPG::MoveCommand.new(0))
   if event

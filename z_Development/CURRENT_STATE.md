@@ -10,6 +10,7 @@
 
 
 ### Pokemon
+- [ ] Bridge Aware.
 
 
 
@@ -21,12 +22,10 @@
 - [ ] Outdoor Pet Beds close to diggable terrain, with a Rock or Ground type will go around digging up sand.
 - [ ] Spawn Pest for Berry Plant
 - [ ] Poke Generator
-- [ ] Electric Icebox
-- [x] Humanlike OR Psychic
+- [ ] Humanlike OR Psychic for Apricorn Machine
 - [ ] Adjacent Crate type items stations can autodeposit into.
 - [ ] Electric Pump: Pumps water out of water sources.
 - [ ] Electric Water Purifier: Turns Water pumped in into Purified water.
-- [ ] Electric Miner: A 3x3 rig that automines, but ruins soil quality around it. Cannot be placed within 4 tiles of water, and the noise increases Pokemon spawns, and cancels out warding totems. Can only be used on stone.
 - [ ] Pipes, the equalvent of Cables. Can be used to pipe water.
 - [ ] Sprinklers: Waters Berry Plants automatically.
 

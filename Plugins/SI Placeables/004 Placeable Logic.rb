@@ -6,7 +6,7 @@ ItemHandlers::UseFromBag.addIf(proc { |item| GameData::Item&.try_get(item).is_pl
 	 next 0 
 	end 
 	
-  x,  y = Placeable.starter_coordinates
+  x,  y = Placeable.starter_coordinates(item.id)
   unless placeable.correct_terrain?(x, y)
 	sideDisplay(_INTL("You can't use that here."))
 	next 0 
@@ -131,7 +131,7 @@ def pick_up(event_id, item)
  pbSEPlay("pickup")
  $player.held_item = item
  $player.held_item_object = event_id
- event = $player.hefld_item_event 
+ event = $player.held_item_event 
  return unless event 
  event.width = 1
  event.height = 1

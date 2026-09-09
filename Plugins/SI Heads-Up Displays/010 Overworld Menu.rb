@@ -816,6 +816,10 @@ end
 	  cur_qty=$bag.quantity(:JACKETEDCABLE) 
 	  showzero = true
 	end
+    if $game_temp.piping? && !$game_temp.in_inventory
+	  cur_qty=$bag.quantity(:COPPERPIPE) 
+	  showzero = true
+	end
 
 	@sprites["namewindow"].text=name if name && @sprites["namewindow"].text!=name
 	
@@ -849,6 +853,9 @@ end
   def refreshConnecting
     refreshItemCustom(:JACKETEDCABLE)
   end 
+  def refreshPiping
+    refreshItemCustom(:COPPERPIPE)
+  end 
   
   
   def refreshBox
@@ -857,7 +864,9 @@ end
 	 if $game_temp.connecting?
 	  name =  refreshConnecting
 	  cur_qty = refreshText(nil, name)
-	    
+	 elsif $game_temp.piping?
+	  name =  refreshPiping
+	  cur_qty = refreshText(nil, name)
 	 elsif Input.press?(Input::PUNCH) && $player.quick_access != $PokemonGlobal.cur_stored_pokemon
 	  name =  refreshPunchQuickAccess
 	  cur_qty = refreshText($player.quick_access, name)
@@ -925,6 +934,7 @@ end
  
   def override?
    return true if $game_temp.connecting?
+   return true if $game_temp.piping?
    return false if !Input.press?(Input::RUNNING)
    player = get_cur_player
    x = player.x

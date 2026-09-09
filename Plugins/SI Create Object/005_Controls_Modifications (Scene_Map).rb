@@ -571,21 +571,45 @@ class Scene_Map
 	   @ball_ehud_was_enabled = nil
 	  end 
       if $game_temp.position_calling == true #Input Logic for Placing Overworld Objects
+        $game_temp.connection_mode = false
+        $game_temp.connection_source = nil
+        $game_temp.piping_mode = false
+        $game_temp.piping_source = nil
+        $game_temp.assignment_mode = false
+        $game_temp.assignment_source = nil
 	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
 	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
 		$PokemonGlobal.ball_hud_enabled = false 
 	    positioning_controls
       elsif $game_temp.assigning?
+        $game_temp.connection_mode = false
+        $game_temp.connection_source = nil
+        $game_temp.piping_mode = false
+        $game_temp.piping_source = nil
 	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
 	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
 		$PokemonGlobal.ball_hud_enabled = false 
 	    pokemon_assignment
       elsif $game_temp.connecting?
+        $game_temp.assignment_mode = false
+        $game_temp.assignment_source = nil
+        $game_temp.piping_mode = false
+        $game_temp.piping_source = nil
 	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
 	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
 	    $PokemonGlobal.set_extended_hud = false 
 	    $PokemonGlobal.ball_hud_enabled = true 
 	    power_linking
+      elsif $game_temp.piping?
+        $game_temp.assignment_mode = false
+        $game_temp.assignment_source = nil
+        $game_temp.connection_mode = false
+        $game_temp.connection_source = nil
+	    @ball_hud_was_enabled ||= $PokemonGlobal.ball_hud_enabled
+	    @ball_ehud_was_enabled ||= $PokemonGlobal.set_extended_hud
+	    $PokemonGlobal.set_extended_hud = false 
+	    $PokemonGlobal.ball_hud_enabled = true 
+	    pipe_linking
       elsif $game_temp.current_pkmn_controlled!=false
 	    pokemon_controls
 		pbDeselectAllSelected if Input.trigger?(Input::DESELECTALL)
@@ -598,7 +622,94 @@ class Scene_Map
       end
   end
 
+  
+  def pipe_linking
+   if @assignment_marker.nil?
+    @assignment_marker = PositionMarker.new($game_player.x, $game_player.y)
+   end
+   $game_temp.just_update_anyways = true 
+   $game_temp.piping_counter ||= 0
+   $OverworldMenu.hideSmallBallHUD
+   @assignment_marker.update 
+   eventdata = $game_temp.piping_source
+   item = eventdata.item 
+   text = _INTL("Routing #{item.name}...")
+   x = $game_player.x
+   y = $game_player.y
+   
+   case $game_player.direction
+   when 2 then y += 1
+   when 4 then x -= 1
+   when 6 then x += 1
+   when 8 then y -= 1
+   end
 
+   @assignment_marker.x = x
+   @assignment_marker.y = y
+   event_id = $game_map.check_event(x, y)
+   event = $game_map.events[event_id]
+   amount = $game_temp.piping_counter + 1
+   if event && event.is_a?(Game_OVEvent) && Placeable.hydromechanical?(event.type) && event.type.internal_data.nil?
+     localMeter=CraftingStationData.new(event_id)
+     event.type.internal_data = localMeter
+   end 
+   can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.hydromechanical?(event.type) && Placeable.pipable?(eventdata, event.type.internal_data)
+   already_connected = can_connect && eventdata.connected_to_water_network?(event)
+   text = _INTL("Route #{item.name} to #{event.station_name} for #{amount} Pipe?") if can_connect
+   text = _INTL("Disconnect #{item.name} from #{event.station_name}?") if already_connected
+   if Input.press?(Input::USE)
+    if already_connected
+    source_data = $game_temp.piping_source
+    target_data = event.type.internal_data
+    old_amt = source_data.remove_from_water_network(event)
+    target_data.remove_from_water_network(source_data.event)
+
+
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+	$game_temp.piping_counter = nil
+    $game_temp.piping_source = nil
+    $game_temp.piping_mode = false
+	item = ItemData.new(:COPPERPIPE)
+	$bag.add(item, old_amt)
+    text = _INTL("Disconnected #{item.name} from #{event.station_name}.") if event && event.is_a?(Game_OVEvent)
+	$game_temp.assignment_cooldown = 20
+    $game_temp.just_update_anyways = false 
+    elsif can_connect && false#$bag.quantity(:COPPERPIPE) < amount
+    text = _INTL("You do not have enough Pipe!")
+    elsif can_connect
+    source_data = $game_temp.piping_source
+    target_data = event.type.internal_data
+    source_data.add_to_water_network(event, amount)
+    target_data.add_to_water_network(source_data.event, amount)
+
+
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+	$game_temp.piping_counter = nil
+    $game_temp.piping_source = nil
+    $game_temp.piping_mode = false
+	#$bag.remove(:COPPERPIPE, amount)
+    text = _INTL("Routed #{item.name} to #{event.station_name}.") if event && event.is_a?(Game_OVEvent)
+	$game_temp.assignment_cooldown = 20
+    $game_temp.just_update_anyways = false 
+	end 
+   elsif Input.press?(Input::BACK)
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+	$game_temp.piping_counter = nil
+    $game_temp.piping_source = nil
+    $game_temp.piping_mode = false
+    text = _INTL("Cancelled Routing for #{item.name}.")
+    $game_temp.just_update_anyways = false 
+   end 
+   $sidedisplay.clear_text
+   sideDisplay(text, true)
+  
+  
+  
+  end 
+  
   def power_linking
    if @assignment_marker.nil?
     @assignment_marker = PositionMarker.new($game_player.x, $game_player.y)
@@ -631,9 +742,28 @@ class Scene_Map
      event.type.internal_data = localMeter
    end 
    can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.electronic?(event.type) && Placeable.connectable?(eventdata, event.type.internal_data)
+   already_connected = can_connect && eventdata.connected_to_network?(event)
    text = _INTL("Connect #{item.name} to #{event.station_name} for #{amount} Cable?") if can_connect
+   text = _INTL("Disconnect #{item.name} from #{event.station_name}?") if already_connected
    if Input.press?(Input::USE)
-    if can_connect && false#$bag.quantity(:JACKETEDCABLE) < amount
+    if already_connected
+    source_data = $game_temp.connection_source
+    target_data = event.type.internal_data
+    old_amt = source_data.remove_from_network(event)
+    target_data.remove_from_network(source_data.event)
+
+
+    @assignment_marker.dispose
+    @assignment_marker = nil 
+	$game_temp.connection_counter = nil
+    $game_temp.connection_source = nil
+    $game_temp.connection_mode = false
+	item = ItemData.new(:JACKETEDCABLE)
+	$bag.add(item, old_amt)
+    text = _INTL("Disconnected #{item.name} from #{event.station_name}.") if event && event.is_a?(Game_OVEvent)
+	$game_temp.assignment_cooldown = 20
+    $game_temp.just_update_anyways = false 
+    elsif can_connect && false#$bag.quantity(:JACKETEDCABLE) < amount
     text = _INTL("You do not have enough Cable!")
     elsif can_connect
     source_data = $game_temp.connection_source
@@ -1628,47 +1758,30 @@ end
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
     elsif Input.triggerex?(Keys::CONTROLS_LIST["/?"])
-	   pbAddPokemonSilent(:ELEKID)
+	   item = ItemData.new(:CAPTURESTYLUS)
+	   $bag.add(item, 1)
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	#  $bag.add(:SOFTSAND, 64)
+
 	
-	  15.times do 
-	   item = ItemData.new(:PETBEDOUTDOOR)
-	   $bag.add(item, 1)
-	  end
-	#  item = ItemData.new(:SIFTER)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+2, item, false, false, $game_player.direction)
-	#  item = ItemData.new(:WINDGENERATOR)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
-	
-	  item = ItemData.new(:ELECTRICQUARRY)
+	  item = ItemData.new(:COALGENERATOR)
       key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
 
 	  item = ItemData.new(:MACHINEBOX)
       key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y-1, item, false, false, $game_player.direction)
-	#  item = ItemData.new(:MACHINEBOX)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
-	#  item = ItemData.new(:MACHINEBOX)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
+	  
+	  
+	  item = ItemData.new(:ELECTRICPUMP)
+      key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
+	  
+	  item = ItemData.new(:SPRINKLER)
+      key_id = $DynamicEvents.generateEvent($game_player.x-5, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:ELECTRICPURIFIER)
+      key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:ELECTRICOREWASHER)
+      key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
 
-	  item = ItemData.new(:POKEGENERATOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x-6, $game_player.y-1, item, false, false, $game_player.direction)
-	  
-	#  item = ItemData.new(:HYDROGENERATOR)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y+3, item, false, false, $game_player.direction)
-	#  item = ItemData.new(:MACHINEBOX)
-   #   key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y+2, item, false, false, $game_player.direction)
-	  
-	  
-	#  item = ItemData.new(:SOLARGENERATOR)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x+4, $game_player.y-1, item, false, false, $game_player.direction)
-	  
-	  
-	#  item = ItemData.new(:MACHINEBOX)
-    #  key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
-	  #Placeable.begin_place(item)
     end
 
   end

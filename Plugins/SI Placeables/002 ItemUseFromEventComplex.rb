@@ -77,6 +77,9 @@ end
 }
 )
 
+
+
+
 ItemHandlers::UseFromEvent.add(:ELECTRICOREWASHER, proc { |item, key_id|
 localMeter = item.internal_data
 if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
@@ -91,6 +94,55 @@ else
 end
 }
 )
+
+
+ItemHandlers::UseFromEvent.add(:ELECTRICPURIFIER, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+ItemHandlers::UseFromEvent.add(:SPRINKLER, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+ItemHandlers::UseFromEvent.add(:ELECTRICPUMP, proc { |item, key_id|
+localMeter = item.internal_data
+if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
+localMeter=CraftingStationData.new(key_id)
+item.internal_data=localMeter
+end
+localMeter.event_id = key_id if localMeter.event_id!=key_id
+if Input.press?(Input::SHIFT) && localMeter.power.to_f <= 0.0 && localMeter.active==false
+ Placeable.pick_up(key_id,item)
+else
+ Inventory.invWindow(item.id,localMeter)
+end
+}
+)
+
+
+
 
 ItemHandlers::UseFromEvent.add(:ELECTRICQUARRY, proc { |item, key_id|
 localMeter = item.internal_data

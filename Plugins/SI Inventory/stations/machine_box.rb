@@ -10,7 +10,7 @@ module InventoryScene
         event_data.internal_storage.concat(Array.new(short_by)) if short_by.positive?
         super
       end
-      def slot_count = 5
+      def slot_count = 2
       def background_key = "MACHINEBOX"
       def uses_recipe_grid? = false
       def shows_search_ui? = false
@@ -31,7 +31,7 @@ module InventoryScene
       def render_station
 
         slot_count.times do |i|
-		  i < 2 ? render_charge_slots(i) : render_upgrade_slots(i)
+		  render_charge_slots(i)
         end
         render_power_display
 		render_assign_button
@@ -51,19 +51,6 @@ module InventoryScene
           render_slot_icon(:craft, i, *craft[i]) if craft[i]
 	  end
 	  
-	  def render_upgrade_slots(i)
-        x = bonus_1 + 300
-        y = bonus_2 + 22
-          sprites["craft_slots#{i}"] = IconSprite.new(0, 0, viewport)
-          sprites["craft_slots#{i}"].setBitmap(
-            "Graphics/Pictures/craftingMenu/newCraftingPages/pocket/placeholder_slot"
-          )
-          sprites["craft_slots#{i}"].z = 70
-          sprites["craft_slots#{i}"].x = x
-          sprites["craft_slots#{i}"].y =  y + (i - 2) * SLOT_SIZE
-          render_slot_icon(:craft, i, *craft[i]) if craft[i]
-	  end 
-
       def render_assign_button
         objects["assign_button"] = IconSprite.new(0, 0, viewport)
         objects["assign_button"].x = bonus_1 + 110
@@ -166,7 +153,6 @@ module InventoryScene
 	  
       private
 
-
       def render_assign_button
         objects["assign_button"] = IconSprite.new(0, 0, viewport)
         objects["assign_button"].x = bonus_1 + 110
@@ -209,6 +195,118 @@ module InventoryScene
        # sync_slots_visuals!(:craft, 0..slot_count)
        # update_power_display
 		refresh_assign_button
+      end
+
+    end
+  end
+end
+
+
+module InventoryScene
+  module Stations
+    # The original's setup_ui had an explicitly empty `when :MACHINEBOX`
+    # branch - no craft slots, no result. Whatever this station is for,
+    # it's evidently just bag + party access with no recipe grid.
+    class WaterMachines < FuellessGenerators
+      def slot_count = 0
+      def background_key = "FUELLESSGENERATORS"
+      def handle_object_click(object_key)
+        toggle_connection_mode if object_key == "assign_button"
+        toggle_wconnection_mode if object_key == "water_button"
+      end 
+	  
+	  
+      private
+      def render_station
+
+        slot_count.times do |i|
+		  i < 2 ? render_charge_slots(i) : render_upgrade_slots(i)
+        end
+        render_power_display
+		render_assign_button
+		render_water_button
+      end
+
+
+      def render_assign_button
+        objects["assign_button"] = IconSprite.new(0, 0, viewport)
+        objects["assign_button"].x = bonus_1 + 110
+        objects["assign_button"].y = bonus_2 + 116
+        objects["assign_button"].z = 0
+        objects["assign_button"].visible = true
+        text = connecting_power? ? "Connecting..." : "Connect"
+        create_text_centered("current_task_label", text, objects["assign_button"].x + 44, objects["assign_button"].y + 12)
+        refresh_assign_button
+      end
+      def render_water_button
+        objects["water_button"] = IconSprite.new(0, 0, viewport)
+        objects["water_button"].x = bonus_1 + 210
+        objects["water_button"].y = bonus_2 + 116
+        objects["water_button"].z = 0
+        objects["water_button"].visible = true
+        text = connecting_pipe? ? "Routing..." : "Route Pipe"
+        create_text_centered("current_water_label", text, objects["water_button"].x + 44, objects["water_button"].y + 12)
+        refresh_water_button
+      end
+
+
+	  
+      def refresh_water_button
+        bitmap = connecting_pipe? ? "smallbutton_down" : "smallbutton_up"
+        objects["water_button"].setBitmap("Graphics/Pictures/craftingMenu/#{bitmap}")
+        objects["water_button"].visible = true 
+        text = connecting_pipe? ? "Routing..." : "Route Pipe"
+		update_text_centered("current_water_label", text)
+      end
+
+      def toggle_wconnection_mode
+ 
+        if connecting_pipe?
+          $game_temp.piping_mode = false
+          $game_temp.piping_source = nil
+        else
+          $game_temp.piping_mode = true
+          $game_temp.piping_source = event_data
+        end
+        refresh_assign_button
+      end
+	  
+	  def connecting_pipe?
+        $game_temp.piping_mode && $game_temp.piping_source.equal?(event_data)
+	  end 
+
+      def render_power_display
+	    return 
+        x = bonus_1 + 110
+        y = bonus_2 + 48
+
+        sprites["power_bar"] = IconSprite.new(0, 0, viewport)
+        sprites["power_bar"].setBitmap(
+          "Graphics/Pictures/craftingMenu/newCraftingPages/machinebox/power_bar"
+        )
+        sprites["power_bar"].z = 70
+        sprites["power_bar"].x = x
+        sprites["power_bar"].y = y
+
+        sprites["power_bar_fill"] = IconSprite.new(0, 0, viewport)
+        sprites["power_bar_fill"].bitmap = Bitmap.new(
+          sprites["power_bar"].bitmap.width,
+          sprites["power_bar"].bitmap.height
+        )
+        sprites["power_bar_fill"].z = 71
+        sprites["power_bar_fill"].x = x + 10
+        sprites["power_bar_fill"].y = y + 10
+		create_text_centered("power_text", "#{event_data.power.round(2)}/#{event_data.internal_battery_limit}", x + 40, y - 2)
+        create_text_centered("output_text", "Out: #{event_data.average_power_output} EU/s", x + 116, y + 60)
+		update_power_display
+      end
+
+      def station_update
+        event_data.update
+       # sync_slots_visuals!(:craft, 0..slot_count)
+       # update_power_display
+		refresh_assign_button
+		refresh_water_button
       end
 
     end

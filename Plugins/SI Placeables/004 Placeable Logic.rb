@@ -69,11 +69,24 @@ def connectable?(data_a, data_b)
   return false 
 end 
 
+def pipable?(data_a, data_b)
+  return true if data_a.produces_water? && data_b.needs_water?
+  return true if data_b.produces_water? && data_a.needs_water?
+  return false 
+end 
+
 def electronic?(item)
   return false unless item.is_a?(ItemData)
   data = GameData::Placeable.get(item.id)
   return false unless data
   data.needs_power || data.produces_power || data.battery_box
+end 
+
+def hydromechanical?(item)
+  return false unless item.is_a?(ItemData)
+  data = GameData::Placeable.get(item.id)
+  return false unless data
+  data.produces_water || data.needs_water
 end 
 
 def place_or_hold(item = $player.held_item, x = nil, y = nil)

@@ -869,7 +869,6 @@ end
 	end
     super 
 	if @following && self.map.map_id != @following.map.map_id
-	  puts "Running for #{self.pokemon.name}"
       vector = $map_factory.getRelativePos(@following.map.map_id, 0, 0, self.map.map_id, @x, @y)
       # NOTE: Can't use moveto because vector is outside the boundaries of the
       #       map, and moveto doesn't allow setting invalid coordinates.
@@ -880,7 +879,6 @@ end
 	 # self.map = @map
 	 # self.map_id = @map.map_id 
    	  @transitioned_map = [@following.map.map_id, vector[0], vector[1], true]
-	  puts "Set up map_transition2"
 	  #follow_leader(@following)
 	end 
  end 
@@ -1147,15 +1145,8 @@ end
     player_there   = ($game_player.x == new_x && $game_player.y == new_y)
     dest_passable  = location_passable?(new_x, new_y, 10 - direction)
     self_impassable = !location_passable?(self.x, self.y, direction)
-    puts "move_fancy(#{direction}): from (#{self.x},#{self.y}) map#{self.map.map_id} to (#{new_x},#{new_y}) - player_there=#{player_there} dest_passable=#{dest_passable} self_impassable=#{self_impassable}"
-    # Move if new position is the player's, or the new position is passable,
-    # or self's current position is not passable
     if player_there || dest_passable || self_impassable
-      puts "move_fancy(#{direction}): calling move_through"
       move_through(direction)
-      puts "move_fancy(#{direction}): after move_through, now at (#{self.x},#{self.y}) map#{self.map.map_id}"
-    else
-      puts "move_fancy(#{direction}): all three checks failed, not moving"
     end
   end
 
@@ -1165,7 +1156,6 @@ end
     half_delta_x = delta_x / 2
     half_delta_y = delta_y / 2
     if location_passable?(self.x + half_delta_x, self.y + half_delta_y, 10 - direction)
-      # Can walk over the middle tile normally; just take two steps
       move_fancy(direction)
       move_fancy(direction)
     elsif location_passable?(self.x + delta_x, self.y + delta_y, 10 - direction)

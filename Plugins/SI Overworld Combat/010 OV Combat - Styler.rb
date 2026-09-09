@@ -17,7 +17,7 @@ def capture_styler_touching(opponent)
 	
 	return 
 	end
-     action = OverworldCombat::Moves.choose_move(attacker, $game_player)
+     action = OverworldCombat::Moves.choose_move(opponent, $game_player)
      return false unless action
   
      move, target, score = action

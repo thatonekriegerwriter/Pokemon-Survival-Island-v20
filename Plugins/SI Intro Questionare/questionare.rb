@@ -811,6 +811,11 @@ end
 	 
 	 
 	 end
+	 
+if $player.is_it_this_class?(:RANGER,false)
+  item = ItemData.new(:CAPTURESTYLUS)
+  $bag.add(item, 1)
+end
   end
 
   def pbEndScene
@@ -1513,7 +1518,8 @@ loop do
 end
 
 if $player.is_it_this_class?(:RANGER,false)
-  $bag.add(:CAPTURESTYLUS)
+  item = ItemData.new(:CAPTURESTYLUS)
+  $bag.add(item, 1)
 end
 end
 

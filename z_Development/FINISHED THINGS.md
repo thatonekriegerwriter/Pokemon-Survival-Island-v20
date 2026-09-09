@@ -63,6 +63,7 @@
 - [x] Electric Water Purifier: Turns Water pumped in into Purified water.
 
 ### Placeables
+- [x] Electric Types can provide electricity to PokeGenerators.
 - [x] Graves have a low chance of respawning as a Ghost Type
 - [x] Pet bed 
 - [x] Berry Pot 
@@ -81,6 +82,9 @@
 - [x] Panner 
 - [x] Electric Miner: A 3x3 rig that automine. Can only be used on stone.
 - [-] Electric Icebox
+- [x] Poke Generator
+- [x] Pipes, the equalvent of Cables. Can be used to pipe water.
+- [x] Remove Upgrade Slots from Machine Box
 
 
 ### Combat
@@ -93,6 +97,7 @@
 - [x] Add Shoreline equipment
 
 ### World
+- [x] Clean up directing Pokemon across map borders.
 - [x] FIX THE RENDERING PROBLEM ASSHOLE.
 - [x] Fix Berry Plant updating
 - [x] Check to see if crafting stations are working as intended.

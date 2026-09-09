@@ -79,6 +79,12 @@ class Inventory_Scene
     :ELECTRICPRESS => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "ELECTRICPRESS", power_cost: 60) },
     :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE", power_cost: 20) },
     :CUTTER => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 1, bg: "CUTTER", power_cost: 60) },
+	
+    :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
+	
+    :ELECTRICPUMP => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
+    :ELECTRICPURIFIER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
+    :SPRINKLER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
   }.freeze
 #
   def self.new(type, event_data, container)

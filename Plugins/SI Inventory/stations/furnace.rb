@@ -407,6 +407,7 @@ module InventoryScene
 
       def station_update
 		event_data.update
+		event_data.fuel = 10000 if $DEBUG && Input.press?(Input::CTRL)
         sprites["craft_slots_equals"].bitmap = fuel_bitmap
         update_power_display
 		refresh_assign_button

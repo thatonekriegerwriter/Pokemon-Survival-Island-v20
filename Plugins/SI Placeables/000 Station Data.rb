@@ -858,6 +858,18 @@ class CraftingStationData #Electric
 	return :consumer if needs_water?
     return false 
   end 
+  def connected_to_network?(event)
+   event_id = event.id
+   @network.any? do |_type, events|
+    events.any? { |id, _amount| id == event_id }
+   end
+  end
+  def connected_to_water_network?(event)
+  event_id = event.id
+  @water_network.any? do |_type, events|
+    events.any? { |id, _amount| id == event_id }
+  end
+  end
   
   def add_to_network(event, amount)
     event_id = event.id
@@ -875,21 +887,7 @@ class CraftingStationData #Electric
 	@network[type] ||= []
 	@network[type] << [event_id, amount] unless @network[type].any? { |id, _amount| id == event_id }
   end 
-  
-  def remove_from_network_by_id(event_id)
-   @network.each_value do |events|
-    events.reject! { |id, _amount| id == event_id }
-   end
-  end 
 
-  def remove_from_network(event)
-    event_id = event.id
-	type = event.type.internal_data.station_type
-	return unless [:producer, :batbox, :consumer].include?(type)
-	@network[type] ||= []
-    @network[type].reject! { |id, _amount| id == event_id }
-  end 
-  
   def add_to_water_network(event, amount)
     event_id = event.id
 	type = event.type.internal_data.waterstation_type
@@ -906,20 +904,66 @@ class CraftingStationData #Electric
 	@water_network[type] ||= []
 	@water_network[type] << [event_id, amount] unless @water_network[type].any? { |id, _amount| id == event_id }
   end 
-  
-  def remove_from_water_network_by_id(event_id)
-   @water_network.each_value do |events|
-    events.reject! { |id, _amount| id == event_id }
-   end
-  end 
 
-  def remove_from_water_network(event)
-    event_id = event.id
-	type = event.type.internal_data.waterstation_type
-	return unless [:producer, :consumer].include?(type)
-	@water_network[type] ||= []
-    @water_network[type].reject! { |id, _amount| id == event_id }
-  end 
+  
+def remove_from_network_by_id(event_id)
+  amount = 0
+
+  @network.each_value do |events|
+    events.reject! do |id, event_amount|
+      if id == event_id
+        amount = event_amount
+        true
+      else
+        false
+      end
+    end
+  end
+
+  amount
+end
+
+def remove_from_network(event)
+  event_id = event.id
+  type = event.type.internal_data.station_type
+  return 0 unless [:producer, :batbox, :consumer].include?(type)
+
+  events = @network[type] ||= []
+  index = events.index { |id, _amount| id == event_id }
+  return 0 unless index
+
+  events.delete_at(index)[1]
+end
+  
+
+def remove_from_water_network_by_id(event_id)
+  amount = 0
+
+  @water_network.each_value do |events|
+    events.reject! do |id, event_amount|
+      if id == event_id
+        amount = event_amount
+        true
+      else
+        false
+      end
+    end
+  end
+
+  amount
+end
+
+def remove_from_water_network(event)
+  event_id = event.id
+  type = event.type.internal_data.waterstation_type
+  return 0 unless [:producer, :consumer].include?(type)
+
+  events = @water_network[type] ||= []
+  index = events.index { |id, _amount| id == event_id }
+  return 0 unless index
+
+  events.delete_at(index)[1]
+end
   
 def available_power
   total = 0.0

@@ -600,6 +600,20 @@ ItemHandlers::UseFromBag.add(:HOE,proc{|item, event|
 )
 
 
+ItemHandlers::UseFromBox.add(:CAPTURESTYLUS,proc{|styler, event|
+    puts "S-styler are you okay?"
+	unless $styler.same_styler?(styler)
+	  $styler.set_styler(styler)
+    puts "Did this."
+	end 
+	$styler.activate_styler
+	next true
+
+	}
+)
+
+
+
 def is_consumable_item?(item)
 return (GameData::Item.get(item).is_berry? && GameData::Item.get(item).name.include?("Berry")) || GameData::Item.get(item).is_foodwater? || GameData::Item.get(item).name.include?("Potion") || GameData::Item.get(item).id==:REVIVALHERB || GameData::Item.get(item).id==:HEALPOWDER || GameData::Item.get(item).id==:ENERGYPOWDER || GameData::Item.get(item).id==:ENERGYROOT
 end

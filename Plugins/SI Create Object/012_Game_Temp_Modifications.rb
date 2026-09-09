@@ -49,8 +49,10 @@ class Game_Temp
   attr_accessor :assignment_cooldown
   attr_accessor :connection_mode 
   attr_accessor :connection_source 
-  attr_accessor :connection_cooldown
   attr_accessor :connection_counter
+  attr_accessor :piping_mode 
+  attr_accessor :piping_source 
+  attr_accessor :piping_counter
   
   def in_inventory
     @in_inventory = false if @in_inventory.nil?
@@ -69,14 +71,22 @@ class Game_Temp
     @connection_mode = false if @connection_mode.nil?
     return @connection_mode
   end
-  def connection_cooldown
-    @connection_cooldown = 0 if @connection_cooldown.nil?
-    return @connection_cooldown
+  
+  def piping_mode
+    @piping_mode = false if @piping_mode.nil?
+    return @piping_mode
   end
   
+  def piping?
+    self.piping_mode == true && !self.piping_mode_source.nil?
+  end 
   
   def connecting?
     self.connection_mode == true && !self.connection_source.nil?
+  end 
+  
+  def assigning?
+    self.assignment_mode == true && !self.assignment_source.nil?
   end 
   
   def inv_cooldown
@@ -92,10 +102,6 @@ class Game_Temp
     @currently_selecting = false if @currently_selecting.nil?
     return @currently_selecting
   end
-  
-  def assigning?
-    self.assignment_mode == true && !self.assignment_source.nil?
-  end 
   
   def radial_enabled
     @radial_enabled = false if @radial_enabled.nil?

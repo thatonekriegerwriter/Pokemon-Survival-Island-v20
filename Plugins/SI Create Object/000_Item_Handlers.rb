@@ -601,10 +601,8 @@ ItemHandlers::UseFromBag.add(:HOE,proc{|item, event|
 
 
 ItemHandlers::UseFromBox.add(:CAPTURESTYLUS,proc{|styler, event|
-    puts "S-styler are you okay?"
 	unless $styler.same_styler?(styler)
 	  $styler.set_styler(styler)
-    puts "Did this."
 	end 
 	$styler.activate_styler
 	next true

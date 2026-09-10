@@ -198,8 +198,8 @@ GameData::Placeable.register({ :id            => :ELECTRICPRESS, :needs_power =>
 GameData::Placeable.register({ :id            => :ELECTRICFURNACE, :needs_power => true, :image => "craftingStations/ElectricFurnace"})
 GameData::Placeable.register({ :id            => :SEWINGMACHINE, :needs_power => true, :image => "craftingStations/SewingMachine"})
 GameData::Placeable.register({ :id            => :ELECTRICSIFTER, :needs_power => true, :image => "craftingStations/ElectricSifter"})
-GameData::Placeable.register({ :id            => :ELECTRICOREWASHER, :needs_power => true, :image => "craftingStations/ElectricOreWasher"})
-GameData::Placeable.register({ :id            => :ELECTRICPURIFIER, :needs_water => true, :packable => true, :needs_power => true, :image => "craftingStations/waterpurifier"})
+GameData::Placeable.register({ :id            => :ELECTRICOREWASHER, :needs_water => true, :needs_power => true, :image => "craftingStations/ElectricOreWasher"})
+GameData::Placeable.register({ :id            => :ELECTRICPURIFIER, :needs_power => true, :needs_water => true, :packable => true, :image => "craftingStations/waterpurifier"})
 
 GameData::Placeable.register({ :id            => :ELECTRICLIGHT, :usable_locations => [:ANY], :needs_power => true, :image => "craftingStations/Lamp"})
 
@@ -207,12 +207,13 @@ GameData::Placeable.register({ :id            => :COALGENERATOR, :usable_locatio
 GameData::Placeable.register({ :id            => :HYDROGENERATOR, :correct_terrain => [:StillWater, :Water, :DeepWater], :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/waterwheel" })
 GameData::Placeable.register({ :id            => :WINDGENERATOR, :animates_unless_stored => true, :packable => true, :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/windmill" })
 GameData::Placeable.register({ :id            => :SOLARGENERATOR, :usable_locations => [:BASE_EXTERIOR], :produces_power => true, :image => "craftingStations/SolarPanel" })
+GameData::Placeable.register({ :id            => :FEEDER, :usable_locations => [:BASE], :image => "craftingStations/Feeder"}) 
 
 GameData::Placeable.register({ :id            => :PORTABLECAMP, :width => 3, :height => 3, :packable => true, :usable_locations => [:WILDS], :image => "craftingStations/Tent", :placement_coordinates =>  { 2 => [-1,-1], 4 => [-1,-1], 6 => [-1,-1], 8 => [-1,-1]}})
 
 
-GameData::Placeable.register({ :id            => :ELECTRICQUARRY, :width => 3, :height => 3, :correct_terrain => [:Stone, :Rock], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/bigmachine" })
-GameData::Placeable.register({ :id            => :ELECTRICPUMP, :width => 3, :height => 3, :correct_terrain => [:StillWater, :Water, :DeepWater], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :produces_water => true, :image => "craftingStations/bigmachine2" })
+GameData::Placeable.register({ :id            => :ELECTRICQUARRY, :packable => true, :width => 3, :height => 3, :correct_terrain => [:Stone, :Rock], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :image => "craftingStations/bigmachine" })
+GameData::Placeable.register({ :id            => :ELECTRICPUMP, :packable => true, :width => 3, :height => 3, :correct_terrain => [:StillWater, :Water, :DeepWater], :needs_power => true, :usable_locations => [:BASE_EXTERIOR], :produces_water => true, :image => "craftingStations/bigmachine2" })
 GameData::Placeable.register({ :id            => :RESEARCHTABLE, :assignable => true, :image => "craftingStations/ResearchTable"})
 GameData::Placeable.register({ :id            => :BERRYPOT, :assignable => true, :image => "craftingStations/BerryPot", :usable_locations => [:BASE]}) 
 GameData::Placeable.register({ :id            => :BERRYPLANT, :assignable => true, :usable_locations => [:ANY]}) #If Mushroom, absolutely shoot up mushroom pokemon growth stonks
@@ -221,7 +222,6 @@ GameData::Placeable.register({ :id            => :CUTTER, :assignable => true, :
 GameData::Placeable.register({ :id            => :ELECTRICGRINDER, :assignable => true, :needs_power => true})
 GameData::Placeable.register({ :id            => :COMPOSTER, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/Composter"}) 
 GameData::Placeable.register({ :id            => :GUARDPOST, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/guard station"}) #Needs a Pokemon to guard base.
-GameData::Placeable.register({ :id            => :FEEDER, :usable_locations => [:BASE], :assignable => true, :image => "craftingStations/Feeder"}) #Needs a Pokemon to distribute food.
 
 
 

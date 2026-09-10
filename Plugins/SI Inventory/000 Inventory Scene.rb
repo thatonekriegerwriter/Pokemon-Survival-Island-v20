@@ -66,7 +66,6 @@ class Inventory_Scene
     :MODIFICATIONTABLE => ->(e, c) { InventoryScene::Stations::ModificationTable.new(event_data: e, container: c) },
     :MOVERELEARNER => ->(e, c) { InventoryScene::Stations::MoveRelearner.new(event_data: e, container: c) },
 
-    :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::Panner.new(event_data: e, container: c) },
     :SIFTER => ->(e, c) { InventoryScene::Stations::Sifter.new(event_data: e, container: c, machine: false) },
     :ELECTRICSIFTER => ->(e, c) { InventoryScene::Stations::Sifter.new(event_data: e, container: c, machine: true) },
     :ELECTRICFURNACE => ->(e, c) { InventoryScene::Stations::ElectricFurnace.new(event_data: e, container: c) },
@@ -80,10 +79,10 @@ class Inventory_Scene
     :SEWINGMACHINE => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 3, bg: "SEWINGMACHINE", power_cost: 20) },
     :CUTTER => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 1, bg: "CUTTER", power_cost: 60) },
 	
-    :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
+    :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::Panner.new(event_data: e, container: c) },
 	
     :ELECTRICPUMP => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
-    :ELECTRICPURIFIER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
+    :ELECTRICPURIFIER => ->(e, c) { InventoryScene::Stations::AdvancedWaterMachines.new(event_data: e, container: c) },
     :SPRINKLER => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
   }.freeze
 #

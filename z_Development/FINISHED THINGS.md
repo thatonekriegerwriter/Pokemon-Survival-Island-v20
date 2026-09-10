@@ -38,11 +38,8 @@
 - [x] Update Options Menu and Controls Menu
 - [x] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
-
 ### Pokemon
 - [x] Possible relearnable move storage
-
-
 
 ### Sprites
 - [x] Berry Pot 
@@ -86,7 +83,6 @@
 - [x] Pipes, the equalvent of Cables. Can be used to pipe water.
 - [x] Remove Upgrade Slots from Machine Box
 
-
 ### Combat
 - [x] Rework moveexecution to be within OverworldCombat::MoveExecution.
 - [x] Combat state in battle_data, last used move, resetting counters, etc.
@@ -105,7 +101,6 @@
 - [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
 - [x] Make simulated combat system
 - [x] Update weather for GameData::Zones
-
 
 ### Misc Mechanics
 - [x] Statues still eat energy if you back out of saving.

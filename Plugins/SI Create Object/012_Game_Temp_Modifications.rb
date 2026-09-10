@@ -78,7 +78,7 @@ class Game_Temp
   end
   
   def piping?
-    self.piping_mode == true && !self.piping_mode_source.nil?
+    self.piping_mode == true && !self.piping_source.nil?
   end 
   
   def connecting?

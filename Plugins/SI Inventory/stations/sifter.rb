@@ -218,9 +218,9 @@ module InventoryScene
 	  
 	  def bonus_slot_function = nil
       def handle_object_click(object_key)
-        return unless object_key == "assign_button"
- 
-        toggle_connection_mode
+        toggle_connection_mode if object_key == "assign_button"
+        toggle_wconnection_mode if object_key == "water_button"
+        tank_clicked(object_key) if object_key.match?(/\Atank_slot_\d+\z/)
       end 
 	  
       def station_can_afford_extra_cost?
@@ -232,6 +232,7 @@ module InventoryScene
       end
   
 	  def initial_craft_contents = event_data.internal_storage
+      def tank_count = 1
       def slot_count = 1
       def background_key = "PANNER"
       def craft_slots_hold_pokemon? = false
@@ -278,10 +279,102 @@ module InventoryScene
         sprites["craft_slots_equals"].z = 70
         sprites["craft_slots_equals"].x = x2 + 87
         sprites["craft_slots_equals"].y = y2 - 60
+        tank_count.times do |i|
+          render_tank(i)
+        end
 		render_assign_button
+		render_water_button
 		render_bonus_slot
       end
+      def render_tank(i)
+        x = bonus_1 + 66 + (i * 50)
+        y = bonus_2 + 24
 
+        objects["tank_slot_#{i}"] = IconSprite.new(0, 0, viewport)
+        objects["tank_slot_#{i}"].x = x
+        objects["tank_slot_#{i}"].y = y
+        objects["tank_slot_#{i}"].z = 0
+        objects["tank_slot_#{i}"].setBitmap(
+          "Graphics/Pictures/craftingMenu/tank_slot"
+        )
+
+        objects["tank_slot_#{i}_fluid"] = IconSprite.new(0, 0, viewport)
+        objects["tank_slot_#{i}_fluid"].x = x
+        objects["tank_slot_#{i}_fluid"].y = y
+        objects["tank_slot_#{i}_fluid"].z = 1
+
+        objects["tank_slot_#{i}_overlay"] = IconSprite.new(0, 0, viewport)
+        objects["tank_slot_#{i}_overlay"].x = x
+        objects["tank_slot_#{i}_overlay"].y = y
+        objects["tank_slot_#{i}_overlay"].z = 2
+        objects["tank_slot_#{i}_overlay"].setBitmap(
+          "Graphics/Pictures/craftingMenu/tank_slot_overlay"
+        )
+      end
+      def refresh_tanks
+        tank_count.times do |i|
+          refresh_tank(i)
+        end
+      end
+
+      def refresh_tank(i)
+        main_fluid_sprite = objects["tank_slot_#{i}"]
+        fluid_sprite = objects["tank_slot_#{i}_fluid"]
+        return unless fluid_sprite
+
+        amount_per_tank = event_data.internal_water_storage.to_f
+		water = i == 0 ? event_data.water : event_data.secondary_water
+		fluid_type = i == 0 ? event_data.fluid_type : event_data.secondary_fluid_type
+        tank_amount = [[water, 0.0].max, amount_per_tank].min
+
+        if tank_amount <= 0 || fluid_type.nil?
+          fluid_sprite.visible = false
+          return
+        end
+
+        fluid_sprite.visible = true
+
+        # The fluid graphic is expected to represent a full tank.
+        # Its height is cropped according to the amount contained.
+        bitmap = Bitmap.new(
+          main_fluid_sprite.bitmap.width,
+          main_fluid_sprite.bitmap.height
+        )
+
+        ratio = tank_amount / amount_per_tank
+        height = (bitmap.height * ratio).to_i
+
+        source_rect = Rect.new(
+          0,
+          bitmap.height - height,
+          bitmap.width,
+          height
+        )
+
+        bitmap.blt(
+          0,
+          bitmap.height - height,
+          fluid_bitmap(fluid_type),
+          source_rect
+        )
+
+        fluid_sprite.bitmap.dispose if fluid_sprite.bitmap
+        fluid_sprite.bitmap = bitmap
+      end
+
+      def fluid_bitmap(fluid_type)
+        path = "Graphics/Pictures/craftingMenu/fluids/#{fluid_type.to_s}"
+        path = "Graphics/Pictures/craftingMenu/fluids/WATER" unless pbResolveBitmap(path)
+        Bitmap.new(path)
+      end
+
+      def tank_clicked(object_key)
+        return unless object_key.match?(/\Atank_slot_\d+\z/)
+        index = object_key.split("_").last.to_i
+		puts index
+        # Tank interaction goes here.
+      end
+	  
       def render_bonus_slot
         x = sprites["craft_slots0"].x - 8
         y = bonus_2 + 20
@@ -334,6 +427,16 @@ module InventoryScene
         bitmap
       end
 
+      def render_water_button
+        objects["water_button"] = IconSprite.new(0, 0, viewport)
+        objects["water_button"].x = bonus_1 + 192
+        objects["water_button"].y = bonus_2 + 120
+        objects["water_button"].z = 0
+        objects["water_button"].visible = true
+        text = connecting_pipe? ? "Routing..." : "Route Pipe"
+        create_text_centered("current_water_label", text, objects["water_button"].x + 44, objects["water_button"].y + 12)
+        refresh_water_button
+      end
 
 
       def render_assign_button
@@ -346,6 +449,33 @@ module InventoryScene
         create_text_centered("current_task_label", text, objects["assign_button"].x + 44, objects["assign_button"].y + 12)
         refresh_assign_button
       end
+
+	  
+      def refresh_water_button
+        bitmap = connecting_pipe? ? "smallbutton_down" : "smallbutton_up"
+        objects["water_button"].setBitmap("Graphics/Pictures/craftingMenu/#{bitmap}")
+        objects["water_button"].visible = true 
+        text = connecting_pipe? ? "Routing..." : "Route Pipe"
+		update_text_centered("current_water_label", text)
+      end
+
+      def toggle_wconnection_mode
+ 
+        if connecting_pipe?
+          $game_temp.piping_mode = false
+          $game_temp.piping_source = nil
+        else
+          $game_temp.piping_mode = true
+          $game_temp.piping_source = event_data
+        end
+        refresh_water_button
+      end
+	  
+	  def connecting_pipe?
+        $game_temp.piping_mode && $game_temp.piping_source.equal?(event_data)
+	  end 
+
+
 	  
       def refresh_assign_button
         bitmap = connecting_power? ? "smallbutton_down" : "smallbutton_up"
@@ -376,6 +506,8 @@ module InventoryScene
 		event_data.update
         sync_slots_visuals!(:craft, 0..slot_count)
 		refresh_assign_button
+		refresh_water_button
+		refresh_tanks
         sprites["craft_slots_equals"].bitmap = fuel_bitmap
       end
     end

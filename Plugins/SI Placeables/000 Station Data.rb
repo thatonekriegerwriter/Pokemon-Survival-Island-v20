@@ -24,6 +24,13 @@ class CraftingStationData
     attr_accessor :power_transmitted
     attr_accessor :minimum_power_input
     attr_accessor :fuel_item
+    attr_accessor :internal_water_storage
+    attr_accessor :secondary_water
+    attr_accessor :average_water_output
+    attr_accessor :average_water_input
+    attr_accessor :minimum_water_input
+    attr_accessor :fluid_type
+    attr_accessor :secondary_fluid_type
 
     FUEL_TO_EU = 100.0
     FUEL_BURN_RATE = 0.01
@@ -39,10 +46,18 @@ class CraftingStationData
 	
     @power = 0.0
     @water = 0.0
+	@secondary_water = 0.0
 	@internal_battery_limit = get_energy
 	@average_power_output = get_power_output
 	@average_power_input = get_power_input
 	@minimum_power_input = get_minimum_power_input
+	
+	
+	@internal_water_storage = get_tank
+	@average_water_output = get_water_output
+	@average_water_input = get_water_input
+	@minimum_water_input = get_minimum_water_input
+	
     @connected_to = nil
     @time_running       = 0
     @network = {}
@@ -54,6 +69,8 @@ class CraftingStationData
 	@passed_time = 0
 	@clicked = false 
 	@fuel_item = nil
+	@fluid_type = nil
+	@secondary_fluid_type = nil
 	@power_transmitted = 0.0
     @internal_storage = [nil] if spinner?
   end
@@ -464,10 +481,31 @@ class CraftingStationData
   end 
   
 
-  def update_feeder(time_delta)
+  def update_pokemon_generator(time_delta)
+    return if @power >= @internal_battery_limit
+    return if @fuel >= 100.0
+	 active_workers = workers.select do |worker_id|
+      worker = $game_map.events[worker_id]
+      worker && worker.pokemon && worker.pokemon.stamina > 0.0
+     end
+	if active_workers.length > 0
+     base_power_gen = 2.0
+	 base_power_gen += active_workers.sum do |worker_id|
+	   worker = $game_map.events[worker_id]
+       next 0.0 unless worker
+       next 0.0 unless worker&.pokemon
+	   pokemon = worker.pokemon
+	   move = pokemon.moves.find do |move|
+         move && move.type == :ELECTRIC && move.pp > 0
+      end
+       move ? 1.5 : 1.0
+     end
+	 amount = (base_power_gen * time_delta)
+     @fuel = [@fuel + amount, 100.0].min
+    end
   end 
-  
-  def get_current_power_output
+
+    def get_current_power_output
     output = @average_power_output
 	if windmill?
 	 output = event.map.get_current_height(event.x, event.y).to_f
@@ -506,30 +544,7 @@ class CraftingStationData
     end 
     return output
   end 
-  def update_pokemon_generator(time_delta)
-    return if @power >= @internal_battery_limit
-    return if @fuel >= 100.0
-	 active_workers = workers.select do |worker_id|
-      worker = $game_map.events[worker_id]
-      worker && worker.pokemon && worker.pokemon.stamina > 0.0
-     end
-	if active_workers.length > 0
-     base_power_gen = 2.0
-	 base_power_gen += active_workers.sum do |worker_id|
-	   worker = $game_map.events[worker_id]
-       next 0.0 unless worker
-       next 0.0 unless worker&.pokemon
-	   pokemon = worker.pokemon
-	   move = pokemon.moves.find do |move|
-         move && move.type == :ELECTRIC && move.pp > 0
-      end
-       move ? 1.5 : 1.0
-     end
-	 amount = (base_power_gen * time_delta)
-     @fuel = [@fuel + amount, 100.0].min
-    end
-  end 
-  
+
 def update_production(time_delta)
   if @power <= 0 && (@fuel<=0 || machine_box?)
     @active = false
@@ -578,8 +593,9 @@ def update_production(time_delta)
 
 end
   
-  
-  def update_consumption(time_delta)
+
+ 
+ def update_consumption(time_delta)
   return if @average_power_input <= 0
   power_input = @average_power_input
   eu_needed = power_input * time_delta
@@ -616,6 +632,12 @@ end
     update_consumption(time_delta) if needs_power?
     update_production(time_delta) if power_generator?
     update_batbox(time_delta) if batbox?
+	update_fluid_type
+	update_powerless if powerless?
+	update_water_consumption(time_delta) if needs_water?
+    update_water_production(time_delta) if produces_water?
+	
+	
     @time_active = time_now if time_now 
 	update_network(time_delta, time_now, visited)
   
@@ -635,9 +657,19 @@ end
     @time_active = time_now
   end 
 
-
+  def powerless?
+    tank?
+  end 
+  
+  def tank?
+    item&.id == :TANK
+  end 
   def update_fuelless
     @fuel = 100
+  end 
+
+  def update_powerless
+    @power = 100
   end 
 
 
@@ -738,6 +770,80 @@ end
     @network = {}
   end 
 
+  def update_water_production(time_delta)
+    if @power <= 0
+     @active = false
+     return
+    end
+  if @power > 0
+    water_to_pump = get_current_water_output * time_delta
+    water_to_pump = [water_to_pump, @internal_water_storage - @water].min
+    @water = [@water + water_to_pump, @internal_water_storage].min
+  end
+  
+  output_remaining = get_current_water_output * time_delta
+  @active = (@water > 0)
+  waternetwork_events(:consumer).shuffle.each do |nevent|
+    break if @water <= 0
+
+    other_data = nevent.type.internal_data
+    next if other_data.average_water_input <= 0
+    next if other_data.water >= other_data.internal_water_storage
+	other_data.fluid_type = @fluid_type if other_data.fluid_type.nil?
+	next if other_data.fluid_type != @fluid_type
+	start_water = other_data.water
+
+    wtr_needed = other_data.average_water_input * time_delta
+    wtr_needed = [wtr_needed, other_data.internal_water_storage - other_data.water].min
+
+	#puts output_remaining <= 0
+    next if output_remaining <= 0
+
+    wtr_taken = [@water, wtr_needed, output_remaining].min
+
+    @water -= wtr_taken
+	output_remaining -= wtr_taken
+    other_data.water += wtr_taken
+	if other_data.active 
+	  other_data.active = other_data.water > 0
+	else
+	  other_data.active = start_water + wtr_taken >= other_data.minimum_water_input * time_delta
+	end 
+  end
+
+  end
+
+  def get_current_water_output
+    output = @average_water_output
+	return output
+  end
+  def update_water_consumption(time_delta)
+  return if @average_water_input <= 0
+  water_input = @average_water_input
+  wtr_needed = water_input * time_delta
+
+  if @active
+    wtr_used = [@water, wtr_needed].min
+    @water -= wtr_used
+	@water = 0 if @water < 0
+	@fluid_type = nil if @water == 0
+    @active = @water > 0
+  else
+    @active = (@water >= wtr_needed)
+  end
+  end 
+  
+  def update_sprinkler(time_delta)
+  end
+  
+  def update_washer(time_delta)
+  end 
+  
+  def update_purifier(time_delta)
+  end
+
+  def update_feeder(time_delta)
+  end 
   
 end
 
@@ -754,10 +860,20 @@ class CraftingStationData
   def quarry?
     item&.id == :ELECTRICQUARRY
   end
-  
-  
-  
-  
+
+
+  def pump?
+    item&.id == :ELECTRICPUMP
+  end
+  def sprinkler?
+    item&.id == :SPRINKLER
+  end
+  def water_purifier?
+    item&.id == :ELECTRICPURIFIER
+  end
+  def ore_washer?
+    item&.id == :ELECTRICOREWASHER
+  end
   def power_generator?
     return false unless item 
     GameData::Placeable.get(item.id).produces_power
@@ -844,7 +960,13 @@ class CraftingStationData
     @fuel > 0.0
   end 
   
-
+  def powered?
+    @power > 0.0
+  end 
+  
+  def active?
+    @active
+  end 
 end 
 class CraftingStationData #Electric
   def station_type
@@ -1017,18 +1139,24 @@ end
   def get_power_input
     return 32.0 if machine_box?
     return 6.0 if quarry?
+    return 6.0 if pump?
     return 3.0 if electric_furnace?
     return 3.0 if electric_sifter?
-    return 3.0 if panner?
+    return 0.5 if sprinkler?
+    return 3.0 if water_purifier?
+    return 4.0 if ore_washer?
     #return 3.0 if needs_power?
     return 0.0
   end
   
   def get_minimum_power_input
     return 80.0 if quarry?
+    return 60.0 if pump?
     return 1.0 if electric_furnace?
     return 1.0 if electric_sifter?
-    return 1.0 if panner?
+    return 1.0 if sprinkler?
+    return 1.0 if water_purifier?
+    return 1.0 if ore_washer?
     #return 3.0 if needs_power?
     return 0.0
   end
@@ -1043,7 +1171,41 @@ end
 	return 0.0
   end 
   
-
+    def get_tank
+    return 4000.0 if pump?
+	return 120.0 if ore_washer?
+	return 420.0 if water_purifier?
+	return 60.0
+  end 
+  
+  def terrain_tag_water?
+    [:StillWater, :Water, :DeepWater].include?(event.terrain_tag.id)
+  
+  end 
+   def update_fluid_type
+   @fluid_type = :WATER if pump? && terrain_tag_water?
+ end 
+  def get_water_output
+    return 1.0 if pump? && event.terrain_tag.id == :StillWater
+    return 6.0 if pump? && event.terrain_tag.id == :Water
+    return 12.0 if pump? && event.terrain_tag.id == :DeepWater
+	return 0.0
+  end 
+  
+  def get_water_input
+    return 1.0 if sprinkler?
+	return 2.0 if ore_washer?
+	return 8.0 if water_purifier?
+	return 0.0
+  end 
+  
+  def get_minimum_water_input
+    return 0.15 if sprinkler?
+	return 1.0 if ore_washer?
+	return 4.0 if water_purifier?
+	return 0.0
+  end 
+  
 
 
   

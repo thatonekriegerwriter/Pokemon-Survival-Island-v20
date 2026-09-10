@@ -40,11 +40,14 @@
 
 ### World
 - [ ] Finish First Temple
+- [ ] Lock off unavailable statues
 
 
 ### Misc Mechanics
 - [ ] Too low happiness for too long begins dragging down loyalty.
 - [ ] Too low loyalty for too long, and being unattended risks Pokemon abandoning you.
 - [ ] Pokemon nature impacts perferred food.
+- [ ] Overhaul Happiness to be ephemerial.
+- [ ] Pokemon Mood
 
  

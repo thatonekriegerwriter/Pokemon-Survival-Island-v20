@@ -10,8 +10,6 @@
 
 
 ### Pokemon
-- [ ] Overhaul Happiness to be ephemerial.
-- [ ] Pokemon Mood
 - [ ] Released Pokemon Array and Released Pokemon events
 
 
@@ -60,7 +58,6 @@
 - [-] Fix held item across map boundries, there is slight visual jitter, but its fine
 
 ### Misc Mechanics
-- [ ] Drop items on death?
 - [ ] Disease
 
 ### Items

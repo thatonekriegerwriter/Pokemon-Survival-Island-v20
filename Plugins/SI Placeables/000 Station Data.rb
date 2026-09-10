@@ -654,6 +654,8 @@ end
 	update_panner(time_delta) if panner?
 	update_quarry(time_delta) if quarry?
 	update_washer(time_delta) if ore_washer?
+	update_sprinkler(time_delta) if sprinkler?
+	update_purifier(time_delta) if water_purifier?
 	end 
     time_now = pbGetTimeNow.to_i
     time_delta_active = time_now - @time_active
@@ -818,11 +820,15 @@ end
 
   end
 
+
   def get_current_water_output
     output = @average_water_output
 	return output
   end
+   
+
   def update_water_consumption(time_delta)
+  
     if @power <= 0
      @active = false
      return
@@ -830,8 +836,8 @@ end
   return if @average_water_input <= 0
   water_input = @average_water_input
   wtr_needed = water_input * time_delta
-
-  if @active
+  if @active && sprinkler?
+  elsif @active
     wtr_used = [@water, wtr_needed].min
     @water -= wtr_used
 	@water = 0 if @water < 0
@@ -845,8 +851,45 @@ end
   def active_sprinkler?
     @active && sprinkler?
   end 
+
+def get_nearby_berry_plants
+  events = $DynamicEvents.block_data_for_type(:BERRYPLANT)
+  return [] if events.empty?
+
+  events.select do |event|
+    dx = (event.x - x).abs
+    dy = (event.y - y).abs
+    dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
+  end.map(&:internal_data)
+end
   
   def update_sprinkler(time_delta)
+    if @power <= 0
+     @active = false
+     return
+    end
+    events = get_nearby_berry_plants
+	return if events.empty?
+	return unless @active 
+	
+	water_per_plant = 0.25 * time_delta
+	water_needed = water_per_plant * events.length
+    water_used = [@water, water_needed].min
+	
+    return if water_used <= 0
+    water_remaining = water_used
+
+    events.each do |plant|
+      break if water_remaining <= 0
+
+      amount = [water_per_plant, water_remaining].min
+      plant.water(amount * (2.0 / 3.0))
+      water_remaining -= amount
+    end
+    @water -= water_used - water_remaining
+	@water = 0 if @water < 0
+	@fluid_type = nil if @water == 0
+    @active = @water > 0
   end
   
   def update_washer(time_delta)
@@ -888,6 +931,27 @@ end
   end 
   
   def update_purifier(time_delta)
+  return unless @fluid_type == :WATER
+  return unless @secondary_fluid_type.nil? || @secondary_fluid_type == :FRESHWATER
+  return if @water <= 0
+  return if @secondary_water >= @internal_water_storage 
+ 
+  @work_done += time_delta
+
+  work_time = 5.0 * 60.0
+  return if @work_done < work_time
+
+  amount = [10.0, @water].min
+  amount = [amount, @internal_water_storage - @secondary_water].min
+
+  return if amount <= 0
+
+  @water -= amount
+  @secondary_water += amount
+  @secondary_fluid_type = :FRESHWATER
+  @work_done -= work_time
+
+  @fluid_type = nil if @water <= 0
   end
 
   def update_feeder(time_delta)
@@ -1223,6 +1287,7 @@ end
     return 4000.0 if pump?
 	return 120.0 if ore_washer?
 	return 420.0 if water_purifier?
+    return 420.0 if sprinkler?
 	return 60.0
   end 
   
@@ -1234,21 +1299,21 @@ end
    @fluid_type = :WATER if pump? && terrain_tag_water?
  end 
   def get_water_output
-    return 2.0 if pump? && event.terrain_tag.id == :StillWater
-    return 8.0 if pump? && event.terrain_tag.id == :Water
-    return 16.0 if pump? && event.terrain_tag.id == :DeepWater
+    return 8.0 if pump? && event.terrain_tag.id == :StillWater
+    return 16.0 if pump? && event.terrain_tag.id == :Water
+    return 32.0 if pump? && event.terrain_tag.id == :DeepWater
 	return 0.0
   end 
   
   def get_water_input
-    return 1.0 if sprinkler?
-	return 2.0 if ore_washer?
-	return 8.0 if water_purifier?
+    return 8.0 if sprinkler?
+	return 4.0 if ore_washer?
+	return 16.0 if water_purifier?
 	return 0.0
   end 
   
   def get_minimum_water_input
-    return 0.15 if sprinkler?
+    return 1.0 if sprinkler?
 	return 1.0 if ore_washer?
 	return 4.0 if water_purifier?
 	return 0.0

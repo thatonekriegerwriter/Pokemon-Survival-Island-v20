@@ -4554,17 +4554,17 @@ Description = A Paraglider that can be used for traversing the sky.
 [JACKETEDCABLE]
 Name = Copper Cable
 NamePlural = Copper Cables
-Pocket = 7
+Pocket = 0
 Price = 0
-Flags = Fling_10,Tool
+Flags = Fling_10
 Description = Copper Cables for wiring up machines.
 #-------------------------------
 [COPPERPIPE]
 Name = Copper Pipe
 NamePlural = Copper Pipes
-Pocket = 7
+Pocket = 0
 Price = 0
-Flags = Fling_10,Tool
+Flags = Fling_10
 Description = Copper Cables for wiring up machines.
 #-------------------------------
 [MASTERBALL]

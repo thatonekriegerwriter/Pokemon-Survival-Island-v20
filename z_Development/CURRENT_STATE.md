@@ -21,6 +21,7 @@
 - [ ] Sprinklers: Waters Berry Plants automatically.
 - [ ] Guard Post UI + Functionality.
 - [ ] Feeder UI
+- [ ] Coal Generator: Different Fuel Types give different wattage output
 
 ### Items
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.

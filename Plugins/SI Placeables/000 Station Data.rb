@@ -596,6 +596,10 @@ end
 
  
  def update_consumption(time_delta)
+    if @power <= 0
+     @active = false
+     return
+    end
   return if @average_power_input <= 0
   power_input = @average_power_input
   eu_needed = power_input * time_delta
@@ -649,6 +653,7 @@ end
     update_sifter(time_delta) if electric_sifter? || sifter?
 	update_panner(time_delta) if panner?
 	update_quarry(time_delta) if quarry?
+	update_washer(time_delta) if ore_washer?
 	end 
     time_now = pbGetTimeNow.to_i
     time_delta_active = time_now - @time_active
@@ -818,6 +823,10 @@ end
 	return output
   end
   def update_water_consumption(time_delta)
+    if @power <= 0
+     @active = false
+     return
+    end
   return if @average_water_input <= 0
   water_input = @average_water_input
   wtr_needed = water_input * time_delta
@@ -833,10 +842,49 @@ end
   end
   end 
   
+  def active_sprinkler?
+    @active && sprinkler?
+  end 
+  
   def update_sprinkler(time_delta)
   end
   
   def update_washer(time_delta)
+      return unless result_slot
+    item, qty = result_slot.dup
+	qty = [qty, (@power / 60).floor].min
+	qty = [qty, (@water / 40).floor].min
+	return if qty <= 0
+    if item.is_a?(ItemData) && item.id == :SOFTSAND
+	  @internal_storage[-1][1] -= qty
+	  @internal_storage[-1] = nil if @internal_storage[-1][1]<=0
+	  items = []
+	  qty.times do |i|
+	    items << [:SIFTEDORE, 1]
+	  end 
+	  items = items.group_by(&:first).map do |id, stacks|
+        item = ItemData.new(id)
+        [item, stacks.sum { |_, amount| amount }]
+      end
+	  raise if items.length > 1
+	  items.each do |item, amount|
+ 	   existing = @internal_storage[0...-1].find do |stack|
+       stack.is_a?(Array) && stack[0].is_a?(ItemData) && stack[0].id == item.id
+       end
+
+ 	   if existing
+ 	     existing[1] += amount
+ 	   else
+        index = @internal_storage[0...-1].index(nil)
+  	    raise if index.nil?
+  	    @internal_storage[index] = [item, amount]
+ 	   end
+	  end
+
+	  @power -= (60 * qty) 
+	  @water -= (40 * qty) 
+	end 
+	
   end 
   
   def update_purifier(time_delta)
@@ -1186,9 +1234,9 @@ end
    @fluid_type = :WATER if pump? && terrain_tag_water?
  end 
   def get_water_output
-    return 1.0 if pump? && event.terrain_tag.id == :StillWater
-    return 6.0 if pump? && event.terrain_tag.id == :Water
-    return 12.0 if pump? && event.terrain_tag.id == :DeepWater
+    return 2.0 if pump? && event.terrain_tag.id == :StillWater
+    return 8.0 if pump? && event.terrain_tag.id == :Water
+    return 16.0 if pump? && event.terrain_tag.id == :DeepWater
 	return 0.0
   end 
   

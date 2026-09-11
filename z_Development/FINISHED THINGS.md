@@ -14,6 +14,7 @@
 - [x] Make sure pokemon working in stations return to work after combat. 
 - [x] Fix middle mouse selection
 - [x] Butchering table
+- [x] Placeable Stations Recipes
 
 ### Core Gameplay 
 - [x] You can assign Pokemon to tasks around the base.

@@ -16,7 +16,6 @@
 
 ### Items
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
-- [x] Placeable Stations Recipes
 
 ### PlaceableAssignments
 - [ ] Make sure guards aren't locked to STANDING at their station + Functionality.

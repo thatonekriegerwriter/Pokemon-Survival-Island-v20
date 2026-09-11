@@ -30,7 +30,6 @@ class Tooltip
 	end 
     clear_contents
     @sprites["bg"].bitmap.clear
-
     # Starting vertical offset
     cursor_y = @padding
 

@@ -653,7 +653,7 @@ class Scene_Map
      localMeter=CraftingStationData.new(event_id)
      event.type.internal_data = localMeter
    end 
-   can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.hydromechanical?(event.type) && Placeable.pipable?(eventdata, event.type.internal_data)
+   can_connect = event && event != eventdata.event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.hydromechanical?(event.type) && Placeable.pipable?(eventdata, event.type.internal_data)
    already_connected = can_connect && eventdata.connected_to_water_network?(event)
    text = _INTL("Route #{item.name} to #{event.station_name} for #{amount} Pipe?") if can_connect
    text = _INTL("Disconnect #{item.name} from #{event.station_name}?") if already_connected
@@ -741,7 +741,7 @@ class Scene_Map
      localMeter=CraftingStationData.new(event_id)
      event.type.internal_data = localMeter
    end 
-   can_connect = event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.electronic?(event.type) && Placeable.connectable?(eventdata, event.type.internal_data)
+   can_connect = event && event != eventdata.event && event.is_a?(Game_OVEvent) && event.type.internal_data && Placeable.electronic?(event.type) && Placeable.connectable?(eventdata, event.type.internal_data)
    already_connected = can_connect && eventdata.connected_to_network?(event)
    text = _INTL("Connect #{item.name} to #{event.station_name} for #{amount} Cable?") if can_connect
    text = _INTL("Disconnect #{item.name} from #{event.station_name}?") if already_connected
@@ -1758,12 +1758,14 @@ end
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
     elsif Input.triggerex?(Keys::CONTROLS_LIST["/?"])
-	   item = ItemData.new(:CAPTURESTYLUS)
-	   $bag.add(item, 1)
+	 #  item = ItemData.new(:CAPTURESTYLUS)
+	#   $bag.add(item, 1)
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
 
+	   item = ItemData.new(:SOFTSAND)
+	   $bag.add(item, 64)
 	
 	  item = ItemData.new(:COALGENERATOR)
       key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
@@ -1775,6 +1777,8 @@ end
 	  item = ItemData.new(:ELECTRICPUMP)
       key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
 	  
+	  item = ItemData.new(:TANK)
+      key_id = $DynamicEvents.generateEvent($game_player.x-6, $game_player.y-1, item, false, false, $game_player.direction)
 	  item = ItemData.new(:SPRINKLER)
       key_id = $DynamicEvents.generateEvent($game_player.x-5, $game_player.y-1, item, false, false, $game_player.direction)
 	  item = ItemData.new(:ELECTRICPURIFIER)

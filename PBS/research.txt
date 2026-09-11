@@ -23,6 +23,54 @@ UnlockItem=JACKETEDCABLE
 AssociatedRecipe=ELECTRICGRINDER
 Flags=
 #-------------------------------
+[ELECTRICSIFTER]
+Name=Placeable: Electric Sifter
+HoursPerStage=1
+StageAmt=2
+UnlockItem=JACKETEDCABLE
+AssociatedRecipe=ELECTRICSIFTER
+Flags=
+#-------------------------------
+[ELECTRICOREWASHER]
+Name=Placeable: Electric Ore Washer
+HoursPerStage=1
+StageAmt=2
+UnlockItem=JACKETEDCABLE
+AssociatedRecipe=ELECTRICOREWASHER
+Flags=
+#-------------------------------
+[ELECTRICPURIFIER]
+Name=Placeable: Water Purifier
+HoursPerStage=1
+StageAmt=2
+UnlockItem=JACKETEDCABLE
+AssociatedRecipe=ELECTRICPURIFIER
+Flags=
+#-------------------------------
+[ELECTRICLIGHT]
+Name=Placeable: Electric Light
+HoursPerStage=1
+StageAmt=2
+UnlockItem=TORCH
+AssociatedRecipe=ELECTRICLIGHT
+Flags=
+#-------------------------------
+[ELECTRICQUARRY]
+Name=Placeable: Quarry
+HoursPerStage=3
+StageAmt=4
+UnlockItem=IRONPICKAXE
+AssociatedRecipe=ELECTRICQUARRY
+Flags=
+#-------------------------------
+[ELECTRICPUMP]
+Name=Placeable: Electric Pump
+HoursPerStage=3
+StageAmt=4
+UnlockItem=COPPERPIPE
+AssociatedRecipe=ELECTRICPUMP
+Flags=
+#-------------------------------
 [MACHINEBOX_3]
 Name=Placeable: Poke Generator
 HoursPerStage=2

@@ -102,12 +102,12 @@ module InventoryScene
 	end 
 	
     def update
-      tooltip.update
       pbUpdateSpriteHash(sprites)
       update_tab_highlight
       update_drag_ghost
       update_highlight
       update_hover_tooltip
+      tooltip.update
       update_party_bars if has_party_sidebar?
       update_result_slot if uses_recipe_grid?
       update_pokemon_icon_tones

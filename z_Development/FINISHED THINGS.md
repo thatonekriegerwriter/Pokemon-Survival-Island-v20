@@ -20,6 +20,7 @@
 - [x] Electronics Connections and Electrical System
 
 ### UI
+- [x] Electronics UI
 - [x] Machine Box UI
 - [x] Modifier Station Functionality  + UI, modifiers are highly complex if  they have stacks, and need their internal data deep cloned.
 - [x] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
@@ -80,8 +81,15 @@
 - [x] Electric Miner: A 3x3 rig that automine. Can only be used on stone.
 - [-] Electric Icebox
 - [x] Poke Generator
+- [x] Outdoor Pet Beds close to diggable terrain, with a Rock or Ground type will go around digging up sand.
 - [x] Pipes, the equalvent of Cables. Can be used to pipe water.
 - [x] Remove Upgrade Slots from Machine Box
+- [x] Electric Pump: Pumps water out of water sources.
+- [x] Electric Water Purifier: Turns Water pumped in into Purified water.
+- [x] Electric Ore Washer
+- [x] Sprinklers: Waters Berry Plants automatically.
+- [x] Coal Generator: Different Fuel Types give different wattage output
+- [x] Add Watering Cans to the tank system
 
 ### Combat
 - [x] Rework moveexecution to be within OverworldCombat::MoveExecution.

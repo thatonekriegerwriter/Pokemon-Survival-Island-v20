@@ -4554,7 +4554,7 @@ Description = A Paraglider that can be used for traversing the sky.
 [JACKETEDCABLE]
 Name = Copper Cable
 NamePlural = Copper Cables
-Pocket = 0
+Pocket = 1
 Price = 0
 Flags = Fling_10
 Description = Copper Cables for wiring up machines.
@@ -4562,7 +4562,7 @@ Description = Copper Cables for wiring up machines.
 [COPPERPIPE]
 Name = Copper Pipe
 NamePlural = Copper Pipes
-Pocket = 0
+Pocket = 1
 Price = 0
 Flags = Fling_10
 Description = Copper Cables for wiring up machines.
@@ -10306,6 +10306,15 @@ Price = 0
 FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A powered station that allows you pump water into a water network.
+#-------------------------------
+[TANK]
+Name = Fluid Tank
+NamePlural = Fluid Tank
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A container exclusively for water.
 #-------------------------------
 [SIFTEDORE]
 Name = Sifted Ore

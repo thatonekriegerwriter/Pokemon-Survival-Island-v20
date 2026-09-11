@@ -241,11 +241,25 @@ class Game_Map
     map_event = @map.events[index]
 	if map_event.name[/BerryPlant/i] || map_event.name[/AncientStone/i]
 	  type = map_event.name[/BerryPlant/i] ? :BERRYPLANT : :STATUE
-      @events[index]          = Game_OVEvent.new(type, @map_id, map_event, self)
+	  unless already_has_event?(index)
+	   add_to_ov_events(index)
+       @events[index] = Game_OVEvent.new(type, @map_id, map_event, self)
+	  end 
 	else
       @events[index]          = Game_Event.new(@map_id, map_event, self)
 	
 	end 
+  end 
+  
+  def add_to_ov_events(key_id)
+    key = [@map_id, key_id]
+	return if already_has_event?(key_id)
+	$game_temp.ovevents << key 
+  end 
+  
+  def already_has_event?(key_id)
+    key = [@map_id, key_id]
+	$game_temp.ovevents.include?(key)
   end 
   
   def setup(map_id, add = false)
@@ -280,7 +294,7 @@ class Game_Map
     EventHandlers.trigger(:on_game_map_setup, @map_id, @map, tileset)
     @events               = EventHash.new
     @map.events.each_key do |i|
-      @events[i]          = buildMapEvent(i)
+      buildMapEvent(i)
     end
     @common_events        = {}
     (1...$data_common_events.size).each do |i|

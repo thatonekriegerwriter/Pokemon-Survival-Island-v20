@@ -880,8 +880,9 @@ class BerryPlantData
   attr_accessor :stagnation_message
 
 	
-  def initialize(event_id)
+  def initialize(event_id, map_id = $game_map.map_id)
      @event_id = event_id 
+	 @map_id = map_id
 	 @tile_data = BerryTileData.new(self.event.x,self.event.y)
 	 @centered = false
 	 @jit = false
@@ -962,7 +963,8 @@ class BerryPlantData
   
   def event
    @event_id = @event.id if @event 
-   $game_map.events[event_id] if event_id
+   map = $map_factory.getMapNoAdd(@map_id)
+   map.events[event_id] if event_id
   end 
   
   def workers
@@ -1143,6 +1145,7 @@ def nearby_apiaries?
 end
 
   def update
+    @map_id = $game_map.map_id if @map_id.nil?
 	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
     @exposed_to_rain = false if @exposed_to_rain.nil?
     @jit = false if @jit.nil?

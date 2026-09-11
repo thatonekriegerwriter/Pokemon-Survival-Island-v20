@@ -23,18 +23,23 @@ class CraftingStationData
     attr_accessor :clicked
     attr_accessor :power_transmitted
     attr_accessor :minimum_power_input
-    attr_accessor :fuel_item
+    attr_accessor :fuel_type
     attr_accessor :internal_water_storage
     attr_accessor :secondary_water
     attr_accessor :average_water_output
     attr_accessor :average_water_input
     attr_accessor :minimum_water_input
     attr_accessor :fluid_type
+    attr_accessor :passive_water_consumption
     attr_accessor :secondary_fluid_type
 
     FUEL_TO_EU = 100.0
     FUEL_BURN_RATE = 0.01
-	
+      FUEL_HASH = {
+        CHARCOAL: 5, COAL: 10, ACORN: 0.5, WOODENLOG: 2.5,
+        WOODENSTICKS: 0.5, WOODENPLANKS: 1, HEATROCK: 20, FIRESTONE: 40
+      }.freeze
+	#return 10.0 if coal_generator?
   def initialize(event_id)
     @event_id = event_id 
     @time_last_updated = pbGetTimeNow.to_i
@@ -68,9 +73,10 @@ class CraftingStationData
 	@work_done = 0.0
 	@passed_time = 0
 	@clicked = false 
-	@fuel_item = nil
+	@fuel_type = nil
 	@fluid_type = nil
 	@secondary_fluid_type = nil
+	@passive_water_consumption = get_water_consumption
 	@power_transmitted = 0.0
     @internal_storage = [nil] if spinner?
   end
@@ -431,41 +437,6 @@ class CraftingStationData
 	end 
 	
   end 
-  def update_panner(time_delta)
-    return unless result_slot
-	return unless panner?
-    item, qty = result_slot.dup
-	qty = [qty, (@power / 60).floor].min
-	return if qty <= 0
-    if item.is_a?(ItemData) && item.id == :SOFTSAND
-	  @internal_storage[-1][1] -= qty
-	  @internal_storage[-1] = nil if @internal_storage[-1][1]<=0
-	  items = []
-	  qty.times do |i|
-	    items << [:SIFTEDORE, 1]
-	  end 
-	  items = items.group_by(&:first).map do |id, stacks|
-        item = ItemData.new(id)
-        [item, stacks.sum { |_, amount| amount }]
-      end
-	  raise if items.length > 1
-	  items.each do |item, amount|
- 	   existing = @internal_storage[0...-1].find do |stack|
-       stack.is_a?(Array) && stack[0].is_a?(ItemData) && stack[0].id == item.id
-       end
-
- 	   if existing
- 	     existing[1] += amount
- 	   else
-        index = @internal_storage[0...-1].index(nil)
-  	    raise if index.nil?
-  	    @internal_storage[index] = [item, amount]
- 	   end
-	  end
-	  @power -= (60 * qty)
-	end 
-	
-  end 
   def update_modifier
     @extra_storage = [] if @extra_storage.nil? 
     return unless self.result_slot.nil?
@@ -542,10 +513,16 @@ class CraftingStationData
      output = base_power_gen
     end 
     end 
+    if coal_generator?
+	 output += FUEL_HASH[@fuel_type.id] if @fuel_type
+	end 
     return output
   end 
 
 def update_production(time_delta)
+  if @fuel <= 0 && coal_generator?
+    @fuel_type = nil
+  end 
   if @power <= 0 && (@fuel<=0 || machine_box?)
     @active = false
 	#puts "This one?" if item&.id == :COALGENERATOR
@@ -651,11 +628,10 @@ end
 	if @active
 	update_machine_box(time_delta) if machine_box?
     update_sifter(time_delta) if electric_sifter? || sifter?
-	update_panner(time_delta) if panner?
 	update_quarry(time_delta) if quarry?
-	update_washer(time_delta) if ore_washer?
 	update_sprinkler(time_delta) if sprinkler?
 	update_purifier(time_delta) if water_purifier?
+	update_washer(time_delta) if ore_washer?
 	end 
     time_now = pbGetTimeNow.to_i
     time_delta_active = time_now - @time_active
@@ -751,7 +727,7 @@ end
   
   
   def update_data(time_delta, time_now)
-    update_electronics(time_delta) if electric?
+    update_electronics(time_delta) if electric? || tank?
 	update_furnace(time_delta) if furnace? || coal_generator?
 	update_grinder(time_delta) if grinder?
 	update_spinner(time_delta) if spinner?
@@ -803,7 +779,6 @@ end
     wtr_needed = other_data.average_water_input * time_delta
     wtr_needed = [wtr_needed, other_data.internal_water_storage - other_data.water].min
 
-	#puts output_remaining <= 0
     next if output_remaining <= 0
 
     wtr_taken = [@water, wtr_needed, output_remaining].min
@@ -811,11 +786,13 @@ end
     @water -= wtr_taken
 	output_remaining -= wtr_taken
     other_data.water += wtr_taken
+	puts wtr_taken 
 	if other_data.active 
 	  other_data.active = other_data.water > 0
 	else
 	  other_data.active = start_water + wtr_taken >= other_data.minimum_water_input * time_delta
 	end 
+	puts other_data.active 
   end
 
   end
@@ -828,16 +805,14 @@ end
    
 
   def update_water_consumption(time_delta)
-  
     if @power <= 0
      @active = false
      return
     end
-  return if @average_water_input <= 0
-  water_input = @average_water_input
+  return if @passive_water_consumption <= 0
+  water_input = @passive_water_consumption
   wtr_needed = water_input * time_delta
-  if @active && sprinkler?
-  elsif @active
+  if @active
     wtr_used = [@water, wtr_needed].min
     @water -= wtr_used
 	@water = 0 if @water < 0
@@ -853,14 +828,15 @@ end
   end 
 
 def get_nearby_berry_plants
-  events = $DynamicEvents.block_data_for_type(:BERRYPLANT)
-  return [] if events.empty?
+  berry_plants = $DynamicEvents.berryplants
+  return [] if berry_plants.empty?
 
-  events.select do |event|
-    dx = (event.x - x).abs
-    dy = (event.y - y).abs
+  berry_plants.select do |plant|
+    plant_event = plant.event 
+    dx = (plant_event.x - event.x).abs
+    dy = (plant_event.y - event.y).abs
     dx <= 1 && dy <= 1 && (dx != 0 || dy != 0)
-  end.map(&:internal_data)
+  end
 end
   
   def update_sprinkler(time_delta)
@@ -868,18 +844,22 @@ end
      @active = false
      return
     end
-    events = get_nearby_berry_plants
-	return if events.empty?
+	if @water <= 0
+     @active = false
+     return
+     end 
+    plants = get_nearby_berry_plants
+	return if plants.empty?
 	return unless @active 
 	
 	water_per_plant = 0.25 * time_delta
-	water_needed = water_per_plant * events.length
+	water_needed = water_per_plant * plants.length
     water_used = [@water, water_needed].min
 	
     return if water_used <= 0
     water_remaining = water_used
 
-    events.each do |plant|
+    plants.each do |plant|
       break if water_remaining <= 0
 
       amount = [water_per_plant, water_remaining].min
@@ -894,16 +874,23 @@ end
   
   def update_washer(time_delta)
       return unless result_slot
+	if @water <= 0
+     @active = false
+     return
+  
+     end 
     item, qty = result_slot.dup
-	qty = [qty, (@power / 60).floor].min
-	qty = [qty, (@water / 40).floor].min
-	return if qty <= 0
+    return if @power < 60
+    return if @water < 5
+	qty = 1
     if item.is_a?(ItemData) && item.id == :SOFTSAND
 	  @internal_storage[-1][1] -= qty
 	  @internal_storage[-1] = nil if @internal_storage[-1][1]<=0
 	  items = []
 	  qty.times do |i|
 	    items << [:SIFTEDORE, 1]
+	    @power -= 60
+	    @water -= 5 
 	  end 
 	  items = items.group_by(&:first).map do |id, stacks|
         item = ItemData.new(id)
@@ -924,8 +911,6 @@ end
  	   end
 	  end
 
-	  @power -= (60 * qty) 
-	  @water -= (40 * qty) 
 	end 
 	
   end 
@@ -933,7 +918,11 @@ end
   def update_purifier(time_delta)
   return unless @fluid_type == :WATER
   return unless @secondary_fluid_type.nil? || @secondary_fluid_type == :FRESHWATER
-  return if @water <= 0
+  if @water <= 0
+     @active = false
+     return
+  
+  end 
   return if @secondary_water >= @internal_water_storage 
  
   @work_done += time_delta
@@ -965,9 +954,6 @@ class CraftingStationData
   end
   def sifter?
     item&.id == :SIFTER
-  end
-  def panner?
-    item&.id == :ELECTRICOREWASHER
   end
   def quarry?
     item&.id == :ELECTRICQUARRY
@@ -1286,6 +1272,7 @@ end
     def get_tank
     return 4000.0 if pump?
 	return 120.0 if ore_washer?
+	return 100.0 if tank?
 	return 420.0 if water_purifier?
     return 420.0 if sprinkler?
 	return 60.0
@@ -1305,16 +1292,22 @@ end
 	return 0.0
   end 
   
+  def get_water_consumption
+	return 8.0 if water_purifier?
+	return 0.0
+  end 
+  
   def get_water_input
-    return 8.0 if sprinkler?
-	return 4.0 if ore_washer?
-	return 16.0 if water_purifier?
+    return 4.0 if sprinkler?
+    return 1.0 if tank?
+	return 0.5 if ore_washer?
+	return 8.0 if water_purifier?
 	return 0.0
   end 
   
   def get_minimum_water_input
     return 1.0 if sprinkler?
-	return 1.0 if ore_washer?
+	return 0.5 if ore_washer?
 	return 4.0 if water_purifier?
 	return 0.0
   end 
@@ -1574,10 +1567,6 @@ class GuardStationData
   def pokemon = @pokemon_slot[0]
   def pokemon_slot = @pokemon_slot
   
-  def give_feather
-    nil
-  end 
-  
   def replace_pokemon(new_pokemon)
     spawned_event&.removeThisEventfromMap
     @pokemon_slot[0] = nil
@@ -1671,11 +1660,17 @@ class PetBedData
 	@started_working_at = nil 
 	@stopped_working_at = nil 
 	@last_got_feather = pbGetTimeNow.to_i - 3600
+	@last_got_dig = pbGetTimeNow.to_i - 3600
   end
  
   def last_got_feather
 	@last_got_feather = pbGetTimeNow.to_i - 3600 if @last_got_feather.nil?
 	return @last_got_feather
+  end  
+ 
+  def last_got_dig
+	@last_got_dig = pbGetTimeNow.to_i - 3600 if @last_got_dig.nil?
+	return @last_got_dig
   end  
   
   def workers
@@ -1749,8 +1744,46 @@ class PetBedData
     return !@partner_bed.nil? && !@baby_bed.nil?
   end 
   alias breeding? breeding 
+
+def has_diggable_tile?
+  (-6..6).any? do |dx|
+    (-6..6).any? do |dy|
+      next false if dx == 0 && dy == 0
+      next false if dx * dx + dy * dy > 36
+
+      terrain_tag = $game_map.terrain_tag(event.x + dx, event.y + dy)
+      terrain_tag&.can_dig
+    end
+  end
+end
+
+  def can_find_sand?
+   return outdoor_petbed? && has_diggable_tile? && pbGetTimeNow.to_i - last_got_dig >= 1800 + rand(800)
+  end 
   
+  def should_find_sand?
+    can_find_sand? && rand(100) < 26
+  end 
   
+  def pick_sand
+    items = [:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:CLEVERFEATHER,:SWIFTFEATHER,:SWIFTFEATHER,:SWIFTFEATHER].freeze 
+    item = ItemData.new(items.sample)
+    amt = rand(4)+1
+    [item, amt]
+  end 
+  
+  def give_sand
+    return unless should_find_sand?
+	item, quantity = pick_sand
+	if $bag.can_add?(item, quantity)
+	 $bag.add(item, quantity)
+	 itemAnim(item, quantity)
+     itemname = (quantity > 1) ? item.name_plural : item.name
+	 sideDisplay(_INTL("{1} seems to have left {2} {3} in their bed.", pokemon.name, quantity, itemname))
+	 @last_got_dig = pbGetTimeNow.to_i
+	end 
+  end 
+
   def reserved_for_egg
 	@reserved_for_egg = false if @reserved_for_egg.nil?
     return @reserved_for_egg
@@ -1921,10 +1954,7 @@ class PetBedData
   def outdoor_petbed?
     petbeditem_id == :PETBEDOUTDOOR
   end 
-  def guard_station?
-    petbeditem_id == :GUARDPOST
-  end 
-  
+
   def breeding_opportunity
     time_now = pbGetTimeNow.to_i
     if @try_breeding.nil?
@@ -2182,7 +2212,7 @@ class PetBedData
 	end 
 	#You cannot breed if you have a job assigned currently. Maybe I exclude this for Breeders.
 	
-	update_breeding unless guard_station?
+	update_breeding
   end 
 end
 

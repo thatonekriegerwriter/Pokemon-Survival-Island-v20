@@ -3,6 +3,7 @@ module InventoryScene
     class PetBed < BaseStation
       def initialize(event_data:, container:)
         event_data.give_feather
+        event_data.give_sand
         super
       end
 	  

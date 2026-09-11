@@ -10,7 +10,7 @@ module InventoryScene
         BOWL GLASSBOTTLE SOUPBROTH WATER FRESHWATER WEAKPOTION
         POTION SUPERPOTION HYPERPOTION MAXPOTION FULLRESTORE HPUP PPUP
         CARBOS PROTEIN IRON CALCIUM ZINC REPEL SUPERREPEL MAXREPEL ETHER
-        MAXETHER ELIXIR MAXELIXIR
+        MAXETHER ELIXIR MAXELIXIR TEA HONEY SITRUSJUICE BERRYJUICE
       ].freeze
       CONTAINER_ITEMS = %i[BOWL GLASSBOTTLE].freeze
 
@@ -171,12 +171,7 @@ module InventoryScene
         clear_result if craft_empty_or_nil? || !can_afford?(recipe, craft)
       end
 
-      # NOTE: the original read `modifier_item = @craft[4]` here for
-      # ApricornMachine (the 5th slot, distinct from the 4-slot recipe) but
-      # never did anything further with it in the code I was given - the
-      # feature reads as unfinished/dead in the source. I've left it as a
-      # hook (ApricornMachine#modifier_item) rather than guessing at
-      # intended behavior; flag if it's supposed to do something.
+
       def apply_bottle_contents(itemdata)
         bottle_entry = craft.each_with_index.find { |(item, _qty), _i| item && BOTTLE_ITEMS.include?(item.id) }
         return unless bottle_entry

@@ -1045,6 +1045,12 @@ update!
              .max || -1
   end 
   
+  def get_block_data_key
+    key_id_r = highest_key(@block_data) + 1
+    "BLOCK_#{key_id_r.to_s}"
+  end 
+  
+  
   def generateEvent(x,y,object,aat=false,store=false,direction=nil)
     object = ItemStorageHelper.get_item_data(object) if object.is_a?(Symbol)
 	
@@ -1357,6 +1363,23 @@ update!
      event.type.id == type
    end
   end 
+def berryplants
+  results = []
+
+  $game_temp.ovevents.each do |map_id, key_id|
+    next unless $PokemonGlobal.eventvars[[map_id, key_id]]
+
+    results << $PokemonGlobal.eventvars[[map_id, key_id]]
+  end
+
+  block_data_for_type(:BERRYPLANT).each do |event|
+
+    results << $PokemonGlobal.eventvars[[event.map_id, event.id]]
+  end
+
+  results
+end
+
   def block_data_at(x, y, type = nil, map_id = $game_map.map_id)
   @block_data.values.select do |event|
     next false unless event.map_id == map_id

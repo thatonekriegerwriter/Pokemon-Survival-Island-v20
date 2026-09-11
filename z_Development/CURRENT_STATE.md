@@ -5,35 +5,24 @@
 ### Core Gameplay 
 
 ### UI
-- [ ] Electronics UI
 - [ ] Record Demo
-
 
 ### Pokemon
 - [ ] Bridge Aware.
 
-
-
 ### Placeables
-- [ ] Electric Pump: Pumps water out of water sources.
-- [ ] Electric Water Purifier: Turns Water pumped in into Purified water.
-- [ ] Electric Ore Washer
-- [ ] Sprinklers: Waters Berry Plants automatically.
-- [ ] Guard Post UI + Functionality.
+- [ ] Guard Post UI
 - [ ] Feeder UI
-- [ ] Coal Generator: Different Fuel Types give different wattage output
 
 ### Items
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
-
+- [x] Placeable Stations Recipes
 
 ### PlaceableAssignments
-- [ ] Outdoor Pet Beds close to diggable terrain, with a Rock or Ground type will go around digging up sand.
-- [ ] Make sure guards aren't locked to STANDING at their station
+- [ ] Make sure guards aren't locked to STANDING at their station + Functionality.
 - [ ] Feeder functionality
 - [ ] Humanlike OR Psychic for Apricorn Machine
 - [ ] Spawn Pest for Berry Plant
-
 
 ### Combat
 
@@ -41,8 +30,8 @@
 
 ### World
 - [ ] Finish First Temple
+- [ ] Update Dungeons
 - [ ] Lock off unavailable statues
-
 
 ### Misc Mechanics
 - [ ] Too low happiness for too long begins dragging down loyalty.

@@ -6,6 +6,14 @@ EventHandlers.add(:on_player_step_taken, :connection_counter,
   }
 )
 
+EventHandlers.add(:on_player_step_taken, :piping_counter,
+  proc {
+    next unless $game_temp.piping_counter
+    $game_temp.piping_counter += 1
+
+  }
+)
+
 class Game_Temp
   attr_accessor :position_calling
   attr_accessor :in_throwing
@@ -53,10 +61,15 @@ class Game_Temp
   attr_accessor :piping_mode 
   attr_accessor :piping_source 
   attr_accessor :piping_counter
+  attr_accessor :ovevents
   
   def in_inventory
     @in_inventory = false if @in_inventory.nil?
     return @in_inventory
+  end
+  def ovevents
+    @ovevents = [] if @ovevents.nil?
+    return @ovevents
   end
   def assignment_mode
     @assignment_mode = false if @assignment_mode.nil?

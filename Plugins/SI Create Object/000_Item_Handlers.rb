@@ -1049,12 +1049,12 @@ def pbCanteen(canteen, can_fill = true )
   return result
 end 
 
-def pbFillCanteen(canteen, drink=nil)
+def pbFillCanteen(canteen, drink=nil, amt = 25, durability = true )
   if drink
    return false if canteen.liquid_type && canteen.liquid_type != drink.id 
    SoundManager.play_se("can_fill")
-   result = canteen.fill(drink, 25)
-  canteen.decrease_durability(1) if result 
+   result = canteen.fill(drink, amt)
+  canteen.decrease_durability(1) if result && durability
    return result
   end
   facingEvent = $game_player.pbFacingEvent

@@ -59,6 +59,7 @@ class Game_OVEvent < Game_Event
   attr_accessor :spawn_map_id
   attr_accessor :map_id # contains the map_id
   attr_writer :map # contains the original map 
+  attr_accessor :original_event_id
 
   def initialize(type, map_id, event, map=nil)
     super(map_id, event, map)
@@ -69,6 +70,7 @@ class Game_OVEvent < Game_Event
 	@moveable = false
 	@workers = EventWorkers.new(@event.id)
 	@attackable = false
+	@original_event_id = nil
   end
   
   def workers

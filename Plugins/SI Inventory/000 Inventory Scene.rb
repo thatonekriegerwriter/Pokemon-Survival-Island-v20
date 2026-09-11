@@ -80,6 +80,7 @@ class Inventory_Scene
     :CUTTER => ->(e, c) { InventoryScene::Stations::ElectricCraftingBench.new(event_data: e, container: c, slots: 1, bg: "CUTTER", power_cost: 60) },
 	
     :ELECTRICOREWASHER => ->(e, c) { InventoryScene::Stations::Panner.new(event_data: e, container: c) },
+    :TANK => ->(e, c) { InventoryScene::Stations::Tank.new(event_data: e, container: c) },
 	
     :ELECTRICPUMP => ->(e, c) { InventoryScene::Stations::WaterMachines.new(event_data: e, container: c) },
     :ELECTRICPURIFIER => ->(e, c) { InventoryScene::Stations::AdvancedWaterMachines.new(event_data: e, container: c) },

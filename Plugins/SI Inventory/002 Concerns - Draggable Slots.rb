@@ -378,7 +378,7 @@ module InventoryScene
         drink = grabbed_item.item
         canteen = existing[0]
       
-        bottle = drink.respond_to?(:bottle) ? drink.bottle : nil
+        bottle = drink.respond_to?(:bottle) ? drink.bottle : ItemData.new(:GLASSBOTTLE)
  
         if pbFillCanteen(canteen, drink)
          $bag.add(bottle, 1) if bottle
@@ -1135,8 +1135,15 @@ module InventoryScene
           hash[:maxdurability] = [item.max_durability, 0, 0]
         end
         if item.watering_can? || !item.water.nil? 
+		 if item.id == :WATERBOTTLE
+		  if item.liquid_type
+          hash[item.liquid_type] = [item.water, 0, 0]
+          hash[:"max#{item.liquid_type}"] = [100, 0, 0]
+		  end 
+		 else
           hash[:water] = [item.water, 0, 0]
           hash[:maxwater] = [100, 0, 0]
+		 end 
         end
         hash[:description] = [item.data.description, 0, 0]
         tooltip.show(hash)

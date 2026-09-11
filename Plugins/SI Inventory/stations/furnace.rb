@@ -108,12 +108,20 @@ module InventoryScene
       # The original's `fuel(stack)` method - feeding fuel tops up
       # event_data.fuel and clears the slot instead of joining the recipe.
       def add_fuel(stack)
+	    return if event_data.fuel > 0 && event_data.fuel_type && event_data.fuel_type.id != item.id
         item, amt = stack
         base = FUEL_HASH[item.id]
         return unless base
 
-        event_data.fuel = [event_data.fuel + base * amt, 100.0].min
-        craft[1] = nil
+        space = 100.0 - event_data.fuel
+        needed = (space / base).ceil
+        consumed = [amt, needed].min
+
+        event_data.fuel += base * consumed
+        event_data.fuel = 100.0 if event_data.fuel > 100.0
+        event_data.fuel_type = item
+
+        craft[1] = amt > consumed ? [item, amt - consumed] : nil
         remove_slot_icon(:craft, 1)
       end
     end
@@ -436,12 +444,20 @@ module InventoryScene
       # The original's `fuel(stack)` method - feeding fuel tops up
       # event_data.fuel and clears the slot instead of joining the recipe.
       def add_fuel(stack)
+	    return if event_data.fuel > 0 && event_data.fuel_type && event_data.fuel_type.id != item.id
         item, amt = stack
         base = POWER_HASH[item.id]
         return unless base
 
-        event_data.fuel = [event_data.fuel + base * amt, 100.0].min
-        craft[1] = nil
+        space = 100.0 - event_data.fuel
+        needed = (space / base).ceil
+        consumed = [amt, needed].min
+
+        event_data.fuel += base * consumed
+        event_data.fuel = 100.0 if event_data.fuel > 100.0
+        event_data.fuel_type = item
+
+        craft[1] = amt > consumed ? [item, amt - consumed] : nil
         remove_slot_icon(:craft, 1)
       end
     end

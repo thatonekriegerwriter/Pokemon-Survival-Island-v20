@@ -222,6 +222,41 @@ module InventoryScene
         toggle_wconnection_mode if object_key == "water_button"
         tank_clicked(object_key) if object_key.match?(/\Atank_slot_\d+\z/)
       end 
+      def show_tank_tooltip(object_key)
+        return unless object_key.match?(/\Atank_slot_\d+\z/)
+        index = object_key.split("_").last.to_i
+		fluid_type = index == 0 ? event_data.fluid_type : event_data.secondary_fluid_type
+		water = index == 0 ? event_data.water : event_data.secondary_water
+		if fluid_type
+		item = GameData::Item.get(fluid_type)
+		name = "#{item.name} Tank"
+		else 
+		name = "Empty Tank"
+		end 
+        hash = { name: [name, 0, 0] }
+		maxwater = event_data.internal_water_storage.to_f
+        hash[:water] = [water, 0, 0]
+        hash[:maxwater] = [maxwater, 0, 0]
+        tooltip.show(hash)
+      end
+	  
+      def update_hover_tooltip
+	    return show_empty_tooltip unless @show_tooltip
+        if (object_key = clicked_object?)
+		  if object_key.match?(/\Atank_slot_\d+\z/)
+		    show_tank_tooltip(object_key)
+		    return 
+		  end 
+		end 
+        stack = item_hovered?
+        return show_empty_tooltip if stack.nil?
+        item = stack.is_a?(Array) ? stack[0] : stack
+        if item.is_a?(Pokemon)
+          show_pokemon_tooltip(item)
+        else
+          show_item_tooltip(item.is_a?(Symbol) ? ItemData.new(item) : item)
+        end
+      end
 	  
       def station_can_afford_extra_cost?
 	    true
@@ -368,12 +403,120 @@ module InventoryScene
         Bitmap.new(path)
       end
 
+
       def tank_clicked(object_key)
         return unless object_key.match?(/\Atank_slot_\d+\z/)
+		return unless grabbed_item
         index = object_key.split("_").last.to_i
-		puts index
-        # Tank interaction goes here.
+        selected_tank = index == 0 ? event_data.water : event_data.secondary_water
+		fluid_type = index == 0 ? event_data.fluid_type : event_data.secondary_fluid_type
+		item = grabbed_item.item
+		
+		#If we have an item that contains the same fluid as the target tank, or the tank is empty, fill it with that fluid.
+		if CANTEEN_FILLABLE_DRINKS.include?(item.id) && (fluid_type == item.id || fluid_type.nil?)
+		#If this is an empty bottle and there is a fluid.
+		 drink = item
+         bottle = drink.respond_to?(:bottle) ? drink.bottle : ItemData.new(:GLASSBOTTLE)
+		 selected_tank += 25
+		 if index == 0
+          event_data.fluid_type = drink.id
+    	     event_data.water = selected_tank
+         else
+          event_data.secondary_fluid_type = drink.id
+    	     event_data.secondary_water = selected_tank
+         end
+         $bag.add(bottle)
+         shrink_grabbed_by(1)
+		elsif item.id == :GLASSBOTTLE && fluid_type
+		 return if selected_tank < 25
+
+		 drink = ItemData.new(fluid_type)
+		 drink.set_bottle(item)
+
+		 selected_tank -= 25
+		   if index == 0
+    	     event_data.water = selected_tank
+             event_data.fluid_type = nil if event_data.water <= 0
+		   else
+    	     event_data.secondary_water = selected_tank
+             event_data.secondary_fluid_type = nil if event_data.secondary_water <= 0
+		   end
+		 $bag.add(drink)
+		 shrink_grabbed_by(1)
+		#If this is a canteen, and the fluid in front of us can be placed in it.
+		elsif item.id == :WATERBOTTLE && CANTEEN_FILLABLE_DRINKS.include?(fluid_type) && (item.liquid_type == fluid_type || item.liquid_type.nil?)
+    	 canteen = item
+    	 drink = ItemData.new(fluid_type)
+         amount = [100, selected_tank, 100.0 - canteen.water].min
+		 
+    	 if amount > 0
+    	   selected_tank -= amount
+
+    	   unless pbFillCanteen(canteen, drink, amount, false)
+    	     selected_tank += amount
+    	   end
+		   if index == 0
+    	     event_data.water = selected_tank
+		   else
+    	     event_data.secondary_water = selected_tank
+		   end
+    	 end
+
+		#If this is a canteen, and the tank is empty, but the Canteen isn't.
+		elsif item.id == :WATERBOTTLE && fluid_type.nil? && item.liquid_type
+    	 canteen = item
+         amount = [100, canteen.water, event_data.internal_water_storage - selected_tank].min
+    	 if amount > 0
+    	   canteen.water -= amount
+    	   selected_tank += amount
+
+    	   if index == 0
+    	     event_data.fluid_type = canteen.liquid_type
+    	     event_data.water = selected_tank
+    	   else
+   	         event_data.secondary_fluid_type = canteen.liquid_type
+    	     event_data.secondary_water = selected_tank
+    	   end
+
+    	   canteen.liquid_type = nil if canteen.water <= 0
+		 end
+        elsif GameData::BerryPlant::WATERING_CANS.include?(item.id) && fluid_type.nil? && item.water > 0
+    	 can = item
+         amount = [100, can.water, event_data.internal_water_storage - selected_tank].min
+    	 if amount > 0
+    	   can.water -= amount
+    	   selected_tank += amount
+
+    	   if index == 0
+    	     event_data.fluid_type = :WATER
+    	     event_data.water = selected_tank
+    	   else
+   	         event_data.secondary_fluid_type = :WATER
+    	     event_data.secondary_water = selected_tank
+    	   end
+		 end
+         elsif GameData::BerryPlant::WATERING_CANS.include?(item.id) && fluid_type && fluid_type == :WATER
+    	 can = item
+         amount = [100, selected_tank, 100.0 - can.water].min
+		 
+    	 if amount > 0
+    	   selected_tank -= amount
+
+    	   if can.increase_water(amount)#pbFillCanteen(canteen, drink, amount, false)
+	         SoundManager.play_se("can_fill")
+		   else
+    	     selected_tank += amount
+    	   end
+		   if index == 0
+    	     event_data.water = selected_tank
+		   else
+    	     event_data.secondary_water = selected_tank
+		   end
+    	 end
+
+		end 
       end
+
 	  
       def render_bonus_slot
         x = sprites["craft_slots0"].x - 8

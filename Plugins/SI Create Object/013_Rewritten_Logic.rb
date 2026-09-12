@@ -93,6 +93,12 @@ class Game_OVEvent < Game_Event
     @type 
   end 
   
+  def item
+    return nil if @type==:BERRYPLANT || @type==:STATUE
+   @type = ItemData.new(@type) if !@type.is_a?(ItemData)
+   return @type
+  end 
+  
   def internal_data
    return self.variable if @type==:BERRYPLANT || @type==:STATUE
    @type = ItemData.new(@type) if !@type.is_a?(ItemData)

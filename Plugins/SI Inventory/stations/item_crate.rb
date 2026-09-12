@@ -61,5 +61,17 @@ module InventoryScene
       end
     end
   end
+  
+  
+  class Feeder < ItemCrate
+  	  def can_drop?(kind, index)
+	    item = grabbed_item.item
+#        store = backing_store_for(kind)
+#        slot = store[index]
+	    return false if kind == :craft && (!item.is_a?(ItemData) || !item.data.is_foodwater?)
+		return true 
+	  end 
+  
+  end 
 end
 

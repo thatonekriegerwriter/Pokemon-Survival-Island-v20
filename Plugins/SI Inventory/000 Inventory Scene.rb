@@ -49,7 +49,7 @@ class Inventory_Scene
     :APRICORNCRAFTING => ->(e, c) { InventoryScene::Stations::ApricornMachine.new(event_data: e, container: c, machine: false) },
     :APRICORNMACHINE => ->(e, c) { InventoryScene::Stations::ApricornMachine.new(event_data: e, container: c, machine: true) },
     :ITEMCRATE => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
-    :FEEDER => ->(e, c) { InventoryScene::Stations::ItemCrate.new(event_data: e, container: c) },
+    :FEEDER => ->(e, c) { InventoryScene::Stations::Feeder.new(event_data: e, container: c) },
     :ICEBOX => ->(e, c) { InventoryScene::Stations::Icebox.new(event_data: e, container: c) },
     :ELECTRICICEBOX => ->(e, c) { InventoryScene::Stations::Icebox.new(event_data: e, container: c) },
     :PKMNCRATE => ->(e, c) { InventoryScene::Stations::PkmnCrate.new(event_data: e, container: c) },

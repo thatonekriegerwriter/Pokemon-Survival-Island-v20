@@ -6,22 +6,18 @@
 
 ### UI
 - [ ] Record Demo
+- [ ] Guard Post UI
 
 ### Pokemon
 - [ ] Bridge Aware.
 
 ### Placeables
-- [ ] Guard Post UI
-- [ ] Feeder UI
+- [ ] Make sure guards aren't locked to STANDING at their station + Functionality.
+- [ ] Humanlike OR Psychic for Apricorn Machine
+- [ ] Spawn Pest for Berry Plant
 
 ### Items
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
-
-### PlaceableAssignments
-- [ ] Make sure guards aren't locked to STANDING at their station + Functionality.
-- [ ] Feeder functionality
-- [ ] Humanlike OR Psychic for Apricorn Machine
-- [ ] Spawn Pest for Berry Plant
 
 ### Combat
 

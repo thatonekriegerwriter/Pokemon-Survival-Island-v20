@@ -2106,12 +2106,40 @@ end
      self.movement_type==:INBED ? update_in_bed : update_working
 	@work_check = time_now
   end 
+  def update_working
+    return unless self.movement_type==:WORKING
+    stamina = pokemon.stamina
+    unless should_go_to_work?
+      self.movement_type = :MOVING_TO_BED
+      return
+    end
+
+    if stamina <= 0
+      self.movement_type = nearby_feeder? && rand(100) < 25 ? :MOVING_TO_FEEDER : :MOVING_TO_BED
+      return
+    end
+
+
+    chance = (7 - stamina) * 100 / 7
+    if PBDayNight.isNight?
+      chance *= 1.5
+    elsif PBDayNight.isDay? && stamina > 3
+      chance *= 0.5
+    end
+
+  chance = [chance, 100].min
+   if rand(100) < chance	
+      self.movement_type = nearby_feeder? && rand(100) < 25 ? :MOVING_TO_FEEDER : :MOVING_TO_BED
+	end
+  end 
+  
   
   def should_update_left_bed?
     !$PokemonGlobal.selected_pokemon.include?(pokemon) && !spawned_event&.in_battle
   end 
   
   def update_in_bed
+    return unless self.movement_type==:INBED
     stamina = pokemon.stamina
     return if stamina <= 0
 	return if !should_go_to_work?
@@ -2127,29 +2155,20 @@ end
    
   end 
   
-  def update_working
-    return unless self.movement_type==:WORKING
-    stamina = pokemon.stamina
+def nearby_feeder?
+  events = $DynamicEvents.block_data_for_type(:FEEDER)
+  return false if events.empty?
+  events.any? do |feeder|
+    dx = feeder.x - self.event.x
+    dy = feeder.y - self.event.y
+    next false if dx * dx + dy * dy > 16
 
-    if stamina <= 0 || !should_go_to_work?
-      self.movement_type = :MOVING_TO_BED
-      return
-    end
-
-
-    chance = (7 - stamina) * 100 / 7
-    if PBDayNight.isNight?
-      chance *= 1.5
-    elsif PBDayNight.isDay? && stamina > 3
-      chance *= 0.5
-    end
-
-  chance = [chance, 100].min
-
-    self.movement_type = :MOVING_TO_BED if rand(100) < chance
-  end 
+    item = feeder.item
+    item && item.crate_storage && item.crate_storage.is_a?(PCItemStorage) && item.crate_storage.any?
+  end
+end
   
-  
+
   def update
     return unless pokemon
 	return if pokemon.fainted?

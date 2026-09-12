@@ -22,6 +22,7 @@
 
 ### UI
 - [x] Electronics UI
+- [x] Feeder UI
 - [x] Machine Box UI
 - [x] Modifier Station Functionality  + UI, modifiers are highly complex if  they have stacks, and need their internal data deep cloned.
 - [x] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
@@ -66,6 +67,7 @@
 - [x] Graves have a low chance of respawning as a Ghost Type
 - [x] Pet bed 
 - [x] Berry Pot 
+- [x] Feeder functionality
 - [x] Hydro Generator
 - [x] Wind Generator
 - [x] Solar Generator

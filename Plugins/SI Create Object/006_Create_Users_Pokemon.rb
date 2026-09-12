@@ -315,6 +315,10 @@ def perform_movement
     to_bed_movement
   when :WORKING
     working_movement
+  when :MOVING_TO_FEEDER
+    to_feeder_movement
+  when :FEEDING
+    feeder_movement
   else
     pbMoveRoute2(self, [PBMoveRoute::Random])
   end
@@ -560,6 +564,191 @@ end
     end
   end
 
+
+def nearby_feeders
+  events = $DynamicEvents.block_data_for_type(:FEEDER)
+  return [] if events.empty?
+
+  events.select do |feeder|
+    dx = feeder.x - self.x
+    dy = feeder.y - self.y
+    next false if dx * dx + dy * dy > 16
+
+    item = feeder.item
+    item && item.crate_storage && item.crate_storage.is_a?(PCItemStorage) && item.crate_storage.any?
+  end
+end
+
+  def find_standing_position(target_x, target_y, target_width, target_height)
+    work_spots = []
+    (0...target_width).each do |x|
+      work_spots << [target_x + x, target_y - target_height]
+    end
+    (0...target_width).each do |x|
+      work_spots << [target_x + x, target_y + 1]
+    end
+    (0...target_height).each do |y|
+      work_spots << [target_x - 1, target_y - target_height + 1 + y]
+      work_spots << [target_x + target_width, target_y - target_height + 1 + y]
+    end
+    work_spot = work_spots.find do |x, y|
+      next false unless $game_map.passablenoevents?(x, y, 0)
+      event_id = $game_map.check_event(x, y)
+	  event = $game_map.events[event_id]
+	  !event || event == self
+    end
+  
+  
+    return work_spot 
+  end 
+  
+  def target_still_valid?
+    x, y = @target_spot
+    return false unless $game_map.passablenoevents?(x, y, 0)
+    event_id = $game_map.check_event(x, y)
+	event = $game_map.events[event_id]
+	!event || event == self
+  end 
+
+def to_feeder_movement
+  return if sleeping?
+  if @pet_bed.nil?
+   @movement_type = :WANDER 
+   return
+  end
+  if pokemon.stamina >= 7
+   @movement_type = :MOVING_TO_WORK 
+   return 
+  end
+
+
+  owner_pet_bed = get_pet_bed
+  return @movement_type = :WANDER if owner_pet_bed.nil?
+  
+  return @movement_type = :MOVING_TO_BED if owner_pet_bed.work_event.nil?
+  feeders = nearby_feeders
+  return @movement_type = :MOVING_TO_BED if feeders.empty?
+  if @target_feeder.nil?
+    @target_feeder = feeders.sample
+  end
+
+  @target_spot = nil if @target_spot && !target_still_valid?
+  unless @target_spot
+    @target_spot = find_standing_position(
+      @target_feeder.x,
+      @target_feeder.y,
+      @target_feeder.width,
+      @target_feeder.height
+    )
+  end
+  unless @target_spot
+    feeders = feeders - [@target_feeder]
+
+    @target_feeder = feeders.find do |feeder|
+      spot = find_standing_position(
+        feeder.x,
+        feeder.y,
+        feeder.width,
+        feeder.height
+      )
+      if spot
+        @target_spot = spot
+        true
+      else
+        false
+      end
+    end
+
+    return @movement_type = :MOVING_TO_BED if @target_feeder.nil?
+  end 
+  
+  return @movement_type = :MOVING_TO_BED if @target_spot.nil?
+#  puts work_spot.inspect
+  if [self.x, self.y] == @target_spot
+    @movement_type = :FEEDING
+	@target_spot = nil
+	@feeding_target = rand(5..7)
+  else
+    move_toward_work(@target_spot[0], @target_spot[1])
+  end
+end
+def feeder_movement
+  time_now = pbGetTimeNow.to_f
+  time_delta = @feeding_last_update ? time_now - @feeding_last_update : 0.0
+  @feeding_last_update = time_now
+
+  return unless self.movement_type == :FEEDING
+  unless @target_feeder
+    @movement_type = :MOVING_TO_BED
+    @target_feeder = nil
+    @feeding_target = nil 
+    @feeding_timer = nil
+    @feeding_item = nil
+    @feeding_index = nil
+    @feeding_last_update = nil
+    return 
+  end 
+
+  item = @target_feeder.item
+  storage = item.crate_storage
+  unless storage.is_a?(PCItemStorage)
+    @movement_type = :MOVING_TO_BED
+    @target_feeder = nil
+    @feeding_target = nil 
+    @feeding_timer = nil
+    @feeding_item = nil
+    @feeding_index = nil
+    @feeding_last_update = nil
+    return
+  end
+  
+  if @feeding_timer
+    @feeding_timer -= time_delta
+    return if @feeding_timer > 0
+
+    @feeding_timer = nil
+	
+    storage.items[@feeding_index][1] -= 1
+    storage.items[@feeding_index] = nil if storage.items[@feeding_index][1] <= 0
+	
+    pokemon.stamina = [pokemon.stamina + 1, 7].min
+    @feeding_item = nil
+    @feeding_index = nil
+  end
+
+  if pokemon.stamina >= @feeding_target
+    @movement_type = :MOVING_TO_WORK 
+    @target_feeder = nil
+    @feeding_target = nil 
+    @feeding_timer = nil
+    @feeding_item = nil
+    @feeding_index = nil
+    @feeding_last_update = nil
+    return 
+  end
+
+  food_slot, food_index = storage.items.each_with_index.find do |slot, index|
+    next false unless slot
+    item, amount = slot
+    amount > 0 && item.is_a?(ItemData) && item.food?
+  end
+  
+  unless food_slot
+    @movement_type = :MOVING_TO_BED
+    @target_feeder = nil
+    @feeding_target = nil 
+    @feeding_timer = nil
+    @feeding_item = nil
+    @feeding_index = nil
+    @feeding_last_update = nil
+    return
+  end
+  
+  @feeding_index = food_index
+  @feeding_item = food_slot[0]
+  @feeding_timer = 30.0
+end
+
 def to_work_movement
   return if sleeping?
   if pokemon.stamina <= 0
@@ -573,41 +762,30 @@ def to_work_movement
   owner_pet_bed = get_pet_bed
   return @movement_type = :WANDER if owner_pet_bed.nil?
   return @movement_type = :MOVING_TO_BED if owner_pet_bed.work_event.nil?
-
+  @target_spot = nil if @target_spot && !target_still_valid?
+  unless @target_spot 
   work_x = owner_pet_bed.work_x
   work_y = owner_pet_bed.work_y
   width = owner_pet_bed.work_event.width
   height = owner_pet_bed.work_event.height
-  work_spots = []
-  (0...width).each do |x|
-    work_spots << [work_x + x, work_y - height]
+  @target_spot = find_standing_position(work_x, work_y, width, height) 
   end
-  (0...width).each do |x|
-    work_spots << [work_x + x, work_y + 1]
-  end
-  (0...height).each do |y|
-    work_spots << [work_x - 1, work_y - height + 1 + y]
-    work_spots << [work_x + width, work_y - height + 1 + y]
-  end
-  work_spot = work_spots.find do |x, y|
-    next false unless $game_map.passablenoevents?(x, y, 0)
-    event_id = $game_map.check_event(x, y)
-	event = $game_map.events[event_id]
-	!event || event == self || !(event.is_a?(Game_PokeEventA) || event.is_a?(Game_OVEvent))
-  end
-  puts work_spot.inspect
-  return @movement_type = :MOVING_TO_BED if work_spot.nil?
+
+  return @movement_type = :MOVING_TO_BED if @target_spot.nil?
 #  puts work_spot.inspect
-  if [self.x, self.y] == work_spot
+  if [self.x, self.y] == @target_spot
     @movement_type = :WORKING
+	@target_spot = nil
   else
-    move_toward_work(work_spot[0], work_spot[1])
+    move_toward_work(@target_spot[0], @target_spot[1])
   end
 end 
 
+
+
 def to_bed_movement
   return if sleeping?
-	@started_working_at = nil if !@started_working_at.nil?
+  @started_working_at = nil if !@started_working_at.nil?
   @movement_type = :WANDER if @pet_bed.nil?
   return unless @pet_bed
    owner_pet_bed = get_pet_bed
@@ -618,11 +796,16 @@ def to_bed_movement
   end 
 end 
 
+
+
 def work_event
   owner_pet_bed = get_pet_bed
   return nil unless owner_pet_bed
   owner_pet_bed.work_event
 end 
+
+
+
 
 def working_movement
   @movement_type = :WANDER if @pet_bed.nil?

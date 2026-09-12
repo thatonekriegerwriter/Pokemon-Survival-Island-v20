@@ -175,7 +175,9 @@ class PCItemStorage
   def length
     return @items.length
   end
-
+  def any?
+    !self.empty?
+  end 
   def empty?
     return @items.length == 0
   end
@@ -310,7 +312,11 @@ class IceBoxStorage
   def empty?
     return @items.length == 0
   end
-
+  
+  def any?
+    !self.empty?
+  end 
+  
   def clear
     @items.clear
   end

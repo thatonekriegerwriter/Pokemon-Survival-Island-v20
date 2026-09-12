@@ -240,3 +240,11 @@ GameData::TerrainTag.register({
   :id_number              => 45,
   :can_hoe                  => true
 })
+
+
+GameData::TerrainTag.register({
+  :id                     => :Stone,
+  :id_number              => 46,
+  :battle_environment     => :Rock,
+  :can_mine     => true
+})

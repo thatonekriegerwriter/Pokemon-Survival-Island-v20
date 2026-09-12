@@ -1569,6 +1569,7 @@ class GuardStationData
   
   def give_feather = nil
   def give_sand = nil
+  def breeding? = false 
   
   def replace_pokemon(new_pokemon)
     spawned_event&.removeThisEventfromMap
@@ -1589,9 +1590,9 @@ class GuardStationData
     return false unless new_pokemon
     return false if !new_pokemon.able?
     return true if new_pokemon.equal?(pokemon) # already resting here
+    @pokemon_slot[0] = new_pokemon
 
     if pbPlacePokemon(x, y, new_pokemon)
-      @pokemon_slot[0] = new_pokemon
       self.movement_type = :INBED 
 	  spawned_event.pet_bed = @event_id
 	  @resting_since = pbGetTimeNow.to_i 
@@ -1601,6 +1602,12 @@ class GuardStationData
     end
   end
 
+
+  def pokemon_in_bed?
+    return false unless spawned_event
+    return spawned_event.x == x && spawned_event.y == y 
+  end 
+  
   def remove_pokemon
     spawned_event&.removeThisEventfromMap
     @pokemon_slot[0] = nil
@@ -1828,8 +1835,8 @@ end
     return false unless new_pokemon
     return true if new_pokemon.equal?(pokemon) # already resting here
 
-    if pbPlacePokemon(x, y, new_pokemon)
       @pokemon_slot[0] = new_pokemon
+    if pbPlacePokemon(x, y, new_pokemon)
 	  if new_pokemon.egg? 
       self.movement_type = :EGG 
 	  @pokemon_is_egg = true 

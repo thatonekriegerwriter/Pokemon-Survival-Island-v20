@@ -1259,6 +1259,7 @@ def pole_range_logic
   max_range = [$player.playerstamina / 4, 3].min
   amt = 1
   charge = 0
+  direction = $game_player.direction
   
   
   
@@ -1266,7 +1267,7 @@ def pole_range_logic
   return false if start_end.nil?
 
   position_marker = PositionMarker.new(start_end[1][0],start_end[1][1])
-  position_marker.visible = true
+  position_marker.visible = $game_map.passableStrict?(start_end[1][0],start_end[1][1],direction,$game_player)
  
   $game_temp.in_throwing = true
   $game_temp.no_moving = true 
@@ -1295,17 +1296,19 @@ def pole_range_logic
         end
       new_amt = [new_amt, max_range].min
 	  
-	  
       if new_amt != amt
           new_start_end = getLandingCoords(new_amt)
 
         unless new_start_end.nil?
-          amt = new_amt
-         start_end = new_start_end
+          x, y = new_start_end[1]
+		  if $game_map.passableStrict?(x, y, direction, $game_player)
+           amt = new_amt
+           start_end = new_start_end
 		  
-          position_marker.x = start_end[1][0]
-          position_marker.y = start_end[1][1]
-          pbSEPlay("GUI storage pick up")
+           position_marker.x = start_end[1][0]
+           position_marker.y = start_end[1][1]
+           pbSEPlay("GUI storage pick up")
+		 end 
         end
       end
     else

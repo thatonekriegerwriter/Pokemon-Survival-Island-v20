@@ -9,6 +9,7 @@
 
 ### Pokemon
 - [ ] Bridge Aware.
+- [ ] Reenable spawns
 
 ### Placeables
 - [ ] Make sure guards aren't locked to STANDING at their station + Functionality.

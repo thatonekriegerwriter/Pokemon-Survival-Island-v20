@@ -249,7 +249,7 @@ def pbTileIsPossible(x,y)
   return false if tile_terrain_tag.ledge
   return false if tile_terrain_tag.waterfall
   return false if tile_terrain_tag.waterfall_crest
-  return false if tile_terrain_tag.id == :Rock
+  return false if tile_terrain_tag.id == :Stone
   if VisibleEncounterSettings::RESTRICT_ENCOUNTERS_TO_PLAYER_MOVEMENT
     return false if !tile_terrain_tag.can_surf && 
               $PokemonGlobal && $PokemonGlobal.surfing

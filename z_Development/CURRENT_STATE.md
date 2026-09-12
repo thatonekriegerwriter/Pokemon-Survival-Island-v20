@@ -6,7 +6,6 @@
 
 ### UI
 - [ ] Record Demo
-- [ ] Guard Post UI
 
 ### Pokemon
 - [ ] Bridge Aware.

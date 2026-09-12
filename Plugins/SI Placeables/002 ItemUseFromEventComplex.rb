@@ -350,11 +350,13 @@ ItemHandlers::UseFromEvent.add(:ICEBOX, proc { |item, key_id|
 
 def item_crates(item, key_id)
  storage = item.crate_storage
- storage.active = true
  this_event = $game_map.events[key_id]
  if storage.empty? || storage.nil?
   storage = PCItemStorage.new
   item.crate_storage = storage
+ storage.active = true
+ else 
+ storage.active = true
  end
  localMeter = item.internal_data
  if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
@@ -362,12 +364,16 @@ def item_crates(item, key_id)
   item.internal_data=localMeter
  end
  localMeter.event_id = key_id if localMeter.event_id!=key_id
+  if item.id == :ITEMCRATE
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateileft.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
+ end 
  pbSEPlay("Voltorb Flip tile")
  Inventory.invWindow(item.id, localMeter, storage)
+  if item.id == :ITEMCRATE
  pbMoveRoute(this_event, [PBMoveRoute::Graphic,"crateidown.png",0,this_event.direction,0])
  @move_route_waiting = true if !$game_temp.in_battle
+ end 
 end
 
 
@@ -375,11 +381,13 @@ end
 
 def icebox_crates(item, key_id, electronic=false)
  storage = item.crate_storage
- storage.active = true
  this_event = $game_map.events[key_id]
  if storage.empty? || storage.nil?
   storage = IceBoxStorage.new(electronic)
   item.crate_storage = storage
+ storage.active = true
+ else
+ storage.active = true
  end
  localMeter = item.internal_data
  if localMeter.nil? || !localMeter.is_a?(CraftingStationData)
@@ -397,11 +405,13 @@ end
 
 def pokemon_crates(item, key_id)
  storage = item.crate_storage
- storage.active = true
  this_event = $game_map.events[key_id]
  if !storage.is_a?(PokemonStorage) && storage.empty?
   storage = PokemonStorage.new(1)
   item.crate_storage = storage
+ storage.active = true
+ else
+ storage.active = true
  end
  localMeter = item.internal_data
  if localMeter.nil? || !localMeter.is_a?(CraftingStationData)

@@ -60,9 +60,6 @@ module InventoryScene
         sync_slots_visuals!(:craft, 0..slot_count)
       end
     end
-  end
-  
-  
   class Feeder < ItemCrate
   	  def can_drop?(kind, index)
 	    item = grabbed_item.item
@@ -73,5 +70,13 @@ module InventoryScene
 	  end 
   
   end 
+
+
+
+  end
+  
+  
+
+
 end
 

@@ -1567,6 +1567,9 @@ class GuardStationData
   def pokemon = @pokemon_slot[0]
   def pokemon_slot = @pokemon_slot
   
+  def give_feather = nil
+  def give_sand = nil
+  
   def replace_pokemon(new_pokemon)
     spawned_event&.removeThisEventfromMap
     @pokemon_slot[0] = nil

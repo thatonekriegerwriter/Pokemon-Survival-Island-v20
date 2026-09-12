@@ -1763,28 +1763,17 @@ end
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-
-	   item = ItemData.new(:SOFTSAND)
-	   $bag.add(item, 64)
 	
-	  item = ItemData.new(:COALGENERATOR)
+	  item = ItemData.new(:FEEDER)
       key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
 
-	  item = ItemData.new(:MACHINEBOX)
-      key_id = $DynamicEvents.generateEvent($game_player.x-2, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:PETBEDOUTDOOR)
+      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 	  
-	  item = ItemData.new(:ELECTRICPUMP)
-      key_id = $DynamicEvents.generateEvent($game_player.x+3, $game_player.y-1, item, false, false, $game_player.direction)
+	  item = ItemData.new(:GUARDPOST)
+      key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y-1, item, false, false, $game_player.direction)
 	  
-	  item = ItemData.new(:TANK)
-      key_id = $DynamicEvents.generateEvent($game_player.x-6, $game_player.y-1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:SPRINKLER)
-      key_id = $DynamicEvents.generateEvent($game_player.x-5, $game_player.y-1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:ELECTRICPURIFIER)
-      key_id = $DynamicEvents.generateEvent($game_player.x-4, $game_player.y-1, item, false, false, $game_player.direction)
-	  item = ItemData.new(:ELECTRICOREWASHER)
-      key_id = $DynamicEvents.generateEvent($game_player.x-3, $game_player.y-1, item, false, false, $game_player.direction)
 
     end
 

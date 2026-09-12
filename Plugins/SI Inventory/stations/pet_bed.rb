@@ -281,6 +281,9 @@ module InventoryScene
     class GuardPost < PetBed
 	  def should_render_assign? = false 
       def background_key = "GUARDPOST"
+	  def folder
+	    "guardpost"
+	  end 
 	end
   end
 end 

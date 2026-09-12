@@ -40,6 +40,7 @@ class Inventory_Scene
     "Inventory" => ->(e, c) { InventoryScene::Stations::Bag.new(event_data: e, container: c) },
     :PETBED => ->(e, c) { InventoryScene::Stations::PetBed.new(event_data: e, container: c) },
     :PETBEDOUTDOOR => ->(e, c) { InventoryScene::Stations::PetBedOutdoor.new(event_data: e, container: c) },
+    :GUARDPOST => ->(e, c) { InventoryScene::Stations::GuardPost.new(event_data: e, container: c) },
     :FURNACE => ->(e, c) { InventoryScene::Stations::Furnace.new(event_data: e, container: c) },
     :CAULDRON => ->(e, c) { InventoryScene::Stations::Cauldron.new(event_data: e, container: c) },
     :GRINDER => ->(e, c) { InventoryScene::Stations::Grinder.new(event_data: e, container: c) },

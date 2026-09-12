@@ -24,6 +24,7 @@
 - [x] Electronics UI
 - [x] Feeder UI
 - [x] Machine Box UI
+- [x] Guard Post UI
 - [x] Modifier Station Functionality  + UI, modifiers are highly complex if  they have stacks, and need their internal data deep cloned.
 - [x] The item modifier infrastructure is updated, but we don't have a table for it, nor effects
 - [x] Summary Screen Happiness, Loyalty, and Inventory rework.

@@ -1633,7 +1633,7 @@ end
       spriteset&.addUserAnimation(Settings::DUST_ANIMATION_ID, self.x, self.y, true, 1)
     end
     bridge_aware_update
-	puts [self.x, self.y, bridge_height].inspect
+	#puts [self.x, self.y, bridge_height].inspect
   end
 
 

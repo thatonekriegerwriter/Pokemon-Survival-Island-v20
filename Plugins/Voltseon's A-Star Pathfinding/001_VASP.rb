@@ -527,6 +527,7 @@ def get_neighbours(tile, closed_tiles, open_tiles, traveller = nil)
     map = $map_factory.getMapNoAdd(map_id)
     info = BridgeAware.detect_bridge_control(map, check_x, check_y)
     neighbour_height = (info[:on] ? info[:height] : 0) if info
+	puts "Height: #{neighbour_height.inspect}"
     # Checks if the tile is actually passable - evaluated AT neighbour_height,
     # not whatever height the traveller actually happens to be at right now.
     next unless isPassableForPathfinding?(map_id, check_x, check_y, traveller, neighbour_height)

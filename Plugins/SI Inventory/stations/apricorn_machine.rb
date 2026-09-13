@@ -1,26 +1,24 @@
 module InventoryScene
   module Stations
-    # NOTE ON THE "MODIFIER" SLOT: the original read `@craft[4]` as a
-    # "modifier_item" while producing the crafted result, and separately
-    # did `inventory.delete_at(4)` inside get_recipe for :APRICORNMACHINE
-    # specifically. But `delete_at(4)` ran on the ALREADY-SORTED,
-    # already-normalized ingredient list, not on craft slot index 4
-    # directly - so it was deleting whatever landed at position 4 after
-    # sorting, not "the modifier slot". Combined with the fact that no
-    # sprite was ever created for craft_slots[4] (rendering jumps straight
-    # from slot 3 to the extra slot at index 5), slot 4 looks unreachable
-    # through the UI entirely - I think this was a partially-removed or
-    # never-finished feature, not something safe for me to guess back into
-    # working order. I've reproduced the REACHABLE parts faithfully
-    # (slots 0-3 as the recipe grid, slot 5 as a plain extra craft slot)
-    # and left slot 4 out rather than inventing behavior for it - please
-    # confirm what it's supposed to do before this ships.
     class ApricornMachine < BaseStation
       def initialize(event_data:, container:, machine: false)
         @machine = machine
+        needed = slot_count + 1
+        short_by = needed - event_data.internal_storage.length
+        event_data.internal_storage.concat(Array.new(short_by)) if short_by.positive?
+		
         super(event_data:, container:)
       end
+      
 
+      def recipe_matching_slots = craft[0...slot_count]
+      def initial_craft_contents = event_data.internal_storage
+      def finalize_container
+        unless @machine
+          craft.each { |data| $bag.add(data[0], data[1]) if data }
+        end
+      end
+	  
       def handle_object_click(object_key)
 	    return unless @machine
         return unless object_key == "assign_button"
@@ -39,8 +37,9 @@ module InventoryScene
       end
 
       def slot_count = 4
-      def background_key = "APRICORNCRAFTING"
-      def extra_slot_index = @machine ? 5 : nil
+      def background_key = "APRICORNCRAFTING" #THIS IS OUR CRAFTING KEY
+      def extra_slot_index = @machine ? 4 : nil
+	  def bonus_slot_function = :READ
       def hides_result_highlight? = true
 
       private
@@ -72,8 +71,8 @@ module InventoryScene
         sprites["craft_slots_equals"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots_equals"].bitmap = fuel_bitmap
         sprites["craft_slots_equals"].z = 70
-        sprites["craft_slots_equals"].x = x3 + 47 - 20
-        sprites["craft_slots_equals"].y = y2 + 22 - 8
+        sprites["craft_slots_equals"].x = x3 + 160
+        sprites["craft_slots_equals"].y = y2
 		end 
         sprites["craft_slots_result"] = IconSprite.new(0, 0, viewport)
         sprites["craft_slots_result"].setBitmap("Graphics/Pictures/craftingMenu/newCraftingPages/pokeball/result_slot")
@@ -135,7 +134,7 @@ module InventoryScene
 
       def render_assign_button
         objects["assign_button"] = IconSprite.new(0, 0, viewport)
-        objects["assign_button"].x = bonus_1 + 268
+        objects["assign_button"].x = bonus_1 + 200
         objects["assign_button"].y = bonus_2 + 120
         objects["assign_button"].z = 0
         objects["assign_button"].visible = true

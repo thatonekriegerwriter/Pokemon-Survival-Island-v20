@@ -92,7 +92,7 @@ def initialize(*args)
 
 end
   def stamina
-    @stamina = 7 if @stamina.nil?
+    @stamina = 7.0 if @stamina.nil?
     return @stamina
   end 
   def extra_moves

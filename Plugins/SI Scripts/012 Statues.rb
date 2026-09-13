@@ -301,6 +301,7 @@ class StatueData
 		     pbMessage(_INTL("Return with one POKeMON."))
 		  end
         when 3
+		return pbMessage(_INTL("This is not available in the current Demo."))
 	    pbMessage(_INTL("The Statue seems to want you have at tools for mining before it will activate."))
 		  if $bag.has?(:IRONPICKAXE) && $bag.has?(:IRONHAMMER)
 	        pbMessage(_INTL("The Statue glows brighter, before a compulsion to touch the Statue begins."))
@@ -308,16 +309,30 @@ class StatueData
 		  else
 		     pbMessage(_INTL("Return with Mining Tools."))
 		  end
-        when 4
+        when 4 #Oceanside Statue (Needs to be in demo)
+		   unless $PokemonGlobal.visitedMaps[63]
+		     pbMessage(_INTL("Your travel here seems to have been the burden the Statue wished to carry."))
+		     pbMessage(_INTL("May your continued exploration be fruitful."))
+		    @solved = true
+		   else 
+		     pbMessage(_INTL("The Statue seems unwilling to budge for the moment, perhaps explore more?"))
+		   end 
         when 5
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 6
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 7
 		  @solved = true
         when 8
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 9
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 10
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 11
+		return pbMessage(_INTL("This is not available in the current Demo."))
         when 12
+		return pbMessage(_INTL("This is not available in the current Demo."))
   
   
   

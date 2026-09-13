@@ -195,15 +195,10 @@ def invalid_tile_tag(x,y)
 end 
 
 def possible?(x, y)
-  puts "Possible?"
   return false if !$game_map.valid?(x,y)
-  puts "Possible2?"
   return false if invalid_tile_tag(x,y)
-  puts "Possible3?"
   object_event = $player.held_item_event
-  puts "Possible4"
   return false if !$game_map.passableStrict?(x, y, 0) && !bedroll_possible?(object_event)
-  puts "Possible5?"
   events = $game_map.events.values + $DynamicEvents.events_for_map
   for event in events
     next if $player.held_item_object.nil?
@@ -211,11 +206,9 @@ def possible?(x, y)
     if event.x==x && event.y==y
 	  # Multi-tile event collision handling
 	  next if event.x != object_event.x && event.y != object_event.y
-  puts "Possible6?"
       return false
     end 
   end
-  puts "Possible7?"
   return true
 end 
 

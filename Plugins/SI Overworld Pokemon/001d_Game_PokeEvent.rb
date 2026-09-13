@@ -462,6 +462,7 @@ end
  end
  
 class Game_PokeEvent < Game_Event
+  include BridgeAware
   attr_accessor :event
   attr_accessor :id
   attr_accessor :pokemon # contains the original pokemon of class Pokemon
@@ -542,6 +543,7 @@ class Game_PokeEvent < Game_Event
 	@intelligent = false
 	@stuck = 0
 	@height_level = 0
+	@bridge_height = 0
 	@miniboss = false
 	@boss = false
 	@movement_type_locked = false
@@ -554,59 +556,9 @@ class Game_PokeEvent < Game_Event
 	@last_attacked_by = nil
   end
   
-  def copied_values
-    return [
-    :parasteps_steps,
-    :angry_at,
-    :angy_at_cur_tar,
-    :steps_taken,
-    :youarealreadydead,
-    :movement_type,
-    :cannot_move,
-    :movement_timer,
-    :ov_movement_timer,
-    :still_timer,
-    :counter,
-    :battle_timer,
-    :times_not_attacking,
-    :attacked_last_call,
-    :dont_attack,
-    :attacking,
-    :movement_hit_logic,
-    :pathing,
-    :blockedtiles,
-    :cur_path,
-    :isshovement,
-    :disable_despawn,
-    :can_pause,
-    :intelligent,
-    :stuck,
-    :height_level,
-    :miniboss,
-    :boss,
-    :movement_type_locked,
-    :barreling,
-    :default_move_frequency,
-    :default_move_speed
-  ]
-  
-  
-  end
-  def transferrable_data
-   return copied_values.map { |var| instance_variable_get("@#{var}") }
-  end
-
-  
-  def set_data(values)
-   copied_values.each_with_index do |value, index|
-      instance_variable_set("@#{value}", values[index])
-   
-   end
-  
-  end
-  
   def thinking
    return if $game_temp.connecting?
+   bridge_aware_update
    $PokemonGlobal.ov_combat.ov_combat_loop(self)
   end
   def screen_x
@@ -658,7 +610,7 @@ class Game_PokeEvent < Game_Event
 			anything_there1 = am_i_looking_at_something(self, 3)
 				if !anything_there1.nil?
 				 if anything_there1.is_a?(Game_PokeEventA) || anything_there1.is_a?(Game_Player)
-					   if anything_there1.is_a?(Game_Player) && self.height_level==$PokemonGlobal.bridge
+					   if anything_there1.is_a?(Game_Player) && self.bridge_height==$PokemonGlobal.bridge
 					@angy_at_cur_tar = anything_there1
 					 @still_timer=0
 		          @movement_type = :CHASEP
@@ -673,7 +625,7 @@ class Game_PokeEvent < Game_Event
 			anything_there = am_i_looking_at_something_basic(self, 3)
 				if !anything_there.nil?
 				 if anything_there.is_a?(Game_PokeEventA) || anything_there.is_a?(Game_Player)
-					   if anything_there1.is_a?(Game_Player) && self.height_level==$PokemonGlobal.bridge
+					   if anything_there1.is_a?(Game_Player) && self.bridge_height==$PokemonGlobal.bridge
 					@angy_at_cur_tar = anything_there1
 					 @still_timer=0
 		          @movement_type = :CHASEP
@@ -704,7 +656,7 @@ class Game_PokeEvent < Game_Event
 			 yes = false
 				if !anything_there1.nil?
 				 if anything_there1.is_a?(Game_PokeEventA) || anything_there1.is_a?(Game_Player)
-					   if anything_there1.is_a?(Game_Player) && self.height_level!=$PokemonGlobal.bridge
+					   if anything_there1.is_a?(Game_Player) && self.bridge_height!=$PokemonGlobal.bridge
 					   else
 					@angy_at_cur_tar = anything_there1
 					 @still_timer=0
@@ -721,7 +673,7 @@ class Game_PokeEvent < Game_Event
 			anything_there = am_i_looking_at_something_basic(self, 3)
 				if !anything_there.nil?
 				 if anything_there.is_a?(Game_PokeEventA) || anything_there.is_a?(Game_Player)
-					   if anything_there1.is_a?(Game_Player) && self.height_level==$PokemonGlobal.bridge
+					   if anything_there1.is_a?(Game_Player) && self.bridge_height==$PokemonGlobal.bridge
 					@angy_at_cur_tar = anything_there1
 					 @still_timer=0
 		          @movement_type = :CHASEP

@@ -56,12 +56,18 @@ class PathfindingTile
   attr_writer :f_cost
   attr_writer :parent
   attr_writer :direction
+  # This tile's bridge height, i.e. what BridgeAware#bridge_height the
+  # traveller would have AFTER stepping onto this tile. Lets the search
+  # reason about height changing mid-route (bridge on/off tiles) instead of
+  # using one frozen value for the whole path - see get_neighbours.
+  attr_writer :height
 
-  def initialize(x, y, map_id = nil, direction = nil)
+  def initialize(x, y, map_id = nil, direction = nil, height = 0)
     @x = x
     @y = y
     @map_id = map_id
     @direction = direction
+    @height = height
     @g_cost = self.g_cost
     @h_cost = self.h_cost
     @f_cost = self.f_cost
@@ -74,6 +80,7 @@ class PathfindingTile
   # Compass direction (:down/:left/:right/:up) this tile was reached from
   # its parent by. Only meaningful for tiles produced by get_neighbours.
   def direction; return @direction; end
+  def height; return @height; end
 
   def g_cost; return @g_cost; end
 
@@ -271,7 +278,8 @@ end
 # Shared by calc_path_segments (the only thing that should call this
 # directly); calc_path itself is now a thin single-segment wrapper below.
 def run_astar_search(event, dest_map_id, dest_x, dest_y)
-  open_tiles = [PathfindingTile.new(event.x, event.y, event.map.map_id)]
+  start_height = event.respond_to?(:bridge_height) ? event.bridge_height : 0
+  open_tiles = [PathfindingTile.new(event.x, event.y, event.map.map_id, nil, start_height)]
   closed_tiles = []
   while open_tiles.length > 0
     current = open_tiles[0]
@@ -292,6 +300,14 @@ def run_astar_search(event, dest_map_id, dest_x, dest_y)
       open_tiles.push(neighbour)
     end
   end
+  # The loop above exits two ways: destination reached (break, above), or
+  # open_tiles ran dry without ever reaching it (search exhausted - happens
+  # more easily now that a bridge can make part of the map only
+  # conditionally reachable). Only the first case is a real path - honor
+  # this method's own documented "or [] if unreachable" contract instead of
+  # silently returning a route to whatever tile happened to be processed
+  # last.
+  return [] unless closed_tiles.last&.same_tile?(dest_map_id, dest_x, dest_y)
   closed_tiles
 end
 
@@ -327,7 +343,11 @@ def calc_path_segments(event, destination, destination_map_id = nil)
   resolved = $map_factory.getRealTilePos(destination_map_id, destination[0], destination[1])
   return [] unless resolved
   dest_map_id, dest_x, dest_y = resolved
-  return [] unless isPassableForPathfinding?(dest_map_id, dest_x, dest_y, event)
+  # NOTE: no upfront isPassableForPathfinding? short-circuit here anymore -
+  # it used to reject destinations reachable only via a bridge, since it
+  # only ever checked passability at the traveller's CURRENT (frozen)
+  # height. Reachability is now entirely run_astar_search's job, which can
+  # correctly account for height changing mid-route.
 
   tile_path = calc_sorted_tile_path(run_astar_search(event, dest_map_id, dest_x, dest_y))
   return [] if tile_path.empty?
@@ -498,13 +518,23 @@ def get_neighbours(tile, closed_tiles, open_tiles, traveller = nil)
     resolved = $map_factory.getRealTilePos(tile.map_id, tile.x + x, tile.y + y)
     next unless resolved   # off the edge of the world entirely - no connection there
     map_id, check_x, check_y = resolved
-    # Checks if the tile is actually passable
-    next unless isPassableForPathfinding?(map_id, check_x, check_y, traveller)
+    # What height would the traveller be at AFTER stepping onto this tile?
+    # A bridge-on control tile here sets it; a bridge-off tile clears it;
+    # anything else just carries the current tile's height forward - this
+    # is what lets the search reason about height changing mid-route
+    # instead of using one frozen value for the whole path.
+    neighbour_height = tile.height
+    map = $map_factory.getMapNoAdd(map_id)
+    info = BridgeAware.detect_bridge_control(map, check_x, check_y)
+    neighbour_height = (info[:on] ? info[:height] : 0) if info
+    # Checks if the tile is actually passable - evaluated AT neighbour_height,
+    # not whatever height the traveller actually happens to be at right now.
+    next unless isPassableForPathfinding?(map_id, check_x, check_y, traveller, neighbour_height)
     # Checks whether tile has already been parsed
     next if closed_tiles.any? { |closed_tile| closed_tile.same_tile?(map_id, check_x, check_y) }
     next if open_tiles.any? { |open_tile| open_tile.same_tile?(map_id, check_x, check_y) }
     # Add the neighbouring tile to the array
-    neighbours.push(PathfindingTile.new(check_x, check_y, map_id, dir))
+    neighbours.push(PathfindingTile.new(check_x, check_y, map_id, dir, neighbour_height))
   end
   return neighbours
 end
@@ -513,7 +543,13 @@ end
 # $map_factory.isPassable? so the two exceptions below (walking through a
 # berry plant, walking through the player) never affect anything else that
 # calls isPassable?/Game_Map#passable? for real collision purposes.
-def isPassableForPathfinding?(mapID, x, y, traveller = nil)
+#
+# height_override, when given, is the bridge_height the traveller WOULD have
+# after reaching (x, y) - not necessarily what it actually has right now.
+# get_neighbours computes this per-node (see there) so the search can
+# reason about crossing a bridge mid-route instead of using one frozen
+# height for the whole path.
+def isPassableForPathfinding?(mapID, x, y, traveller = nil, height_override = nil)
   map = $map_factory.getMapNoAdd(mapID)
   return false if !map || !map.valid?(x, y)
   return true if traveller&.through
@@ -525,8 +561,16 @@ def isPassableForPathfinding?(mapID, x, y, traveller = nil)
   was_through = exempted&.through
   exempted.through = true if exempted
 
+  # Same idea for bridge height: temporarily swap in the height this tile
+  # would leave the traveller at, run the check, then put its real (current)
+  # height back - the traveller hasn't actually moved.
+  height_swappable = height_override && traveller.respond_to?(:bridge_height)
+  was_height = traveller.bridge_height if height_swappable
+  traveller.bridge_height = height_override if height_swappable
+
   passable = map.passable?(x, y, 0, traveller)
 
+  traveller.bridge_height = was_height if height_swappable
   exempted.through = was_through if exempted
   return false unless passable
 

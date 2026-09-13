@@ -64,6 +64,7 @@
 - [x] Electric Water Purifier: Turns Water pumped in into Purified water.
 
 ### Placeables
+- [x] Make sure guards aren't locked to STANDING at their station + Functionality.
 - [x] Electric Types can provide electricity to PokeGenerators.
 - [x] Graves have a low chance of respawning as a Ghost Type
 - [x] Pet bed 
@@ -77,10 +78,12 @@
 - [x] Sewing Machine
 - [x] Electric Press: Presses items into plates.
 - [x] Electric Sawmill: Cuts wood more effectively.
+- [x] Spawn Pest for Berry Plant
 - [x] Apricorn Machine, will autofill recipes, but also needs Pokemon assigned to work properly.
 - [x] Sifter: Turns sand into other materials commonly found in sand.
 - [x] Electric Sifter: Turns sand into other materials commonly found in sand.
 - [x] Sifted Ore.
+- [x] Humanlike OR Psychic for Apricorn Machine
 - [x] Panner 
 - [x] Electric Miner: A 3x3 rig that automine. Can only be used on stone.
 - [-] Electric Icebox

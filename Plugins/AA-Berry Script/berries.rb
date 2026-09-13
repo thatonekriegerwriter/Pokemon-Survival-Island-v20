@@ -1987,16 +1987,28 @@ end
 
 def pbBerryPlantPestRandomEncounter(berry)
     #return false if $game_system.encounter_disabled
-  encounter_type = $PokemonEncounters.find_valid_encounter_type_for_weather(encounter_type, encounter_type)
-  encounter = $PokemonEncounters.has_encounter_type?(encounter_type)
-    return if encounter_type.nil?
+  #  encounter_type = $PokemonEncounters.find_valid_encounter_type_for_weather(encounter_type, encounter_type)
+  #  encounter = $PokemonEncounters.has_encounter_type?(encounter_type)
+  #  return if encounter_type.nil?
     $stats.berry_pest_battles ||= 0
     $stats.berry_pest_battles += 1
-	$game_temp.in_safari=true
-    result = pbEncounter(encounter_type)
-	$game_temp.in_safari==false
+	species = [:RATTATA]
+	fake_encounter = [20, species.sample, 5, 25]
+    level =  new_set_enemy_level(fake_encounter)
+    if level < 3
+     level = 3 
+    end
+    pokemon = pbGenerateWildPokemon(encounter[1],level)
+	berry_name = GameData::Item.get(berry).name
+    sideDisplay(_INTL("You shook the #{pokemon.name} out of the #{berry_name} plant!"))
+    ret = $DynamicEvents.spawnPokeEvent(event.x, event.y, pokemon, false)
+    pbPlayCryOnOverworld(pokemon.species, pokemon.form) 
+
+#	$game_temp.in_safari=true
+#    result = pbEncounter(encounter_type)
+#	$game_temp.in_safari==false
 	
-    return result
+    return ret
 end
 
 
@@ -2026,13 +2038,12 @@ def pbPestInteraction(this_event,berry_plant)
         else this_event.turn_right
         end
     end
-    pbMessage(_INTL("A Pokémon jumped out at you!"))
     pbBerryPlantPestRandomEncounter(berry)
 	
 	berry_plant.stoppedbitting+=1
     berry_plant.pests = false
     berry_plant.pests_timer = pbGetTimeNow.to_i
-	 return true
+	return true
 end
 
 

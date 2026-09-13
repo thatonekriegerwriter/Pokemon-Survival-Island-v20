@@ -554,7 +554,8 @@ ItemHandlers::UseFromBox.add(:POKEMONBRUSH,proc { |brush, facingEvent|
    time_delta = pbGetTimeNow.to_i - pkmn.time_last_brush
    next if time_delta < 1800
    pkmn.time_last_brush = pbGetTimeNow.to_i
-   pkmn.changeLoyalty("groom",pkmn)
+   pkmn.changeLoyalty("groom")
+   pkmn.changeLoyalty("groom")
    if pkmn.species_data.egg_groups.include?(:Flying) && rand(255) < 3
     item = ItemData.new(PetBedData::FEATHERS.sample)
     quantity = rand(4)+1

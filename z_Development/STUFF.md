@@ -11,6 +11,8 @@
 
 ### Pokemon
 - [ ] Released Pokemon Array and Released Pokemon events
+- [ ] Allow Pokemon to be spawnable on other maps
+- [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
 
 
 ### Placeables
@@ -40,6 +42,10 @@
 - [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
+
+- [ ] Update Dungeons (Possibly can move to later)
+- [x] Lock off unavailable statues (Safety for later demo releases)
+
 - [ ] Hostile Pokemon crossing borders
 - [ ] Fix the map of the Chilled Plains and Temperate Highlands
 - [ ] Add Dungeon Under the Xatu Town

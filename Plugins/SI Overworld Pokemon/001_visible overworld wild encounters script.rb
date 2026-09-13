@@ -125,7 +125,6 @@ def current_max_encounter
 end 
 
 def pbSpawnOnStepTaken(repel_active)
-  return
   return if $game_temp.in_menu
   return if $game_system.menu_disabled
   return false if !VisibleEncounterTimeGate.allow_spawn?
@@ -691,8 +690,7 @@ class Game_Map
 		  event.type.associatedevent=nil
 		  if event.type.inworld && event.type.fainted?
 		    sideDisplay(_INTL("{1} has fainted!",  event.type.name))
-		    event.type.changeHappiness("faintbad",event.type)
-		    event.type.changeLoyalty("faintbad",event.type)
+		    event.type.changeHappiness("faintbad")
 		    pbSEPlay("faint")
 		  end
 		  pbOverworldCombat.removeAlly(id)

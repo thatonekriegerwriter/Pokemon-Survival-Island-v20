@@ -580,6 +580,8 @@ end
 
 def participants_in_range(type, source, range)
   pbOverworldCombat.getParticipants(type).values.select do |event|
+    next false unless event
+    next false unless source
     next false unless event.map_id == source.map_id
 
     dx = (event.x - source.x).abs

@@ -23,7 +23,7 @@ class EventWorkers
   def current_workers
      @workers.select do |id|
       worker = $game_map.events[id]
-      worker && event.cardinal?(worker) && worker.pokemon && worker.pokemon.is_a?(Pokemon) && worker.pokemon.stamina > 0
+      worker && event.cardinal?(worker) && worker.pokemon && worker.pokemon.is_a?(Pokemon) && worker.pokemon.stamina > 0 && worker.movement_type == :WORKING
     end
   end 
   

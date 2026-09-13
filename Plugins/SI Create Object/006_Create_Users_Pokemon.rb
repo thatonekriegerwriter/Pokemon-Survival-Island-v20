@@ -1,4 +1,15 @@
 class Game_PokeEventA < Game_Event
+  include BridgeAware
+
+  # @following already tracks who this Pokemon is currently walking behind
+  # (the player, or the Pokemon ahead of it in the follower train) - that's
+  # exactly BridgeAware's "leader" concept. While @following is nil, this
+  # event is moving under its own control (a move route, wandering, etc)
+  # and detects bridge control tiles for itself.
+  def bridge_leader
+    @following
+  end
+
   def move_type_custom
     return if jumping? || moving?
 	
@@ -176,6 +187,7 @@ class Game_PokeEventA < Game_Event
     events_list = self.map.events.values + $DynamicEvents.events_for_map(self.map.map_id)
     events_list.each do |event|
       next if self == event || !event.at_coordinate?(new_x, new_y) || event.through || (self.is_a?(Game_PokeEventA) && event.is_a?(Game_PokeEventA)) || (self.is_a?(Game_PokeEventA) && event.name[/berryplant/i])
+      next if BridgeAware.scan_event(event)
       return false if self != $game_player || event.character_name != ""
     end
     if $game_player.x == new_x && $game_player.y == new_y &&
@@ -315,6 +327,10 @@ def perform_movement
     to_bed_movement
   when :WORKING
     working_movement
+  when :GUARDING
+    guarding_movement
+  when :PATROLLING
+    patrolling_movement
   when :MOVING_TO_FEEDER
     to_feeder_movement
   when :FEEDING
@@ -323,52 +339,135 @@ def perform_movement
     pbMoveRoute2(self, [PBMoveRoute::Random])
   end
 end 
-
-def in_attacking_movement_state?
- return true if work_event && work_event.type == :GUARDPOST && @movement_type == :WORKING
- return false if [:EGG, :INBED, :MOVING_TO_WORK, :MOVING_TO_BED, :WORKING, :SEARCH].include?(@movement_type)
- return true 
-end 
  
- def can_be_knocked_out_of_state?
- return false if sleeping?
- return false if work_event && work_event.type == :GUARDPOST && @movement_type == :WORKING
- return false if [:EGG].include?(@movement_type)
- return true 
+ 
+ def guarding_movement
+   @movement_type = :WANDER if @pet_bed.nil?
+  return unless @pet_bed
+  if sleeping?
+    self.step_anime = false
+    self.walk_anime = false
+    wake_chance = PBDayNight.isDay? ? 25 : 1
+    if rand(100) < wake_chance 
+      wake_up
+      $scene.spriteset.addUserAnimation(3, self.x, self.y, true, 1)
+    end
+  else
+    turn_random if rand(255) == 0 && ![:PARALYSIS, :SLEEP].include?(@type.status)
+  end
  end 
  
- def set_following
- 
-  @following = nil if @following &&  @following != $game_player && ($game_map.events[@following.id].nil? || !$game_map.events[@following.id].equal?(@following))
-  @following = $PokemonGlobal.follower_pkmn.get_follow_target(self) if @following.nil?
- 
- end 
+ def find_attacking_position(target_x, target_y, target_width, target_height)
+  work_spots = []
 
-def move_behind_player
-  return if sleeping?
-  set_following 
-  $PokemonGlobal.follower_pkmn.add(@id)
-  decrease_attack_opportunity(1) if @attack_opportunity > 0
-  #puts @following.inspect 
-  self.move_toward_player(@following)
-  @movement_type = :FOLLOW
-end
+  top = []
+  bottom = []
+  left = []
+  right = []
 
-def follow_movement
-  return if sleeping?
-  decrease_attack_opportunity(1) if @attack_opportunity > 0 && rand(10) < 6
-  set_following
-  
-  leader_coords = [@following.map.map_id, @following.x, @following.y]
-  if @playercoords != leader_coords
-    target = follow_leader(@following)
-    look_at_location(@event.id, target[1], target[2])
-    @playercoords = leader_coords
-	@targetcoords = target
+  (0...target_width).each do |x|
+    top << [target_x + x, target_y - target_height]
+    bottom << [target_x + x, target_y + 1]
+  end
+
+  (0...target_height).each do |y|
+    left << [target_x - 1, target_y - target_height + 1 + y]
+    right << [target_x + target_width, target_y - target_height + 1 + y]
+  end
+
+  case self.direction
+  when 2 # facing down: behind = top
+    work_spots = top + left + right + bottom
+  when 4 # facing left: behind = right
+    work_spots = right + top + bottom + left
+  when 6 # facing right: behind = left
+    work_spots = left + top + bottom + right
+  when 8 # facing up: behind = bottom
+    work_spots = bottom + left + right + top
+  end
+
+  work_spots.find do |x, y|
+    next false unless $game_map.passablenoevents?(x, y, 0)
+    event_id = $game_map.check_event(x, y)
+    event = $game_map.events[event_id]
+    !event || event == self
   end
 end
+ 
+ 
+ def patrolling_movement
+   @target = @following.id if @following && @following.is_a?(Game_PokeEvent)
+   if @target
+     target_event = $game_map.events[@target]
+	 if target_event.nil?
+	  @target_spot = nil 
+	  @target = nil
+	  return 
+	 end 
+	 @target_spot = nil if @target_spot && !target_still_valid?
+     @target_spot = find_attacking_position(target_event.x, target_event.y, target_event.width, target_event.height) if target_event && @target_spot.nil?
+
+     if @target_spot && [self.x, self.y] != @target_spot
+      move_toward_work(@target_spot[0], @target_spot[1])
+	 elsif @target_spot.nil? && target_event
+	  follow_leader(target_event)
+	 end 
+   elsif @trailing
+     target_event = $game_map.events[@trailing]
+	 if target_event.nil?
+	  @trailing = nil 
+	  return 
+	 end 
+     move_type_toward_eventa(target_event)
+   else 
+     move_random
+	 nearby_mobs = $DynamicEvents.hostile_mobs_for_map.select do |event|
+      dx = event.x - self.x
+      dy = event.y - self.y
+      dx * dx + dy * dy <= 36
+     end
+     if nearby_mobs.any? && rand(100) < 10
+       @trailing = nearby_mobs.sample.id
+     end
+   end 
+ end 
 
 
+  def move_toward_given_event(event)
+    sx = @x + (@width / 2.0) - (event.x + (event.width / 2.0))
+    sy = @y - (@height / 2.0) - (event.y - (event.height / 2.0))
+    return if sx == 0 && sy == 0
+    abs_sx = sx.abs
+    abs_sy = sy.abs
+    if abs_sx == abs_sy
+      (rand(2) == 0) ? abs_sx += 1 : abs_sy += 1
+    end
+    if abs_sx > abs_sy
+      (sx > 0) ? move_left : move_right
+      if !moving? && sy != 0
+        (sy > 0) ? move_up : move_down
+      end
+    else
+      (sy > 0) ? move_up : move_down
+      if !moving? && sx != 0
+        (sx > 0) ? move_left : move_right
+      end
+    end
+  end
+  def move_type_toward_eventa(event)
+    sx = @x + (@width / 2.0) - (event.x + (event.width / 2.0))
+    sy = @y - (@height / 2.0) - (event.y - (event.height / 2.0))
+    if sx.abs + sy.abs >= 20
+      move_random
+      return
+    end
+    case rand(6)
+    when 0..3 then move_toward_given_event(event)
+    when 4    then move_random
+    when 5    then move_forward
+    end
+  end
+  
 
 
 def wander_movement
@@ -532,7 +631,6 @@ def inbed_movement
     end
 
   elsif get_pet_bed.breeding? && get_pet_bed.pokemon_in_bed?
-    # Breeding-specific behavior goes here.
 
   else
     turn_random if
@@ -783,6 +881,51 @@ end
 
 
 
+def in_attacking_movement_state?
+ return true if guard_station? && (@movement_type == :GUARDING || @movement_type == :PATROLLING)
+ return false if [:EGG, :INBED, :MOVING_TO_WORK, :MOVING_TO_BED, :WORKING, :SEARCH].include?(@movement_type)
+ return true 
+end 
+ 
+ def can_be_knocked_out_of_state?
+ return false if sleeping?
+ return false if guard_station? && (@movement_type == :GUARDING || @movement_type == :PATROLLING)
+ return false if [:EGG].include?(@movement_type)
+ return true 
+ end 
+ 
+ def set_following
+ 
+  @following = nil if @following &&  @following != $game_player && ($game_map.events[@following.id].nil? || !$game_map.events[@following.id].equal?(@following))
+  @following = $PokemonGlobal.follower_pkmn.get_follow_target(self) if @following.nil?
+ 
+ end 
+
+def move_behind_player
+  return if sleeping?
+  set_following 
+  $PokemonGlobal.follower_pkmn.add(@id)
+  decrease_attack_opportunity(1) if @attack_opportunity > 0
+  #puts @following.inspect 
+  self.move_toward_player(@following)
+  @movement_type = :FOLLOW
+end
+
+def follow_movement
+  return if sleeping?
+  decrease_attack_opportunity(1) if @attack_opportunity > 0 && rand(10) < 6
+  set_following
+  
+  leader_coords = [@following.map.map_id, @following.x, @following.y]
+  if @playercoords != leader_coords
+    target = follow_leader(@following)
+    look_at_location(@event.id, target[1], target[2])
+    @playercoords = leader_coords
+	@targetcoords = target
+  end
+end
+
+
 def to_bed_movement
   return if sleeping?
   @started_working_at = nil if !@started_working_at.nil?
@@ -796,7 +939,11 @@ def to_bed_movement
   end 
 end 
 
-
+def guard_station?
+  owner_pet_bed = get_pet_bed
+  return false unless owner_pet_bed
+  owner_pet_bed.guard_station?
+end 
 
 def work_event
   owner_pet_bed = get_pet_bed
@@ -867,6 +1014,10 @@ class Game_PokeEventA < Game_Event
   attr_accessor :started_working_at  
   attr_accessor :started_sleeping_at  
   attr_accessor :woke_up_at  
+  attr_accessor :target  
+  attr_accessor :trailing  
+  attr_accessor :height_level  
+  attr_accessor :bridge_height
  
   include FollowerMovement
   
@@ -888,6 +1039,7 @@ class Game_PokeEventA < Game_Event
 	@playercoords = [0,0]
 	@fighting = nil
 	@pet_bed = nil
+	@trailing = nil
 	@sending_handshake = []
 	@recieving_handshake = []
 	@targets = {}
@@ -917,6 +1069,8 @@ class Game_PokeEventA < Game_Event
 	@started_working_at = nil
 	@started_sleeping_at = nil
 	@woke_up_at = nil
+	@height_level = 0
+	@bridge_height = 0
   end
   
   def use_reaction_move(target, move)
@@ -1130,7 +1284,7 @@ end
 	if @type.inworld && @type.fainted?
 	  sideDisplay(_INTL("{1} has fainted!",  @type.name))
 	  @type.changeHappiness("faintbad",@type)
-      @type.changeLoyalty("faintbad",@type)
+      @type.changeLoyalty("faint") if @type.happiness <=  30
 	  pbSEPlay("faint")
 	end
 	pbOverworldCombat.removeAlly(@id)
@@ -1478,6 +1632,8 @@ end
       spriteset = $scene.spriteset(map_id)
       spriteset&.addUserAnimation(Settings::DUST_ANIMATION_ID, self.x, self.y, true, 1)
     end
+    bridge_aware_update
+	puts [self.x, self.y, bridge_height].inspect
   end
 
 
@@ -1498,11 +1654,14 @@ end
       next if event.tile_id < 0 || event.through || !event.at_coordinate?(x, y)
       tile_data = GameData::TerrainTag.try_get(this_map.terrain_tags[event.tile_id])
       next if tile_data.ignore_passability
-      next if tile_data.bridge && $PokemonGlobal.bridge == 0
+      # NOTE: uses this event's OWN bridge_height (BridgeAware), not
+      # $PokemonGlobal.bridge, so it can cross bridges independently of
+      # whatever height the real player currently happens to be at.
+      next if tile_data.bridge && bridge_height == 0
       return false if tile_data.ledge
       passage = this_map.passages[event.tile_id] || 0
       return false if passage & bit != 0
-      passed_tile_checks = true if (tile_data.bridge && $PokemonGlobal.bridge > 0) ||
+      passed_tile_checks = true if (tile_data.bridge && bridge_height > 0) ||
                                    (this_map.priorities[event.tile_id] || -1) == 0
       break if passed_tile_checks
     end
@@ -1513,11 +1672,11 @@ end
         next if tile_id == 0
         tile_data = GameData::TerrainTag.try_get(this_map.terrain_tags[tile_id])
         next if tile_data.ignore_passability
-        next if tile_data.bridge && $PokemonGlobal.bridge == 0
+        next if tile_data.bridge && bridge_height == 0
         return false if tile_data.ledge
         passage = this_map.passages[tile_id] || 0
         return false if passage & bit != 0
-        break if tile_data.bridge && $PokemonGlobal.bridge > 0
+        break if tile_data.bridge && bridge_height > 0
         break if (this_map.priorities[tile_id] || -1) == 0
       end
     end

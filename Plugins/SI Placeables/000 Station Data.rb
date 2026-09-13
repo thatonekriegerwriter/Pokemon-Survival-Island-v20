@@ -184,6 +184,8 @@ class CraftingStationData
     @passed_time %= 1800
   end  
   
+
+  
   def update_spinner(time_delta)
     return if workers.empty?
     @work_done += workers.length * time_delta * (100.0 / 4000.0)
@@ -631,6 +633,7 @@ end
 	update_quarry(time_delta) if quarry?
 	update_sprinkler(time_delta) if sprinkler?
 	update_purifier(time_delta) if water_purifier?
+	update_apricorn_machine(time_delta) if apricorn_machine?
 	update_washer(time_delta) if ore_washer?
 	end 
     time_now = pbGetTimeNow.to_i
@@ -709,6 +712,35 @@ end
     end
     end 
   end 
+  
+  def should_apricorn_machine?
+    apricorn_machine? && @power > 24 && @current_recipe
+  end 
+  
+  def update_apricorn_machine(time_delta)
+    @current_recipe ||= get_recipe(recipe_slots)
+    return if workers.empty?
+    return unless @current_recipe
+    return unless can_afford?(@current_recipe.recipe, recipe_slots)
+	time = @current_recipe.time.to_f
+	time = 2000.0 if time <= 0.0
+    @work_done += workers.length * time_delta * (100.0 / time)
+	event.grant_worker_exp(0.025  * time_delta)
+	crafted = 0 
+    while @work_done >= 25.0
+     break unless can_afford?(@current_recipe.recipe, recipe_slots)
+     break if @power < 25
+     remove_amounts(@current_recipe.recipe)
+     craft(@current_recipe)
+     @power -= 25
+     @work_done -= 25.0
+	 event.grant_worker_exp(100)
+     @current_recipe = get_recipe(recipe_slots)
+	 crafted += 1 
+     break unless @current_recipe
+    end
+	decrease_workers_stamina(crafted * 0.58) if crafted > 0
+  end  
   
   
   def update
@@ -1029,7 +1061,9 @@ class CraftingStationData
   def poke_generator?
     item&.id == :POKEGENERATOR
   end 
-  
+  def apricorn_machine?
+    item&.id == :APRICORNMACHINE
+  end 
   def spinner?
     item&.id == :SILKSPINNER
   end  
@@ -1053,6 +1087,7 @@ class CraftingStationData
   def electric_furnace?
     item&.id == :ELECTRICFURNACE
   end 
+  
   
   def fueled?
     @fuel > 0.0
@@ -1243,7 +1278,7 @@ end
     return 0.5 if sprinkler?
     return 3.0 if water_purifier?
     return 4.0 if ore_washer?
-    #return 3.0 if needs_power?
+   return 3.0 if needs_power?
     return 0.0
   end
   
@@ -1255,7 +1290,7 @@ end
     return 1.0 if sprinkler?
     return 1.0 if water_purifier?
     return 1.0 if ore_washer?
-    #return 3.0 if needs_power?
+    return 1.0 if needs_power?
     return 0.0
   end
   
@@ -1408,14 +1443,11 @@ class CraftingStationData
 
       def get_recipe(ingredients)
         inventory = normalize_ingredients(ingredients)
-
         matches = crafting_data.select do |recipe|
           required = normalize_ingredients(recipe.recipe)
           required = required.reject { |item, _| item == :MACHINEBOX } if $player.is_it_this_class?(:ENGINEER, false)
-
           next false unless inventory.map(&:first).sort == required.map(&:first).sort
           next false unless inventory.size == required.size
-
           remaining = inventory.map(&:dup)
           required.all? do |req_item, req_qty|
             idx = remaining.index { |inv_item, inv_qty| inv_item == req_item && inv_qty >= req_qty }
@@ -1488,8 +1520,10 @@ class CraftingStationData
    return @active
   end
   def crafting_data
+    crafting_type = item.id
+	crafting_type = :APRICORNCRAFTING if apricorn_machine?
     GameData::Recipe::DATA.values.select do |recipe|
-       recipe.station.include?(item.id) && (!recipe.locked || $recipe_book.unlocked?(recipe.id))
+       recipe.station.include?(crafting_type) && (!recipe.locked || $recipe_book.unlocked?(recipe.id))
     end
   end
   
@@ -1498,6 +1532,7 @@ class CraftingStationData
 	return unless worker
 	pkmn = worker.pokemon
 	return unless pkmn && pkmn.is_a?(Pokemon)
+	pkmn.stamina = pkmn.stamina.to_f unless pkmn.stamina.is_a?(Float)
 	pkmn.stamina = [pkmn.stamina - amt, 0].max
   end 
   
@@ -1566,6 +1601,7 @@ class GuardStationData
   def y = event.y 
   def pokemon = @pokemon_slot[0]
   def pokemon_slot = @pokemon_slot
+  def guard_station? = true 
   
   def give_feather = nil
   def give_sand = nil
@@ -1588,12 +1624,11 @@ class GuardStationData
   
   def place_pokemon(new_pokemon)
     return false unless new_pokemon
-    return false if !new_pokemon.able?
     return true if new_pokemon.equal?(pokemon) # already resting here
     @pokemon_slot[0] = new_pokemon
 
     if pbPlacePokemon(x, y, new_pokemon)
-      self.movement_type = :INBED 
+      self.movement_type = :GUARDING 
 	  spawned_event.pet_bed = @event_id
 	  @resting_since = pbGetTimeNow.to_i 
       return true
@@ -1607,7 +1642,7 @@ class GuardStationData
     return false unless spawned_event
     return spawned_event.x == x && spawned_event.y == y 
   end 
-  
+
   def remove_pokemon
     spawned_event&.removeThisEventfromMap
     @pokemon_slot[0] = nil
@@ -1636,9 +1671,115 @@ class GuardStationData
   
   def breeding = false
   def remove_worker = false
-  
-  def update
+  def should_update_left_bed?
+    !$PokemonGlobal.selected_pokemon.include?(pokemon) && !spawned_event&.in_battle
   end 
+  def update
+    return unless pokemon
+	return if pokemon.fainted?
+	respawn_pokemon if spawned_event.nil?
+	unless [:INBED, :MOVING_TO_BED, :GUARDING, :PATROLLING].include?(self.movement_type) 
+	 @stopped_working_at = pbGetTimeNow.to_i if @stopped_working_at.nil?
+     time_now = pbGetTimeNow.to_i
+     time_delta = time_now - @stopped_working_at
+	 if time_delta >= 300
+	 if should_update_left_bed?
+	   self.movement_type = :MOVING_TO_BED
+	   @stopped_working_at = nil
+	 else  
+	   @stopped_working_at = pbGetTimeNow.to_i
+	 end 
+     end
+	 return 
+	end
+
+	if self.movement_type == :GUARDING
+	 update_guarding
+	elsif self.movement_type == :INBED
+	 update_in_bed
+	elsif self.movement_type == :PATROLLING
+	elsif self.movement_type == :MOVING_TO_BED
+	else 
+	end 
+	if can_heal? && !spawned_event.in_battle
+	 update_bedtime
+	 return
+	else 
+     @bedtime = nil 
+	end 
+  end 
+  def update_bedtime
+    @bedtime = pbGetTimeNow.to_i if @bedtime.nil?
+    time_now = pbGetTimeNow.to_i
+    time_delta = time_now - @bedtime
+    return if time_delta < 3600
+	amt = (time_delta/3600).floor
+	heal_BED(amt, pokemon)
+	@bedtime += amt * 3600
+  end 
+  
+  def update_guarding
+    return unless self.movement_type==:GUARDING
+	if spawned_event.in_battle && self.movement_type != :PATROLLING
+	  self.movement_type = :PATROLLING
+	  target = pbOverworldCombat.get_target(spawned_event)
+	  spawned_event&.target = target.id if target
+	  return
+	end
+	@work_check = pbGetTimeNow.to_i - 300 if @work_check.nil?
+    time_now = pbGetTimeNow.to_i
+    time_delta = time_now - @work_check
+    return if time_delta < 300
+	if spawned_event.started_working_at
+	time_working = time_now - spawned_event.started_working_at
+	if time_working >= 3600
+      hours = (time_working / 3600).floor
+	  pokemon.stamina = [pokemon.stamina - hours, 0].max
+	  spawned_event.started_working_at = time_now
+	end 
+	end 
+	@work_check = time_now
+    stamina = pokemon.stamina
+    if stamina <= 0
+      self.movement_type = nearby_feeder? && rand(100) < 25 ? :MOVING_TO_FEEDER : :MOVING_TO_BED
+      return
+    end
+    chance = (7 - stamina) * 100 / 7
+    if PBDayNight.isNight?
+      chance *= 1.5
+    elsif PBDayNight.isDay? && stamina > 3
+      chance *= 0.5
+    end
+
+  chance = [chance, 100].min
+   if rand(100) < chance	
+      self.movement_type = nearby_feeder? && rand(100) < 25 ? :MOVING_TO_FEEDER : :MOVING_TO_BED
+	  return if rand(100) >= 25 
+	end
+	if rand(100) < 50 && stamina > 3
+     self.movement_type = :PATROLLING
+     return
+    end
+      self.movement_type = :GUARDING
+  end 
+	
+  def update_in_bed
+    return unless self.movement_type==:INBED
+    return if stamina <= 0
+    stamina = pokemon.stamina
+	
+    chance = stamina * 100 / 7
+    if PBDayNight.isDay? && stamina > 3
+      chance *= 1.5
+    elsif PBDayNight.isNight?
+      chance *= 0.5
+    end
+    chance = [chance, 100].min
+    self.movement_type = :GUARDING if rand(100) < chance
+   
+  end 
+	
+
 
 end 
 
@@ -1654,6 +1795,7 @@ class PetBedData
   HATCH_STEPS_PER_HOUR = 80.0
   MIN_BREEDING_DELAY = 3600
   MAX_BREEDING_DELAY = 28800
+  def guard_station? = false 
   def initialize(event_id)
     @event_id = event_id
     @pokemon_slot = [nil]
@@ -1926,6 +2068,13 @@ end
     return false 
   
   end 
+  def machinist?
+    return false if current_job.id != :APRICORNMACHINE
+	return job_data.should_apricorn_machine?
+  end 
+  
+  
+  
   
   def should_go_to_work?
     return researching? if current_job.id == :RESEARCHTABLE
@@ -1933,6 +2082,7 @@ end
 	return planted? if current_job.id == :BERRYPOT || current_job.id == :BERRYPLANT 
 	return workable? if current_job.id == :GRINDER
 	return generating? if current_job.id == :POKEGENERATOR
+	return machinist? if current_job.id == :APRICORNMACHINE
 	return true 
   end 
   

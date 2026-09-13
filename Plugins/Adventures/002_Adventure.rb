@@ -376,8 +376,8 @@ class Adventure # Battles - rewritten around CombatSimulation
   end
 
   def handle_battle_loss(pkmn, sim)
-    pkmn.changeHappiness("faint", pkmn)
-    pkmn.changeLoyalty("faint", pkmn)
+    pkmn.changeHappiness("faint")
+    pkmn.changeLoyalty("faint") if pkmn.happiness <=  30
     pkmn.permaFaint = true if pkmn.hp == 0 && defined?(Nuzlocke.definedrules?) && Nuzlocke.on?
     return if pkmn.species == :SHAYMIN
 

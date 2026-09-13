@@ -290,6 +290,9 @@ module InventoryScene
 	  def reserved_for_egg?(kind, index)
 	    kind == :pokemon_slot && index == 0 && event_data.is_a?(PetBedData) && event_data.reserved_for_egg
 	  end 
+	  def unable_pokemon?(kind, index)
+	    kind == :pokemon_slot && event_data.is_a?(GuardStationData) && grabbed_item && grabbed_item.pokemon? && !grabbed_item.item.able?
+	  end 
 	  def bee_comb?(kind, index)
 	    kind == :pokemon_slot && [2,3,4,5,6,7,8,9,10,11].include?(index) && event_data.is_a?(BeehiveData)
 	  end 
@@ -318,6 +321,7 @@ module InventoryScene
 	  
 	  def can_drop_pokemon?(kind, index)
 	    return false if reserved_for_egg?(kind, index)
+		return false if unable_pokemon?(kind, index)
 		return false if bee_comb?(kind, index)
 		return false if filled_grave?(kind, index)
 		return false if alive_in_grave?(kind, index)

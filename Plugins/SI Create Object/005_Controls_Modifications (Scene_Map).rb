@@ -1763,16 +1763,16 @@ end
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	
-	  item = ItemData.new(:FEEDER)
-      key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
+	AdventureGuide.show
+	#  item = ItemData.new(:COALGENERATOR)
+   #   key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
 
-	  item = ItemData.new(:PETBEDOUTDOOR)
-      key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:MACHINEBOX)
+   #   key_id = $DynamicEvents.generateEvent($game_player.x, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 	  
-	  item = ItemData.new(:GUARDPOST)
-      key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y-1, item, false, false, $game_player.direction)
+	#  item = ItemData.new(:APRICORNMACHINE)
+   #   key_id = $DynamicEvents.generateEvent($game_player.x+1, $game_player.y-1, item, false, false, $game_player.direction)
 	  
 
     end
@@ -2016,14 +2016,18 @@ EventHandlers.add(:on_player_interact, :pet_follower,
 	  pkmn.time_last_pet = pbGetTimeNow.to_i
 	  unless facingEvent.sleeping?
 	  pkmn.update_interacted
-      pkmn.changeHappiness("groom",pkmn)
+      pkmn.changeHappiness("groom")
+      pkmn.changeLoyalty("groom")
 	  pbSEPlay("pet", 80)
 	  if pkmn.happiness>=240
 	   $scene.spriteset.addUserAnimation(51,facingEvent.x,facingEvent.y,true,1)
+       pkmn.changeLoyalty("groom")
+       pkmn.changeLoyalty("groom")
       elsif pkmn.happiness<=30
 	   $scene.spriteset.addUserAnimation(35,facingEvent.x,facingEvent.y,true,1)
 	  else
 	   $scene.spriteset.addUserAnimation(50,facingEvent.x,facingEvent.y,true,1)
+       pkmn.changeLoyalty("groom")
 	  end
 	  else
 	  facingEvent.wake_up

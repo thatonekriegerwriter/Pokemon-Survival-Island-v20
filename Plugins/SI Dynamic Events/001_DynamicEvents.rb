@@ -1622,6 +1622,9 @@ class Game_Map
 	end 
 	
     return playerPassable?(x, y, d, self_event) if self_event == $game_player
+    if self_event.respond_to?(:bridge_height)
+      return bridgeHeightPassable?(x, y, d, self_event.bridge_height, self_event)
+    end
     # All other events
     newx = x
     newy = y
@@ -1691,6 +1694,11 @@ class Game_Map
  
   
   def playerPassable?(x, y, d, self_event = nil)
+    return bridgeHeightPassable?(x, y, d, $PokemonGlobal.bridge, self_event)
+  end
+
+
+  def bridgeHeightPassable?(x, y, d, height, self_event = nil)
     bit = (1 << ((d / 2) - 1)) & 0x0f
     [2, 1, 0].each do |i|
       tile_id = data[x, y, i]
@@ -1698,14 +1706,14 @@ class Game_Map
       terrain = GameData::TerrainTag.try_get(@terrain_tags[tile_id])
       passage = @passages[tile_id]
       if terrain
-        # Ignore bridge tiles if not on a bridge
-        next if terrain.bridge && $PokemonGlobal.bridge == 0
-        # Make water tiles passable if player is surfing
-        return true if $PokemonGlobal.surfing && terrain.can_surf && !terrain.waterfall
+        # Ignore bridge tiles if not at this height
+        next if terrain.bridge && height == 0
+        # Make water tiles passable if the player is surfing
+        return true if self_event == $game_player && $PokemonGlobal.surfing && terrain.can_surf && !terrain.waterfall
         # Prevent cycling in really tall grass/on ice
-        return false if $PokemonGlobal.bicycle && terrain.must_walk
-        # Depend on passability of bridge tile if on bridge
-        if terrain.bridge && $PokemonGlobal.bridge > 0
+        return false if self_event == $game_player && $PokemonGlobal.bicycle && terrain.must_walk
+        # Depend on passability of bridge tile if at this height
+        if terrain.bridge && height > 0
           return (passage & bit == 0 && passage & 0x0f != 0x0f)
         end
       end
@@ -1716,6 +1724,7 @@ class Game_Map
     end
     return true
   end
+
 
   # Returns whether the position x,y is fully passable (there is no blocking
   # event there, and the tile is fully passable in all directions)

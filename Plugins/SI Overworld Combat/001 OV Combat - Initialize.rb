@@ -769,16 +769,18 @@ def get_distance_alt(unit)
 end
  
  def in_battle?(unit)
-    optionsa = get_enemies
-    optionsb = nearby_hostile_events(unit).uniq
-    options = optionsa + optionsb
+    options = nearby_hostile_events(unit).uniq
     return options.length>0
  end 
-
+ 
+ def get_target(unit)
+    options = nearby_hostile_events(unit).uniq
+    return options.sample 
+ end 
+ 
  def foe(unit)
    if OverworldCombat.player_side?(unit)
     options = get_enemies + nearby_hostile_events(unit).uniq
-	puts options.to_s
     return options
    else
     return get_player_and_allies + angry_at_here(unit).uniq

@@ -55,6 +55,13 @@ def pbCurrentWeatherSeason
   return season
 end
 
+def pbCurrentZone
+  map = $game_map.map_id 
+  zone = GameData::Zone.for_map(map)
+  return zone.name if zone
+  return nil
+end 
+
 
 GameData::Zone.register({
   :id            => :TEMPERATEFOREST,

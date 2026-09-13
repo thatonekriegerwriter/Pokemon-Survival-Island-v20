@@ -10,168 +10,6 @@ class Game_PokeEventA < Game_Event
     @following
   end
 
-  def move_type_custom
-    return if jumping? || moving?
-	
-	@move_route_index = 0 if @move_route.list[0].code ==52879 && @move_route_index > 0
-    while @move_route_index < @move_route.list.size
-      command = @move_route.list[@move_route_index]
-      if command.code == 0
-        if @move_route.repeat
-          @move_route_index = 0
-        else
-          if @move_route_forcing
-            @move_route_forcing = false
-            @move_route       = @original_move_route
-            @move_route_index = @original_move_route_index
-            @original_move_route = nil
-          end
-          @stop_count = 0
-        end
-        return
-      end
-	  if command.code == 52879
-		eval(command.parameters[0])
-        @move_route_index = 0
-	  end
-      if command.code <= 14
-        case command.code
-        when 1  then move_down
-        when 2  then move_left
-        when 3  then move_right
-        when 4  then move_up
-        when 5  then move_lower_left
-        when 6  then move_lower_right
-        when 7  then move_upper_left
-        when 8  then move_upper_right
-        when 9  then move_random
-        when 10 then move_toward_player
-        when 11 then move_away_from_player
-        when 12 then move_forward
-        when 13 then move_backward
-        when 14 then jump(command.parameters[0], command.parameters[1])
-        end
-        
-        if @move_route.skippable || moving? || jumping?
-          @move_route_index += 1
-          @move_route_stall_count = 0
-        elsif @move_route_forcing
-          # The command above didn't actually move/jump the event (most
-          # likely blocked - e.g. a tile A* considered passable but the
-          # real directional passability check rejects). Without this,
-          # @move_route_index never advances, the route never reaches
-          # its terminator, and @move_route_forcing - which suppresses
-          # normal control input - is stuck true forever. Bail out after
-          # ~2 seconds so control returns instead of freezing the event.
-          @move_route_stall_count = (@move_route_stall_count || 0) + 1
-          if @move_route_stall_count > 120
-            puts "Move route stalled on command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
-            @move_route_forcing = false
-            @move_route         = @original_move_route
-            @move_route_index   = @original_move_route_index
-            @original_move_route = nil
-            @move_route_stall_count = 0
-          end
-        end
-        return
-      end
-      if command.code == 15   # Wait
-        @wait_count = (command.parameters[0] * Graphics.frame_rate / 20) - 1
-        @move_route_index += 1
-        return
-      end
-      if command.code >= 16 && command.code <= 26
-        case command.code
-        when 16 then turn_down
-        when 17 then turn_left
-        when 18 then turn_right
-        when 19 then turn_up
-        when 20 then turn_right_90
-        when 21 then turn_left_90
-        when 22 then turn_180
-        when 23 then turn_right_or_left_90
-        when 24 then turn_random
-        when 25 then turn_toward_player
-        when 26 then turn_away_from_player
-        end
-        @move_route_index += 1
-        return
-      end
-      if command.code >= 46 && command.code <= 49
-        case command.code
-        when 46 then move_map_fancy(8)
-        when 47 then move_map_fancy(6)
-        when 48 then move_map_fancy(4)
-        when 49 then move_map_fancy(2)
-        end
-        if @move_route.skippable || moving? || jumping?
-          @move_route_index += 1
-          @move_route_stall_count = 0
-        elsif @move_route_forcing
-          @move_route_stall_count = (@move_route_stall_count || 0) + 1
-          if @move_route_stall_count > 120
-            puts "Move route stalled on fancy command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
-            @move_route_forcing = false
-            @move_route         = @original_move_route
-            @move_route_index   = @original_move_route_index
-            @original_move_route = nil
-            @move_route_stall_count = 0
-          end
-        end
-        return
-      end
-      if command.code >= 27
-        case command.code
-        when 27
-          $game_switches[command.parameters[0]] = true
-          self.map.need_refresh = true
-        when 28
-          $game_switches[command.parameters[0]] = false
-          self.map.need_refresh = true
-        when 29 then self.move_speed = command.parameters[0]
-        when 30 then self.move_frequency = command.parameters[0]
-        when 31 then @walk_anime = true
-        when 32 then @walk_anime = false
-        when 33 then @step_anime = true
-        when 34 then @step_anime = false
-        when 35 then @direction_fix = true
-        when 36 then @direction_fix = false
-        when 37 then @through = true
-        when 38 then @through = false
-        when 39
-          old_always_on_top = @always_on_top
-          @always_on_top = true
-          calculate_bush_depth if @always_on_top != old_always_on_top
-        when 40
-          old_always_on_top = @always_on_top
-          @always_on_top = false
-          calculate_bush_depth if @always_on_top != old_always_on_top
-        when 41
-          old_tile_id = @tile_id
-          @tile_id = 0
-          @character_name = command.parameters[0]
-          @character_hue = command.parameters[1]
-          if @original_direction != command.parameters[2]
-            @direction = command.parameters[2]
-            @original_direction = @direction
-            @prelock_direction = 0
-          end
-          if @original_pattern != command.parameters[3]
-            @pattern = command.parameters[3]
-            @original_pattern = @pattern
-          end
-          calculate_bush_depth if @tile_id != old_tile_id
-        when 42 then @opacity = command.parameters[0]
-        when 43 then @blend_type = command.parameters[0]
-        when 44 then pbSEPlay(command.parameters[0])
-        when 45 then eval(command.parameters[0])
-        end
-		
-		
-        @move_route_index += 1
-      end
-    end
-  end
   def passable_ignore_same_type?(x, y, d, strict = false)
     new_x = x + (d == 6 ? 1 : d == 4 ? -1 : 0)
     new_y = y + (d == 2 ? 1 : d == 8 ? -1 : 0)
@@ -2086,7 +1924,7 @@ class Game_Character
 
   def move_type_custom
     return if jumping? || moving?
-	  
+	
 	@move_route_index = 0 if @move_route.list[0].code ==52879 && @move_route_index > 0
     while @move_route_index < @move_route.list.size
       command = @move_route.list[@move_route_index]
@@ -2104,7 +1942,6 @@ class Game_Character
         end
         return
       end
-
 	  if command.code == 52879
 		eval(command.parameters[0])
         @move_route_index = 0
@@ -2126,7 +1963,28 @@ class Game_Character
         when 13 then move_backward
         when 14 then jump(command.parameters[0], command.parameters[1])
         end
-        @move_route_index += 1 if @move_route.skippable || moving? || jumping?
+        
+        if @move_route.skippable || moving? || jumping?
+          @move_route_index += 1
+          @move_route_stall_count = 0
+        elsif @move_route_forcing
+          # The command above didn't actually move/jump the event (most
+          # likely blocked - e.g. a tile A* considered passable but the
+          # real directional passability check rejects). Without this,
+          # @move_route_index never advances, the route never reaches
+          # its terminator, and @move_route_forcing - which suppresses
+          # normal control input - is stuck true forever. Bail out after
+          # ~2 seconds so control returns instead of freezing the event.
+          @move_route_stall_count = (@move_route_stall_count || 0) + 1
+          if @move_route_stall_count > 120
+            puts "Move route stalled on command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
+            @move_route_forcing = false
+            @move_route         = @original_move_route
+            @move_route_index   = @original_move_route_index
+            @original_move_route = nil
+            @move_route_stall_count = 0
+          end
+        end
         return
       end
       if command.code == 15   # Wait
@@ -2149,6 +2007,29 @@ class Game_Character
         when 26 then turn_away_from_player
         end
         @move_route_index += 1
+        return
+      end
+      if command.code >= 46 && command.code <= 49
+        case command.code
+        when 46 then move_map_fancy(8)
+        when 47 then move_map_fancy(6)
+        when 48 then move_map_fancy(4)
+        when 49 then move_map_fancy(2)
+        end
+        if @move_route.skippable || moving? || jumping?
+          @move_route_index += 1
+          @move_route_stall_count = 0
+        elsif @move_route_forcing
+          @move_route_stall_count = (@move_route_stall_count || 0) + 1
+          if @move_route_stall_count > 120
+            puts "Move route stalled on fancy command #{command.code} at (#{@x},#{@y}) - releasing forced route" if $DEBUG
+            @move_route_forcing = false
+            @move_route         = @original_move_route
+            @move_route_index   = @original_move_route_index
+            @original_move_route = nil
+            @move_route_stall_count = 0
+          end
+        end
         return
       end
       if command.code >= 27
@@ -2197,12 +2078,12 @@ class Game_Character
         when 44 then pbSEPlay(command.parameters[0])
         when 45 then eval(command.parameters[0])
         end
+		
+		
         @move_route_index += 1
       end
     end
   end
-
-
 
 
 

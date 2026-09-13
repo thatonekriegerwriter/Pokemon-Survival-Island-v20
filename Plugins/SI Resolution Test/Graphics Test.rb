@@ -144,6 +144,13 @@ end
 #end
 
 module Graphics
+    class << Graphics
+      alias update_fps_counter update
+    end
+  @fps_frames = 0
+  @fps = 0
+  @fps_last_time = Time.now
+  
   def self.width
     #width = 640
     width = Settings::SCREEN_WIDTH 
@@ -156,6 +163,26 @@ module Graphics
 	height += $graphics_manager.height if $graphics_manager 
 	return height
   end
+   def self.update
+    update_fps_counter
+	update_fps
+  end
+  def self.update_fps
+    @fps_frames += 1
+
+    now = Time.now
+    elapsed = now - @fps_last_time
+
+    if elapsed >= 1.0
+      @fps = @fps_frames / elapsed
+      @fps_frames = 0
+      @fps_last_time = now
+    end
+  end 
+  def self.fps
+    [@fps, frame_rate.to_f].min
+  end
+
 end
 
 class Viewport

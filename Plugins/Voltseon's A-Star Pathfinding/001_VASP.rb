@@ -357,8 +357,9 @@ def calc_path_segments(event, destination, destination_map_id = nil)
   # out of the "current" map's own bounds, exactly like move_with_maps
   # itself already tolerates (its self.x < 0 || ... branch). So this is
   # one continuous route for the whole path, not per-map segments.
-  entered_other_map = false 
-  route = (1...tile_path.length).map do |i|
+  entered_other_map = false
+  route = []
+  (1...tile_path.length).each do |i|
     a = tile_path[i - 1]
     b = tile_path[i]
     code = calc_move_route_inverted(b, a)
@@ -370,10 +371,13 @@ def calc_path_segments(event, destination, destination_map_id = nil)
       m.map_id != event.map.map_id
     end
     if other_map && !entered_other_map
-     entered_other_map = true
-     fancy_move_code(code)
-    else
-     code
+      entered_other_map = true
+      code = fancy_move_code(code)
+    end
+    route.push(code)
+    if b.height != a.height && event.respond_to?(:bridge_height)
+      route.push(PBMoveRoute::Script)
+      route.push("self.bridge_height = #{b.height}")
     end
   end
 
@@ -566,12 +570,12 @@ def isPassableForPathfinding?(mapID, x, y, traveller = nil, height_override = ni
   # would leave the traveller at, run the check, then put its real (current)
   # height back - the traveller hasn't actually moved.
   height_swappable = height_override && traveller.respond_to?(:bridge_height)
-  #was_height = traveller.bridge_height if height_swappable
+  was_height = traveller.bridge_height if height_swappable
   traveller.bridge_height = height_override if height_swappable
 
   passable = map.passable?(x, y, 0, traveller)
 
- # traveller.bridge_height = was_height if height_swappable
+  traveller.bridge_height = was_height if height_swappable
   exempted.through = was_through if exempted
   return false unless passable
 
@@ -702,6 +706,7 @@ commands_duplicate = commands.map do |command|
     command # In case of any other values, keep them as they are
   end
 end
+ puts commands_duplicate.inspect 
   route = RPG::MoveRoute.new
   route.repeat    = false
   route.skippable = true

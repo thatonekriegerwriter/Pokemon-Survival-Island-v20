@@ -1,6 +1,7 @@
 class PlayerStatusHUD
   BG_PATH="Graphics/Pictures/Hud/Bolt"
   BG_PATH2="Graphics/Pictures/Hud/Heart"
+  DIRECTION = { 2 => "Down", 4 => "Left", 6 => "Right", 8 => "Up" }
   def initialize(viewport)
     @viewport = viewport 
     @y_position = Graphics.height-64 + $PokemonSystem.screenposy + 30
@@ -19,14 +20,38 @@ class PlayerStatusHUD
     
     createHPBar(@x_position , @y_position, 90, 8)
     createSTABar(@x_position + 10 , @y_position + 20, 90, 8)
+	create_location_display
   end 
+  def create_location_display
+    create_text_backdrop("location_backdrop", 4, 4, 9, 260, 160)
+    backdrop_sprite = @sprites["location_backdrop"]
+    @sprites["location_text"] = Window_UnformattedTextPokemon.new("")
+    text_sprite = @sprites["location_text"]
+    text_sprite.contents.font.size = 14
+    text_sprite.refresh
+    pbPrepareWindow(text_sprite)
+    text_sprite.resizeToFit("")
+    text_sprite.x = -2
+    text_sprite.y = -2
+    text_sprite.windowskin = nil
+    text_sprite.baseColor = Color.new(255, 255, 255)
+    text_sprite.shadowColor = nil
+    text_sprite.viewport = @viewport
+    text_sprite.z = 10
+	backdrop_sprite.visible = false
+    text_sprite.visible = false
+  end
   def revealMainHUD
   @sprites.each_key do |key|
+    next if key == "location_backdrop"
+    next if key == "location_text"
     @sprites[key].visible=true
   end
   end
   def hideMainHUD
   @sprites.each_key do |key|
+    next if key == "location_backdrop"
+    next if key == "location_text"
     @sprites[key].visible=false
   end
   end
@@ -44,6 +69,46 @@ class PlayerStatusHUD
     return unless should_display?
     refreshSTABar
     refreshHPBar
+    refresh_location_display
+  end
+  def refresh_location_display
+  text_sprite = @sprites["location_text"]
+   return unless text_sprite.visible
+    pbFillUpdaterConfig if (GameVersion::POKE_UPDATER_CONFIG).empty?
+  version = GameVersion::POKE_UPDATER_CONFIG['CURRENT_GAME_VERSION']
+  version = "DEVELOPMENT" if version == "999999999.9999.9999.9999.999.9999.999" && version
+  version = Settings::GAME_VERSION if version.nil?
+  height = $game_player.height_level || 0
+  map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
+  tiles = *get_tile_with_direction
+  zone = pbCurrentZone
+  zone = "Base" if map_metadata.associated_base && !zone
+  zone = "Dungeon" if map_metadata.random_dungeon && !zone
+  zone = "Interior" if !map_metadata.outdoor_map && !zone
+  zone = "Unknown" if !zone
+  direction = DIRECTION[$game_player.direction] || "N/A"
+  text = ""
+  text << "Version: SI-#{version}\n"
+  text << "#{Graphics.fps.round(1)} fps\n"
+  text << "Map (Zone): #{$game_map.map_id} - #{$game_map.name} (#{zone})\n"
+  text << "XYZ: #{$game_player.x.to_f} / #{$game_player.y.to_f} / #{height.to_f}\n"
+  text << "Facing: #{direction}\n"
+  text << "Difficulty: #{$PokemonSystem.difficulty+1}\n"
+  text << "Hovering: Map #{tiles[3].map_id} - #{tiles[0].to_f} / #{tiles[1].to_f} / 0.0\n"
+  event_id = tiles[3].check_event(tiles[0], tiles[1])
+  ename = "None"
+  if event_id 
+   event = tiles[3].events[event_id]
+   ename = event.name if event 
+   ename = event.pokemon.name if event && event.is_a?(Game_PokeEvent) || event.is_a?(Game_PokeEventA)
+   ename = event.station_name if event && event.is_a?(Game_OVEvent)
+   ename = event.type.berry.name if event && event.is_a?(Game_OVEvent) && event.type && event.type.is_a?(BerryPlantData) && event.type.berry
+   ename = event.data.name if event && event.is_a?(Game_TempEvent) && event.data && event.data.is_a?(Pokemon::Move)
+  end 
+  text << "Hover Event: #{ename}"
+
+  text_sprite.text = text
+  text_sprite.resizeToFit(text)
   end
   def pbPrepareWindow(window)
     window.visible=true
@@ -245,6 +310,11 @@ end
 
 
   def update
+  if $DEBUG && Input.triggerex?(:F3)
+    visible = !@sprites["location_text"].visible
+    @sprites["location_text"].visible = visible
+    @sprites["location_backdrop"].visible = visible
+  end
     pbUpdateSpriteHash(@sprites)
   end 
   

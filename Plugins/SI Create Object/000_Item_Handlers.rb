@@ -1302,6 +1302,7 @@ def pole_range_logic
 
         unless new_start_end.nil?
           x, y = new_start_end[1]
+		  position_marker.visible = $game_map.passableStrict?(x, y, direction, $game_player)
 		  if $game_map.passableStrict?(x, y, direction, $game_player)
            amt = new_amt
            start_end = new_start_end

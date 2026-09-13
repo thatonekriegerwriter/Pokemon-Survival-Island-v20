@@ -157,10 +157,10 @@ class ModularTitleScreen
 	
     pbFillUpdaterConfig if (GameVersion::POKE_UPDATER_CONFIG).empty?
 	text = GameVersion::POKE_UPDATER_CONFIG['CURRENT_GAME_VERSION']
-	text = "LATEST" if text == "999999999.9999.9999.9999.999.9999.999" && !text.nil?
+	text = "DEVELOPMENT" if text == "999999999.9999.9999.9999.999.9999.999" && !text.nil?
 	text = Settings::GAME_VERSION if text.nil?
 	
-	createtextboxesplease("update_ver_text",3,340,"SI-#{text.slice(0, 10)}")
+	createtextboxesplease("update_ver_text",3,340,"SI-#{text}")
     @sprites["start"] = Sprite.new(@viewport)
     @sprites["start"].bitmap = pbBitmap("Graphics/MODTS/start")
     @sprites["start"].center!

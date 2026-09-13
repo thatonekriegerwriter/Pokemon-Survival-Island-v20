@@ -339,3 +339,19 @@ MenuHandlers.add(:debug_menu, :set_map_height, {
     pbFadeOutIn { pbHeightMapEditor }
   }
 })
+
+class Game_Character
+  attr_accessor :height_level
+end 
+
+EventHandlers.add(:on_step_taken, :update_height_level,
+  proc { |event|
+    next unless event 
+	next unless event.map
+	map = event.map
+	x = event.x
+	y = event.y 
+	height = map.get_current_height(x,y)
+	event.height_level = height
+  }
+)

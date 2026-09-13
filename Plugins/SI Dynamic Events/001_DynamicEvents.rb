@@ -1594,7 +1594,7 @@ end
 
 
 class Game_Map
-  def passable?(x, y, d, self_event = nil)
+  def passable?(x, y, d, self_event = nil, height_override = nil)
     return false if !valid?(x, y)
     bit = (1 << ((d / 2) - 1)) & 0x0f
     @events.each_value do |event|

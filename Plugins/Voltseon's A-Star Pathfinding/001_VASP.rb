@@ -566,12 +566,12 @@ def isPassableForPathfinding?(mapID, x, y, traveller = nil, height_override = ni
   # would leave the traveller at, run the check, then put its real (current)
   # height back - the traveller hasn't actually moved.
   height_swappable = height_override && traveller.respond_to?(:bridge_height)
-  was_height = traveller.bridge_height if height_swappable
+  #was_height = traveller.bridge_height if height_swappable
   traveller.bridge_height = height_override if height_swappable
 
   passable = map.passable?(x, y, 0, traveller)
 
-  traveller.bridge_height = was_height if height_swappable
+ # traveller.bridge_height = was_height if height_swappable
   exempted.through = was_through if exempted
   return false unless passable
 

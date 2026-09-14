@@ -18,6 +18,8 @@ class MTS_Element_BG0
     @sprites["bg"] = IconSprite.new(@viewport)
     @sprites["bg"].bitmap = pbBitmap("Graphics/MODTS/Backgrounds/#{file}")
 	end
+	@bg_y_pos = 0.0   # precise float position, tracked independently
+  @bg_speed = 0.5   # <1px/frame — tune this for the pace you want
     @introBackgroundList = ["splash1 copy","splash2 copy","splash3 copy","splash4 copy","splash5 copy",
  "splash6 copy","splash7 copy","splash8 copy","splash9 copy","splash10 copy",
 "splash11 copy","splash12 copy","splash13 copy","splash14 copy","splash15 copy",
@@ -44,7 +46,8 @@ class MTS_Element_BG0
 	
     @introBackgroundGameFrameCount += 1
     if @sprites["bg"].y < 60
-      @sprites["bg"].y += 1
+      @bg_y_pos += @bg_speed
+      @sprites["bg"].y = @bg_y_pos.to_i
     elsif @sprites["bg"].y >= 60 && @introBackgroundGameFrameCount > @introBackgroundG_BFrameCount
       @introBackgroundGameFrameCount = 0
       @tempRand = @currentRand
@@ -63,6 +66,7 @@ class MTS_Element_BG0
 	  
       @sprites["bg"].setBitmap("Graphics/MODTS/Backgrounds/#{@introBackgroundList[@bg_index]}")
       @sprites["bg"].y = 0
+      @bg_y_pos = 0.0 
 
 
    end

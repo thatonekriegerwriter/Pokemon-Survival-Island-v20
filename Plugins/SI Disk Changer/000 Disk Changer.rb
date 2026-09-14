@@ -118,7 +118,7 @@ class DiskManager
   
   def save(data, filename, disc = self.current_disk)
     file_dir = File.join(disc.file_path, filename)
-    save_data(data, path(file_dir, disc))
+    save_data(data, file_dir)
   end
  
   def save_values
@@ -277,7 +277,8 @@ class Game_Map
    # puts @real_map_id.to_s
 	raise "Invalid map ID #{@real_map_id}" if @real_map_id == 0
     @map = $disk_manager.load(sprintf("Map%03d.rxdata", @real_map_id))
-    @map.create_height_map if @map.height_map.nil?
+    expanded = @map.create_height_map
+	$disk_manager.save(@map, sprintf("Map%03d.rxdata", @real_map_id)) if expanded
     #puts @map.instance_variables
     tileset = $data_tilesets[@map.tileset_id]
     updateTileset

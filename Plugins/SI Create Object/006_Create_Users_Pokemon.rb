@@ -1920,7 +1920,38 @@ end
 
 
 class Game_Character
-
+  
+  def move_map_fancy(direction)
+    map_id = self.instance_variable_get(:@new_map_id)
+	raise if map_id.nil?
+	
+    target = $map_factory.getFacingTile(direction, self)
+	map = $map_factory.getMapNoAdd(map_id)
+    vector = $map_factory.getRelativePos(map_id, 0, 0, self.map.map_id, self.x, self.y)
+	self.map = map
+	self.map_id = map.map_id
+	@x = vector[0]
+    @y = vector[1]
+	@real_x = self.x * Game_Map::REAL_RES_X
+	@real_y = self.y * Game_Map::REAL_RES_Y
+	fancy_movetomap(target[1], target[2])
+  end 
+  
+  def fancy_movetomap(new_x, new_y)
+    if self.x - new_x == 1 && self.y == new_y
+      move_fancy(4)
+    elsif self.x - new_x == -1 && self.y == new_y
+      move_fancy(6)
+    elsif self.x == new_x && self.y - new_y == 1
+      move_fancy(8)
+    elsif self.x == new_x && self.y - new_y == -1
+      move_fancy(2)
+    elsif self.x != new_x || self.y != new_y
+      moveto(new_x, new_y)
+    end
+  end 
+  
+  
 
   def move_type_custom
     return if jumping? || moving?

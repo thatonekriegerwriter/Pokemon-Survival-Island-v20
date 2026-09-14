@@ -43,6 +43,7 @@
 - [x] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
 ### Pokemon
+- [-] Bridge Aware.
 - [x] Possible relearnable move storage
 
 ### Sprites

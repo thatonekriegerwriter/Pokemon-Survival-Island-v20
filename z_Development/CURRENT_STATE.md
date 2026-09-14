@@ -3,13 +3,12 @@
 ### Quik Notes
 
 ### Core Gameplay 
-- [ ] Fix Player Classes
+- [ ] Finish Player Classes
 
 ### UI
 - [ ] Record Demo (This can wait for last.)
 
 ### Pokemon
-- [-] Bridge Aware.
 
 ### Placeables
 

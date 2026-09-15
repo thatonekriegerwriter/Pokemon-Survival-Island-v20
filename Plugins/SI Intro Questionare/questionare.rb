@@ -1,50 +1,64 @@
+#===============================================================================
+# Single source of truth for every player class: its display name and
+# description. This used to be duplicated independently across
+# PlayerClass#getName, the free function getPlayerClassName, and
+# PokemonIntroScene#pbStartScene's own @commands/@descriptions arrays — and
+# they had drifted out of sync (getName was missing :COOK, getPlayerClassName
+# was missing :HIKER, and "Blackbelt" vs "Black Belt" disagreed between
+# sources). Everything now reads from here instead.
+#
+# ORDER matters: it's the same order the class-picker menu displays classes
+# in, since PokemonIntroScene#pbEntry picks a class by looking up the chosen
+# menu index directly against this order.
+#===============================================================================
+module PlayerClassData
+  CLASSES = {
+    ACTOR:       { name: "Actor",       description: "At any statue, you can take on the role of another Class, gaining their passive effects for the day. When not doing so, your POKeMON have a chance to not use PP." },
+    TRIATHLETE:  { name: "Tri-Athlete", description: "You excel at movement, and have trained your body to use less Stamina, and move quicker by default. You'll never need Running Shoes." },
+    EXPERT:      { name: "Expert",      description: "All your POKeMON partake in your skills, letting them ignore Level Caps. Your Journal is filled with pages of POKeMON you have surely seen." },
+    RANGER:      { name: "Ranger",      description: "You can always flee from a fight with (non-special) Wild POKeMON, and owing to your profession you can obtain temporarily POKeMON without using POKeBALLs. ...Not that you are allowed to use POKeBALLs." },
+    COOK:        { name: "Cook",        description: "You can always use food to pacify the POKeMON you are fighting, and the food you make is of higher Quality." },
+    BLACKBELT:   { name: "Black Belt",  description: "All your POKeMONs multihit moves will hit twice as much, and you can use various forms of punches." },
+    COORDINATOR: { name: "Coordinator", description: "You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme. Your POKeMON's Happiness decays slower." },
+    ENGINEER:    { name: "Engineer",    description: "You can craft most machines without Machine Boxes, use electric POKeMON as Generators, and all your POKeMON are immune to Electric Type moves." },
+    COLLECTOR:   { name: "Collector",   description: "You have a chance not to use an item, and will find twice as many items when scavenging." },
+    BREEDER:     { name: "Breeder",     description: "You excel at working with Eggs, and have a higher chance to have them spawn. Eggs can appear when you sleep." },
+    NURSE:       { name: "Nurse",       description: "Sleeping and health items recover more health for both you and your POKeMON, and you passively heal while on the Overworld." },
+    GARDENER:    { name: "Gardener",    description: "Plants you care for will always give a berry back if they die, or you dig them up. All Berries you have planted will grow slightly faster." },
+    FISHER:      { name: "Fisher",      description: "When fishing, you will encounter fish more frequently, which will be of higher level, and give more meat. You can even get meat off of a Magikarp." },
+    HIKER:       { name: "Hiker",       description: "You move around the Mountains with a Pole a little faster. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double." },
+  }.freeze
+
+  # index -> class id, in class-picker menu order
+  ORDER = CLASSES.keys.freeze
+
+  def self.name_for(id)
+    CLASSES[id] ? CLASSES[id][:name] : nil
+  end
+
+  def self.description_for(id)
+    CLASSES[id] ? CLASSES[id][:description] : nil
+  end
+end
+
 class PlayerClass
   attr_accessor :id
   attr_accessor :name
   attr_accessor :acted_class
   attr_accessor :actorcooldown
 
-
   def initialize(id)
-     @id           = id
-     @name           = getName
-     @acted_class   = :NONE
-     @actorcooldown = false
+    @id            = id
+    @name          = getName
+    @acted_class   = :NONE
+    @actorcooldown = false
   end
-  
-  def getName
-      case @id
-	    when :TRIATHLETE 
-		  return "Tri-Athlete"
-	    when :ACTOR
-		  return "Actor"
-	    when :EXPERT#$game_variables
-		  return "Expert"
-	    when :RANGER
-		  return "Ranger"
-	    when :BLACKBELT
-		  return "Blackbelt"
-	    when :COORDINATOR
-		  return "Coordinator"
-	    when :ENGINEER
-		  return "Engineer"
-	    when :NURSE
-		  return "Nurse"
-	    when :BREEDER
-		  return "Breeder"
-	    when :COLLECTOR
-		  return "Collector"
-	    when :GARDENER
-		  return "Gardener"
-	    when :FISHER
-		  return "Fisher"
-	    when :HIKER
-		  return "Hiker"
-	 end
-  end
- 
 
+  def getName
+    PlayerClassData.name_for(@id)
+  end
 end
+
 
 
 
@@ -434,24 +448,20 @@ end
 #===============================================================================
 class PokemonIntroScene
   def initialize_game_start_actions
-   if $PokemonSystem.nuzlockemode == 0
-    if Nuzlocke.definedrules? == true
-      if Nuzlocke.on? == false
-      Nuzlocke.toggle(true)
+    if $PokemonSystem.nuzlockemode == 0
+      if Nuzlocke.definedrules? == true
+        Nuzlocke.toggle(true) if Nuzlocke.on? == false
+      else
+        Nuzlocke.start
+        Nuzlocke.toggle(true)
       end
-    else 
-      Nuzlocke.start
-      Nuzlocke.toggle(true)
     end
-
-end
-   if $PokemonSystem.difficulty < 2
-      $bag.add(ItemData.new(:POTION),3)
-   end
-   $mouse.enable
-  
+    if $PokemonSystem.difficulty < 2
+      $bag.add(ItemData.new(:POTION), 3)
+    end
+    $mouse.enable
   end
-  
+
   def update_player_sprites
       if @index+1<9
       meta = GameData::PlayerMetadata.get(@index+1)
@@ -479,35 +489,11 @@ end
 
   def pbStartScene
     initialize_game_start_actions
-	@commands = [_INTL("Actor"),#0
-       _INTL("Tri-Athlete"),#1
-       _INTL("Expert"),#2
-       _INTL("Ranger"),#3
-       _INTL("Cook"),#4
-       _INTL("Black Belt"),#5
-       _INTL("Coordinator"),#6
-       _INTL("Engineer"),#7
-       _INTL("Collector"),#8
-       _INTL("Breeder"),#9
-       _INTL("Nurse"),#10
-       _INTL("Gardener"),#11
-       _INTL("Fisher"),#12
-       _INTL("Hiker")]#13
-	 @descriptions = [_INTL("At any statue, you can take on the role of another Class, gaining their passive effects for the day. When not doing so, your POKeMON have a chance to not use PP."),#0
-		  _INTL("You excel at movement, and have trained your body to use less Stamina, and move quicker by default. You'll never need Running Shoes."),#1
-         _INTL("All your POKeMON partake in your skills, letting them ignore Level Caps. Your Journal is filled with pages of POKeMON you have surely seen."),#2
-         _INTL("You can always flee from a fight with (non-special) Wild POKeMON, and owing to your profession you can obtain temporarily POKeMON without using POKeBALLs. ...Not that you are allowed to use POKeBALLs."),#3
-         _INTL("You can always use food to pacify the POKeMON you are fighting, and the food you make is of higher Quality."),#4 #Loyalty decays slower
-         _INTL("All your POKeMONs multihit moves will hit twice as much, and you can use various forms of punches."),#5
-         _INTL("You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme. Your POKeMON's Happiness decays slower."),#6
-         _INTL("You can craft most machines without Machine Boxes, use electric POKeMON as Generators, and all your POKeMON are immune to Electric Type moves."),#7
-         _INTL("You have a chance not to use an item, and will find twice as many items when scavenging."),#8
-         _INTL("You excel at working with Eggs, and have a higher chance to have them spawn. Eggs can appear when you sleep."),#9
-         _INTL("Sleeping and health items recover more health for both you and your POKeMON, and you passively heal while on the Overworld."),#10
-         _INTL("Plants you care for will always give a berry back if they die, or you dig them up. All Berries you have planted will grow slightly faster."),#11
-         _INTL("When fishing, you will encounter fish more frequently, which will be of higher level, and give more meat. You can even get meat off of a Magikarp."),#12
-         _INTL("You move around the Mountains with a Pole a little faster. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double.")#13
-          ]
+    # Built from PlayerClassData instead of a separately hardcoded copy of the
+    # class list/descriptions, so this always matches what set_player_class
+    # actually recognizes (see pbEntry's class-picker selection below).
+    @commands = PlayerClassData::ORDER.map { |id| _INTL(PlayerClassData::CLASSES[id][:name]) }
+    @descriptions = PlayerClassData::ORDER.map { |id| _INTL(PlayerClassData::CLASSES[id][:description]) }
     helptext = "Name:"
     minlength = 1
     maxlength = Settings::MAX_PLAYER_NAME_SIZE
@@ -529,7 +515,6 @@ end
     @sprites["entry"].maxlength = maxlength
     addBackgroundPlane(@sprites, "background", "Naming/introbg", @viewport)
     @sprites["background"].z = -1
-    #addBackgroundPlane(@sprites, "background", "Naming/bg_2", @viewport)
     @sprites["shadow"] = IconSprite.new(0, 0, @viewport)
     @sprites["shadow"].setBitmap("Graphics/Characters/Shadows/defaultShadow")
     @sprites["shadow"].x = 53
@@ -574,7 +559,6 @@ end
       @sprites["textbox"].letterbyletter=false
       @sprites["textbox"].visible=false
 	  
-#@sprites["player"]=TrainerWalkingCharSprite.new(charset,@viewport)
 
     @sprites["window"]=SpriteWindow_Base.new(@sprites["character"].x+20,@sprites["subject"].y-35,128,192)
     @sprites["window2"]=SpriteWindow_Base.new(@sprites["subject"].x-45,@sprites["subject"].y-35,127,128)
@@ -613,209 +597,177 @@ end
     pbFadeInAndShow(@sprites)
   end
 
-  def pbEntry
-    ret = ""
-    frame=0
-    loop do
-      frame+=1
-      Graphics.update
-      Input.update
-	  if $mouse.hidden?# && frame==Graphics.frame_rate*10
-	   $mouse.show 
-	  end
+  # Every mouse-hit-test in pbEntry used to recompute this inline (~150+ chars each,
+  # several with a copy-pasted duplicate clause elsewhere in the same condition).
+  # x_margin pads the horizontal bounds; y_offset shifts (not pads) the vertical
+  # bounds — matches each sprite's original check exactly (entry needed a -38 shift,
+  # cmdwindow needed 0 margin, everything else used the 5px margin / 0 offset default).
+  def mouse_over?(sprite, x_margin: 5, y_offset: 0)
+    Input.mouse_x.between?(sprite.x - x_margin + $PokemonSystem.screenposx,
+                            sprite.x + sprite.width + x_margin + $PokemonSystem.screenposx) &&
+      Input.mouse_y.between?(sprite.y + y_offset + $PokemonSystem.screenposy,
+                              sprite.y + sprite.height + y_offset + $PokemonSystem.screenposy)
+  end
 
-      if @sprites["cmdwindow"].active == false && @sprites["entry"].text!="" && !$player.playerclass.nil? && @sprites["cmdwindow"].active == false && Input.triggerex?(:RETURN) && @sprites["entry"].text.length >= @minlength && @sprites["entry"].active == true
+  # shared by both ways of confirming the entered name (pressing Enter vs clicking
+  # Finish) — these used to be two ~15-line copies of the same logic. Note the two
+  # callers still check slightly different conditions (Enter additionally requires
+  # the entry field to be focused and meet @minlength) — only the action itself,
+  # not the trigger condition, was actually duplicated.
+  def can_confirm_name?
+    @sprites["cmdwindow"].active == false && @sprites["entry"].text != "" && !$player.playerclass.nil?
+  end
 
-		  pbPlayDecisionSE
-		  $player.name = @sprites["entry"].text
-		 if @index+1==9
-		    if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
-				index2=12
-			else
-				index2=11
-			end
-		 else
-				index2=@index+1
-		 end
-		 pbChangePlayer(index2)
-		 break
-      elsif @sprites["cmdwindow"].active == false && @sprites["entry"].text!="" && !$player.playerclass.nil? && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5+$PokemonSystem.screenposx,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["finishbutton"].y+$PokemonSystem.screenposy,@sprites["finishbutton"].y+@sprites["finishbutton"].height+$PokemonSystem.screenposy))
-		  pbPlayDecisionSE
-         $player.name = @sprites["entry"].text
-		 if @index+1==9
-		    if pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?"))
-				index2=12
-			else
-				index2=11
-			end
-		 else
-				index2=@index+1
-		 end
-		 pbChangePlayer(index2)
-		 break
-      elsif Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["finishbutton"].x-5+$PokemonSystem.screenposx,@sprites["finishbutton"].x+@sprites["finishbutton"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["finishbutton"].y+$PokemonSystem.screenposy,@sprites["finishbutton"].y+@sprites["finishbutton"].height+$PokemonSystem.screenposy))
-       pbPlayBuzzerSE
-      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["charaleft"].x-5+$PokemonSystem.screenposx,@sprites["charaleft"].x+@sprites["charaleft"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["charaleft"].y+$PokemonSystem.screenposy,@sprites["charaleft"].y+@sprites["charaleft"].height+$PokemonSystem.screenposy))
-
-        @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/b"))
-            pbPlayCursorSE
-		  @index = (@index - 1) % 9
-		 update_player_sprites
-		  pbWait(5)
-        @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/a"))
-      elsif @sprites["cmdwindow"].active == false && @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["chararight"].x-5+$PokemonSystem.screenposx,@sprites["chararight"].x+@sprites["chararight"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["chararight"].y+$PokemonSystem.screenposy,@sprites["chararight"].y+@sprites["chararight"].height+$PokemonSystem.screenposy))
-
-        @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/d"))
-            pbPlayCursorSE
-		@index = (@index + 1) % 9
-		 update_player_sprites
-		  pbWait(5)
-        @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/c"))
-      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(@sprites["entry"].x-5+$PokemonSystem.screenposx,@sprites["entry"].x+@sprites["entry"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["entry"].y-38+$PokemonSystem.screenposy,@sprites["entry"].y+@sprites["entry"].height-38+$PokemonSystem.screenposy))
-      Input.text_input = true
-      @sprites["entry"].active = true
-      elsif @sprites["entry"].active == true && Input.text_input == true && Input.trigger?(Input::MOUSERIGHT)
-	   Input.text_input = false 
-      @sprites["entry"].active = false
-      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && (Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width+$PokemonSystem.screenposx,Graphics.width+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["subject"].y-20+$PokemonSystem.screenposy,@sprites["subject"].y-20+@sprites["cmdwindow"].height+$PokemonSystem.screenposy))
-      @sprites["cmdwindow"].index = 0
-      @sprites["cmdwindow"].active = true
-      @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex]
-      @sprites["textbox"].visible = true
-      @sprites["cmdwindow"]&.update
-      elsif @sprites["cmdwindow"].active == true && @sprites["cmdwindow"].index != -1
-	   loop do
-      frame+=1
-      Graphics.update
-      Input.update
-      @sprites["entry"].update
-      @sprites["subject"]&.update
-	  if frame%120==0 && @index!=8
-      @dir+=1
-      @sprites["subject"].src_rect.y=@y[@dir%4]
-     end
-	    if Input.trigger?(Input::USE)
-		  pbPlayDecisionSE
-         command = @sprites["cmdwindow"].truecommands.index(@sprites["cmdwindow"].commands[@sprites["cmdwindow"].index])
-           case command
-            when 0
-	          $player.set_player_class(:ACTOR)
-            when 1
-	          $player.set_player_class(:TRIATHLETE)
-            when 2
-	          $player.set_player_class(:EXPERT)
-            when 3
-	          $player.set_player_class(:RANGER)
-            when 4
-	          $player.set_player_class(:COOK)
-            when 5
-	          $player.set_player_class(:BLACKBELT)
-            when 6
-	          $player.set_player_class(:COORDINATOR)
-            when 7
-	          $player.set_player_class(:ENGINEER)
-            when 8
-	          $player.set_player_class(:COLLECTOR)
-            when 9
-	          $player.set_player_class(:BREEDER)
-            when 10
-	          $player.set_player_class(:NURSE)
-            when 11
-	          $player.set_player_class(:GARDENER)
-            when 12
-	          $player.set_player_class(:FISHER) 
-            when 13
-	          $player.set_player_class(:HIKER)
-           end
-		   @sprites["cmdwindow"].clear_color
-		   @sprites["cmdwindow"].set_color(getPlayerClassName($player.playerclass.id),true)
-        @sprites["cmdwindow"].refresh
-		  @sprites["cmdwindow"].index = -1
-         @sprites["cmdwindow"].active = false
-         @sprites["textbox"].visible = false
-         @sprites["cmdwindow"]&.update
-		  break
-		elsif Input.trigger?(Input::DOWN) || Input.repeat?(Input::DOWN) || Input.scroll_v==-1
-            pbPlayCursorSE
-			if @sprites["cmdwindow"].index+1<@sprites["cmdwindow"].length
-			 @sprites["cmdwindow"].index += 1 
-           @sprites["cmdwindow"].downarrow2.visible = true if @sprites["cmdwindow"].trueindex+1!=@sprites["cmdwindow"].truecommands.length-1
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex]
-
-			else#if @sprites["cmdwindow"].truecommands[@sprites["cmdwindow"].index+1] && @sprites["cmdwindow"].index+1>@sprites["cmdwindow"].length
-			 @sprites["cmdwindow"].scroll_down
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex+1] if @descriptions[@sprites["cmdwindow"].trueindex+1]
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex] if !@descriptions[@sprites["cmdwindow"].trueindex+1]
-			 end
-			 
-		elsif Input.trigger?(Input::UP) || Input.repeat?(Input::UP) || Input.scroll_v==1
-            pbPlayCursorSE
-			 if @sprites["cmdwindow"].index-1>=0
-			 @sprites["cmdwindow"].index -= 1
-           @sprites["cmdwindow"].downarrow2.visible = true if @sprites["cmdwindow"].trueindex!=@sprites["cmdwindow"].truecommands.length-1
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex]
-
-			 else#if @sprites["cmdwindow"].truecommands[@sprites["cmdwindow"].index-1] && @sprites["cmdwindow"].index-1>0
-			 @sprites["cmdwindow"].scroll_up
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex-1] if @sprites["cmdwindow"].trueindex!=0
-          @sprites["textbox"].text=@descriptions[@sprites["cmdwindow"].trueindex] if @sprites["cmdwindow"].trueindex==0
-			 end
-			 
-		elsif Input.trigger?(Input::BACK)
-		  pbPlayCloseMenuSE
-		  @sprites["cmdwindow"].index = -1
-         @sprites["cmdwindow"].active = false
-         @sprites["textbox"].visible = false
-         @sprites["cmdwindow"]&.update
-		 
-		  break
-		end
-		end
-	  else 
-	
+  def confirm_name_and_advance
+    pbPlayDecisionSE
+    $player.name = @sprites["entry"].text
+    index2 =
+      if @index + 1 == 9
+        pbBodyTypeMessage(_INTL("Would you like a feminine looking body, or a masculine looking body?")) ? 12 : 11
+      else
+        @index + 1
       end
-	  
-	  
-	  
-	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(@sprites["entry"].x-5+$PokemonSystem.screenposx,@sprites["entry"].x+@sprites["entry"].width+5+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["entry"].y-38+$PokemonSystem.screenposy,@sprites["entry"].y+@sprites["entry"].height-38+$PokemonSystem.screenposy)) 
-      Input.text_input = false 
-      @sprites["entry"].active = false
-	  end
-	  if Input.trigger?(Input::MOUSELEFT) && !(Input.mouse_x.between?(Graphics.width-@sprites["cmdwindow"].width+$PokemonSystem.screenposx,Graphics.width+$PokemonSystem.screenposx) && Input.mouse_y.between?(@sprites["subject"].y-20+$PokemonSystem.screenposy,@sprites["subject"].y-20+@sprites["cmdwindow"].height+$PokemonSystem.screenposy))
-      @sprites["cmdwindow"].index = -1
-      @sprites["cmdwindow"].active = false
-      @sprites["textbox"].visible = false
-      @sprites["cmdwindow"]&.update
-	  end
-      @sprites["entry"].update
-      @sprites["subject"]&.update
-	  if frame%120==0 && @index!=8
-      @dir+=1
-      @sprites["subject"].src_rect.y=@y[@dir%4]
-     end
+    pbChangePlayer(index2)
+  end
 
-
-
+  # advances the walking-animation frame; was duplicated inline at the tail of the
+  # outer loop and the head of the inner (class-picker) loop in pbEntry
+  def update_frame_animation(frame)
+    @sprites["entry"].update
+    @sprites["subject"]&.update
+    if frame % 120 == 0 && @index != 8
+      @dir += 1
+      @sprites["subject"].src_rect.y = @y[@dir % 4]
     end
-	 $mouse.disable
-	 if pbGenerateEgg(:SHAYMIN)
-	 	 egg = $player.last_party
-	 	 egg.learn_move(:SYNTHESIS)
-	 	 egg.learn_move(:AROMATHERAPY)
-	 	 egg.record_first_moves
-	 	 egg.happiness=200
-	 	 egg.loyalty=200
-	 	 egg.shiny = true
-	 	 egg.obtain_text=_I("???")
-	 	 egg.calc_stats 
-	 
-	 
-	 end
-	 
-if $player.is_it_this_class?(:RANGER,false)
-  item = ItemData.new(:CAPTURESTYLUS)
-  $bag.add(item, 1)
-end
+  end
+
+  def pbEntry
+    frame = 0
+    loop do
+      frame += 1
+      Graphics.update
+      Input.update
+      $mouse.show if $mouse.hidden?
+
+      if can_confirm_name? && Input.triggerex?(:RETURN) && @sprites["entry"].text.length >= @minlength && @sprites["entry"].active == true
+        confirm_name_and_advance
+        break
+      elsif can_confirm_name? && Input.trigger?(Input::USE) && mouse_over?(@sprites["finishbutton"])
+        confirm_name_and_advance
+        break
+      elsif Input.trigger?(Input::USE) && mouse_over?(@sprites["finishbutton"])
+        pbPlayBuzzerSE
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && mouse_over?(@sprites["charaleft"])
+        @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/b"))
+        pbPlayCursorSE
+        @index = (@index - 1) % 9
+        update_player_sprites
+        pbWait(5)
+        @sprites["charaleft"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/a"))
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && mouse_over?(@sprites["chararight"])
+        @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/d"))
+        pbPlayCursorSE
+        @index = (@index + 1) % 9
+        update_player_sprites
+        pbWait(5)
+        @sprites["chararight"].setBitmap(sprintf("Graphics/Pictures/IntroAssets/c"))
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && mouse_over?(@sprites["entry"], y_offset: -38)
+        Input.text_input = true
+        @sprites["entry"].active = true
+      elsif @sprites["entry"].active == true && Input.text_input == true && Input.trigger?(Input::MOUSERIGHT)
+        Input.text_input = false
+        @sprites["entry"].active = false
+      elsif @sprites["cmdwindow"].active == false && Input.trigger?(Input::USE) && mouse_over?(@sprites["cmdwindow"], x_margin: 0)
+        @sprites["cmdwindow"].index = 0
+        @sprites["cmdwindow"].active = true
+        @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex]
+        @sprites["textbox"].visible = true
+        @sprites["cmdwindow"]&.update
+      elsif @sprites["cmdwindow"].active == true && @sprites["cmdwindow"].index != -1
+        loop do
+          frame += 1
+          Graphics.update
+          Input.update
+          update_frame_animation(frame)
+          if Input.trigger?(Input::USE)
+            pbPlayDecisionSE
+            command = @sprites["cmdwindow"].truecommands.index(@sprites["cmdwindow"].commands[@sprites["cmdwindow"].index])
+            # picks the class directly from the same registry/order used to build
+            # the menu, instead of a separately hand-maintained 14-branch case
+            # statement that had to be kept in sync with that order by hand
+            class_id = PlayerClassData::ORDER[command]
+            $player.set_player_class(class_id) if class_id
+            @sprites["cmdwindow"].clear_color
+            @sprites["cmdwindow"].set_color(getPlayerClassName($player.playerclass.id), true)
+            @sprites["cmdwindow"].refresh
+            @sprites["cmdwindow"].index = -1
+            @sprites["cmdwindow"].active = false
+            @sprites["textbox"].visible = false
+            @sprites["cmdwindow"]&.update
+            break
+          elsif Input.trigger?(Input::DOWN) || Input.repeat?(Input::DOWN) || Input.scroll_v == -1
+            pbPlayCursorSE
+            if @sprites["cmdwindow"].index + 1 < @sprites["cmdwindow"].length
+              @sprites["cmdwindow"].index += 1
+              @sprites["cmdwindow"].downarrow2.visible = true if @sprites["cmdwindow"].trueindex + 1 != @sprites["cmdwindow"].truecommands.length - 1
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex]
+            else
+              @sprites["cmdwindow"].scroll_down
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex + 1] if @descriptions[@sprites["cmdwindow"].trueindex + 1]
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex] if !@descriptions[@sprites["cmdwindow"].trueindex + 1]
+            end
+          elsif Input.trigger?(Input::UP) || Input.repeat?(Input::UP) || Input.scroll_v == 1
+            pbPlayCursorSE
+            if @sprites["cmdwindow"].index - 1 >= 0
+              @sprites["cmdwindow"].index -= 1
+              @sprites["cmdwindow"].downarrow2.visible = true if @sprites["cmdwindow"].trueindex != @sprites["cmdwindow"].truecommands.length - 1
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex]
+            else
+              @sprites["cmdwindow"].scroll_up
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex - 1] if @sprites["cmdwindow"].trueindex != 0
+              @sprites["textbox"].text = @descriptions[@sprites["cmdwindow"].trueindex] if @sprites["cmdwindow"].trueindex == 0
+            end
+          elsif Input.trigger?(Input::BACK)
+            pbPlayCloseMenuSE
+            @sprites["cmdwindow"].index = -1
+            @sprites["cmdwindow"].active = false
+            @sprites["textbox"].visible = false
+            @sprites["cmdwindow"]&.update
+            break
+          end
+        end
+      end
+
+      if Input.trigger?(Input::MOUSELEFT) && !mouse_over?(@sprites["entry"], y_offset: -38)
+        Input.text_input = false
+        @sprites["entry"].active = false
+      end
+      if Input.trigger?(Input::MOUSELEFT) && !mouse_over?(@sprites["cmdwindow"], x_margin: 0)
+        @sprites["cmdwindow"].index = -1
+        @sprites["cmdwindow"].active = false
+        @sprites["textbox"].visible = false
+        @sprites["cmdwindow"]&.update
+      end
+      update_frame_animation(frame)
+    end
+
+    $mouse.disable
+    if pbGenerateEgg(:SHAYMIN)
+      egg = $player.last_party
+      egg.learn_move(:SYNTHESIS)
+      egg.learn_move(:AROMATHERAPY)
+      egg.record_first_moves
+      egg.happiness = 200
+      egg.loyalty = 200
+      egg.shiny = true
+      egg.obtain_text = _I("???")
+      egg.calc_stats
+    end
+
+    if $player.is_it_this_class?(:RANGER, false)
+      item = ItemData.new(:CAPTURESTYLUS)
+      $bag.add(item, 1)
+    end
   end
 
   def pbEndScene
@@ -845,34 +797,7 @@ end
 
   
   def getPlayerClassName(id)
-      case id
-	    when :TRIATHLETE 
-		  return "Tri-Athlete"
-	    when :ACTOR
-		  return "Actor"
-	    when :EXPERT#$game_variables
-		  return "Expert"
-	    when :RANGER
-		  return "Ranger"
-	    when :BLACKBELT
-		  return "Black Belt"
-	    when :COORDINATOR
-		  return "Coordinator"
-	    when :ENGINEER
-		  return "Engineer"
-	    when :NURSE
-		  return "Nurse"
-	    when :BREEDER
-		  return "Breeder"
-	    when :COLLECTOR
-		  return "Collector"
-	    when :GARDENER
-		  return "Gardener"
-	    when :FISHER
-		  return "Fisher"
-	    when :COOK
-		  return "Cook"
-	 end
+    PlayerClassData.name_for(id)
   end
  
 
@@ -1543,6 +1468,9 @@ module GameData
     end
 end
 end
+
+
+
 
 
 class Battle::Battler

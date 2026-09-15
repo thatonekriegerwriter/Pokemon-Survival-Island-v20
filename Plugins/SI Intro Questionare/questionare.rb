@@ -1545,9 +1545,6 @@ end
 end
 
 
-
-
-
 class Battle::Battler
 
   def pbReducePP(move)

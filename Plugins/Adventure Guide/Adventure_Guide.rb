@@ -302,7 +302,7 @@ module AdventureGuide
     #---------------------------------------------------------------------------
     def create_scene
       create_sprite(:background, "Scene_#{@page + 1}")
-      %i[text title description].each { |key| create_text_sprite(key) }
+      %i[text title description guides].each { |key| create_text_sprite(key) }
       create_sprite(:choice, "Choice")
       update_choice_cursor
       show_sprite(:choice)
@@ -359,6 +359,7 @@ module AdventureGuide
 
     def update_text
       refresh_lists if @lists_dirty
+	  draw_guides_title
       draw_title
       draw_list
       draw_description
@@ -446,7 +447,29 @@ module AdventureGuide
 
       draw_lines(:title, entries) unless entries.empty?
     end
-    
+
+
+    def draw_guides_title
+      clear_text(:guides)
+
+      title =
+        if @page == PAGE_DESCRIPTION
+          current_book&.name
+		elsif @page == PAGE_CHAPTERS
+          "CHAPTERS"
+        else
+          "GUIDES"
+        end
+
+      return unless title
+
+      entries = [
+        [title, 10, -14, 0, Color.new(255, 255, 255), Color.new(0, 0, 0)]
+      ]
+
+      draw_lines(:guides, entries)
+    end
+
 	def get_lengths
       lines = @chapter_descriptions[@position[PAGE_BOOKS]][@position[PAGE_CHAPTERS]]
       return [0, 0] if lines.nil? || lines.empty?

@@ -1,4 +1,0 @@
-Name = Berry Scripts
-Version = 2.2.2
-Credits = Luka S.J.
-Link = https://luka-sj.com/res/modts

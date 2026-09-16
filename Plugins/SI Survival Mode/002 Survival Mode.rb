@@ -2009,6 +2009,16 @@ def damagePlayer(amount,iframes=false)
   puts "#{$player.name}: #{$player.playerhealth}/#{$player.playermaxhealth2} - #{amount}"
 end
 
+def totalhp
+$player.playermaxhealth2
+end 
+def hp
+$player.playerhealth
+end 
+def hp=(value)
+$player.playerhealth=value
+end 
+
 
 def togglescaling
   $game_switches[140]=false if $game_switches[140]==true

@@ -32,6 +32,20 @@ class Game_Temp
   end
 end
 
+class Scene_Map
+	alias quicksave_update update
+  def update
+    quicksave_update
+    scene = $scene if !scene
+    if Input.triggerex?(:F9) #AUX2 refers to W key, can be changed by pressing F1
+       maps=[54,56,351,352,41,148,149,155,150,151,152,147,153,154]
+       map_metadata = $game_map.metadata
+       if map_metadata&.base_map
+         pbAutosave
+		end
+	end
+end
+end
 
 class PokemonGlobalMetadata
   attr_accessor :lastSave
@@ -78,12 +92,14 @@ def pbSetDisableAutosave=(value)
 end
 
 def pbAutosave(scene = nil)
+  return unless pbCanAutosave?
   scene = $scene if !scene
   return if $PokemonGlobal.cur_challenge!=false
   return if $PokemonSystem.autosave!=0
   return if $PokemonGlobal.hardcore==true
   return if $game_temp.in_temple==true
-  return if SaveData::TESTING_MODE==false
+  return if $game_temp.in_dungeon==true
+  return if SaveData::TESTING_MODE==true
   if !pbInBugContest? && !pbBattleChallenge.pbInChallenge? 
     sideDisplay("Now Saving...",true)
 	 Game.auto_save
@@ -91,31 +107,19 @@ def pbAutosave(scene = nil)
   end
 end
 
-# Check if the map are connected
-EventHandlers.add(:on_enter_map, :autosave,
-  proc { |old_map_id|   # previous map ID, is 0 if no map ID
-    next if $game_map.map_id==3
-    next if $PokemonGlobal.hardcore==true
-    map_metadata = GameData::MapMetadata.try_get($game_map.map_id)
-    old_map_metadata = GameData::MapMetadata.try_get(old_map_id)
-    if old_map_id>0 && !$map_factory.areConnected?($game_map.map_id, old_map_id) && map_metadata && old_map_metadata && (map_metadata.outdoor_map || old_map_metadata.outdoor_map)
-      $game_temp.changeUnConnectedMap = true 
-    end
-  }
-  )
-
-  # Walk in or out of a building
-  EventHandlers.add(:on_map_or_spriteset_change, :autosave,
-    proc { |scene, map_changed|
-      next if !scene || !scene.spriteset
-      next if $game_map.map_id==3
-	   next if pbGetTimeNow.to_i<$PokemonGlobal.lastSave+3600
-      if pbCanAutosave? && map_changed && $game_temp.changeUnConnectedMap==true
-        pbAutosave(scene)
-      end
-      $game_temp.changeUnConnectedMap = false
-    }
-  )
+EventHandlers.add(:on_player_step_taken, :auto_save, proc {
+  $player.autosave_steps = 0 if $player.autosave_steps.nil?
+  next if $PokemonGlobal.sliding
+  next if !pbCanAutosave?
+  next if $game_map.map_id==3
+  next if $game_temp.in_temple==true
+  next if pbGetTimeNow.to_i<$PokemonGlobal.lastSave+3600
+  $player.autosave_steps += 1
+  if $player.autosave_steps >= 400
+    pbAutosave
+    $player.autosave_steps = 0
+  end
+})
 
 # Autosave when caught a pokemon
 EventHandlers.add(:on_wild_battle_end, :autosave_catchpkm,

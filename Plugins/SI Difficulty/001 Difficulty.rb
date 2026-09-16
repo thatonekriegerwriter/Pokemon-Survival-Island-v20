@@ -336,6 +336,7 @@ class PokemonEncounters
     return false
   end
 
+
   def choose_wild_pokemon(enc_type, chance_rolls = 1)
     if !enc_type || !GameData::EncounterType.exists?(enc_type)
       raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
@@ -350,20 +351,20 @@ class PokemonEncounters
       favored_type = nil
       case first_pkmn.ability_id
       when :FLASHFIRE
-        favored_type = :FIRE if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
+        favored_type = :FIRE if MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
                                 GameData::Type.exists?(:FIRE) && rand(100) < 50
       when :HARVEST
-        favored_type = :GRASS if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
+        favored_type = :GRASS if MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
                                  GameData::Type.exists?(:GRASS) && rand(100) < 50
       when :LIGHTNINGROD
-        favored_type = :ELECTRIC if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
+        favored_type = :ELECTRIC if MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
                                     GameData::Type.exists?(:ELECTRIC) && rand(100) < 50
       when :MAGNETPULL
         favored_type = :STEEL if GameData::Type.exists?(:STEEL) && rand(100) < 50
       when :STATIC
         favored_type = :ELECTRIC if GameData::Type.exists?(:ELECTRIC) && rand(100) < 50
       when :STORMDRAIN
-        favored_type = :WATER if Settings::MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
+        favored_type = :WATER if MORE_ABILITIES_AFFECT_WILD_ENCOUNTERS &&
                                  GameData::Type.exists?(:WATER) && rand(100) < 50
       end
       if favored_type
@@ -410,11 +411,39 @@ class PokemonEncounters
         level = [level - rand(1..4), 1].max
       end
     end
-    if level < 1
-     level = 1 
+    if level < 3
+     level = 3 
     end
     # Return [species, level]
-	#puts "This one is picking level."
+    return [encounter[1], level]
+  end
+
+  def choose_wild_pokemon_for_map(map_ID, enc_type)
+    if !enc_type || !GameData::EncounterType.exists?(enc_type)
+      raise ArgumentError.new(_INTL("Encounter type {1} does not exist", enc_type))
+    end
+    # Get the encounter table
+    encounter_data = GameData::Encounter.get(map_ID, $PokemonGlobal.encounter_version)
+    return nil if !encounter_data
+    enc_list = encounter_data.types[enc_type]
+    return nil if !enc_list || enc_list.length == 0
+    # Calculate the total probability value
+    chance_total = 0
+    enc_list.each { |a| chance_total += a[0] }
+    # Choose a random entry in the encounter table based on entry probabilities
+    rnd = rand(chance_total)
+    encounter = nil
+    enc_list.each do |enc|
+      rnd -= enc[0]
+      next if rnd >= 0
+      encounter = enc
+      break
+    end
+    # Return [species, level]
+    level =  new_set_enemy_level(encounter)
+    if level < 3
+     level = 3 
+    end
     return [encounter[1], level]
   end
 

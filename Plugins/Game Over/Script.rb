@@ -11,7 +11,7 @@
 # The switch number that need to be ON in order to allows a game over
 GAMEOVERSWITCH = 80
 
-alias :_old_FL_pbStartOver :pbStartOver
+#alias :_old_FL_pbStartOver :pbStartOver
 def pbStartOver(gameover=false)
     $game_temp.in_menu = false if $game_temp.in_menu==true
     $game_temp.dead = true
@@ -19,8 +19,8 @@ def pbStartOver(gameover=false)
     
     pbFadeOutIn { pbRespawnItself } if $player.playerhealth<=0 && $game_temp.in_temple==false
     pbLoadRpgxpScene(Scene_Gameover.new) if $game_temp.in_temple==true && $player.playerhealth<=0
-    return
-  _old_FL_pbStartOver(gameover)
+ #   return
+ # _old_FL_pbStartOver(gameover)
 end
 
 def pbRespawnAtBed 
@@ -37,8 +37,6 @@ end
     return
   end
   $stats.blacked_out_count += 1
-  $player.decrease_current_total_hp
-  $player.playerhealth = $player.playermaxhealth2
   if $PokemonGlobal.pokecenterMapId && $PokemonGlobal.pokecenterMapId >= 0 && $player.is_dead==false
     mapname = GameData::MapMetadata&.try_get($PokemonGlobal.pokecenterMapId).name
 	if mapname.include?("(Folder)")
@@ -54,10 +52,12 @@ end
     $scene.transfer_player if $scene.is_a?(Scene_Map)
     $game_map.refresh
     $game_temp.dead = false
-  $player.playerfood = $player.playermaxfood
-  $player.playerwater = $player.playermaxwater
-  $player.playersleep = $player.playermaxsleep
-	 pbBedMessageLoss
+    $player.decrease_current_total_hp
+    $player.playerhealth = $player.playermaxhealth2
+    $player.playerfood = $player.playermaxfood
+    $player.playerwater = $player.playermaxwater
+    $player.playersleep = $player.playermaxsleep
+  	pbBedMessageLoss
  else
     pbLoadRpgxpScene(Scene_Gameover.new)
  end

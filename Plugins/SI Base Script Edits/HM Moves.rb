@@ -133,6 +133,47 @@ def pbEndSurf(_xOffset, _yOffset, dir)
   return false
 end
 
+
+
+def pbCut
+  move = :CUT
+  movefinder = $player.get_pokemon_with_move(move)
+  if !pbCheckHiddenMoveBadge(Settings::BADGE_FOR_CUT, false) || (!$DEBUG && !movefinder) || (!$bag.has?(:MACHETE)  && !movefinder) 
+    pbMessage(_INTL("This tree looks like it can be cut down."))
+    return false
+  end
+  if pbConfirmMessage(_INTL("This tree looks like it can be cut down!\nWould you like to cut it?"))
+    $stats.cut_count += 1
+    pbSEPlay("Cut", 80)
+    speciesname = (movefinder) ? movefinder.name : $player.name
+    pbMessage(_INTL("{1} used {2}!", speciesname, GameData::Move.get(move).name))
+    pbHiddenMoveAnimation(movefinder)
+    return true
+  end
+  return false
+end
+
+def pbRockSmash
+  move = :ROCKSMASH
+  movefinder = $player.get_pokemon_with_move(move)
+  if !pbCheckHiddenMoveBadge(Settings::BADGE_FOR_ROCKSMASH, false) || (!$DEBUG && !movefinder) ||  (!$bag.has?(:PICKAXE)  && !movefinder) 
+    pbMessage(_INTL("It's a rugged rock, but a Pokémon may be able to smash it."))
+    return false
+  end
+  if pbConfirmMessage(_INTL("This rock seems breakable with a hidden move.\nWould you like to use Rock Smash?"))
+    $stats.rock_smash_count += 1
+    pbSEPlay("Rock Smash", 80)
+    speciesname = (movefinder) ? movefinder.name : $player.name
+    movename = (movefinder) ? move.name : "Hammer"
+    pbMessage(_INTL("{1} used {2}!", speciesname, movename))
+    pbHiddenMoveAnimation(movefinder)
+    return true
+  end
+  return false
+end
+
+
+
 def has_move_or_held_item(move_id, item_id)
 
   movefinder = $player.get_pokemon_with_move(move_id)

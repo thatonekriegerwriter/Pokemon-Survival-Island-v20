@@ -149,7 +149,7 @@ class Phenomenon
       # Kernel.echo("Testing map #{$game_map.map_id}, against #{key}, with value #{value}...\n")
       types.push(key) if $PokemonEncounters && $PokemonEncounters.map_has_encounter_type?($game_map.map_id, key)
     end
-    self.possible = types.size > 0 && $Trainer.party.length > 0 # set to false if no encounters for map or trainer has no pokemon
+    self.possible = types.size > 0 && $player.party.length > 0 # set to false if no encounters for map or trainer has no pokemon
     self.types = types
   end
 

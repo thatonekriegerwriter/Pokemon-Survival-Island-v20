@@ -82,4 +82,56 @@ end
 
 
 
+class FixedSizeArray
 
+  def initialize(size)
+    @array = []
+	@array_size = size || 5
+  end
+
+  def add(element)
+    @array.push(element)
+    @array.shift if @array.size > @array_size
+  end
+  def remove(element)
+    @array.delete(element)
+  end
+  def clear
+    @array = []
+  end
+  def to_a
+    @array
+  end
+  def empty?
+    return @array.empty?
+  end
+  def length
+    return @array.length
+  end
+  
+  
+  
+  def how_many?(object,length)
+    last_part = @array.last(length)
+    count = last_part.count(object)
+	return count
+  end
+
+  def next_position
+    return @array.size
+  end
+end
+
+
+class ElectricityPower
+end 
+
+
+SaveData.register(:electricity) do
+  ensure_class :ElectricityPower 
+  save_value { $ElectricityPower  }
+  load_value { |value| $ElectricityPower = value }
+  new_game_value {
+    ElectricityPower.new
+  }
+end

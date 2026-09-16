@@ -422,13 +422,6 @@ class ModularTitleScreen
   # file.nil?      -> hides the save-select box entirely (used when leaving the menu)
   # file == 1      -> clears the box's text/party display but leaves it visible (blank slot)
   # otherwise      -> file is a loaded save's data; populate the box with it
-  # Minimal stand-in so the existing, unmodified pbSetParty (which only ever calls
-  # .character_ID and .party on whatever it's given) can be fed a save summary
-  # instead of a full Player object.
-  SaveSummaryPartyStub = Struct.new(:character_ID, :party)
-
-  # file is now a save summary (see SaveData.build_summary in Auto_Multi_Save.rb) —
-  # a small hash with just enough fields to preview a save, not the full save data.
   def displayboxdisplaymeasavefile(file=nil, header=nil, selected_file=nil)
     if file.nil? || file == 1
       pbSetParty()
@@ -449,21 +442,21 @@ class ModularTitleScreen
         @sprites2["arrowr2"].visible = true
       end
       (1..5).each { |i| @sprites2["star#{i}"].visible = true if getSIDataStatus("stars") >= i }
-      date = file[:last_time_saved]
+      date = file[:player].last_time_saved
       minute = date.min.to_s
       minute = "0#{date.min}" if minute.length == 1
       thetime = "#{date.year}-#{date.month}-#{date.day} #{date.hour}:#{minute}"
       savename = "#{selected_file}"
       savename += " - #{thetime}"
+      mapid = file[:map_factory].map.map_id
       @sprites2["selectionbox2"].visible = true
-      pbSetParty(SaveSummaryPartyStub.new(file[:character_id], file[:party]))
+      pbSetParty(file[:player])
       set_text("savename", savename)
-      set_text("savelocation", pbGetMapNameFromId(file[:map_id]))
-      case file[:gender]
-      when :male
+      set_text("savelocation", pbGetMapNameFromId(mapid))
+      if file[:player].male?
         basecolor = MALETEXTCOLOR
         shadowcolor = MALETEXTSHADOWCOLOR
-      when :female
+      elsif file[:player].female?
         basecolor = FEMALETEXTCOLOR
         shadowcolor = FEMALETEXTSHADOWCOLOR
       else
@@ -471,9 +464,11 @@ class ModularTitleScreen
         shadowcolor = TEXTSHADOWCOLOR
       end
       set_text_box_text_color("playername", basecolor, shadowcolor)
-      set_text("playername", file[:name])
-      set_text("playerclass", "Class:    #{file[:playerclass_name]}")
-      set_text("playerhealth", "Health:    #{file[:playerhealth].to_i}/#{file[:playermaxhealth].to_i}")
+      set_text("playername", file[:player].name)
+      classy = file[:player].playerclass.name.to_s if file[:player].playerclass.respond_to?("name")
+      classy = file[:player].playerclass.to_s if !file[:player].playerclass.respond_to?("name")
+      set_text("playerclass", "Class:    #{classy}")
+      set_text("playerhealth", "Health:    #{file[:player].playerhealth.to_i}/#{file[:player].playermaxhealth.to_i}")
     end
   end
 

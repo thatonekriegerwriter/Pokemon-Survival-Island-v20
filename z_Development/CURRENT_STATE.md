@@ -13,6 +13,8 @@
 ### Placeables
 
 ### Items
+- [ ] Custom Evolutions
+- [ ] Ocean Trading Xatu
 - [ ] Update Adventure Manual (Talk about Pokemon assignment interactions)
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
 

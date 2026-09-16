@@ -503,6 +503,7 @@ module PunchBag
   end
   
   def self.canIncreaseIV?(pkmn, stat)
+    return false 
     return pkmn.iv[Bridge.getInternalStat(stat)] < Bridge.ivStatLimit
   end
   

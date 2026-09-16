@@ -77,7 +77,7 @@ class Scene_Intro
     @selected_file = SaveData.get_newest_save_slot
     @newest_file = SaveData.get_newest_save_slot
     @newest_data = {}
-    @newest_data = SaveData.read_summary(@newest_file) || {} if @selected_file
+    @newest_data = load_save_file(SaveData.get_full_path(@newest_file)) if @selected_file
     @index = 0
     @main_loop = true
     @demo_timer = 0
@@ -149,7 +149,7 @@ class Scene_Intro
   def command_definitions(show_continue, real_save_file_list)
     [
       [:continue, _INTL('Continue Game'), show_continue],
-      [:load_game, _INTL('Load Game'), show_continue && real_save_file_list.length > 1 && @save_data[:hardcore] == false],
+      [:load_game, _INTL('Load Game'), show_continue && real_save_file_list.length > 1 && @save_data[:global_metadata].hardcore == false],
       [:new_game, _INTL('New Game'), true],
       [:update, _INTL('Check for Updates'), getUpdate && GameVersion::ENABLED],
       [:quit, _INTL('Quit Game'), true],
@@ -181,7 +181,7 @@ class Scene_Intro
       originalBehavior
     else
       @screen.depth(1)
-      @save_data = @selected_file ? (SaveData.read_summary(@selected_file) || {}) : {}
+      @save_data = @selected_file ? load_save_file(SaveData.get_full_path(@selected_file)) : {}
       show_continue = !@save_data.empty?
 
       defs = command_definitions(show_continue, real_save_file_list)
@@ -346,10 +346,7 @@ class Scene_Intro
         else
           pbPlayDecisionSE
         end
-        # @save_data is only the lightweight preview summary while browsing — actually
-        # loading the game needs the real, full save data, so that's fetched fresh here,
-        # exactly once, right before handing off.
-        select_this_file(load_save_file(SaveData.get_full_path(@selected_file)))
+        select_this_file(@save_data)
         break
       elsif Input.triggerex?(:DELETE)
         # Load Game blanks the display before the confirmation prompt; Continue doesn't
@@ -362,8 +359,8 @@ class Scene_Intro
         if !file.nil?
           @newest_file = file
           @selected_file = file
-          @newest_data = SaveData.read_summary(@newest_file) || {}
-          @save_data = SaveData.read_summary(@selected_file) || {}
+          @newest_data = load_save_file(SaveData.get_full_path(@newest_file))
+          @save_data = load_save_file(SaveData.get_full_path(@selected_file))
           @screen.displayboxdisplaymeasavefile(@save_data, cmd, @selected_file)
         else
           # no saves left at all — clear the box and drop back out to the main menu
@@ -376,13 +373,13 @@ class Scene_Intro
         end
       elsif allow_cycle && Input.trigger?(Input::LEFT)
         @selected_file = SaveData.get_prev_slot(save_file_list, @selected_file)
-        @save_data = SaveData.read_summary(@selected_file) || {}
+        @save_data = load_save_file(SaveData.get_full_path(@selected_file))
         @screen.displayboxdisplaymeasavefile(1)
         pbPlayDecisionSE
         @screen.move_arrowl2(@save_data, cmd, @selected_file)
       elsif allow_cycle && Input.trigger?(Input::RIGHT)
         @selected_file = SaveData.get_next_slot(save_file_list, @selected_file)
-        @save_data = SaveData.read_summary(@selected_file) || {}
+        @save_data = load_save_file(SaveData.get_full_path(@selected_file))
         @screen.displayboxdisplaymeasavefile(1)
         pbPlayDecisionSE
         @screen.move_arrowr2(@save_data, cmd, @selected_file)
@@ -442,8 +439,7 @@ class Scene_Intro
           screen.pbStartScreen(true)
         end
       when cmd_mystery_gift
-        full_save_data = load_save_file(SaveData.get_full_path(@selected_file))
-        pbFadeOutIn { pbDownloadMysteryGift(full_save_data[:player]) }
+        pbFadeOutIn { pbDownloadMysteryGift(@save_data[:player]) }
       when cmd_update
         pbValidateGameVersionAndUpdate(true)
       when cmd_language
@@ -451,12 +447,8 @@ class Scene_Intro
         $PokemonSystem.language = pbChooseLanguage
         pbLoadMessages('Data/' + Settings::LANGUAGES[$PokemonSystem.language][1])
         if show_continue
-          # @save_data here is only the lightweight preview summary, not the real save —
-          # writing that to disk would destroy the actual save file, so this needs a
-          # genuine full load to patch and write back.
-          full_save_data = load_save_file(SaveData.get_full_path(@selected_file))
-          full_save_data[:pokemon_system] = $PokemonSystem
-          File.open(SaveData.get_full_path(@selected_file), 'wb') { |file| Marshal.dump(full_save_data, file) }
+          @save_data[:pokemon_system] = $PokemonSystem
+          File.open(SaveData.get_full_path(@selected_file), 'wb') { |file| Marshal.dump(@save_data, file) }
         end
         $scene = pbCallTitle
         return

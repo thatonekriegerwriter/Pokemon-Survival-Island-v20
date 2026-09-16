@@ -444,6 +444,7 @@ def evolve_to(newspecies)
    $scene.spriteset.addUserAnimation(7, self.event.x, self.event.y, true, 1) if self.event.map_id == $game_map.map_id 
    self.event.update_pokemon_sprite 
   end 
+  pbAutosave
   return moves_to_learn
 end
 

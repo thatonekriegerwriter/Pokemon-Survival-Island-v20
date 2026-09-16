@@ -919,10 +919,10 @@ class PokemonControls_Scene
   def has_debug_menu?
     @all_controls.each do |control|
 	  if control.control_action == "Debug Menu"
-	    return false
+	    return true
 	  end
 	end
-    return true
+    return false
   end
   def start_scene
     @sprites  = {}
@@ -1154,10 +1154,10 @@ end
   def has_debug_menu?
     @game_controls.each do |control|
 	  if control.control_action == "Debug Menu"
-	    return false
+	    return true 
 	  end
 	end
-    return true
+    return false 
   end
   
   

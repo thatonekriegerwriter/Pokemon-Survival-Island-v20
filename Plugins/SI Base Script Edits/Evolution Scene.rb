@@ -179,7 +179,6 @@ class PokemonEvolutionScene
 
   # Opens the evolution screen
   def pbEvolution(cancancel = true)
-    puts "killing"
     metaplayer1 = SpriteMetafilePlayer.new(@metafile1, @sprites["rsprite1"])
     metaplayer2 = SpriteMetafilePlayer.new(@metafile2, @sprites["rsprite2"])
     metaplayer1.play
@@ -236,7 +235,6 @@ class PokemonEvolutionScene
     end
     # Success jingle/message
     newspeciesname = GameData::Species.get(@newspecies).name
-    puts "potato"
     pbMessageDisplay(@sprites["msgwindow"],
                      _INTL("\\se[]Congratulations! Your {1} evolved into {2}!\\wt[80]",
                            @pokemon.name, newspeciesname)) { pbUpdate }

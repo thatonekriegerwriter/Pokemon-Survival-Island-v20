@@ -8,12 +8,12 @@
 
 AdventureGuide.register_book(
   id: :survival_guide,
-  name: "Surviving in the Wilderness",
-  description: "It's as easy as A, B, C, Dead.",
+  name: "Survival Situations",
+  description: "A guide to wilderness survival for stranded explorers.",
   enabled: true,
   chapters: [
     {
-      name: "Chapter 1: Basic Needs",
+      name: "Chapter 1: Basics",
       enabled: true,
       unlocks_book: :recipes,
       description: "In a survival situation, access what is your most pressing needs. If you are in an area with aggressive Pokémon your top priority should be shelter, as to not be attacked. Berries are a good basic source of food and liquids to tide you over until you can get better sources of both. When looking for berries, generally berries edible by Pokémon are edible by humans, so look for loamy soil housing berry trees once your shelter is set up. Another source of food is fishing, with even a cheaply made fishing rod, a Pokémon may be caught and used for food."
@@ -64,9 +64,21 @@ AdventureGuide.register_book(
 )
 
 AdventureGuide.register_book(
+  id: :flora,
+  name: "Flora Foundations",
+  description: "A guide to wild plants for estranged inventors.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "Multiple types of plants dominate the varieties of floral life in the world, but the most common of all is berries, able to be found in every Region of the planet. These can be fed to Pokémon for various effects, or used in food and meals for both yourself and your Pokémon. The second most common is various types of Crops, like Wheat, or Potatoes, can be used for even hardier dishes than berries can provide, but are uncommon to find outside of farms, unlike wild berries. The final type of Flora that can be found in the world is the Apricorn, which was classically used for the creation of the Pokéball alongside Tumblestones before modern manufacturing methods. Finally, there are medicinal herbs which can have unique effects on Pokemon."
+    },
+  ]
+)
+
+AdventureGuide.register_book(
   id: :recipes,
-  name: "Recipes for the Enterprising Trainer",
-  description: "",
+  name: "Enterprising Eats",
+  description: "A guide to cooking and recipes for resourceful adventurers.",
   enabled: false,
   chapters: [
     { name: "Tea", enabled: false, description: "When settling down for the day, settle down with some Tea! It's quite easy to make, you just need: \n*Freshwater\n*Tealeaf\n\nand you are set to go!" },
@@ -84,8 +96,8 @@ AdventureGuide.register_book(
 
 AdventureGuide.register_book(
   id: :pokemon_care,
-  name: "A Basic Guide to Modern POKeMON Care",
-  description: "",
+  name: "Poké Pursuits",
+  description: "A guide to Pokémon care for aspiring caretakers.",
   enabled: false,
   chapters: [
     { name: "Chapter 1: Aging and Lifespan", enabled: false, description: "POKeMON are complex creatures, they age and die like we can. Some Trainers worry about this less than others, but for those concerned with it, it is easy to learn what a POKeMONs remaining lifespan is at any POKeMON Center, and an enterprising Trainer should always know their POKeMON's age, easily viewable from the Summary Screen, as simple logic dictates, the older a POKeMON is, the closer it is to death. Beyond that, a POKeMON's lifespan suffers the more frequently they are knocked out or badly damaged, or as it is stated in the next chapter, dehydrated or starving. Mind the health of your POKeMON carefully." },
@@ -98,8 +110,8 @@ AdventureGuide.register_book(
 
 AdventureGuide.register_book(
   id: :pokemon_adventures,
-  name: "Pokemon Adventures",
-  description: "",
+  name: "Adventurous Allies",
+  description: "A guide to Pokémon independence for overbearing trainers",
   enabled: false,
   chapters: [
     { name: "Chapter 1: Primer", enabled: false, description: "Many people forget that at the end of the day, POKeMON are more used to the outdoors than we humans are. Collectively, they are excellent scavengers, and capable hunters. Some Trainers choose to send their POKeMON out on their own, and the results can be quite surprising, new allies, mountains of items, and other discoveries." },

@@ -13,18 +13,15 @@ end
 
 module BedCore
 def self.sleep
-	#  pbFadeOutIn(99999) {
+	#  pbFadeOutIn(99999) {}
 	$game_temp.in_bed=true
    scene = PBSleepScene.new
    scene.pbStartScene
    scene.pbChoose
    scene.pbEndScene
 	$game_temp.in_bed=false
-   #}
 
 end 
-
-
 end 
 
 class PBSleepScene
@@ -516,6 +513,35 @@ end
             }
  
  
+ 
+
+def pbRandomEvent
+   chance = rand(256)
+   if chance > 5 && chance < 11
+     Kernel.pbMessage(_INTL("It sounds like something crashed."))   #Comet
+     $game_switches[450]=true 
+     $game_switches[451]=true 
+   elsif chance <= 1
+     Kernel.pbMessage(_INTL("The Sky looks beautiful tonight."))   #Comet
+
+      $player.able_party.each do |pkmn|
+	       pkmn.level_cap+=1
+        endexp = pkmn.growth_rate.minimum_exp_for_level(pkmn.level + 1)
+		addexp = endexp-pkmn.exp-pkmn.stored_exp
+		pkmn.stored_exp+=addexp
+        pbDoLevelUps(pkmn)
+      end
+     
+   elsif chance > 1 && chance < 5
+     
+   elsif chance == 13
+     
+   elsif chance == 14
+     
+   elsif chance == 15
+end
+end
+
 
 
 def heal_BED(wari,pkmn)
@@ -568,7 +594,7 @@ def heal_BED(wari,pkmn)
 end
 
 def breederEgg
-  return if $player.is_it_this_class?(:BREEDER,false)
+  return# if $player.is_it_this_class?(:BREEDER,false)
   ran = false
   $player.able_party.each do |pkmn1|
      next if ran==true
@@ -700,3 +726,18 @@ class PokemonGlobalMetadata
 	   return @everytwodays
 	  end
 	end
+	
+	
+	
+
+def pbCheckName
+name = pbEnterPlayerName(_INTL("What do you put?"), 0, Settings::MAX_PLAYER_NAME_SIZE)
+if name.nil? || name.empty?
+  return false
+else
+ $game_variables[4974]=name
+  Kernel.pbMessage(_INTL("You are unsure on what it would have done."))
+  return true
+end
+end
+

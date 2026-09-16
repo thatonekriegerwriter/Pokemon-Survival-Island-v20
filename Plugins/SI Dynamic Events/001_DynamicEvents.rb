@@ -1,27 +1,4 @@
 class Hash
-  alias_method :old_each, :each
-
-  def each(*args, &block)
-    if $game_map && equal?($game_map.events)
-      puts "Iterating over $game_map.events with each"
-      puts caller.take(10)
-	  raise
-    end
-
-    old_each(*args, &block)
-  end
-  
-  alias_method :old_each_value, :each_value
-
-  def each_value(*args, &block)
-    if $game_map && equal?($game_map.events)
-      puts "Iterating over $game_map.events with each_value"
-      puts caller.take(10)
-	  raise 
-    end
-
-    old_each_value(*args, &block)
-  end
 end
 
 class Game_Event < Game_Character
@@ -1881,3 +1858,88 @@ MenuHandlers.add(:debug_menu, :clear_dynamic_temp, {
       pbSEPlay("GUI save choice")
   }
 })
+
+
+
+
+def pbAbsoluteDistance(x1, y1, x2, y2)
+  return (x2 - x1).abs + (y2 - y1).abs
+end
+
+def am_i_looking_at_something_basic(event, distance)
+  return nil if event.nil?
+  distance.times do |i|
+  return nil if event.nil?
+  start_coord=[event.x,event.y]
+  landing_coord=[event.x,event.y]
+  case event.direction
+  when 2; landing_coord[1]+=i+1
+  when 4; landing_coord[0]-=i+1
+  when 6; landing_coord[0]+=i+1
+  when 8; landing_coord[1]-=i+1
+  end
+  
+	event2 = get_event_at(*landing_coord)
+	if !event2.nil?
+	  return event2
+	end
+  end
+
+  
+  return nil
+end
+
+def direction_to_angle(direction)
+  case direction
+  when 2  # Down
+    return 90
+  when 4  # Left
+    return 180
+  when 6  # Right
+    return 0
+  when 8  # Up
+    return 270
+  else
+    return 0  # Default to right if something unexpected happens
+  end
+end
+
+
+def am_i_looking_at_something(event, range)
+  ex, ey = event.x, event.y
+  angle =  direction_to_angle(event.direction)
+  radians = angle * Math::PI / 180
+  
+  cone_width = 45 
+  detected_event = nil
+
+  (1..range).each do |i|
+    x_offset = (i * Math.cos(radians)).round
+    y_offset = (i * Math.sin(radians)).round
+
+    (-cone_width..cone_width).step(10) do |angle_offset|
+      offset_radians = (angle + angle_offset) * Math::PI / 180
+      tx = ex + (i * Math.cos(offset_radians)).round
+      ty = ey + (i * Math.sin(offset_radians)).round
+
+      checked_event = get_event_at(tx, ty)
+
+      if !checked_event.nil?
+        detected_event = checked_event
+        break
+      end
+    end
+    break if detected_event 
+  end
+
+  return detected_event
+end
+
+def get_event_at(x,y)
+
+id = $game_map.check_event(x,y)
+return $game_player if id.is_a?(Game_Player)
+return nil if !id.is_a?(Integer)
+ return $game_map.events[id]
+end
+

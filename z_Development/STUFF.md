@@ -11,11 +11,16 @@
 
 ### Pokemon
 - [ ] Released Pokemon Array and Released Pokemon events
-- [ ] Allow Pokemon to be spawnable on other maps
+- [ ] Early Pokemon Evolution
+- [ ] Foreign Pokemon
+- [ ] Trade evolution Pokemon
+- [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
+- [ ] Potential
 
 
 ### Placeables
+- [ ] Punch Bag
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox. This requires a rewriting of IceBox data I don't want to do.
 - [ ] Steam Engine: Upgraded Water Mill that is just https://tekkitclassic.fandom.com/wiki/Water_Strainer + https://tekkitclassic.fandom.com/wiki/Steam_Engine has to have water pumped in.
 - [ ] Geothermal Generator/Combustion Engine: https://tekkitclassic.fandom.com/wiki/Geothermal_Generator + https://tekkitclassic.fandom.com/wiki/Combustion_Engine Must be placed on lava and powered.
@@ -42,10 +47,11 @@
 - [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
-
+- [ ] Outbreaks
 - [ ] Update Dungeons (Possibly can move to later)
 - [x] Lock off unavailable statues (Safety for later demo releases)
-
+- [ ] Define Phenomena
+- [ ] For maps with identical encounter lists, uses Encounter Alias
 - [ ] Hostile Pokemon crossing borders
 - [ ] Fix the map of the Chilled Plains and Temperate Highlands
 - [ ] Add Dungeon Under the Xatu Town

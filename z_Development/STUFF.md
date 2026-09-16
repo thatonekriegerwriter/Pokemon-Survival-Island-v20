@@ -21,6 +21,7 @@
 
 ### Placeables
 - [ ] Punch Bag
+- [ ] Seed Analyzer
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox. This requires a rewriting of IceBox data I don't want to do.
 - [ ] Steam Engine: Upgraded Water Mill that is just https://tekkitclassic.fandom.com/wiki/Water_Strainer + https://tekkitclassic.fandom.com/wiki/Steam_Engine has to have water pumped in.
 - [ ] Geothermal Generator/Combustion Engine: https://tekkitclassic.fandom.com/wiki/Geothermal_Generator + https://tekkitclassic.fandom.com/wiki/Combustion_Engine Must be placed on lava and powered.
@@ -75,6 +76,7 @@
 ### Items
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
+- [ ] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
  
  
  

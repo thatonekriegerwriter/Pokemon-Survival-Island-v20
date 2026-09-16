@@ -11,11 +11,12 @@
 ### Pokemon
 
 ### Placeables
+- [ ] Torches lower spawn rates, but do not prevent them.
 
 ### Items
 - [ ] Custom Evolutions
 - [ ] Ocean Trading Xatu
-- [ ] Update Adventure Manual (Talk about Pokemon assignment interactions)
+- [ ] Update Adventure Manual (Talk about Pokemon assignment interactions) (We started this and didnt finish)
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
 
 ### Combat

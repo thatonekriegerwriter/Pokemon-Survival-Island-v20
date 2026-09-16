@@ -576,13 +576,9 @@ module Settings
 			
             [:ACORN,:ACORN]               => [:APPLE],
             [:APPLE,:APPLE]               => [:LEMON],
-            [:LEMON,:LEMON]               => [:BAIT],
             [:ACORN,:APPLE]               => [:APPLE],
             [:ACORN,:LEMON]               => [:LEMON],
             [:APPLE,:LEMON]               => [:LEMON],
-            [:BAIT,:APPLE]               => [:BAIT],
-            [:BAIT,:LEMON]               => [:BAIT],
-            [:BAIT,:ACORN]               => [:BAIT],
 			
 			
 			

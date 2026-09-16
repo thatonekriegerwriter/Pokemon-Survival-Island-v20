@@ -185,6 +185,7 @@ end
   
   def die
     return unless lifespan_zero?
+    return if self.types.include?(:GHOST)
     data = Nuzlocke.rules; data = [] if data.nil?
 	pbShowTipCardsGrouped(:DEATH) if !pbSeenTipCard?(:DOWNED)
     pkmn.hp = 0

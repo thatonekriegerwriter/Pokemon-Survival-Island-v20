@@ -15,50 +15,46 @@ AdventureGuide.register_book(
     {
       name: "Chapter 1: Basics",
       enabled: true,
-      unlocks_book: :recipes,
-      description: "In a survival situation, access what is your most pressing needs. If you are in an area with aggressive Pokémon your top priority should be shelter, as to not be attacked. Berries are a good basic source of food and liquids to tide you over until you can get better sources of both. When looking for berries, generally berries edible by Pokémon are edible by humans, so look for loamy soil housing berry trees once your shelter is set up. Another source of food is fishing, with even a cheaply made fishing rod, a Pokémon may be caught and used for food."
+      unlocks_book: :flora,
+      description: "In a survival situation, assess what are your most pressing needs. If there are any dangerous Pokémon around, your top priority should be locating a safe place away from them, lest you end up attacked. Some of the most suitable areas are abandoned caves. The most ideal locations should be near sources of water, and easy sources of food, like berries. Remember to not eat all your berries however, leave one for replanting!  If you reach a safe place, and you have bedding, be sure to set it up and rest at it, sleeping allows your body to rest and recover, the same with any Pokémon you may have."
     },
     {
-      name: "Chapter 2: Defense",
+      name: "Chapter 2: Supplies",
       enabled: false,
-      description: "When going out to look for food and drink from your shelter, you may encounter wild Pokémon. With skilled evasion, some of these encounters may be avoided, but some may get the jump upon you if you are walking in Tall Grass. If you cannot evade a POKeMON, attempt to take it's approach head on, lest it could attack you and do damage to you and yours, If you end up getting into a battle with a Pokémon, your POKeDEX will not be able to report the level of the Pokémon if the area in question has not been throughly explored, so you may need to be careful when approaching wild Pokémon for the safety of your own Pokémon. If your Pokémon are damaged, return to your shelter, and give them, and yourself, a much needed rest."
+      description: "Once set up in a safe location, the most pressing object to find resources for is a base field workbench. To create this, you may have to obtain wood from weaker trees in the area, they may often be found near other plants in the area, like Berry Trees. From that point, the most suggested thing to create would be a fishing rod. Raw fish is the safest kind of food to consume, and you can obtain Pokémon that way for self-defense, albeit a weak one. On top of that, a bowl is highly important, as it can be used to obtain water from clean water sources. While it may not be the most healthy, unboiled water can still be used to stave off thirst. "
     },
     {
-      name: "Chapter 3: Exploration",
+      name: "Chapter 3:  Exploration P1",
       enabled: false,
-      description: "When venturing far from home, it would not only be a good idea to have a good amount of food and water ready, but portable shelter is also a must for ones ability to comfortably sleep, if you must stay in an area for a long amount of time, however, prioritize locating shelter in the local area."
+      unlocks_book: :cooking,
+      description: "When departing from your shelter, sandy areas are the most pressing areas to comb, as beach combing can be a source of various useful materials. Another highly pressing material to collect is stones, which can be randomly found on the ground, or found by looking around larger stones in the environment. Stones are best used for the creation of a Furnace, and if Iron is found while beach combing, priority should be given to creating a Shovel, as it can rapidly accelerate beach combing, and allow for easier acquisition of sand, which can be smelted into glass for glass bottles, which can be cooked to purify water."
     },
     {
-      name: "Chapter 4: Hidden Items",
+      name: "Chapter 4: Exploration P2",
       enabled: false,
-      description: "When exploring the wilderness around you, there may be items laying around that are not readily visible for you to see, the most common places for unseen items to be are near sources of water, but such items could be anywhere in the world, so if you are missing that one thing to craft what you want, start searching throughly, and it may show up."
+      description: "Travelling further from your encampment may reward more interesting or useful items, but exploring also comes with greater risks if you are in an unsafe environment. If you are in an area with aggressive Pokémon, use your own Pokémon or equipment against them. If you are in an environment lacking resources for self-defense, prioritize being out of its line of sight. Particularly aggressive Pokémon could fire attacks at you from a distance, or rush you down. If a Pokémon is running you down, do not stop moving, and attempt to bait it into running into a wall. An intelligent Pokémon may understand what you are trying to do, however, so continue making distance. "
     },
     {
-      name: "Chapter 5: Crafting",
-      enabled: false,
-      description: "During your exploration of the environment, you may have come across weaker trees you could tear down, and gain logs from. While your ability to craft without a Workbench is limited, you can create a Workbench with 5 Wooden Planks, which are gained via cutting down wood in the Crafting Menu. Upon the Creation of the Workbench, your options for Survival are greatly expanded. Top priorities should be a Pokémon Crate, and an Item Crate, for storage of your Pokémon, and Personal Effects."
-    },
-    {
-      name: "Chapter 6: Structures",
+      name: "Chapter 5: Security",
       enabled: false,
       unlocks_book: :pokemon_care,
-      description: "If there are any abandoned structures in your environment, take proper caution in approaching them, they could contain powerful Pokémon, and upon entry, exit may be impeded by said Pokémon. In some of these locations, it is best to send a single Pokémon if possible, otherwise, tread with caution, and make sure you have taken proper preparation."
+      description: "Once basic supplies are obtained, focus should be brought into your own defense, and offenses. Various tools for survival, like a machete, can both be used to cut thicker trees, and also attack Pokémon, though putting yourself in direct combat with a Pokémon is extremely dangerous. It can be made safer by approaching with proper equipment, like a Buckler. The safest way, however, is to obtain your own Pokémon. If you can locate Tumblestones and Apricorns in your environment, those can be used to make primitive Pokéballs to obtain Pokémon with. You will need to craft a specialized Pokéball Workstation for this, but it uses many basic items you should have so far, and Tumblestones. While it may not be the most helpful, an old wives tale from ancient Johto says that when seeking your first partner, the first Apricorn Ball you throw will always catch your target, so pick your new partner carefully."
     },
     {
-      name: "Chapter 7: Adventures",
+      name: "Chapter 6: Resources",
       enabled: false,
-      unlocks_book: :pokemon_adventures,
-      description: "If you have a good amount of POKeMON at your disposal, it may be a good idea to send them out upon their own. They can bring back items, or locate new POKeMON for your use. For more, please check our companion book, 'Pokemon Adventures'"
+      description: "Your bag only has a limited amount of room for Pokémon and Items, so once you are in a secure place, and have a good amount of resources, a high priority should be given to places where these can be stored. Items are less pressing, but a place to store Pokémon should be highly pressing, as any excess Pokémon you catch will be sent to an available storage. When moving around storage, Pokémon and Items will remain inside, but will not be available for storage until the storage is interacted with again. It is highly advised to store any perishables in something like an Ice Box, if materials are available to make such a thing. Otherwise, keep items in their own dedicated storage."
     },
     {
-      name: "Chapter 8: Yourself",
+      name: "Chapter 7: Structures",
       enabled: false,
-      description: "While you may be out in the wilderness, it may be a good idea to become acquainted with yourself and your skills. You are quite special in what you can do, if it be your ability to sprint, your ability to recover POKeBALLs, or even working with electronics. This can be accessed with a tap of the 'A' Button, with a short description, like 'Runner' or 'Breeder'."
+      unlocks_book: :structures1,
+      description: "Naturally occurring caves and other such structures in the environment carry no small risk of danger. Caves can be regarded as safer than larger, abandoned or ruined structures, but still carry no small risk. Both are likely to contain powerful Pokémon, but structures are more likely to contain especially powerful and organized groups of Pokémon that will require extreme preparation to deal with, even then, tread with caution. Upon entering these areas, expect your exit to have the chance to be impeded at some point. If exit *is* available, there is no shame in retreat if it is needed. One small luxury is any caves you may open up yourself are always guaranteed to be secure, unlike naturally occurring caves, which carry the aforementioned risk. Caves you open up also have a high likelihood of containing materials which can be obtained with a Pickaxe. Visit these caves periodically, as you may find materials you did not see before."
     },
     {
-      name: "Chapter 9: Your Bag",
+      name: "Chapter 8: Final Advice",
       enabled: false,
-      description: "Remember to be careful! You can't carry everything you see! You will need some form of storage for your excess! Invest in an Item Box if you like collecting! As for your bag, each slot has a limit of 99, and a general size limit of 20! Thankfully, you can use the 1-9 num keys at the top of your keyboard to quickly navigate your bag, beyond that, most kinds of food can be Registered for use with the 'D' button!"
+      description: "While offense and defense are important, there are various ways to protect yourself against Pokémon, bright lights placed around areas will make most Pokémon unlikely to approach, but will not prevent them entirely, sufficiently smelly smells will repel Pokémon from approaching yourself or structures. Pokémon are not likely to enter interiors occupied by a person out of fear, but this may not deter larger groups of Pokémon from doing so. The presence of wild Pokémon is not only a risk, but defeating these Pokémon may allow you to obtain rare materials used for crafting. Most of all, rarely, in locales where humans are extremely uncommon, you may find extremely intelligent Pokémon. These Pokémon may be willing to engage with you in a peaceful manner, and very well could be a source of materials. The world is wide, and while the basics may protect you, and may allow you to survive, having an explorative mind will allow you to thrive."
     }
   ]
 )
@@ -70,27 +66,92 @@ AdventureGuide.register_book(
   enabled: false,
   chapters: [
     { name: "Chapter 1: Basics", enabled: false, 
-	description: "Multiple types of plants dominate the varieties of floral life in the world, but the most common of all is berries, able to be found in every Region of the planet. These can be fed to Pokémon for various effects, or used in food and meals for both yourself and your Pokémon. The second most common is various types of Crops, like Wheat, or Potatoes, can be used for even hardier dishes than berries can provide, but are uncommon to find outside of farms, unlike wild berries. The final type of Flora that can be found in the world is the Apricorn, which was classically used for the creation of the Pokéball alongside Tumblestones before modern manufacturing methods. Finally, there are medicinal herbs which can have unique effects on Pokemon."
+	description: "Multiple types of plants dominate the varieties of floral life in the world, but the most common of all is berries, able to be found in every Region of the planet. These can be fed to Pokémon for various effects, or used in food and meals for both yourself and your Pokémon. The second most common is various types of Crops, like Wheat, or Potatoes, can be used for even hardier dishes than berries can provide, but are uncommon to find outside of farms, unlike wild berries. The third most common type of Flora that can be found in the world is the Apricorn, which was classically used for the creation of the Pokéball alongside Tumblestones before modern manufacturing methods. Finally, there are medicinal herbs which can have unique effects on Pokemon, they do not like them.."
     },
+    { name: "Chapter 2: Berries", enabled: false, 
+	description: "It may be self-evident, but Berry trees are plants that may yield berries. There is no guarantee of this. They may be found. They may grow naturally. You may collect berries from them if there is a yield. They are edible, and enjoyed by both people and Pokémon. Some types of berries resemble some types of crops. They may be used in place of those crops. A Tamato Berry is not a Tomato. It will suffice as one if you are lacking. A Berry may be used on a Pokémon. A berry may be given to a Pokémon to use. Berries are the best kind of flora for a Floral Inventor to begin learning Floral Inventing with. They are simple. The most common ones grow quickly." },
+    { name: "Chapter 3: Crops", enabled: false, 
+	description: "Crops are farmed by farmers. Farmers do not like when you disturb their Crops. I have not been able to obtain many seeds. Farmers are not afraid to have their Tauros charge you if you are trying to learn about their Crops. Crops, unlike Berries, take longer to grow, and are less common than them, but they make for very good meals. This is wasteful for a dedicated Floral Inventor. They must be planted. The few Crops I have must be tended to more frequently than berries. When partaking in serious Floral Inventing, they seem to attract pests more frequently. Rattatas took the only Crops I had." },
+    { name: "Chapter 4: Apricorns", enabled: false, 
+	description: "Apricorns are not the easiest to invent with. They are the easiest to obtain with highly specific uses. I attempt to think of something to use Apricorns for. Apricorns take forever to grow, give many Apricorns, and then I stare at them because I can only realistically use them for Pokéballs. I do not own Pokémon. I do not know how to make carved Pokéballs. I do not want to waste them in a Blender. I do not like Aprijuice. I do not own Pokémon for it to be useful for. I have too many Apricorns.\n\nI have returned to this chapter to note that the Rattatas have eaten the Apricorns as well. Problem solved, as they only ate the excess. I may still use them for Floral Inventing." },
+    { name: "Chapter 5: Herbs", enabled: false, 
+	description: "Herbs are enjoyable to grow. I obtained a set of various herbs and roots. They are chiefly used for Pokémon, but seem to be best for Advanced Floral Inventing. A Sitrus Berry and an Energy Root creates a type of Berry I have never seen before. Fascinating. The Herbs are hard to find more of. They grow slowly. I have spent the last 12 hours watching Herbs grow. I have never been so titillated." },
+    { name: "Chapter 6: Other", enabled: false, 
+	description: "I am told I should note other plants. Trees exist. Mushrooms exist. I am sure they are useful. I have not found out how. Mushrooms just make more mushrooms. I have obtained seeds I have never seen before on Pokémon. I plant them. They sprout and give me more seeds. Miracles lead to Mastery. Mastery dyed in Purple is an Enigma. These may be valuable to sell to continue research.\n\nThe Rattata ate my plants again. I will have to start from the beginning." },
+    { name: "Chapter 7: General Advice", enabled: false, 
+	description: "Plants all have different rates of growth and different stages of life, some plants don’t need very much water, some plants do. Some benefit from colder biomes. Some like the heat. All of these factors simply affect how and *if* a plant will grow. It does not harm you to take notes about a plant to learn about its conditions. It does not harm you to time how long these plants grow. If you are focusing on these plants extensively, having this information will allow you to retain as much of your time as possible. A truly dedicated Floral Inventor understands notes and understanding are key. " },
+    { name: "Chapter 8: Crossbreeding",
+      unlocks_book: :beekeeping, enabled: false, 
+	description: "What I call Advanced Floral Research, many call Crossbreeding. Careful planting and placement of plants connected with cropsticks leads to traits being traded between the two. Some are nonobvious. A wintry plant being bred with a summer plant may lead to a summer plant that thrives in winter. More curiously is when mutations occur. They cannot be measured. They are random. Pests only arrive with cropsticks. Weeds only appear with cropsticks. Mutations only appear with cropsticks. Transmission of traits only appears with cropsticks. A truly dedicated Floral Inventor can understand randomness itself and variables that go into it. Bee type Pokémon help scare Rattatas away. They do not guarantee it. Bee type Pokémon increase likelihood of progression of Advanced Floral Research. They do not guarantee it. I need more Apricorns. I need more Pokéballs. I need more Bees. Research has surpassed what the Rattatas took. I appreciate my new Research Partners." },
   ]
 )
 
 AdventureGuide.register_book(
-  id: :recipes,
-  name: "Enterprising Eats",
-  description: "A guide to cooking and recipes for resourceful adventurers.",
+  id: :beekeeping,
+  name: "Bee Behaviors",
+  description: "A guide to beekeeping for estranged inventors.",
   enabled: false,
   chapters: [
-    { name: "Tea", enabled: false, description: "When settling down for the day, settle down with some Tea! It's quite easy to make, you just need: \n*Freshwater\n*Tealeaf\n\nand you are set to go!" },
-    { name: "Lemonade", enabled: false, description: "Lemonade is another good choice! The ingredients are a bit rarer, but the rewards are just as good! You will need: \n*Lemon\n*Sugar\n*Freshwater\n\n" },
-    { name: "Sitrus Juice", enabled: false, description: "Sitrus Juice is very similar to Lemonade, the Ingredients are even the same! You just nned to replace one of them with Berry Mash!" },
-    { name: "Bread", enabled: false, description: "Bread is one of the easiest things to make when cooking! Three Pieces of Wheat and away you go! If you want something a bit better, add some meat to that bread!" },
-    { name: "Curry", enabled: false, description: "There is a multitude types of Curry you can make! All of them have two things in common, Meat, and a Bowl, but the final part is different for each! Try out different berries to see what you get!" },
-    { name: "Large Meal", enabled: false, description: "Large Meals, like Curry, are varied, but all they have in common is a Baked Potato, a Drink, and a Hearty Main Dish!" },
-    { name: "Chocolate", enabled: false, description: "Chocolate is a classic! Sugar and Cocoa Beans and away you go! If you want something a little sweeter though, maybe add a little more sugar to your chocolate." },
-    { name: "Carrot Cake", enabled: false, description: "You have a wheat, you have sugar, and you have a carrot! What can go wrong!" },
-    { name: "Berry Mash", enabled: false, description: "THe Sitrus Juice recipe has a big hint to what this is made out of, but you need 2 of them, and another common type of berry!" },
-    { name: "Mint", enabled: false, description: "Mints cause the same cooking joy as Curry! Random Berry + Sugar! See what you get!" }
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "" },
+]
+)
+
+AdventureGuide.register_book(
+  id: :structures1,
+  name: "Ruinous Repertoire",
+  description: "A guide to surviving in what is left for aged adventurers.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "When one finds themselves in a particular kind of sticky wicket, trapped in a room in the middle of an ancient Pokotopian temple, surrounded on all sides by hostiles, if be man, Pokémon, or both, one must remember the 3 Cs. Consider, Chatter, and Craft. When I found myself trapped atop the Cubone Tree, with those river rapids below me, and that group of angry Fearow after me, did I hesitate? No. I leap, making even the birds think I went into those rapids while I hid in that Cubone tree's skull. Any single structure around you can be your boon, or in the case of that Temple where I was surrounded: Bane. Sometimes you will always be in a place where you can’t do one or more of the C’s. That just means you have to do the last one 3 times as hard. Don’t let yourself get caught out, don’t let yourself be unprepared, and don’t let yourself be caught with your pants down." },
+	{ name: "Chapter 2: Dodging Shots", enabled: false, 
+	description: "When in that ancient Pokotopian temple, you gotta watch out for not only the devilish Pokémon that thrive within the blood of dead men, but also the traps they lay. That rock? Pass by it and the Geodude opens its devilish inhuman eyes and ATTACKS. That pressure plate that might open the door? Sets off an arrow trap to impale your plucky sidekick in the skull. You gotta be ready for ANYTHING in these places, or they will tear your limb from stinking limb, and your only way out will be through sheer dumb luck and the 3 Cs. Take that shield and block that arrow. Considering if that rock might be in the exact spot to cut you off. Never shut up so they don’t know your next move. And always… ALWAYS bring a snack." },
+	{ name: "Chapter 3: Chasing Bandits", enabled: false, 
+	description: "You successfully got uncornered, and you are finally up against the BIG GUY, and he’s making his run, and he’s trying his best to show you whats for. Nows the time to consider: Should I talk, or should I craft. And then after that, consider even HARDER, how does this guy attack? Is he following any pattern? Can I hit him from a distance or do I just gotta get in there and beat. him. down. Then remember the FOURTH C.  *Comrades.* If the other guy can come in with his group, trapping you in a sea of hostiles, you can throw out your guys too. Except Togepi. We don’t let babies fight here." },
+	{ name: "Chapter 4: Securing Loot", enabled: false, 
+	description: "You beat down the BIG GUY, and you and your guys are basking in the afterglow of the experience. You all feel like your potential increased today. Now… *you gotta go back in.* You might have wiped out every guy in that place, and more of em might have even come, but you gotta be sure you got *every* single piece of loot, out of *every single chest.* Maybe more chest appeared while you were fighting that big guy. You ain’t gotta worry about any of your guys, cause no matter how hurt they got, even if  they got knocked out, cause you beat the guy, they are gonna be just fucking peachy, meaning you can go back in and get exactly what you came for." },
+	{ name: "Chapter 5: New Place", enabled: false, 
+	description: "You beat the BIG GUY, you beat the LITTLE GUYS, you get all the loot. You maybe even got the girl. Now… it’s time to go the NEXT PLACE. Sometimes the next place will be as simple as walking down the stone hall to the next place. Sometimes you have to bring out the FIFTH C. *COMPASS.* And navigate your way to where you gotta be. And if you don’t have a compass. BRING OUT THE SIXTH C. C-MAP. AND IF YOU DONT HAVE A C-MAP, BRING OUT THE SEVENTH C. C-Aimless Wandering. If you go the C-Aimless Wander Route, make sure you have the EIGHTH C. Camping Set. You may not always be able to set up a grand base. But you and your guys can set up a tent. But not Togepi. Don’t let babies set up tents. " },
+	{ name: "Chapter 6: Old Place", enabled: false, 
+	description: "Just cause you got the new place, you beat up the BIG GUY, you beat up the LITTLE GUYS, you got all the LOOT, and got the GIRL, it doesn’t magically mean places you’ve been to have become POINTLESS. Maybe some of that LOOT allows you to find a NEW PLACE IN THE OLD PLACE. And once you found the NEW PLACE IN THE OLD PLACE, you can find EVEN MORE PLACES. Maybe you can even find NEW LITTLE GUYS IN THE NEW OLD PLACES, OR EVEN NEW BIG GUYS. Or even a SECRET EVIL TEAM THAT MAKES IT THEIR LIFE GOAL TO TURN INNOCENT  GUYS INTO NOT SO INNOCENT GUYS. 
+
+The POSSIBILITIES ARE ENDLESS." },
+	{ name: "Chapter 7: Places only YOUR GUYS CAN GO", enabled: false, 
+	description: "Sometimes when exploring the NEW OLD PLACES, you find places that a man of your stature just can’t make his way into. Sometimes the only guys who can make their way into that kind of sticky wicket are the lil guys. Your lil guys. Sometimes, the entry way to those wickets is so fucking small that you gotta let the baby go. You gotta let that Togepi wander into that CAVE. You gotta let the CHILDREN GO PLACES. Just don’t let Togepi go ALONE. Remember the FOURTH C. COMRADES. And then remember the TWO HUNDRED AND SIXTY NINETH C. SOME CAVES ONLY YOUR GUYS CAN GO IN, AND ALL YOU CAN DO IS STAND  THERE AND WAIT UNTIL THEY GET BACK." },
+	{ name: "Chapter 823: Places that you should go back to", enabled: false, 
+	description: "You need to remember that one nook on that one mountain that looked PARTICULARLY SUS. And once you have the LOOT that LETS YOU GO TO THAT SPOT ON THAT MOUNTAIN, YOU CAN REACH THE SECRET RAVINE ON THE ISLAND THAT CONTAINS VERSIONS OF THE BIG GUYS YOU CAN ACTUALLY TALK TO AND GET ALONG WITH. AND THEN YOU ALL SING THE 2 MILLIONTH C: CUMBIFUCKINGYA. Just don’t let Togepi say fuck." },
+	{ name: "Chapter 9: Remember to take breakies.", enabled: false, 
+	description: "Sometimes Togepi needs a lil nippy nap. And when Togepi needs a LIL NIPPY NAP, YOU FIND A PLACE TO MAKE BASE. NOT SET UP A TENT. *MAKE BASE.* BECAUSE TOGEPI NEEDS A FULL ON NIPPY NAP." },
+	{ name: "Chapter 10258: Places that you should go back to but probably won’t", enabled: false,
+	description: "Home." }
+]
+)
+#, hide_after: true
+AdventureGuide.register_book(
+  id: :structures2,
+  name: "Ceaseless Scamps",
+  description: "A guide to scrapping it together for aged adventurers.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "" },
+]
+)
+
+AdventureGuide.register_book(
+  id: :cooking,
+  name: "Enterprising Eats",
+  description: "A guide to cooking and recipes for resourceful gourmand.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
+    { name: "Chapter 2: Cooked Oran, Apple, and Potato", enabled: false, description: "If you got a campfire or some kinda heat, you can just shove a bunch of Oran Berries in there. They don’t… fill that much, but it’s real easy to cook! You can do the same thing with Apples and Potatoes to a similar result, but they taste real good. One drawback with the Oran Berries though is that cooking em like that cooks out a lot of the healing juices." },
+    { name: "Chapter 3: Meats", enabled: false, description: "Look we all do things we ain’t proud of, but when you are starvin, that Goldeen in the water looks a lot more appealing as something well… *to catch* over something… *to catch.* A lot of Pokémon taste a lot better than you think they would. Ain’t no shame in just… takin some of the meat leftover from beating up a Pokémon. It’s better to eat wild Pokémon than to be starvin and thinking of eating your own. …but if you both are starvin, better for one of you to get somethin to eat than both of you die. All Pokémon cook real well, well… most do. Metal ain’t too healthy to eat. Neither are rocks." },
+    { name: "Chapter 4: Stews", enabled: false, description: "If you got a lot of bones around you, ain’t no harm in makin that into a broth, you just need some water, to make a basic broth, and then some meats for a full on stew. Lot more filling than meat and berries, but unlike the prior options, you need a big ol’ cauldron or somethin to cook it in. Still nice when you can get somethin’ so fillin." },
+    { name: "Chapter 5: Drinks", enabled: false,
+      unlocks_book: :cooking2, description: "Talkin about berries last time made me realize one of the best uses for berries! If you mash some Oran Berries and Sitrus Berries together, you can take that mashed up set of berries, mix it into a bottle with some sugar, and make a real tasty drink. You can also make some juice out of Oran Berries by themselves. Theres other stuff you can find around to make drinks with, like Lemons for Lemonade, or Tea Leaves for Tea. Most of this junk does need clean water though, which is why the best thing you can drink is just water straight from the river! If it ain’t kill Pokemon, it ain’t kill me!" }
   ]
 )
 
@@ -100,11 +161,14 @@ AdventureGuide.register_book(
   description: "A guide to Pokémon care for aspiring caretakers.",
   enabled: false,
   chapters: [
-    { name: "Chapter 1: Aging and Lifespan", enabled: false, description: "POKeMON are complex creatures, they age and die like we can. Some Trainers worry about this less than others, but for those concerned with it, it is easy to learn what a POKeMONs remaining lifespan is at any POKeMON Center, and an enterprising Trainer should always know their POKeMON's age, easily viewable from the Summary Screen, as simple logic dictates, the older a POKeMON is, the closer it is to death. Beyond that, a POKeMON's lifespan suffers the more frequently they are knocked out or badly damaged, or as it is stated in the next chapter, dehydrated or starving. Mind the health of your POKeMON carefully." },
-    { name: "Chapter 2: Basic Needs", enabled: false, description: "Always be sure to have approprate amounts of food and drink for your POKeMON around, they need much less than use humans, but you still must be mindful. Thankfully, POKeMON get proper amounts of rest while in their POKeBALLs, so it is not something to worry too hard about, however, if a POKeMON is starving or dehydrated, their lifespan will begin decreasing rapidly, meaning they will die." },
-    { name: "Chapter 3: Natures", enabled: false, description: "Each POKeMON's personality is as varied as can be. This impacts the kind of food and drink they enjoy, all the way to the kind of play they like. Some POKeMON could be exceptionally loving, easy to gain its trust and affection, while another could be hateful, wanting nothing to do with humanity as a whole. Be mindful of your POKeMON's nature throughout your care for it, as your treatment of your POKeMON could even change its nature depending on your treatment of it." },
-    { name: "Chapter 4: Happiness", enabled: false, description: "What makes a POKeMON happy is dependent on its nature, but something universal is a happy POKeMON will go out of its way for you more often than not, like toughing it out in combat, or doing a critical! However, while this is nice, it is not as important as what we will talk about in the next chapter." },
-    { name: "Chapter 5: Loyalty", enabled: false, description: "A POKeMON's obedience has always been a mystery, is it dependent on ones badges? The POKeMON's level? It could be argued to be a mixture of these things, but the most influencial aspect is a POKeMON's loyalty to its trainer. The more Loyal a POKeMON is, the more likely it is to obey in combat. The less loyal a POKeMON is, the more likely they are to disobey, even if they have a large amount of happiness. While it's hard to know exactly how a POKeMON feels, upon the same Summary Screen as the Food and Water, there should be a short line summarizing your POKeMON's feelings at the current time." }
+    { name: "Chapter 1: Basics", enabled: false, description: "Pokémon, as lovely as they are, are complex creatures. Much like us, they can age, and they can die. Most Pokémon can, at least. Most Trainers can get their Pokémon checked out at Pokémon centers to see how well they are, feed them medicines, and do their best to prolong their lives. Ghost types lack these problems, overall. Pokemon if loved, and cared for deeply, when laid to rest, will eventually return to you. This does not mean you should not mind the health of those you are still living with. You must be as attentive to them as you are to any other, and this does not mean you should not be attentive to those who have returned after passing.\n\nAll Pokemon deserve constant love, care, and attention." },
+    { name: "Chapter 2: Needs", enabled: false, description: "A Pokémon needs more than just love, obviously. It needs food, and water. They may not be as pressing for some Pokémon as others, but I am sure even if a Pokémon does not require it, giving it is appreciated. A Pokémon needs rest, and not just rest inside their Pokéballs, as that is not truly restful for the poor dears. A proper rest in a proper bed, either with you, or in their own cute little one will be enough to cure them of even their most mortal woes. Beauty sleep helps everyone, dearie, and speaking of beauty, Pokémon need grooming and attention. They need love and pets. They need every bit of love you can give them." },
+    { name: "Chapter 3: Natures", enabled: false, description: "Each Lil Pokémon’s personality as as varied as can be, this impacts the kinds of foods the lil ones enjoy, and the kinds of play they like. Some Pokémon are especially loving, some are sturdy as a brick mountain, others as serious as an old fuddyduddy, and then some poor darlings could have their hearts filled with hate. Caring for a Pokémon requires being attentive to that personality of it’s, as how you treat the little one can close or open its heart. An open heart means the Pokémon is happy and comfortable, like every lil one should be." },
+    { name: "Chapter 4: Happiness", enabled: false, description: "What makes a Pokémon happy is as different as there are stars in the sky, but basic things like grooming and petting are always a start. Keeping them with you, letting them explore, letting them get stronger, and grow. Sometimes this means things will happen to bring down the poor dears mood. You help them through it, you help make sure they are stronger so that meanie can never hurt them again. And when they are back to the normal happy self, playing with the others, and busy having fun.\n\nYou go and personally make sure that meanie can never hurt them again." },
+    { name: "Chapter 5: Loyalty", enabled: false,
+      unlocks_book: :pokemon_adventures , description: "I see people point to badges, and levels, and so many things that cause a Pokémon to be ‘obedient’. I don’t see meanies like evil Teams have a bunch of badges or levels, they are often pathetically weak at best. Yet their Pokémon still listen to them, they may be hurting and lack affection, but by some miracle, they are still *loyal.* The less loyal a Pokémon is, the more likely they are to disobey, even if the dear is happy. It’s hard for some people to accept that, I think. That Pokémon are their own people. That’s when they get mean, that’s when they are liable to be their most evil. My Pokémon may leave, they might not be loyal, but that’s okay. I don’t hold it against them, because that’s their choice. But when other people take that choice away from their Pokémon, oh it just… twists me up into knots. I go and help the poor dears, I make the problem go away, and I help them be happy again, so they can forget about that old meanie that used to own them. They are free to do whatever they want." },
+    { name: "Chapter 6: Foods", enabled: false, description: "Pokémon have different foods they like, and depending on what you feed them, they might react positively, negatively, or not feel too strongly about it. You don’t need to always be feeding your Pokémon their favorite foods, and it’s cruel to me to give them something they hate. I do understand however that sometimes when the budget is tight and you only have so much you *can* give that the poor dears have to make do. I’ve had to live with that a few times, myself. Learning what your Pokémon likes or dislikes is a lot of  trial and error, but it's always worth it. It twists me up in knots when I see someone not even trying to learn, though. It’s not a hard problem to fix. The new dears always tend to hate the exact food their previous owners always fed them." },
+    { name: "Chapter 7: Moods", enabled: false, description: "Pokémon aren’t static, just like you and me they go through a lot of feelings in one day. They can be happy with you, they can be loyal to you, but that does not mean they are in a happy mood. Sometimes the dears are sad. Sometimes they are angry. Sometimes they are so full of energy that they just… don’t know what to do with. Feelings aren’t bad, but Pokémon certainly appreciate paying attention and reacting to how they feel. The dears can’t speak, but they can certainly be heard if you have an ear out. So many people don’t have an ear out. So many people can’t even read a Pokémon’s expression. My Pokémon love me because I try to understand their moods, uplift them when they are down, listen to their frustrations when they are angry, listen to their joy when they are happy, and play with them when they are zooming around. And one day, when the dearies pass, I know they will come back to me as ghosts. That’s a luxury their previous owners thankfully don’t have." }
   ]
 )
 
@@ -114,7 +178,30 @@ AdventureGuide.register_book(
   description: "A guide to Pokémon independence for overbearing trainers",
   enabled: false,
   chapters: [
-    { name: "Chapter 1: Primer", enabled: false, description: "Many people forget that at the end of the day, POKeMON are more used to the outdoors than we humans are. Collectively, they are excellent scavengers, and capable hunters. Some Trainers choose to send their POKeMON out on their own, and the results can be quite surprising, new allies, mountains of items, and other discoveries." },
-    { name: "Chapter 2: Eggs", enabled: false, description: "While not advisable, you can send out an Egg with another member of your Adventuring Party, wherein the egg can be cared for by the POKeMON. Note that Eggs hatched this way may be less happy or loyal than their in-party counterparts." }
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "Books tell me Pokémon like going on adventures, big long trips across regions and fighting other trainers and Pokémon, and a lot of Pokémon I have seem to want to do the same. That’s… too scary though. What if I lose? What if one of my Pokémon gets hurt. There’s a lot of safer ways to have Pokémon help you that don’t involve having them… get hurt, and it means you don’t get hurt either! Pokémon are good at different things, and there’s a lot of things around your house they can help with! Humanlike Pokémon and Psychics can do stuff that normally require hands to do, and Ice Type Pokémon can help cool stuff! Fire types can heat stuff up. They are all really useful, and it’s safe too! It’s really easy to avoid Pokémon getting hurt if you just never leave the house, and never let them leave!" },
+    { name: "Chapter 2: Exploring", enabled: false,
+	description: "Sometimes, when you aren’t making sure your Pokémon are safe, they like to go exploring. They find parts of the house you didn’t know existed, find ways out of the house, or even sometimes fly out the windows just to go outside. Psychic and Ghost types especially can find ways out of the house. I… don’t like that my Pokémon do this, but I can’t really… stop them. I set up a flag outside, and when I blow a whistle they know to come back or else. Sometimes they come back with items! Sometimes they even come back with other Pokémon! Or Eggs! When they come back with Eggs, I make it really clear they have to stay in the house and take care of the Eggs. If they try to leave during this time, I get mad at them. They shouldn’t really act like my parents did when I was growing up." },
+    { name: "Chapter 3: Eggs", enabled: false,
+	description: "Sometimes when I wake up in the morning, Pokémon that I haven’t really had tasks for recently have left an Egg for me in one of the empty beds laying around. I make sure at least some of the Pokémon take care of it, but I prefer when the Fire Types do it, especially ones like Carkol or Slugma, who get the eggs hatched even faster than other Pokémon. Once they are hatched, I can give them a job and keep them safe. Until they try to leave. \n\nIf they leave though, I will have another empty bed again. For another Egg." },
+    { name: "Chapter 4: Risk", enabled: false,
+	description: "Baltoy decided to explore again a few days ago. I told it that it shouldn’t. I blew the whistle, and Baltoy didn’t come back. Normally my other little explorers see them when they are off exploring when they don’t think I can see. Normally more of them don’t come back than average. But sometimes… when something happens, all my Pokémon realize how much safer it is at home. Since Baltoy didn’t come back, the others knew better than to explore. They’ll forget how dangerous it is in a few more days, and the cycle will repeat." },
+    { name: "Chapter 5: Disloyal", enabled: false,
+	description: "I woke up today to an empty house. They all left. I’m sure some of them will come back. I am sure I will see some of them again. They would be happier if they were just loyal and listened to me, but disloyal Pokémon will always be unsafe. Disloyal Pokémon will always be unhappy. The Loyal ones come back, even if they are only loyal because I’m safe. Even if they are only loyal because just like me, they are scared. If they knew better, they would know I’m scarier than the outside when I want to be." },
+    { name: "Chapter 6: Control", enabled: false,
+	description: "I went to go get milk today for the first time in a long time, normally the Pokémon do it. They were so helpful bringing it back home. I love it when the first ones start coming back home. It’s safe here. They won’t get hurt. They recognize they hurt me when they leave. They recognize they hurt me when they get hurt. The house was so empty with them gone. The second I passed by each one of them and looked them in the eyes, they followed behind me like they hadn’t been Disloyal. Loyalty is so easy when they know better." }
   ]
+)
+
+
+
+AdventureGuide.register_book(
+  id: :cooking2,
+  name: "Culinary Curiosities",
+  description: "A guide to meals for cooks who prefer to make the most of what they have.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
+]
 )

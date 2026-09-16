@@ -7,9 +7,9 @@ class OverworldCombat
   
   
   def capturecalc(event, ball, dir)
+    return 99 if $player.pokedex.owned_count<1
     pkmn = event.pokemon
     catch_rate = pkmn.species_data.catch_rate
-    return 99 if $player.pokedex.owned_count<1
       if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
          catch_rate = ball.effects.trigger(:modifyCatchRate, catch_rate, nil, pkmn)
          #catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)

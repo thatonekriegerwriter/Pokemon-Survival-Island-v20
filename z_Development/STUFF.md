@@ -72,6 +72,7 @@
 
 ### Misc Mechanics
 - [ ] Disease
+- [ ] Pokewalker Program?
 
 ### Items
 - [ ] New Sewing Machine recipe for clothes.

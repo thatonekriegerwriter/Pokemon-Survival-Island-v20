@@ -308,7 +308,7 @@ class PokemonCloseScreen
       $scene.main
     end
     Graphics.transition(20)
-	
+	return true 
 	else
     @scene.pbEndScreen
 	return false

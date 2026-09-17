@@ -11,7 +11,6 @@
 ### Pokemon
 
 ### Placeables
-- [ ] Torches lower spawn rates, but do not prevent them.
 
 ### Items
 - [ ] Custom Evolutions

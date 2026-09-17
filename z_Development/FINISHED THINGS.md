@@ -98,6 +98,7 @@
 - [x] Sprinklers: Waters Berry Plants automatically.
 - [x] Coal Generator: Different Fuel Types give different wattage output
 - [x] Add Watering Cans to the tank system
+- [x] Torches lower spawn rates, but do not prevent them.
 
 ### Combat
 - [x] Rework moveexecution to be within OverworldCombat::MoveExecution.

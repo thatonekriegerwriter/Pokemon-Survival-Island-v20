@@ -383,6 +383,20 @@ def pbShouldSpawn
   end
 end
 
+def pbNearbyTorch?(x, y)
+  events = $DynamicEvents.block_data_for_type(:TORCH)
+  return false if events.empty?
+  events.any? do |event|
+    dx = event.x - x
+    dy = event.y - y
+    next false if dx * dx + dy * dy > 16
+    true
+  end
+
+end
+
+
+
 class PokemonEncounters  
   def encounter_type_on_tile(x,y)
     time = pbGetTimeNow
@@ -484,7 +498,10 @@ class PokemonEncounters
 	if $player.is_it_this_class?(:TRIATHLETE)
       encounter_chance /= 3 
 	end
-	  
+	if pbNearbyTorch?(get_cur_player.x, get_cur_player.y)
+  	 encounter_chance /= 2
+ 	 min_steps_needed *= 2
+	end
 	  
 	  
 	  

@@ -156,6 +156,17 @@ AdventureGuide.register_book(
 )
 
 AdventureGuide.register_book(
+  id: :cooking2,
+  name: "Culinary Curiosities",
+  description: "A guide to meals for cooks who prefer to make the most of what they have.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
+]
+)
+
+AdventureGuide.register_book(
   id: :pokemon_care,
   name: "Poké Pursuits",
   description: "A guide to Pokémon care for aspiring caretakers.",
@@ -195,13 +206,3 @@ AdventureGuide.register_book(
 
 
 
-AdventureGuide.register_book(
-  id: :cooking2,
-  name: "Culinary Curiosities",
-  description: "A guide to meals for cooks who prefer to make the most of what they have.",
-  enabled: false,
-  chapters: [
-    { name: "Chapter 1: Basics", enabled: false, 
-	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
-]
-)

@@ -9,21 +9,27 @@
 - [ ] Record Demo (This can wait for last.)
 
 ### Pokemon
+- [ ] Verify Pokemon sending out in the water.
 
 ### Placeables
+- [ ] Prep Station: A modifier station but for modification of food, having a higher modifier yield, but once something is modified, it can't be *unmodified.*
+- [ ] Bees decrease likelhood of pest spawns, other bee byproducts.
 
 ### Items
 - [ ] Custom Evolutions
 - [ ] Ocean Trading Xatu
-- [ ] Update Adventure Manual (Talk about Pokemon assignment interactions) (We started this and didnt finish)
+- [ ] Update Adventure Manual (Bees, Cooking, and Structures)
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
-
+- [ ] Work on the internal data first and foremost for food flavors. 
+- [ ] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
+- [ ] More foods
 ### Combat
 
 ### Buildings
 
 ### World
 - [ ] Finish First Temple (Second to last)
+- [ ] Update Crossbreeding
 
 ### Misc Mechanics
 - [-] Too low happiness for too long begins dragging down loyalty.

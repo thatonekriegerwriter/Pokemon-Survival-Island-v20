@@ -66,7 +66,7 @@ AdventureGuide.register_book(
   enabled: false,
   chapters: [
     { name: "Chapter 1: Basics", enabled: false, 
-	description: "Multiple types of plants dominate the varieties of floral life in the world, but the most common of all is berries, able to be found in every Region of the planet. These can be fed to Pokémon for various effects, or used in food and meals for both yourself and your Pokémon. The second most common is various types of Crops, like Wheat, or Potatoes, can be used for even hardier dishes than berries can provide, but are uncommon to find outside of farms, unlike wild berries. The third most common type of Flora that can be found in the world is the Apricorn, which was classically used for the creation of the Pokéball alongside Tumblestones before modern manufacturing methods. Finally, there are medicinal herbs which can have unique effects on Pokemon, they do not like them.."
+	description: "Multiple types of plants dominate the varieties of floral life in the world, but the most common of all is berries, able to be found in every Region of the planet. These can be fed to Pokémon for various effects, or used in food and meals for both yourself and your Pokémon. The second most common is various types of Crops, like Wheat, or Potatoes, can be used for even hardier dishes than berries can provide, but are uncommon to find outside of farms, unlike wild berries. The third most common type of Flora that can be found in the world is the Apricorn, which was classically used for the creation of the Pokéball alongside Tumblestones before modern manufacturing methods. Finally, there are medicinal herbs which can have unique effects on Pokemon, they do not like them."
     },
     { name: "Chapter 2: Berries", enabled: false, 
 	description: "It may be self-evident, but Berry trees are plants that may yield berries. There is no guarantee of this. They may be found. They may grow naturally. You may collect berries from them if there is a yield. They are edible, and enjoyed by both people and Pokémon. Some types of berries resemble some types of crops. They may be used in place of those crops. A Tamato Berry is not a Tomato. It will suffice as one if you are lacking. A Berry may be used on a Pokémon. A berry may be given to a Pokémon to use. Berries are the best kind of flora for a Floral Inventor to begin learning Floral Inventing with. They are simple. The most common ones grow quickly." },
@@ -93,51 +93,20 @@ AdventureGuide.register_book(
   enabled: false,
   chapters: [
     { name: "Chapter 1: Basics", enabled: false, 
-	description: "" },
+	description: "While Advanced Floral Research slowly progresses idly, I have decided to put focus on my Research Partners, the Bee type Pokémon I have collected. I have not located a sufficient criteria for what a ‘bee’ is when it comes to Pokémon. It is not all pollinators, as some do not work amiably with others, and it can even change within a group of Pokémon. A Weedle is not a bee. A Beedrill is a Bee in spite of its common classification as a hornet. You will be able to tell if it is a bee because when in an Apiary it will do bee things slowly. Eventually when it is done doing bee things, there will be honey. I do not know what to do with the honey." },
+    { name: "Chapter 2: Produce", enabled: false, 
+	description: "Bees assigned to Floral Research produce honey first and foremost. Occasionally, rarely, they produce other things. Much like Crops from my Floral Research, all of this is useless. While attempting to dump useless Honey and useless Crops, I met a Trainer named Tori. She seemed very annoyed that I was ‘wasting perfectly good food’. She is now paying me for the excess ‘produce’ from my experiments. I do not quite understand what it is useful for, but I will not object to more funds for Floral Research." },
+    { name: "Chapter 3: New Bees", enabled: false, 
+	description: "My bees stopped producing. They are not going out. I do not understand. I asked Tori to help. Tori arrived, and when studying my research partners, seemed annoyed with me. She taught me that within the Bee hives, there is a big bee. She is called the Queen. I did not know about the Queen. The Queen is dead. I was sure  this was the end of my research, before Tori revealed a Queen only dies in such a manner after lying eggs in the ‘nest’, which also contains a new Princess to replace the Queen. I do not like this process. I did not know the Queen, but she was a good research partner. There was a lot of honey and resources left from when she was gone, but I do not want any of it right now. I do not even want money for it right now." },
+    { name: "Chapter 4: Frames", enabled: false, 
+	description: "Tori brought ‘frames’ today. They are for storage of honey. There are various levels of them. I let her install them. I was busy making sure the new Queen did not die. Tori seemed to understand something I didn’t, and offered to sit with me and hold my hand. I do not like hand holding. It helped. Tori told me all about how this is natural, and I asked her if it was like when Rattatas eat your plants, and after a moment, she said yes. It will be sad when the Queen dies. It will happen, but it is natural. Like Rattatas eating your plants." },
+    { name: "Chapter 5: New Queen", enabled: false, 
+	description: "The Bees slowed down today, and Tori helped me move the new Queen to a safe place. She is much more careful than me. The bees seem to like her. The bees also like her food. She uses my crops and the Bee’s honey in her restaurant. I also like Tori’s food." },
+    { name: "Chapter 6: Farm", enabled: false, 
+	description: "I have forgotten to make notes for quite some time. Tori and I were focusing heavily on the bees, and she was helping me with the Floral Resea- Farm. Tori was helping me with the farm. The Bees need a lot of trees to pollenate, which will lead to more mutations in my part of the farm, while making crops grow faster in Tori’s side of the farm. Tori asked if she could bring in farm animals.I do not like farm animals. They are loud, and Tauros attacked me before. When Tori is around they are nice. Tori tells me they will be nice when I am not around as well. I do not believe her. Apparently more than just Bee Pokemon interact with plants. Environmental variables can alter the produce Bees create, but all Pokemon can help me with Floral Research. It is… nice seeing Tori’s Bulbasaur help with the collection of finished plants. They hold the plants still while I study them. They respond well to praise. I also respond well when Tori praises me. I do not have to prove my research is worth something when Tori is around. I like Tori. I also like Tori’s food. Her food we create on our farm. I am a Farmer. I will not attack Floral Researchers with Tauros." },
 ]
 )
 
-AdventureGuide.register_book(
-  id: :structures1,
-  name: "Ruinous Repertoire",
-  description: "A guide to surviving in what is left for aged adventurers.",
-  enabled: false,
-  chapters: [
-    { name: "Chapter 1: Basics", enabled: false, 
-	description: "When one finds themselves in a particular kind of sticky wicket, trapped in a room in the middle of an ancient Pokotopian temple, surrounded on all sides by hostiles, if be man, Pokémon, or both, one must remember the 3 Cs. Consider, Chatter, and Craft. When I found myself trapped atop the Cubone Tree, with those river rapids below me, and that group of angry Fearow after me, did I hesitate? No. I leap, making even the birds think I went into those rapids while I hid in that Cubone tree's skull. Any single structure around you can be your boon, or in the case of that Temple where I was surrounded: Bane. Sometimes you will always be in a place where you can’t do one or more of the C’s. That just means you have to do the last one 3 times as hard. Don’t let yourself get caught out, don’t let yourself be unprepared, and don’t let yourself be caught with your pants down." },
-	{ name: "Chapter 2: Dodging Shots", enabled: false, 
-	description: "When in that ancient Pokotopian temple, you gotta watch out for not only the devilish Pokémon that thrive within the blood of dead men, but also the traps they lay. That rock? Pass by it and the Geodude opens its devilish inhuman eyes and ATTACKS. That pressure plate that might open the door? Sets off an arrow trap to impale your plucky sidekick in the skull. You gotta be ready for ANYTHING in these places, or they will tear your limb from stinking limb, and your only way out will be through sheer dumb luck and the 3 Cs. Take that shield and block that arrow. Considering if that rock might be in the exact spot to cut you off. Never shut up so they don’t know your next move. And always… ALWAYS bring a snack." },
-	{ name: "Chapter 3: Chasing Bandits", enabled: false, 
-	description: "You successfully got uncornered, and you are finally up against the BIG GUY, and he’s making his run, and he’s trying his best to show you whats for. Nows the time to consider: Should I talk, or should I craft. And then after that, consider even HARDER, how does this guy attack? Is he following any pattern? Can I hit him from a distance or do I just gotta get in there and beat. him. down. Then remember the FOURTH C.  *Comrades.* If the other guy can come in with his group, trapping you in a sea of hostiles, you can throw out your guys too. Except Togepi. We don’t let babies fight here." },
-	{ name: "Chapter 4: Securing Loot", enabled: false, 
-	description: "You beat down the BIG GUY, and you and your guys are basking in the afterglow of the experience. You all feel like your potential increased today. Now… *you gotta go back in.* You might have wiped out every guy in that place, and more of em might have even come, but you gotta be sure you got *every* single piece of loot, out of *every single chest.* Maybe more chest appeared while you were fighting that big guy. You ain’t gotta worry about any of your guys, cause no matter how hurt they got, even if  they got knocked out, cause you beat the guy, they are gonna be just fucking peachy, meaning you can go back in and get exactly what you came for." },
-	{ name: "Chapter 5: New Place", enabled: false, 
-	description: "You beat the BIG GUY, you beat the LITTLE GUYS, you get all the loot. You maybe even got the girl. Now… it’s time to go the NEXT PLACE. Sometimes the next place will be as simple as walking down the stone hall to the next place. Sometimes you have to bring out the FIFTH C. *COMPASS.* And navigate your way to where you gotta be. And if you don’t have a compass. BRING OUT THE SIXTH C. C-MAP. AND IF YOU DONT HAVE A C-MAP, BRING OUT THE SEVENTH C. C-Aimless Wandering. If you go the C-Aimless Wander Route, make sure you have the EIGHTH C. Camping Set. You may not always be able to set up a grand base. But you and your guys can set up a tent. But not Togepi. Don’t let babies set up tents. " },
-	{ name: "Chapter 6: Old Place", enabled: false, 
-	description: "Just cause you got the new place, you beat up the BIG GUY, you beat up the LITTLE GUYS, you got all the LOOT, and got the GIRL, it doesn’t magically mean places you’ve been to have become POINTLESS. Maybe some of that LOOT allows you to find a NEW PLACE IN THE OLD PLACE. And once you found the NEW PLACE IN THE OLD PLACE, you can find EVEN MORE PLACES. Maybe you can even find NEW LITTLE GUYS IN THE NEW OLD PLACES, OR EVEN NEW BIG GUYS. Or even a SECRET EVIL TEAM THAT MAKES IT THEIR LIFE GOAL TO TURN INNOCENT  GUYS INTO NOT SO INNOCENT GUYS. 
-
-The POSSIBILITIES ARE ENDLESS." },
-	{ name: "Chapter 7: Places only YOUR GUYS CAN GO", enabled: false, 
-	description: "Sometimes when exploring the NEW OLD PLACES, you find places that a man of your stature just can’t make his way into. Sometimes the only guys who can make their way into that kind of sticky wicket are the lil guys. Your lil guys. Sometimes, the entry way to those wickets is so fucking small that you gotta let the baby go. You gotta let that Togepi wander into that CAVE. You gotta let the CHILDREN GO PLACES. Just don’t let Togepi go ALONE. Remember the FOURTH C. COMRADES. And then remember the TWO HUNDRED AND SIXTY NINETH C. SOME CAVES ONLY YOUR GUYS CAN GO IN, AND ALL YOU CAN DO IS STAND  THERE AND WAIT UNTIL THEY GET BACK." },
-	{ name: "Chapter 823: Places that you should go back to", enabled: false, 
-	description: "You need to remember that one nook on that one mountain that looked PARTICULARLY SUS. And once you have the LOOT that LETS YOU GO TO THAT SPOT ON THAT MOUNTAIN, YOU CAN REACH THE SECRET RAVINE ON THE ISLAND THAT CONTAINS VERSIONS OF THE BIG GUYS YOU CAN ACTUALLY TALK TO AND GET ALONG WITH. AND THEN YOU ALL SING THE 2 MILLIONTH C: CUMBIFUCKINGYA. Just don’t let Togepi say fuck." },
-	{ name: "Chapter 9: Remember to take breakies.", enabled: false, 
-	description: "Sometimes Togepi needs a lil nippy nap. And when Togepi needs a LIL NIPPY NAP, YOU FIND A PLACE TO MAKE BASE. NOT SET UP A TENT. *MAKE BASE.* BECAUSE TOGEPI NEEDS A FULL ON NIPPY NAP." },
-	{ name: "Chapter 10258: Places that you should go back to but probably won’t", enabled: false, hide_once_read: true,
-	description: "Home." }
-]
-)
-
-AdventureGuide.register_book(
-  id: :structures2,
-  name: "Ceaseless Scamps",
-  description: "A guide to scrapping it together for aged adventurers.",
-  enabled: false,
-  chapters: [
-    { name: "Chapter 1: Basics", enabled: false, 
-	description: "" },
-]
-)
 
 AdventureGuide.register_book(
   id: :cooking,
@@ -146,23 +115,26 @@ AdventureGuide.register_book(
   enabled: false,
   chapters: [
     { name: "Chapter 1: Basics", enabled: false, 
-	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
-    { name: "Chapter 2: Cooked Oran, Apple, and Potato", enabled: false, description: "If you got a campfire or some kinda heat, you can just shove a bunch of Oran Berries in there. They don’t… fill that much, but it’s real easy to cook! You can do the same thing with Apples and Potatoes to a similar result, but they taste real good. One drawback with the Oran Berries though is that cooking em like that cooks out a lot of the healing juices." },
-    { name: "Chapter 3: Meats", enabled: false, description: "Look we all do things we ain’t proud of, but when you are starvin, that Goldeen in the water looks a lot more appealing as something well… *to catch* over something… *to catch.* A lot of Pokémon taste a lot better than you think they would. Ain’t no shame in just… takin some of the meat leftover from beating up a Pokémon. It’s better to eat wild Pokémon than to be starvin and thinking of eating your own. …but if you both are starvin, better for one of you to get somethin to eat than both of you die. All Pokémon cook real well, well… most do. Metal ain’t too healthy to eat. Neither are rocks." },
-    { name: "Chapter 4: Stews", enabled: false, description: "If you got a lot of bones around you, ain’t no harm in makin that into a broth, you just need some water, to make a basic broth, and then some meats for a full on stew. Lot more filling than meat and berries, but unlike the prior options, you need a big ol’ cauldron or somethin to cook it in. Still nice when you can get somethin’ so fillin." },
+	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Moon!" },
+    { name: "Chapter 2: Cooked Oran, Apple, and Potato", 
+	enabled: false, description: "If you got a campfire or some kinda heat, you can just shove a bunch of Oran Berries in there. They don’t… fill that much, but it’s real easy to cook! You can do the same thing with Apples and Potatoes to a similar result, but they taste real good. One drawback with the Oran Berries though is that cooking em like that cooks out a lot of the healing juices." },
+    { name: "Chapter 3: Meats", enabled: false, 
+	description: "Look we all do things we ain’t proud of, but when you are starvin, that Goldeen in the water looks a lot more appealing as something well… *to catch* over something… *to catch.* A lot of Pokémon taste a lot better than you think they would. Ain’t no shame in just… takin some of the meat leftover from beating up a Pokémon. It’s better to eat wild Pokémon than to be starvin and thinking of eating your own. …but if you both are starvin, better for one of you to get somethin to eat than both of you die. All Pokémon cook real well, well… most do. Metal ain’t too healthy to eat. Neither are rocks." },
+    { name: "Chapter 4: Stews", enabled: false, 
+	description: "If you got a lot of bones around you, ain’t no harm in makin that into a broth, you just need some water, to make a basic broth, and then some meats for a full on stew. Lot more filling than meat and berries, but unlike the prior options, you need a big ol’ cauldron or somethin to cook it in. Still nice when you can get somethin’ so fillin." },
     { name: "Chapter 5: Drinks", enabled: false,
       unlocks_book: :cooking2, description: "Talkin about berries last time made me realize one of the best uses for berries! If you mash some Oran Berries and Sitrus Berries together, you can take that mashed up set of berries, mix it into a bottle with some sugar, and make a real tasty drink. You can also make some juice out of Oran Berries by themselves. Theres other stuff you can find around to make drinks with, like Lemons for Lemonade, or Tea Leaves for Tea. Most of this junk does need clean water though, which is why the best thing you can drink is just water straight from the river! If it ain’t kill Pokemon, it ain’t kill me!" }
   ]
 )
 
 AdventureGuide.register_book(
-  id: :cooking2,
+  id: :cooking2, #Make the main character of this 'tori' and she is the daughter of the MC from Enterprising Eats
   name: "Culinary Curiosities",
   description: "A guide to meals for cooks who prefer to make the most of what they have.",
   enabled: false,
   chapters: [
     { name: "Chapter 1: Basics", enabled: false, 
-	description: "An enterprising Trainer tends to find themselves in situations where they aren’t near a town, are out of money, and are out of supplies, I have found myself in that position many-a-time. Don’t fret, however! Ancient Trainers knew something modern Trainers have no clue about, but I will bless you with this knowledge.\n\nBasically anything a Pokémon can eat, we can eat too! You see that Rattata going for that Oran Berry? Fight em for it. You can cook that on a campfire and live another day! You see that Ursaring in the water? You can drink that! …well maybe not THAT water, that’s the Ursaring’s water and you don’t wanna die, but if you find water that DON’T have an Ursaring in it and maybe a Luvdisc or something you are good. That’s your water now. Drink it. Eat all the fish in it. Cook all the fish in it. Stab the Luvdisc with a knife and eat that too. Don’t stab the Ursaring though, personal experience, they react really poorly to being stabbed. Either way, I got a list of recipes I wanna share with you that I made up when I couldn’t find where the nearest town was from Mount Coronet!" },
+	description: "" },
 ]
 )
 
@@ -204,5 +176,57 @@ AdventureGuide.register_book(
   ]
 )
 
+
+
+AdventureGuide.register_book(
+  id: :structures1,
+  name: "Ruinous Repertoire",
+  description: "A guide to surviving in what is left for aged adventurers.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "When one finds themselves in a particular kind of sticky wicket, trapped in a room in the middle of an ancient Pokotopian temple, surrounded on all sides by hostiles, if be man, Pokémon, or both, one must remember the 3 Cs. Consider, Chatter, and Craft. When I found myself trapped atop the Cubone Tree, with those river rapids below me, and that group of angry Fearow after me, did I hesitate? No. I leap, making even the birds think I went into those rapids while I hid in that Cubone tree's skull. Any single structure around you can be your boon, or in the case of that Temple where I was surrounded: Bane. Sometimes you will always be in a place where you can’t do one or more of the C’s. That just means you have to do the last one 3 times as hard. Don’t let yourself get caught out, don’t let yourself be unprepared, and don’t let yourself be caught with your pants down." },
+	{ name: "Chapter 2: Dodging Shots", enabled: false, 
+	description: "When in that ancient Pokotopian temple, you gotta watch out for not only the devilish Pokémon that thrive within the blood of dead men, but also the traps they lay. That rock? Pass by it and the Geodude opens its devilish inhuman eyes and ATTACKS. That pressure plate that might open the door? Sets off an arrow trap to impale your plucky sidekick in the skull. You gotta be ready for ANYTHING in these places, or they will tear your limb from stinking limb, and your only way out will be through sheer dumb luck and the 3 Cs. Take that shield and block that arrow. Considering if that rock might be in the exact spot to cut you off. Never shut up so they don’t know your next move. And always… ALWAYS bring a snack." },
+	{ name: "Chapter 3: Chasing Bandits", enabled: false, 
+	description: "You successfully got uncornered, and you are finally up against the BIG GUY, and he’s making his run, and he’s trying his best to show you whats for. Nows the time to consider: Should I talk, or should I craft. And then after that, consider even HARDER, how does this guy attack? Is he following any pattern? Can I hit him from a distance or do I just gotta get in there and beat. him. down. Then remember the FOURTH C.  *Comrades.* If the other guy can come in with his group, trapping you in a sea of hostiles, you can throw out your guys too. Except Togepi. We don’t let babies fight here." },
+	{ name: "Chapter 4: Securing Loot", enabled: false, 
+	description: "You beat down the BIG GUY, and you and your guys are basking in the afterglow of the experience. You all feel like your potential increased today. Now… *you gotta go back in.* You might have wiped out every guy in that place, and more of em might have even come, but you gotta be sure you got *every* single piece of loot, out of *every single chest.* Maybe more chest appeared while you were fighting that big guy. You ain’t gotta worry about any of your guys, cause no matter how hurt they got, even if  they got knocked out, cause you beat the guy, they are gonna be just fucking peachy, meaning you can go back in and get exactly what you came for." },
+	{ name: "Chapter 5: New Place", enabled: false, 
+	description: "You beat the BIG GUY, you beat the LITTLE GUYS, you get all the loot. You maybe even got the girl. Now… it’s time to go the NEXT PLACE. Sometimes the next place will be as simple as walking down the stone hall to the next place. Sometimes you have to bring out the FIFTH C. *COMPASS.* And navigate your way to where you gotta be. And if you don’t have a compass. BRING OUT THE SIXTH C. C-MAP. AND IF YOU DONT HAVE A C-MAP, BRING OUT THE SEVENTH C. C-Aimless Wandering. If you go the C-Aimless Wander Route, make sure you have the EIGHTH C. Camping Set. You may not always be able to set up a grand base. But you and your guys can set up a tent. But not Togepi. Don’t let babies set up tents. " },
+	{ name: "Chapter 6: Old Place", enabled: false, 
+	description: "Just cause you got the new place, you beat up the BIG GUY, you beat up the LITTLE GUYS, you got all the LOOT, and got the GIRL, it doesn’t magically mean places you’ve been to have become POINTLESS. Maybe some of that LOOT allows you to find a NEW PLACE IN THE OLD PLACE. And once you found the NEW PLACE IN THE OLD PLACE, you can find EVEN MORE PLACES. Maybe you can even find NEW LITTLE GUYS IN THE NEW OLD PLACES, OR EVEN NEW BIG GUYS. Or even a SECRET EVIL TEAM THAT MAKES IT THEIR LIFE GOAL TO TURN INNOCENT  GUYS INTO NOT SO INNOCENT GUYS. 
+
+The POSSIBILITIES ARE ENDLESS." },
+	{ name: "Chapter 7: Places only YOUR GUYS CAN GO", enabled: false, 
+	description: "Sometimes when exploring the NEW OLD PLACES, you find places that a man of your stature just can’t make his way into. Sometimes the only guys who can make their way into that kind of sticky wicket are the lil guys. Your lil guys. Sometimes, the entry way to those wickets is so fucking small that you gotta let the baby go. You gotta let that Togepi wander into that CAVE. You gotta let the CHILDREN GO PLACES. Just don’t let Togepi go ALONE. Remember the FOURTH C. COMRADES. And then remember the TWO HUNDRED AND SIXTY NINETH C. SOME CAVES ONLY YOUR GUYS CAN GO IN, AND ALL YOU CAN DO IS STAND  THERE AND WAIT UNTIL THEY GET BACK." },
+	{ name: "Chapter 823: Places that you should go back to", enabled: false, 
+	description: "You need to remember that one nook on that one mountain that looked PARTICULARLY SUS. And once you have the LOOT that LETS YOU GO TO THAT SPOT ON THAT MOUNTAIN, YOU CAN REACH THE SECRET RAVINE ON THE ISLAND THAT CONTAINS VERSIONS OF THE BIG GUYS YOU CAN ACTUALLY TALK TO AND GET ALONG WITH. AND THEN YOU ALL SING THE 2 MILLIONTH C: CUMBIFUCKINGYA. Just don’t let Togepi say fuck." },
+	{ name: "Chapter 9: Remember to take breakies.", enabled: false, 
+	description: "Sometimes Togepi needs a lil nippy nap. And when Togepi needs a LIL NIPPY NAP, YOU FIND A PLACE TO MAKE BASE. NOT SET UP A TENT. *MAKE BASE.* BECAUSE TOGEPI NEEDS A FULL ON NIPPY NAP." },
+	{ name: "Chapter 10258: Places that you should go back to but probably won’t", enabled: false, hide_once_read: true,
+	description: "Home." }
+]
+)
+
+AdventureGuide.register_book(
+  id: :structures2,
+  name: "Ceaseless Scamps",
+  description: "A guide to scrapping it together for aged adventurers.",
+  enabled: false,
+  chapters: [
+    { name: "Chapter 1: Basics", enabled: false, 
+	description: "In those times when you are after your current sticky wicket, and on your way to the next, when your Togepi needs a nippy nap, you may find yourself needing a place to breathe. Caves are the first secure place, trees are the second. I personally prefer tree houses. Either way, you can put down your tools and sit them down with some iron for repairs, and give your pals a place to rest. This is when the 3 Cs are most important: Consider, Chatter, and Craft. Consider what you need to do in what little down time you have. Chatter with your pals, make em feel heard, and craft. Craftin is how you get out of most of your sticky wickets unless you wanna risk your Comrades. " },
+    { name: "Chapter 2: Caving", enabled: false, 
+	description: "In those times when your Togepi is nippy napping and your guys are relaxing around your current base, do your best to source tools in the environment. I remember when I was in that grand ice cave, those crystals twinkling like stars. I found something I hadn’t heard anything about in an age. A gleaming blue Tumblestone. Astonishing. The kind of stuff you can find with your trusty pickaxe and an exceedingly large amount of spare time. Reminds me of the 9th C: Caves are my friend.\n\nUnless it's a really big one. There’s the old Sinnoh adage: A big cave means big misery. If that bitch looks like it has more than one entrance, that cave will take something from you." },
+    { name: "Chapter 3: Surfing", enabled: false, 
+	description: "In those times when your Togepi wants to go for a lil swimmy swim, you gotta remember that the ocean is a *dangerous place for a lil baby.* Not that you can’t take em, but you gotta attend the lil baby. It’s easy for hostile guys to jump you while you are taking to the water, even if you are on the back of your own guy. Thankfully, heading out on the water with your lil baby, you can sometimes find stuff you didn’t think could be out there. Why once, I found a… well, that’s a story for another day." },
+    { name: "Chapter 4: Natives", enabled: false, 
+	description: "You would not believe how wide the world we live in is. Did you know Kanto once made a clone of a psychic Pokemon so powerful it could talk to humans? People seem to think that was only something man could do. Pokemon have proven themselves as smart as man since day one. Some stories say Lugia, the legendary guardian of the seas, has talked to humans. Some say the Legendary Beasts have. Humans aren’t the only ones with a monopoly on language. Nothing is saying that Meowth you got can’t suddenly start talkin one day. And what happens when you are visiting a place man has never been, but Pokeman has. 
+" },
+    { name: "Chapter 5: Basics", enabled: false, 
+	description: "Sometimes you go into a place, and you think “other guys can’t be here” “this is the ass end of nowhere”, and you think all you have to care about is you and your guys, your comrades, your *friends*. It’s you against the world. It’s you against the elements. But the first sign you got of seeing someone like you in a place they shouldn’t be well… you gotta remember this if you want to survive.\n\nGone are the Pokémon Centers, Shops, Gyms. Gone are the houses,  villagers, and friendly Professors. It’s just you and however many Pokemon you are trapped with there. And worst of all… you're pretty sure someone out there wants you very, very dead. " }
+]
+)
 
 

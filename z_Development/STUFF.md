@@ -77,7 +77,6 @@
 ### Items
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
-- [ ] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
  
  
  

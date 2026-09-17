@@ -20,8 +20,10 @@ module AdventureGuide
   #   unlocks_book - id (symbol) of another book to reveal once this chapter
   #                  has been read all the way through. nil if it doesn't
   #                  unlock anything extra.
-  Chapter = Struct.new(:name, :description, :enabled, :unlocks_book, keyword_init: true) do
+  Chapter = Struct.new(:name, :description, :enabled, :unlocks_book, :hide_once_read,, keyword_init: true) do
     def enabled? = !!enabled
+    def hide_once_read? = !!hide_once_read
+
   end
 
   # A book made up of one or more chapters.
@@ -141,10 +143,14 @@ module AdventureGuide
 
     def current_book = enabled_books[@position[PAGE_BOOKS]]
 
-    def current_chapter = current_book&.enabled_chapters&.[](@position[PAGE_CHAPTERS])
+    def current_chapter = current_book && visible_chapters(current_book)[@position[PAGE_CHAPTERS]]
 
     def mark_lists_dirty = @lists_dirty = true
 
+    def visible_chapters(book)
+      book.enabled_chapters.reject { |c| c.hide_once_read? && chapter_read?(book, c) }
+    end
+	
     def refresh_lists
       @book_names = []
       @book_descriptions = []
@@ -155,7 +161,7 @@ module AdventureGuide
         @book_names << display_name_for_book(book)
         @book_descriptions << wrap_text(book.description, DESCRIPTION_WRAP_WIDTH[PAGE_BOOKS])
 
-        chapters = book.enabled_chapters
+        chapters = visible_chapters(book)
         @chapter_names << chapters.map { |c| display_name_for_chapter(book, c) } + ["Return"]
         @chapter_descriptions << chapters.map { |c| wrap_text(c.description, DESCRIPTION_WRAP_WIDTH[PAGE_DESCRIPTION]) }
       end
@@ -289,7 +295,7 @@ module AdventureGuide
       return unless saved[:page] && saved[:page] >= PAGE_CHAPTERS
 
       book = enabled_books[book_index]
-      chapters = book.enabled_chapters
+      chapters = visible_chapters(book)
       chapter_row = chapters.index { |c| chapter_index_in_book(book, c) == saved[:chapter_index] }
       return unless chapter_row
 

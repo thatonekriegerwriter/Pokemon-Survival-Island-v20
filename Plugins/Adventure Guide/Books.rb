@@ -123,11 +123,11 @@ The POSSIBILITIES ARE ENDLESS." },
 	description: "You need to remember that one nook on that one mountain that looked PARTICULARLY SUS. And once you have the LOOT that LETS YOU GO TO THAT SPOT ON THAT MOUNTAIN, YOU CAN REACH THE SECRET RAVINE ON THE ISLAND THAT CONTAINS VERSIONS OF THE BIG GUYS YOU CAN ACTUALLY TALK TO AND GET ALONG WITH. AND THEN YOU ALL SING THE 2 MILLIONTH C: CUMBIFUCKINGYA. Just don’t let Togepi say fuck." },
 	{ name: "Chapter 9: Remember to take breakies.", enabled: false, 
 	description: "Sometimes Togepi needs a lil nippy nap. And when Togepi needs a LIL NIPPY NAP, YOU FIND A PLACE TO MAKE BASE. NOT SET UP A TENT. *MAKE BASE.* BECAUSE TOGEPI NEEDS A FULL ON NIPPY NAP." },
-	{ name: "Chapter 10258: Places that you should go back to but probably won’t", enabled: false,
+	{ name: "Chapter 10258: Places that you should go back to but probably won’t", enabled: false, hide_once_read: true,
 	description: "Home." }
 ]
 )
-#, hide_after: true
+
 AdventureGuide.register_book(
   id: :structures2,
   name: "Ceaseless Scamps",

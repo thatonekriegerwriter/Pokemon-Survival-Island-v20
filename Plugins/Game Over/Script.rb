@@ -226,10 +226,8 @@ class Scene_Gameover
   # * Frame Update
   #--------------------------------------------------------------------------
   def update
-    # If C button was pressed
     if Input.trigger?(Input::USE)
- # commented line
-      $scene = nil # added line
+      $scene = nil
     end
   end
 end
@@ -254,8 +252,7 @@ class PokemonClose_Scene
     locationColor = "209808,90F090"   # green
     loctext = _INTL("<ac><c3={1}>{2}</c3></ac>", locationColor, mapname)
     loctext += _INTL("Player<r><c3={1}>{2}</c3><br>", textColor, $player.name)
-	classy = $player.playerclass.name if $player.playerclass.respond_to?("name")
-	classy = $player.playerclass if !$player.playerclass.respond_to?("name")
+	classy = $player.playerclass.name
     loctext += _INTL("Class<r><c3={1}>{2} Lv{3}</c3><br>", textColor, classy, $player.playerclasslevel.to_i)
     @sprites["nubg"] = IconSprite.new(0,0,@viewport)
     @sprites["nubg"].setBitmap(_INTL("Graphics/Pictures/loadslotsbg"))
@@ -296,7 +293,6 @@ class PokemonCloseScreen
   end
 
   def pbCloseScreen(menu=nil)
-    ret = false
     @scene.pbStartScreen
     if pbConfirmMessage(_INTL("Are you sure you want to quit the game?"))
         pbFadeOutIn {

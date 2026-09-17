@@ -340,7 +340,7 @@ class ConsumableStats
     @item = item 
     @spoiling_rate = 1 # effects the rate the food spoils, rang: 1-5
 	@priority = 1 # effects how much this as an ingredient changes the food, rang: 1-5
-	@servings = 1 # effects how many times the food can be eaten, rang: 1-3
+	@servings = :AVERAGE # effects how much stamina it restores, :TINY, :SMALL, :AVERAGE, :LARGE, :HUGE
 	@flavor = [0,0,0,0,0] #effects how a pokemon likes the food
 	@restores = 0 # effects how much the food restores, range: negative to postive
 	@quality = 1 #  effects it's price, and the amount of food/water restored by it, rang: 1-5

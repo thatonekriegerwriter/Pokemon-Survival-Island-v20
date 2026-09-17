@@ -1,4 +1,20 @@
 module ForeignPokemon
+  BTogepi = {
+    :species    => :PURRLOIN,
+    :level      => 7,
+    :shiny      => false,
+    :gender     => 0,
+    :ot         => :N,
+    :happiness  => 255,
+    :nature     => :TIMID,
+    :moves      => [:SCRATCH,:GROWL,:ASSIST],
+    :iv         => {:HP => 30,
+                    :ATTACK => 30,
+                    :DEFENSE => 30,
+                    :SPECIAL_ATTACK => 30,
+                    :SPECIAL_DEFENSE => 30,
+                    :SPEED => 30}
+  }
   NPurrloin = {
     :species    => :PURRLOIN,
     :level      => 7,

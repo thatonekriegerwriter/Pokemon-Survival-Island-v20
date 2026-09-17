@@ -362,7 +362,7 @@ LandMorning,21
     5,ODDISH,3
     5,TANGELA,3
     4,LOTAD,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,SUNKERN,2
     1,MARILL,3,5
     1,TORCHIC,2
@@ -400,7 +400,7 @@ OverworldLandMorning,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -467,7 +467,7 @@ LandMorning,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -506,7 +506,7 @@ OverworldLandMorning,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -690,7 +690,7 @@ LandDay,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -730,7 +730,7 @@ OverworldLandDay,21
     5,ODDISH,3
     5,TANGELA,3
     4,LOTAD,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,SUNKERN,2
     1,MARILL,3,5
     1,TORCHIC,2
@@ -799,7 +799,7 @@ LandDay,21
     5,ODDISH,3
     5,TANGELA,3
     4,LOTAD,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,SUNKERN,2
     1,MARILL,3,5
     1,TORCHIC,2
@@ -840,7 +840,7 @@ OverworldLandDay,21
     5,ODDISH,3
     5,TANGELA,3
     4,LOTAD,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,SUNKERN,2
     1,MARILL,3,5
     1,TORCHIC,2
@@ -2256,7 +2256,7 @@ OverworldLandDay,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -2294,7 +2294,7 @@ LandDay,21
     10,ZIGZAGOON,2
     5,ODDISH,3
     5,TANGELA,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     4,LOTAD,3
     4,SUNKERN,2
     1,MARILL,3,5
@@ -8512,7 +8512,7 @@ LandDay,21
     20,SENTRET,4
     20,SUNKERN,2
     20,TAILLOW,3
-    4,TOGEPI,5
+    4,BUNEARY,5
     20,TANGELA,3
     1,TORCHIC,2
     20,ZIGZAGOON,2
@@ -8560,7 +8560,7 @@ LandDay,21
     20,HOPPIP,3
     20,LOTAD,3
     20,MARILL,3,5
-    4,TOGEPI,5
+    4,BUNEARY,5
     20,ODDISH,3
     20,RATTATA,5
     20,SENTRET,4
@@ -8613,7 +8613,7 @@ LandDay,21
     20,HOPPIP,3
     20,LOTAD,3
     20,MARILL,3,5
-    4,TOGEPI,5
+    4,BUNEARY,5
     20,ODDISH,3
     20,RATTATA,5
     20,SENTRET,4

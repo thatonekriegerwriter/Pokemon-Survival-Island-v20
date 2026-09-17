@@ -10,9 +10,10 @@
 
 
 ### Pokemon
+- [ ] Stations use https://bulbapedia.bulbagarden.net/wiki/Performance
 - [ ] Released Pokemon Array and Released Pokemon events
 - [ ] Early Pokemon Evolution
-- [ ] Foreign Pokemon
+- [ ] Update Foreign Pokemon for Encounter Spawns. Add "Papas" Togepi.
 - [ ] Trade evolution Pokemon
 - [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic

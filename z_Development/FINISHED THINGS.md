@@ -126,6 +126,7 @@
 
 ### Items
 - [x] Grooming Brush
+- [x] Update Adventure Manual
 - [x] Whistle item that automatically selects all Pokemon
 - [x] Bottle type items milk cows
 - [x] Make sure food and water feed pokemon in harder modes.

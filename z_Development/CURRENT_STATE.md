@@ -18,7 +18,6 @@
 ### Items
 - [ ] Custom Evolutions
 - [ ] Ocean Trading Xatu
-- [ ] Update Adventure Manual (Bees, Cooking, and Structures)
 - [ ] Finish the internal data for items, like how much food it restores, the effect of the Pokeball.
 - [ ] Work on the internal data first and foremost for food flavors. 
 - [ ] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.

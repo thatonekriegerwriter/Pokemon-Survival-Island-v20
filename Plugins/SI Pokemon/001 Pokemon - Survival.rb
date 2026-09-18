@@ -130,15 +130,25 @@ end
     @last_interacted_with = pbGetTimeNow.to_i
   end 
   
-  def can_harvest?
+  def can_harvest?(rand_amt = 0)
 	@item_timer ||= pbGetTimeNow.to_i - 3600
 	time_now = pbGetTimeNow.to_i
     time_delta = time_now - @item_timer
-    return time_delta >= 3600
+    return time_delta >= (3600 + rand_amt)
   end 
+  
+  def harvest_result
+    return :CHERUBIBALL if @pokemon.species == :CHERUBI
+	return :EGGEDIBLE if @pokemon.species == :CHANSEY
+	return :TROPIUSFRUIT if @pokemon.species == :TROPIUS
+	return :SLOWPOKETAIL if @pokemon.species == :SLOWPOKE
+    return nil 
+  end 
+  
   def harvest
 	@item_timer = pbGetTimeNow.to_i
   end 
+  
   def update
     if is_birthday? && @handled_aging==false
 	

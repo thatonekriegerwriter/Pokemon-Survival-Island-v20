@@ -20,7 +20,7 @@ module AdventureGuide
   #   unlocks_book - id (symbol) of another book to reveal once this chapter
   #                  has been read all the way through. nil if it doesn't
   #                  unlock anything extra.
-  Chapter = Struct.new(:name, :description, :enabled, :unlocks_book, :hide_once_read,, keyword_init: true) do
+  Chapter = Struct.new(:name, :description, :enabled, :unlocks_book, :hide_once_read, keyword_init: true) do
     def enabled? = !!enabled
     def hide_once_read? = !!hide_once_read
 

@@ -1780,6 +1780,29 @@ class GuardStationData
   end 
 	
 
+  def can_find_harvest?
+   return false unless pokemon
+   return false unless pokemon_in_bed?
+   return pokemon.harvest_result && pokemon.can_harvest?(rand(1600))
+  end 
+  
+  def should_find_harvest?
+    can_find_harvest? && rand(100) < 26
+  end 
+
+  def check_harvest
+    return unless should_find_harvest?
+	item = pokemon.harvest_result
+	quantity = 1
+	if $bag.can_add?(item, quantity)
+	 $bag.add(item, quantity)
+	 itemAnim(item, quantity)
+     itemname = (quantity > 1) ? item.name_plural : item.name
+	 sideDisplay(_INTL("{1} seems to have a gift for you: a {3}.", pokemon.name, quantity, itemname))
+	 pokemon.harvest
+	end 
+  end 
+
 
 end 
 
@@ -2393,6 +2416,31 @@ end
 	
 	update_breeding
   end 
+
+  def can_find_harvest?
+   return false unless pokemon
+   return false unless pokemon_in_bed?
+   return pokemon.harvest_result && pokemon.can_harvest?(rand(1600))
+  end 
+  
+  def should_find_harvest?
+    can_find_harvest? && rand(100) < 26
+  end 
+
+  def check_harvest
+    return unless should_find_harvest?
+	item = pokemon.harvest_result
+	quantity = 1
+	if $bag.can_add?(item, quantity)
+	 $bag.add(item, quantity)
+	 itemAnim(item, quantity)
+     itemname = (quantity > 1) ? item.name_plural : item.name
+	 sideDisplay(_INTL("{1} seems to have a gift for you: a {3}.", pokemon.name, quantity, itemname))
+	 pokemon.harvest
+	end 
+  end 
+
+
 end
 
 class BerryPotData

@@ -1795,6 +1795,11 @@ overlay.font.size = old_size
       return (selmove == Pokemon::MAX_MOVES) ? -1 : selmove
     end
 
+def stats_page_unlocked?
+  # return $bag.has?(:ITEM_NAME_HERE)
+  return false
+end
+
     def pbScene
       @pokemon.play_cry
       loop do
@@ -1821,7 +1826,7 @@ overlay.font.size = old_size
             pbPlayDecisionSE
       # Write the held item's name
 	  #puts Pokemon.instance_method(:initialize).source_location
-           # dorefresh = pbOptions
+            dorefresh = pbOptions
           end
         elsif Input.trigger?(Input::UP) && @partyindex > 0
           oldindex = @partyindex
@@ -1842,6 +1847,7 @@ overlay.font.size = old_size
         elsif Input.trigger?(Input::LEFT) && !@pokemon.egg?
           oldpage = @page
           @page -= 1
+          @page -= 1 if @page == 3 && !stats_page_unlocked?
           @page = 1 if @page < 1
           @page = 7 if @page > 7
           if @page != oldpage   # Move to next page
@@ -1852,6 +1858,7 @@ overlay.font.size = old_size
         elsif Input.trigger?(Input::RIGHT) && !@pokemon.egg?
           oldpage = @page
           @page += 1
+          @page += 1 if @page == 3 && !stats_page_unlocked?
           @page = 1 if @page < 1
           @page = 7 if @page > 7
           if @page != oldpage   # Move to next page
@@ -1866,7 +1873,9 @@ overlay.font.size = old_size
       end
       return @partyindex
     end
-  end
+
+
+ end
 
   #===============================================================================
   #

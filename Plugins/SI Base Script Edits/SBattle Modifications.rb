@@ -1019,7 +1019,7 @@ class Battle::Battler
 	  
     end
 #EDIT
-    return pbDisobey(choice, badgeLevel) if rand(100)+1<= PbCalculate_disobedience_chance(pkmn.loyalty,pkmn.happiness)
+    return pbDisobey(choice, badgeLevel) if rand(100)+1<= PbCalculate_disobedience_chance(@pokemon.loyalty,@pokemon.happiness)
 #END EDIT
     disobedient |= !pbHyperModeObedience(choice[2])
     return true if !disobedient

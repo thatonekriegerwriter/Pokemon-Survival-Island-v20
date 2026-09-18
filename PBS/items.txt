@@ -1626,7 +1626,7 @@ Name = Leek
 NamePlural = Leeks
 Pocket = 1
 Price = 1000
-Flags = Fling_60
+Flags = Fling_60,Berry
 Description = An item to be held by Farfetch'd. It is a very long and stiff stalk of leek that boosts the critical-hit ratio.
 #-------------------------------
 [SOULDEW]
@@ -8444,12 +8444,20 @@ Flags = FoodWater
 Description = A Cherubi treat.
 #-------------------------------
 [EGGEDIBLE]
-Name = Egg
-NamePlural = Eggs
+Name = Sharing Egg
+NamePlural = Sharing Eggs
 Pocket = 6
 Price = 5
 Flags = FoodWater
-Description = A fresh egg, versatile for cooking or baking.
+Description = An Egg shared with you by a Chansey.
+#-------------------------------
+[TROPIUSFRUIT]
+Name = Tropius Banana
+NamePlural = Tropius Banana
+Pocket = 6
+Price = 5
+Flags = FoodWater,Berry
+Description = A singular fruit originally obtained from a Tropius.
 #-------------------------------
 [POTATOSTEW]
 Name = Stew (Potato)

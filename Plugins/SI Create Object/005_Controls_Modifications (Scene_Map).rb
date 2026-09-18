@@ -1763,7 +1763,8 @@ end
     elsif Input.triggerex?(Keys::CONTROLS_LIST["\|"])#Input.triggerex?(:TAB)
 	# test_cloning
 	#  pbRelearnMoveScreen
-	AdventureGuide.show
+	pbTradingScene(RECIPE1)
+	#AdventureGuide.show
 	#  item = ItemData.new(:COALGENERATOR)
    #   key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
 

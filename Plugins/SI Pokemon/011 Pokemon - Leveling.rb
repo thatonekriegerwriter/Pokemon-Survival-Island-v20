@@ -302,11 +302,11 @@ end
       message = _INTL("{1} has not gained enough experience to level up.", name)
 
       if internal_battle && battle
-        battle.pbDisplayPaused(message)
+       # battle.pbDisplayPaused(message)
       elsif statue
         pbMessage(message)
       else
-        sideDisplay(message)
+      #  sideDisplay(message)
       end
     end
     return false

@@ -45,6 +45,8 @@
 ### Pokemon
 - [-] Bridge Aware.
 - [x] Possible relearnable move storage
+- [x] Verify Pokemon sending out in the water.
+- [-] Hide the Stats page? Or at least lock some of it behind items.
 
 ### Sprites
 - [x] Berry Pot 

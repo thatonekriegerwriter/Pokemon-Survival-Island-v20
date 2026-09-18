@@ -4,6 +4,7 @@ module InventoryScene
       def initialize(event_data:, container:)
         event_data.give_feather
         event_data.give_sand
+        event_data.check_harvest 
         super
       end
 	  

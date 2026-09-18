@@ -459,7 +459,7 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
     next false if !do_it
 	x,y = start_end[1]
 	can_do = decreaseStamina(3.55*amt)
-    next false unless can_do #&& $game_player.pbFacingTerrainTag.can_surf_freely==false
+    next false unless can_do
     pbSEPlay("Battle throw")
     sprite_index = $scene.spriteset.addUserSprite(OWPokemonReleaseSprite.new(start_end,pkmn,$game_map,Spriteset_Map.viewport))
 	holding_pattern(sprite_index)
@@ -490,7 +490,10 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
        pbResetTempAfterBattle()
 	   next true
 	end 
-	if !pbObjectIsPossible(x,y)
+	
+	
+	
+	unless pbCanPlacePokemon?(x, y, pkmn)
 	 sideDisplay(_INTL("Your Pokeball bounced off for some reason."))
 	 pbSEPlay("Player bump")
      next false 

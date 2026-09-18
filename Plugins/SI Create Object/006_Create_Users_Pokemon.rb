@@ -1763,12 +1763,27 @@ class Game_Event < Game_Character
   end
 end
 
+def pbCanPlacePokemon?(x, y, pokemon)
+  return false if !$game_map.valid?(x, y)
+  return true if pokemon.has_type?(:FLYING)
+  if pokemon.has_type?(:WATER)
+    terrain_tag = $map_factory.getTerrainTag($game_map.map_id, x, y)
+    return false if !terrain_tag.can_surf_freely
+    events = $game_map.events.values + $DynamicEvents.events_for_map
+    for event in events
+      return false if event.x == x && event.y == y
+    end
+    return true
+  end
+  return pbObjectIsPossible(x, y)
+end
+
 def pbPlacePokemon(x, y, pokemon)
   if pokemon.fainted?
    pokemon.in_world = false 
    return false 
   end 
-  if !pbObjectIsPossible(x,y)
+  unless pbCanPlacePokemon?(x, y, pokemon)
    pokemon.in_world = false 
    return false 
   end

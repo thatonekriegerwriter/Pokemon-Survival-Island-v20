@@ -309,7 +309,7 @@ class StatueData
 		  else
 		     pbMessage(_INTL("Return with Mining Tools."))
 		  end
-        when 4 #Oceanside Statue (Needs to be in demo)
+        when 4
 		   unless $PokemonGlobal.visitedMaps[63]
 		     pbMessage(_INTL("Your travel here seems to have been the burden the Statue wished to carry."))
 		     pbMessage(_INTL("May your continued exploration be fruitful."))

@@ -3981,6 +3981,7 @@ Habitat = WatersEdge
 Category = Dragon
 Pokedex = This Pokémon is known as the Sea Incarnate. Figureheads that resemble Dragonite decorate the bows of many ships.
 Generation = 1
+WildItemRare = DRAGONFANG
 WildItemUncommon = DRAGONSCALE
 #-------------------------------
 [MEWTWO]
@@ -9814,6 +9815,7 @@ Category = Rock Head
 Pokedex = Bagon is a solitary Pokémon that doesn't form groups with others of its kind. It also has a head hard enough to cleave a boulder in one strike.
 Generation = 3
 WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = SHELGON,Level,30
 #-------------------------------
 [SHELGON]
@@ -9841,6 +9843,7 @@ Category = Endurance
 Pokedex = Shelgon ignores its hunger entirely, never eating any food. Apparently, Shelgon will evolve once all its energy stores are used up.
 Generation = 3
 WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = SALAMENCE,Level,50
 #-------------------------------
 [SALAMENCE]
@@ -9868,6 +9871,7 @@ Category = Dragon
 Pokedex = While basking in the joy of flight generally keeps it in high spirits, it turns into an uncontrollable menace if something angers it.
 Generation = 3
 WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 #-------------------------------
 [BELDUM]
 Name = Beldum
@@ -11705,6 +11709,8 @@ Habitat = Cave
 Category = Land Shark
 Pokedex = Gible attacks anything that moves, and it drags whatever it catches into the crevice that is its lair. Despite the big mouth, Gible's stomach is small.
 Generation = 4
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = GABITE,Level,24
 #-------------------------------
 [GABITE]
@@ -11731,6 +11737,8 @@ Habitat = Cave
 Category = Cave
 Pokedex = Jewels are buried in the caves these Pokémon nest in, but you'll be torn apart by claws and fangs the moment you enter one of these caves.
 Generation = 4
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = GARCHOMP,Level,48
 #-------------------------------
 [GARCHOMP]
@@ -11755,6 +11763,8 @@ Color = Blue
 Shape = BipedalTail
 Habitat = Cave
 Category = Mach
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Pokedex = Garchomp makes its home in volcanic mountains. It flies through the sky as fast as a jet airplane, hunting down as much prey as it can.
 Generation = 4
 #-------------------------------
@@ -16076,6 +16086,8 @@ Habitat = RoughTerrain
 Category = Tusk
 Pokedex = They play with each other by knocking their large tusks together. Their tusks break sometimes, but they grow back so quickly that it isn't a concern.
 Generation = 5
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = FRAXURE,Level,38
 #-------------------------------
 [FRAXURE]
@@ -16102,6 +16114,8 @@ Habitat = RoughTerrain
 Category = Axe Jaw
 Pokedex = After battle, this Pokémon carefully sharpens its tusks on river rocks. It needs to take care of its tusks. If one breaks, it will never grow back.
 Generation = 5
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Evolutions = HAXORUS,Level,48
 #-------------------------------
 [HAXORUS]
@@ -16127,6 +16141,8 @@ Shape = BipedalTail
 Habitat = RoughTerrain
 Category = Axe Jaw
 Pokedex = While usually kindhearted, it can be terrifying if angered. Tusks that can slice through steel beams are how Haxorus deals with its adversaries.
+WildItemUncommon = DRAGONFANG
+WildItemRare = DRAGONFANG
 Generation = 5
 #-------------------------------
 [CUBCHOO]

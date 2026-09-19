@@ -14,22 +14,6 @@ module InventoryScene
       def craft_slots_hold_pokemon? = true
       def shows_search_ui? = false
 
-      # The shared pick-up/place/swap logic just needs something
-      # array-like with one slot. This proxy wraps PetBedData so that
-      # assigning into it (`store[0] = pokemon`, `store[0] = nil`) calls
-      # place_pokemon/remove_pokemon as a side effect - which is what
-      # actually spawns/despawns the Pokemon on the map. Keeping that
-      # here, rather than teaching the generic DraggableSlots/
-      # PartyInteraction code about PetBed specifically, is what lets
-      # every other station stay untouched by this.
-      #
-      # KNOWN GAP: if place_pokemon returns false (pbPlacePokemon refused
-      # - fainted, blocked tile), []= here just silently no-ops rather
-      # than telling the caller the drop failed. The generic drop-handling
-      # code (handle_pokemon_drop) doesn't currently check for that and
-      # will still render the Pokemon as "placed" in the slot regardless.
-      # Flagging this rather than guessing at how you'd want a failed
-      # placement surfaced to the player (message? bounce back to hand?).
       class SlotProxy
         def initialize(bed_data) = @bed_data = bed_data
         def length = 1
@@ -45,9 +29,7 @@ module InventoryScene
       end
       
 	  def should_render_assign? = true 
-	  
-      # Nothing item-based to save - PetBed only ever holds the one
-      # Pokemon, and PetBedData already owns that directly.
+	 
       def finalize_container = nil
 	  
 	  def get_current_action
@@ -199,12 +181,6 @@ module InventoryScene
 	    !event_data.assigned_job.nil?
 	  end 
 	  
-      # Pressed/active bitmap while this bed is the one currently
-      # selecting an assignment target - same up/down toggle convention
-      # as Bag's equipment_button. Re-checked every frame (not just
-      # right after a click) so the button also reflects reality if
-      # assignment_mode gets cleared some other way (completed by
-      # walking up to a station, or cancelled below).
       def refresh_assign_button
         pokemon = event_data.pokemon
 	    pokemon_grabbed = grabbed_item && event_data.pokemon && event_data.pokemon == grabbed_item.item
@@ -246,9 +222,6 @@ module InventoryScene
 		end 
 	  end
 	  
-      # Removing the resting Pokemon always unassigns its job (per your
-      # earlier rule) - this extends that to also cancel an in-progress
-      # selection, so the button doesn't stay stuck "on" for an empty bed.
       def cancel_assignment_if_orphaned
         return unless assigning_from_this_bed? && event_data.pokemon.nil?
         $game_temp.assignment_mode = false

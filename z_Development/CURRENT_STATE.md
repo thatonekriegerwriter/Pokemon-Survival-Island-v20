@@ -32,6 +32,7 @@
 
 ### World
 - [ ] Finish First Temple (Second to last)
+- [ ] Test Mineshaft
 
 ### Misc Mechanics
 - [-] Too low happiness for too long begins dragging down loyalty.

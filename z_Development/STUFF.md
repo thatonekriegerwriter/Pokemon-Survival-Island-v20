@@ -18,11 +18,12 @@
 - [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
 - [ ] Potential
+- [ ] Ability override
 
 
 ### Placeables
+- [ ] Shelf
 - [ ] Punch Bag
-- [ ] Seed Analyzer
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox. This requires a rewriting of IceBox data I don't want to do.
 - [ ] Steam Engine: Upgraded Water Mill that is just https://tekkitclassic.fandom.com/wiki/Water_Strainer + https://tekkitclassic.fandom.com/wiki/Steam_Engine has to have water pumped in.
 - [ ] Geothermal Generator/Combustion Engine: https://tekkitclassic.fandom.com/wiki/Geothermal_Generator + https://tekkitclassic.fandom.com/wiki/Combustion_Engine Must be placed on lava and powered.
@@ -76,6 +77,7 @@
 - [ ] Pokewalker Program?
 
 ### Items
+- [ ] Wide Lense as Seed Analyzer
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
  

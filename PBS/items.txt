@@ -300,7 +300,7 @@ NamePlural = Star Pieces
 Pocket = 1
 Price = 12000
 Flags = Fling_30
-Description = A shard of a pretty gem that sparkles in a red color. It is exceedingly valuable to most species.
+Description = A shard of a pretty gem that sparkles in a red color.
 #-------------------------------
 [COMETSHARD]
 Name = Comet Shard
@@ -2512,14 +2512,14 @@ Consumable = false
 Description = A folding Bicycle that enables much faster movement than the Running Shoes.
 #-------------------------------
 [ADVENTURERULES]
-Name = Surviving in the Wilderness
-NamePlural = Surviving in the Wilderness
+Name = Survival Guides
+NamePlural = Survival Guides
 Pocket = 1
 Price = 0
 FieldUse = Direct
 Flags = KeyItem
 Consumable = false
-Description = A Basic Guide to Surviving in the Wilderness.
+Description = A Guide to surviving in the wilderness which contains multiple stories and personal anecdotes. You aren't sure where it came from.
 #-------------------------------
 [ESCAPEROPE]
 Name = Escape Rope

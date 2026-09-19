@@ -1095,8 +1095,11 @@ class BerryPlantData
                 time_for_checks = 8 * 3600
                 rolls = (pests_delta / time_for_checks).floor
 			     if rolls>0
+                    pest_chance = getPestAppearChance * (0.75 ** nearby_apiaries?)
+                    pest_chance = 0 if pest_chance < 0
+
                 rolls.times do 
-                    @pests = true if rand(100) < getPestAppearChance #1 
+                    @pests = true if rand(100) < pest_chance #1 
                     @pests_timer += time_for_checks
                     break if @pests
                 end  
@@ -1423,7 +1426,7 @@ class BerryPlantData
     end
 
     def getPestAppearChance
-        pests_chance =  1
+        pests_chance =  2
         return pests_chance
     end
 

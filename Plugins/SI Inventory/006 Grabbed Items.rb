@@ -52,6 +52,8 @@ module InventoryScene
       when :party then "_partytext"
       when :adventure_party then "_apartytext"
       when :traveling_partner then "_tpartnertext"
+      when :trade_cost then "_tradecosttext"
+      when :trade_output then "_tradeoutputtext"
       else "_text"
       end
     end
@@ -65,6 +67,8 @@ module InventoryScene
       when :party then "_partyimage"
       when :adventure_party then "_apartyimage"
       when :traveling_partner then "_tpartnerimage"
+      when :trade_cost then "_tradecostimage"
+      when :trade_output then "_tradeoutputimage"
       else "_image"
       end
     end

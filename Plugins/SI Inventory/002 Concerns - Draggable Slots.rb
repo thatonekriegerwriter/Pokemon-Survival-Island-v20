@@ -50,7 +50,9 @@ module InventoryScene
         when :craft, :equipment, :box then sprite_xy(sprites["craft_slots#{index}"])
         when :pokemon_inventory then sprite_xy(sprites["pkmn_slots#{index}"])
         when :adventure_party then sprite_xy(sprites["adv_slots#{index}"])
-        when :result then s = sprites["craft_slots_result"]; s ? [s.x + 8, s.y + 8] : [0, 0]
+        when :result then s = sprites["craft_slots_result"]; s ? [s.x + 8, s.y + 8] : [-128, -128]
+        when :trade_cost then sprite_xy(sprites["#{index}_traderowslot"])
+        when :trade_output then s = sprites["#{index}_traderowslot"]; s ? [s.x + 40, s.y] : [-128, -128]
         else [-128, -128]
         end
       end

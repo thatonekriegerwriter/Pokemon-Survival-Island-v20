@@ -142,6 +142,7 @@ end
 	return :EGGEDIBLE if @pokemon.species == :CHANSEY
 	return :TROPIUSFRUIT if @pokemon.species == :TROPIUS
 	return :SLOWPOKETAIL if @pokemon.species == :SLOWPOKE
+	return :LEEK if @pokemon.species == :FARFETCHD
     return nil 
   end 
   

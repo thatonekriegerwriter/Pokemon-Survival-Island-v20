@@ -67,6 +67,7 @@
 - [x] Electric Water Purifier: Turns Water pumped in into Purified water.
 
 ### Placeables
+- [x] Bees decrease likelhood of pest spawns
 - [x] Make sure guards aren't locked to STANDING at their station + Functionality.
 - [x] Electric Types can provide electricity to PokeGenerators.
 - [x] Graves have a low chance of respawning as a Ghost Type
@@ -128,6 +129,7 @@
 
 ### Items
 - [x] Grooming Brush
+- [x] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
 - [x] Update Adventure Manual
 - [x] Whistle item that automatically selects all Pokemon
 - [x] Bottle type items milk cows

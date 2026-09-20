@@ -620,6 +620,7 @@ class OWBallThrowSprite
        pbPlayerEXP(@pkmn, pbOverworldCombat.get_allied_pokemon)
 	   @pkmn.poke_ball = @ball_used
 	   @pkmn.calc_stats
+	   @pkmn.loyalty += (item.stats.quality * 5)
 	   $scene.spriteset.addUserAnimation(BALL_SUCCESS_ANIM_ID, @end_coord[0], @end_coord[1], true, 1)
 	   pkmnAnim(@pkmn)
 	   pbAddPokemonSilent(@pkmn)
@@ -647,6 +648,10 @@ class OWBallThrowSprite
 	   end
 	   sideDisplay(text)
 	   @ball_used.effects.trigger(:onFailCatch, @pkmn, nil)
+	   if rand(100) < @ball_used.stats.recoverable * 25
+	     sideDisplay(_INTL("You recovered the {1}!", @ball_used.name)
+         $bag.add(@ball_used, 1)
+       end
 	   makeAggressive(@event)
 	   @phase=5
     when 5

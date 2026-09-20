@@ -148,20 +148,14 @@ class ItemStats
   def defense
     weapon.stat_bonus
   end 
-  def stat_bonus=(value)
-    weapon.stat_bonus=value
-  end 
-  def stat_bonus
-    weapon.stat_bonus
-  end 
-  def stat_bonus=(value)
-    weapon.stat_bonus=value
-  end 
-  def stat_bonus
-    weapon.stat_bonus
-  end 
 
-
+  def species
+    @berry&.species
+  end 
+  def seasons 
+    @berry&.seasons 
+  end 
+  
   def growth
     @berry&.growth
   end 
@@ -174,6 +168,11 @@ class ItemStats
   def gain
     @berry&.gain
   end 
+  def season
+    @berry&.season
+  end 
+
+
   def growth=(value)
     @berry&.growth=value
   end 
@@ -186,7 +185,9 @@ class ItemStats
   def gain=(value)
     @berry&.gain=value
   end 
-
+  def season=(value)
+    @berry&.season=value
+  end 
 
 
 
@@ -199,6 +200,12 @@ class ItemStats
   def ease_of_use
     @pokeball&.ease_of_use
   end 
+  def range
+    @pokeball&.range 
+  end 
+  def height
+    @pokeball&.height
+  end 
 
   def catch_rate=(value)
     @pokeball&.catch_rate=value
@@ -207,6 +214,12 @@ class ItemStats
     @pokeball&.recoverable=value
   end 
   def ease_of_use=(value)
+    @pokeball&.ease_of_use=value
+  end 
+  def range=(value)
+    @pokeball&.recoverable=value
+  end 
+  def height=(value)
     @pokeball&.ease_of_use=value
   end 
   
@@ -261,7 +274,7 @@ class WeaponStats
   attr_accessor :accuracy 
   attr_accessor :speed 
   def initialize(item)
-    @item = @item
+    @item = item
     @stat_bonus = 0
     @accuracy = 0
     @speed = 0
@@ -277,7 +290,7 @@ class WeaponStats
   end 
   def accuracy
     @accuracy = 0 if @accuracy.nil?
-	return @stat_bonus
+	return @accuracy
   end 
   def speed
     @speed = 0 if @speed.nil?
@@ -304,23 +317,45 @@ end
 
 class BerryStats
   attr_accessor :item
+  attr_accessor :species
   attr_accessor :growth # effects the growth rate of plants
   attr_accessor :resistance # effects how resistant the plant is to weeds, and pests, rang: 0-4
   attr_accessor :flavor #effects how a pokemon likes a berry
+  attr_accessor :seasons #the genetic data for its preferred season
   attr_accessor :season #effects the season the plant has an affinity for, 0-3
   attr_accessor :gain # effects the number of fruits that the plant will yield, rang 0-4
   attr_accessor :quality #effects it's price, and the amount of food/water restored by it, or in something with it, rang: 1-5
   def initialize(item)
     @item = item 
+	@species = [item.id, item.id]
+	@seasons = [berry_data.season, berry_data.season]
+	@season = berry_data.season
     @growth = berry_data.hours_per_stage
 	@resistance = 0
 	@flavor = berry_data.flavor
-	@season = berry_data.season
 	@gain = 0
 	@quality = 1
   end 
+  
+  def seasons
+	@seasons = [berry_data.season, berry_data.season] if @seasons.nil?
+	return @seasons
+  end 
+  def season
+	@season = berry_data.season if @season.nil?
+	return @season
+  end 
+  
+  def species
+	@species = [@item.id, @item.id] if @species.nil?
+    return @species 
+  end 
+  
   def initialize_copy(original)
     super
+    @flavor = original.instance_variable_get(:@flavor).dup
+    @seasons = original.instance_variable_get(:@seasons).dup
+    @species = original.instance_variable_get(:@species).dup
   end
   
   def berry_data
@@ -391,22 +426,38 @@ class PokeBallStats
   attr_accessor :catch_rate # effects the catch rate of the POKeBALL
   attr_accessor :recoverable # effects if the POKeBALL can be recovered after being thrown, percentage chance of recovery.
   attr_accessor :ease_of_use # effects if this POKeBALL takes up your turn to use while in a Command Battle, and the stamina use on the Overworld, percentage chance of occurance.
+  attr_accessor :range #Effects how far ball can be tossed. Modifier items range from 1-3, but you could stack all of them, meaning max range is 10, at the cast of all three modifier slots.
+  attr_accessor :height #Effects how HIGH a Ball can be tossed. Modifier items range from 1-2, but you could stack all of them, meaning max height is 5, and you have one modifier slot spare.
   attr_accessor :quality #effects it's price, and the happiness of the POKeMON inside.
   def initialize(item)
     @item = item 
     @catch_rate = get_catch_rate
 	@recoverable = 0
 	@ease_of_use = 0
+	@range = 3 
+	@height = 1
 	@quality = 1
   end 
   def initialize_copy(original)
     super
   end
-    def get_catch_rate
-	  return 1 if @item.id==:POKEBALLC
-	  return 1.5 if @item.id==:GREATBALLC
-	  return 2 if @item.id==:ULTRABALLC
-	end
+  
+  def range
+	@range = 3 if @range.nil?
+	return @range 
+  end 
+  
+  def height
+	@height = 1 if @height.nil?
+	return @height 
+  end 
+  
+  def get_catch_rate
+	return 1.0 if @item.id==:POKEBALLC
+	return 1.5 if @item.id==:GREATBALLC
+	return 2.0 if @item.id==:ULTRABALLC
+	return 1.0
+   end
 end 
 
 
@@ -420,6 +471,7 @@ class CaptureStylerStats
    attr_accessor :latent_power  #  effects trigger amount when the Player is low hp (cap at 20)
   #attr_accessor :assists # possible effects for the styler based on pokemon in the team
   def initialize(item)
+    @item = item
     @health = 100
     @power = 0
 	@line = 0

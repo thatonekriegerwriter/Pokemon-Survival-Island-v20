@@ -204,10 +204,21 @@ def getLandingCoordsAB(event,event2=$game_player)
   return [start_coord,landing_coord]
 end
 
-def getLandingCoords2(event=$game_player)
+def getLandingCoords2(cap = 7, event=$game_player)
+  puts cap
   start_coord=[event.x,event.y]
   landing_coord=get_tile_mouse_on
+  dx=landing_coord[0]-start_coord[0]
+  dy=landing_coord[1]-start_coord[1]
 
+  distance=Math.sqrt(dx**2+dy**2)
+  if distance>cap
+    ratio=cap/distance
+    landing_coord=[
+      (start_coord[0]+dx*ratio).round,
+      (start_coord[1]+dy*ratio).round
+    ]
+  end
 
   return [start_coord,landing_coord]
 end
@@ -274,8 +285,7 @@ def selection_mouse_logic(do_it, amt)
   return do_it,amt,start_end
 end
 
-
-def throwing_range_logic(do_it, amt)
+def throwing_range_logic_old(do_it, amt, cap = 7)
    if $player.weapon_cooldown>0
 	sideDisplay("You are too winded from your last attack still!")
     start_end = getLandingCoords2
@@ -355,7 +365,64 @@ def throwing_range_logic(do_it, amt)
 end
 
 
-def throwing_range_logic_pokeball(amt)
+def throwing_range_logic(do_it, amt, cap = 7)
+   if $player.weapon_cooldown>0
+	sideDisplay("You are too winded from your last attack still!")
+    start_end = getLandingCoords2(cap)
+    return do_it,amt,start_end
+   end
+   if $game_temp.lockontarget==false
+    start_end = getLandingCoords2(cap)#getLandingCoords(amt)
+	position_marker = PositionMarker.new(start_end[1][0],start_end[1][1])
+	$game_temp.in_throwing=true
+	$mouse.hide
+	loop do
+	Graphics.update
+	Input.update
+	$scene.update
+	position_marker.update
+
+	 temp = getLandingCoords2(cap)
+	 if start_end!=temp
+       start_end = temp
+	   position_marker.x=start_end[1][0]
+  	   position_marker.y=start_end[1][1]
+       pbSEPlay("GUI storage put down")
+	 end
+	 if Input.trigger?(Input::USE) && !start_end.nil?
+	   
+	    turn,amt = player_turning_logic(start_end[1][0],start_end[1][1])
+	    $game_player.turn_generic(turn) 
+	    do_it = true
+	   $game_temp.in_throwing=false
+		position_marker.dispose
+	    break
+	 elsif Input.trigger?(Input::BACK)
+	   $game_temp.in_throwing=false
+		position_marker.dispose
+	   break
+	end
+	
+	end
+    $mouse.show
+	else
+	   event = $game_temp.lockontarget
+	   start_end = getLandingCoordsAB(event)
+	   
+	   
+	   dx = start_end[1][0] - start_end[0][0]
+	   dy = start_end[1][1] - start_end[0][1]
+	   distance = Math.sqrt(dx**2 + dy**2)
+	   if distance <= cap
+	    turn,amt = player_turning_logic(start_end[1][0],start_end[1][1])
+	    do_it = true
+       end
+    end
+  return do_it,amt,start_end
+end
+
+
+def throwing_range_logic_pokemon(amt)
 	 $game_temp.currently_throwing_pkmn = true
      do_it = false 
 	 if (Input.trigger?(Input::JUMPUP)  || Input.scroll_v==1) && false
@@ -435,6 +502,63 @@ def throwing_range_logic_pokeball(amt)
   return do_it,amt,start_end
 end
 
+
+
+ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_poke_ball? }, proc { |item, event|
+    next if $player.is_it_this_class?(:RANGER,false)
+	next if $game_temp.in_throwing==true
+	if pbBoxesFull?
+	  sideDisplay(_INTL("There's no room for Pokémon!"))
+	  next
+	end 
+	if pbOverworldCombat.battle_rules.include?("Catchless")
+	  sideDisplay(_INTL("You can't catch anything right now!"))
+	  next
+	end
+	if nuzlocke_has?(:NOOVCATCHING)
+	  sideDisplay(_INTL("Overworld Catching is disabled!"))
+	next
+	end
+	if nuzlocke_has?(:ONEROUTE)
+      static = data.include?(:STATIC) && !$nuzx_static_enc
+      shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
+      map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
+	  if !map.nil? && !static && !shiny
+	  sideDisplay(_INTL("Your enabled challenges say you cannot catch a wild Pokemon on this map!!"))  
+	   next
+	  end
+	next
+	end
+
+    cap = item.stats.range
+	puts cap
+	amt=1
+	do_it = false
+    do_it,amt,start_end = throwing_range_logic(do_it, amt, cap)
+	if do_it==true
+	 target_height = $game_map.get_current_height(start_end[1][0], start_end[1][1])
+     height_difference = target_height - $game_player.height_level
+	 if height_difference > item.stats.height
+	  sideDisplay(_INTL("You don't think the ball can make it that high!"))
+      next false 
+	 end 
+     $bag.remove(item)
+     pbSEPlay("Battle throw")
+	 base_stamina = 3.0
+	 ease = item.ease_of_use
+	 stamina_cost = base_stamina * (1.0 - ease * 0.1)
+	 can_do = decreaseStamina(stamina_cost * amt)
+	 next false if can_do == false
+     $scene.spriteset.addUserSprite(OWBallThrowSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
+	 next true
+	else
+	 next false
+	end
+  }
+)
+
+
+
  def can_throw_pkmn?
     return false if $game_temp.pokemon_calling==true
     return false if $game_temp.in_throwing==true
@@ -455,7 +579,7 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
 	  sideDisplay(_INTL("You can only have one Pokemon on the map right now!"))
 	  next false
 	end
-    do_it, amt, start_end = throwing_range_logic_pokeball(amt)
+    do_it, amt, start_end = throwing_range_logic_pokemon(amt)
     next false if !do_it
 	x,y = start_end[1]
 	can_do = decreaseStamina(3.55*amt)
@@ -504,49 +628,6 @@ ItemHandlers::UseFromBox.addIf(proc { |item| item.is_a?(Pokemon) }, proc { |pkmn
 	next false if event.nil?
 	pbShowTipCardsGrouped(:OVERWORLD_PKMN) if !pbSeenTipCard?(:OVERWORLDPOKEMON)
 	
-  }
-)
-
-
-ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_poke_ball? }, proc { |item, event|
-    next if $player.is_it_this_class?(:RANGER,false)
-	next if $game_temp.in_throwing==true
-	if pbBoxesFull?
-	  sideDisplay(_INTL("There's no room for Pokémon!"))
-	  next
-	end 
-	if pbOverworldCombat.battle_rules.include?("Catchless")
-	  sideDisplay(_INTL("You can't catch anything right now!"))
-	next
-	
-	end
-	if nuzlocke_has?(:NOOVCATCHING)
-	  sideDisplay(_INTL("Overworld Catching is disabled!"))
-	next
-	end
-	if nuzlocke_has?(:ONEROUTE)
-      static = data.include?(:STATIC) && !$nuzx_static_enc
-      shiny = data.include?(:SHINY) && @battlers[args[0]].shiny?
-      map = $PokemonGlobal.nuzlockeData[$game_map.map_id]
-	  if !map.nil? && !static && !shiny
-	  sideDisplay(_INTL("Your enabled challenges say you cannot catch a wild Pokemon on this map!!"))  
-	   next
-	  end
-	next
-	end
-	amt=1
-	do_it = false
-    do_it,amt,start_end = throwing_range_logic(do_it, amt)
-	if do_it==true
-    $bag.remove(item)
-    pbSEPlay("Battle throw")
-	can_do = decreaseStamina(2.5*amt)
-	next false if can_do == false
-    $scene.spriteset.addUserSprite(OWBallThrowSprite.new(start_end,item,$game_map,Spriteset_Map.viewport))
-	next true
-	else
-	next false
-	end
   }
 )
 

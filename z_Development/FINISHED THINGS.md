@@ -113,6 +113,7 @@
 - [x] Add Shoreline equipment
 
 ### World
+- [x] Lock off unavailable statues (Safety for later demo releases)
 - [x] Clean up directing Pokemon across map borders.
 - [x] FIX THE RENDERING PROBLEM ASSHOLE.
 - [x] Fix Berry Plant updating
@@ -121,6 +122,7 @@
 - [x] Make the mining spot in the Ice Cave a *mining spot.* Maybe make that part of the room a mining spot???
 - [x] Make simulated combat system
 - [x] Update weather for GameData::Zones
+- [x] Test Mineshaft
 
 ### Misc Mechanics
 - [x] Statues still eat energy if you back out of saving.
@@ -128,6 +130,7 @@
 - [x] Ambient Temp
 
 ### Items
+- [x] Ocean Trading Xatu
 - [x] Grooming Brush
 - [x] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
 - [x] Update Adventure Manual

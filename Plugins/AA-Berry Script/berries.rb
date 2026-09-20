@@ -34,11 +34,16 @@ def pbBerryPlant
     berry_plant = BerryPlantData.new(this_event.id)
     interp.setVariable(berry_plant)
   end
+
+
+
   berry = berry_plant.berry
   if berry.nil? && !berry_plant.berry_id.nil?
    berry_plant.berry = ItemData.new(berry_plant.berry_id)
    berry = berry_plant.berry
   end 
+  
+  
   berry_plant.dead=false if berry_plant.dead.nil?
   pbTurnBerryPlant(this_event,berry_plant) 
   
@@ -111,8 +116,15 @@ def pbBerryPlant
   if berry_plant.grown?
     this_event.turn_up   # Stop the event turning towards the player
 	theyield = berry_plant.berry_yield
+	yield_berry = resolve_berry
+	
+	
 	if theyield > 0
-     berry_plant.reset if pbPickBerry(berry, theyield, true, berry_plant.mutated_berry_info)
+	 if pbPickBerry(yield_berry, theyield, true, berry_plant.mutated_berry_info)
+      @last_berry = yield_berry
+      @timewithoutberry = pbGetTimeNow.to_i
+      berry_plant.reset 
+	 end 
 	else
      pbMessage(_INTL("There were no berries on the bush!"))
 	 berry_plant.reset
@@ -369,8 +381,6 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
     interp.setVariable(berry_plant)
     berry_plant.berry = berry
   end
-  berry_plant.last_berry = berry
-  berry_plant.timewithoutberry = pbGetTimeNow.to_i
   
   berrydata = GameData::Item.get(berry)
   mut_berry_qty = 0
@@ -908,7 +918,6 @@ class BerryPlantData
     @time_last_updated  = 0
     @growth_stage       = 0
     @replant_count      = 0
-    @quality            = 0
     @watered_this_stage = false
     @watering_count     = 0
     @not_watered_count     = 0
@@ -939,6 +948,15 @@ class BerryPlantData
 	@time_tile_last_updated = pbGetTimeNow.to_i
     @exposed_to_rain = false
     @stagnation_message = false
+    @species_primary   = nil
+    @species_secondary = nil
+    @season_primary    = nil
+    @season_secondary  = nil
+    @growth_value      = nil
+    @resistance_value  = nil
+    @gain_value         = nil
+    @flavor             = nil
+    @quality            = nil
   end
   
   def dead?
@@ -1538,10 +1556,10 @@ class BerryPlantData
 
 
   def moist
-    @times_in_each_moist[3]+=1 if @moisture_level == 0
-    @times_in_each_moist[2]+=1 if @moisture_level > 0 && @moisture_level < 51
-    @times_in_each_moist[1]+=1 if @moisture_level > 50 && @moisture_level < 100
     @times_in_each_moist[0]+=1 if @moisture_level >= 100
+    @times_in_each_moist[1]+=1 if @moisture_level > 50 && @moisture_level < 100
+    @times_in_each_moist[2]+=1 if @moisture_level > 0 && @moisture_level < 51
+    @times_in_each_moist[3]+=1 if @moisture_level == 0
     
   end  
 
@@ -1589,32 +1607,6 @@ class BerryPlantData
     end
 
 
-
-    def checkNearbyPlantsForMutation
-        $PokemonGlobal.compilePlantMutationParents if !$PokemonGlobal.berry_plant_mutation_parents
-        @mutated_berry_tried = true
-		 return if cropsticks==false
-        return if !self.event || !$PokemonGlobal.berry_plant_mutation_parents.include?(@berry_id)
-        mutation_chance = Settings::BERRY_MULCHES_IMPACTING_MUTATIONS[@mulch,id] || Settings::BERRY_BASE_MUTATION_CHANCE
-		mutation_chance *= (1.0 + (nearby_apiaries? * 0.5))
-        return if mutation_chance <= 0 || rand(100) >= mutation_chance
-        #position = [self.event.map_id, self.event.x, self.event.y]
-        #map = $map_factory.getMap(position[0])
-        neighbors = pbGetNeighbors
-        possible = []
-        neighbors.each do |data|
-            next if data.nil? || !data.is_a?(BerryPlantData) || !data.planted?
-            id = data.berry_id
-            if Settings::BERRY_MUTATION_POSSIBILITIES[[@berry_id,id]]
-                possible.concat(Settings::BERRY_MUTATION_POSSIBILITIES[[@berry_id,id]])
-            elsif Settings::BERRY_MUTATION_POSSIBILITIES[[id,@berry_id]]
-                possible.concat(Settings::BERRY_MUTATION_POSSIBILITIES[[id,@berry_id]])
-            end
-        end
-		 mutated_berry = ItemData.new(possible.sample)
-        @mutated_berry_info = [mutated_berry,Settings::BERRY_MUTATION_COUNT] if possible.length > 0
-    end
-
     def checkNearbyPlantsForPropagation(dropped_berries)
         return if dropped_berries.nil? || dropped_berries.empty?
         neighbors = pbGetNeighbors
@@ -1660,34 +1652,6 @@ class BerryPlantData
 	   @yield_penalty=0
 	  end
 end
-  
-  
-  def get_quality
-   max_value =  @times_in_each_moist.max
-   index_of_max = @times_in_each_moist.index(max_value)
-   lastberryinf=0
-   lastberryinf= @last_berry_qual if !@last_berry.nil?
-     case index_of_max 
-	   when 0
-	     @quality=4 + (@watering_count/2).to_i
-	   when 1
-	      @quality=2 + (@watering_count/2).to_i
-	   when 2
-	     @quality=-2 + (@watering_count/2).to_i
-	   when 3
-	     @quality=-4 + (@watering_count/2).to_i
-	  end
-	  if @quality<lastberryinf
-	    @quality=lastberryinf
-	  end
-	  if @quality<1
-	   @quality=1
-	  end
-  
-  
-  
-  
-  end
   
   
   

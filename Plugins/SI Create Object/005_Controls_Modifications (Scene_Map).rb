@@ -1764,7 +1764,8 @@ end
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#pbTradingScene(RECIPE1)
-	pbXatuTrade(:OCEAN)
+	#pbXatuTrade(:OCEAN)
+	pbMiningGame(:MOUNTAINMINE)
 	#AdventureGuide.show
 	#  item = ItemData.new(:COALGENERATOR)
    #   key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)

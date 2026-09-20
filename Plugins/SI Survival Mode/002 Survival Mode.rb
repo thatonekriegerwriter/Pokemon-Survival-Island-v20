@@ -2041,7 +2041,7 @@ end
     exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
     exp_final = ($player.exp + exp).clamp(0, $player.get_max_exp)
     exp_gained = exp_final - $player.exp
-    puts "expGained: #{expGained}"
+    puts "expGained: #{exp_gained}"
 	
   if exp_gained > 0
     cur_level = $player.playerclasslevel

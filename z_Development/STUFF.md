@@ -18,7 +18,6 @@
 - [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
 - [ ] Potential
-- [ ] Ability override
 
 
 ### Placeables
@@ -34,6 +33,9 @@
 ### Character
 
 ### Combat
+- [ ] Battle Styles for Overworld
+- [ ] Focus Meter for Overworld
+- [ ] Move Mastery for Overworld
 - [ ] Moves that need overworld state need it implmented.
 - [ ] Finish move effects. (Requires combat state)
 - [ ] Finish class effects
@@ -50,9 +52,9 @@
 - [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
+- [ ] Update Mineshaft UI
 - [ ] Outbreaks
 - [ ] Update Dungeons (Possibly can move to later)
-- [x] Lock off unavailable statues (Safety for later demo releases)
 - [ ] Define Phenomena
 - [ ] For maps with identical encounter lists, uses Encounter Alias
 - [ ] Hostile Pokemon crossing borders
@@ -77,9 +79,11 @@
 - [ ] Pokewalker Program?
 
 ### Items
-- [ ] Wide Lense as Seed Analyzer
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
+- [ ] Cell Battery for Battery 
+- [ ] Blow Dart/Generic Dart
+- [ ] Pokeball Trap
  
  
  

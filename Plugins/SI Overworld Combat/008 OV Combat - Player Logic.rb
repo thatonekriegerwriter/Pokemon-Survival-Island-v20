@@ -10,12 +10,12 @@ class OverworldCombat
     return 99 if $player.pokedex.owned_count<1
     pkmn = event.pokemon
     catch_rate = pkmn.species_data.catch_rate
-      if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
-         catch_rate = ball.effects.trigger(:modifyCatchRate, catch_rate, nil, pkmn)
-         #catch_rate = OverworldPBEffects.modifyCatchRate(ball, catch_rate, pkmn)
-      else
-         catch_rate /= 10
-      end
+    catch_rate *= [ball.stats.catch_rate, 0.01].max
+    if !pkmn.species_data.has_flag?("UltraBeast") || ball == :BEASTBALL
+      catch_rate = ball.effects.trigger(:modifyCatchRate, catch_rate, nil, pkmn)
+    else
+      catch_rate /= 10
+    end
     x = (((3 * pkmn.totalhp) - (2 * pkmn.hp)) * catch_rate.to_f) / (3 * pkmn.totalhp)
     # Calculation modifiers
     if pkmn.status == :SLEEP || pkmn.status == :FROZEN
@@ -23,9 +23,9 @@ class OverworldCombat
     elsif pkmn.status != :NONE
       x *= 1.5
     end
-    if Input.repeat?(Input::ACTION)
-      x *= 1.2
-    end 
+ #   if Input.repeat?(Input::ACTION)
+ #     x *= 1.2
+ #   end 
     return 4 if x >= 255 || ball.effects.trigger(:isUnconditional, nil, pkmn)
     #return 99 if x >= 255 || OverworldPBEffects.isUnconditional?(ball, pkmn)
     y = (65_536 / ((255.0 / x)**0.1875)).floor

@@ -407,7 +407,31 @@ class PokemonBag
     $PokemonGlobal.hud_favorites.delete(item)
   end
 
+  def get(item)
+    item_data = GameData::Item.try_get(item)
+    return nil if !item_data
+    pocket = item_data.pocket
 
+    @pockets[pocket].each do |item_slot|
+      next if !item_slot
+      return item_slot[0] if item_slot[0].identical(item)
+    end
+
+    return nil
+  end
+
+  def get_sym(item)
+    item_data = GameData::Item.try_get(item)
+    return nil if !item_data
+    pocket = item_data.pocket
+
+    @pockets[pocket].each do |item_slot|
+      next if !item_slot
+      return item_slot[0] if item_slot[0].id == item_data.id
+    end
+
+    return nil
+  end
 
   private
   

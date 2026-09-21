@@ -281,28 +281,57 @@ def inherit_nature(egg, genetic_source, mother, father)
   egg.nature = new_natures.sample
 end
 
+def inherit_ability_from_pokemon(egg, pokemon, index = pokemon.ability_index)
+  ability = pokemon.getAbilityList.find { |i| i[1] == index }
+  return if !ability
+
+  child_ability = egg.getAbilityList.find { |i| i[0] == ability[0] }
+  if child_ability
+    egg.ability_index = child_ability[1]
+    egg.ability = nil
+  else
+    egg.ability = ability[0]
+  end
+end
+
 # If a Pokémon is bred with a Ditto, that Pokémon can pass down its Hidden
 # Ability (60% chance). If neither Pokémon are Ditto, then the mother can pass
 # down its ability (60% chance if Hidden, 80% chance if not).
 def inherit_ability(egg, genetic_source, mother, father)
-   
-  parent = (mother[1]) ? father[0] : mother[0]
+  if mother[1] && !father[1]
+    parent = father[0]
+  elsif father[1] && !mother[1]
+    parent = mother[0]
+  else
+    parent = rand(2) == 0 ? mother[0] : father[0]
+  end
+  
   if parent.hasHiddenAbility?
-    egg.ability_index = parent.ability_index if rand(100) < 60
-  elsif !mother[1] && !father[1]
+    inherit_ability_from_pokemon(egg, parent) if rand(100) < 60
+  else
+      index = (parent.ability_index + 1) % 2
+      inherit_ability_from_pokemon(egg, parent, index)
+  end
+  
+  if parent.hasHiddenAbility?
+    inherit_ability_from_pokemon(egg, parent) if rand(100) < 60
+  elsif mother[1]
+    inherit_ability_from_pokemon(egg, parent)
+  elsif !father[1]
     if rand(100) < 80
-      egg.ability_index = mother[0].ability_index
+      inherit_ability_from_pokemon(egg, mother[0])
     else
-      egg.ability_index = (mother[0].ability_index + 1) % 2
+      index = (mother[0].ability_index + 1) % 2
+      inherit_ability_from_pokemon(egg, mother[0], index)
     end
   end
 
   return if !genetic_source.ability_index
   return if rand(100) >= 10
   if genetic_source.hasHiddenAbility?
-      egg.ability_index = genetic_source.ability_index if rand(100) < 80
+    inherit_ability_from_pokemon(egg, genetic_source) if rand(100) < 80
   else
-      egg.ability_index = genetic_source.ability_index
+    inherit_ability_from_pokemon(egg, genetic_source)
   end
   
 end

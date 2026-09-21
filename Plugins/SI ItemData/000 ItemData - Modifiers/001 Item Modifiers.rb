@@ -5,10 +5,11 @@ class ItemModifiers
   def initialize(item)
     @item = item
     @modifiers = {}
-	@modifiers_length = 3 
+	@modifiers_length = @item.data.is_foodwater? ? 5 : 3 
     @effects = ItemEffects.new(@item)
   end
-
+  
+  
   def initialize_copy(original)
     super
     @modifiers = original.modifiers.dup
@@ -17,6 +18,7 @@ class ItemModifiers
   end
  
   def add(modifier_item)
+	@modifiers_length =  5 if @modifiers_length == 3 && @item.data.is_foodwater?
     return false if @modifiers.length >= @modifiers_length
     return false if @modifiers.keys.include?(modifier_item.id)
 	if (result = ModifierManager.trigger(modifier_item, @item))
@@ -52,7 +54,8 @@ class ItemModifiers
   end
   
   def max_length
-    @modifiers_length
+	@modifiers_length =  5 if @modifiers_length == 3 && @item.data.is_foodwater?
+    return @modifiers_length
   end 
   
   def to_a

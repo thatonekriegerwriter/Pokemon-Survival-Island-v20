@@ -1,5 +1,6 @@
     # Changing
 class Pokemon
+NEGATIVE_TYPES = ["faint","powder","energyroot","revivalherb","damaged","neglected","hungry","thirsty","tired","youareeatingme"
 DATA_HASH = {
   :happiness => {
     :base => {
@@ -1293,6 +1294,9 @@ DATA_HASH = {
   
     return base 
   end 
+
+
+
   def changeHappiness(method,pkmn=self)
     return if method == "damaged"
 	#puts "<#{Time.now}> - #{self.name} (Happiness) - #{method} (#{self.level} (#{self.exp} - #{self.stored_exp}))"
@@ -1308,6 +1312,7 @@ DATA_HASH = {
     end
 	gain = 0 if gain < 0 && $player.is_it_this_class?(:COORDINATOR, false)
     @happiness = (@happiness + gain + base).clamp(0, 255)
+	changeLoyalty(method) if NEGATIVE_TYPES.include?(method) && @happiness < 64
   end
 
   

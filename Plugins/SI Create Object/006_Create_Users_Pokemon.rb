@@ -309,7 +309,9 @@ end
 
 
 def wander_movement
-	@started_working_at = nil if !@started_working_at.nil?
+  if !@started_working_at.nil?
+	@started_working_at = nil 
+  end 
   return if sleeping?
   pbMoveRoute2(self, [PBMoveRoute::Random])
   metadata = GameData::MapMetadata.try_get($game_map.map_id)

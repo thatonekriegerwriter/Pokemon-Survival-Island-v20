@@ -53,6 +53,10 @@ module BerryGenetics
     # 0, 2,   <- replace with real season values (0-3)
   ].freeze
 
+  CLIMATE_DOMINANT      = [].freeze  # PLACEHOLDER
+  WEATHER_DOMINANT      = [].freeze  # PLACEHOLDER
+  INHOSPITABLE_DOMINANT = [].freeze  # PLACEHOLDER
+
   # ---- flavor blend constants -----------------------------------------------
   # PLACEHOLDER. Tune so "slightly sweet" actually reads as slight, and so
   # repeated reinforcement doesn't rocket toward the cap in a couple of
@@ -67,11 +71,15 @@ module BerryGenetics
   # fully-grown neighbors the same way AgriCraft's odds improve with more
   # parent plants present. STAT_CAP mirrors AgriCraft's 1-10 scale - change
   # if these traits are meant to live on a different range.
-
-  GROWTH_INCREMENT_CHANCE     = 0.10
+  
+  SEASON_REROLL_CHANCE       = 0.10 
+  CLIMATE_REROLL_CHANCE      = 0.10 
+  WEATHER_REROLL_CHANCE      = 0.10
+  INHOSPITABLE_REROLL_CHANCE = 0.10 
+  GROWTH_INCREMENT_CHANCE     = 0.01
   RESISTANCE_INCREMENT_CHANCE = 0.10
   GAIN_INCREMENT_CHANCE       = 0.10
-  QUALITY_INCREMENT_CHANCE = 0.10
+  QUALITY_INCREMENT_CHANCE    = 0.10
   NEIGHBOR_CHANCE_SCALE       = 0.5   # each extra grown neighbor adds this much of the base chance
   STAT_CAP                    = 10
 
@@ -89,6 +97,9 @@ module BerryGenetics
     case chromosome
     when :species then SPECIES_DOMINANT.include?(value)
     when :season   then SEASON_DOMINANT.include?(value)
+    when :climate       then CLIMATE_DOMINANT.include?(value)
+    when :weather       then WEATHER_DOMINANT.include?(value)
+    when :inhospitable  then INHOSPITABLE_DOMINANT.include?(value)
     else false
     end
   end
@@ -109,6 +120,11 @@ module BerryGenetics
     pair.sample
   end
 
+  def maybe_reroll_allele(own_primary, own_secondary, neighbor_primary, neighbor_secondary, base_chance, grown_neighbor_count)
+   chance = base_chance * (1 + grown_neighbor_count * NEIGHBOR_CHANCE_SCALE)
+    return [own_primary, own_secondary] if rand >= chance
+   [draw_allele([own_primary, own_secondary]), draw_allele([neighbor_primary, neighbor_secondary])]
+  end
   # ---- species mutation (Step 1) --------------------------------------------
   # Checks ONE direction: this parent's own primary species against the
   # OTHER parent's secondary species. Call this twice per breeding event -
@@ -146,10 +162,16 @@ module BerryGenetics
     return current_value if rand >= chance
     [current_value + 1, STAT_CAP].min
   end
-
+  
+  def maybe_decrement(current_value, base_chance, grown_neighbor_count)
+    chance = base_chance * (1 + grown_neighbor_count * NEIGHBOR_CHANCE_SCALE)
+    return current_value if rand >= chance
+    [current_value - 1, 1].max
+  end
+  
   def maybe_increment_quality(cur_quality, base_chance, grown_neighbor_count, watered_count, moist)
    chance = base_chance * (1 + grown_neighbor_count * NEIGHBOR_CHANCE_SCALE)
-   return current_value if rand >= chance
+   return cur_quality if rand >= chance
    max_value =  moist.max
    max_index = moist.index(max_value)
    quality_array = [1,0,-1,-2]
@@ -176,16 +198,34 @@ end
 class BerryPlantData
   attr_accessor :species_primary, :species_secondary
   attr_accessor :season_primary, :season_secondary
+  
+  attr_accessor :inhospitable_primary, :inhospitable_secondary
+  attr_accessor :weather_primary, :weather_secondary
+  attr_accessor :climate_primary, :climate_secondary
+  
   attr_accessor :growth_value, :resistance_value, :gain_value
   attr_accessor :flavor
 
-  def active_species
-    BerryGenetics.resolve_active(:species, @species_primary, @species_secondary)
+  def active_species(new_primary, new_secondary)
+    BerryGenetics.resolve_active(:species, new_primary, new_secondary)
   end
 
-  def active_season
-    BerryGenetics.resolve_active(:season, @season_primary, @season_secondary)
+  def active_season(new_primary, new_secondary)
+    BerryGenetics.resolve_active(:season, new_primary, new_secondary)
   end
+
+  def active_climate(new_primary, new_secondary)
+    BerryGenetics.resolve_active(:climate, new_primary, new_secondary)
+  end
+
+  def active_weather(new_primary, new_secondary)
+    BerryGenetics.resolve_active(:weather, new_primary, new_secondary)
+  end
+
+  def active_inhospitable(new_primary, new_secondary)
+    BerryGenetics.resolve_active(:inhospitable, new_primary, new_secondary)
+  end
+	
 
   # Seeds a fresh genome from the species template - a Pure Tree, matching
   # "all trees from the wild are purebred": both alleles identical, single
@@ -196,6 +236,14 @@ class BerryPlantData
     @species_secondary = @berry.stats.species[1]
     @season_primary    = @berry.stats.seasons[0]
     @season_secondary  = @berry.stats.seasons[1]
+    @climate_primary   = @berry.stats.climates[0]
+    @climate_secondary = @berry.stats.climates[1]
+    @weather_primary    = @berry.stats.weathers[0]
+    @weather_secondary  = @berry.stats.weathers[1]
+    @inhospitable_primary    = @berry.stats.inhospitables[0]
+    @inhospitable_secondary  = @berry.stats.inhospitables[1]
+	
+	
     @growth_value      = @berry.stats.growth
     @resistance_value  = @berry.stats.resistance
     @gain_value         = @berry.stats.gain
@@ -228,33 +276,65 @@ class BerryPlantData
 
     new_season_primary   = BerryGenetics.draw_allele([@season_primary, @season_secondary])
     new_season_secondary = BerryGenetics.draw_allele([neighbor.season_primary, neighbor.season_secondary])
+
+    new_climate_primary   = BerryGenetics.draw_allele([@climate_primary, @climate_secondary])
+    new_climate_secondary = BerryGenetics.draw_allele([neighbor.climate_primary, neighbor.climate_secondary])
+
+    new_weather_primary   = BerryGenetics.draw_allele([@weather_primary, @weather_secondary])
+    new_weather_secondary = BerryGenetics.draw_allele([neighbor.weather_primary, neighbor.weather_secondary])
+
+    new_inhospitable_primary   = BerryGenetics.draw_allele([@inhospitable_primary, @inhospitable_secondary])
+    new_inhospitable_secondary = BerryGenetics.draw_allele([neighbor.inhospitable_primary, neighbor.inhospitable_secondary])
 	
-    new_species = active_species
-    new_season = active_season
+
+	
+    new_species = active_species(new_species_primary, new_species_secondary)
+    new_season = active_season(new_season_primary, new_season_secondary)
+    new_climate = active_climate(new_climate_primary, new_climate_secondary)
+    new_weather = active_weather(new_weather_primary, new_weather_secondary)
+    new_inhospitable = active_inhospitable(new_inhospitable_primary, new_inhospitable_secondary)
 	
     mutated_berry = grow_berry(ItemData.new(new_species), neighbor)
-    mutated_berry.stats.species[0] = new_species_primary
-	mutated_berry.stats.species[1] = new_species_secondary
-	mutated_berry.stats.seasons[0] = new_season_primary
-	mutated_berry.stats.seasons[1] = new_season_secondary
-	mutated_berry.stats.season = new_season
-    @mutated_berry_info = [mutated_berry, Settings::BERRY_MUTATION_COUNT]
-    return species_mutated
+    @mutated_berry_info = mutated_berry
+    return mutated_berry
   end
   
   def grow_berry(growing_berry, neighbor)
     neighbors_grown = grown_neighbor_count
-    growing_berry.stats.growth = BerryGenetics.maybe_increment(@growth_value,     BerryGenetics::GROWTH_INCREMENT_CHANCE,     neighbors_grown)
+    growing_berry.stats.growth = BerryGenetics.maybe_decrement(@growth_value,     BerryGenetics::GROWTH_INCREMENT_CHANCE,     neighbors_grown)
     growing_berry.stats.resistance = BerryGenetics.maybe_increment(@resistance_value, BerryGenetics::RESISTANCE_INCREMENT_CHANCE, neighbors_grown)
     growing_berry.stats.gain = BerryGenetics.maybe_increment(@gain_value,       BerryGenetics::GAIN_INCREMENT_CHANCE,       neighbors_grown)
-    growing_berry.stats.quality = maybe_increment_quality.maybe_increment(@quality, BerryGenetics::QUALITY_INCREMENT_CHANCE, neighbors_grown, @watering_count, @times_in_each_moist)
+    growing_berry.stats.quality = BerryGenetics.maybe_increment_quality(@quality, BerryGenetics::QUALITY_INCREMENT_CHANCE, neighbors_grown, @watering_count, @times_in_each_moist)
     growing_berry.stats.flavor = BerryGenetics.blend_flavor(@flavor, neighbor.flavor)
+	
+
+    season_pair       = BerryGenetics.maybe_reroll_allele(@season_primary,       @season_secondary,       neighbor.season_primary,       neighbor.season_secondary,       BerryGenetics::SEASON_REROLL_CHANCE,       neighbors_grown)
+    climate_pair      = BerryGenetics.maybe_reroll_allele(@climate_primary,      @climate_secondary,      neighbor.climate_primary,      neighbor.climate_secondary,      BerryGenetics::CLIMATE_REROLL_CHANCE,      neighbors_grown)
+    weather_pair      = BerryGenetics.maybe_reroll_allele(@weather_primary,      @weather_secondary,      neighbor.weather_primary,      neighbor.weather_secondary,      BerryGenetics::WEATHER_REROLL_CHANCE,      neighbors_grown)
+    inhospitable_pair = BerryGenetics.maybe_reroll_allele(@inhospitable_primary, @inhospitable_secondary, neighbor.inhospitable_primary, neighbor.inhospitable_secondary, BerryGenetics::INHOSPITABLE_REROLL_CHANCE, neighbors_grown)
+
+    growing_berry.stats.seasons[0], growing_berry.stats.seasons[1]           = season_pair
+    growing_berry.stats.climates[0], growing_berry.stats.climates[1]         = climate_pair
+    growing_berry.stats.weathers[0], growing_berry.stats.weathers[1]         = weather_pair
+    growing_berry.stats.inhospitables[0], growing_berry.stats.inhospitables[1] = inhospitable_pair
+
+    growing_berry.stats.season       = BerryGenetics.resolve_active(:season, *season_pair)
+    growing_berry.stats.climate      = BerryGenetics.resolve_active(:climate, *climate_pair)
+    growing_berry.stats.weather      = BerryGenetics.resolve_active(:weather, *weather_pair)
+    growing_berry.stats.inhospitable = BerryGenetics.resolve_active(:inhospitable, *inhospitable_pair)
+
+
 	return growing_berry
   end 
   
   def resolve_berry
+    if cropsticks==false
+	   new_berry = @berry.dup 
+	   new_berry.durability = new_berry.max_durability 
+	   return new_berry
+	end 
     neighbor = get_valid_neighbor
-    if cropsticks==false || neighbor.nil?
+    if neighbor.nil?
 	   new_berry = @berry.dup 
 	   new_berry.durability = new_berry.max_durability 
 	   return new_berry
@@ -266,7 +346,6 @@ class BerryPlantData
   end 
   
   def get_valid_neighbor
-    return nil if cropsticks == false 
     neighbors = pbGetNeighbors
     valid_neighbors = neighbors.select { |data| data.is_a?(BerryPlantData) && data.planted? }
     return nil if valid_neighbors.empty?

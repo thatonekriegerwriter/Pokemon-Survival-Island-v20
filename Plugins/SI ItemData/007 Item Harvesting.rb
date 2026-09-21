@@ -62,9 +62,9 @@ end
 	
 	
 	
-    food_item.quality=((total_ivs.to_f / max_ivs * 4).round)+1
-    food_item.stats.priority=3
-    food_item.stats.servings=1
+    food_item.quality = ((total_ivs.to_f / max_ivs * 4).round)+1
+    food_item.stats.priority = 3
+    food_item.stats.servings = :AVERAGE
 	
 	
 	

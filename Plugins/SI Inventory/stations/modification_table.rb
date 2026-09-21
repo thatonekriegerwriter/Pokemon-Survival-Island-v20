@@ -19,12 +19,12 @@ module InventoryScene
       def craft = event_data.internal_storage
 	  
 	  def can_drop?(kind, index)
-	    puts kind
 	    item = grabbed_item.item
         stack = craft[extra_slot_index]
         store = backing_store_for(kind)
         slot = store[index]
 	    return false if kind == :craft && index!=extra_slot_index && stack.nil?
+	    return false if kind == :craft && item.is_a?(ItemData) && item.data.is_foodwater? && !item.data.is_apricorn? && !item.data.is_berry?
 	    return false if kind == :craft && item.is_a?(ItemData) && event_data.recipe_has?(item.id) && ( slot && slot[0].id != item.id)
 		return true 
 	  end 

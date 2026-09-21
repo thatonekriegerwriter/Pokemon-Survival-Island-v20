@@ -112,6 +112,12 @@ class ItemStats
   def restores
     @consumable&.restores
   end 
+  def food
+    @consumable&.food
+  end 
+  def water
+    @consumable&.water
+  end 
   def priority=(value)
     @consumable.priority=value
   end 
@@ -123,6 +129,12 @@ class ItemStats
   end 
   def restores=(value)
     @consumable.restores=value
+  end 
+  def food=(value)
+    @consumable.food=value
+  end 
+  def water=(value)
+    @consumable.water=value
   end 
   
   def weapon 
@@ -155,6 +167,12 @@ class ItemStats
   def seasons 
     @berry&.seasons 
   end 
+  def weathers
+    @berry&.weathers
+  end 
+  def climates 
+    @berry&.climates 
+  end 
   
   def growth
     @berry&.growth
@@ -171,7 +189,12 @@ class ItemStats
   def season
     @berry&.season
   end 
-
+  def climate
+    @berry&.climate
+  end 
+  def weather
+    @berry&.weather
+  end 
 
   def growth=(value)
     @berry&.growth=value
@@ -188,7 +211,12 @@ class ItemStats
   def season=(value)
     @berry&.season=value
   end 
-
+  def climate=(value)
+    @berry&.climate=value
+  end 
+  def weather=(value)
+    @berry&.weather=value
+  end 
 
 
   def catch_rate
@@ -325,18 +353,48 @@ class BerryStats
   attr_accessor :season #effects the season the plant has an affinity for, 0-3
   attr_accessor :gain # effects the number of fruits that the plant will yield, rang 0-4
   attr_accessor :quality #effects it's price, and the amount of food/water restored by it, or in something with it, rang: 1-5
+  attr_accessor :climates
+  attr_accessor :weathers
+  attr_accessor :inhospitables
+  
+  
+  attr_accessor :inhospitable
+  attr_accessor :climate
+  attr_accessor :weather
   def initialize(item)
     @item = item 
 	@species = [item.id, item.id]
 	@seasons = [berry_data.season, berry_data.season]
+	@climates = [berry_data.climate, berry_data.climate]
+	@weathers = [berry_data.weather, berry_data.weather]
+	@inhospitables = [berry_data.inhospitable, berry_data.inhospitable]
+	
+	
+	
 	@season = berry_data.season
+	@climate = berry_data.climate
+    @weather = berry_data.weather
+	@inhospitable = berry_data.inhospitable
+	
+	
+	
     @growth = berry_data.hours_per_stage
 	@resistance = 0
-	@flavor = berry_data.flavor
 	@gain = 0
 	@quality = 1
+	
+	@flavor = berry_data.flavor
   end 
   
+  def inhospitables
+	@inhospitables = [berry_data.inhospitable, berry_data.inhospitable].compact if @inhospitables.nil? || @inhospitables.compact.empty?
+	return @inhospitables
+  end 
+  def inhospitable
+	@inhospitable = berry_data.inhospitable if @inhospitable.nil?
+	return @inhospitable
+  end 
+
   def seasons
 	@seasons = [berry_data.season, berry_data.season] if @seasons.nil?
 	return @seasons
@@ -345,7 +403,26 @@ class BerryStats
 	@season = berry_data.season if @season.nil?
 	return @season
   end 
-  
+
+  def weathers
+	@weathers ||= [berry_data.weather, berry_data.weather]
+    return @weathers 
+  end 
+  def weather
+	@weather = berry_data.weather if @weather.nil?
+	return @weather
+  end 
+
+  def climates
+	@climates ||= [berry_data.climate, berry_data.climate]
+    return @climates 
+  end 
+  def climate
+	@climate = berry_data.climate if @climate.nil?
+	return @climate
+  end 
+
+
   def species
 	@species = [@item.id, @item.id] if @species.nil?
     return @species 
@@ -369,7 +446,8 @@ class ConsumableStats
   attr_accessor :spoiling_rate 
   attr_accessor :priority 
   attr_accessor :servings 
-  attr_accessor :restores 
+  attr_accessor :food 
+  attr_accessor :water 
   
   def initialize(item)
     @item = item 
@@ -377,13 +455,21 @@ class ConsumableStats
 	@priority = 1 # effects how much this as an ingredient changes the food, rang: 1-5
 	@servings = :AVERAGE # effects how much stamina it restores, :TINY, :SMALL, :AVERAGE, :LARGE, :HUGE
 	@flavor = [0,0,0,0,0] #effects how a pokemon likes the food
-	@restores = 0 # effects how much the food restores, range: negative to postive
+	@food = 0 # effects how much the food restores, range: negative to postive
+	@water = 0 # effects how much the water restores, range: negative to postive
 	@quality = 1 #  effects it's price, and the amount of food/water restored by it, rang: 1-5
   end 
   def initialize_copy(original)
     super
     @flavor = original.instance_variable_get(:@flavor).dup
   end
+  
+  def restores 
+    @food
+  end 
+  def restores=(value)
+    @food=value 
+  end 
   
   def quality
     if @item.data.is_berry?

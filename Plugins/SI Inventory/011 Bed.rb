@@ -570,7 +570,8 @@ def heal_BED(wari,pkmn)
 	  return if pkmn.dead?
 	end 
   end
-  
+    seconds = wari * 60 * 60
+    pkmn.total_time_working = [pkmn.total_time_working - (second / 2), 0].max
     newHP = pkmn.hp + (wari*4.25)
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
     newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)

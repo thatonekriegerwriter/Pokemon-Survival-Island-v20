@@ -1588,12 +1588,14 @@ end
 class GuardStationData
   attr_accessor :event_id
   attr_accessor :started_working_at  
+  attr_accessor :total_time_working  
   attr_reader :assigned_job
   def initialize(event_id)
     @event_id = event_id
     @pokemon_slot = [nil]
 	@resting_since = nil
     @assigned_job = event_id
+    @total_time_working   = 0
 	
   end 
   def event = $game_map.events[@event_id]
@@ -1645,6 +1647,7 @@ class GuardStationData
 
   def remove_pokemon
     spawned_event&.removeThisEventfromMap
+	pokemon.total_time_working = 0
     @pokemon_slot[0] = nil
   end
 
@@ -1692,7 +1695,9 @@ class GuardStationData
      end
 	 return 
 	end
-
+    if pokemon.total_time_working >= 129_600 && rand(100) < 25
+	 pokemon.changeHappiness("neglected")
+	end 
 	if self.movement_type == :GUARDING
 	 update_guarding
 	elsif self.movement_type == :INBED
@@ -1732,6 +1737,7 @@ class GuardStationData
     return if time_delta < 300
 	if spawned_event.started_working_at
 	time_working = time_now - spawned_event.started_working_at
+    pokemon.total_time_working += time_working
 	if time_working >= 3600
       hours = (time_working / 3600).floor
 	  pokemon.stamina = [pokemon.stamina - hours, 0].max
@@ -1819,6 +1825,7 @@ class PetBedData
   MIN_BREEDING_DELAY = 3600
   MAX_BREEDING_DELAY = 28800
   def guard_station? = false 
+  
   def initialize(event_id)
     @event_id = event_id
     @pokemon_slot = [nil]
@@ -2028,6 +2035,7 @@ end
   def remove_pokemon
     remove_worker
     spawned_event&.removeThisEventfromMap
+	pokemon.total_time_working = 0
     @pokemon_slot[0] = nil
 	cancel_assignment
   end
@@ -2280,6 +2288,7 @@ end
     return if time_delta < 300
 	if spawned_event.started_working_at
 	time_working = time_now - spawned_event.started_working_at
+    pokemon.total_time_working += time_working
 	if time_working >= 3600
       hours = (time_working / 3600).floor
 	  pokemon.stamina = [pokemon.stamina - hours, 0].max
@@ -2396,14 +2405,15 @@ end
 	 return 
 	end
 	return if spawned_event.in_battle
+    if pokemon.total_time_working >= 129_600 && rand(100) < 25
+	 pokemon.changeHappiness("neglected")
+	end 
 	if can_heal?
 	 update_bedtime
 	 return
 	else 
      @bedtime = nil 
 	end 
-
-
 	if @assigned_job && !spawned_event.sleeping? && !breeding#&& @assigned_job!=@event_id  This was intended to be 'assigned job is caring for egg' but that doesnt work.
 	 if cancel_assignment?
 	  cancel_assignment
@@ -2468,7 +2478,8 @@ class BerryPotData
 
   def plant(berry)
     reset(true)
-    @berry          = berry
+    @berry          = berry.dup
+	@berry.durability = @berry.max_durability 
     @growth_stage      = 1
     @time_last_updated = pbGetTimeNow.to_i
   end

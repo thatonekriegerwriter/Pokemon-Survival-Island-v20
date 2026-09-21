@@ -4,6 +4,8 @@ class Pokemon
   attr_accessor :time_last_pet
   attr_accessor :time_last_brush
   attr_accessor :time_last_milk
+  attr_accessor :loyalty_timer
+  attr_accessor :total_time_working 
 
 alias _SI_Pokemon_Loyalty_init initialize
  def initialize(*args)
@@ -14,8 +16,19 @@ alias _SI_Pokemon_Loyalty_init initialize
     @time_last_pet = pbGetTimeNow.to_i-3600
     @time_last_brush = pbGetTimeNow.to_i-3600
     @time_last_milk = pbGetTimeNow.to_i-3600
+    @loyalty_timer = pbGetTimeNow.to_i
+    @total_time_working = 0
  end
 
+   def loyalty_timer
+   @loyalty_timer = pbGetTimeNow.to_i if @loyalty_timer.nil?
+   return @loyalty_timer
+   end
+   def total_time_working
+   @total_time_working = 0 if @total_time_working.nil?
+   return @total_time_working
+   end
+   
    def time_last_pet
    @time_last_pet = pbGetTimeNow.to_i-3600 if @time_last_pet.nil?
    return @time_last_pet

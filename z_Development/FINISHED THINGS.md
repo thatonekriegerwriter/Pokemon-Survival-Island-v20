@@ -43,10 +43,14 @@
 - [x] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
 ### Pokemon
+- [x] Too low happiness for too long begins dragging down loyalty.
+- [x] Overhaul Happiness to be ephemerial.
+- [x] Update happiness calls to call loyalty mods depending on circumstances.
 - [-] Bridge Aware.
 - [x] Possible relearnable move storage
 - [x] Verify Pokemon sending out in the water.
 - [-] Hide the Stats page? Or at least lock some of it behind items.
+- [x] pkmn.ability can be used to override ability_index, meaning a Pokemon COULD recieve an ability from a parent that isn't the same species using that.
 
 ### Sprites
 - [x] Berry Pot 
@@ -138,5 +142,13 @@
 - [x] Bottle type items milk cows
 - [x] Make sure food and water feed pokemon in harder modes.
 - [x] Make Bait no longer a plant, but a crafted item from meat, when bait is thrown, it should cause a Crisis Battle if its on a Pokemon, if not, it should spawn a bait encounter.
+- [x] Limit Pokeball throw range based on internal stat
+- [x] Limit Pokeball height based on internal stat
+- [x] Change Pokeball Stamina cost based on internal stat
+- [x] Change Pokeball Catch Rate based on internal stat
+- [x] Change Pokeball Catch Starting Happiness based on quality
+- [x] Change Pokeball $bag.remove likelihood based on recoverable.
+- [x] Refresh Capture Styler 'health' over time, or by putting it in a electric machine.
+- [x] Update Crossbreeding paths, this needs internal data for plants. (Req: Item Data)
 
  

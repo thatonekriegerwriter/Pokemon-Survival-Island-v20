@@ -4449,6 +4449,19 @@ Flags = KeyItem,Tool
 Consumable = false
 Description = A tool that can search out Pokémon that are hiding in grass. Its battery is recharged as you walk.
 #-------------------------------
+[DART]
+Name = Dart
+NamePlural = Darts
+Pocket = 7
+Price = 0
+BattleUse = OnFoe
+WeaponCooldown = 20
+BattleTimer = 12
+MovementLock = 0
+Move = ABSORB
+Flags = Tool,Dart,Weapon,Overworld
+Description = A handcrafted dart that damages a Pokémon in battle.
+#-------------------------------
 [POISONDART]
 Name = Poison Dart
 NamePlural = Poison Darts
@@ -4460,7 +4473,7 @@ BattleTimer = 12
 MovementLock = 0
 Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
-Description = A handcrafted dart gun that poisons a Pokémon in battle.
+Description = A handcrafted dart that poisons a Pokémon in battle.
 #-------------------------------
 [SLEEPDART]
 Name = Sleep Dart
@@ -4473,7 +4486,7 @@ BattleTimer = 12
 MovementLock = 0
 Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
-Description = A handcrafted dart gun that sedates a Pokémon in battle.
+Description = A handcrafted dart that sedates a Pokémon in battle.
 #-------------------------------
 [PARALYZDART]
 Name = Paralysis Dart
@@ -4486,7 +4499,7 @@ BattleTimer = 12
 MovementLock = 0
 Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
-Description = A handcrafted dart gun that stuns a Pokémon in battle.
+Description = A handcrafted dart that stuns a Pokémon in battle.
 #-------------------------------
 [ICEDART]
 Name = Ice Dart
@@ -4499,7 +4512,7 @@ BattleTimer = 12
 MovementLock = 0
 Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
-Description = A handcrafted dart gun that freezes a Pokémon in battle.
+Description = A handcrafted dart that freezes a Pokémon in battle.
 #-------------------------------
 [FIREDART]
 Name = Fire Dart
@@ -4512,7 +4525,7 @@ BattleTimer = 12
 MovementLock = 0
 Move = ABSORB
 Flags = Tool,Dart,Weapon,Overworld
-Description = A handcrafted dart gun that burns a Pokémon in battle.
+Description = A handcrafted dart that burns a Pokémon in battle.
 #-------------------------------
 [WATERBOTTLE]
 Name = Iron Canteen

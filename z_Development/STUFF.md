@@ -18,10 +18,15 @@
 - [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
 - [ ] Potential
+- [ ] Bees do not work at night
+- [ ] Too low loyalty for too long, and being unattended risks Pokemon abandoning you.
+- [ ] Pokemon Mood
+- [ ] Limit HMs based on physical features
 
 
 ### Placeables
-- [ ] Shelf
+- [ ] FLAG - Right now, Pokemon only 'sleep' while you share maps with them, a Pokemon working on another map will basically work forever. There does need to be some level of "catch up simulation" when a map is loaded so you don't get 100% effectiveness of your Stationed Pokemon just because you aren't standing by them. Simulated Stamina Loss/Rest Time.
+- [ ] Shelf - Allows you to store multiple crates in one position.
 - [ ] Punch Bag
 - [ ] Ice Types can provide passive cold to Icebox/Electric Icebox. This requires a rewriting of IceBox data I don't want to do.
 - [ ] Steam Engine: Upgraded Water Mill that is just https://tekkitclassic.fandom.com/wiki/Water_Strainer + https://tekkitclassic.fandom.com/wiki/Steam_Engine has to have water pumped in.
@@ -52,7 +57,7 @@
 - [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
-- [ ] Update Mineshaft UI
+- [-] Update Mineshaft UI. (Needs player stats and way to refresh weapon)
 - [ ] Outbreaks
 - [ ] Update Dungeons (Possibly can move to later)
 - [ ] Define Phenomena
@@ -76,13 +81,13 @@
 
 ### Misc Mechanics
 - [ ] Disease
-- [ ] Pokewalker Program?
 
 ### Items
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
-- [ ] Cell Battery for Battery 
-- [ ] Blow Dart/Generic Dart
+- [ ] Cell Battery for Battery, and charge battery in machine 
+- [ ] Capture Styler charging
+- [ ] Blow Dart & Generic Dart
 - [ ] Pokeball Trap
  
  

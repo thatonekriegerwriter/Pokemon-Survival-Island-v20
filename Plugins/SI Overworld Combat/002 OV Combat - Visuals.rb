@@ -649,7 +649,7 @@ class OWBallThrowSprite
 	   sideDisplay(text)
 	   @ball_used.effects.trigger(:onFailCatch, @pkmn, nil)
 	   if rand(100) < @ball_used.stats.recoverable * 25
-	     sideDisplay(_INTL("You recovered the {1}!", @ball_used.name)
+	     sideDisplay(_INTL("You recovered the {1}!", @ball_used.name))
          $bag.add(@ball_used, 1)
        end
 	   makeAggressive(@event)

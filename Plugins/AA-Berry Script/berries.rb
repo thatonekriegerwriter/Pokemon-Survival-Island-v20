@@ -64,7 +64,7 @@ def pbBerryPlant
   end
   
   
-  if berry_plant.overall_soil_quality==0
+  if berry_plant.planted? && berry_plant.overall_soil_quality <= 0
     #puts "berry_plant.overall_soil_quality==0"
     pbTurnBerryPlant(this_event,berry_plant)   # Stop the event turning towards the player
     sideDisplay(_INTL("The soil seems to have become ruined."))
@@ -117,10 +117,14 @@ def pbBerryPlant
     this_event.turn_up   # Stop the event turning towards the player
 	theyield = berry_plant.berry_yield
 	yield_berry = resolve_berry
-	
+	mutated_berry = nil
+	if theyield > 1 && berry_plant.mutated_berry_info
+	 theyield -= 1
+	 mutated_berry = [berry_plant.mutated_berry_info, 1]
+	end 
 	
 	if theyield > 0
-	 if pbPickBerry(yield_berry, theyield, true, berry_plant.mutated_berry_info)
+	 if pbPickBerry(yield_berry, theyield, true, mutated_berry)
       @last_berry = yield_berry
       @timewithoutberry = pbGetTimeNow.to_i
       berry_plant.reset 
@@ -332,7 +336,7 @@ def new_planting(event, berry_plant)
  item_info = GameData::Item.get(current_selection)
  return false if !item_info.is_mulch? && !item_info.is_berry? && item_info.id != :CROPSTICKS
  pbTurnBerryPlant(event,berry_plant)
- sideDisplay(_INTL("There is soft, loamy soil.", GameData::Item.get(berry_plant.mulch).name)) if !berry_plant.mulch.nil? && berry_plant.cropsticks == false
+ sideDisplay(_INTL("There is soft, loamy soil.", GameData::Item.get(berry_plant.mulch).name)) if berry_plant.mulch.nil? && berry_plant.cropsticks == false
  sideDisplay(_INTL("There is soft, loamy soil, it has had {1} laid down in it.", GameData::Item.get(berry_plant.mulch).name)) if berry_plant.mulch && berry_plant.cropsticks == false
  sideDisplay(_INTL("There is soft, loamy soil, it has had {1} laid down in it, surrounded by {2}.", GameData::Item.get(berry_plant.mulch).name, GameData::Item.get(:CROPSTICKS).name)) if berry_plant.mulch && berry_plant.cropsticks == true
  if item_info.id == :CROPSTICKS
@@ -390,7 +394,6 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
    mut_berry = mutation_info[0]
    mut_berrydata = GameData::Item.get(mutation_info[0])
    mut_berry_qty = mutation_info[1]
-   mut_berry_qty -= 1 while qty - mut_berry_qty < 1
    mut_berry_name = (mut_berry_qty > 1) ? mut_berrydata.name_plural : mut_berrydata.name
   end
   berry_name = (qty > 1) ? berrydata.name_plural : berrydata.name
@@ -457,7 +460,6 @@ class PokemonGlobalMetadata
     alias tdw_berry_plant_global_init initialize
     def initialize
         tdw_berry_plant_global_init
-        compilePlantMutationParents
         @maps_first_setups = {}
         @tile_data = {}
     end
@@ -475,28 +477,7 @@ class PokemonGlobalMetadata
 
 
 
-    def compilePlantMutationParents
-        @berry_plant_mutation_parents = []
-        Settings::BERRY_MUTATION_POSSIBILITIES.each { |key| 
-            @berry_plant_mutation_parents.push(key[0][0]) if !@berry_plant_mutation_parents.include?(key[0][0])
-            @berry_plant_mutation_parents.push(key[0][1]) if !@berry_plant_mutation_parents.include?(key[0][1])
-        }
-    end
 
-
-    def initializeWateringCanLevels
-        @watering_can_levels = {}
-        GameData::BerryPlant::WATERING_CANS.each do |item|
-            @watering_can_levels[item] = pbGetWateringCanMax(item)
-        end
-    end
-
-    def initializeToolDurability
-        @tool_durability = {}
-        GameData::Item::TOOLS.each do |item|
-            @tool_durability[item] = pbGetDurabilityMax(item)
-        end
-    end
 
 end
 
@@ -513,6 +494,7 @@ module GameData
     attr_reader :season
     attr_reader :weather
     attr_reader :flavor
+    attr_reader :inhospitable
 
     DATA = {}
     DATA_FILENAME = "berry_plants.dat"
@@ -545,6 +527,7 @@ module GameData
       @climate           = hash[:climate]           || "Temperate"
       @weather           = hash[:weather]           || :None
       @flavor           = hash[:flavor]           || [0,0,0,0,0]
+      @inhospitable           = hash[:inhospitable]
     end
 
     def minimum_yield
@@ -564,10 +547,11 @@ module GameData
 	def weather
 	 return @weather.to_sym
 	end
-  end
 	def flavor
 	 return @flavor
 	end
+  end
+
 end
 
 #===============================================================================
@@ -611,7 +595,7 @@ module Settings
 			
 			
 			
-            [:REDAPRICORN,:ORANBERRY]     => [:BLUEAPRICORN],
+            [:REDAPRICORN,:PASSHOBERRY]     => [:BLUEAPRICORN],
             [:BLUEAPRICORN,:SITRUSBERRY]  => [:GREENAPRICORN],
             [:GREENAPRICORN,:APICOTBERRY]  => [:BLACKAPRICORN],
             [:BLACKAPRICORN,:SEEDOFMASTERY]  => [:PURPLEAPRICORN],
@@ -757,84 +741,97 @@ end
 
 
 class BerryTileData
-  attr_accessor :tile_x 
-  attr_accessor :tile_y 
+  TICK_SECONDS       = 600                    # one tile step = 10 minutes
+  HOURS_PER_TICK     = TICK_SECONDS / 3600.0
+  MAX_QUALITY        = 4.0
+  MAX_CATCH_UP_TICKS = 6 * 24 * 7             # cap on steps replayed after time away (7 days)
+
+  # Soil quality change PER HOUR for each fatigue level (0-5).
+  # Fatigue = how many of the last half of the planting history are the same berry.
+  # Positive heals the soil, negative damages it.
+  FATIGUE_QUALITY_PER_HOUR = {
+    0 =>  2.0,
+    1 =>  1.0,
+    2 =>  0.0,
+    3 => -0.5,
+    4 => -1.0,
+    5 => -2.0
+  }
+
+  # Extra quality lost per hour, for every hour the tile has gone without water.
+  WATERLESS_PENALTY_PER_HOUR = 0.25
+
+  attr_accessor :tile_x
+  attr_accessor :tile_y
   attr_accessor :tile_map
-  attr_accessor :overall_soil_quality 
-  attr_accessor :beside_water 
-  attr_accessor :planted_crops_array 
-  attr_accessor :waterless_length 
-  attr_accessor :soil_dryness 
-  attr_accessor :cropsticks 
+  attr_accessor :overall_soil_quality   # 0.0 (ruined) .. 4.0 (best)
+  attr_accessor :beside_water
+  attr_accessor :planted_crops_array
+  attr_accessor :waterless_length       # hours this tile has gone without water; persists across plants
+  attr_accessor :cropsticks
 
-
-  def initialize(x,y)
-    #SOIL QUALITY GOES FROM 0-4, 0 is worst, 4 is best
-	 @tile_x = x
-	 @tile_y = y
-	 @tile_map = $game_map.map_id
-     @overall_soil_quality = 4.0
-	 #A plant will only grow if water is available.
-	 @beside_water = true
-	 #The tile will remember 
-	 @planted_crops_array = FixedSizeArray.new(10)
-	 @soil_dryness = 0
-	 @waterless_length = 0
-	 @cropsticks = false
-	 $PokemonGlobal.tile_data[[@tile_map,@tile_x,@tile_y]] = self
+  # The registry in $PokemonGlobal.tile_data is the single source of truth.
+  # `legacy` lets a tile object from an old save be adopted instead of replaced.
+  def self.for(map_id, x, y, legacy = nil)
+    key  = [map_id, x, y]
+    tile = $PokemonGlobal.tile_data[key]
+    if tile.nil?
+      tile = legacy || new(map_id, x, y)
+      $PokemonGlobal.tile_data[key] = tile
+    end
+    return tile
   end
-  
+
+  def initialize(map_id, x, y)
+    @tile_map             = map_id
+    @tile_x               = x
+    @tile_y               = y
+    @overall_soil_quality = MAX_QUALITY
+    @beside_water         = true
+    @planted_crops_array  = FixedSizeArray.new(10)
+    @soil_fatigue         = 0
+    @waterless_length     = 0
+    @cropsticks           = false
+  end
+
+  # Renamed from soil_dryness. Old saves still have @soil_dryness, so migrate on read.
+  def soil_fatigue
+    @soil_fatigue = (@soil_dryness || 0) if @soil_fatigue.nil?
+    return @soil_fatigue
+  end
+
+  def soil_fatigue=(value)
+    @soil_fatigue = value
+  end
+
+  alias soil_dryness  soil_fatigue     # compatibility; remove once nothing else uses the old name
+  alias soil_dryness= soil_fatigue=
+
   def add_berry_to_array(berry)
-	 @planted_crops_array.add(berry)
+    @planted_crops_array.add(berry)
   end
-  
-  def update(berry_id)
-    quality =  @overall_soil_quality
-    update_dryness(berry_id)
-    update_quality(quality)
-  
-  end
-  
-  def update_quality(quality)
-   change_qual = 0
-   soil_effect = 0
-    case @soil_dryness
-	   when 3
-	     soil_effect = 0.5
-	   when 4
-	     soil_effect = 1
-	   when 5
-	     soil_effect = 2
-	   when 0
-	     soul_effect = -2
-	   when 1
-	     soul_effect = -1
-	   else
-         soil_effect = 0
-	end
-	
-	 change_qual = change_qual.to_i
-	 change_qual -= soul_effect.to_i
-	 
-     change_qual -= @waterless_length.to_f
-	 quality += change_qual.to_i
-	 quality = 0 if quality<0
-  
-  end
- 
- def update_dryness(berry_id)
-   if !berry_id.nil?
-   @soil_dryness = 0
-   @soil_dryness += (@planted_crops_array.how_many?(berry_id,(@planted_crops_array.length/2)))
-   elsif berry_id.nil?
-    amt = @soil_dryness-=1
-   @soil_dryness = [0,amt].max
-   
-   end
- end
- 
-end
 
+  # One 10-minute step.
+  def update(berry_id)
+    update_fatigue(berry_id)
+    update_quality
+  end
+
+  def update_fatigue(berry_id)
+    if berry_id.nil?
+      # Empty tile: fatigue recovers one level per step.
+      self.soil_fatigue = [soil_fatigue - 1, 0].max
+    else
+      self.soil_fatigue = @planted_crops_array.how_many?(berry_id, (@planted_crops_array.length / 2))
+    end
+  end
+
+  def update_quality
+    per_hour  = FATIGUE_QUALITY_PER_HOUR[soil_fatigue.to_i] || 0.0
+    per_hour -= @waterless_length * WATERLESS_PENALTY_PER_HOUR
+    @overall_soil_quality = (@overall_soil_quality + per_hour * HOURS_PER_TICK).clamp(0.0, MAX_QUALITY)
+  end
+end
 
 
 
@@ -993,7 +990,9 @@ class BerryPlantData
   def plant(berry)
     reset(true)
 	@dead = false
-	@berry = berry
+	@berry = berry.dup
+	@berry.durability = @berry.max_durability 
+	seed_genome
     @berry_id          = @berry.id
     @tile_data.add_berry_to_array(@berry_id)
     @growth_stage      = 1
@@ -1018,8 +1017,8 @@ class BerryPlantData
     @watering_count     = 0
   end
   
-   def get_hours_per_stage(plant_data)
-     hours = plant_data.hours_per_stage
+   def get_hours_per_stage
+     hours = @berry.stats.growth
 	 hours -= rand(2)+1 if $player.is_it_this_class?(:GARDENER,false)
      return [hours,1].max
    end   
@@ -1059,31 +1058,36 @@ class BerryPlantData
    
    
   def berry_plant_growth_modifications(tps,dph,mr,sfg)
-     plant_data = GameData::BerryPlant.get(@berry_id)
-     berry_season = @preferred_season || plant_data.season
-     berry_climate = plant_data.climate
-     berry_weather = plant_data.weather
+     berry_season = @berry.stats.season
+     berry_climate = @berry.stats.climate
+     berry_weather = @berry.stats.weather
 	 
-	 tps -= overall_soil_quality * 240 if overall_soil_quality > 2
-	 tps += overall_soil_quality * 240 if overall_soil_quality < 2
+	 tps -= ((overall_soil_quality - 2.0) * 240).to_i
 	 
 	 
      tps,dph,mr,sfg = mulchly_actions(tps,dph,mr,sfg)
+	 
+	 
+	 
      if !$game_map.name.include?(berry_climate)
 		  tps = (tps * 1.75).ceil
          sfg += 1
      end
 
-		if pbGetSeason == berry_season
-		  tps = (tps * 0.75).ceil
-		elsif pbGetSeason == (berry_season.to_i+1).to_i || pbGetSeason == (berry_season.to_i-3).to_i
-		  tps = (tps * 0.999).ceil
-		elsif pbGetSeason == (berry_season.to_i+2).to_i || pbGetSeason == (berry_season.to_i-4).to_i
-		  tps = (tps * 1.25).ceil
-		elsif pbGetSeason == (berry_season.to_i+3).to_i || pbGetSeason == (berry_season.to_i-5).to_i
-		  tps = (tps * 1.5).ceil
-         sfg += 1
-		end
+
+
+     season_distance = (pbGetSeason - berry_season.to_i) % 4
+     case season_distance
+     when 0   # current season is the berry's season
+       tps = (tps * 0.75).ceil
+     when 1
+       tps = (tps * 1.1).ceil
+     when 2
+       tps = (tps * 1.25).ceil
+     when 3
+       tps = (tps * 1.5).ceil
+       sfg += 1
+     end
 
      tps = [tps,3600].max
 	 tps = (tps / tending_multiplier).floor
@@ -1142,7 +1146,7 @@ class BerryPlantData
 	return false
   end 
   def rain_type
-    return GameData::Weather.get($game_screen.weather_type).category
+    return GameData::Weather.get($game_screen.weather_type).id 
   end
 
   def growth_stalled?
@@ -1151,7 +1155,7 @@ class BerryPlantData
 
 def nearby_apiaries?
   events = $DynamicEvents.block_data_for_type(:APIARY)
-  return false if events.empty?
+  return 0 if events.empty?
   events.count do |apiary|
     dx = apiary.x - self.event.x
     dy = apiary.y - self.event.y
@@ -1167,18 +1171,22 @@ end
     @exposed_to_rain = false if @exposed_to_rain.nil?
     @jit = false if @jit.nil?
     @stagnation_message = false if @stagnation_message.nil?
-	 time_now = pbGetTimeNow
-	 @time_tile_last_updated ||= time_now.to_i
-	 tile_delta = time_now.to_i - @time_tile_last_updated
-	 
-    if tile_delta > 600
-	   @tile_data.update(@berry_id)
-		@time_tile_last_updated = time_now.to_i
+	
+	
+	
+	time_now = pbGetTimeNow
+	@time_tile_last_updated ||= time_now.to_i
+	tile_delta = time_now.to_i - @time_tile_last_updated
+    tile_steps = (time_now.to_i - @time_tile_last_updated) / BerryTileData::TICK_SECONDS
+    if tile_steps > 0
+      [tile_steps, BerryTileData::MAX_CATCH_UP_TICKS].min.times { tile_data.update(@berry_id) }
+      @time_tile_last_updated += tile_steps * BerryTileData::TICK_SECONDS
     end
+
     return if !planted?
     
-	 @time_rain_last_updated ||= time_now.to_i
-	 rain_delta = time_now.to_i - @time_rain_last_updated
+	@time_rain_last_updated ||= time_now.to_i
+	rain_delta = time_now.to_i - @time_rain_last_updated
     if is_raining? && rain_delta > 60
 	       refresh_amt = rain_delta/60
 	        water(1.5 * refresh_amt,true) if rain_type == :Rain
@@ -1197,7 +1205,7 @@ end
 
 
 
-	hours_per_stage = get_hours_per_stage(plant_data)
+	hours_per_stage = get_hours_per_stage
     tps = hours_per_stage * 3600   # In seconds
 
     dph = plant_data.drying_per_hour
@@ -1264,10 +1272,8 @@ end
 
     @time_alive = new_time_alive
     @growth_stage = 1 + (@time_alive / tps)
-	if growth_stalled?
-     @growth_stage = 2 
-	 @tile_data.waterless_length+=1
-	end
+	@growth_stage = 2 if growth_stalled?
+      
     @time_last_updated = time_now.to_i
 	  
       @weeds_timer += tps*2 if self.event && @weeds_timer && cropsticks==true && @growth_stage > old_growth_stage
@@ -1279,6 +1285,7 @@ end
     old_growth_hour = (done_replant) ? 0 : (@time_alive - time_delta) / 3600
     new_growth_hour = @time_alive / 3600
     if new_growth_hour > old_growth_hour
+	   @tile_data.waterless_length += hours_passed if growth_stalled?
 	   moist
 	   @bitten += 0.50 if @pests==true
        @weedsamt += 0.25 if @weeds==true
@@ -1293,38 +1300,32 @@ end
 
 
 	@exposed_to_preferred_weather = true if checkPreferredWeather
-    return if !planted? || !self.event || @mutated_berry_tried || @growth_stage < 2
-    checkNearbyPlantsForMutation
 	
 	update_watering
     update_harvesting
 	update_weeds
+	
+    return if !planted? || !self.event || @mutated_berry_tried || @growth_stage < 2
+    checkNearbyPlantsForMutation
   end
   
   
   
   
   def growth(berry_season,drying_per_hour)
-
-   if @moisture_level > 0
-	  if pbGetSeason == berry_season
-	        @moisture_level -= 1 if drying_per_hour-2 < 1
-	        @moisture_level -= (drying_per_hour-2) if drying_per_hour-2 > -1
-			
-	  elsif pbGetSeason == (berry_season.to_i+1).to_i || pbGetSeason == (berry_season.to_i-3).to_i
-	        @moisture_level -= drying_per_hour
-			
-	  elsif pbGetSeason == (berry_season.to_i+2).to_i || pbGetSeason == (berry_season.to_i-4).to_i
-	        @moisture_level -= (drying_per_hour+1)
-			
-	  elsif pbGetSeason == (berry_season.to_i+3).to_i || pbGetSeason == (berry_season.to_i-5).to_i
-	        @moisture_level -= (drying_per_hour+3)
-	  else
-	        @moisture_level -= drying_per_hour
-	  end
-	  return
+    return @yield_penalty += 1 if @moisture_level <= 0
+    season_distance = (pbGetSeason - berry_season.to_i) % 4
+	case season_distance
+	when 0
+     @moisture_level -= 1 if drying_per_hour-2 < 1
+     @moisture_level -= (drying_per_hour-2) if drying_per_hour-2 > -1
+	when 1
+     @moisture_level -= drying_per_hour
+	when 2
+     @moisture_level -= (drying_per_hour+1)
+	when 3
+     @moisture_level -= (drying_per_hour+3)
 	end
-   @yield_penalty += 1
   end
 
 
@@ -1369,8 +1370,8 @@ def update_harvesting
    
     pokemon.inventory.add(@berry, cur_yield)
     pokemon.gain_exp_single(100)
+	sideDisplay(_INTL("#{1} has collected the harvest!",pokemon.name))
     reset
-	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
   end
 end
 
@@ -1410,41 +1411,54 @@ end
 
 class BerryPlantData
    
-    def soil_dryness
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  return @tile_data.soil_dryness
-	end
-    def overall_soil_quality
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  return @tile_data.overall_soil_quality
-	end
-    def planted_crops_array
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  return @tile_data.planted_crops_array.to_a
-	end
-    def add_berry_to_array(berry)
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  return @tile_data.add_berry_to_array(berry)
-	end
-    def beside_water
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  return @tile_data.beside_water
-	end
-    def beside_water=(value)
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
-	  @tile_data.beside_water=value
-	end
+  def tile_data
+    if @tile_key.nil?
+      @map_id = $game_map.map_id if @map_id.nil?
+      ev = self.event
+      @tile_key = [@map_id, ev.x, ev.y]
+    end
+    tile = BerryTileData.for(@tile_key[0], @tile_key[1], @tile_key[2], @tile_data)
+    @tile_data = nil unless @tile_data.nil?   # drop any reference from an old save
+    return tile
+  end
+
+  def soil_fatigue
+    return tile_data.soil_fatigue
+  end
+  alias soil_dryness soil_fatigue            # compatibility; remove once nothing else uses the old name
+
+  def overall_soil_quality
+    return tile_data.overall_soil_quality
+  end
+
+  def planted_crops_array
+    return tile_data.planted_crops_array.to_a
+  end
+
+  def add_berry_to_array(berry)
+    return tile_data.add_berry_to_array(berry)
+  end
+
+  def beside_water
+    return tile_data.beside_water
+  end
+
+  def beside_water=(value)
+    tile_data.beside_water = value
+  end
 
 
     def getWeedGrowthChance
         return 0 unless cropsticks==true
         weeds_chance =  15
         #weeds_chance += getWateringCansUsedTraits(:weed_chance) if self.event
+		weeds_chance -= (@berry.stats.resistance/2)
         return weeds_chance
     end
 
     def getPestAppearChance
         pests_chance =  2
+		pests_chance -= (@berry.stats.resistance/2)
         return pests_chance
     end
 
@@ -1497,51 +1511,39 @@ class BerryPlantData
     return 0
   end
 
+  def current_yield_penalty
+  # bucket 0 = mostly fully watered ... bucket 3 = mostly dry
+   idx = @times_in_each_moist.index(@times_in_each_moist.max)
+   adjust = [-2, 0, 2, 4][idx]
+   return [@yield_penalty + adjust + @not_watered_count, 0].max   # no longer mutates state
+  end
 
   def berry_yield
     data = GameData::BerryPlant.get(@berry_id)
     min_yield = data.minimum_yield
 	max_yield = data.max_yield 
-	 case @mulch&.id
-      when :PRODUCEMULCH
-        min_yield+=(rand(2)+2)
-      when :POTENTIALMULCH
-        max_yield+=(rand(2)+2)
-      when :PRODUCEMULCH2
-        min_yield+=(rand(2)+4)
-      when :POTENTIALMULCH2
-        max_yield+=(rand(2)+4)
-	 end
-	 @weedsamt = 0 if @weedsamt.nil?
-	 @pulledweeds = 0 if @pulledweeds.nil?
-	 @bitten = 0 if @bitten.nil?
-	 @stoppedbitting = 0 if @stoppedbitting.nil?
-	 amt1 = (@weedsamt-@pulledweeds)
-	 amt2 = (@bitten-@stoppedbitting).ceil
-	 if min_yield-amt1 < 0
-	   amt1=min_yield
-	 end
-	 if max_yield-amt2 < 0
-	   amt2=max_yield
-	 end
-	 min_yield -= amt1
-	 max_yield -= amt2
-	 
-	 
-	 get_penalties
-     ret =  [(max_yield * (5 + @yield_penalty) / 5), max_yield].max
-	 @exposed_to_preferred_weather=false if @exposed_to_preferred_weather.nil?
-     ret += Settings::BERRY_PREFERRED_WEATHER_YIELD if @exposed_to_preferred_weather
-     ret += 2 if [:RICHMULCH, :AMAZEMULCH].include?(@mulch&.id)
-	 if ret > max_yield
-	   ret = max_yield
-	 end 
-	 if ret < min_yield
-	   ret = min_yield
-	 end 
-	 
+    case @mulch&.id
+    when :PRODUCEMULCH    then min_yield += rand(2) + 2
+    when :POTENTIALMULCH  then max_yield += rand(2) + 2
+    when :PRODUCEMULCH2   then min_yield += rand(2) + 4
+    when :POTENTIALMULCH2 then max_yield += rand(2) + 4
+    end
+    weeds = [((@weedsamt || 0) - (@pulledweeds || 0)).ceil, 0].max
+    bites = [((@bitten || 0) - (@stoppedbitting || 0)).ceil, 0].max
+    min_yield = [min_yield - weeds, 0].max
+    max_yield = [max_yield - bites, 0].max
+
+    ret = [(max_yield * (5 - current_yield_penalty) / 5), min_yield].max
+
+    @exposed_to_preferred_weather = false if @exposed_to_preferred_weather.nil?
+    ret += Settings::BERRY_PREFERRED_WEATHER_YIELD if @exposed_to_preferred_weather
+    ret += 2 if [:RICHMULCH, :AMAZEMULCH].include?(@mulch&.id)
+
+    ret = max_yield if ret > max_yield
+    ret = min_yield if ret < min_yield
+    ret += (@berry.stats.gain / 2)
+	ret -= weeds 
     return ret
-	
   end
 
 
@@ -1579,15 +1581,8 @@ class BerryPlantData
     def propagate
         return if !self.event
         propagation = []
-        berry = @berry_id
         qty = berry_yield
-        qty.times { propagation.push(berry) }
-        if @mutation_info
-            mut_berry = @mutation_info[0] 
-            mut_berry_qty = @mutation_info[1]
-            mut_berry_qty -= 1 while qty - mut_berry_qty < 1
-            mut_berry_qty.times { propagation.push(mut_berry) }
-        end
+        qty.times { propagation.push(@berry) }
         checkNearbyPlantsForPropagation(propagation)
     end
 
@@ -1613,7 +1608,7 @@ class BerryPlantData
         neighbors.each do |data|
             next if data.nil? || !data.is_a?(BerryPlantData) || data.planted?
             mulch = data.mulch
-            propagation_chance = Settings::BERRY_MULCHES_IMPACTING_PROPAGATION[mulch.id] || Settings::BERRY_BASE_PROPAGATION_CHANCE
+            propagation_chance = Settings::BERRY_MULCHES_IMPACTING_PROPAGATION[mulch&.id] || Settings::BERRY_BASE_PROPAGATION_CHANCE
             next if propagation_chance <= 0 || rand(1000) >= propagation_chance
             data.plant(dropped_berries.sample)
             $stats.berries_propagated ||= 0
@@ -1695,7 +1690,7 @@ end
 def getAxe
   return :STONEAXE if $bag.has?(:STONEAXE)
   return :IRONAXE if $bag.has?(:IRONAXE)
-  retun false
+  return false
 end
 
 
@@ -1834,7 +1829,7 @@ end
 
 
 
-def pbBerryPlantPestRandomEncounter(berry)
+def pbBerryPlantPestRandomEncounter(berry, event)
     #return false if $game_system.encounter_disabled
   #  encounter_type = $PokemonEncounters.find_valid_encounter_type_for_weather(encounter_type, encounter_type)
   #  encounter = $PokemonEncounters.has_encounter_type?(encounter_type)
@@ -1847,7 +1842,7 @@ def pbBerryPlantPestRandomEncounter(berry)
     if level < 3
      level = 3 
     end
-    pokemon = pbGenerateWildPokemon(encounter[1],level)
+    pokemon = pbGenerateWildPokemon(fake_encounter[1],level)
 	berry_name = GameData::Item.get(berry).name
     sideDisplay(_INTL("You shook the #{pokemon.name} out of the #{berry_name} plant!"))
     ret = $DynamicEvents.spawnPokeEvent(event.x, event.y, pokemon, false)
@@ -1879,7 +1874,7 @@ def pbPestInteraction(this_event,berry_plant)
     berry = berry_plant.berry_id
     if berry_plant.grown?
         this_event.turn_up
-    elsif
+    else
         case berry_plant.growth_stage
         when 1 then this_event.turn_down
         when 2 then this_event.turn_down
@@ -1887,7 +1882,7 @@ def pbPestInteraction(this_event,berry_plant)
         else this_event.turn_right
         end
     end
-    pbBerryPlantPestRandomEncounter(berry)
+    pbBerryPlantPestRandomEncounter(berry, this_event)
 	
 	berry_plant.stoppedbitting+=1
     berry_plant.pests = false
@@ -1901,7 +1896,6 @@ def pbBerryPlantWitheredItem
     berry = berry_plant.berry_id
     return if !berry_plant
     item = berry_plant.withered_item if berry_plant.respond_to?(:withered_item)
-    return if berry_plant.planted? #|| !item
     pbReceiveItem(:WOODENSTICKS,rand(7)+4)
     $bag.add(item) if item
 	$bag.add(berry) if $player.is_it_this_class?(:GARDENER)
@@ -1922,8 +1916,9 @@ def pbOtherInteractions
     return if current_selection.nil?
     return if !current_selection.is_a?(ItemData)
     # Dig Up
-    if berry_plant.growing? && berry_plant.growth_stage == 1 && current_selection.id==:SHOVEL && current_selection.decrease_durability(1)
+    if berry_plant.growing? && berry_plant.growth_stage == 1 && current_selection.id==:SHOVEL
         if pbConfirmMessage(_INTL("You may be able to dig up the berry. Dig up the {1}?", GameData::Item.get(berry).name))
+		  if current_selection.decrease_durability(1)
             berry_plant.reset
             if rand(100) < 50 || $player.is_it_this_class?(:GARDENER)
                 $bag.add(berry)
@@ -1931,6 +1926,7 @@ def pbOtherInteractions
             else
                 pbMessage(_INTL("The dug up {1} broke apart in your hands.",GameData::Item.get(berry).name))
             end
+          end 
         end
     end
     #Weeds

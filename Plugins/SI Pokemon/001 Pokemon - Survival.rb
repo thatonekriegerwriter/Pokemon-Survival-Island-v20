@@ -51,6 +51,7 @@ class Pokemon
   attr_accessor :memory
   attr_accessor :item_timer
   attr_accessor :stamina 
+  attr_accessor :original_ability 
 
 
   def location
@@ -84,11 +85,11 @@ def initialize(*args)
     @shiny_leaf = 0
     @hidden_modifiers = []
 	@extra_moves = []
-	@handled_aging = false 
 	@item_timer = pbGetTimeNow.to_i - 3600
 	@last_interacted_with = pbGetTimeNow.to_i
 	
 	@birth_date = generate_birthday
+	@original_ability = self.ability_id 
 
 end
   def stamina

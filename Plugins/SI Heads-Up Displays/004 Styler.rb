@@ -5,7 +5,9 @@ class MouseTrail
   attr_accessor :max_trail_length
   attr_accessor :trigger_cooldown
   attr_accessor :target_hits_f
-  attr_accessor :styler_health
+  attr_accessor :time_last_updated
+
+
 
   def initialize(viewport = nil)
     @viewport = viewport || Viewport.new(0, 0, Graphics.width, Graphics.height)
@@ -41,7 +43,7 @@ class MouseTrail
     @last_loop_frame = 0
     @line_age_bonus = 0
     @combo_sprite = create_combo_sprite
-
+    @time_last_updated = pbGetTimeNow.to_i 
     set_styler(ItemData.new(:CAPTURESTYLUS))
     @styler = create_styler
   end
@@ -61,8 +63,8 @@ class MouseTrail
   end
 
   def set_styler(styler)
+    @time_last_updated = pbGetTimeNow.to_i
     @user_styler = styler
-    @styler_health = @user_styler.stats.health
     power = @user_styler.stats.power
     line = @user_styler.stats.line
     recovery = @user_styler.stats.recovery
@@ -73,7 +75,15 @@ class MouseTrail
     @power = power + 1
     @recovery = recovery + 1
   end
-
+  
+  def styler_health
+    @user_styler.stats.health
+  end 
+  
+  def styler_health=(value)
+    @user_styler.stats.health=value 
+  end 
+  
   def clear_trail
     @trail_sprites.each(&:dispose)
     @trail_sprites.clear
@@ -143,6 +153,16 @@ class MouseTrail
   end
 
   def update
+	if $bag.has?(@user_styler) && !@styler_on
+     @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
+	 time_now = pbGetTimeNow.to_i
+	 time_delta = time_now - @time_last_updated
+	 if time_delta > 150
+	  amt = time_delta / 150
+      @user_styler.stats.health += (1 * amt)
+      @time_last_updated += amt * 150
+	 end 
+	end 
     return if $game_temp.in_menu || @disposed
 
     @styler = create_styler if !@styler || @styler.disposed?
@@ -158,6 +178,7 @@ class MouseTrail
     if hide_styler
       @styler.visible = false if @styler.visible
       @combo_sprite.visible = false if @combo_sprite
+	  @styler_on = false 
       clear_trail
       return
     else
@@ -202,7 +223,7 @@ class MouseTrail
       collision = check_trail_collision(@most_recent_trail)
 
       if collision == :unsafe_loop
-        @styler_health -= 15
+        @user_styler.stats.health -= 15
         pbSEPlay("styler_recoil") rescue nil
         sideDisplay("Line snapped! Styler damaged!") rescue nil
         clear_trail
@@ -258,7 +279,7 @@ class MouseTrail
                 @lastsound = sound_index
 
                 pbSEPlay("Stylus#{sound_index + 1}")
-                @styler_health += @recovery
+                @user_styler.stats.health += @recovery
 
                 if pkmn.hits >= target_hits
                   if $game_map.map_id != 11
@@ -337,7 +358,7 @@ class MouseTrail
 
   def update_styler
     return if @styler_dead
-    if @user_styler && @styler_health <= 0
+    if @user_styler && @user_styler.stats.health <= 0
       @styler_dead = true
       @styler.setBitmap("Graphics/Plugins/Capture Styler/loss.gif")
       @styler.bitmap.looping = false

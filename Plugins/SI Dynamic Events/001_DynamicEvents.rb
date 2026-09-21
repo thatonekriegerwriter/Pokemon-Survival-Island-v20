@@ -1146,15 +1146,14 @@ update!
 	   berry_plant.beside_water=any_acceptable_water_tiles_for_hoe(x,y)
        $PokemonGlobal.eventvars[[mapId, key_id]] = berry_plant
     end
-	    map = mapId
 		 viewport = Spriteset_Map.viewport
         sprite = Sprite_Character.new(Spriteset_Map.viewport,@block_data[key_id])
         $scene.spritesets[mapId].character_sprites.push(sprite)
-       $scene.spritesets[mapId].addUserSprite(BerryPlantGroundSprite.new(@block_data[key_id], map, viewport))
-       $scene.spritesets[mapId].addUserSprite(BerryPlantMoistureSprite.new(@block_data[key_id], map, viewport))
-       $scene.spritesets[mapId].addUserSprite(BerryPlantMulchSprite.new(@block_data[key_id], map, viewport))
-       $scene.spritesets[mapId].addUserSprite(BerryPlantSprite.new(@block_data[key_id], map, viewport))
-       $scene.spritesets[mapId].addUserSprite(BerryPlantWeedSprite.new(@block_data[key_id], map, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantGroundSprite.new(@block_data[key_id], mapId, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantMoistureSprite.new(@block_data[key_id], mapId, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantMulchSprite.new(@block_data[key_id], mapId, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantSprite.new(@block_data[key_id], mapId, viewport))
+       $scene.spritesets[mapId].addUserSprite(BerryPlantWeedSprite.new(@block_data[key_id], mapId, viewport))
   
     update!
     return @block_data[key_id]

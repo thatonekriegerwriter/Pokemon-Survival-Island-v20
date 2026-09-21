@@ -58,7 +58,8 @@ class PokemonFamily
   attr_reader :name 
   attr_reader :iv
   attr_reader :nature
-  attr_reader :ability_index # nickname
+  attr_reader :ability_index
+  attr_reader :ability
   # You can add more data here and on initialize class. Just
   # don't store the entire pokémon object.
 
@@ -93,6 +94,7 @@ class PokemonFamily
     @iv=pokemon.iv
     @nature=pokemon.nature
     @ability_index=pokemon.ability_index
+    @ability=pokemon.ability
   end
    def ability_index
     return @ability_index

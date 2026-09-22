@@ -102,7 +102,7 @@ class Battle::Scene
       pbPlayCursorSE if cw.index != oldIndex      # Actions
       if Input.trigger?(Input::USE)
 	    command = getSelectionCommands[cw.index]
-	    if @battle.suboptions[command].length==0 || (command==_INTL("CATCH")) && $player.is_it_this_class?(:RANGER, false)
+	    if @battle.suboptions[command].length==0 || (command==_INTL("CATCH")) && $player.real_ranger?
 		 pbPlayBuzzerSE
 		 oldText = cw.getText(cw.index)
 		 cw.setMsgBoxText(_INTL("{1} can't do anything with that!", $player.name))

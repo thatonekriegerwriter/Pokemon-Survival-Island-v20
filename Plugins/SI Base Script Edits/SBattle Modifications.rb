@@ -867,13 +867,7 @@ class Battle
       return 0
     end
     # Fleeing from wild battles
-    if $DEBUG && Input.press?(Input::CTRL)
-      pbSEPlay("Battle flee")
-      pbDisplayPaused(_INTL("You got away safely!"))
-      @decision = 3
-      return 1
-    end
-    if $player.is_it_this_class?(:RANGER)
+    if $DEBUG && Input.press?(Input::CTRL) || $player.real_ranger?(10)
       pbSEPlay("Battle flee")
       pbDisplayPaused(_INTL("You got away safely!"))
       @decision = 3

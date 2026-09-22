@@ -167,6 +167,8 @@ module InventoryScene
         pocket = GameData::Item.get(itemdata).pocket
         self.current_tab = pocket - 1
         refresh_bag_grid
+        pbPlayerEXPPassive(5) if $player.cook? && itemdata.data.is_foodwater?
+        pbPlayerEXPPassive(5) if $player.engineer? && recipe.recipe.any? { |item, _| item == :MACHINEBOX }
 
         clear_result if craft_empty_or_nil? || !can_afford?(recipe, craft)
       end

@@ -288,6 +288,7 @@ class MouseTrail
                     pbHeldItemDropOW(pkmn)
                     pkmnAnim(pkmn)
                     pbAddPokemonSilent(pkmn)
+	                pbPlayerEXPPassive(200) if $player.ranger? 
                     event.removeThisEventfromMap
                   elsif $game_map.map_id == 11 && (pokemon = get_form_for_species(pkmn))
                     $game_temp.preventspawns = false

@@ -31,6 +31,7 @@ EventHandlers.add(:on_wild_battle_end, :dungeonbattle,
         if joinrnd < chances
           if pbConfirmMessage(_INTL("Oh! {1} want's to join your Party! Do you want {1} to join your Party?", pkmn))
             pbMessage(_INTL("{1} is overjoyed!", pkmn))
+	        pbPlayerEXPPassive(10) if $player.coordinator?
             pbAddPokemonSilent(species, level)
           else
             pbMessage(_INTL("{1} leaves crying.", pkmn))

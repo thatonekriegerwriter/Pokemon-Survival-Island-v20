@@ -1,6 +1,7 @@
     # Changing
 class Pokemon
-NEGATIVE_TYPES = ["faint","powder","energyroot","revivalherb","damaged","neglected","hungry","thirsty","tired","youareeatingme"
+NEGATIVE_TYPES = ["faint","powder","energyroot","revivalherb","damaged","neglected","hungry","thirsty","tired","youareeatingme"]
+
 DATA_HASH = {
   :happiness => {
     :base => {
@@ -1318,6 +1319,7 @@ DATA_HASH = {
 	if NEGATIVE_TYPES.include?(method) && @happiness < 64
 	changeLoyalty(method)  unless $player.real_coordinator?(10)
 	end 
+	pbPlayerEXPPassive(1) if $player.coordinator? && total > 0
   end
 
   
@@ -1337,7 +1339,9 @@ DATA_HASH = {
     if gain > 0
       gain += 1 if @obtain_map == $game_map.map_id
 	end
-    @loyalty = (@loyalty + gain + base).clamp(0, 255)
+    total = gain + base
+    @loyalty = (@loyalty + total).clamp(0, 255)
+	pbPlayerEXPPassive(1) if $player.coordinator? && total > 0
   end
   
 

@@ -628,6 +628,7 @@ def check_end_conditions
     pbWait(Graphics.frame_rate * 3 / 4)
     pbSEPlay("Mining found all")
     sideDisplay(_INTL("Everything was dug up!"))
+    pbPlayerEXPPassive(20) if $player.hiker? 
     return true
   end
 

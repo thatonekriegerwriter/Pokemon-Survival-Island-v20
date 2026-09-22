@@ -765,7 +765,7 @@ class PokemonIntroScene
       egg.calc_stats
     end
 
-    if $player.is_it_this_class?(:RANGER, false)
+    if $player.real_ranger?
       item = ItemData.new(:CAPTURESTYLUS)
       $bag.add(item, 1)
     end
@@ -1557,7 +1557,7 @@ loop do
   end
 end
 
-if $player.is_it_this_class?(:RANGER,false)
+if $player.real_ranger?
   item = ItemData.new(:CAPTURESTYLUS)
   $bag.add(item, 1)
 end
@@ -1590,6 +1590,7 @@ end
 
 def pbItemRestoreHP(pkmn, restoreHP)
   restoreHP *= 1.5 if $player.nurse?
+  pbPlayerEXPPassive(1) if $player.nurse? && rand(100) < 5
   newHP = pkmn.hp + restoreHP
   newHP = pkmn.totalhp if newHP > pkmn.totalhp
   hpGain = newHP - pkmn.hp
@@ -1613,6 +1614,7 @@ def pbBattleHPItem(pkmn, battler, restoreHP, scene)
     restoreHP *= 1.5 if $player.nurse?
     if battler.pbRecoverHP(restoreHP) > 0
       scene.pbDisplay(_INTL("{1}'s HP was restored.", battler.pbThis))
+      pbPlayerEXPPassive(1) if $player.nurse? && rand(100) < 5
     end
   elsif pbItemRestoreHP(pkmn, restoreHP) > 0
     scene.pbDisplay(_INTL("{1}'s HP was restored.", pkmn.name))

@@ -139,7 +139,7 @@ def ov_mining(type)
  else 
   pbMessage(_INTL("While you don't have a pickaxe, you chip off a piece of the #{GameData::Item.get(type).name}."))
    amt = rand(2)+1
-   amt *= 2 if $player.is_it_this_class?(:HIKER,false) && rand(100)<=25
+   amt *= 2 if $player.real_hiker? && rand(100)<=25
   if !$bag.add(type,amt)
   pbMessage(_INTL("You don't have space!"))
   else 
@@ -149,6 +149,7 @@ def ov_mining(type)
   end
  end
   decreaseStamina(8)
+  pbPlayerEXPPassive(5) if $player.hiker? 
  end
 
 end
@@ -208,6 +209,7 @@ def ov_mining2(type)
   
   end 
   decreaseStamina(8)
+  pbPlayerEXPPassive(5) if $player.hiker? 
  end
  end
 end

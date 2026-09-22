@@ -25,9 +25,15 @@ class Pokemon
    
    def event
     return nil if @associatedevent.nil?
-    $game_map.events[@associatedevent]
+    return $game_map.events[@associatedevent]
    end 
    alias ovevent event
+   
+   
+  def in_pet_bed?
+    return false unless event 
+	event.in_pet_bed?
+  end 
    
    def associatedevent
    return @associatedevent

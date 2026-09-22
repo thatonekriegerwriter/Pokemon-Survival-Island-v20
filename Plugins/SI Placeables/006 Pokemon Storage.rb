@@ -110,6 +110,10 @@ class PokemonBox
     @pokemon[i] = value
   end
 
+  def remove_released
+    @pokemon.map! { |pkmn| pkmn&.released? ? nil : pkmn }
+  end
+  
   def each
     @pokemon.each { |item| yield item }
   end
@@ -415,7 +419,8 @@ class PokemonStorage
 	$PokemonGlobal.pokemonStorageSystems[@name] = self
 	end
   end
-  
+
+
   def next_box_id
   max = $PokemonGlobal.pokemonStorageSystems.keys
             .map { |k| k[/\d+/].to_i }
@@ -634,6 +639,7 @@ class PokemonStorage
  
   def update
     return if !active?
+	pokemon.remove_released
     @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
     time_now = pbGetTimeNow
     time_delta = time_now.to_i - @time_last_updated
@@ -644,7 +650,6 @@ class PokemonStorage
       pokemon.each do |pkmn|
 	    pkmn.update if pkmn.respond_to?(:update)
       end
-	
 	
    @time_last_updated = time_now.to_i
   end
@@ -888,7 +893,7 @@ module Battle::CatchAndStoreMixin
 
   def pbThrowPokeBall(idxBattler, ball, catch_rate = nil, showPlayer = false)
     # Determine which Pokémon you're throwing the Poké Ball at
-    if $player.is_it_this_class?(:RANGER,false)
+    if $player.true_ranger?
       pbDisplay(_INTL("You are a Ranger, don't use POKeBALLs!"))
       return false
     end

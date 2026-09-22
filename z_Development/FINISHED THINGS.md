@@ -231,6 +231,7 @@
 - [x] Level 20 - Fisher - You have the option to avoid a Pokemon encounter while fishing.
 
 
+- [x] Level 5 - Cook - When in a Crisis Battle, you can feed Pokemon to connect with them. (Associated functionality may not implimented for demo)
 - [x] Level 10 - Cook - Food made by a cook keeps extremely well (No Spoiling by age or prep station)
 - [x] Level 20 - Cook - Cooks produce twice as much food when cooking food items.
 
@@ -241,8 +242,21 @@
 - [x] Level 20 - Black Belt - When Blocking with fists, and attacked,  Black Belts will counter with a basic punch.
 
 
-- [x] Level 0 - Rangers have a Capture Styler
-- [x] Level 0 - Pokeballs are blocked from use. 
+- [x] Level 0 - Rangers have a Capture Styler. Pokeballs are blocked from use. Rangers only have Pokemon temporarily. Once a Pokemon is 'partnered' it needs an internal timer. This alters combat fundamentally.
 - [x] Level 5 - Rangers need a way to mark a Pokemon as a 'partner' which makes them never leave, but you can only have one. (Actable)
 - [x] Level 10 - Rangers can flee turnbased combat (almost) anytime.
 - [x] Level 20 - Second Partner. (Actable)
+
+
+
+ ### PlayerEXP
+ - [x] Gardener - Harvesting a berry plant, bonus for mutation) 
+ - [x] Cook — cooking a recipe
+ - [x] Engineer — crafting a machine
+ - [x] Breeder — an egg successfully produced (perform_breeding); an egg hatched
+ - [x] Ranger — capturing with the Capture Styler; a successful Assist (once built)
+ - [x] Fisher — a successful catch while fishing
+ - [x] Collector — a successful scavenging pull (pbCollectionMain/pbCollectionMain2); a successful comet pull
+ - [x] Hiker — a successful mine hit (ov_mining/ov_mining2); clearing a mining spot
+ - [x] Coordinator — a successful happiness/loyalty gain interaction; successfully awe-recruiting an ally
+ - [x] Nurse — healing a Pokémon via bed, item, with cooldown.

@@ -505,7 +505,7 @@ end
 
 
 ItemHandlers::UseFromBox.addIf(proc { |item| GameData::Item&.try_get(item).is_poke_ball? }, proc { |item, event|
-    next if $player.is_it_this_class?(:RANGER,false)
+    next if $player.real_ranger?
 	next if $game_temp.in_throwing==true
 	if pbBoxesFull?
 	  sideDisplay(_INTL("There's no room for Pokémon!"))
@@ -1454,7 +1454,7 @@ def pbDigTheGround(coords, shovel=true)
        shovel ? pbSEPlay("shovel") : pbSEPlay("Anim/PRSFX- Dig2")
       pbCollectionMain2
 	  amt = 1
-	  amt = 2 if $player.is_it_this_class?(:COLLECTOR)
+	  amt = 2 if $player.collector?
 	  $PokemonGlobal.collection_maps[$game_map.map_id] << coords
 	  return true 
 

@@ -1827,6 +1827,12 @@ end
       # Write the held item's name
 	  #puts Pokemon.instance_method(:initialize).source_location
             dorefresh = pbOptions
+			if dorefresh == :exit
+              dorefresh = true
+              pbPlayCloseMenuSE
+              break
+			
+			end 
           end
         elsif Input.trigger?(Input::UP) && @partyindex > 0
           oldindex = @partyindex

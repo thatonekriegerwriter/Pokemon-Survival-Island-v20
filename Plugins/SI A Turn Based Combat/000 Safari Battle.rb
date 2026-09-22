@@ -116,6 +116,10 @@ class SafariBattle
 	add_action(menu, SafariBattle::Acts::Appeal::BreederGroom, _INTL("GROOM"), _INTL("Attempt to groom the POKeMON with your Brush."), 4)
 	add_action(menu, SafariBattle::Acts::Appeal::Groom, _INTL("GROOM"), _INTL("Attempt to groom the POKeMON with your Brush."), 4)
 	add_action(menu, SafariBattle::Acts::Appeal::Bait, _INTL("BAIT"), _INTL("Attempt to get the POKeMON to relax by feeding it."), 6, true)
+	foods = $bag.any_food_items?   # <-- needs to exist, mirroring any_pokeballs?
+	foods.each do |food|
+	 add_action(menu, SafariBattle::Acts::Appeal::Food, GameData::Item.get(food).name.upcase, GameData::Item.get(food).description, 6, true, food)
+	end
   end 
   
   def setup_catching_options

@@ -391,7 +391,7 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   
   
   if !mutation_info.nil?
-   mut_berry = mutation_info[0]
+   mut_berry = ItemData.new(mutation_info[0])
    mut_berrydata = GameData::Item.get(mutation_info[0])
    mut_berry_qty = mutation_info[1]
    mut_berry_name = (mut_berry_qty > 1) ? mut_berrydata.name_plural : mut_berrydata.name
@@ -411,6 +411,10 @@ def pbPickBerry(berry, qty = 1, replant=false, mutation_info=nil)
   $stats.berry_plants_picked += 1
   $stats.mutated_berries_picked ||= 0
   $stats.mutated_berries_picked += mut_berry_qty
+  if $player.gardener?
+   pbPlayerEXPPassive(5)
+   pbPlayerEXPPassive(10) if !mutation_info.nil?
+  end
   if qty + mut_berry_qty >= GameData::BerryPlant.get(berry.id).maximum_yield
     $stats.max_yield_berry_plants += 1
   end

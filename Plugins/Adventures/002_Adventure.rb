@@ -366,6 +366,7 @@ class Adventure # Battles - rewritten around CombatSimulation
 
     if PokeventureConfig::FindFriends && rand(friend_chance).zero? && pkmn.traveling_partners.length < 2
       enemy.hp = enemy.totalhp
+	  pbPlayerEXPPassive(10) if $player.coordinator?
       addAlly(pkmn, enemy)
     end
 

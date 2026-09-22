@@ -243,13 +243,14 @@ class Player < Trainer
   
   def base_damage
     base = 1
-#	base *= 2 if $player.is_it_this_class?(:BLACKBELT)
+#	base *= 2 if $player.real_black_belt?
     return base
   end 
   
   
   def update
     self.party.each { |pokemon| pokemon.update if pokemon }
+    self.party.each_with_index { |pokemon, i| self.party[i] = nil if pokemon&.released? }
   end 
 
 end
@@ -1420,7 +1421,6 @@ end
 def increaseStamina(amount)
  amount = amount.to_f 
  $player.playerstamina = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
- amount/=1.5 if $player.is_it_this_class?(:TRIATHLETE)
  ret = true 
  $player.playerstamina = [$player.playerstamina+amount, $player.playermaxstamina].min
  return ret 
@@ -1429,7 +1429,6 @@ end
 def decreaseStamina(amount)
  amount = amount.to_f 
  $player.playerstamina = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
- amount/=1.5 if $player.is_it_this_class?(:TRIATHLETE)
  ret = true 
  ret = false if $player.playerstamina<=0
  $player.playerstamina = [$player.playerstamina-amount, 0.0].max
@@ -1553,10 +1552,8 @@ end
         cur_level += 1
         level_max_exp = $player.maximum_exp_for_level(cur_level)
         temp_exp2 = [level_max_exp, exp_final].min
-        puts temp_exp2
 
         $player.exp = temp_exp2
-        pbSEPlay("Pkmn exp gain")
 
         break if cur_level >= new_level
       end

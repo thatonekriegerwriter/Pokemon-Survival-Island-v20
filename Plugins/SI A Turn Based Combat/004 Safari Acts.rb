@@ -550,7 +550,7 @@ class SafariBattle::Acts::Appeal::Groom < SafariBattle::Acts::Appeal
   end 
 
   def can_add?
-    enough_stamina? && !$player.is_it_this_class?(:BREEDER, false) && $bag.has?(:POKEMONBRUSH)
+    enough_stamina? && !$player.real_breeder? && $bag.has?(:POKEMONBRUSH)
   end
   
   def act(battle, target)
@@ -578,7 +578,7 @@ class SafariBattle::Acts::Appeal::BreederGroom < SafariBattle::Acts::Appeal
   end 
 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BREEDER, false) && $bag.has?(:POKEMONBRUSH)
+    enough_stamina? && $player.real_breeder? && $bag.has?(:POKEMONBRUSH)
   end
   
   def act(battle, target)
@@ -599,6 +599,27 @@ class SafariBattle::Acts::Appeal::BreederGroom < SafariBattle::Acts::Appeal
   end 
 end 
 
+class SafariBattle::Acts::Appeal::Food < SafariBattle::Acts::Appeal
+  def initialize(name, description, stamina_cost, consumable, extra_data)
+    @id = extra_data
+    super(name, description, stamina_cost, consumable, extra_data)
+  end 
+
+  def can_add?
+    enough_stamina? && $player.real_cook?(5) && $bag.quantity(@extra_data) > 0
+  end
+
+  def act(battle, target)
+    return unless spend_stamina
+    consume_item
+    battle.pbDisplayPaused(_INTL("{1} offers some {2} to {3}.", $player.name, GameData::Item.get(@extra_data).name, target.pokemon.name))
+    attack_delta = rand(10..20)
+    escape_delta = rand(10..20)
+    catch_delta = rand(10..25)
+    make_passive(target, attack_delta, escape_delta, catch_delta)
+    battle.runrate += 3
+  end 
+end
 
 
 class SafariBattle::Acts::Appeal::Bait < SafariBattle::Acts::Appeal

@@ -1448,7 +1448,7 @@ class CraftingStationData
         inventory = normalize_ingredients(ingredients)
         matches = crafting_data.select do |recipe|
           required = normalize_ingredients(recipe.recipe)
-          required = required.reject { |item, _| item == :MACHINEBOX } if $player.is_it_this_class?(:ENGINEER, false)
+          required = required.reject { |item, _| item == :MACHINEBOX } if $player.real_engineer?
           next false unless inventory.map(&:first).sort == required.map(&:first).sort
           next false unless inventory.size == required.size
           remaining = inventory.map(&:dup)
@@ -2264,7 +2264,19 @@ end
 	 event.grant_worker_exp(0.05 * time_delta)
      pokemon.steps_to_hatch -= steps
      pokemon.steps_to_hatch = 0 if pokemon.steps_to_hatch < 0
-	 event.grant_worker_exp(500) if pokemon.steps_to_hatch <= 0
+	 if pokemon.steps_to_hatch <= 0
+     pokemon.timeEggHatched = pbGetTimeNow
+     pokemon.owner          = Pokemon::Owner.new_from_trainer($player)
+	 pokemon.name = nil
+     pokemon.obtain_method  = 1   # hatched from egg
+     pokemon.hatched_map    = $game_map.map_id
+     pokemon.record_first_moves
+	 pbPlayerEXPPassive(5) if $player.breeder? 
+     $player.pokedex.register(pokemon)
+     $player.pokedex.set_owned(pokemon.species)
+     $player.pokedex.set_seen_egg(pokemon.species)
+	 event.grant_worker_exp(500) 
+	 end 
      @resting_since += (steps_increment * 3600.0 / HATCH_STEPS_PER_HOUR).to_i
   end 
   
@@ -2374,7 +2386,6 @@ end
 	if @pokemon_is_egg && !egg?
 	 @pokemon_is_egg = false 
 	 pokemon.play_cry
-	 pokemon.name = nil
 	 sideDisplay(_INTL("{1} hatched from the Egg!", pokemon.name))
      was_owned = $player.owned?(pokemon.species)
      $player.pokedex.register(pokemon)
@@ -2973,13 +2984,14 @@ def pbBerryPot(berryPot)
 end 
 
 def pbPickBerryPot(berry, qty = 1)
-  berry = GameData::Item.get(berry)
-  berry_name = (qty > 1) ? berry.name_plural : berry.name
+  berry = ItemData.new(berry) if berry.is_a?(Symbol)
+  berry_name = (qty > 1) ? GameData::Item.get(berry).name_plural : GameData::Item.get(berry).name
   if !$bag.can_add?(berry, qty)
     sideDisplay(_INTL("The Bag is full..."))
     return false
   end 
   $stats.berry_plants_picked += 1
+  pbPlayerEXPPassive(5) if $player.gardener?
   if qty >= GameData::BerryPlant.get(berry.id).maximum_yield
     $stats.max_yield_berry_plants += 1
   end

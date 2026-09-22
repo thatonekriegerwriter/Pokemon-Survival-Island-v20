@@ -25,7 +25,7 @@ end
     return if pkmn.types.include?(:GHOST)
 
   
-   if pkmn.species==:MAGIKARP && !$player.is_it_this_class?(:FISHER)
+   if pkmn.species==:MAGIKARP && !$player.real_fisher?
     if $player.party.include?(pkmn)
 		index = $player.party.index(pkmn)
 		$player.remove_pokemon_at_index(index)
@@ -52,15 +52,13 @@ end
     amt = amt.round
     amt = [amt, 1].max
 	amt += rand(2)
-	amt = (amt * 1.5).round if $player.is_it_this_class?(:FISHER,false)
-	amt = 1 if pkmn.species==:MAGIKARP && $player.is_it_this_class?(:FISHER)
+	amt = (amt * 1.5).round if $player.real_fisher?
+	amt = 1 if pkmn.species==:MAGIKARP && $player.real_fisher?
 	
     total_ivs = pkmn.iv[:HP] + pkmn.iv[:ATTACK] + pkmn.iv[:DEFENSE] + pkmn.iv[:SPECIAL_ATTACK] + pkmn.iv[:SPECIAL_DEFENSE] + pkmn.iv[:SPEED]
     max_ivs = 31 * 6
 	
     food_item.quality = ((total_ivs.to_f / max_ivs * 4).round)+1
-    food_item.stats.priority = 3
-    food_item.stats.servings = :AVERAGE
 	
 	
 	

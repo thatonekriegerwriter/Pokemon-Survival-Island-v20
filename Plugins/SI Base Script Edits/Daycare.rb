@@ -77,6 +77,7 @@ class DayCare
       set_pokerus(egg)
       # Recalculate egg's stats
       egg.calc_stats
+	  pbPlayerEXPPassive(5) if $player.breeder? && !bee 
       return egg
     end
 
@@ -576,10 +577,7 @@ end
       if !@egg_generated && count == 2
         compat = compatibility
         egg_chance = [0, 20, 50, 70][compat]
-   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0
-   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0
-   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat>0
-   egg_chance += 1 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat==0
+        egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0
 		 
         @egg_generated = true if rand(100) < egg_chance
       end

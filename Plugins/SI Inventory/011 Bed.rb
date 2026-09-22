@@ -594,37 +594,12 @@ def heal_BED(wari,pkmn)
     pkmn.heal_PP_by_amt(amt)
 	 end
 	end
+  pbPlayerEXPPassive(1) if $player.nurse? && rand(100) < 5
   #pkmn.ready_to_evolve = false
 end
 
 def breederEgg
-  return# if $player.is_it_this_class?(:BREEDER,false)
-  ran = false
-  $player.able_party.each do |pkmn1|
-     next if ran==true
-    $player.able_party.each do |pkmn2|
-   compat = $PokemonGlobal.day_care.get_compatibility2(pkmn1,pkmn2)
-   egg_chance = [0, 20, 50, 70][compat]
-   egg_chance += 10 if $bag.has?(:OVALCHARM) && compat>0 && !$player.is_it_this_class?(:BREEDER)
-   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && compat>0 && !$bag.has?(:OVALCHARM)
-   egg_chance += 10 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat>0
-   egg_chance += 1 if $player.is_it_this_class?(:BREEDER) && $bag.has?(:OVALCHARM) && compat==0
-   daycare.egg_generated = true if rand(100) < egg_chance
-   if daycare.egg_generated == true
-        egg = EggGenerator.generate(pkmn1,pkmn2)
-        raise _INTL("Couldn't generate the egg.") if egg.nil
-        if !$map_factory
-           event = $game_map.generateEvent($game_player.x,$game_player.y,egg,false,false,2)
-       else
-          mapId = $game_map.map_id
-          spawnMap = $map_factory.getMap(mapId)
-          event = spawnMap.generateEvent($game_player.x+1,$game_player.y,egg,false,false,2)
-       end
-        $game_player.move_backward
-      ran = true
-   end 
-  end
- end
+  return
 
 end
 

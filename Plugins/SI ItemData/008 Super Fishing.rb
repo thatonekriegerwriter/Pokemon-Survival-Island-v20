@@ -434,14 +434,16 @@ def theRods(item,level,encounter_type)
       pbFishingEncounter(encounter_type,bait_name)
 	  $game_temp.in_safari=false
 	 end 
+	  pbPlayerEXPPassive(20) if $player.fisher? 
 	else
 	  pbFishingItem
+	  pbPlayerEXPPassive(10) if $player.fisher? 
 	end
     when 2
 	if encounter_type !=:item
      encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
      level = encounter[1]
-	 level = encounter+rand(5)+1 if $player.is_it_this_class?(:FISHER,false)
+	 level = encounter+rand(5)+1 if $player.real_fisher?
      pokemon = pbGenerateWildPokemon(encounter[0],encounter[1])
      $player.pokedex.set_seen(pokemon.species)
 	 if !bait_name.nil?
@@ -453,6 +455,7 @@ def theRods(item,level,encounter_type)
  	 pbHeldItemDropOW(pokemon)
      $player.pokedex.set_seen(pokemon.species)
 	 pbPlayerEXP(pokemon)
+	  pbPlayerEXPPassive(20) if $player.fisher? 
 	 if !pokemon.fainted?
 	loop do
 	 commands=[]
@@ -490,9 +493,11 @@ def theRods(item,level,encounter_type)
 
     else
 	 pbFishingItem
+	  pbPlayerEXPPassive(10) if $player.fisher? 
     end
     else
 	 pbFishingItem
+	  pbPlayerEXPPassive(10) if $player.fisher? 
 	
 
 

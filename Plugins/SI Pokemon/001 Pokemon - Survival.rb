@@ -101,6 +101,20 @@ end
     return @extra_moves
   end 
   
+  
+  def release
+   @release = false if @release.nil?
+   return @release 
+  end 
+  
+  def release=(value)
+    @release = value 
+  end 
+  
+  def released?
+    self.release==true 
+  end 
+  
   def add_move_at_index(move_id, index)
     old_move = @moves[index]
 	@moves[index] = Pokemon::Move.new(move_id)
@@ -151,6 +165,7 @@ end
 	@item_timer = pbGetTimeNow.to_i
   end 
   
+  
   def update
     if is_birthday? && @handled_aging==false
 	
@@ -165,6 +180,13 @@ end
       @handled_aging = true
 	elsif !is_birthday? && @handled_aging==true
 	  @handled_aging = false
+	end 
+    if @ranger_timer
+	  time_now = pbGetTimeNow.to_i
+	  if time_now >= @ranger_timer + 86_400
+	    @release = true  
+	  
+	  end 
 	end 
   end
  

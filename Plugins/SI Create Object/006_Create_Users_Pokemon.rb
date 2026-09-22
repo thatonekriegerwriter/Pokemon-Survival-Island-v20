@@ -962,6 +962,9 @@ def get_pet_bed
  bed_event.type.internal_data
 end 
 
+def in_pet_bed?
+  !get_pet_bed.nil?
+end 
 
 def movement_logic
    return if pokemon.fainted?

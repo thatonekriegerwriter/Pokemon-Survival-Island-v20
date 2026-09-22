@@ -66,6 +66,7 @@ def pbCollectionMain
     vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
     amt = $player.collector? ? 2 : 1
     pbItemBall(vbItem, amt)
+	pbPlayerEXPPassive(5) if $player.collector? 
   elsif chanceCollect == 1 || chanceCollect == 4
     pbMessage("You didn't find anything.")
   end
@@ -85,6 +86,7 @@ def pbCollectionMain2
     vbItem = pool[rand(pool.length)]
     vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
     pbItemBall(vbItem, amt)
+	pbPlayerEXPPassive(5) if $player.collector? 
   else
     pbItemBall(:SOFTSAND, amt)
   end
@@ -129,6 +131,7 @@ def pbMeteorMain
       pbItemBall(:IRON2, rand(200))
     end
     pbItemBall(vbItem, amt)
+	pbPlayerEXPPassive(10) if $player.collector? 
   elsif chanceCollect == 1 || chanceCollect == 4
     pbMessage("It's a POKeMON! It leaps at you!")
     pbEncounter(:Comet)

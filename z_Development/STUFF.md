@@ -94,6 +94,53 @@
 - [ ] Pokeball Trap
  
  
+ ### Player Classes
+
+
+- [ ] Level 10 - Experts allow Pokemon to learn "Potential Moves"  (Associated functionality may not implimented for demo)
+- [ ] Level 15 - Experts allow certain Pokemon to evolve early. (Actable) (Associated functionality may not implimented for demo)
+
+
+- [ ] Level 5 - Engineer - Portable devices drain power slower. (Associated functionality not implimented for demo)
+- [ ] Level 15 - Engineer - Pokemon assigned to Pokemon Generators cannot run away.  (Actable) (Associated functionality not implimented for demo)
+- [ ] Level 20 - Engineer - Pokemon will not run away when assigned to work at any station.  (Associated functionality not implimented for demo)
+
+
+- [ ] Level 0 - Cook - Feeding Pokemon improves their mood, and its happiness. (Actable) (Associated functionality may not implimented for demo)
+
+
+- [ ] Level 15 - The Styler unlocks "Assists".  (Associated functionality not implimented for demo)
+ 
+ 
+ 
+ ### PlayerEXP
+ - [ ] Expert — completing a Journal task (you already have num_tasks_completed) 
+ - [ ] Cook — feeding a Pokémon with cooldown
+ - [ ] Black Belt — landing a punch-type move in battle (once punches exist)
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
  
  

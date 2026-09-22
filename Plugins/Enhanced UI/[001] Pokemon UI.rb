@@ -365,7 +365,8 @@ if Settings::SUMMARY_MODERN_QoL
       else
         if !@pokemon.egg?
           commands[cmdNickname = commands.length] = _INTL("Nickname") if !@pokemon.foreign?
-          commands[cmdPartner = commands.length] = _INTL("Partner") if $player.partner_count > $player.current_partner_count
+          commands[cmdPartner = commands.length] = _INTL("Partner") if $player.partner_count > $player.current_partner_count && $player.party.include?(@pokemon)
+          commands[cmdRelease = commands.length] = _INTL("Release") if !@pokemon.in_pet_bed?
           commands[cmdJournal  = commands.length] = _INTL("View Journal") if PluginManager.installed?("Pokémon Birthsigns") && @pokemon.hasBirthsign?(true)
         end
        # commands[cmdMark = commands.length] = _INTL("Mark")
@@ -389,9 +390,15 @@ if Settings::SUMMARY_MODERN_QoL
 		  dorefresh = true
 	    end
 
+      elsif cmdRelease >= 0 && command == cmdRelease
+	   if pbConfirmMessage(_INTL("Would you like to release {1}?", @pokemon.name))
+	     @pokemon.release = true 
+         dorefresh = :exit 
+		end 
       elsif cmdPartner >= 0 && command == cmdPartner
 	   if pbConfirmMessage(_INTL("Would you like to make {1} your partner?", @pokemon.name))
 	     @pokemon.starter = true 
+	     @pokemon.ranger_timer = nil
 	     $player.current_partner_count+=1
          dorefresh = true
 		end 

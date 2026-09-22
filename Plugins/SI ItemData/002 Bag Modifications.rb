@@ -32,7 +32,17 @@ module ItemStorageHelper
     return ret
   end
   
-  
+  def self.any_food_items(items)
+    ret = []
+    items.each_with_index do |item_slot, i|
+      next if !item_slot
+      data = GameData::Item.get(item_slot[0].id)
+      next unless data.is_foodwater? || data.is_berry?
+      next if data.is_apricorn?
+      ret << item_slot[0]
+    end
+    return ret
+  end
 
   # Returns the quantity of item in items
   def self.quantity(items, item)
@@ -115,7 +125,7 @@ module ItemStorageHelper
   # Deletes an item (items array, max. size per slot, item, no. of items to delete)
   def self.remove(items, item, qty)
 	item = get_item_data(item) if item.is_a?(Symbol)
-	if GameData::Item.get(item).id==:CAPTURESTYLUS && $player.is_it_this_class?(:RANGER)
+	if GameData::Item.get(item).id==:CAPTURESTYLUS && $player.real_ranger?
 	 pbMessage(_INTL("You can't throw away a Capture Styler!"))
     return false 
 	end
@@ -279,6 +289,18 @@ class PokemonBag
     pocket = item_data.pocket
     return ItemStorageHelper.any_pokeballs(@pockets[pocket])
   end
+  
+  
+  
+  
+  
+  def any_food_items?
+    ret = []
+    @pockets.each do |pocket|
+      ret.concat(ItemStorageHelper.any_food_items(pocket))
+    end
+    return ret
+  end
 
 
   def quantity(item, durability = false, water = false)
@@ -352,7 +374,6 @@ class PokemonBag
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
      return if item.durability.is_a?(Numeric) && item.durability <= 0
     item_data = GameData::Item.try_get(item)
-	return true if ($player.is_it_this_class?(:COLLECTOR) && rand(100)<=20)
     return false if !item_data
     pocket = item_data.pocket
     return ItemStorageHelper.remove(@pockets[pocket], item, qty)

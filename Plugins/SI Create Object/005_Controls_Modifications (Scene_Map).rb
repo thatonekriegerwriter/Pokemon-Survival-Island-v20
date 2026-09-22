@@ -1016,7 +1016,7 @@ class Scene_Map
         user: selected_pkmn.pokemon
       })
 	  return false unless effects
-	 move.pp-=1 unless ($player.is_it_this_class?(:ACTOR) && $player.playerclass.acted_class==:NONE ) && rand(5)==1
+	 move.pp-=1 unless $player.not_acting? && rand(5)==1
      return true 
   end 
   
@@ -1994,7 +1994,7 @@ EventHandlers.add(:on_player_interact, :check_ov_egg,
 	 next unless pkmn.egg?
 	 next if pkmn.fainted?
 	 next if pkmn.dead?
-	 if $player.is_it_this_class?(:BREEDER)
+	 if $player.true_breeder?
       time_delta = pbGetTimeNow.to_i - pkmn.time_last_pet
 	  unless time_delta < 1800
 	   pkmn.steps_to_hatch -= 275

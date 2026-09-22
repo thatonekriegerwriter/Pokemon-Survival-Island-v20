@@ -398,6 +398,8 @@ end
 
 
 class PokemonEncounters  
+  CAVE_MAPS = [282,31,71,213]
+  
   def encounter_type_on_tile(x,y)
     time = pbGetTimeNow
     ret = nil
@@ -495,8 +497,9 @@ class PokemonEncounters
       min_steps_needed /= 2
 	end
 	
-	if $player.is_it_this_class?(:TRIATHLETE)
+	if $player.real_hiker(15) && CAVE_MAPS.include?($game_map.map_id)
       encounter_chance /= 3 
+ 	  min_steps_needed *= 3
 	end
 	if pbNearbyTorch?(get_cur_player.x, get_cur_player.y)
   	 encounter_chance /= 2

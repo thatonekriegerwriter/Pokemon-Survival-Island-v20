@@ -22,9 +22,9 @@ def new_set_enemy_level(encounter)
 end
 
 def pbPersonalLevelCap(pkmn)
- return 20 if pkmn.shadowPokemon?
- level_cap = $PokemonSystem.level_caps == 0 ? Level_Cap::LEVEL_CAP[$game_system.level_cap] : Settings::MAXIMUM_LEVEL
- level_cap = Settings::MAXIMUM_LEVEL if $player.is_it_this_class?(:EXPERT,false)
+ return 50 if pkmn.shadowPokemon?
+ return Settings::MAXIMUM_LEVEL if $player.real_expert?(20)
+ level_cap = Level_Cap::LEVEL_CAP[$game_system.level_cap]
  obtainlevel = pkmn.obtain_level
  level = pkmn.level
  caplevel = level
@@ -40,7 +40,8 @@ def pbPersonalLevelCap(pkmn)
 	    break
 	 end 
 	 if telling>5
-	   caplevel+=level_cap
+	   caplevel=level_cap
+	   caplevel = [caplevel, Settings::MAXIMUM_LEVEL].min
 	   break
 	 end
       telling+=1

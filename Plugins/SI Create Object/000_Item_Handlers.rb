@@ -638,8 +638,13 @@ ItemHandlers::UseFromBox.add(:POKEMONBRUSH,proc { |brush, facingEvent|
    time_delta = pbGetTimeNow.to_i - pkmn.time_last_brush
    next if time_delta < 1800
    pkmn.time_last_brush = pbGetTimeNow.to_i
+   amt = 2
+   amt = 4 if $player.coordinator?(15)
+   amt = 8 if $player.real_breeder?(5)
+   amt.times do |i|
    pkmn.changeLoyalty("groom")
-   pkmn.changeLoyalty("groom")
+   end 
+   pbItemRestoreHP(pkmn, 20) if $player.real_nurse?(5)
    if pkmn.species_data.egg_groups.include?(:Flying) && rand(255) < 3
     item = ItemData.new(PetBedData::FEATHERS.sample)
     quantity = rand(4)+1
@@ -712,11 +717,11 @@ ItemHandlers::UseFromBox.addIf(proc { |item| is_consumable_item?(item) }, proc {
    if id&.is_a?(Game_Player)
        if item_data.is_foodwater? || item_data.is_berry?
         ret = pbNeoEating(item)
-		$bag.remove(item, 1)
+		$bag.remove(item, 1) unless $player.real_collector(5) && rand(4)==0
         next 2
 	   
 	   elsif item_data.is_medicine?
-        ret = pbNeoMedicine(item)
+        ret = pbNeoMedicine(item) unless $player.real_collector(5) && rand(4)==0
 		$bag.remove(item, 1)
         next 2
 	   
@@ -731,7 +736,9 @@ ItemHandlers::UseFromBox.addIf(proc { |item| is_consumable_item?(item) }, proc {
 	       if item.data.field_use==2
     intret = ItemHandlers.triggerUseFromBag(item)
     if intret >= 0
-      bag.remove(item) if intret == 1 && item.data.consumed_after_use?
+	  unless $player.real_collector(5) && rand(4)==0
+      $bag.remove(item) if intret == 1 && item.data.consumed_after_use? 
+	  end 
         next intret
     end
     sideDisplay(_INTL("Can't use that here."))
@@ -747,8 +754,10 @@ ItemHandlers::UseFromBox.addIf(proc { |item| is_consumable_item?(item) }, proc {
           sideDisplay(_INTL("You used {1} on {2}.", item.name, pkmn.name)) if ret==true
           sideDisplay(_INTL("{2} doesn't need a {1} right now.", item.name,pkmn.name))  if ret==false
         if ret && item.data.consumed_after_use?
+	     unless $player.real_collector(5) && rand(4)==0
           $bag.remove(item, qty)
           sideDisplay(_INTL("You used your last {1}.", item.name)) if !$bag.has?(item)
+	      end 
 		   end
 		   end
            else
@@ -767,67 +776,7 @@ ItemHandlers::UseFromBox.addIf(proc { |item| is_consumable_item?(item) }, proc {
      end
    end
     end
-   if false 
-      cmdEat     = -1
-      cmdMedicate = -1
-      cmdUse      = -1
-      commands = []
-      commands[cmdUse = commands.length]    = _INTL("Use") if item.data.field_use == 1 || ItemHandlers.hasOutHandler(item)
-      commands[cmdMedicate = commands.length]       = _INTL("Use (Self)") if item.data.is_medicine?
-	  
-	   if item.data.is_foodwater? || item.data.is_berry?
-	    if item.data.is_water?
-      commands[cmdEat = commands.length]       = _INTL("Drink")
-		else
-      commands[cmdEat = commands.length]       = _INTL("Eat")
-	    end
-	   end
-	  if commands.length == 1 && commands[0]== _INTL("Use")
-        ret = pbUseItem($bag, item, $scene)
-        next 2
-	  elsif commands.length == 1 && commands[0]== _INTL("Drink")
-        ret = pbNeoEating(item)
-		$bag.remove(item, 1)
-        next 2
-	  elsif commands.length == 1 && commands[0]== _INTL("Eat")
-        ret = pbNeoEating(item)
-		$bag.remove(item, 1)
-        next 2
-	  elsif commands.length == 1 && commands[0]== _INTL("Use (Self)")
-        ret = pbNeoMedicine(item)
-		$bag.remove(item, 1)
-        next 2
-	  else
-	  
-      commands[commands.length]                 = _INTL("Cancel")
-       $PokemonGlobal.alternate_control_mode=true
-      command=pbShowCommands(nil,commands,0)
-	  if cmdUse >= 0 && command == cmdUse   # Use item
-        ret = pbUseItem($bag, item, $scene)
-          $PokemonGlobal.alternate_control_mode=false
-        next 2
-      elsif cmdMedicate>=0 && command==cmdMedicate   # Medicate
-        ret = pbNeoMedicine(item)
-		$bag.remove(item, 1)
-          $PokemonGlobal.alternate_control_mode=false
-        next 2
-      elsif cmdEat >=0 && command==cmdEat   # Eat
-        ret = pbNeoEating(item)
-		$bag.remove(item, 1)
-          $PokemonGlobal.alternate_control_mode=false
-        next 2
-      elsif Input.trigger(Input::BACK)   # Eat
-          $PokemonGlobal.alternate_control_mode=false
-     next 0
-	  else
-          $PokemonGlobal.alternate_control_mode=false
-     next 0
-      end
-
-          $PokemonGlobal.alternate_control_mode=false
-      end
-  end
-     next 0
+    next 0
   }
 )
 
@@ -1484,7 +1433,7 @@ def pbDigUpBerryPlant(berry_event)
 	berry_id = berry_plant.berry_id
 	return false if berry_id.nil?
     berry = GameData::Item.get(berry_id)
-	result = (rand(100) < 50 || $player.is_it_this_class?(:GARDENER))
+	result = (rand(100) < 50 || $player.real_gardener?
 	
 	berry_plant.reset
 	if result

@@ -1,51 +1,47 @@
 EventHandlers.add(:on_wild_battle_end, :dungeonbattle,
   proc { |species, level, decision|
-  if $PokemonGlobal.in_dungeon==true
-    pkmn = species 
-	joinrnd = rand(100)
-	firstPkmn = $player.first_pokemon
-    if decision == 1
-    	if level > firstPkmn.level+5
-	  chances = 10
-    elsif level > firstPkmn.level+10
-	  chances = 5
-    elsif level > firstPkmn.level+20
-	  chances = 1
-	else 
-	  chances = 15
-    end 	
-       if firstPkmn
-    case firstPkmn.ability_id
-    when :COMPOUNDEYES
-      chances = chances+10
-    when :SUPERLUCK
-      chances = chances+25
-    end
-	if firstPkmn.item == :WONDERORB
-      chances = chances+15
-	end
-	if firstPkmn.hasMove?(:FALSESWIPE)
-      chances = chances+15
-	end
-  end
-    	if joinrnd<chances 
-	if pbConfirmMessage(_INTL("Oh! {1} want's to join your Party! Do you want {1} to join your Party?",pkmn))
-	  pbMessage(_INTL("{1} is overjoyed!",pkmn))
-	  pbAddPokemonSilent(species,level)
-	else
-	  pbMessage(_INTL("{1} leaves crying.",pkmn))
-	end
+    if $PokemonGlobal.in_dungeon == true
+      pkmn = species
+      joinrnd = rand(100)
+      firstPkmn = $player.first_pokemon
+      if decision == 1
+        if level > firstPkmn.level + 20
+          chances = 1
+        elsif level > firstPkmn.level + 10
+          chances = 5
+        elsif level > firstPkmn.level + 5
+          chances = 10
+        else
+          chances = 15
+        end
 
-	end
-  	elsif decision == 2
-      leavingDungeon
-  end
-  
-  end
+        if firstPkmn
+          case firstPkmn.ability_id
+          when :COMPOUNDEYES
+            chances += 10
+          when :SUPERLUCK
+            chances += 25
+          end
+          chances += 15 if firstPkmn.item == :WONDERORB
+          chances += 15 if firstPkmn.hasMove?(:FALSESWIPE)
+        end
+
+        chances += 15 if $player.real_coordinator?(20)
+
+        if joinrnd < chances
+          if pbConfirmMessage(_INTL("Oh! {1} want's to join your Party! Do you want {1} to join your Party?", pkmn))
+            pbMessage(_INTL("{1} is overjoyed!", pkmn))
+            pbAddPokemonSilent(species, level)
+          else
+            pbMessage(_INTL("{1} leaves crying.", pkmn))
+          end
+        end
+      elsif decision == 2
+        leavingDungeon
+      end
+    end
   }
 )
-
-
 #===============================================================================
 # Code that generates a random dungeon layout, and implements it in a given map.
 #===============================================================================

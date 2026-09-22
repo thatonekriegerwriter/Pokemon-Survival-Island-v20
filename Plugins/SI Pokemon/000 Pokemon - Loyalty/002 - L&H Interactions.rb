@@ -1308,11 +1308,16 @@ DATA_HASH = {
       gain += 1 if @obtain_map == $game_map.map_id
       gain += 1 if @poke_ball == :LUXURYBALL
       gain = (gain * 1.5).floor if hasItem?(:SOOTHEBELL)
-	  bonus += 1 if self.nature == :LOVING
+	  gain += 1 if self.nature == :LOVING
     end
-	gain = 0 if gain < 0 && $player.is_it_this_class?(:COORDINATOR, false)
-    @happiness = (@happiness + gain + base).clamp(0, 255)
-	changeLoyalty(method) if NEGATIVE_TYPES.include?(method) && @happiness < 64
+    total = gain + base
+    if total < 0 && $player.real_coordinator?(5)
+      total = (total / 2.0).ceil 
+    end
+    @happiness = (@happiness + total).clamp(0, 255)
+	if NEGATIVE_TYPES.include?(method) && @happiness < 64
+	changeLoyalty(method)  unless $player.real_coordinator?(10)
+	end 
   end
 
   
@@ -1331,7 +1336,6 @@ DATA_HASH = {
 	gain = get_loyalty_gains(method, nature,loyalty_range)
     if gain > 0
       gain += 1 if @obtain_map == $game_map.map_id
-	  gain += rand(5)+5 if $player.is_it_this_class?(:MONK, false)
 	end
     @loyalty = (@loyalty + gain + base).clamp(0, 255)
   end

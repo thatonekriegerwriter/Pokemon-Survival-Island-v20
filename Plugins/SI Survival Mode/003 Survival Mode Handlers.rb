@@ -17,11 +17,14 @@
 
 EventHandlers.add(:on_player_step_taken, :nurse_healing,
   proc {
+   next unless $player.real_nurse?(15)
    next if $player.playerwater < 1
    next if $player.playersleep < 1
    next if $player.playerfood < 1
-   next if !$player.is_it_this_class?(:NURSE,false)
-     increaseHealth(1)
+   next unless pbOverworldCombat.in_battle?($game_player)
+   next unless rand(4) == 0
+   
+   increaseHealth(1)
 
 
 
@@ -130,35 +133,75 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 
 
 
-
-  
-  def player_stamina_logic
-      the_stamina_functions
-	 
-    if drain_stamina
-	 SoundManager.play_se("breath",100) if $player.playerstamina <= ($player.playermaxstamina/10)
-	  return  
-	end
-	 
-    return if $player.playerstamina == $player.playermaxstamina
-	 time_now = pbGetTimeNow
-	 #rain_delta = time_now.to_i - $player.time_last_stamina
-	 if $player.playerstamina >= $player.playermaxstamina
-	   $player.playerstamina=$player.playermaxstamina
-	 return
-	 end
-	 if rand(255)<1
-    $player.time_last_stamina += 1 
-	 puts $player.time_last_stamina
-	end
-    return if $player.time_last_stamina==50
-	 SoundManager.play_se("breath",100) if $player.playerstamina <= ($player.playermaxstamina/10)
-	 
-    restore_stamina
-    $player.time_last_stamina = 0
-  
-  
+  def run_button?
+    (Input.press?(Input::RUNNING) || Input.trigger?(Input::RUNNING)) && get_keyname("Running")!="None"
   end 
+  
+def restore_stamina
+  return if $player.running == true
+  return if $player.running == false && run_button?
+  return if $game_temp.in_menu
+  prereqs = $player.not_acting? && $player.held_item.nil?
+  if prereqs
+  
+    if $game_player.moved_this_frame == false && $game_player.moved_last_frame == false
+      if rand(5) == 1
+        puts "Increase Stamina - No Moving+"
+        $player.playerstamina += 1
+      end
+    elsif $game_player.moved_this_frame == false
+      if rand(10) == 1
+        puts "Increase Stamina - No Moving"
+        $player.playerstamina += 3
+      end
+    elsif rand(40) == 1
+      puts "Increase Stamina - While Moving"
+      $player.playerstamina += ($player.real_triathlete?(10) ? 9 : 6)
+    end
+
+  end
+end
+
+def drain_stamina
+  duris = rand(30) == 1
+  if $game_player.moved_this_frame && !$game_temp.in_menu && $player.running
+    return decreaseStamina(4) if duris && [:NORMALSHOES, :SEASHOES].include?($player.playershoes.id) && !$player.real_triathlete?(5)
+    return decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.real_triathlete?(5)
+    return decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.real_triathlete?(5)
+    return decreaseStamina(1) if rand(140) == 1 && $player.real_triathlete?(5)
+  end
+  return false
+end
+
+def the_stamina_functions
+  $player.playerstamina    = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
+  $player.playermaxstamina = $player.playermaxstamina.to_f if $player.playermaxstamina.is_a? Integer
+  $player.playerstaminamod = $player.playerstaminamod.to_f if $player.playerstaminamod.is_a? Integer
+
+  $player.playermaxstamina = 100.0 if $player.playermaxstamina.nil?
+  $player.playerstaminamod = 0.0 if $player.playerstaminamod.nil?
+end
+
+def player_stamina_logic
+  the_stamina_functions
+
+  if drain_stamina
+    SoundManager.play_se("breath", 100) if $player.playerstamina <= ($player.playermaxstamina / 10)
+    return
+  end
+
+  if $player.playerstamina >= $player.playermaxstamina
+    $player.playerstamina = $player.playermaxstamina
+    return
+  end
+  
+  $player.time_last_stamina += 1 if rand(255) < 1
+  return if $player.time_last_stamina == 50
+  SoundManager.play_se("breath", 100) if $player.playerstamina <= ($player.playermaxstamina / 10)
+
+  restore_stamina
+  $player.time_last_stamina = 0
+end
   
   EventHandlers.add(:on_frame_update, :stamina,
   proc {
@@ -170,6 +213,24 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
 
 
 
+def stamina_management_for_ov
+  raise 
+  if $PokemonGlobal.in_dungeon == false
+    duris = rand(30) == 1
+
+    if $game_player.can_run_unforced? && !$game_temp.in_menu && $player.running
+      decreaseStamina(4) if duris && [:NORMALSHOES, :SEASHOES].include?($player.playershoes.id) && !$player.real_triathlete?
+      decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.real_triathlete?
+      decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.real_triathlete?
+      decreaseStamina(1) if rand(140) == 1 && $player.real_triathlete?
+    end
+
+    $player.playerstamina = $player.playermaxstamina if $player.playerstamina > $player.playermaxstamina
+  end
+end
+
+
+  
 
 
   EventHandlers.add(:on_frame_update, :healthplayer,
@@ -210,97 +271,6 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
    pbSEPlay("normaldamage")
   }
 )
-  def run_button?
-    (Input.press?(Input::RUNNING) || Input.trigger?(Input::RUNNING)) && get_keyname("Running")!="None"
-  end 
-def restore_stamina
- return if $player.running == true
- return if $player.running == false && run_button?
- return if $game_temp.in_menu
-  prereqs = !$player.acting && $player.held_item.nil?
-  if prereqs
-	 if $game_player.moved_this_frame==false && $game_player.moved_last_frame==false
-	     if rand(5) == 1
-         puts "Increase Stamina - No Moving+"
-	      $player.playerstamina+=1
-		  end
-    elsif $game_player.moved_this_frame==false
-	     if rand(10) == 1
-         puts "Increase Stamina - No Moving"
-	      $player.playerstamina+=3
-		  end
-	 elsif rand(40) == 1 
-       puts "Increase Stamina - While Moving"
-      $player.playerstamina+=6
-	 end
-
-
-
-  end
-end
-
-def drain_stamina
-	   duris = rand(30) == 1
-if $game_player.moved_this_frame && !$game_temp.in_menu && $player.running
-	return decreaseStamina(4) if duris && ($player.playershoes.id == :NORMALSHOES || $player.playershoes.id == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
-	return decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
-	return decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
-	return decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
-end
-return false
-end
-
-def the_stamina_functions
-
-    $player.playerstamina = $player.playerstamina.to_f if $player.playerstamina.is_a? Integer
-    $player.playermaxstamina = $player.playermaxstamina.to_f if $player.playermaxstamina.is_a? Integer
-	$player.playerstaminamod = $player.playerstaminamod.to_f if $player.playerstaminamod.is_a? Integer
-
-	
-	$player.playermaxstamina = 100.0 if $player.playermaxstamina.nil?
-	
-	$player.playerstaminamod = 0.0 if $player.playerstaminamod.nil?
-
-end
-
-def stamina_management_for_ov
-
-  if $PokemonGlobal.in_dungeon==false
-  
-  
-  
-  
-	
-
-
-
-
-
-	   duris = rand(30) == 1
-   
-	
-	if $game_player.can_run_unforced? && !$game_temp.in_menu && $player.running
-	
-	   decreaseStamina(4) if duris && ($player.playershoes.id == :NORMALSHOES || $player.playershoes.id == :SEASHOES) && !$player.is_it_this_class?(:TRIATHLETE,false)
-	   decreaseStamina(3) if duris && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
-	   decreaseStamina(2) if duris && $player.playershoes.id == :RUNNINGSHOES && !$player.is_it_this_class?(:TRIATHLETE,false)
-	   decreaseStamina(1) if rand(140) == 1 && $player.is_it_this_class?(:TRIATHLETE,false)
-	   
-	   
-	end
-
-
-
-
-	   $player.playerstamina = $player.playermaxstamina if $player.playerstamina > $player.playermaxstamina
-
-  end
-
-
-
-
-end
-
 
 
   EventHandlers.add(:on_frame_update, :agestepspkmn,

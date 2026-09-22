@@ -1005,7 +1005,7 @@ class Battle::Battler
     return true if choice[0]!=:UseMove
     return true if !@battle.internalBattle
     return true if !@battle.pbOwnedByPlayer?(@index)
-	return true if $player.is_it_this_class?(:COORDINATOR,false)
+	return true if $player.coordinator?
 
     disobedient = false
     # Pokémon may be disobedient; calculate if it is

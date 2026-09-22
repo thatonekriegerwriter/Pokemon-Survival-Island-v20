@@ -226,9 +226,24 @@ class Player < Trainer
     return @party.find_all { |p| p && p.inworld && p.associatedevent && !p.fainted? }
   end
   
+  def partner_count
+   @partner_count = 0 if @partner_count.nil?
+   return @partner_count 
+  end 
+  def partner_count=(value)
+   @partner_count = value 
+  end 
+  def current_partner_count
+   @current_partner_count = 0 if @current_partner_count.nil?
+   return @current_partner_count 
+  end 
+  def current_partner_count=(value)
+   @current_partner_count = value 
+  end 
+  
   def base_damage
     base = 1
-	base *= 2 if $player.is_it_this_class?(:BLACKBELT)
+#	base *= 2 if $player.is_it_this_class?(:BLACKBELT)
     return base
   end 
   
@@ -872,9 +887,6 @@ end
 
 
 
-
-
-
 def pbSleepRestore(wari,vari=nil)
   wari = wari.to_f
 ##########PLAYER###################
@@ -1249,8 +1261,8 @@ def pbNeoMedicine(item)
 	
 	if effects.health && effects.health > 0 
 	 restoreHP = effects.health
-	 $player.restore_total_hp if restoreHP >= 9999 && $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 20
-     restoreHP *= 1.5 if $player.is_it_this_class?(:NURSE)
+	 $player.restore_total_hp if restoreHP >= 9999 && $player.real_nurse?(20)
+     restoreHP *= 1.5 if $player.real_nurse?
      increaseHealth(restoreHP)    
     end 	
     damagePlayer(effects.health.abs)          if effects.health && effects.health < 0 

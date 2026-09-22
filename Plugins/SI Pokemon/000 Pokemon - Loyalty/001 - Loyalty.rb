@@ -68,6 +68,7 @@ alias _SI_Pokemon_Loyalty_init initialize
   end
   
   def should_disobey?
+    return false if $player.coordinator?
     rand(256)+1<= self.calculate_disobedience_chance(@loyalty, @happiness)
   end 
 

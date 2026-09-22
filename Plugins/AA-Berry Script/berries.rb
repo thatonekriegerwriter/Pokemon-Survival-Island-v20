@@ -986,7 +986,7 @@ class BerryPlantData
   end 
   
   def tending_multiplier
-    value = $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15 ? 0.5 : 0.25
+    value = $player.gardener?(15) ? 0.5 : 0.25
     1.0 + (workers.length * value)
   end
   
@@ -1022,7 +1022,7 @@ class BerryPlantData
   
    def get_hours_per_stage
      hours = @berry.stats.growth
-	 hours -= 1 $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 5
+	 hours -= 1 if $player.gardener?(5)
      return [hours,1].max
    end   
   
@@ -1099,7 +1099,7 @@ class BerryPlantData
   
   def detriment_effects(time_now)
     return unless self.event && cropsticks
-    return unless $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 10
+    return unless $player.real_gardener?(10)
 
         if @weeds_timer && !@weeds && @growth_stage > 1
             weed_delta = time_now.to_i - @weeds_timer
@@ -1351,8 +1351,9 @@ def update_watering
     next unless move
 
     water(move.base_damage)
-    move.pp -= 1 unless $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15
-    pokemon.gain_exp_single(250)
+    move.pp -= 1 unless $player.gardener?(15)
+	expamt = $player.expert?(5) ? 500 : 250
+    pokemon.gain_exp_single(expamt)
     @watered_at = time_now
   end
 end
@@ -1372,7 +1373,8 @@ def update_harvesting
     next unless pokemon.inventory.can_add?(@berry, cur_yield)
    
     pokemon.inventory.add(@berry, cur_yield)
-    pokemon.gain_exp_single(100)
+	expamt = $player.expert?(5) ? 200 : 100
+    pokemon.gain_exp_single(expamt)
 	sideDisplay(_INTL("{1} has collected the harvest!", pokemon.name))
     reset
   end
@@ -1389,7 +1391,8 @@ def update_weeds
     next unless @weeds
     next unless pokemon
     next unless pokemon.types.include?(:GRASS)
-    pokemon.gain_exp_single(100)
+	expamt = $player.expert?(5) ? 200 : 100
+    pokemon.gain_exp_single(expamt)
     pullWeeds
   end
 end
@@ -1443,7 +1446,7 @@ class BerryPlantData
   end
 
   def beside_water
-    return true if $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 20
+    return true if $player.real_gardener?(20)
     return tile_data.beside_water
   end
 
@@ -1903,7 +1906,7 @@ def pbBerryPlantWitheredItem
     item = berry_plant.withered_item if berry_plant.respond_to?(:withered_item)
     pbReceiveItem(:WOODENSTICKS,rand(7)+4)
     $bag.add(item) if item
-	$bag.add(berry) if $player.is_it_this_class?(:GARDENER)
+	$bag.add(berry) if $player.real_gardener?
 end
 
 
@@ -1925,7 +1928,7 @@ def pbOtherInteractions
         if pbConfirmMessage(_INTL("You may be able to dig up the berry. Dig up the {1}?", GameData::Item.get(berry).name))
 		  if current_selection.decrease_durability(1)
             berry_plant.reset
-            if rand(100) < 50 || $player.is_it_this_class?(:GARDENER)
+            if rand(100) < 50 || $player.real_gardener?
                 $bag.add(berry)
                 pbMessage(_INTL("The dug up {1} was in good enough condition to keep.",GameData::Item.get(berry).name))
             else

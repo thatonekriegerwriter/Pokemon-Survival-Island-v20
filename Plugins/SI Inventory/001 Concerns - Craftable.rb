@@ -50,7 +50,7 @@ module InventoryScene
 
         crafting_data.select do |recipe|
           required = normalize_ingredients(recipe.recipe)
-          required = required.reject { |item, _| item == :MACHINEBOX } if $player.is_it_this_class?(:ENGINEER, false)
+          required = required.reject { |item, _| item == :MACHINEBOX } if $player.real_engineer?
 
           next false unless inventory.map(&:first).sort == required.map(&:first).sort
           next false unless inventory.size == required.size
@@ -154,7 +154,7 @@ module InventoryScene
         set_max_durability(itemdata)
         apply_bottle_contents(itemdata)
         amt = result.yield
-
+		amt *= 2 if $player.real_cook?(20) && itemdata.data.is_foodwater?
         if grabbed_item && !grabbed_item.pokemon? && itemdata.identical(grabbed_item.item) && grabbed_item.qty < itemdata.stack_size
           grabbed_item.qty = [grabbed_item.qty + amt, itemdata.stack_size].min
         else

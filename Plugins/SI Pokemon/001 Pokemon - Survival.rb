@@ -52,6 +52,7 @@ class Pokemon
   attr_accessor :item_timer
   attr_accessor :stamina 
   attr_accessor :original_ability 
+  attr_accessor :ranger_timer 
 
 
   def location

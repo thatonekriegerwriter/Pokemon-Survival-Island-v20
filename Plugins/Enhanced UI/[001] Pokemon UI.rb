@@ -350,12 +350,14 @@ if Settings::SUMMARY_MODERN_QoL
       cmdFeed    = -1
       cmdPokedex    = -1
       cmdJournal    = -1
+      cmdRelease    = -1
       cmdDebug  = -1
       cmdMark       = -1
       cmdCheckMoves = -1
       cmdLearnMoves = -1
       cmdForgetMove = -1
       cmdTeachTMs   = -1
+      cmdPartner  = -1
       case @page
       when 4
         commands[cmdCheckMoves = commands.length] = _INTL("Check Moves") if !@pokemon.moves.empty?
@@ -363,6 +365,7 @@ if Settings::SUMMARY_MODERN_QoL
       else
         if !@pokemon.egg?
           commands[cmdNickname = commands.length] = _INTL("Nickname") if !@pokemon.foreign?
+          commands[cmdPartner = commands.length] = _INTL("Partner") if $player.partner_count > $player.current_partner_count
           commands[cmdJournal  = commands.length] = _INTL("View Journal") if PluginManager.installed?("Pokémon Birthsigns") && @pokemon.hasBirthsign?(true)
         end
        # commands[cmdMark = commands.length] = _INTL("Mark")
@@ -385,8 +388,14 @@ if Settings::SUMMARY_MODERN_QoL
           pbMessage(_INTL("It's name is now: {1}.",pkmn.name))
 		  dorefresh = true
 	    end
- 
-      elsif cmdJournal >= 0 && command == cmdJournal
+
+      elsif cmdPartner >= 0 && command == cmdPartner
+	   if pbConfirmMessage(_INTL("Would you like to make {1} your partner?", @pokemon.name))
+	     @pokemon.starter = true 
+	     $player.current_partner_count+=1
+         dorefresh = true
+		end 
+      elsif cmdJournal >= 0 && command == cmdJournal 
         pbOpenJournalBasic(@pokemon.birthsign.month)
         dorefresh = true
       elsif cmdDebug >= 0 && command == cmdDebug

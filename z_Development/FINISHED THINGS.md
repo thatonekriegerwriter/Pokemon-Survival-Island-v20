@@ -156,4 +156,93 @@
 - [x] Berry Plant dominance and recessiveness
 - [x] Check if we like the mutation table for berries
 
+ ### Player Classes
+- [x] Cap player class level at 20, remove shadow Pokemon cap.
  
+ - [x] Level 0 - Actors pokemon have a chance to not use PP when the Actor is not acting.
+- [-] Level 5 - Actors can take on the role of another class for a day. They can't use all abilities, just specific ones. Three Days cooldown.
+- [x] Level 10 - Changes cooldown to two days.
+- [x] Level 15 - Changes cooldown to one day.
+- [x] Level 20 - No cooldown.
+
+
+- [x] Level 0 - Tri-Athletes are as fast as a pair of running shoes while running. (Actable)
+- [x] Level 5 - Tri-Athletes use less stamina while running.
+- [x] Level 10 - Tri-Athletes have an improved stamina recovery rate while moving.
+- [x] Level 15 - Tri-Athletes move faster both normally and while running. (Actable)
+- [x] Level 20 - If a Pole is held, and you are running, you naturally vault objects.
+
+
+- [x] Level 0 - Experts have a fully filled out Journal, even if they haven't caught everything in an area.
+- [x] Level 5 - Experts Pokemon gain experience at a doubled rate if working at a station. (Actable)
+- [x] Level 20 - Experts don't have level caps on Pokemon. (Remove level cap setting in settings, I think)
+
+
+- [x] Level 0 - Coordinator - 'You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme.' (No Disobedience)  (Actable)
+- [x] Level 5 - Coordinator - Your POKeMON's Happiness decays slower. half negative gain on happiness loss
+- [x] Level 10 - Coordinator - A Coordinators Pokemon does not lose loyalty from happiness loss, only things that target loyalty directly.
+- [x] Level 15 - Coordinator - Coordinators Pokemon gain more loyalty and happiness from positive interactions.  (Actable)
+- [x] Level 20 - Coordinator - A Coordinators Pokemon can awe enemies into joining them during Adventures or in Dungeons.
+
+
+- [x] Level 0 - Gardener - Plants you care for will always give a berry back if they die, or you dig them up.
+- [x] Level 5 - Gardener - All Berries you have planted will grow slightly faster.  (Actable)
+- [x] Level 10 - Gardener - You will never get pests or weeds on your plants.
+- [x] Level 15 - Gardener - Your Pokemon, if assigned to a plant, give larger bonuses, and don't use PP for watering, if applicable. (Actable)
+- [x] Level 20 - Gardener - Your plants will be able to grow irregardless of environmental conditions (No need for local water).
+
+
+- [x] Level 0 - Collector - You will find twice as many items when scavenging.  (Actable)
+- [x] Level 5 - Collector - You have a chance not to use a consumable item.
+- [x] Level 10 - Collector - You will have a higher chance to find rare items while scavenging.
+- [x] Level 15 - Collector - You will come across currency more often. (Right now this just means Collectors can find Star Pieces in any mines)  (Actable)
+- [x] Level 20 - Collector - You can find items that would otherwise be unavailable in an area.
+
+
+- [x] Level 0 - Hiker - When holding a Pole, you move faster in mountainous areas.
+- [x] Level 5 - Hiker - Overworld Ore will occasionally give double.  (Actable)
+- [x] Level 10 - Hiker - When mining in a mineshaft, you have more hits before the mine collapses, and have more items in your mines.  (Actable)
+- [x] Level 15 - Hiker - When in a cave with a mineshaft, Pokemon spawns are dramatically lowered.
+- [x] Level 20 - Hiker - Quarries produce twice as many items.
+
+
+- [x] Level 0 - Engineer - You can craft most machines without Machine Boxes.
+- [x] Level 10 - Engineer - PokeGenerators have a higher effectiveness.  (Actable)
+
+
+- [x] Level 0 - Breeder - Eggs will hatch faster for you by default.  (Actable)
+- [x] Level 5 - Breeder - Has an improved groom action when using a grooming brush.
+- [x] Level 10 - Breeder - Pokemon that are working that still breed eggs.
+- [x] Level 15 - Breeder - Pokémon are more likely to produce an Egg.
+- [x] Level 20 - Breeder - Pokémon can produce Eggs irregardless of if two Pokemon can normally breed.  (Actable)
+
+
+- [x] Level 0 - Nurse - Sleeping and health items recover more health for both you and your POKeMON.  (Actable)
+- [x] Level 5 - Nurse - Petting or Grooming your Pokemon restores their health.
+- [x] Level 10 - Nurse - Pokemon always fully heal in bed. (Pokemon cannot die of damage in their sleep, but can of old age, and not being secured in the overworld.)  (Actable)
+- [x] Level 15 - Nurse - You passively heal while on the Overworld. This is implimented just... check it. Make sure it isn't busted. Add this to not work while in combat.
+- [x] Level 20 - Nurse - Full Restores restore your max health to its max value.
+
+
+- [x] Level 0 - Fisher - You can even get meat off of a Magikarp.
+- [x] Level 5 - Fisher - You catch things faster while fishing.
+- [x] Level 10 - Fisher - Fishing up items increases in likelihood.  (Actable)
+- [x] Level 15 - Fisher - You can encounter fish while fishing that are one rank higher than your current Rod.  (Actable)
+- [x] Level 20 - Fisher - You have the option to avoid a Pokemon encounter while fishing.
+
+
+- [x] Level 10 - Cook - Food made by a cook keeps extremely well (No Spoiling by age or prep station)
+- [x] Level 20 - Cook - Cooks produce twice as much food when cooking food items.
+
+
+- [x] Level 5 - Black Belt - Punch type moves have far less stamina cost.  (Actable)
+- [x] Level 10 - Black Belt - Black Belts have higher accuracy with Punch Type moves.
+- [x] Level 15 - Black Belt - Black Belts can block with their fists in the place of a Buckler, causing their incoming damage to be reduced.  (Actable)
+- [x] Level 20 - Black Belt - When Blocking with fists, and attacked,  Black Belts will counter with a basic punch.
+
+
+- [x] Level 0 - Rangers have a Capture Styler
+- [x] Level 0 - Pokeballs are blocked from use. 
+- [x] Level 5 - Rangers need a way to mark a Pokemon as a 'partner' which makes them never leave, but you can only have one. (Actable)
+- [x] Level 10 - Rangers can flee turnbased combat (almost) anytime.
+- [x] Level 20 - Second Partner. (Actable)

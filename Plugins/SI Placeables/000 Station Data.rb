@@ -463,6 +463,7 @@ class CraftingStationData
      end
 	if active_workers.length > 0
      base_power_gen = 2.0
+     base_power_gen = 4.0 if $player.engineer?(10)
 	 base_power_gen += active_workers.sum do |worker_id|
 	   worker = $game_map.events[worker_id]
        next 0.0 unless worker
@@ -506,6 +507,7 @@ class CraftingStationData
      end
 	 if active_workers.length > 0
      base_power_gen = 3.0
+     base_power_gen = 6.0 if $player.engineer?(10)
 	 base_power_gen += active_workers.sum do |worker_id|
 	   worker = $game_map.events[worker_id]
        next 0.0 unless worker
@@ -694,6 +696,7 @@ end
 	mineitems = [:FIRESTONE,:FIRESTONE,:FIRESTONE,:WATERSTONE,:WATERSTONE,:WATERSTONE,:THUNDERSTONE,:THUNDERSTONE,:THUNDERSTONE,:LEAFSTONE,:LEAFSTONE,:MOONSTONE,:MOONSTONE,:DAWNSTONE,:ICESTONE,:ICESTONE,:SUNSTONE,:OVALSTONE,:EVERSTONE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:STARPIECE,:NEVERMELTICE, :NEVERMELTICE, :EVIOLITE,:EVIOLITE,:RAREBONE,:RAREBONE,:LIGHTCLAY,:HARDSTONE,:THUNDERSTONE,:THUNDERSTONE,:HEARTSCALE,:IRONBALL,:ODDKEYSTONE,:HEATROCK,:DAMPROCK,:SMOOTHROCK,:ICYROCK,:REDSHARD,:GREENSHARD,:YELLOWSHARD,:BLUESHARD,:INSECTPLATE,:DREADPLATE,:DRACOPLATE,:ZAPPLATE,:FISTPLATE,:FLAMEPLATE,:MEADOWPLATE,:EARTHPLATE,:ICICLEPLATE,:TOXICPLATE,:MINDPLATE,:STONEPLATE,:SKYPLATE,:SPOOKYPLATE,:IRONPLATE,:SPLASHPLATE,:COAL,:STONE,:COPPERORE,:COPPERORE,:SILVERORE,:SILVERORE,:GOLDORE,:GOLDORE,:IRONORE,:IRONORE,:IRONORE,:IRONORE]
 	new_item = ItemData.new(mineitems.sample)
     amount = 1
+	amount *= 2 if $player.real_miner?(20)
     existing = @internal_storage.find do |stack|
       stack.is_a?(Array) &&
         stack[0].is_a?(ItemData) &&
@@ -2139,7 +2142,10 @@ end
   end 
   
   def should_breed?
-    return rand(100) < 69
+   chance = 69
+   chance += 15 if $player.real_breeder?(15)
+   chance = [chance, 100].min
+   return rand(100) < chance
   end 
   
   def outdoor_petbed?
@@ -2420,11 +2426,12 @@ end
 	  return 
 	 end 
 	 update_job
+     update_breeding if $player.real_breeder?(10) && pokemon_in_bed?
 	 return 
 	end 
 	#You cannot breed if you have a job assigned currently. Maybe I exclude this for Breeders.
 	
-	update_breeding
+	update_breeding if pokemon_in_bed?
   end 
 
   def can_find_harvest?
@@ -2529,7 +2536,7 @@ class BerryPotData
     event.workers.current_workers 
   end 
   def tending_multiplier
-    value = $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15 ? 0.5 : 0.25
+    value = $player.gardener?(15) ? 0.5 : 0.25
     1.0 + (workers.length * value)
   end
   def update
@@ -2550,7 +2557,7 @@ class BerryPotData
     min_yield = plant_data.minimum_yield
     time_per_stage = ((plant_data.hours_per_stage * 3600) * 1.5).floor
 	time_per_stage = (time_per_stage / tending_multiplier).floor
-	time_per_stage -= 1 $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 5
+	time_per_stage -= 1 if $player.gardener?(5)
 	time_per_stage = [time_per_stage,1].max
 	
 	
@@ -2601,7 +2608,8 @@ def update_watering
 
     water(move.base_damage)
     move.pp -= 1
-    pokemon.gain_exp_single(250)
+	expamt = $player.expert?(5) ? 500 : 250
+    pokemon.gain_exp_single(expamt)
     @watered_at = time_now
   end
 end
@@ -2620,7 +2628,8 @@ def update_harvesting
     next unless pokemon.inventory.can_add?(@berry, cur_yield)
    
     pokemon.inventory.add(@berry, cur_yield)
-    pokemon.gain_exp_single(100)
+	expamt = $player.expert?(5) ? 200 : 100
+    pokemon.gain_exp_single(expamt)
     reset
 	sideDisplay(_INTL("#{pokemon.name} has collected the harvest!"))
   end

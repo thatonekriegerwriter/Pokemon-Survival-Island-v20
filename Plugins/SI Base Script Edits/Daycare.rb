@@ -85,6 +85,7 @@ class DayCare
 	  unless bee 
        egg.name           = _INTL("Egg")
        egg.steps_to_hatch = egg.species_data.hatch_steps
+       egg.steps_to_hatch /= 1.5 if $player.breeder?
        egg.obtain_text    = _INTL("Raised from an Egg!")
 	  else
        egg.obtain_text    = _INTL("Born with its hive!")
@@ -727,6 +728,7 @@ end
       pkmn1, pkmn2 = pokemon_pair
     end
 	
+	return 4 if $player.breeder?(20)
 	
     return 0 if pkmn1.shadowPokemon? || pkmn2.shadowPokemon?
     return 0 if pkmn1.celestial? || pkmn2.celestial?

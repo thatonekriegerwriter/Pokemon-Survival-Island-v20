@@ -224,7 +224,8 @@ ItemHandlers::UseInField.add(:OLDROD, proc { |item|
     next false
   end
   if reduceStaminaBasedOnItem(item)!=false
-  theRods(item,1,:OldRod)
+  rods = $player.fisher?(15) ? [item,2,:GoodRod] : [item,1,:OldRod] 
+  theRods(*rods)
   next true
   else
     sideDisplay(_INTL("You don't have enough stamina to use this."))
@@ -240,7 +241,8 @@ ItemHandlers::UseInField.add(:GOODROD, proc { |item|
     next false
   end
   if reduceStaminaBasedOnItem(item)!=false
-  theRods(item,2,:GoodRod)
+  rods = $player.fisher?(15) ? [item,3,:SuperRod] : [item,2,:GoodRod] 
+  theRods(*rods)
   next true
   else
     sideDisplay(_INTL("You don't have enough stamina to use this."))
@@ -295,19 +297,6 @@ def pbFishingEncounter(enc_type, bait_name = "", only_single = true)
   return true
 end
 
-
-def pbCollectionMain64
-  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE]
-  chanceCollect=rand(6)  #Encounters 2/10 of the time
-  if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
-    vbItem = vbItems[rand(vbItems.length)]
-		  amt = 1
-	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
-    pbItemBall(vbItem,amt)
-  elsif  chanceCollect==1 ||  chanceCollect==4
-    pbMessage(_INTL("The Pokémon fled as you started reeling..."))
-  end
-end
 
 def pbTakeItemFromPokemon2(pkmn, scene)
   ret = false
@@ -395,17 +384,14 @@ def theRods(item,level,encounter_type)
    bgm = pbStringToAudioFile(testbgm) if testbgm
    pbBGMFade(0.8)
    pbBGMPlay(bgm) if testbgm
-  $PokemonGlobal.fishing=true
-  $game_temp.no_moving = true 
-    $player.acting=true
-  $PokemonGlobal.cur_stored_fishing_rod = item
-  
-	pbSEPlay("GUI sel decision", 60) 
-  
-  
+   $PokemonGlobal.fishing=true
+   $game_temp.no_moving = true 
+   $player.acting=true
+   $PokemonGlobal.cur_stored_fishing_rod = item
+   pbSEPlay("GUI sel decision", 60) 
   encounter_type = $PokemonEncounters.find_valid_encounter_type_for_weather(encounter_type, encounter_type)
   encounter = $PokemonEncounters.has_encounter_type?(encounter_type)
-  encounter_type = [encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,"item"][rand([encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,encounter_type,"item"].length)]
+  encounter_type = rand($player.fisher?(10) ? 5 : 12) == 0 ? :item : encounter_type
   bait = nil
   bait_name = nil
   done = false 
@@ -441,17 +427,18 @@ def theRods(item,level,encounter_type)
   result,score = pbFishing(encounter, level, bait, encounter_type)
   case result
     when 1
-	if encounter_type !="item"
-    $stats.fishing_battles += 1
-	$game_temp.in_safari=true
-     pbFishingEncounter(encounter_type,bait_name)
-	$game_temp.in_safari=false
+	if encounter_type !=:item
+	 unless $player.real_fisher?(20) && pbConfirmMessage(_INTL("A fish is going to attack you! Back off?"))
+      $stats.fishing_battles += 1
+	  $game_temp.in_safari=true
+      pbFishingEncounter(encounter_type,bait_name)
+	  $game_temp.in_safari=false
+	 end 
 	else
-	 
-	pbCollectionMain64
+	  pbFishingItem
 	end
     when 2
-	if encounter_type !="item"
+	if encounter_type !=:item
      encounter = $PokemonEncounters.choose_wild_pokemon(encounter_type)
      level = encounter[1]
 	 level = encounter+rand(5)+1 if $player.is_it_this_class?(:FISHER,false)
@@ -502,22 +489,14 @@ def theRods(item,level,encounter_type)
 	end
 
     else
-	 pbCollectionMain64
+	 pbFishingItem
     end
     else
-	if encounter_type !="item"
-	 if !bait_name.nil?
-	if bait_name == "Poisonous Meat" || pokemon.status==:POISON
-    pbMessage(_INTL("It seems to have died of the poison."))
-	else
-    pbMessage(_INTL("It seems to have died.")) 
-	pbCookMeat(pokemon)
-	end
-	end
-    else
-	pbCollectionMain64
+	 pbFishingItem
 	
-	end
+
+
+
 	end
   end
 
@@ -640,6 +619,7 @@ end
 def pbFishing(hasEncounter, rodType, bait=nil, item_or_encounter)
   $stats.fishing_count += 1
   speedup = $player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)#($player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)  || $player.activeCharm?(:LURECHARM))
+  speedup = $player.real_fisher(5) unless speedup
   biteChance, hookChance = fishingmodifiers(rodType,speedup,bait)
   bait_name = GameData::Item.get(bait).name if !bait.nil?
   pbFishingBegin
@@ -695,7 +675,7 @@ def pbFishing(hasEncounter, rodType, bait=nil, item_or_encounter)
       ret, score = pbSuperFishing(rodType,speedup,bait)
 	    if ret==false
         pbFishingEnd {
-          pbMessageDisplay(msgWindow, _INTL("The Pokémon doesn't look happy!")) if item_or_encounter != "item"
+          pbMessageDisplay(msgWindow, _INTL("The Pokémon doesn't look happy!")) if item_or_encounter != :item
 		   ret=1
         }
 		elsif ret==true

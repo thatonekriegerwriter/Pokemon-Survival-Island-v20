@@ -124,6 +124,7 @@ class ItemData
    
    def update(spoil_amt)
      internal_data.update if internal_data && internal_data.respond_to?(:update) && !internal_data.is_a?(ResearchTableData)
+	 return if $player.real_cook?(10)
      return if @id==:SPOILEDFOOD
      item = GameData::Item.get(@id)
      return unless item.is_foodwater? && !item.is_berry?
@@ -137,7 +138,7 @@ class ItemData
 	 end 
  	 @stats = ItemStats.new(self) if @stats.nil?
 	 amt = spoil_amt * @stats.spoiling_rate
-	 amt = amt/2.0 if item.is_berry?
+	 amt = amt/4.0 if item.is_berry? 
      if @durability - amt <= 0
 	   @id = :SPOILEDFOOD
 	   @durability=nil

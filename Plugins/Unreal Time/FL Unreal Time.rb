@@ -267,10 +267,17 @@ def pbGetTime(hours)
  return result
 end 
 
-EventHandlers.add(:on_new_day, :midnight_activations,
+EventHandlers.add(:on_new_day, :clear_acting,
   proc {
     next if $player.nil?
-	$player.playerclass.acted_class=:NONE if $player.is_it_this_class?(:ACTOR)
+    next unless $player.currently_acting?
+	next unless $player.can_act_again?
+	$player.clear_acting
+  }
+)
+
+EventHandlers.add(:on_new_day, :clear_digging,
+  proc {
 	$PokemonGlobal.collection_maps = {}
   }
 )

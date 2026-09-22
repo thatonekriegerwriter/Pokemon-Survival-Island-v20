@@ -568,6 +568,7 @@ def self.chargingattack?(move)
 end 
 
 def self.sight_line(seer)
+  return 3 if seer == $game_player
   return seer.counter.to_i if defined?(seer.counter)
      counter_match = seer.name.match(/surrounding\(\d+\)/)
 	 counter = counter_match[0] if counter_match
@@ -703,7 +704,7 @@ def execute_move(attacker, move, target)
       hit_targets << target
   end
   return false if hit_targets.empty?
-  unless attacker.is_a?(Game_PokeEventA) && ($player.is_it_this_class?(:ACTOR) && $player.playerclass.acted_class==:NONE ) && rand(5)==1
+  unless attacker.is_a?(Game_PokeEventA) && $player.not_acting? && rand(5)==1
   move.pp -= 1 if move.pp>0
   end 
   start_glow(attacker)
@@ -801,21 +802,31 @@ end
   
 
   def attacking_the_player(damage, attacker, move, directionals)
+        blocking = false 
         backattack, sideattack, baddir = directionals 
 		if $player.blocking && !backattack && !sideattack
          shield=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 		 if shield.is_a?(ItemData)
-		  pbSEPlay("Anim/Knock")
-		  reduced_damage = damage * 3.0 / (3.0 + shield.stat.stat_bonus)
-		  shield.decrease_durability(reduced_damage)
-		  return 
+		  if shield.id == :BUCKLER
+		    pbSEPlay("Anim/Knock")
+		    reduced_damage = damage * 3.0 / (3.0 + shield.stat.stat_bonus)
+		    shield.decrease_durability(reduced_damage)
+		    return 
+		  end 
+         elsif shield.is_a?(Symbol) && shield == :BLOCK
+		    pbSEPlay("Anim/Knock")
+		    damage = (damage * 2.0 / 3.0) 
+			blocking = true  
 		 end
 		end
-        damage *= 1.5
+        damage *= 1.5 unless blocking
 		health_exclaimation(damage)
 		damagePlayer(damage, true)
 		if should_knock_down_player?(damage, move)
 		  get_knocked_down(attacker)
+		elsif $player.real_black_belt?(20) && blocking && attacker.cardinal?($game_player)
+		  pbTurnTowardEvent($game_player, attacker)
+		  player_action(attacker, :PUNCH)
 		end
 
   end

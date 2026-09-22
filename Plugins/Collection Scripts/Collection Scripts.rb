@@ -54,33 +54,87 @@ end
 #==============================================================================#
   
 def pbCollectionMain
-  vbItems=[:SOFTSAND,:SOFTSAND,:SOFTSAND,:SOFTSAND,:STONE,:STONE,:STONE,:STONE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:CLEVERFEATHER,:SWIFTFEATHER,:SWIFTFEATHER,:SWIFTFEATHER]
-  chanceCollect=rand(6)  #Encounters 2/10 of the time
-  if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
-    vbItem = vbItems[rand(vbItems.length)]
-		  amt = 1
-	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
-    pbItemBall(vbItem,amt)
-  elsif  chanceCollect==1 ||  chanceCollect==4
+  vbItems = [:SOFTSAND, :SOFTSAND, :SOFTSAND, :SOFTSAND, :STONE, :STONE, :STONE, :STONE, :CHARCOAL, :BIGROOT, :LIGHTCLAY, :BLACKSLUDGE, :DAMPROCK, :SHOALSHELL, :SHOALSALT, :PEARL, :BIGPEARL, :KINGSROCK, :DEEPSEATOOTH, :DEEPSEASCALE, :IRONORE, :CLEVERFEATHER, :SWIFTFEATHER, :SWIFTFEATHER, :SWIFTFEATHER]
+
+  rare_items = [:IRONORE,:IRONORE,:IRONORE, :PEARL, :BIGPEARL, :KINGSROCK]
+  collector_bonus_items = [:ICESTONE,:ICYROCK,:SILVERORE,:GOLDORE,:COPPERORE] 
+  pool = $player.real_collector?(20) ? vbItems + collector_bonus_items : vbItems
+
+  chanceCollect = rand(6)  # Encounters 2/10 of the time
+  if chanceCollect == 0 || chanceCollect == 2 || chanceCollect == 3 || chanceCollect == 5
+    vbItem = pool[rand(pool.length)]
+    vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
+    amt = $player.collector? ? 2 : 1
+    pbItemBall(vbItem, amt)
+  elsif chanceCollect == 1 || chanceCollect == 4
     pbMessage("You didn't find anything.")
   end
 end
 
+
 def pbCollectionMain2
-  vbItems=[:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:STONE,:IRONORE,:CHARCOAL,:BIGROOT,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:LIGHTCLAY,:BLACKSLUDGE,:DAMPROCK,:SHOALSHELL,:SHOALSALT,:SHOALSALT,:SHOALSALT,:PEARL,:PEARL,:BIGPEARL,:KINGSROCK,:DEEPSEATOOTH,:DEEPSEASCALE,:IRONORE,:IRONORE,
-  :HEALTHFEATHER,:MUSCLEFEATHER,:RESISTFEATHER,:GENIUSFEATHER,:SWIFTFEATHER, :PRETTYFEATHER]
-  chanceCollect=rand(2)  #Encounters 2/10 of the time
-  if  chanceCollect==0
-    vbItem = vbItems[rand(vbItems.length)]
-		  amt = 1
-	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
-    pbItemBall(vbItem,amt)
+  vbItems = [:STONE, :STONE, :STONE, :STONE, :STONE, :STONE, :STONE, :STONE, :STONE, :IRONORE, :CHARCOAL, :BIGROOT, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :LIGHTCLAY, :BLACKSLUDGE, :DAMPROCK, :SHOALSHELL, :SHOALSALT, :SHOALSALT, :SHOALSALT, :PEARL, :PEARL, :BIGPEARL, :KINGSROCK, :DEEPSEATOOTH, :DEEPSEASCALE, :IRONORE, :IRONORE,
+    :HEALTHFEATHER, :MUSCLEFEATHER, :RESISTFEATHER, :GENIUSFEATHER, :SWIFTFEATHER, :PRETTYFEATHER]
+  rare_items = [:IRONORE,:IRONORE,:IRONORE, :PEARL, :BIGPEARL, :KINGSROCK]
+  collector_bonus_items = [:ICESTONE,:ICYROCK,:SILVERORE,:GOLDORE,:COPPERORE] 
+  pool = $player.real_collector?(20) ? vbItems + collector_bonus_items : vbItems
+  amt = $player.collector? ? 2 : 1
+
+  chanceCollect = rand(2)  # Encounters 2/10 of the time
+  if chanceCollect == 0
+    vbItem = pool[rand(pool.length)]
+    vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
+    pbItemBall(vbItem, amt)
   else
-		  amt = 1
-	      amt = 2 if $player.is_it_this_class?(:COLLECTOR)
-   pbItemBall(:SOFTSAND,amt)
+    pbItemBall(:SOFTSAND, amt)
   end
 end
+
+
+def pbFishingItem
+  vbItems = [:PEARL, :BIGPEARL, :SHOALSALT, :SHOALSHELL, :DEEPSEATOOTH, :DEEPSEASCALE, :SUSHI]
+  collector_bonus_items = [:PRISMSCALE, :DRAGONSCALE, :HEARTSCALE, :MYSTICWATER, :LEFTOVERS]
+  rare_items = [:STARDUST, :STARPIECE, :WATERSTONE, :WATER, :LUMINOUSMOSS]
+  pool = $player.real_collector?(20) ? vbItems + collector_bonus_items : vbItems
+  amt = $player.collector? ? 2 : 1
+
+  chanceCollect = rand(2)  # Encounters 2/10 of the time
+  if chanceCollect == 0
+    vbItem = pool[rand(pool.length)]
+    vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
+	if vbItem == :WATER
+ 	 vbItem = ItemData.new(:WATER)
+	 vbItem.set_bottle(ItemData.new(:GLASSBOTTLE))
+	end 
+    pbItemBall(vbItem, amt)
+  else
+    default_item = :SHOALSALT
+    pbItemBall(default_item, amt)
+  end
+end
+
+
+def pbMeteorMain
+  vbItems = [:COMETSHARD, :COMETSHARD, :COMETSHARD, :COMETSHARD, :COMETSHARD, :COMETSHARD, :SPEEDCOMET, :DEFENDCOMET, :BALANCEDCOMET, :BALANCEDCOMET, :BALANCEDCOMET, :ATKCOMET, :STARPIECE, :STARPIECE, :STARPIECE, :MOONSTONE, :MOONSTONE, :NEVERMELTICE, :NEVERMELTICE, :NEVERMELTICE, :LIFEORB, :LIFEORB, :SUNSTONE, :SUNSTONE]
+  rare_items = [:ATKCOMET :SPEEDCOMET, :DEFENDCOMET]   
+  collector_bonus_items = [:ENIGMABERRY,:ICESTONE,:ICYROCK,:FIRESTONE] 
+  pool = $player.real_collector?(20) ? vbItems + collector_bonus_items : vbItems
+
+  chanceCollect = rand(6)  # Encounters 2/10 of the time
+  if chanceCollect == 0 || chanceCollect == 2 || chanceCollect == 3 || chanceCollect == 5
+    vbItem = pool[rand(pool.length)]
+    vbItem = rare_items[rand(rare_items.length)] if $player.real_collector?(10) && !rare_items.include?(vbItem) && rand(100) < 25
+    amt = $player.collector? ? 2 : 1
+    if rand(21) == 5
+      pbItemBall(:IRON2, rand(200))
+    end
+    pbItemBall(vbItem, amt)
+  elsif chanceCollect == 1 || chanceCollect == 4
+    pbMessage("It's a POKeMON! It leaps at you!")
+    pbEncounter(:Comet)
+  end
+end
+
 #==============================================================================#
 #==============================================================================#
                                                                                 
@@ -108,20 +162,6 @@ end
 #==============================================================================#
 #==============================================================================#
                                                                              
-def pbMeteorMain
-  vbItems=[:COMETSHARD,:COMETSHARD,:COMETSHARD,:COMETSHARD,:COMETSHARD,:SPEEDCOMET,:DEFENDCOMET,:BALANCEDCOMET,:BALANCEDCOMET,:BALANCEDCOMET,:ATKCOMET,:STARPIECE,:STARPIECE,:STARPIECE,:MOONSTONE,:MOONSTONE,:NEVERMELTICE,:NEVERMELTICE,:NEVERMELTICE,:LIFEORB,:LIFEORB,:SUNSTONE,:SUNSTONE,:COMETSHARD]
-  chanceCollect=rand(6)  #Encounters 2/10 of the time
-  if  chanceCollect==0 ||  chanceCollect==2 ||  chanceCollect==3 || chanceCollect==5
-    vbItem = vbItems[rand(24)]
-	if rand(21)==5
-	pbItemBall(:IRON2,(rand(200)))
-	end
-    pbItemBall(vbItem,1)
-  elsif  chanceCollect==1 ||  chanceCollect==4
-    pbMessage("It's a POKeMON! It leaps at you!")
-    pbEncounter(:Comet)
-  end
-end
 
 GameData::EncounterType.register({
   :id             => :BerryTree,

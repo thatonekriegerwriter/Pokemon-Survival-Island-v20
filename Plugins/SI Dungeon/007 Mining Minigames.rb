@@ -310,7 +310,7 @@ end
     end
     numitems=3+rand(4)
 	
-    numitems+=2 if $player.is_it_this_class?(:HIKER)
+    numitems+=2 if $player.hiker?(10)
     tries = 0
     while numitems>0
       rnd=rand(ptotal)
@@ -616,7 +616,7 @@ end
 
 def check_end_conditions
   hitsamt = 49
-  hitsamt += 10 if $player.is_it_this_class?(:HIKER)
+  hitsamt += 10 if $player.hiker?(10)
 
   if @sprites["crack"].hits >= hitsamt
     collapse

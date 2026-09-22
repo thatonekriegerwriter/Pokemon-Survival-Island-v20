@@ -46,6 +46,7 @@ class PlayerClass
   attr_accessor :name
   attr_accessor :acted_class
   attr_accessor :actorcooldown
+  attr_accessor :started_acting_at
 
   def initialize(id)
     @id            = id
@@ -806,8 +807,8 @@ end
 
 class Player < Trainer
  def is_it_this_class?(id, acting=true)
-   return $player.playerclass == id if id.is_a? String
-   return if $player.playerclass.is_a? String
+  return $player.playerclass == id if id.is_a? String
+  return false if $player.playerclass.is_a? String
   if acting==true
    return ($player.playerclass.id == id || ($player.playerclass.id == :ACTOR && $player.playerclass.acted_class == id ))
   else
@@ -820,10 +821,123 @@ class Player < Trainer
    @playerclass.id = class_id
    @playerclass.name = @playerclass.getName
  end
+ 
+ def not_acting?
+    actor? && $player.playerclass.acted_class == :NONE
+ end 
+ 
+ def currently_acting?
+    actor? && $player.playerclass.acted_class != :NONE
+ end 
+ 
+ def clear_acting
+    @playerclass.acted_class = :NONE
+ end 
+ 
+ def can_act_again?
+   return true if @playerclass.started_acting_at.nil?
+   cooldown_days = 3
+   cooldown_days = 2 if actor?(10)
+   cooldown_days = 1 if actor?(15)
+   cooldown_days = 0 if actor?(20)
 
+   cooldown_seconds = cooldown_days * 24 * 60 * 60
+   return pbGetTimeNow.to_i - @playerclass.started_acting_at >= cooldown_seconds
+ end 
+ 
+ def set_acting(id)
+    raise unless CLASS_HELPERS.values.include?(id)
+    @playerclass.acted_class = id
+	@playerclass.started_acting_at = pbGetTimeNow.to_i 
+ end 
+ 
+  CLASS_HELPERS = {
+    actor:        :ACTOR,
+    triathlete:   :TRIATHLETE,
+    expert:       :EXPERT,
+    ranger:       :RANGER,
+    cook:         :COOK,
+    coordinator:  :COORDINATOR,
+    gardener:     :GARDENER,
+    collector:    :COLLECTOR,
+    hiker:        :HIKER,
+    black_belt:   :BLACKBELT,
+    engineer:     :ENGINEER,
+    breeder:      :BREEDER,
+    nurse:        :NURSE,
+    fisher:       :FISHER,
+  }.freeze
 
+  CLASS_HELPERS.each do |name, id|
+    define_method("#{name}?") do |level = 0|
+      is_it_this_class?(id, true) && playerclasslevel >= level
+    end
+
+    define_method("real_#{name}?") do |level = 0|
+      is_it_this_class?(id, false) && playerclasslevel >= level
+    end
+  end
 end
 
+
+class Game_Player < Game_Character
+
+  def move_generic(dir, turn_enabled = true)
+    turn_generic(dir, true) if turn_enabled
+    if !$game_temp.encounter_triggered
+      if can_move_in_direction?(dir)
+        x_offset = (dir == 4) ? -1 : (dir == 6) ? 1 : 0
+        y_offset = (dir == 8) ? -1 : (dir == 2) ? 1 : 0
+        return if pbLedge(x_offset, y_offset)
+        return if pbEndSurf(x_offset, y_offset)
+        turn_generic(dir, true)
+        if !$game_temp.encounter_triggered
+          @x += x_offset
+          @y += y_offset
+          if $PokemonGlobal&.diving || $PokemonGlobal&.surfing
+            $stats.distance_surfed += 1
+          elsif $PokemonGlobal&.bicycle
+            $stats.distance_cycled += 1
+          else
+            $stats.distance_walked += 1
+          end
+          $stats.distance_slid_on_ice += 1 if $PokemonGlobal.sliding
+          increase_steps
+        end
+      elsif !check_event_trigger_touch(dir)
+        try_pole_vault || bump_into_object
+      end
+    end
+    $game_temp.encounter_triggered = false
+  end
+
+
+def try_pole_vault
+  return false unless $player.real_triathlete?(20)
+  return false unless $player.running
+  return false unless isSelectedThisItem?(:POLE)
+  return false if $game_temp.in_menu || $game_temp.in_throwing
+
+  direction = $game_player.direction
+  max_range = [$player.playerstamina / 4, 3].min
+  return false if max_range < 1
+
+  (2..max_range).each do |amt|
+    start_end = getLandingCoords(amt)
+    next if start_end.nil?
+    x, y = start_end[1]
+    next unless $game_map.passableStrict?(x, y, direction, $game_player)
+    if pbJumpToward(amt, true, false, direction)
+      decreaseStamina(amt * 4)
+      return true
+    end
+  end
+  false
+end
+
+
+
+end 
 
 
 def get_class_text
@@ -1467,7 +1581,7 @@ class Battle::Battler
     return true if usingMultiTurnAttack?
     return true if move.pp < 0          # Don't reduce PP for special calls of moves
     return true if move.total_pp <= 0   # Infinite PP, can always be used
-    return true if ($player.is_it_this_class?(:ACTOR) && $player.playerclass.acted_class==:NONE )&& @battle.pbOwnedByPlayer?(@index) && rand(5)==1																				   
+    return true if $player.not_acting? && @battle.pbOwnedByPlayer?(@index) && rand(5)==1																				   
     return false if move.pp == 0        # Ran out of PP, couldn't reduce
     pbSetPP(move, move.pp - 1) if move.pp > 0
     return true
@@ -1475,7 +1589,7 @@ class Battle::Battler
 end
 
 def pbItemRestoreHP(pkmn, restoreHP)
-  restoreHP *= 1.5 if $player.is_it_this_class?(:NURSE)
+  restoreHP *= 1.5 if $player.nurse?
   newHP = pkmn.hp + restoreHP
   newHP = pkmn.totalhp if newHP > pkmn.totalhp
   hpGain = newHP - pkmn.hp
@@ -1488,7 +1602,6 @@ def pbHPItem(pkmn, restoreHP, scene)
     scene.pbDisplay(_INTL("It won't have any effect."))
     return false
   end
-  restoreHP *= 1.5 if $player.is_it_this_class?(:NURSE)
   hpGain = pbItemRestoreHP(pkmn, restoreHP)
   scene.pbRefresh
   scene.pbDisplay(_INTL("{1}'s HP was restored by {2} points.", pkmn.name, hpGain))
@@ -1496,8 +1609,8 @@ def pbHPItem(pkmn, restoreHP, scene)
 end
 
 def pbBattleHPItem(pkmn, battler, restoreHP, scene)
-  restoreHP *= 1.5 if $player.is_it_this_class?(:NURSE)
   if battler
+    restoreHP *= 1.5 if $player.nurse?
     if battler.pbRecoverHP(restoreHP) > 0
       scene.pbDisplay(_INTL("{1}'s HP was restored.", battler.pbThis))
     end

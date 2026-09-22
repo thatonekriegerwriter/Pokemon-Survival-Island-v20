@@ -84,9 +84,6 @@ class OverworldCombat
   end
   
 
-def is_assassin?
-  return $player.is_it_this_class?(:ASSASSIN,false)
-end
   
   def tool?(item)
 	return true if item.id==:SNATCHER
@@ -108,7 +105,7 @@ end
     return numShakes
   end
 
-
+ PUNCHES = [:PUNCH]
 
 
  def hits?(event,item)
@@ -119,12 +116,13 @@ end
 		
         hit_rate+=4 if event.direction == $game_player.direction
         hit_rate+=2 if (event.direction == 4 || event.direction == 6) && ($game_player.direction == 8 || $game_player.direction == 2)
+        hit_rate+=4 if PUNCHES.include?(item.id) && $player.real_black_belt?(10)
 		randhit = rand(8)
         return randhit<=hit_rate
 
  end
  
- def begin_action(event, item, dir)
+ def begin_action(event, item, dir = $game_player.direction)
    unless $player.weapon_cooldown<=0
 	sideDisplay("You are too winded from your last attack still!")
     return 
@@ -157,6 +155,9 @@ end
  
  def handle_punch(event)
   return if @battle_rules.include?("No Player Damage") || @battle_rules.include?("No Player Basics")
+  amt = 10 
+  amt /= 2 if $player.black_belt?(5)
+  decreaseStamina(amt)
   pkmn = event.pokemon
   move = Pokemon::Move.new(:TACKLE)
   baseDmg = move.base_damage

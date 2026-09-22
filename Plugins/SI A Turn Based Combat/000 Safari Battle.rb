@@ -87,7 +87,7 @@ class SafariBattle
   def setup_attacking_options
     menu = _INTL("ATTACK")
     @suboptions[menu] = []
-	add_action(menu, SafariBattle::Acts::Attack::BlackBeltPunch, _INTL("NORMAL"), _INTL("Strike out at the enemy like a common man."), 4)
+	add_action(menu, SafariBattle::Acts::Attack::BlackBeltPunch, _INTL("NORMAL"), _INTL("Strike out at the enemy like a common man."), 2)
 	add_action(menu, SafariBattle::Acts::Attack::PreciseAttack, _INTL("PRECISE"), _INTL("Land a carefully aimed hit."), 4)
 	add_action(menu, SafariBattle::Acts::Attack::FierceAttack, _INTL("FIERCE"), _INTL("Attack fiercely and with reckless abandon."), 8)
 	add_action(menu, SafariBattle::Acts::Attack::SpecialAttack, _INTL("SPECIAL"), _INTL("Use your *special* attack."), 25) if @used_special==false

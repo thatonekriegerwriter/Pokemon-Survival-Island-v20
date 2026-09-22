@@ -499,7 +499,7 @@ def draw_research_page
 	 if !@pkmn_icons2.empty?
     thespecies = enc_array[@selections[2]]
 	species_data = GameData::Species.get(thespecies)
-	if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form)
+	if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form) || $player.real_expert?
 	make_move_text if @pkmn_icons3.empty? && @selections[3]==3 && @depth==3
 	end 
 	end 
@@ -780,14 +780,14 @@ def create_species
  
  
       species_data = GameData::Species.get(thespecies)
-      if !$player.pokedex.owned?(thespecies) && !seen_form_any_gender?(thespecies,species_data.form) && !$player.is_it_this_class?(:EXPERT)
+      if !$player.pokedex.owned?(thespecies) && !seen_form_any_gender?(thespecies,species_data.form) && !$player.real_expert?
         @pkmn_icons2["dex_icon"].setSpeciesBitmap(nil)
         @pkmn_icons2["dex_icon"].zoom_x=0.5
         @pkmn_icons2["dex_icon"].zoom_y=0.5
- @pkmn_icons2["pkmn_name"].x = @pkmn_icons2["pkmn_name"].x+15
+        @pkmn_icons2["pkmn_name"].x = @pkmn_icons2["pkmn_name"].x+15
         @pkmn_icons2["pkmn_name"].text="???"
         @pkmn_icons2["pkmn_name"].setTextToFit("???")
-      elsif !$player.pokedex.owned?(thespecies)
+      elsif !$player.pokedex.owned?(thespecies) && !$player.real_expert?
         @pkmn_icons2["dex_icon"].setSpeciesBitmap(thespecies)
         @pkmn_icons2["dex_icon"].tone = Tone.new(0,0,0,255)
         @pkmn_icons2["pkmn_name"].text=GameData::Species.get(thespecies).name
@@ -810,7 +810,7 @@ def create_species
  @pkmn_icons2["dexcursor"].z = 51
  @selection4=0 if @selection4==-1
  end
- if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form)
+ if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form) || $player.real_expert?
 species_data.types.each_with_index do |type, i|
  @pkmn_icons2["type#{i}"] = IconSprite.new(0,0,@viewport)
  @pkmn_icons2["type#{i}"].setBitmap("Graphics/Pictures/ftypes/#{GameData::Type.get(type).name}")
@@ -850,7 +850,7 @@ destroy_pkmn_icons2
 create_species
  if !species_data.nil? 
  
- if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form)
+ if $player.pokedex.owned?(thespecies) && seen_form_any_gender?(thespecies,species_data.form) || $player.real_expert?
  if @selections[3]==0
     @visibletasks ||= [0,3]
     tasks = []
@@ -1284,11 +1284,11 @@ end
     enc_array.each do |s|
      next if @pkmn_icons["icon_#{i}"].nil?
       species_data = GameData::Species.get(s)
-      if (!$player.pokedex.owned?(s) && !seen_form_any_gender?(s,species_data.form) && !$player.is_it_this_class?(:EXPERT))
+      if (!$player.pokedex.owned?(s) && !seen_form_any_gender?(s,species_data.form) && !$player.real_expert?)
         @pkmn_icons["icon_#{i}"].pbSetParams(0,0,0,false)
         @pkmn_icons["icon_#{i}"].tone = Tone.new(0,0,0,255)
         @pkmn_icons["icon_#{i}"].visible = true
-      elsif !$player.pokedex.owned?(s)
+      elsif !$player.pokedex.owned?(s) && !$player.real_expert?
         @pkmn_icons["icon_#{i}"].pbSetParams(s,0,species_data.form,false)
         @pkmn_icons["icon_#{i}"].tone = Tone.new(0,0,0,255)
         @pkmn_icons["icon_#{i}"].visible = true
@@ -2109,7 +2109,7 @@ def change_species_form(amount)
   enc_array, currKey = getEncData
   encounter_pokemon = enc_array[@selections[2]]
   species = GameData::Species.get(encounter_pokemon)
-  if $player.pokedex.owned?(encounter_pokemon) && seen_form_any_gender?(encounter_pokemon, species.form)
+  if $player.pokedex.owned?(encounter_pokemon) && seen_form_any_gender?(encounter_pokemon, species.form) || $player.real_expert?
    @selections[3] += amount
    @selections[3] = 3 if @selections[3]-1 < 0
    @selections[3] = 0 if @selections[3]+1 >= 4

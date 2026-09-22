@@ -359,7 +359,12 @@ class Adventure # Battles - rewritten around CombatSimulation
 
     collectItem(pkmn) if pkmn.dungeon_battles_left
 
-    if PokeventureConfig::FindFriends && rand(PokeventureConfig::ChanceToFindFriend).zero? && pkmn.traveling_partners.length < 2
+
+    friend_chance = PokeventureConfig::ChanceToFindFriend
+    friend_chance = [(friend_chance / 2.0).ceil, 1].max if $player.real_coordinator?(20)
+
+
+    if PokeventureConfig::FindFriends && rand(friend_chance).zero? && pkmn.traveling_partners.length < 2
       enemy.hp = enemy.totalhp
       addAlly(pkmn, enemy)
     end
@@ -413,7 +418,10 @@ class Adventure # Encounters - IQ/chosenAdvType checks removed throughout, curre
       encounter = $PokemonEncounters.choose_wild_pokemon_for_map(pkmn.current_map, enctype)
       generate_egg(pkmn, encounter)
     when 6
-      next_encounter_for_ally(pkmn) if pkmn.traveling_partners.length < 2 && PokeventureConfig::FindFriends && rand(49).zero?
+	  wild_encounter_chance = 49
+      wild_encounter_chance = [(wild_encounter_chance / 2.0).ceil, 1].max if $player.real_coordinator?(20)
+
+      next_encounter_for_ally(pkmn) if pkmn.traveling_partners.length < 2 && PokeventureConfig::FindFriends && rand(wild_encounter_chance).zero?
     end
   end
 

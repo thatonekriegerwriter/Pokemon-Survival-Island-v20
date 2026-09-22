@@ -327,12 +327,17 @@ class Game_Player < Game_Character
       new_charset = pbGetPlayerCharset(meta.cycle_charset)
     when :running
       pbCameraSpeed(1.5) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 3.50 if !@move_route_forcing && $player.playershoes && ($player.playershoes.id == :NORMALSHOES || $player.playershoes == :SEASHOES)
-      self.move_speed = 3.65 if !@move_route_forcing && $player.is_it_this_class?(:TRIATHLETE,false)
-      self.move_speed = 3.65 if !@move_route_forcing && $player.playershoes && $player.playershoes.id == :MAKESHIFTRUNNINGSHOES
-      self.move_speed = 3.75 if !@move_route_forcing && $player.is_it_this_class?(:HIKER) && $game_map&.name&.downcase&.include?("mountain") && $bag.has?(:POLE)
-      self.move_speed = 3.75 if !@move_route_forcing && $player.playershoes && $player.playershoes.id == :RUNNINGSHOES
-      self.move_speed = 4 if !@move_route_forcing && $player.has_running_shoes
+      shoe_id = $player.playershoes&.id
+
+      speeds = []
+      speeds << 3.50 if [:NORMALSHOES, :SEASHOES].include?(shoe_id)
+      speeds << 3.65 if shoe_id == :MAKESHIFTRUNNINGSHOES
+      speeds << 3.75 if $player.real_hiker? && $game_map&.name&.downcase&.include?("mountain") && isSelectedThisItem?(:POLE)
+      speeds << 3.75 if shoe_id == :RUNNINGSHOES || $player.triathlete?(0)
+      speeds << 4.00 if $player.triathlete?(15)
+      speeds << 4.00 if $player.has_running_shoes
+
+      self.move_speed = speeds.max if !@move_route_forcing && !speeds.empty?
       new_charset = pbGetPlayerCharset(meta.run_charset)
     when :ice_sliding
       pbCameraSpeed(1.5) if FancyCamera::INCREASE_WHEN_RUNNING
@@ -340,7 +345,11 @@ class Game_Player < Game_Character
       new_charset = pbGetPlayerCharset(meta.walk_charset)
     else   # :walking, :jumping, :walking_stopped
       pbCameraSpeed(1) if FancyCamera::INCREASE_WHEN_RUNNING
-      self.move_speed = 3 if !@move_route_forcing
+      speeds = []
+	  speeds << 3
+      speeds << 3.25 if $player.triathlete?(15)
+	  
+      self.move_speed = speeds.max if !@move_route_forcing && !speeds.empty?
       new_charset = pbGetPlayerCharset(meta.walk_charset)
     end
     if @bumping
@@ -2019,8 +2028,13 @@ EventHandlers.add(:on_player_interact, :pet_follower,
 	  pkmn.time_last_pet = pbGetTimeNow.to_i
 	  unless facingEvent.sleeping?
 	  pkmn.update_interacted
-      pkmn.changeHappiness("groom")
-      pkmn.changeLoyalty("groom")
+	  amt = 1
+	  amt = 2
+      amt.times do |i|
+       pkmn.changeHappiness("groom")
+       pkmn.changeLoyalty("groom")
+      end 
+	  pbItemRestoreHP(pkmn, 20) if $player.real_nurse?(5)
 	  pbSEPlay("pet", 80)
 	  if pkmn.happiness>=240
 	   $scene.spriteset.addUserAnimation(51,facingEvent.x,facingEvent.y,true,1)

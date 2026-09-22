@@ -80,7 +80,7 @@ module InventoryScene
           pbFadeOutIn { pbDisplayMail(Mail.new(item, "", "")) }
         when :drink, :eat
           ret = pbNeoEating(item)
-          $bag.remove(item, 1)
+          $bag.remove(item, 1) unless $player.real_collector(5) && rand(4)==0
           return :close_bag if ret == 2
         when :equip
           $player.equip(item)
@@ -89,7 +89,8 @@ module InventoryScene
           $player.unequip
           sideDisplay(_INTL("You are now unarmed."))
         when :medicate
-          ret = pbMedicine($bag, item)
+          ret = pbNeoMedicine($bag, item)
+          $bag.remove(item, 1) unless $player.real_collector(5) && rand(4)==0
           return :close_bag if ret == 2
         when :use
           ret = pbUseItem($bag, item)

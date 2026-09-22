@@ -29,5 +29,6 @@
 
 ### World
 - [ ] Finish First Temple (Second to last)
+- [ ] Block off areas
 
 ### Misc Mechanics

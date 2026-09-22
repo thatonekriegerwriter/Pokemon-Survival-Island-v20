@@ -139,7 +139,7 @@ class SafariBattle::Acts::Attack::Punch < SafariBattle::Acts::Attack
   end 
 
   def can_add?
-    ret = enough_stamina? && !$player.is_it_this_class?(:BLACKBELT, false)
+    ret = enough_stamina? && !$player.real_black_belt?
 	return ret 
     
   end
@@ -162,7 +162,7 @@ class SafariBattle::Acts::Attack::BlackBeltPunch < SafariBattle::Acts::Attack::P
     super(name, description, stamina_cost, consumable, extra_data)
   end 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   def act(battle, target)
      return unless spend_stamina
@@ -185,7 +185,7 @@ class SafariBattle::Acts::Attack::PreciseAttack < SafariBattle::Acts::Attack
     super(name, description, stamina_cost, consumable, extra_data)
   end 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   
   def act(battle, target)
@@ -209,7 +209,7 @@ class SafariBattle::Acts::Attack::FierceAttack < SafariBattle::Acts::Attack
     super(name, description, stamina_cost, consumable, extra_data)
   end 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   
   def act(battle, target)
@@ -233,7 +233,7 @@ class SafariBattle::Acts::Attack::SpecialAttack < SafariBattle::Acts::Attack
     super(name, description, stamina_cost, consumable, extra_data)
   end 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   
   def act(battle, target)
@@ -358,7 +358,7 @@ class SafariBattle::Acts::Defend::Block < SafariBattle::Acts::Defend
   end 
 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   
   def act(battle, target)
@@ -380,7 +380,7 @@ class SafariBattle::Acts::Defend::Counter < SafariBattle::Acts::Defend
   end 
 
   def can_add?
-    enough_stamina? && $player.is_it_this_class?(:BLACKBELT, false)
+    enough_stamina? && $player.real_black_belt?
   end
   
   def act(battle, target)
@@ -420,7 +420,7 @@ class SafariBattle::Acts::Defend::Run < SafariBattle::Acts::Defend
   end 
   
   def act(battle, target)
-    if Input.press?(Input::CTRL) && $DEBUG
+    if Input.press?(Input::CTRL) && $DEBUG || $player.real_ranger?(10)
        pbSEPlay("Battle flee")
        battle.pbDisplayPaused(_INTL("You got away safely!"))
        battle.decision = 3

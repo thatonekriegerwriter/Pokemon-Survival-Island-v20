@@ -29,7 +29,7 @@ end
        ensure_timer(minedata, map_id)
 	   return if (pbGetTimeNow.to_i - $PokemonGlobal.mining_spot_timer[map_id]) < minedata.timer
 	   max_spots = minedata.max_mining_spots
-	   max_spots += 2 if $player.is_it_this_class?(:HIKER)
+	   max_spots += 2 if $player.hiker?(10)
 	   min_spots = minedata.min_mining_spots
 	   minedata.area_amt.times do |i|
 	      spots = ([[rand(minedata.roll_times) + 1, max_spots].min, min_spots].max).to_i
@@ -69,7 +69,10 @@ end
   
   def get_ore(minedata)
 	rarity = weighted_random([[:common_rewards, 70], [:uncommon_rewards, 25], [:rare_rewards, 5]])
-	ores = minedata.send(rarity)
+    ores = minedata.send(rarity)
+    if rarity == :rare_rewards && $player.real_collector?(15) && !ores.any? { |item, _| item == :STARPIECE }
+      ores = ores + [[:STARPIECE, 10]]
+    end
 	return weighted_random(ores)
   end 
 
@@ -116,7 +119,7 @@ def ov_mining(type)
    else
      image = "Legends_Tumblestone"
   end
-   amt *= 2 if $player.is_it_this_class?(:HIKER,false) && rand(100)<=25
+   amt *= 2 if $player.hiker?(5) && rand(100) <= 25
   route = [PBMoveRoute::Wait,4,
           PBMoveRoute::Graphic, image, 0, 2, 1,
 		   PBMoveRoute::Wait,4,
@@ -166,7 +169,7 @@ def ov_mining2(type)
 	else
      amt = rand(2)+1
     end
-   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
+   amt *= 2 if $player.hiker?(5) && rand(100) <= 25
    if !$bag.can_add?(type,amt)
   sideDisplay(_INTL("You don't have space!"))
   return
@@ -195,7 +198,6 @@ def ov_mining2(type)
 		  PBMoveRoute::Script, "get_own_event.removeThisEventfromMap"]
   end 
   if pbMoveRoute2(this_event,route,true)
-   amt *= 2 if $player.is_it_this_class?(:HIKER) && rand(100)<=25
    current_selection.decrease_durability(1)
   if !$bag.add(type,amt)
   sideDisplay(_INTL("You don't have space!"))
@@ -249,7 +251,7 @@ class MiningGameSceneOld
       next if @sprites["cursor"].isAnimating?
       # Check end conditions
 	   hitsamt = 49
-	   hitsamt += 10 if $player.is_it_this_class?(:HIKER)
+	   hitsamt += 10 if $player.hiker?(10)
       if @sprites["crack"].hits >= hitsamt
         @sprites["cursor"].visible = false
         pbSEPlay("Mining collapse")

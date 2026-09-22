@@ -611,7 +611,7 @@ command = 0
       commands[cmd_level_up = commands.length] = _INTL('Level Up') if $player.party.length>0
       commands[cmd_move_statues = commands.length] = _INTL('Move Between Statues') #if $PokemonGlobal.active_statues.length>1
       commands[cmd_present_pokemon = commands.length] = _INTL('Learn Move') if $player.party.length>0
-      commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.playerclass.id==:ACTOR
+      commands[cmd_change_class = commands.length]  = _INTL('Change Class') if $PokemonGlobal.unlocked_classes.length > 1 && $player.actor?(5) && $player.can_act_again?
       commands[cmd_evolve = commands.length]  = _INTL('Use Evo Stone') if statue.evo_stones.length > 0
       commands[cmd_rest = commands.length]  = _INTL('Try to Rest') if PBDayNight.isNight?(pbGetTimeNow)
       commands[cmd_quit = commands.length]      = _INTL('Cancel')
@@ -711,7 +711,7 @@ command = 0
       if true
    	  cmd12 = []
 	 pbMessageDisplay(msgwindow,_INTL("What do you want to change your acted class to?\\wtnp[1]"))
-	  cmd12 << "Remove" if $player.playerclass.acted_class!=:NONE
+	  cmd12 << "Remove" unless $player.not_acting?
 	 $PokemonGlobal.unlocked_classes.each do |tclass|
 	  cmd12 << getPlayerClassName(tclass)
 	 end
@@ -719,26 +719,27 @@ command = 0
     commands3 = pbShowCommands(msgwindow,cmd12,-1)
 	pbDisposeMessageWindow(msgwindow)
 	  cancel_index = cmd12.length - 1
-	  has_remove = ($player.playerclass.acted_class!=:NONE)
+	  has_remove = (!$player.not_acting?)
 	  selected_class = nil
 	  selected_class = has_remove ? $PokemonGlobal.unlocked_classes[commands3-1] : $PokemonGlobal.unlocked_classes[commands3] if !(has_remove && commands3==0) && commands3 != cancel_index
 	  if commands3 == cancel_index
 	     break
 	   elsif has_remove && commands3==0
-	      pbMessage(_INTL("You do not change your acted class."))
-	      $player.playerclass.acted_class=:NONE
-	   
+	     pbMessage(_INTL("You clear your acted class."))
+	     $player.clear_acting
 	   elsif selected_class==$player.playerclass.id
-	    pbMessage(_INTL("You do not change your acted class."))
+	     pbMessage(_INTL("You do not change your acted class."))
 	   else
 	   
-	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName(selected_class.getName)}?"))
-		 pbMessage(_INTL("You change your acted class to #{getPlayerClassName(selected_class.getName)}."))
-		  $player.playerclass.acted_class = selected_class
+	   
+	     if pbConfirmMessage(_INTL("Are you sure you want to change your acted class to #{getPlayerClassName(selected_class)}?"))
+		  pbMessage(_INTL("You change your acted class to #{getPlayerClassName(selected_class)}."))
+		  $player.set_acting(selected_class)
 		 else 
-	    pbMessage(_INTL("You do not change your acted class."))
-	     break
+	      pbMessage(_INTL("You do not change your acted class."))
+	      break
 		 end
+
 
 	   end
 	  end

@@ -1,0 +1,625 @@
+# Consumables: starting values for every food and healing item.
+# Health is HP change (negative = damage). Unlisted fields use the defaults in GameData::Consumable.
+#-------------------------------
+[WATER]
+Water = 10
+Health = -10.0
+Bottle = true
+Servings = Tiny
+Flavor = 0,0,0,0,0
+#-------------------------------
+[FRESHWATER]
+Water = 20
+Bottle = true
+Servings = Tiny
+Flavor = 0,0,0,0,0
+#-------------------------------
+[MEAT]
+Food = 15
+Health = -7.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,10,0,0,0
+#-------------------------------
+[BIRDMEAT]
+Food = 10
+Health = -7.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,10,5,0,0
+#-------------------------------
+[POISONOUSMEAT]
+Food = 10
+Health = -25.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,0,0,15,10
+#-------------------------------
+[ROCKYMEAT]
+Food = 10
+Health = -10.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,15,0,5,0
+#-------------------------------
+[BUGMEAT]
+Food = 2
+Health = -2.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,5,0,10,5
+#-------------------------------
+[STEELYMEAT]
+Food = 3
+Health = -10.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,10,0,10,0
+#-------------------------------
+[SUSHI]
+Food = 3
+Saturation = -6
+Priority = 3
+Flavor = 0,10,5,0,10
+#-------------------------------
+[LEAFYMEAT]
+Food = 10
+Health = -6.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,0,5,10,0
+#-------------------------------
+[FROZENMEAT]
+Food = 6
+Health = -15.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,10,0,0,0
+#-------------------------------
+[DRAGONMEAT]
+Food = 20
+Health = -15.0
+SE = normaldamage
+Priority = 3
+Flavor = 15,10,0,0,0
+#-------------------------------
+[EDIABLESCRYSTAL]
+Food = 6
+Health = -15.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,5,20,0,0
+#-------------------------------
+[ORANBERRY]
+Food = 1
+Health = 0.5
+Servings = Tiny
+#-------------------------------
+[LEPPABERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[CHERIBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[CHESTOBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[PECHABERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[RAWSTBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[ASPEARBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[PERSIMBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[LUMBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[FIGYBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[WIKIBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[MAGOBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[AGUAVBERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[IAPAPABERRY]
+Food = 1
+Servings = Tiny
+#-------------------------------
+[SITRUSBERRY]
+Food = 1
+Health = 1.0
+Servings = Tiny
+#-------------------------------
+[BERRYJUICE]
+Food = 1
+Water = 8
+Health = 2.0
+Bottle = true
+Servings = Small
+Priority = 2
+Flavor = 10,10,0,10,10
+#-------------------------------
+[ATKCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 20,0,0,0,0
+#-------------------------------
+[SATKCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 5,0,0,15,20
+#-------------------------------
+[SPEEDCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 5,0,20,0,0
+#-------------------------------
+[SPDEFCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 5,0,0,20,0
+#-------------------------------
+[ACCCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 5,10,10,0,0
+#-------------------------------
+[DEFCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 5,0,0,0,20
+#-------------------------------
+[CRITCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 15,0,0,10,0
+#-------------------------------
+[GSCURRY]
+Food = 8
+Water = -7
+Saturation = 15
+Priority = 4
+Flavor = 10,10,10,10,10
+#-------------------------------
+[RAGECANDYBAR]
+Food = 10
+Saturation = 3
+Sleep = 7
+Priority = 5
+Flavor = 5,0,25,0,0
+#-------------------------------
+[SWEETHEART]
+Food = 10
+Saturation = 3
+Sleep = 7
+Priority = 5
+Flavor = 0,5,20,10,0
+#-------------------------------
+[SODAPOP]
+Water = 11
+Saturation = 30
+Sleep = 25
+Bottle = true
+Servings = Large
+Priority = 5
+Flavor = 0,0,20,0,10
+#-------------------------------
+[LEMONADE]
+Water = 22
+Saturation = 30
+Sleep = 10
+Bottle = true
+Servings = Tiny
+Priority = 5
+Flavor = 0,0,15,5,15
+#-------------------------------
+[LEMON]
+Food = 1
+Servings = Tiny
+# Flavor mirrors berry_plants.txt
+Flavor = 0,0,0,5,25
+#-------------------------------
+[HONEY]
+Saturation = 20
+Servings = Huge
+Priority = 5
+Flavor = 0,0,30,0,0
+#-------------------------------
+[MOOMOOMILK]
+Water = 20
+Saturation = 10
+Bottle = true
+Servings = Huge
+Priority = 3
+Flavor = 0,0,15,0,0
+#-------------------------------
+[SLOWPOKETAIL]
+Food = 20
+Health = -10.0
+SE = normaldamage
+Priority = 3
+Flavor = 0,5,15,0,0
+#-------------------------------
+[CSLOWPOKETAIL]
+Food = 20
+Saturation = 20
+Servings = Huge
+Priority = 3
+Flavor = 0,5,20,0,0
+#-------------------------------
+[BAKEDPOTATO]
+Food = 7
+Water = 4
+Saturation = 10
+Servings = Huge
+Priority = 3
+Flavor = 0,10,10,0,0
+#-------------------------------
+[APPLE]
+Food = 1
+Water = 1
+Servings = Tiny
+Priority = 2
+# Flavor mirrors berry_plants.txt
+Flavor = 0,0,15,0,10
+#-------------------------------
+[COOKEDAPPLE]
+Food = 3
+Saturation = 2
+Health = 2
+Servings = Small
+Priority = 2
+Flavor = 0,0,20,0,5
+#-------------------------------
+[CHOCOLATE]
+Food = 10
+Saturation = 3
+Sleep = 7
+Priority = 4
+Flavor = 0,5,20,10,0
+#-------------------------------
+[OLDGATEAU]
+Food = 10
+Saturation = 3
+Sleep = 7
+Flavor = 0,0,20,5,0
+#-------------------------------
+[LAVACOOKIE]
+Food = 6
+Water = 3
+Saturation = 5
+Flavor = 10,0,15,0,0
+#-------------------------------
+[CASTELIACONE]
+Food = 7
+Water = 7
+Flavor = 0,0,20,0,5
+#-------------------------------
+[LUMIOSEGALETTE]
+Food = 6
+Saturation = 5
+Flavor = 0,10,15,0,0
+#-------------------------------
+[SHALOURSABLE]
+Food = 8
+Saturation = 8
+Flavor = 0,15,10,0,0
+#-------------------------------
+[BIGMALASADA]
+Food = 8
+Saturation = 8
+Flavor = 0,5,20,0,0
+#-------------------------------
+[ONION]
+Food = 1
+Water = 1
+Servings = Tiny
+Priority = 2
+# Flavor mirrors berry_plants.txt
+Flavor = 15,0,5,0,0
+#-------------------------------
+[COOKEDORAN]
+Food = 3
+Saturation = 2
+Health = 2
+Servings = Small
+Flavor = 10,10,5,5,5
+#-------------------------------
+[CARROT]
+Food = 1
+Water = 1
+Saturation = 6
+Servings = Tiny
+Priority = 2
+# Flavor mirrors berry_plants.txt
+Flavor = 0,5,10,0,0
+#-------------------------------
+[BREAD]
+Food = 10
+Saturation = 10
+Priority = 4
+Flavor = 0,10,5,0,0
+#-------------------------------
+[TEA]
+Water = 15
+Saturation = 15
+Servings = Large
+Priority = 4
+Flavor = 0,10,0,15,0
+#-------------------------------
+[CARROTCAKE]
+Food = 10
+Water = 1
+Saturation = 15
+Servings = Huge
+Priority = 5
+Flavor = 0,5,15,0,0
+#-------------------------------
+[SITRUSJUICE]
+Food = 6
+Saturation = 20
+Health = 25
+Bottle = true
+Servings = Large
+Priority = 3
+Flavor = 5,10,10,10,10
+#-------------------------------
+[BERRYMASH]
+Food = 8
+Water = 2
+Saturation = 5
+Health = 4.0
+Priority = 3
+Flavor = 5,10,5,10,10
+#-------------------------------
+[LARGEMEAL]
+Servings = Feast
+FeastBoosts = DEFENSE,1,HP,1
+Food = 50
+Water = 50
+Saturation = 50
+Servings = FEAST
+Priority = 5
+Flavor = 5,5,5,10,0
+#-------------------------------
+[COOKEDMEAT]
+Food = 12
+Saturation = 10
+Priority = 3
+Flavor = 0,10,5,0,0
+#-------------------------------
+[COOKEDBIRDMEAT]
+Food = 12
+Saturation = 10
+Priority = 3
+Flavor = 0,10,10,0,0
+#-------------------------------
+[COOKEDROCKYMEAT]
+Food = 12
+Saturation = 10
+Priority = 3
+Flavor = 0,15,5,0,0
+#-------------------------------
+[COOKEDBUGMEAT]
+Food = 12
+Saturation = 10
+Priority = 3
+Flavor = 0,5,5,5,0
+#-------------------------------
+[COOKEDSTEELYMEAT]
+Food = 12
+Saturation = 10
+Priority = 3
+Flavor = 0,10,5,5,0
+#-------------------------------
+[COOKEDSUSHI]
+Food = 6
+Water = 6
+Saturation = 10
+Priority = 3
+Flavor = 0,10,10,0,5
+#-------------------------------
+[COOKEDLEAFYMEAT]
+Food = 24
+Saturation = 5
+Priority = 3
+Flavor = 0,0,10,5,0
+#-------------------------------
+[COOKEDDRAGONMEAT]
+Food = 10
+Saturation = 100
+Priority = 3
+Flavor = 15,10,5,0,0
+#-------------------------------
+[COOKEDEDIABLESCRYSTAL]
+Food = 10
+Saturation = 10
+Priority = 3
+Flavor = 0,5,25,0,0
+#-------------------------------
+[MEATSANDWICHBIRD]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[MEATSANDWICHSLOWPOKETAIL]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,10,0,0
+#-------------------------------
+[MEATSANDWICHROCKY]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[MEATSANDWICHBUG]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[MEATSANDWICHSTEELY]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[MEATSANDWICHSUS]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[MEATSANDWICHLEAFY]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,5,5,0,0
+#-------------------------------
+[MEATSANDWICHMJ]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 5,10,5,0,0
+#-------------------------------
+[MEATSANDWICHCRYSTAL]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,15,0,0
+#-------------------------------
+[MEATSANDWICH]
+Food = 30
+Saturation = 40
+Servings = Large
+Flavor = 0,10,5,0,0
+#-------------------------------
+[LEEK]
+Food = 2
+Water = 2
+Servings = Tiny
+Priority = 2
+# Flavor mirrors berry_plants.txt
+Flavor = 10,0,0,5,0
+#-------------------------------
+[TROPIUSFRUIT]
+Food = 1
+Saturation = 10
+Servings = Small
+Priority = 4
+# Flavor mirrors berry_plants.txt
+Flavor = 0,0,20,0,0
+#-------------------------------
+[EGGEDIBLE]
+Food = 1
+Saturation = 20
+Priority = 4
+Flavor = 0,10,5,0,0
+#-------------------------------
+[CHERUBIBALL]
+Food = 7
+Water = 7
+Saturation = 1
+Servings = Tiny
+Priority = 4
+Flavor = 0,0,15,0,10
+#-------------------------------
+[MEATKABOB]
+Food = 24
+Saturation = 20
+Servings = Large
+Priority = 4
+Flavor = 0,10,5,0,0
+#-------------------------------
+[SOUPBROTH]
+Food = 5
+Water = 5
+Saturation = 10
+Bottle = true
+Servings = Huge
+Priority = 4
+Flavor = 0,10,0,5,0
+#-------------------------------
+[POTATOSTEW]
+Food = 20
+Water = 30
+Saturation = 40
+Bottle = true
+Servings = Huge
+Priority = 4
+Flavor = 0,10,5,5,0
+#-------------------------------
+[FISHSOUP]
+Food = 40
+Water = 30
+Saturation = 10
+Bottle = true
+Servings = Huge
+Priority = 4
+Flavor = 0,10,5,5,5
+#-------------------------------
+[WEAKPOTION]
+Health = 10
+Bottle = true
+Flavor = 0,0,0,5,0
+#-------------------------------
+[POTION]
+Health = 20
+Bottle = true
+Flavor = 0,0,0,10,0
+#-------------------------------
+[SUPERPOTION]
+Health = 40
+Bottle = true
+Flavor = 0,0,0,15,0
+#-------------------------------
+[HYPERPOTION]
+Health = 60
+Bottle = true
+Flavor = 0,0,0,20,0
+#-------------------------------
+[FULLRESTORE]
+Health = 9999
+Healthiness = 100
+Status = NONE
+Bottle = true
+Flavor = 0,0,0,25,0

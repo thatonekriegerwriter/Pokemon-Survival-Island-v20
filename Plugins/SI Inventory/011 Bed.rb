@@ -558,8 +558,8 @@ def heal_BED(wari,pkmn)
 	 else
 	 chance = rand(19)+4
   end
-  
-  if pkmn.fainted?
+  unless $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 10
+  if pkmn.fainted? 
     if wari > 7
 	  pkmn.hp = 1
 	else
@@ -570,13 +570,16 @@ def heal_BED(wari,pkmn)
 	  return if pkmn.dead?
 	end 
   end
+  end 
     seconds = wari * 60 * 60
     pkmn.total_time_working = [pkmn.total_time_working - (second / 2), 0].max
-    newHP = pkmn.hp + (wari*4.25)
+	increased_value = (wari*4.25)
+    increased_value *= 1.5 if $player.is_it_this_class?(:NURSE)
+    newHP = pkmn.hp + increased_value
     newHP = pkmn.totalhp if newHP > pkmn.totalhp
-    newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false)
+    newHP = pkmn.totalhp if $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 10
     pkmn.hp = newHP
-    pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
+    pkmn.heal_status if (chance <= wari || $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 10 )
 	pkmn.status = :NONE if pkmn.status==:SLEEP
 	#puts pkmn.name
 	#puts pkmn.status
@@ -584,7 +587,7 @@ def heal_BED(wari,pkmn)
 	 if (chance <= wari || $player.is_it_this_class?(:NURSE,false) )
 	 amt = BED_LOOKUP_FOR_HOURS[wari.to_s]
 	 amt = 0 if amt.nil?
-	 amt = :FULL if $player.is_it_this_class?(:NURSE,false)
+	 amt = :FULL if $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 10
 	 if amt == :FULL
 	 pkmn.heal_PP
 	 else

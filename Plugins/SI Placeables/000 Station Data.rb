@@ -2529,7 +2529,8 @@ class BerryPotData
     event.workers.current_workers 
   end 
   def tending_multiplier
-    1.0 + (workers.length * 0.25)
+    value = $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15 ? 0.5 : 0.25
+    1.0 + (workers.length * value)
   end
   def update
    # puts "Berry Pot (#{event.id}) updating..."
@@ -2549,6 +2550,8 @@ class BerryPotData
     min_yield = plant_data.minimum_yield
     time_per_stage = ((plant_data.hours_per_stage * 3600) * 1.5).floor
 	time_per_stage = (time_per_stage / tending_multiplier).floor
+	time_per_stage -= 1 $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 5
+	time_per_stage = [time_per_stage,1].max
 	
 	
 	event.grant_worker_exp(0.025 * time_delta)

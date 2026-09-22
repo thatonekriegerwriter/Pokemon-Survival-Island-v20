@@ -49,9 +49,7 @@ end
 
 
 class ItemStats
-  attr_accessor :item
   attr_reader :berry
-  attr_reader :consumable
   attr_reader :pokeball
   attr_reader :capture_styler
   attr_reader :weapon
@@ -61,26 +59,37 @@ class ItemStats
   def initialize(item)
     @item = item
     @berry = BerryStats.new(item) if item.data.is_berry?
-    @consumable = ConsumableStats.new(item) if item.data.is_berry? || item.data.is_foodwater?
+    @consumable = ConsumableStats.new(item) if item.data.is_berry? || item.data.is_foodwater? || GameData::Consumable.try_get(item.id)
     @pokeball = PokeBallStats.new(item) if item.data.is_pokeball?
     @capture_styler = CaptureStylerStats.new(item) if item.data.is_styler?
 	@weapon = WeaponStats.new(item) if item.data.is_weapon?
   end 
   
+  def consumable
+    if @consumable.nil? && GameData::Consumable.try_get(@item.id)
+      @consumable = ConsumableStats.new(@item)
+    end
+    return @consumable
+  end
+def item
+  @item
+end
+
+def item=(value)
+  @item = value
+  [@berry, @consumable, @pokeball, @capture_styler, @weapon].each do |stats|
+    stats.item = value if stats
+  end
+end
+
   def initialize_copy(original)
     super 
-    
     @berry          = original.berry.dup if original.berry
     @consumable     = original.consumable.dup if original.consumable
     @pokeball       = original.pokeball.dup if original.pokeball
     @capture_styler = original.capture_styler.dup if original.capture_styler
     @weapon = original.weapon.dup if original.weapon
-
-    @berry.item          = self.item if @berry
-    @consumable.item     = self.item if @consumable
-    @pokeball.item       = self.item if @pokeball
-    @capture_styler.item = self.item if @capture_styler
-    @weapon.item = self.item if @weapon
+    
   end
   
   def quality
@@ -181,7 +190,8 @@ class ItemStats
     @berry&.resistance
   end 
   def flavor
-    @berry&.flavor
+    return consumable.flavor if consumable
+    return @berry&.flavor
   end 
   def gain
     @berry&.gain
@@ -203,7 +213,11 @@ class ItemStats
     @berry&.resistance=value
   end 
   def flavor=(value)
-    @berry&.flavor=value
+    if consumable
+      consumable.flavor = value
+    else
+      @berry&.flavor = value
+    end
   end 
   def gain=(value)
     @berry&.gain=value
@@ -245,15 +259,16 @@ class ItemStats
     @pokeball&.ease_of_use=value
   end 
   def range=(value)
-    @pokeball&.recoverable=value
+    @pokeball&.range=value
   end 
   def height=(value)
-    @pokeball&.ease_of_use=value
+    @pokeball&.height=value
   end 
   
   
   def health
-    @capture_styler&.health
+    return @capture_styler.health if @capture_styler
+    return consumable&.health
   end 
   def power
     @capture_styler&.power
@@ -271,7 +286,11 @@ class ItemStats
     @capture_styler&.latent_power
   end 
   def health=(value)
-    @capture_styler&.health=value
+    if @capture_styler
+      @capture_styler.health = value
+    elsif consumable
+      consumable.health = value
+    end
   end 
   def power=(value)
     @capture_styler&.power=value
@@ -294,8 +313,46 @@ class ItemStats
     @capture_styler&.assists
   end 
 
+  def saturation
+    consumable&.saturation
+  end
+  def sleep
+    consumable&.sleep
+  end
+  def healthiness
+    consumable&.healthiness
+  end
+  def status
+    consumable&.status
+  end
+  def feast
+    consumable&.feast_boosts
+  end
+  def feast?
+    consumable ? consumable.feast? : false
+  end
+ 
+  def saturation=(value)
+    consumable&.saturation = value
+  end
+  def sleep=(value)
+    consumable&.sleep = value
+  end
+  def healthiness=(value)
+    consumable&.healthiness = value
+  end
+  def status=(value)
+    consumable&.status = value
+  end
+  def feast=(value)
+    consumable&.feast_boosts = value
+  end
+
 
 end 
+
+
+
 class WeaponStats
   attr_accessor :item
   attr_accessor :stat_bonus 
@@ -443,68 +500,108 @@ end
 
 class ConsumableStats
   attr_accessor :item
-  attr_accessor :spoiling_rate 
-  attr_accessor :priority 
-  attr_accessor :servings 
-  attr_accessor :food 
-  attr_accessor :water 
+  attr_accessor :spoiling_rate  # effects the rate the food spoils, rang: 1-5
+  attr_accessor :priority  # effects how much this as an ingredient changes the food, rang: 1-5
+  attr_accessor :servings # effects how much stamina it restores, :TINY, :SMALL, :AVERAGE, :LARGE, :HUGE, :FEAST
+  #flavor #effects how a pokemon likes the food
+  attr_accessor :food # effects how much the food restores, range: negative to postive
+  attr_accessor :water # effects how much the water restores, range: negative to postive
+  #quality #  effects it's price, and the amount of food/water restored by it, rang: 1-5
   
   def initialize(item)
     @item = item 
-    @spoiling_rate = 1 # effects the rate the food spoils, rang: 1-5
-	@priority = 1 # effects how much this as an ingredient changes the food, rang: 1-5
-	@servings = :AVERAGE # effects how much stamina it restores, :TINY, :SMALL, :AVERAGE, :LARGE, :HUGE
-	@flavor = [0,0,0,0,0] #effects how a pokemon likes the food
-	@food = 0 # effects how much the food restores, range: negative to postive
-	@water = 0 # effects how much the water restores, range: negative to postive
-	@quality = 1 #  effects it's price, and the amount of food/water restored by it, rang: 1-5
+    @spoiling_rate = data ? data.spoiling_rate : 1        # rang: 1-5
+    @priority      = data ? data.priority      : 1        # rang: 1-5
+    @servings      = data ? data.servings      : :AVERAGE # :TINY .. :FEAST
+    @flavor        = data ? data.flavor.dup    : [0,0,0,0,0]
+    @food          = data ? data.food          : 0
+    @water         = data ? data.water         : 0
+    @quality       = 1
+    fill_extended_fields
   end 
+  
+  def se
+    data&.se
+  end 
+  
+  def has_bottle?
+    data&.has_bottle? || false 
+  end 
+  
+  
+  def fill_extended_fields
+    return if @extended_ready
+    @saturation   = ((data && data.saturation)  || 0) if @saturation.nil?
+    @sleep        = ((data && data.sleep)       || 0) if @sleep.nil?
+    @health       = ((data && data.health)      || 0) if @health.nil?
+    @healthiness  = ((data && data.healthiness) || 0) if @healthiness.nil?
+    @status       = data.status if @status.nil? && data
+    if @feast_boosts.nil?
+      boosts = data ? data.feast : nil
+      @feast_boosts = boosts ? boosts.map { |pair| pair.dup } : []
+    end
+    @extended_ready = true
+  end
+
+  def data
+    GameData::Consumable.try_get(@item.id)
+  end 
+  
   def initialize_copy(original)
     super
     @flavor = original.instance_variable_get(:@flavor).dup
+    boosts = original.instance_variable_get(:@feast_boosts)
+    @feast_boosts = boosts.map { |pair| pair.dup } if boosts
   end
   
-  def restores 
+  %w[saturation sleep health healthiness status feast_boosts].each do |name|
+    define_method(name)       { fill_extended_fields; instance_variable_get("@#{name}") }
+    define_method("#{name}=") { |value| fill_extended_fields; instance_variable_set("@#{name}", value) }
+  end
+ 
+  def feast?
+    return @servings == :FEAST && !feast_boosts.empty?
+  end
+ 
+  def restores
     @food
-  end 
+  end
   def restores=(value)
-    @food=value 
-  end 
-  
+    @food = value
+  end
+ 
   def quality
     if @item.data.is_berry?
-	  return @item.stats.berry.quality 
-	else
-	 return @quality
-	end 
-  end 
-  
+      return @item.stats.berry.quality
+    else
+      return @quality
+    end
+  end
+ 
   def flavor
     if @item.data.is_berry?
-	  return @item.stats.berry.flavor 
-	else
-	 return @flavor
-	end 
-  end 
-  
+      return @item.stats.berry.flavor
+    else
+      return @flavor
+    end
+  end
+ 
   def quality=(value)
     if @item.data.is_berry?
-	  @item.stats.berry.quality = value 
-	else
-	 @quality = value 
-	end 
-    
-  end 
-  
+      @item.stats.berry.quality = value
+    else
+      @quality = value
+    end
+  end
+ 
   def flavor=(value)
     if @item.data.is_berry?
-	  @item.stats.berry.flavor = value 
-	else
-	 @flavor = value 
-	end 
-  end 
-  
-  
+      @item.stats.berry.flavor = value
+    else
+      @flavor = value
+    end
+  end
+
 end 
 
 class PokeBallStats

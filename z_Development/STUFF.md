@@ -12,9 +12,11 @@
 ### Pokemon
 - [ ] Stations use https://bulbapedia.bulbagarden.net/wiki/Performance
 - [ ] Released Pokemon Array and Released Pokemon events
+- [ ] Add Releasing
 - [ ] Early Pokemon Evolution
 - [ ] Update Foreign Pokemon for Encounter Spawns. Add "Papas" Togepi.
 - [ ] Trade evolution Pokemon
+- [ ] Pokemon Tasks
 - [ ] Allow Pokemon to be spawnable by Pokeball on other maps
 - [ ] Milking station can just be Pet Bed + Pokemon that has hands or a psychic
 - [ ] Potential
@@ -47,6 +49,7 @@
 - [ ] Rework player damage calculation, perhaps use the ethos behind the safari damage system.
 - [ ] Add natures to Safari Combat
 - [ ] Rebuild Boss fight logic
+- [ ] reeval Boss Fight for Rangers
 - [ ] Create Modifier and Effects
 - [ ] Check if Aerial Ace is broken
 - [ ] Charm moves invert targets team

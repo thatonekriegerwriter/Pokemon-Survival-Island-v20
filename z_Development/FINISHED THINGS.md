@@ -134,6 +134,7 @@
 - [x] Ambient Temp
 
 ### Items
+- [x] Finish the internal data for items. (Pokeball Done. Berry framework done, not details, but those arent required. Styler done. Important part of weapons done. Consumable incomplete.
 - [x] Ocean Trading Xatu
 - [x] Grooming Brush
 - [x] Harvestable Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius.
@@ -150,5 +151,9 @@
 - [x] Change Pokeball $bag.remove likelihood based on recoverable.
 - [x] Refresh Capture Styler 'health' over time, or by putting it in a electric machine.
 - [x] Update Crossbreeding paths, this needs internal data for plants. (Req: Item Data)
+- [x] Check and Update food for Cherubi Ball, Slowpoke Tail, and Chansey Egg, and Leek. Tropius Banana.
+- [x] Fill out consumable flavor, and berry flavour
+- [x] Berry Plant dominance and recessiveness
+- [x] Check if we like the mutation table for berries
 
  

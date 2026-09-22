@@ -190,7 +190,7 @@ HoursPerStage = 8
 DryingPerHour = 8
 Yield = 2,5
 Season = 0
-Climate = Highland
+Climate = Highlands
 Weather = None
 Flavor = 10,0,10,10,0
 #-------------------------------
@@ -219,6 +219,7 @@ Yield = 2,5
 Season = 0
 Climate = Marsh
 Weather = None
+Flavor = 10,10,0,10,0
 #-------------------------------
 [GREPABERRY]
 HoursPerStage = 8
@@ -227,7 +228,7 @@ Yield = 2,5
 Season = 0
 Climate = Marsh
 Weather = None
-Flavor = 10,10,0,10,0
+Flavor = 0,10,10,0,10
 #-------------------------------
 [TAMATOBERRY]
 HoursPerStage = 8
@@ -251,7 +252,7 @@ Flavor = 0,20,10,0,0
 HoursPerStage = 6
 DryingPerHour = 10
 Yield = 2,10
-Season = 4
+Season = 3
 Climate = Frigid
 Weather = None
 Flavor = 0,0,20,10,0
@@ -478,7 +479,7 @@ DryingPerHour = 6
 Yield = 2,5
 Season = 0
 Climate = Temperate
-Season = 4
+Season = 3
 Weather = None 
 Flavor = 30,10,30,0,0
 #-------------------------------
@@ -594,7 +595,7 @@ Flavor = 10,0,0,0,40
 HoursPerStage = 14
 DryingPerHour = 13
 Yield = 2,4
-Season = 4
+Season = 3
 Climate = Chilled
 Weather = Snow
 Flavor = 10,0,0,0,40
@@ -606,7 +607,7 @@ Yield = 4,7
 Season = 0
 Climate = Temperate
 Weather = Rain
-Flavor = 40,10,0,0,0
+Flavor = 40,0,0,0,10
 #-------------------------------
 [YELLOWAPRICORN]
 HoursPerStage = 3
@@ -615,7 +616,7 @@ Yield = 3,5
 Season = 1
 Climate = Temperate
 Weather = None
-Flavor = 0,40,10,0,0
+Flavor = 0,10,0,0,40
 #-------------------------------
 [BLUEAPRICORN]
 HoursPerStage = 6
@@ -624,7 +625,7 @@ Yield = 4,7
 Season = 2
 Climate = Temperate
 Weather = None
-Flavor = 0,0,40,10,0
+Flavor = 0,40,0,10,0
 #-------------------------------
 [GREENAPRICORN]
 HoursPerStage = 6
@@ -633,7 +634,7 @@ Yield = 3,5
 Season = 2
 Climate = Temperate
 Weather = None
-Flavor = 0,0,0,40,10
+Flavor = 0,0,10,40,0
 #-------------------------------
 [PINKAPRICORN]
 HoursPerStage = 8
@@ -642,7 +643,7 @@ Yield = 3,5
 Season = 2
 Climate = Temperate
 Weather = None
-Flavor = 10,0,0,0,40
+Flavor = 10,0,40,0,0
 #-------------------------------
 [WHITEAPRICORN]
 HoursPerStage = 8
@@ -678,7 +679,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate Highlands
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,5,10,0
 #-------------------------------
 [PURESEED]
 HoursPerStage = 7
@@ -687,7 +688,7 @@ Yield = 2,5
 Season = 0
 Climate = Marsh
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,5,0,5
 #-------------------------------
 [ELECTRICSEED]
 HoursPerStage = 6
@@ -696,7 +697,7 @@ Yield = 2,5
 Season = 0
 Climate = Marsh
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 10,10,0,0,0
 #-------------------------------
 [GRASSYSEED]
 HoursPerStage = 6
@@ -705,7 +706,7 @@ Yield = 2,5
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,10,0
 #-------------------------------
 [MISTYSEED]
 HoursPerStage = 6
@@ -714,7 +715,7 @@ Yield = 2,5
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,10,0,0
 #-------------------------------
 [PSYCHICSEED]
 HoursPerStage = 6
@@ -723,7 +724,7 @@ Yield = 2,5
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,0,10
 #-------------------------------
 [LUMINOUSMOSS]
 HoursPerStage = 6
@@ -732,7 +733,7 @@ Yield = 2,5
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,5,0
 #-------------------------------
 [MENTALHERB]
 HoursPerStage = 6
@@ -741,7 +742,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,20,0
 #-------------------------------
 [WHITEHERB]
 HoursPerStage = 6
@@ -750,7 +751,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,20,0
 #-------------------------------
 [POWERHERB]
 HoursPerStage = 6
@@ -759,7 +760,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,20,0
 #-------------------------------
 [BIGROOT]
 HoursPerStage = 6
@@ -768,7 +769,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,15,0,5,0
 #-------------------------------
 [ENERGYROOT]
 HoursPerStage = 24
@@ -777,7 +778,7 @@ Yield = 2,1
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,25,0
 #-------------------------------
 [TINYMUSHROOM]
 HoursPerStage = 4
@@ -786,7 +787,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,0,0
 #-------------------------------
 [BIGMUSHROOM]
 HoursPerStage = 6
@@ -795,7 +796,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,15,0,0,0
 #-------------------------------
 [BALMMUSHROOM]
 HoursPerStage = 7
@@ -804,7 +805,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,5,0,0
 #-------------------------------
 [REVIVALHERB]
 HoursPerStage = 24
@@ -813,7 +814,7 @@ Yield = 2,3
 Season = 0
 Climate = Marsh
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,25,0
 #-------------------------------
 [MAXMUSHROOMS]
 HoursPerStage = 24
@@ -822,7 +823,7 @@ Yield = 2,3
 Season = 0
 Climate = Forest
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,20,0,0,0
 #-------------------------------
 [SEEDOFMASTERY]
 HoursPerStage = 24
@@ -840,7 +841,7 @@ Yield = 2,7
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,15,0,10,0
 #-------------------------------
 [POTATO]
 HoursPerStage = 8
@@ -849,7 +850,7 @@ Yield = 2,5
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,5,0,0
 #-------------------------------
 [ONION]
 HoursPerStage = 8
@@ -858,7 +859,7 @@ Yield = 2,5
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 15,0,5,0,0
 #-------------------------------
 [CARROT]
 HoursPerStage = 8
@@ -867,7 +868,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,5,10,0,0
 #-------------------------------
 [WHEAT]
 HoursPerStage = 8
@@ -876,7 +877,7 @@ Yield = 3,6
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,0,0
 #-------------------------------
 [LEMON]
 HoursPerStage = 8
@@ -885,7 +886,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,0,5,25
 #-------------------------------
 [COCOABEAN]
 HoursPerStage = 8
@@ -894,7 +895,7 @@ Yield = 2,1
 Season = 0
 Climate = Jungle
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,5,5,20,0
 #-------------------------------
 [SUGARCANE]
 HoursPerStage = 8
@@ -903,7 +904,7 @@ Yield = 3,6
 Season = 0
 Climate = Jungle
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,25,0,0
 #-------------------------------
 [APPLE]
 HoursPerStage = 3
@@ -912,7 +913,7 @@ Yield = 2,5
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,15,0,10
 #-------------------------------
 [TEALEAF]
 HoursPerStage = 3
@@ -921,7 +922,7 @@ Yield = 2,5
 Season = 0
 Climate = Plain
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,10,0,15,0
 #-------------------------------
 [ROSELIBERRY]
 HoursPerStage = 3
@@ -930,7 +931,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,25,10,0
 #-------------------------------
 [KEEBERRY]
 HoursPerStage = 3
@@ -939,7 +940,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 30,30,10,10,10
 #-------------------------------
 [ABSORBBULB]
 HoursPerStage = 3
@@ -948,7 +949,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 10,0,0,10,0
 #-------------------------------
 [LEEK]
 HoursPerStage = 3
@@ -957,7 +958,7 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 10,0,0,5,0
 #-------------------------------
 [TROPIUSFRUIT]
 HoursPerStage = 3
@@ -966,5 +967,5 @@ Yield = 2,5
 Season = 0
 Climate = Temperate
 Weather = None
-Flavor = 10,10,10,10,10
+Flavor = 0,0,20,0,0
 #-------------------------------

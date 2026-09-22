@@ -90,7 +90,6 @@ def initialize(*args)
 	
 	@birth_date = generate_birthday
 	@original_ability = self.ability_id 
-
 end
   def stamina
     @stamina = 7.0 if @stamina.nil?

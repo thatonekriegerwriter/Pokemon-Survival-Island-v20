@@ -703,7 +703,9 @@ def execute_move(attacker, move, target)
       hit_targets << target
   end
   return false if hit_targets.empty?
+  unless attacker.is_a?(Game_PokeEventA) && ($player.is_it_this_class?(:ACTOR) && $player.playerclass.acted_class==:NONE ) && rand(5)==1
   move.pp -= 1 if move.pp>0
+  end 
   start_glow(attacker)
   sound_from_move(move.id,attacker.pokemon)
   sideDisplay("#{attacker.pokemon.name} used #{move.name}!")

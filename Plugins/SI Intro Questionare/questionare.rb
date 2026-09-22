@@ -20,13 +20,13 @@ module PlayerClassData
     COOK:        { name: "Cook",        description: "You can always use food to pacify the POKeMON you are fighting, and the food you make is of higher Quality." },
     BLACKBELT:   { name: "Black Belt",  description: "All your POKeMONs multihit moves will hit twice as much, and you can use various forms of punches." },
     COORDINATOR: { name: "Coordinator", description: "You perform moves with style that can awe your foes, and your teamwork with your POKeMON on the Overworld is supreme. Your POKeMON's Happiness decays slower." },
-    ENGINEER:    { name: "Engineer",    description: "You can craft most machines without Machine Boxes, use electric POKeMON as Generators, and all your POKeMON are immune to Electric Type moves." },
+    ENGINEER:    { name: "Engineer",    description: "You can craft most machines without Machine Boxes." },
     COLLECTOR:   { name: "Collector",   description: "You have a chance not to use an item, and will find twice as many items when scavenging." },
     BREEDER:     { name: "Breeder",     description: "You excel at working with Eggs, and have a higher chance to have them spawn. Eggs can appear when you sleep." },
     NURSE:       { name: "Nurse",       description: "Sleeping and health items recover more health for both you and your POKeMON, and you passively heal while on the Overworld." },
     GARDENER:    { name: "Gardener",    description: "Plants you care for will always give a berry back if they die, or you dig them up. All Berries you have planted will grow slightly faster." },
     FISHER:      { name: "Fisher",      description: "When fishing, you will encounter fish more frequently, which will be of higher level, and give more meat. You can even get meat off of a Magikarp." },
-    HIKER:       { name: "Hiker",       description: "You move around the Mountains with a Pole a little faster. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double." },
+    HIKER:       { name: "Hiker",       description: "When holding a Pole, you move faster in mountainous areas. When mining, you have more hits before the mine collapses, and have more items in your mines. Overworld Ore will occasionally give double." },
   }.freeze
 
   # index -> class id, in class-picker menu order
@@ -814,6 +814,7 @@ class Player < Trainer
    return $player.playerclass.id == id
   end
  end
+ 
  def set_player_class(class_id)
    @playerclass = PlayerClass.new(class_id) if @playerclass.nil?
    @playerclass.id = class_id
@@ -1456,19 +1457,6 @@ end
 
 
 
-module GameData
-  class Type
-    def effectiveness(other_type)
-      return Effectiveness::INEFFECTIVE if other_type==:ELECTRIC && $player.is_it_this_class?(:ENGINEER)
-      return Effectiveness::NORMAL_EFFECTIVE_ONE if !other_type
-      return Effectiveness::SUPER_EFFECTIVE_ONE if @weaknesses.include?(other_type)
-      return Effectiveness::NOT_VERY_EFFECTIVE_ONE if @resistances.include?(other_type)
-      return Effectiveness::INEFFECTIVE if @immunities.include?(other_type)
-      return Effectiveness::NORMAL_EFFECTIVE_ONE
-    end
-end
-end
-
 
 
 
@@ -1519,223 +1507,3 @@ def pbBattleHPItem(pkmn, battler, restoreHP, scene)
   return true
 end
 
-
-
-#===============================================================================
-# Hits twice.
-#===============================================================================
-class Battle::Move::HitTwoTimes < Battle::Move
-  def multiHitMove?;            return true; end
-  def pbNumHits(user, targets)
-    return 4  if $player.is_it_this_class?(:BLACKBELT,false) && user.pokemon.owner.id == $player.id
-    return 2
-  end
-end
-
-#===============================================================================
-# Hits twice. May poison the target on each hit. (Twineedle)
-#===============================================================================
-class Battle::Move::HitTwoTimesPoisonTarget < Battle::Move::PoisonTarget
-  def multiHitMove?;            return true; end
-  def pbNumHits(user, targets)
-  return 4  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id
-  return 2
-  end
-end
-
-#===============================================================================
-# Hits twice. Causes the target to flinch. (Double Iron Bash)
-#===============================================================================
-class Battle::Move::HitTwoTimesFlinchTarget < Battle::Move::FlinchTarget
-  def multiHitMove?;            return true; end
-  def pbNumHits(user, targets)
-  return 4  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id
-  return 2
-  end
-end
-
-#===============================================================================
-# Hits in 2 volleys. The second volley targets the original target's ally if it
-# has one (that can be targeted), or the original target if not. A battler
-# cannot be targeted if it is is immune to or protected from this move somehow,
-# or if this move will miss it. (Dragon Darts)
-# NOTE: This move sometimes shows a different failure message compared to the
-#       official games. This is because of the order in which failure checks are
-#       done (all checks for each target in turn, versus all targets for each
-#       check in turn). This is considered unimportant, and since correcting it
-#       would involve extensive code rewrites, it is being ignored.
-#===============================================================================
-class Battle::Move::HitTwoTimesTargetThenTargetAlly < Battle::Move
-  def pbNumHits(user, targets); return 1;    end
-  def pbRepeatHit?;             return true; end
-
-  def pbModifyTargets(targets, user)
-    return if targets.length != 1
-    choices = []
-    targets[0].allAllies.each { |b| user.pbAddTarget(choices, user, b, self) }
-    return if choices.length == 0
-    idxChoice = (choices.length > 1) ? @battle.pbRandom(choices.length) : 0
-    user.pbAddTarget(targets, user, choices[idxChoice], self, !pbTarget(user).can_choose_distant_target?)
-  end
-
-  def pbShowFailMessages?(targets)
-    if targets.length > 1
-      valid_targets = targets.select { |b| !b.fainted? && !b.damageState.unaffected }
-      return valid_targets.length <= 1
-    end
-    return super
-  end
-
-  def pbDesignateTargetsForHit(targets, hitNum)
-    valid_targets = []
-    targets.each { |b| valid_targets.push(b) if !b.damageState.unaffected }
-    return [valid_targets[1]] if valid_targets[1] && hitNum == 1
-    return [valid_targets[0]]
-  end
-end
-
-#===============================================================================
-# Hits 3 times. Power is multiplied by the hit number. (Triple Kick)
-# An accuracy check is performed for each hit.
-#===============================================================================
-class Battle::Move::HitThreeTimesPowersUpWithEachHit < Battle::Move
-  def multiHitMove?;            return true; end
-  def pbNumHits(user, targets)
-  return 6  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id
-  return 3
-  end
-
-  def successCheckPerHit?
-    return @accCheckPerHit
-  end
-
-  def pbOnStartUse(user, targets)
-    @calcBaseDmg = 0
-    @accCheckPerHit = !user.hasActiveAbility?(:SKILLLINK)
-  end
-
-  def pbBaseDamage(baseDmg, user, target)
-    @calcBaseDmg += baseDmg
-    return @calcBaseDmg
-  end
-end
-
-#===============================================================================
-# Hits 3 times in a row. If each hit could be a critical hit, it will definitely
-# be a critical hit. (Surging Strikes)
-#===============================================================================
-class Battle::Move::HitThreeTimesAlwaysCriticalHit < Battle::Move
-  def multiHitMove?;                   return true; end
-  def pbNumHits(user, targets);   
-  return 6  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id    
-  return 3
-  end
-  def pbCritialOverride(user, target); return 1;    end
-end
-
-#===============================================================================
-# Hits 2-5 times.
-#===============================================================================
-class Battle::Move::HitTwoToFiveTimes < Battle::Move
-  def multiHitMove?; return true; end
-
-  def pbNumHits(user, targets)
-    hitChances = [
-      2, 2, 2, 2, 2, 2, 2,
-      3, 3, 3, 3, 3, 3, 3,
-      4, 4, 4,
-      5, 5, 5
-    ]
-    r = @battle.pbRandom(hitChances.length)
-    r = hitChances.length - 1 if user.hasActiveAbility?(:SKILLLINK)
-    r = hitChances.length - 1 if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id
-    return hitChances[r]
-  end
-end
-
-#===============================================================================
-# Hits 2-5 times. If the user is Ash Greninja, powers up and hits 3 times.
-# (Water Shuriken)
-#===============================================================================
-class Battle::Move::HitTwoToFiveTimesOrThreeForAshGreninja < Battle::Move::HitTwoToFiveTimes
-  def pbNumHits(user, targets)
-    return 6  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id && user.isSpecies?(:GRENINJA) && user.form == 2
-    return 3 if user.isSpecies?(:GRENINJA) && user.form == 2
-    return super
-  end
-
-  def pbBaseDamage(baseDmg, user, target)
-    return 20 if user.isSpecies?(:GRENINJA) && user.form == 2
-    return super
-  end
-end
-
-#===============================================================================
-# Hits 2-5 times in a row. If the move does not fail, increases the user's Speed
-# by 1 stage and decreases the user's Defense by 1 stage. (Scale Shot)
-#===============================================================================
-class Battle::Move::HitTwoToFiveTimesRaiseUserSpd1LowerUserDef1 < Battle::Move
-  def multiHitMove?; return true; end
-
-  def pbNumHits(user, targets)
-    hitChances = [
-      2, 2, 2, 2, 2, 2, 2,
-      3, 3, 3, 3, 3, 3, 3,
-      4, 4, 4,
-      5, 5, 5
-    ]
-    r = @battle.pbRandom(hitChances.length)
-    r = hitChances.length - 1 if user.hasActiveAbility?(:SKILLLINK)
-    r = hitChances.length - 1 if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id
-    return hitChances[r]
-  end
-
-  def pbEffectAfterAllHits(user, target)
-    return if target.damageState.unaffected
-    if user.pbCanLowerStatStage?(:DEFENSE, user, self)
-      user.pbLowerStatStage(:DEFENSE, 1, user)
-    end
-    if user.pbCanRaiseStatStage?(:SPEED, user, self)
-      user.pbRaiseStatStage(:SPEED, 1, user)
-    end
-  end
-end
-
-#===============================================================================
-# Hits X times, where X is the number of non-user unfainted status-free Pokémon
-# in the user's party (not including partner trainers). Fails if X is 0.
-# Base power of each hit depends on the base Attack stat for the species of that
-# hit's participant. (Beat Up)
-#===============================================================================
-class Battle::Move::HitOncePerUserTeamMember < Battle::Move
-  def multiHitMove?; return true; end
-
-  def pbMoveFailed?(user, targets)
-    @beatUpList = []
-    @beatUpList << $player
-    @battle.eachInTeamFromBattlerIndex(user.index) do |pkmn, i|
-      next if !pkmn.able? || pkmn.status != :NONE
-      @beatUpList.push(i)
-    end
-    if @beatUpList.length == 0
-      @battle.pbDisplay(_INTL("But it failed!"))
-      return true
-    end
-    return false
-  end
-
-  def pbNumHits(user, targets)
-    return 6  if $player.is_it_this_class?(:BLACKBELT) && user.pokemon.owner.id == $player.id    
-    return @beatUpList.length
-  end
-
-  def pbBaseDamage(baseDmg, user, target)
-    i = @beatUpList.shift   # First element in array, and removes it from array
-	if i == $player
-	  atk = 150
-	else
-    atk = @battle.pbParty(user.index)[i].baseStats[:ATTACK]
-	end
-    return 5 + (atk / 10)
-  end
-end

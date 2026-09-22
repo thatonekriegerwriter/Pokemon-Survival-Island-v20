@@ -436,14 +436,18 @@ class Player < Trainer
     @exp = value.clamp(0, get_max_exp)
   end
    
-   
-   
-    def minimum_exp_for_level(level)
-       @playermaxlevel = 20 if @playermaxlevel.nil?
-      return ArgumentError.new("Level #{level} is invalid.") if !level || level <= 0
+    def minimum_exp_for_level(level) 
+      @playermaxlevel = 20 if @playermaxlevel.nil?
+      raise ArgumentError.new("Level #{level} is invalid.") if !level || level <= 0
       level = [level, @playermaxlevel].min
-      return level*100 if level < @playermaxlevel
-	   return 100
+      return (level - 1) * 100
+    end
+   
+    def maximum_exp_for_level(level)
+       @playermaxlevel = 20 if @playermaxlevel.nil?
+      raise ArgumentError.new("Level #{level} is invalid.") if !level || level <= 0
+      level = [level, @playermaxlevel].min
+      return level*100 if level <= @playermaxlevel
     end
 
   def level_from_exp(exp)
@@ -451,7 +455,7 @@ class Player < Trainer
         max = @playermaxlevel
       return max if exp >= get_max_exp
       (1..max).each do |level|
-        return level if exp < minimum_exp_for_level(level)
+        return level if exp < maximum_exp_for_level(level)
       end
       return max
   
@@ -541,6 +545,9 @@ class Player < Trainer #SECONDARY DEFINITIONS
   def decrease_current_total_hp
     @playermaxhealth2-=(@playermaxhealth/4)
   end
+  def restore_total_hp
+    @playermaxhealth2= @playermaxhealth
+  end 
   def is_dead
     return @playermaxhealth2<=0
   end
@@ -565,7 +572,7 @@ class Player < Trainer #SECONDARY DEFINITIONS
 
 
   def heal_self
-    @playerhealth = @playermaxhealth
+    @playerhealth = @playermaxhealth2
   end
   
   
@@ -1171,599 +1178,27 @@ end
 end
 
  
- def pbEating(bag=nil,item=nil,scene=nil)
- pbNeoEating(item)
-$bag.remove(item)
- return
- if item.nil?
- item = 0
-item = pbChooseEdiable
- end
- idate = GameData::Item.get(item)
-  action = "eat" if !idate.is_water?
-  action = "drink" if idate.is_water?
-pbSEPlay(action) 
-$bag.remove(item)
-scene.pbDisplay(_INTL("You {2} {1}.", GameData::Item.get(item).name, action)) if !scene.nil?
-sideDisplay(_INTL("You {2} {1}.",GameData::Item.get(item).name, action)) if scene.nil?
-
-
-case GameData::Item.get(item).id
-when :WATER
-increaseWater(10)
-damagePlayer(10.0)
-if item.is_a?(ItemData)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-end 
-
-return true
-
-
-when :MEAT
-increaseFood(15)
-damagePlayer(7.0)
-		pbSEPlay("normaldamage")
-return true
-
-
-when :BIRDMEAT
-increaseFood(10)
-damagePlayer(7.0)
-		pbSEPlay("normaldamage")
-return true
-when :POISONOUSMEAT
-increaseFood(10)
-damagePlayer(25.0)
-		pbSEPlay("normaldamage")
-return true
-
-
-when :ROCKYMEAT
-increaseFood(10)
-damagePlayer(10.0)
-		pbSEPlay("normaldamage")
-return true
-
-
-
-when :BUGMEAT
-increaseFood(2)
-damagePlayer(2.0)
-		pbSEPlay("normaldamage")
-return true
-
-
-
-when :STEELYMEAT
-increaseFood(3)
-damagePlayer(10.0)
-		pbSEPlay("normaldamage")
-return true
-
-
-
-when :SUSHI
-increaseFood(15)
-damagePlayer(6.0)
-		pbSEPlay("normaldamage")
-return true
-when :LEAFYMEAT
-increaseFood(10)
-damagePlayer(6.0)
-		pbSEPlay("normaldamage")
-return true
-when :FROZENMEAT
-increaseFood(6)
-damagePlayer(15.0)
-		pbSEPlay("normaldamage")
-return true
-when :DRAGONMEAT
-increaseFood(20)
-damagePlayer(15.0)
-		pbSEPlay("normaldamage")
-return true
-when :EDIABLESCRYSTAL
-increaseFood(6)
-damagePlayer(15.0)
-		pbSEPlay("normaldamage")
-return true
-when :ORANBERRY
-increaseFood(1)
-increaseHealth(1.0)
-return true
-when :LEPPABERRY
-increaseFood(1)
-return true
-when :CHERIBERRY
-increaseFood(1)
-return true
-when :CHESTOBERRY
-increaseFood(1)
-return true
-when :PECHABERRY
-increaseFood(1)
-return true
-when :RAWSTBERRY
-increaseFood(1)
-return true
-when :ASPEARBERRY
-increaseFood(1)
-return true
-when :PERSIMBERRY
-increaseFood(1)
-return true
-when :LUMBERRY
-increaseFood(1)
-return true
-when :FIGYBERRY
-increaseFood(1)
-return true
-when :WIKIBERRY
-increaseFood(1)
-return true
-when :MAGOBERRY
-increaseFood(1)
-return true
-when :AGUAVBERRY
-increaseFood(1)
-return true
-when :IAPAPABERRY
-increaseFood(1)
-return true
-when :IAPAPABERRY
-increaseFood(1)
-return true
-when :SITRUSBERRY
-increaseFood(1)
-increaseHealth(1.0)
-return true
-when :BERRYJUICE
-increaseFood(2.0)
-increaseWater(8.0)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-when :FRESHWATER
-increaseWater(20.0)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-#You can add more if you want
-when :ATKCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :SATKCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :SPEEDCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :SPDEFCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :ACCCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :DEFCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :CRITCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :GSCURRY
-increaseFood(8)
-increaseSaturation(15)
-decreaseWater(7)
-return true
-when :RAGECANDYBAR #chocolate
-increaseFood(10)
-increaseSaturation(3)
-increaseSleep(7)
-return true
-when :SWEETHEART #chocolate
-increaseFood(10)
-increaseSaturation(3)
-increaseSleep(7)
-return true
-when :SODAPOP
-increaseFood(11)
-increaseSaturation(30)
-increaseSleep(25)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-when :LEMONADE
-increaseFood(11)
-increaseSaturation(10)
-increaseSleep(7)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-when :HONEY
-increaseSaturation(20)
-return true
-when :MOOMOOMILK
-increaseSaturation(10)
-increaseWater(20)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-when :CSLOWPOKETAIL
-increaseFood(20)
-increaseSaturation(20)
-return true
-when :BAKEDPOTATO
-increaseFood(7)
-increaseSaturation(10)
-increaseWater(4)
-return true
-when :APPLE
-increaseFood(1)
-increaseWater(1)
-return true
-when :CHOCOLATE
-increaseFood(10)
-increaseSaturation(3)
-increaseSleep(7)
-return true
-when :LEMON
-increaseFood(1)
-return true
-when :OLDGATEAU
-increaseFood(10)
-increaseSaturation(3)
-increaseSleep(7)
-return true
-when :LAVACOOKIE
-increaseFood(6)
-increaseSaturation(5)
-increaseWater(3)
-return true
-when :CASTELIACONE
-increaseWater(7)
-increaseFood(7)
-return true
-when :LUMIOSEGALETTE
-increaseFood(6)
-increaseSaturation(5)
-return true
-when :SHALOURSABLE
-increaseFood(8)
-increaseSaturation(8)
-return true
-when :BIGMALASADA
-increaseFood(8)
-increaseSaturation(8)
-return true
-when :ONION
-increaseWater(1)
-increaseFood(1)
-return true
-when :COOKEDORAN
-increaseFood(3)
-increaseHealth(2)
-increaseSaturation(2)
-return true
-when :CARROT
-increaseWater(1)
-increaseFood(1)
-increaseSaturation(6)
-return true
-when :BREAD
-increaseFood(10)
-increaseSaturation(10)
-return true
-when :TEA
-increaseWater(15)
-increaseSaturation(15)
-return true
-when :CARROTCAKE
-increaseFood(10)
-increaseWater(1)
-increaseSaturation(15)
-return true
-when :COOKEDMEAT
-increaseFood(20)
-increaseSaturation(40)
-return true
-when :SITRUSJUICE
-increaseFood(6)
-increaseHealth(25)
-increaseWater(2)
-increaseSaturation(20)
-object = item.bottle_type
-object.decrease_durability(1)
-$bag.add(object,1) if object.durability!=0
-return true
-when :BERRYMASH
-increaseFood(1)
-increaseHealth(10)
-increaseSaturation(5)
-return true
-when :LARGEMEAL
-pbMessage(_INTL("You feasted on the {1}.",GameData::Item.get(item).name))
-increaseFood(50)
-increaseWater(50)
-increaseSaturation(50)
- @party.each do |i|
-  i.ev[:DEFENSE] += 1
-  i.ev[:HP] += 1
- end
-return true
-when :COOKEDBIRDMEAT
-increaseFood(12)
-increaseSaturation(25)
-return true
-when :COOKEDROCKYMEAT
-increaseFood(12)
-increaseSaturation(25)
-return true
-when :COOKEDBUGMEAT
-increaseFood(12)
-increaseSaturation(25)
-return true
-when :COOKEDSTEELYMEAT
-increaseFood(12)
-increaseSaturation(25)
-return true
-when :COOKEDSUSHI
-increaseFood(6)
-increaseWater(6)
-increaseSaturation(10)
-return true
-when :COOKEDLEAFYMEAT
-increaseFood(24)
-increaseSaturation(5)
-return true
-when :COOKEDDRAGONMEAT
-increaseFood(10)
-increaseSaturation(100)
-return true
-when :COOKEDEDIABLESCRYSTAL
-increaseFood(10)
-increaseSaturation(10)
-return true
-when :MEATSANDWICHBIRD
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHSLOWPOKETAIL
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHROCKY
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHBUG
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHSTEELY
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHSUS
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHLEAFY
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHMJ
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICHCRYSTAL
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :MEATSANDWICH
-increaseFood(30)
-increaseSaturation(40)
-return true
-when :EGGEDIBLE
-increaseFood(1)
-increaseSaturation(20)
-return true
-when :CHERUBIBALL
-increaseFood(7)
-increaseWater(7)
-increaseSaturation(1)
-return true
-when :POTATOSTEW
-increaseFood(20)
-increaseWater(20)
-increaseSaturation(1)
-return true
-when :MEATKABOB
-increaseFood(24)
-increaseWater(8)
-increaseSaturation(1)
-return true
-when :FISHSOUP
-increaseFood(30)
-increaseWater(40)
-increaseSaturation(1)
-return true
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-else
-$bag.add(item,1)
-return false
-end
-
-end
-
-
-def food_effects 
-  {
-    WATER:          { water: 10, damage: 10.0, bottle: true },
-    FRESHWATER:     { water: 20, bottle: true },
-    MEAT:           { food: 15, damage: 7.0, se: "normaldamage" },
-    BIRDMEAT:       { food: 10, damage: 7.0, se: "normaldamage" },
-    POISONOUSMEAT:  { food: 10, damage: 25.0, se: "normaldamage" },
-    ROCKYMEAT:      { food: 10, damage: 10.0, se: "normaldamage" },
-    BUGMEAT:        { food: 2, damage: 2.0, se: "normaldamage" },
-    STEELYMEAT:     { food: 3, damage: 10.0, se: "normaldamage" },
-    SUSHI:          { food: 3, saturation: -6},
-    LEAFYMEAT:      { food: 10, damage: 6.0, se: "normaldamage" },
-    FROZENMEAT:     { food: 6, damage: 15.0, se: "normaldamage" },
-    DRAGONMEAT:     { food: 20, damage: 15.0, se: "normaldamage" },
-    EDIABLESCRYSTAL: { food: 6, damage: 15.0, se: "normaldamage" },
-
-    ORANBERRY:      { food: 1, health: 0.5 },
-    LEPPABERRY:     { food: 1 },
-    CHERIBERRY:     { food: 1 },
-    CHESTOBERRY:    { food: 1 },
-    PECHABERRY:     { food: 1 },
-    RAWSTBERRY:     { food: 1 },
-    ASPEARBERRY:    { food: 1 },
-    PERSIMBERRY:    { food: 1 },
-    LUMBERRY:       { food: 1 },
-    FIGYBERRY:      { food: 1 },
-    WIKIBERRY:      { food: 1 },
-    MAGOBERRY:      { food: 1 },
-    AGUAVBERRY:     { food: 1 },
-    IAPAPABERRY:    { food: 1 },
-    SITRUSBERRY:    { food: 1, health: 1.0 },
-    BERRYJUICE:     { food: 1, water: 8, health: 2.0, bottle: true },
-
-    ATKCURRY:       { food: 8, saturation: 15, water: -7 },
-    SATKCURRY:      { food: 8, saturation: 15, water: -7 },
-    SPEEDCURRY:     { food: 8, saturation: 15, water: -7 },
-    SPDEFCURRY:     { food: 8, saturation: 15, water: -7 },
-    ACCCURRY:       { food: 8, saturation: 15, water: -7 },
-    DEFCURRY:       { food: 8, saturation: 15, water: -7 },
-    CRITCURRY:      { food: 8, saturation: 15, water: -7 },
-    GSCURRY:        { food: 8, saturation: 15, water: -7 },
-
-    RAGECANDYBAR:   { food: 10, saturation: 3, sleep: 7 },
-    SWEETHEART:     { food: 10, saturation: 3, sleep: 7 },
-    SODAPOP:        { food: 11, saturation: 30, sleep: 25, bottle: true },
-    LEMON:          { food: 1 },
-    HONEY:          { saturation: 20 },
-    MOOMOOMILK:     { water: 20, saturation: 10, bottle: true },
-    CSLOWPOKETAIL:  { food: 20, saturation: 20 },
-    BAKEDPOTATO:    { food: 7, saturation: 10, water: 4 },
-    APPLE:          { food: 1, water: 1 },
-    COOKEDAPPLE:     { food: 3, health: 2, saturation: 2 },
-    CHOCOLATE:      { food: 10, saturation: 3, sleep: 7 },
-    OLDGATEAU:      { food: 10, saturation: 3, sleep: 7 },
-    LAVACOOKIE:     { food: 6, saturation: 5, water: 3 },
-    CASTELIACONE:   { food: 7, water: 7 },
-    LUMIOSEGALETTE: { food: 6, saturation: 5 },
-    SHALOURSABLE:   { food: 8, saturation: 8 },
-    BIGMALASADA:    { food: 8, saturation: 8 },
-    ONION:          { food: 1, water: 1 },
-    COOKEDORAN:     { food: 3, health: 2, saturation: 2 },
-    CARROT:         { food: 1, water: 1, saturation: 6 },
-    BREAD:          { food: 10, saturation: 10 },
-    TEA:            { water: 15, saturation: 15 },
-    CARROTCAKE:     { food: 10, water: 1, saturation: 15 },
-    SITRUSJUICE:    { food: 6, health: 25, saturation: 20, bottle: true },
-    BERRYMASH:      { food: 8, water: 2, health: 4.0, saturation: 5 },
-    LARGEMEAL:      { food: 50, water: 50, saturation: 50, feast: [[:DEFENSE,1],[:HP,1]] },
-
-    COOKEDMEAT:     { food: 12, saturation: 10 },
-    COOKEDBIRDMEAT: { food: 12, saturation: 10 },
-    COOKEDROCKYMEAT: { food: 12, saturation: 10 },
-    COOKEDBUGMEAT:   { food: 12, saturation: 10 },
-    COOKEDSTEELYMEAT: { food: 12, saturation: 10 },
-    COOKEDSUSHI:     { food: 6, water: 6, saturation: 10 },
-    COOKEDLEAFYMEAT: { food: 24, saturation: 5 },
-    COOKEDDRAGONMEAT: { food: 10, saturation: 100 },
-    COOKEDEDIABLESCRYSTAL: { food: 10, saturation: 10 },
-
-    MEATSANDWICHBIRD:    { food: 30, saturation: 40 },
-    MEATSANDWICHSLOWPOKETAIL: { food: 30, saturation: 40 },
-    MEATSANDWICHROCKY:  { food: 30, saturation: 40 },
-    MEATSANDWICHBUG:    { food: 30, saturation: 40 },
-    MEATSANDWICHSTEELY: { food: 30, saturation: 40 },
-    MEATSANDWICHSUS:    { food: 30, saturation: 40 },
-    MEATSANDWICHLEAFY:  { food: 30, saturation: 40 },
-    MEATSANDWICHMJ:     { food: 30, saturation: 40 },
-    MEATSANDWICHCRYSTAL: { food: 30, saturation: 40 },
-    MEATSANDWICH:       { food: 30, saturation: 40 },
-
-    EGGEDIBLE:       { food: 1, saturation: 20 },
-    CHERUBIBALL:     { food: 7, water: 7, saturation: 1 },
-    MEATKABOB:       { food: 24, saturation: 20 },
-    POTATOSTEW:      { food: 20, water: 30, saturation: 40, bottle: true },
-    FISHSOUP:        { food: 40, water: 30, saturation: 10, bottle: true }
-  }
-
-
-
-
-end 
-def medicine_effects
-  {
-    WEAKPOTION:   { health: 10, bottle: true },
-    POTION:       { health: 20, bottle: true },
-    SUPERPOTION:  { health: 40, bottle: true },
-    HYPERPOTION:  { health: 60, bottle: true },
-    FULLRESTORE:  { health: $player.playermaxhealth2 - $player.playerhealth,
-                    status: :NONE,
-                    healthiness: 100,
-                    bottle: true }
-  }
+def pbEating(bag=nil,item=nil,scene=nil)
+  $bag.remove(item) if item && pbNeoEating(item)
 end
 
 def pbNeoEating(item)
   idate = GameData::Item.get(item)
-  effects = food_effects[idate.id]
-  return false unless effects
+  effects = item.stats.consumable
   has_effect = false
-  if effects[:food] && $player.playerfood < $player.playermaxfood
+  if effects.food && $player.playerfood < $player.playermaxfood
     has_effect = true
   end
-  if effects[:water] && $player.playerwater < $player.playermaxwater
+  if effects.water && $player.playerwater < $player.playermaxwater
     has_effect = true
   end
-  if effects[:saturation] && $player.playersaturation < $player.playermaxsaturation
+  if effects.saturation && $player.playersaturation < $player.playermaxsaturation
     has_effect = true
   end
-  if effects[:sleep] && $player.playersleep < $player.playermaxsleep
+  if effects.sleep && $player.playersleep < $player.playermaxsleep
     has_effect = true
   end
-  if effects[:health] && $player.playerhealth < $player.playermaxhealth2
+  if effects.health && $player.playerhealth < $player.playermaxhealth2
     has_effect = true
   end
   
@@ -1772,28 +1207,29 @@ def pbNeoEating(item)
   action = idate.is_water? ? "drink" : "eat"
   pbSEPlay(action)
   sideDisplay(_INTL("You {2} {1}.", idate.name, action),true,-9)
+
+
+  increaseFood(effects.food)              if effects.food
+  increaseWater(effects.water)            if effects.water
+  increaseSaturation(effects.saturation)  if effects.saturation
+  increaseSleep(effects.sleep)            if effects.sleep
+  increaseHealth(effects.health)          if effects.health && effects.health > 0 
+  damagePlayer(effects.health.abs)          if effects.health && effects.health < 0 
+  pbSEPlay(effects.se)                    if effects.se
   
-  increaseFood(effects[:food])          if effects[:food]
-  increaseWater(effects[:water])        if effects[:water]
-  increaseSaturation(effects[:saturation]) if effects[:saturation]
-  increaseSleep(effects[:sleep])        if effects[:sleep]
-  increaseHealth(effects[:health])      if effects[:health]
-  damagePlayer(effects[:damage])        if effects[:damage]
-  pbSEPlay(effects[:se])                if effects[:se]
-  
-  if effects[:bottle]
+  if effects.has_bottle?
     bottle = item.bottle_type
-    bottle.decrease_durability(1) if bottle 
-    $bag.add(bottle, 1) if bottle 
+    bottle.decrease_durability(1) if bottle
+    $bag.add(bottle, 1) if bottle
   end
   
-  if effects[:feast]
+  if effects.feast?
     sideDisplay(_INTL("You feasted on the {1}.", idate.name),true,-9)
     @party.each do |pokemon|
-	  effects[:feast].each do |stat, amt|
-	  next unless pokemon.ev.key?(stat)
-      pokemon.ev[stat] += amt
-	  end 
+      effects.feast_boosts.each do |stat, amt|
+        next unless pokemon.ev.key?(stat)
+        pokemon.ev[stat] += amt
+      end
     end
   end
   
@@ -1805,15 +1241,23 @@ def pbNeoMedicine(item)
  return false if $player.playerhealth == $player.playermaxhealth2
  time_now   = pbGetTimeNow
  time_delta = time_now.to_i - $player.potion_sickness
- if true#time_delta <= 900
+ 
+ if time_delta >= 300
     idate = GameData::Item.get(item)
-    effects = medicine_effects[idate.id]
-    return false unless effects
+    effects = item.stats.consumable
     sideDisplay(_INTL("You used {1} to heal yourself.", item.name),true,-9)
-    increaseHealth(effects[:health]) if effects[:health]
-	$player.status       = effects[:status]       if effects[:status]
-	$player.healthiness  = [$player.healthiness+effects[:healthiness],100].min  if effects[:healthiness]
-    if effects[:bottle]
+	
+	if effects.health && effects.health > 0 
+	 restoreHP = effects.health
+	 $player.restore_total_hp if restoreHP >= 9999 && $player.is_it_this_class?(:NURSE,false) && $player.playerclasslevel >= 20
+     restoreHP *= 1.5 if $player.is_it_this_class?(:NURSE)
+     increaseHealth(restoreHP)    
+    end 	
+    damagePlayer(effects.health.abs)          if effects.health && effects.health < 0 
+	$player.status      = effects.status if effects.status
+	$player.healthiness = [$player.healthiness + effects.healthiness,100].min if effects.healthiness
+	
+    if effects.has_bottle?
       bottle = item.bottle_type
       bottle.decrease_durability(1)
       $bag.add(bottle, 1)
@@ -2042,6 +1486,7 @@ end
     exp_final = ($player.exp + exp).clamp(0, $player.get_max_exp)
     exp_gained = exp_final - $player.exp
     puts "expGained: #{exp_gained}"
+	new_level = $player.playerclasslevel
 	
   if exp_gained > 0
     cur_level = $player.playerclasslevel
@@ -2049,22 +1494,22 @@ end
 
     if new_level > cur_level
       loop do
-        level_max_exp = 100
+        cur_level += 1
+        level_max_exp = $player.maximum_exp_for_level(cur_level)
         temp_exp2 = [level_max_exp, exp_final].min
         puts temp_exp2
 
         $player.exp = temp_exp2
-        cur_level += 1
         pbSEPlay("Pkmn exp gain")
 
-        break if cur_level > new_level
+        break if cur_level >= new_level
       end
 
-      sideDisplay(_INTL("#{$player.name} leveled up to #{new_level}!")) if
-        $player.playerclasslevel != new_level
+      sideDisplay(_INTL("#{$player.name} leveled up to #{new_level}!")) if $player.playerclasslevel != new_level
     end
   end
 
+  $player.exp = exp_final
   $player.playerclasslevel = new_level
 
   if !pkmnless.empty?
@@ -2077,6 +1522,39 @@ end
     pokemon.gain_ev(caughtmon)
     pokemon.gain_exp_from_overworld(caughtmon)
   end
+  end
+
+  def pbPlayerEXPPassive(exp)
+    $player.playerclasslevel = 1 if $player.playerclasslevel == 0
+    exp = exp * 3 / 2 if $bag.has?(:EXPCHARM)
+    exp_final = ($player.exp + exp).clamp(0, $player.get_max_exp)
+    exp_gained = exp_final - $player.exp
+    puts "expGained: #{exp_gained}"
+	new_level = $player.playerclasslevel
+	
+  if exp_gained > 0
+    cur_level = $player.playerclasslevel
+    new_level = $player.level_from_exp(exp_final)
+
+    if new_level > cur_level
+      loop do
+        cur_level += 1
+        level_max_exp = $player.maximum_exp_for_level(cur_level)
+        temp_exp2 = [level_max_exp, exp_final].min
+        puts temp_exp2
+
+        $player.exp = temp_exp2
+        pbSEPlay("Pkmn exp gain")
+
+        break if cur_level >= new_level
+      end
+
+      sideDisplay(_INTL("#{$player.name} leveled up to #{new_level}!")) if $player.playerclasslevel != new_level
+    end
+  end
+
+  $player.exp = exp_final
+  $player.playerclasslevel = new_level
   end
 
 

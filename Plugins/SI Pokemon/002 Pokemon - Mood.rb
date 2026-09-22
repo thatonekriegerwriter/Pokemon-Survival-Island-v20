@@ -1,8 +1,21 @@
 class Pokemon
+attr_reader :mood 
+alias _SI_PokemonMood_init initialize
+
+def initialize(*args)
+ _SI_PokemonMood_init(*args)
+  @mood = Pokemon::Mood.new
+
+
+end 
+
+   def mood
+    @mood = Pokemon::Mood.new if @mood.nil? || !@mood.is_a?(Pokemon::Mood)
+	return @mood 
+   end 
+
  class Mood
-   alias _SI_Mood_init initialize
-   def initialize(*args)
-     _SI_Mood_init(*args)
+   def initialize
      @anger =  rand(100)
 	 @anxiety =  rand(100)
 	 @affection =  rand(100)
@@ -39,19 +52,6 @@ class Pokemon
    end
  
  end 
-alias _SI_PokemonMood_init initialize
-attr_reader :mood 
-def initialize(*args)
- _SI_PokemonMood_init(*args)
-  @mood = Pokemon::Mood.new
-
-
-end 
-
-   def mood
-    @mood = Pokemon::Mood.new if @mood.nil? || !@mood.is_a?(Pokemon::Mood)
-	return @mood 
-   end 
 
 
 end 

@@ -58,10 +58,6 @@ end
     total_ivs = pkmn.iv[:HP] + pkmn.iv[:ATTACK] + pkmn.iv[:DEFENSE] + pkmn.iv[:SPECIAL_ATTACK] + pkmn.iv[:SPECIAL_DEFENSE] + pkmn.iv[:SPEED]
     max_ivs = 31 * 6
 	
-	
-	
-	
-	
     food_item.quality = ((total_ivs.to_f / max_ivs * 4).round)+1
     food_item.stats.priority = 3
     food_item.stats.servings = :AVERAGE

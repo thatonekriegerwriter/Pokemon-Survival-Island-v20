@@ -34,7 +34,7 @@ class Pokemon
     ev_total = 0
     GameData::Stat.each_main { |s| ev_total += ev[s.id] }
 
-    if shadowPokemon? && saved_ev && level != 20
+    if shadowPokemon? && saved_ev && level < 50
       saved_ev.each_value { |e| ev_total += e }
 
       GameData::Stat.each_main do |s|
@@ -95,7 +95,7 @@ end
     return if egg?
   growth = growth_rate
   return if exp >= growth.maximum_exp
-  return if level == 20 && shadowPokemon?
+  return if level >= 50 && shadowPokemon?
 
   level = defeated_pkmn.level
   exp = level * defeated_pkmn.base_exp
@@ -112,7 +112,7 @@ end
 
   growth = growth_rate
   return if exp >= growth.maximum_exp
-  return if level == 20 && shadowPokemon?
+  return if level >= 50 && shadowPokemon?
 
   has_exp_share = exp_share.include?($player.party.index(self))
 
@@ -273,7 +273,7 @@ end
   end
 
   def apply_levels(show_messages = false, statue = false, internal_battle = false, battle = nil)
-  if level == 20 && shadowPokemon?
+  if level == 50 && shadowPokemon?
     if show_messages
       message = _INTL("{1} cannot go beyond this level because it is a Shadow Pokemon.", name)
 

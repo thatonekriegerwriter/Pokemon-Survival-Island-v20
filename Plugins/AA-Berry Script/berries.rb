@@ -560,60 +560,64 @@ end
 
 module Settings
         BERRY_MUTATION_POSSIBILITIES        = {
-            [:ORANBERRY,:PECHABERRY]    => [:SITRUSBERRY],
+  [:ORANBERRY,:PECHABERRY]      => [:SITRUSBERRY],
+  [:SEEDOFMASTERY,:PURPLEAPRICORN] => [:ENIGMABERRY],
+  [:ACORN,:ACORN]                => [:APPLE],
+  [:APPLE,:APPLE]                => [:LEMON],
+  [:ACORN,:APPLE]                => [:APPLE],
+  [:ACORN,:LEMON]                => [:LEMON],
+  [:APPLE,:LEMON]                => [:LEMON],
+  [:ACORN,:ORANBERRY]            => [:REDAPRICORN],
+  [:ACORN,:REDAPRICORN]          => [:ORANBERRY],
+  [:REDAPRICORN,:ORANBERRY]      => [:ACORN],
+  [:PSYCHICSEED,:MISTYSEED]      => [:MIRACLESEED],
+  [:ELECTRICSEED,:GRASSYSEED]    => [:PURESEED],
+  [:MIRACLESEED,:PURESEED]       => [:SEEDOFMASTERY],
+  [:REDAPRICORN,:PASSHOBERRY]    => [:BLUEAPRICORN],
+  [:BLUEAPRICORN,:SITRUSBERRY]   => [:GREENAPRICORN],
+  [:GREENAPRICORN,:APICOTBERRY]  => [:BLACKAPRICORN],
+  [:BLACKAPRICORN,:SEEDOFMASTERY] => [:PURPLEAPRICORN],
+  [:ARGOSTBERRY,:WHITEHERB]      => [:REVIVALHERB],
+  [:SITRUSBERRY,:ENERGYROOT]     => [:ARGOSTBERRY],
+  [:TINYMUSHROOM,:TINYMUSHROOM]  => [:BIGMUSHROOM],
+  [:BIGMUSHROOM,:BALMMUSHROOM]   => [:MAXMUSHROOMS],
+  [:TINYMUSHROOM,:PURESEED]      => [:BALMMUSHROOM],
 
-			
-            [:SEEDOFMASTERY,:PURPLEAPRICORN]  => [:ENIGMABERRY],
-			
-			
-			
-			
-            [:ACORN,:ACORN]               => [:APPLE],
-            [:APPLE,:APPLE]               => [:LEMON],
-            [:ACORN,:APPLE]               => [:APPLE],
-            [:ACORN,:LEMON]               => [:LEMON],
-            [:APPLE,:LEMON]               => [:LEMON],
-			
-			
-			
-			
-			
-			
-            [:ACORN,:ORANBERRY]           => [:REDAPRICORN],
-            [:ACORN,:REDAPRICORN]         => [:ORANBERRY],
-            [:REDAPRICORN,:ORANBERRY]         => [:ACORN],
-			
-			
-			
-			
-			
-            [:PSYCHICSEED,:MISTYSEED]  => [:MIRACLESEED],
-            [:ELECTRICSEED,:GRASSYSEED]  => [:PURESEED],
-            [:MIRACLESEED,:PURESEED]  => [:SEEDOFMASTERY],
-			
-			
-			
-			
-			
-            [:REDAPRICORN,:PASSHOBERRY]     => [:BLUEAPRICORN],
-            [:BLUEAPRICORN,:SITRUSBERRY]  => [:GREENAPRICORN],
-            [:GREENAPRICORN,:APICOTBERRY]  => [:BLACKAPRICORN],
-            [:BLACKAPRICORN,:SEEDOFMASTERY]  => [:PURPLEAPRICORN],
-			
-			
-			
-			
-			
-            [:ARGOSTBERRY,:WHITEHERB]  => [:REVIVALHERB],
-            [:SITRUSBERRY,:ENERGYROOT]  => [:ARGOSTBERRY],
-            [:TINYMUSHROOM,:TINYMUSHROOM]  => [:BIGMUSHROOM],
-            [:BIGMUSHROOM,:BALMMUSHROOM]  => [:MAXMUSHROOMS],
-            [:TINYMUSHROOM,:PURESEED]  => [:BALMMUSHROOM]
-			
-			
-			
-			
-			
+  # --- new: tier 1, EV berries from pairs of basic flavor berries
+  [:CHERIBERRY,:RAZZBERRY]       => [:TAMATOBERRY],
+  [:CHESTOBERRY,:BLUKBERRY]      => [:CORNNBERRY],
+  [:MAGOBERRY,:NANABBERRY]       => [:MAGOSTBERRY],
+  [:RAWSTBERRY,:WEPEARBERRY]     => [:RABUTABERRY],
+  [:ASPEARBERRY,:PINAPBERRY]     => [:NOMELBERRY],
+  [:TAMATOBERRY,:RAZZBERRY]      => [:SPELONBERRY],
+  [:CORNNBERRY,:BLUKBERRY]       => [:PAMTREBERRY],
+  [:MAGOSTBERRY,:NANABBERRY]     => [:WATMELBERRY],
+  [:RABUTABERRY,:WEPEARBERRY]    => [:DURINBERRY],
+  [:NOMELBERRY,:PINAPBERRY]      => [:BELUEBERRY],
+  [:RAZZBERRY,:RAWSTBERRY]       => [:HONDEWBERRY],
+  [:PERSIMBERRY,:ASPEARBERRY]    => [:GREPABERRY],
+  [:CHESTOBERRY,:WEPEARBERRY]    => [:KELPSYBERRY],
+  [:PINAPBERRY,:MAGOBERRY]       => [:QUALOTBERRY],
+  [:FIGYBERRY,:WIKIBERRY]        => [:POMEGBERRY],
+
+  # --- new: tier 2, stat berries from pairs of tier-1 EV berries
+  [:TAMATOBERRY,:SPELONBERRY]    => [:LIECHIBERRY],
+  [:CORNNBERRY,:PAMTREBERRY]     => [:GANLONBERRY],
+  [:MAGOSTBERRY,:WATMELBERRY]    => [:SALACBERRY],
+  [:RABUTABERRY,:DURINBERRY]     => [:PETAYABERRY],
+  [:NOMELBERRY,:BELUEBERRY]      => [:APICOTBERRY],
+  [:HONDEWBERRY,:GREPABERRY]     => [:MICLEBERRY],
+  [:KELPSYBERRY,:QUALOTBERRY]    => [:CUSTAPBERRY],
+  [:QUALOTBERRY,:POMEGBERRY]     => [:JABOCABERRY],
+  [:POMEGBERRY,:HONDEWBERRY]     => [:ROWAPBERRY],
+
+  # --- new: tier 3, from pairs of tier-2 berries
+  [:LIECHIBERRY,:GANLONBERRY]    => [:LANSATBERRY],
+  [:SALACBERRY,:PETAYABERRY]     => [:STARFBERRY],
+
+  # --- new: type-resist berries
+  [:TANGABERRY,:CHARTIBERRY]     => [:KEEBERRY],
+  [:KASIBBERRY,:PAYAPABERRY]     => [:MARANGABERRY],
         }
 
         #--------------------------------------------------------------------------------
@@ -837,7 +841,6 @@ end
 
 class BerryPlantData
   attr_accessor :event
-  attr_accessor :tile_data
   attr_accessor :no_water_can_message
   attr_accessor :berry
   attr_accessor :berry_id
@@ -886,7 +889,6 @@ class BerryPlantData
   def initialize(event_id, map_id = $game_map.map_id)
      @event_id = event_id 
 	 @map_id = map_id
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y)
 	 @centered = false
 	 @jit = false
 	 @centered = true if self.event.name.include?("center")
@@ -894,7 +896,7 @@ class BerryPlantData
      reset
   end
   def cropsticks 
-    return @tile_data.cropsticks
+    return tile_data.cropsticks
   end
   
   def no_water_can_message
@@ -903,7 +905,7 @@ class BerryPlantData
   end 
   
   def cropsticks=(value)
-    return @tile_data.cropsticks=value
+    return tile_data.cropsticks=value
   end
   
   def reset(planting = false)
@@ -984,7 +986,8 @@ class BerryPlantData
   end 
   
   def tending_multiplier
-    1.0 + (workers.length * 0.25)
+    value = $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15 ? 0.5 : 0.25
+    1.0 + (workers.length * value)
   end
   
   def plant(berry)
@@ -994,7 +997,7 @@ class BerryPlantData
 	@berry.durability = @berry.max_durability 
 	seed_genome
     @berry_id          = @berry.id
-    @tile_data.add_berry_to_array(@berry_id)
+    tile_data.add_berry_to_array(@berry_id)
     @growth_stage      = 1
     @time_last_updated = pbGetTimeNow.to_i
     @timewithoutberry       = 0
@@ -1019,7 +1022,7 @@ class BerryPlantData
   
    def get_hours_per_stage
      hours = @berry.stats.growth
-	 hours -= rand(2)+1 if $player.is_it_this_class?(:GARDENER,false)
+	 hours -= 1 $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 5
      return [hours,1].max
    end   
   
@@ -1096,7 +1099,7 @@ class BerryPlantData
   
   def detriment_effects(time_now)
     return unless self.event && cropsticks
-  
+    return unless $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 10
 
         if @weeds_timer && !@weeds && @growth_stage > 1
             weed_delta = time_now.to_i - @weeds_timer
@@ -1150,7 +1153,7 @@ class BerryPlantData
   end
 
   def growth_stalled?
-   return @exposed_to_rain == false && @tile_data.beside_water == false && @growth_stage >= 2 && @watered_this_stage == false
+   return @exposed_to_rain == false && beside_water == false && @growth_stage >= 2 && @watered_this_stage == false
   end
 
 def nearby_apiaries?
@@ -1167,7 +1170,6 @@ end
 
   def update
     @map_id = $game_map.map_id if @map_id.nil?
-	 @tile_data = BerryTileData.new(self.event.x,self.event.y) if @tile_data.nil?
     @exposed_to_rain = false if @exposed_to_rain.nil?
     @jit = false if @jit.nil?
     @stagnation_message = false if @stagnation_message.nil?
@@ -1240,7 +1242,7 @@ end
       break if new_time_alive < stages_this_life * tps
 	  
 	  
-      if @replant_count >= mr || (growth_stalled? && @tile_data.waterless_length>=6) || overall_soil_quality==0
+      if @replant_count >= mr || (growth_stalled? && tile_data.waterless_length>=6) || overall_soil_quality==0
         @dead = true
         return
       end
@@ -1285,13 +1287,14 @@ end
     old_growth_hour = (done_replant) ? 0 : (@time_alive - time_delta) / 3600
     new_growth_hour = @time_alive / 3600
     if new_growth_hour > old_growth_hour
-	   @tile_data.waterless_length += hours_passed if growth_stalled?
+	   hours_passed = new_growth_hour - old_growth_hour
+	   tile_data.waterless_length += hours_passed if growth_stalled?
 	   moist
 	   @bitten += 0.50 if @pests==true
        @weedsamt += 0.25 if @weeds==true
 	    @checkedcropsticks = false
 		@exposed_to_rain = false
-        (new_growth_hour - old_growth_hour).times do
+        hours_passed.times do
 		   growth(berry_season,dph)
         end
     end
@@ -1348,7 +1351,7 @@ def update_watering
     next unless move
 
     water(move.base_damage)
-    move.pp -= 1
+    move.pp -= 1 unless $player.is_it_this_class?(:GARDENER) && $player.playerclasslevel >= 15
     pokemon.gain_exp_single(250)
     @watered_at = time_now
   end
@@ -1370,7 +1373,7 @@ def update_harvesting
    
     pokemon.inventory.add(@berry, cur_yield)
     pokemon.gain_exp_single(100)
-	sideDisplay(_INTL("#{1} has collected the harvest!",pokemon.name))
+	sideDisplay(_INTL("{1} has collected the harvest!", pokemon.name))
     reset
   end
 end
@@ -1440,6 +1443,7 @@ class BerryPlantData
   end
 
   def beside_water
+    return true if $player.is_it_this_class?(:GARDENER, false) && $player.playerclasslevel >= 20
     return tile_data.beside_water
   end
 
@@ -1543,6 +1547,7 @@ class BerryPlantData
     ret = min_yield if ret < min_yield
     ret += (@berry.stats.gain / 2)
 	ret -= weeds 
+	ret = 0 if ret < 0
     return ret
   end
 
@@ -1572,7 +1577,7 @@ class BerryPlantData
       @watered_this_stage = true
       @watering_count += 1
     end
-	@tile_data.waterless_length = 0 if rain==false
+	tile_data.waterless_length = 0 if rain==false
   end
 
 
@@ -1811,7 +1816,7 @@ class Game_Map
             if plant && !pick
                 berry_plant = $PokemonGlobal.eventvars[[map_id, event[1].id]]
                 if !berry_plant
-                    berry_plant = BerryPlantData.new(event[1].id)
+                    berry_plant = BerryPlantData.new(event[1].id, map_id)
                     $PokemonGlobal.eventvars[[map_id, event[1].id]] = berry_plant
                 end
             end

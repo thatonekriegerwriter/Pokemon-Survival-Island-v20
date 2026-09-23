@@ -1,8 +1,10 @@
 ## SYSTEMS CHECKLIST 
 ## X is complete, - is half complete, empty is not worked on.
 ### Core Gameplay 
+- [-] Finish Player Classes
 
 ### UI
+- [ ] Record Demo, and patch back in video player in Scene_Intro (130) - pbPlayIntroVideo
 - [ ] Xatu give radiant quests and give you Star Pieces if you beat them?
 - [ ] Rework Xatu quest to be data driven.
 - [ ] Quest to repair statue
@@ -10,6 +12,7 @@
 
 
 ### Pokemon
+- [ ] Custom Evolutions (remember to patch back in leafstone)
 - [ ] Stations use https://bulbapedia.bulbagarden.net/wiki/Performance
 - [ ] Released Pokemon Array and Released Pokemon events
 - [ ] Add Releasing
@@ -60,6 +63,7 @@
 - [ ] Player Base create for Oil Tanker needs to be AFTER the Rockets are defeated.
 
 ### World
+- [ ] Make sure S.S Glittering is accessible
 - [-] Update Mineshaft UI. (Needs player stats and way to refresh weapon)
 - [ ] Outbreaks
 - [ ] Update Dungeons (Possibly can move to later)
@@ -86,13 +90,21 @@
 - [ ] Disease
 
 ### Items
+- [ ] Wide Lens for Seed Analyzer (Req: Item Data for Seeds, which is complete)
+- [ ] Zoom Lens for Bee Analyzer (Req: More Complex Bee Data for Bee type Pokemon)
+- [ ] Scope Lens for Pokemon Analyzer (Req: Nothing, all prereqs complete)
 - [ ] New Sewing Machine recipe for clothes.
 - [ ] Reshellable Balls
 - [ ] Cell Battery for Battery, and charge battery in machine 
 - [ ] Capture Styler charging
 - [ ] Blow Dart & Generic Dart
 - [ ] Pokeball Trap
+- [ ] Pokemon nature impacts perferred food, feeding them preferred food makes them happier, and their unpreferred food unhappy. (Req Consumable Data)
+- [ ] Modifiers for Food require a Prep Station. (Req: Item Data)
  
+ ### Food 
+- [ ] other bee byproducts.
+- [ ] More foods
  
  ### Player Classes
 
@@ -107,7 +119,7 @@
 
 
 - [ ] Level 0 - Cook - Feeding Pokemon improves their mood, and its happiness. (Actable) (Associated functionality may not implimented for demo)
-
+- [ ] Level 15 - Cook - Food made by a Cook produces stronger modifiers at the Prep Station. (Current buff +1 basically) (Actable)
 
 - [ ] Level 15 - The Styler unlocks "Assists".  (Associated functionality not implimented for demo)
  

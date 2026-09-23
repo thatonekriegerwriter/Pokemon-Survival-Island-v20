@@ -176,6 +176,7 @@ GameData::Placeable.register({ :id            => :BEDROLL, :width => 1, :height 
 GameData::Placeable.register({ :id            => :CAULDRON, :image => "craftingStations/Cauldron", :usable_locations => [:BASE]})# RECIPE + RESEARCH
 GameData::Placeable.register({ :id            => :UPGRADEDCRAFTINGBENCH, :image => "craftingStations/UCraftingStation"})# RECIPE + RESEARCH
 GameData::Placeable.register({ :id            => :MODIFICATIONTABLE, :image => "craftingStations/ModificationTable"})# RECIPE + RESEARCH
+GameData::Placeable.register({ :id            => :PREPSTATION, :image => "craftingStations/PrepStation"})# RECIPE + RESEARCH
 GameData::Placeable.register({ :id            => :SIFTER, :image => "craftingStations/Sifter"})# RECIPE + RESEARCH
 
 GameData::Placeable.register({ :id            => :STATUE, :usable_locations => [:ANY]})# RECIPE + RESEARCH

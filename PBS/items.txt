@@ -10076,6 +10076,15 @@ FieldUse = Direct
 Flags = Fling_10,Overworld,PlacingItem
 Description = A highly advanced workbench for the detailed modification of already crafted items.
 #-------------------------------
+[PREPSTATION]
+Name = Prep Station
+NamePlural = Prep Stations
+Pocket = 7
+Price = 0
+FieldUse = Direct
+Flags = Fling_10,Overworld,PlacingItem
+Description = A highly advanced workbench for the prepping of meals.
+#-------------------------------
 [GUARDPOST]
 Name = Guard Post
 NamePlural = Guard Posts

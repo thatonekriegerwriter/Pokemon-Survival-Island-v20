@@ -65,6 +65,7 @@ class Inventory_Scene
     :APIARY => ->(e, c) { InventoryScene::Stations::BeeHive.new(event_data: e, container: c) },
     :GRAVE => ->(e, c) { InventoryScene::Stations::Grave.new(event_data: e, container: c) },
     :MODIFICATIONTABLE => ->(e, c) { InventoryScene::Stations::ModificationTable.new(event_data: e, container: c) },
+    :PREPSTATION => ->(e, c) { InventoryScene::Stations::ModificationTable.new(event_data: e, container: c) },
     :MOVERELEARNER => ->(e, c) { InventoryScene::Stations::MoveRelearner.new(event_data: e, container: c) },
 
     :SIFTER => ->(e, c) { InventoryScene::Stations::Sifter.new(event_data: e, container: c, machine: false) },

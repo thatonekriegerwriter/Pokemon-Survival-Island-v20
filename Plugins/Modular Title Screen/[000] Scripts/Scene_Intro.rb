@@ -126,9 +126,9 @@ class Scene_Intro
 
     case ret
     when 1
-      pbFadeOutIn { @screen.hide }
-      pbPlayIntroVideo
-      pbFadeOutIn { @screen.show }
+    #  pbFadeOutIn { @screen.hide }
+    #  pbPlayIntroVideo
+    #  pbFadeOutIn { @screen.show }
       return false
     when 2
       closeTitle

@@ -196,6 +196,17 @@ Type = PLACEABLE
 Locked=true
 Flags=
 #-------------------------------
+[PREPSTATION]
+Name=Recipe: Prep Station
+Result=PREPSTATION
+Yield=1
+Recipe=SILVER2,1,IRON2,4,CRAFTINGBENCH,1,IRON2,4,SILVER2,1
+Station=CRAFTINGBENCH,UPGRADEDCRAFTINGBENCH
+CookingTime=0
+Type = PLACEABLE
+Locked=false
+Flags=
+#-------------------------------
 [WOODENPAIL]
 Name=Recipe
 Result=WOODENPAIL

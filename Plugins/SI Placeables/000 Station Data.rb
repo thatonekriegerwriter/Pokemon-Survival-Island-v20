@@ -445,6 +445,12 @@ class CraftingStationData
     return if @extra_storage.empty?
 	self.result_slot = @extra_storage.shift
   end
+  def update_prep
+    @extra_storage = [] if @extra_storage.nil? 
+    return unless self.result_slot.nil?
+    return if @extra_storage.empty?
+	self.result_slot = @extra_storage.shift
+  end
 
 
   def should_generate?
@@ -749,6 +755,7 @@ end
   def update
     @internal_storage = [] if @internal_storage.nil?
 	update_modifier if modifier?
+	update_prep if prepstation?
     time_now = pbGetTimeNow.to_i
     time_delta = time_now - @time_last_updated
     return if time_delta <= 0
@@ -1054,6 +1061,9 @@ class CraftingStationData
   end 
   def modifier?
     item&.id == :MODIFICATIONTABLE
+  end 
+  def prepstation?
+    item&.id == :PREPSTATION
   end 
   def machine_box?
     item&.id == :MACHINEBOX

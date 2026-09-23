@@ -71,6 +71,7 @@
 - [x] Electric Water Purifier: Turns Water pumped in into Purified water.
 
 ### Placeables
+- [x] Prep Station: A modifier station but for modification of food, having a higher modifier yield, but once something is modified, it can't be *unmodified.*  (Req: Item Data)
 - [x] Bees decrease likelhood of pest spawns
 - [x] Make sure guards aren't locked to STANDING at their station + Functionality.
 - [x] Electric Types can provide electricity to PokeGenerators.
@@ -127,6 +128,7 @@
 - [x] Make simulated combat system
 - [x] Update weather for GameData::Zones
 - [x] Test Mineshaft
+- [x] Block off areas
 
 ### Misc Mechanics
 - [x] Statues still eat energy if you back out of saving.
@@ -237,6 +239,7 @@
 - [x] Level 20 - Cook - Cooks produce twice as much food when cooking food items.
 
 
+- [x] Level 0 - Black Belt - you can use various forms of punches.
 - [x] Level 5 - Black Belt - Punch type moves have far less stamina cost.  (Actable)
 - [x] Level 10 - Black Belt - Black Belts have higher accuracy with Punch Type moves.
 - [x] Level 15 - Black Belt - Black Belts can block with their fists in the place of a Buckler, causing their incoming damage to be reduced.  (Actable)

@@ -986,8 +986,8 @@ class PokemonControls_Scene
 
     @all_controls = $PokemonSystem.game_controls.map { |c| c.clone }
     @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
-   	@all_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
-	@all_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
+   	@all_controls << ControlConfig.new("Change Stance (Left)", "Left") if $player.black_belt? && !has_stance_change_left?
+	@all_controls << ControlConfig.new("Change Stance (Right)", "Right") if $player.black_belt? && !has_stance_change_right?
 	
     list_y = tab_top + TAB_HEIGHT
     @sprites["controlwindow"] = Window_PokemonControls.new(
@@ -1076,8 +1076,8 @@ class PokemonControls_Scene
 		 
          @all_controls = Keys.default_controls.map { |c| c.clone }
          @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
-   	     @all_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
-	     @all_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
+   	     @all_controls << ControlConfig.new("Change Stance (Left)", "Left") if $player.black_belt? && !has_stance_change_left?
+	     @all_controls << ControlConfig.new("Change Stance (Right)", "Right") if $player.black_belt? && !has_stance_change_right?
          draw_tabs
          @sprites["controlwindow"].set_controls(controls_for_tab(@tab_index))
 		 should_refresh_text = true 
@@ -1166,8 +1166,8 @@ class PokemonSystem
   def game_controls
     @game_controls = merge_controls(siLoadControls)
 	@game_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
-	@game_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
-	@game_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
+	@game_controls << ControlConfig.new("Change Stance (Left)", "Left") if $player.black_belt? && !has_stance_change_left?
+	@game_controls << ControlConfig.new("Change Stance (Right)", "Right") if $player.black_belt? && !has_stance_change_right?
     return @game_controls
   end
   

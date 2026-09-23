@@ -1295,22 +1295,22 @@ end
 
 def punches
  punches = [:PUNCH]
- if true#$player.real_black_belt?
+ if $player.real_black_belt?
  punches << :PRECISEATTACK
  punches << :FIERCEATTACK
  punches << :SPECIALATTACK
  end 
- punches << :BLOCK if true#$player.black_belt?(15)
+ punches << :BLOCK if $player.black_belt?(15)
  return punches
 end 
 def punchnames
  punches = ["Punch"]
- if true#$player.real_black_belt?
+ if $player.real_black_belt?
  punches << "Precise Punch"
  punches << "Fierce Punch"
  punches << "Special Punch"
  end 
- punches << "Block" if true#$player.black_belt?(15)
+ punches << "Block" if $player.black_belt?(15)
  return punches
 end 
 

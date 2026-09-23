@@ -639,7 +639,7 @@ class PokemonStorage
  
   def update
     return if !active?
-	pokemon.remove_released
+	@boxes[0].remove_released
     @time_last_updated = pbGetTimeNow.to_i if @time_last_updated.nil?
     time_now = pbGetTimeNow
     time_delta = time_now.to_i - @time_last_updated

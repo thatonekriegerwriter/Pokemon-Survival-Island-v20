@@ -358,7 +358,7 @@ class SafariBattle::Acts::Defend::Block < SafariBattle::Acts::Defend
   end 
 
   def can_add?
-    enough_stamina? && $player.real_black_belt?
+    enough_stamina? && $player.black_belt?(15)
   end
   
   def act(battle, target)
@@ -380,7 +380,7 @@ class SafariBattle::Acts::Defend::Counter < SafariBattle::Acts::Defend
   end 
 
   def can_add?
-    enough_stamina? && $player.real_black_belt?
+    enough_stamina? && $player.black_belt?(20)
   end
   
   def act(battle, target)

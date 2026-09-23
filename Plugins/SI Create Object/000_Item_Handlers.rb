@@ -1433,7 +1433,7 @@ def pbDigUpBerryPlant(berry_event)
 	berry_id = berry_plant.berry_id
 	return false if berry_id.nil?
     berry = GameData::Item.get(berry_id)
-	result = (rand(100) < 50 || $player.real_gardener?
+	result = (rand(100) < 50 || $player.real_gardener?)
 	
 	berry_plant.reset
 	if result

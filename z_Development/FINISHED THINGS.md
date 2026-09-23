@@ -157,6 +157,7 @@
 - [x] Check if we like the mutation table for berries
 
  ### Player Classes
+- [-] Gain PlayerEXP from other things. 
 - [x] Cap player class level at 20, remove shadow Pokemon cap.
  
  - [x] Level 0 - Actors pokemon have a chance to not use PP when the Actor is not acting.
@@ -260,3 +261,4 @@
  - [x] Hiker — a successful mine hit (ov_mining/ov_mining2); clearing a mining spot
  - [x] Coordinator — a successful happiness/loyalty gain interaction; successfully awe-recruiting an ally
  - [x] Nurse — healing a Pokémon via bed, item, with cooldown.
+ - [x] Tri-Athlete — distance covered while running; you're already tracking distance_walked/distance_cycled/distance_surfed, so this could be "every N tiles run, grant exp" rather than a new counter. 

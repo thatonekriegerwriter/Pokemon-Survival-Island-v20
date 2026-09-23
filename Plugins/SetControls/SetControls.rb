@@ -70,6 +70,8 @@ module Input
 	INFOINVENTORY = 63
 	SEARCHINVENTORY = 64
 	INVENTORYTOGGLE = 65
+	STANCECHANGEL = 66
+	STANCECHANGER = 67
 	
 	
 	
@@ -335,6 +337,10 @@ module Input
           return $PokemonSystem.game_control_code("Search Inventory")
         when Input::INVENTORYTOGGLE # X, ESC
           return $PokemonSystem.game_control_code("Interact Inventory")
+        when Input::STANCECHANGEL # X, ESC
+          return $PokemonSystem.game_control_code("Change Stance (Left)")
+        when Input::STANCECHANGER # X, ESC
+          return $PokemonSystem.game_control_code("Change Stance (Right)")
         else
           return nil
       end
@@ -661,8 +667,11 @@ ControlCategories.add(:misc,      _INTL("Other"), 999)
 # single line, e.g.:
 #   ControlCategories.assign("Inventory", :inventory)
 #   ControlCategories.assign("Debug Menu", :misc)
+
+ #  	     @all_controls << ControlConfig.new("Change Stance (Left)", "Left") if $player.black_belt? && !has_stance_change_left?
+#	     @all_controls << ControlConfig.new("Change Stance (Right)", "Right") if $player.black_belt? && !has_stance_change_right?
 ["Down", "Left", "Right", "Up", "Running", "Action", "Cancel", "Menu", "Inventory", "Open Notebook"].each { |action| ControlCategories.assign(action, :overworld) }
-["Show HUD", "Expand HUD", "Combat HUD", "Show Grid", "Direct Pokemon", "Deselect", "Lock On", "Check", "Quick Access", "Quick Use"].each { |action| ControlCategories.assign(action, :combat) }
+["Show HUD", "Expand HUD", "Combat HUD", "Show Grid", "Direct Pokemon", "Deselect", "Lock On", "Check", "Quick Access", "Change Stance (Left)", "Change Stance (Right)", "Quick Use"].each { |action| ControlCategories.assign(action, :combat) }
 ["Aux 1", "Aux 2", "Scroll Up", "Scroll Down", "Debug Menu"].each { |action| ControlCategories.assign(action, :misc) }
 ["Ponder", "Toggle Favorite", "Toggle QA", "Show Info", "Search Inventory", "Interact Inventory"].each { |action| ControlCategories.assign(action, :inventory) }
 
@@ -739,8 +748,12 @@ class Window_PokemonControls < Window_DrawableCommand
     hash["Interact Inventory"] = _INTL("Allows you to use an item/open Pokemon inventory.")
     hash["Aux 1"] = _INTL("Anxillary Control: Currently unused.")
     hash["Aux 2"] = _INTL("Anxillary Control: Currently unused.")
+    hash["Change Stance (Left)"] = _INTL("Change your combat stance to the prior stance.")
+    hash["Change Stance (Right)"] = _INTL("Change your combat stance to the next stance.")
     return hash.fetch(control_action, _INTL("Set the controls."))
   end
+
+
 
   # Swaps in a different tab's controls (the same underlying ControlConfig
   # objects as the master list, just filtered) without losing edits made on
@@ -915,6 +928,24 @@ class PokemonControls_Scene
   TAB_SEL_SHADOW_COLOR = Color.new(248, 176, 80)
   TAB_HEIGHT           = 32
 
+  
+  def has_stance_change_left?
+    @game_controls.each do |control|
+	  if control.control_action == "Change Stance (Left)"
+	    return true 
+	  end
+	end
+    return false 
+  end
+  def has_stance_change_right?
+    @game_controls.each do |control|
+	  if control.control_action == "Change Stance (Right)"
+	    return true 
+	  end
+	end
+    return false 
+  end
+  
 
   def has_debug_menu?
     @all_controls.each do |control|
@@ -955,6 +986,8 @@ class PokemonControls_Scene
 
     @all_controls = $PokemonSystem.game_controls.map { |c| c.clone }
     @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
+   	@all_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
+	@all_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
 	
     list_y = tab_top + TAB_HEIGHT
     @sprites["controlwindow"] = Window_PokemonControls.new(
@@ -1043,6 +1076,8 @@ class PokemonControls_Scene
 		 
          @all_controls = Keys.default_controls.map { |c| c.clone }
          @all_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
+   	     @all_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
+	     @all_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
          draw_tabs
          @sprites["controlwindow"].set_controls(controls_for_tab(@tab_index))
 		 should_refresh_text = true 
@@ -1131,8 +1166,12 @@ class PokemonSystem
   def game_controls
     @game_controls = merge_controls(siLoadControls)
 	@game_controls << ControlConfig.new("Debug Menu", "/?") if $DEBUG && !has_debug_menu?
+	@game_controls << ControlConfig.new("Change Stance (Left)", "Left") if true#$player.black_belt? && !has_stance_change_left?
+	@game_controls << ControlConfig.new("Change Stance (Right)", "Right") if true#$player.black_belt? && !has_stance_change_right?
     return @game_controls
   end
+  
+
   def merge_controls(saved_controls)
   used = Array.new(saved_controls.length, false)
 
@@ -1159,6 +1198,24 @@ end
 	end
     return false 
   end
+  
+  def has_stance_change_left?
+    @game_controls.each do |control|
+	  if control.control_action == "Change Stance (Left)"
+	    return true 
+	  end
+	end
+    return false 
+  end
+  def has_stance_change_right?
+    @game_controls.each do |control|
+	  if control.control_action == "Change Stance (Right)"
+	    return true 
+	  end
+	end
+    return false 
+  end
+  
   
   
   def game_control_code(control_action)

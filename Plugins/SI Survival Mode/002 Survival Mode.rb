@@ -1283,8 +1283,36 @@ def pbNeoMedicine(item)
  end 
 end 
 
+def cur_punch_selection
+ @cur_punch_selection = 0 if @cur_punch_selection.nil?
+ return @cur_punch_selection
+end
+def cur_punch_selection=(value)
+ @cur_punch_selection = 0 if @cur_punch_selection.nil?
+ @cur_punch_selection = value 
+end
 
 
+def punches
+ punches = [:PUNCH]
+ if true#$player.real_black_belt?
+ punches << :PRECISEATTACK
+ punches << :FIERCEATTACK
+ punches << :SPECIALATTACK
+ end 
+ punches << :BLOCK if true#$player.black_belt?(15)
+ return punches
+end 
+def punchnames
+ punches = ["Punch"]
+ if true#$player.real_black_belt?
+ punches << "Precise Punch"
+ punches << "Fierce Punch"
+ punches << "Special Punch"
+ end 
+ punches << "Block" if true#$player.black_belt?(15)
+ return punches
+end 
 
 
  def pbMedicine(bag=nil,item=nil,scene=nil)
@@ -1533,6 +1561,22 @@ end
     pokemon.gain_ev(caughtmon)
     pokemon.gain_exp_from_overworld(caughtmon)
   end
+  end
+
+  def triathlete_run_steps
+    @triathlete_run_steps ||= 0
+  end
+
+  def triathlete_run_steps=(value)
+    @triathlete_run_steps = value
+  end
+  def grant_triathlete_run_exp
+    return unless $player.triathlete?
+    $player.triathlete_run_steps += 1
+    if $player.triathlete_run_steps >= 5000
+      pbPlayerEXPPassive(5)   
+      $player.triathlete_run_steps = 0
+    end
   end
 
   def pbPlayerEXPPassive(exp)

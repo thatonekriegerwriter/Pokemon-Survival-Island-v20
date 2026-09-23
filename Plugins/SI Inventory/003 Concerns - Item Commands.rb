@@ -51,7 +51,7 @@ module InventoryScene
 
         add_command.call(:name, _INTL("Rename"))
         add_command.call(:read, _INTL("Read")) if itm.is_mail?
-        add_command.call(:equip, _INTL("Equip")) if itm.is_tool? && $player.equipped_item == :PUNCH
+        add_command.call(:equip, _INTL("Equip")) if itm.is_tool? && $player.equipped_item == $player.punches[$player.cur_punch_selection]
         add_command.call(:unequip, _INTL("Unequip")) if itm.is_tool? && $player.equipped_item == item
         add_command.call(:drink, _INTL("Drink")) if itm.is_water?
         add_command.call(:eat, _INTL("Eat")) if (itm.is_foodwater? || itm.is_berry?) && !itm.is_water?
@@ -222,7 +222,7 @@ module InventoryScene
         return if item.nil?
         
         if quick_access_identical?(item)
-          $player.quick_access = :PUNCH
+          $player.quick_access = $player.punches[$player.cur_punch_selection]
           sprites[sprite_key]&.visible = false
         else
           $player.quick_access = item

@@ -122,8 +122,10 @@ class Game_Player < Game_Character
             $stats.distance_surfed += 1
           elsif $PokemonGlobal&.bicycle
             $stats.distance_cycled += 1
+			grant_triathlete_run_exp
           else
             $stats.distance_walked += 1
+			grant_triathlete_run_exp if $player.running
           end
           $stats.distance_slid_on_ice += 1 if $PokemonGlobal.sliding
           increase_steps
@@ -866,6 +868,29 @@ class Scene_Map
   end 
   
   def controls_for_all_seasons
+    if Input.trigger?(Input::AUX2)
+	elsif Input.trigger?(Input::HISTORYSCREENSHOT)
+	  pbHistoryScreenshot
+	elsif Input.press?(Input::LOCKON) && $game_temp.position_calling == false && $game_temp.in_throwing==false && $PokemonGlobal.cur_stored_fishing_rod.nil? && $game_temp.relock_prevention==0
+	  $game_temp.lockontarget=false
+	  target = pbGetLockOnTarget
+	  $game_temp.lockontarget=target if target
+	elsif Input.trigger?(Input::STANCECHANGEL)
+	  cur_quick_access = $player.quick_access == $player.punches[$player.cur_punch_selection]
+      $player.cur_punch_selection = ($player.cur_punch_selection - 1) % $player.punches.length
+	  sideDisplay(_INTL("You change your stance back to {1}.",$player.punchnames[$player.cur_punch_selection]))
+	  $player.quick_access = $player.punches[$player.cur_punch_selection] if cur_quick_access
+	elsif Input.trigger?(Input::STANCECHANGER)
+	  cur_quick_access = $player.quick_access == $player.punches[$player.cur_punch_selection]
+      $player.cur_punch_selection = ($player.cur_punch_selection + 1) % $player.punches.length
+	  sideDisplay(_INTL("You change your stance to {1}.",$player.punchnames[$player.cur_punch_selection]))
+	  $player.quick_access = $player.punches[$player.cur_punch_selection] if cur_quick_access
+    else 
+	  debug_controls
+	end
+  end
+
+  def debug_controls
     if Input.trigger?(Input::AUX2) && $DEBUG && Input.pressex?(0x12)
 	#	 pbEkansGame
 	   # if Input.press?(Input::SHIFT)
@@ -883,26 +908,8 @@ class Scene_Map
 #		pbTeleportToLocation
 	
  #   pbFadeOutIn { transfer_disc(1032, 0, 18, 6) }
-	elsif Input.trigger?(Input::AUX2)
-	elsif Input.trigger?(Input::HISTORYSCREENSHOT)
-	    pbHistoryScreenshot
 	elsif Input.press?(Input::F9)
        $game_temp.debug_calling = true if $DEBUG
-	elsif Input.press?(Input::LOCKON) && $game_temp.position_calling == false && $game_temp.in_throwing==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
-		 if $game_temp.relock_prevention==0
-	  	 $game_temp.lockontarget=false
-		  target = pbGetLockOnTarget
-	  	  $game_temp.lockontarget=target if target
-		 end
-#	elsif Input.trigger?(Input::CYCLEMOUSETYPE)
-#	  $mouse.change_mode
-#	elsif false && Input.double_tap?(Input::BACK) 
-#	  if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].is_a?(Pokemon) && $PokemonGlobal.ball_hud_enabled == true
-#	     if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].inworld == true
-#           pbThrowPokemon
-#	     end
-#	  end
-
 	elsif Input.pressex?(0x65) && Input.pressex?(0x62) && Input.pressex?(0x68) && Input.pressex?(0x67) && Input.pressex?(0x69) && $DEBUG
 	  pbFadeOutIn {
 	     pbSEPlay("Fly")
@@ -919,11 +926,7 @@ class Scene_Map
 	     pbWait(Graphics.frame_rate / 4)
 	  }
 	end
-  end
-
-  
-
-  
+  end 
   def directing_pokemon_attacks
 	 selected_pkmn = get_selected_pokemon_event
 	 return if selected_pkmn.nil?
@@ -1158,6 +1161,7 @@ class Scene_Map
 	elsif ($game_player.moved_last_frame || $game_player.moved_this_frame) && $player.playerstamina>0 && run_button?
 	 $player.running=true
 	 $player.run_pressed=true
+	 
 	elsif $player.playerstamina<=0 && $player.running==true
 	 $player.running=false
 	elsif !$game_player.moving? && $player.running==true && !$game_player.moved_last_frame
@@ -1171,10 +1175,11 @@ class Scene_Map
     return if $game_temp.position_calling == true
     return if $game_temp.connecting?
     return if $game_temp.assigning?
+    return if Input.held_for?(Input::PUNCH) > 10 && is_blocking?
     $player.punch_cooldown-=1 if $player.punch_cooldown>0
     $player.weapon_cooldown-=1 if $player.weapon_cooldown>0
-    if Input.trigger?(Input::PUNCH)
-	    if $player.quick_access == :PUNCH
+    if Input.trigger?(Input::PUNCH) #$player.quick_access == :PUNCH
+	    if $player.punches.include?($player.quick_access)
 	     if $player.punch_cooldown<=0
            event, distance = pbGetTarget($game_player)
            if !distance.nil?
@@ -1182,7 +1187,7 @@ class Scene_Map
 			   if !event.nil? 
 			    if !event.is_a? Integer
 			     thefight = pbOverworldCombat
-			     thefight.player_action(event,:PUNCH,$game_player.direction)
+			     thefight.player_action(event,$player.quick_access,$game_player.direction)
 			    end
 			   end
 			  end
@@ -1471,7 +1476,7 @@ end
       current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 	  if current_selection.is_a?(Symbol) || current_selection.is_a?(Pokemon)  || current_selection.is_a?(Pokemon) 
 	     if $player.quick_access == current_selection
-		    $player.quick_access = :PUNCH
+		    $player.quick_access = $player.punches[$player.cur_punch_selection]
 	        sideDisplay(_INTL("You are now unarmed."))
 		 else
 		    $player.quick_access = current_selection
@@ -1525,7 +1530,10 @@ end
     return true if current_selection.id == :BUCKLER
 	return false 
   end 
- 
+  def is_blocking?
+    return true if $player.quick_access == :BLOCK
+	return false 
+  end 
   def ball_hud_controls
     if $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index].nil?
 	 $PokemonGlobal.ball_hud_index+=1
@@ -1539,7 +1547,7 @@ end
 	$PokemonGlobal.alt_control_move=false if  $PokemonGlobal.ball_hud_type!=:PKMN
     current_selection=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 	
-	blocking = Input.held_for?(Input::USE) > 10 && is_buckler?(current_selection)
+	blocking = (Input.held_for?(Input::USE) > 10 && is_buckler?(current_selection) || Input.held_for?(Input::PUNCH) > 10 && is_blocking?)
 	unless blocking
      $player.stop_blocking
     if Input.trigger?(Input::USE)
@@ -1547,7 +1555,7 @@ end
 	elsif Input.trigger?(Input::QUICKACCESSREGISTER) 
 	  if current_selection.is_a?(Symbol) || current_selection.is_a?(Pokemon)  || current_selection.is_a?(ItemData) 
 	     if $player.quick_access == current_selection
-		    $player.quick_access = :PUNCH
+		    $player.quick_access = $player.punches[$player.cur_punch_selection]
 	        sideDisplay(_INTL("You are now unarmed."))
 		 else
 		    $player.quick_access = current_selection

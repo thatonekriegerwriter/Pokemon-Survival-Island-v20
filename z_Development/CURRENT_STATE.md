@@ -34,10 +34,6 @@
 ### Misc Mechanics
 
  ### Player Classes
-- [ ] Gain PlayerEXP from other things. 
 - [ ] Level 15 - Cook - Food made by a Cook produces stronger modifiers at the Prep Station. (Current buff +1 basically) (Actable)
 - [ ] Level 0 - Black Belt - you can use various forms of punches. (Impliment Punches)
 
-
- ### PlayerEXP
- - [ ] Tri-Athlete — distance covered while running; you're already tracking distance_walked/distance_cycled/distance_surfed, so this could be "every N tiles run, grant exp" rather than a new counter. 

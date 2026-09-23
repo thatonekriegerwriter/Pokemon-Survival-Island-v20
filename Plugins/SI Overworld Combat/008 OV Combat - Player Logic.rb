@@ -105,8 +105,6 @@ class OverworldCombat
     return numShakes
   end
 
- PUNCHES = [:PUNCH]
-
 
  def hits?(event,item)
         return true if item.id == :BAIT || item.id == :STONE
@@ -116,7 +114,8 @@ class OverworldCombat
 		
         hit_rate+=4 if event.direction == $game_player.direction
         hit_rate+=2 if (event.direction == 4 || event.direction == 6) && ($game_player.direction == 8 || $game_player.direction == 2)
-        hit_rate+=4 if PUNCHES.include?(item.id) && $player.real_black_belt?(10)
+        hit_rate+=4 if item.is_a?(Symbol) && $player.punches.include?(item) && $player.real_black_belt?(10)
+		hit_rate+=2 if item == :PRECISEATTACK
 		randhit = rand(8)
         return randhit<=hit_rate
 
@@ -139,8 +138,8 @@ class OverworldCombat
      return 
    end
    event.times_not_attacking += 1
-   if item==:PUNCH
-     handle_punch(event)
+   if item.is_a?(Symbol) && $player.punches.include?(item)
+     handle_punch(event, item)
    else
      handle_itemdata(event, item)
    end 
@@ -153,17 +152,40 @@ class OverworldCombat
    $hud.createaChargeBar($game_player) if $player.attack_opportunity>=0
  end 
  
- def handle_punch(event)
+ PUNCHCOSTS = {
+ :PUNCH => 4,
+ :PRECISEATTACK => 6,
+ :FIERCEATTACK => 8,
+ :SPECIALATTACK => 12,
+ :BLOCK => 0
+ }
+ PUNCHMOVES = {
+ :PUNCH => :TACKLE,
+ :PRECISEATTACK => :FALSESWIPE,
+ :FIERCEATTACK => :TAKEDOWN,
+ :SPECIALATTACK => :GIGAIMPACT,
+ :BLOCK => :RETALIATE
+ }
+ PUNCHCOOLDOWN = {
+ :PUNCH => 80,
+ :PRECISEATTACK => 60,
+ :FIERCEATTACK => 100,
+ :SPECIALATTACK => 160,
+ :BLOCK => 60
+ }
+
+
+ def handle_punch(event, punch_type)
   return if @battle_rules.include?("No Player Damage") || @battle_rules.include?("No Player Basics")
-  amt = 10 
-  amt /= 2 if $player.black_belt?(5)
+  amt = PUNCHCOSTS[punch_type]
+  amt /= 2 if $player.black_belt?(5) && punch_type == :PUNCH
   decreaseStamina(amt)
   pkmn = event.pokemon
-  move = Pokemon::Move.new(:TACKLE)
+  move = Pokemon::Move.new(PUNCHMOVES[punch_type])
   baseDmg = move.base_damage
   damage = calculate_weapon_damage(pkmn, :FIGHTING, baseDmg)
   deal_weapon_damage(event, damage)
-  $player.punch_cooldown += 80
+  $player.punch_cooldown += PUNCHCOOLDOWN[punch_type]
   no_moving(15)
  end 
  

@@ -806,14 +806,14 @@ end
         backattack, sideattack, baddir = directionals 
 		if $player.blocking && !backattack && !sideattack
          shield=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-		 if shield.is_a?(ItemData)
+		 if shield.is_a?(ItemData) 
 		  if shield.id == :BUCKLER
 		    pbSEPlay("Anim/Knock")
 		    reduced_damage = damage * 3.0 / (3.0 + shield.stat.stat_bonus)
 		    shield.decrease_durability(reduced_damage)
 		    return 
 		  end 
-         elsif shield.is_a?(Symbol) && shield == :BLOCK
+         elsif $player.quick_access == :BLOCK
 		    pbSEPlay("Anim/Knock")
 		    damage = (damage * 2.0 / 3.0) 
 			blocking = true  

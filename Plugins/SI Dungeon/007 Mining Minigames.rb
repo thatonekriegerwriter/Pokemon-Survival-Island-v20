@@ -589,6 +589,7 @@ end
 
 
   def pbEndScene
+	$mouse.enable 
     pbFadeOutAndHide(@sprites)
     pbDisposeSpriteHash(@sprites)
     @viewport.dispose

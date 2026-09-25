@@ -1781,8 +1781,9 @@ end
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#pbTradingScene(RECIPE1)
+	$bag.add(:RARECANDY, 1)
 	#pbXatuTrade(:OCEAN)
-	pbMiningGame(:MOUNTAINMINE)
+	#pbMiningGame(:MOUNTAINMINE)
 	#AdventureGuide.show
 	#  item = ItemData.new(:COALGENERATOR)
    #   key_id = $DynamicEvents.generateEvent($game_player.x-1, $game_player.y-1, item, false, false, $game_player.direction)
@@ -2002,7 +2003,7 @@ EventHandlers.add(:on_player_interact, :check_ov_egg,
 	 next unless pkmn.egg?
 	 next if pkmn.fainted?
 	 next if pkmn.dead?
-	 if $player.true_breeder?
+	 if $player.real_breeder?
       time_delta = pbGetTimeNow.to_i - pkmn.time_last_pet
 	  unless time_delta < 1800
 	   pkmn.steps_to_hatch -= 275

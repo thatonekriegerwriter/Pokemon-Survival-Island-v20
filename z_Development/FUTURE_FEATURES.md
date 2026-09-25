@@ -98,6 +98,7 @@
 - [ ] Cell Battery for Battery, and charge battery in machine 
 - [ ] Capture Styler charging
 - [ ] Blow Dart & Generic Dart
+- [ ] Extend HUD when fishing
 - [ ] Pokeball Trap
 - [ ] Pokemon nature impacts perferred food, feeding them preferred food makes them happier, and their unpreferred food unhappy. (Req Consumable Data)
 - [ ] Modifiers for Food require a Prep Station. (Req: Item Data)

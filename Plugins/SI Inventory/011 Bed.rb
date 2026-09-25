@@ -572,7 +572,7 @@ def heal_BED(wari,pkmn)
   end
   end 
     seconds = wari * 60 * 60
-    pkmn.total_time_working = [pkmn.total_time_working - (second / 2), 0].max
+    pkmn.total_time_working = [pkmn.total_time_working - (seconds / 2), 0].max
 	increased_value = (wari*4.25)
     increased_value *= 1.5 if $player.real_nurse?(10)
     newHP = pkmn.hp + increased_value

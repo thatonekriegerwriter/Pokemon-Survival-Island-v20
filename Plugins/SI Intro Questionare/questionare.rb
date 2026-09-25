@@ -876,6 +876,9 @@ class Player < Trainer
     define_method("real_#{name}?") do |level = 0|
       is_it_this_class?(id, false) && playerclasslevel >= level
     end
+    define_method("true_#{name}?") do |level = 0|
+      is_it_this_class?(id, false) && playerclasslevel >= level
+    end
   end
 end
 

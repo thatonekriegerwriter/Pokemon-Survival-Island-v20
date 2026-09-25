@@ -62,7 +62,12 @@ class Game_Temp
   attr_accessor :piping_source 
   attr_accessor :piping_counter
   attr_accessor :ovevents
+  attr_accessor :in_dungeon
   
+  def in_dungeon
+    @in_dungeon = false if @in_dungeon.nil?
+    return @in_dungeon
+  end
   def in_inventory
     @in_inventory = false if @in_inventory.nil?
     return @in_inventory

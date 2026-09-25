@@ -1201,18 +1201,23 @@ def pbNeoEating(item)
   has_effect = false
   if effects.food && $player.playerfood < $player.playermaxfood
     has_effect = true
+	puts "food: #{effects.food}"
   end
   if effects.water && $player.playerwater < $player.playermaxwater
     has_effect = true
+	puts "water: #{effects.water}"
   end
   if effects.saturation && $player.playersaturation < $player.playermaxsaturation
     has_effect = true
+	puts "saturation: #{effects.saturation}"
   end
   if effects.sleep && $player.playersleep < $player.playermaxsleep
     has_effect = true
+	puts "sleep: #{effects.sleep}"
   end
   if effects.health && $player.playerhealth < $player.playermaxhealth2
     has_effect = true
+	puts "health: #{effects.health}"
   end
   
   return false unless has_effect
@@ -1283,39 +1288,9 @@ def pbNeoMedicine(item)
  end 
 end 
 
-def cur_punch_selection
- @cur_punch_selection = 0 if @cur_punch_selection.nil?
- return @cur_punch_selection
-end
-def cur_punch_selection=(value)
- @cur_punch_selection = 0 if @cur_punch_selection.nil?
- @cur_punch_selection = value 
-end
-
-
-def punches
- punches = [:PUNCH]
- if $player.real_black_belt?
- punches << :PRECISEATTACK
- punches << :FIERCEATTACK
- punches << :SPECIALATTACK
- end 
- punches << :BLOCK if $player.black_belt?(15)
- return punches
-end 
-def punchnames
- punches = ["Punch"]
- if $player.real_black_belt?
- punches << "Precise Punch"
- punches << "Fierce Punch"
- punches << "Special Punch"
- end 
- punches << "Block" if $player.black_belt?(15)
- return punches
-end 
-
 
  def pbMedicine(bag=nil,item=nil,scene=nil)
+ raise 
 return if $player.playerhealth == $player.playermaxhealth2
 time_now = pbGetTimeNow
 time_delta = time_now.to_i - $player.potion_sickness
@@ -1353,6 +1328,37 @@ scene.pbDisplay(_INTL("You used a Potion too recently.")) if !scene.nil?
 sideDisplay(_INTL("You used a Potion too recently.")) if scene.nil?
 end
 end
+
+def cur_punch_selection
+ @cur_punch_selection = 0 if @cur_punch_selection.nil?
+ return @cur_punch_selection
+end
+def cur_punch_selection=(value)
+ @cur_punch_selection = 0 if @cur_punch_selection.nil?
+ @cur_punch_selection = value 
+end
+
+
+def punches
+ punches = [:PUNCH]
+ if $player.real_black_belt?
+ punches << :PRECISEATTACK
+ punches << :FIERCEATTACK
+ punches << :SPECIALATTACK
+ end 
+ punches << :BLOCK if $player.black_belt?(15)
+ return punches
+end 
+def punchnames
+ punches = ["Punch"]
+ if $player.real_black_belt?
+ punches << "Precise Punch"
+ punches << "Fierce Punch"
+ punches << "Special Punch"
+ end 
+ punches << "Block" if $player.black_belt?(15)
+ return punches
+end 
 
 
 

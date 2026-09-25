@@ -757,7 +757,6 @@ end
       clearPokemonSelection
 	  name = get_current_symbol_name(current_selection)
 	  imagepath = "Graphics/UI/OV HUD/#{name}"
-	  puts imagepath
 	  image = imagepath if pbResolveBitmap(imagepath)
 	  @sprites["ball_icon"].item=nil if current_selection != :BATTLE && current_selection != :TOOL && current_selection != :WEAPONS 
 	  @sprites["ball_icon"].item=:POTION if current_selection == :BATTLE

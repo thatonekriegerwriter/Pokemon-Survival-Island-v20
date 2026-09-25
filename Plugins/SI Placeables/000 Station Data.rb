@@ -2280,6 +2280,7 @@ end
 	 pokemon.name = nil
      pokemon.obtain_method  = 1   # hatched from egg
      pokemon.hatched_map    = $game_map.map_id
+     pokemon.set_birthday
      pokemon.record_first_moves
 	 pbPlayerEXPPassive(5) if $player.breeder? 
      $player.pokedex.register(pokemon)
@@ -2402,6 +2403,7 @@ end
      $player.pokedex.set_owned(pokemon.species)
      $player.pokedex.set_seen_egg(pokemon.species)
 	 spawned_event&.update_pokemon_sprite
+	 spawned_event&.movement_type = :INBED
 	end 
     if egg?
 	 update_egg

@@ -54,7 +54,7 @@ class DayCare
       # Generate egg
       egg = generate_basic_egg(baby_species, bee)
 	  unless bee 
-	   egg.steps_to_hatch /= 2 if same_species?(mother, father)
+	   egg.steps_to_hatch /= 2 if same_species?(mother.species, father.species)
 	   egg.steps_to_hatch /= 2 if same_type?(mother, father)
       end 
 	  
@@ -77,6 +77,7 @@ class DayCare
       set_pokerus(egg)
       # Recalculate egg's stats
       egg.calc_stats
+      egg.set_birthday
 	  pbPlayerEXPPassive(5) if $player.breeder? && !bee 
       return egg
     end
@@ -93,7 +94,7 @@ class DayCare
 	  end 
       egg.happiness      = 120
       egg.loyalty      = 120
-      egg.age = egg.set_birthday
+      egg.set_birthday
       egg.lifespan = egg.get_lifespan
       egg.water = 100
       egg.food = 100

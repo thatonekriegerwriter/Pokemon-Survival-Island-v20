@@ -526,478 +526,42 @@ end
 
 
 
-def testPokeSpawn(x,y,dir)
-    species = pbChooseSpeciesList
-    if species
-      params = ChooseNumberParams.new
-      params.setRange(1, GameData::GrowthRate.max_level)
-      params.setInitialValue(5)
-      params.setCancelValue(0)
-      level = pbMessageChooseNumber(_INTL("Set the wild {1}'s level.",
-                                          GameData::Species.get(species).name), params)
-      if level > 0
-	pokemon = Pokemon.new(species, level)
-    # trigger event on spawning of pokemon
-    EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
-    pbPlaceEncounter(x,y,pokemon,dir)
-    $PokemonEncounters.reset_step_count # added such that your encounter rate resets after spawning of an overworld pokemon 
-    $game_temp.encounter_type = nil
-    $game_temp.encounter_triggered = true
-      end
+class Interpreter
+  def command_201
+    return true if $game_temp.in_battle
+    return false if $game_temp.player_transferring ||
+                    $game_temp.message_window_showing ||
+                    $game_temp.transition_processing
+    # Set up the transfer and the player's new coordinates
+    $game_temp.player_transferring = true
+    if @parameters[0] == 0   # Direct appointment
+      $game_temp.player_new_map_id    = @parameters[1]
+      $game_temp.player_new_x         = @parameters[2]
+      $game_temp.player_new_y         = @parameters[3]
+    else   # Appoint with variables
+      $game_temp.player_new_map_id    = $game_variables[@parameters[1]]
+      $game_temp.player_new_x         = $game_variables[@parameters[2]]
+      $game_temp.player_new_y         = $game_variables[@parameters[3]]
     end
-
-end
-
-
-
-def reset_event_functionality_timer
-     event = pbMapInterpreter.get_self
- if Input.press?(Input::CTRL) && $DEBUG
-    pbSetSelfSwitch(event.id,"A",false)
- end
-end
-  def spawnPot
-     event = pbMapInterpreter.get_self
-     x = event.x
-	  y = event.y
-     if pbPlaceObject(x,y,"OvPot")
-	    return true
-	  end
+    $game_temp.player_new_direction = @parameters[4]
+    @index += 1
+    # If transition happens with a fade, do the fade
+    if @parameters[5] == 0
+      Graphics.freeze
+      $game_temp.transition_processing = true
+      $game_temp.transition_name       = ""
+    end
+    $game_temp.preventspawns=false
     return false
   end
-  def place_patroller(dungeon,room,patroller)
-   $game_temp.cur_spawning==true
-   return false if $game_temp.preventspawns==true
-     puts "Fuck me"
-     return false if dungeon != $game_temp.cur_dungeon
-     return false if room != $game_temp.cur_room
-     event = pbMapInterpreter.get_self
-      case dungeon
-	    when :STONE
-	      case room
-		    when 0
-		     case patroller
-			   when 0
-			     patrolroute = [[72,21],[65,21],[58,21],[58,14],[65,14],[72,14]] 
-			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
-				  species = :GEODUDE
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0)
-			   when 1
-			     patrolroute = [[event.x,event.y],[62,18],[61,15],[69,15]] 
-			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
-				  species = :GEODUDE_1
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0,:STILLP)
-			   when 2
-			     patrolroute = [[72,21],[65,21],[58,21],[58,14],[65,14],[72,14]] 
-			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
-				  species = :GEODUDE
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0,:STILLP,4)
-			  end
-			 when 1
-			 when 2
-		     case patroller
-			   when 0
-			     patrolroute = [[event.x,event.y],[3,11],[3,6],[11,6],[12,11]] 
-			     blockedtiles = [[7,15],[7,9],[10,14],[4,14],[7,19],[7,21],[7,4]] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :PATROLLING
-				  species = :GEODUDE
-				  combatTrial = false
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
-			  end
-			 when 3
-		     case patroller
-			   when 0
-			     patrolroute = [] 
-			     blockedtiles = [[92,54],[99,54],[100,54],[101,54],[102,54],[103,54],[99,50],[100,50],[101,50],[102,50],[103,50],[109,54],[109,47]] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :WANDERP
-				  species = :GEODUDE
-				  combatTrial = true
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
-			   when 1
-			     patrolroute = [] 
-			     blockedtiles = [[92,54],[99,54],[100,54],[101,54],[102,54],[103,54],[99,50],[100,50],[101,50],[102,50],[103,50],[99,45],[103,45]] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :WANDERP
-				  species = :GEODUDE_1
-				  combatTrial = true
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
-			  end
-		    when 4
-			 when 5
-		     case patroller
-			   when 0
-			     patrolroute = [] 
-			     blockedtiles = [[32,41]] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :WANDERP 
-				  species = :GRAVELER
-				  combatTrial = false
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
-			   when 1
-			     patrolroute = [] 
-			     blockedtiles = [[32,41]] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :WANDERP 
-				  species = :GRAVELER_1
-				  combatTrial = false
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
-			  end
-          when 6
-		     case patroller
-			   when 0
-			     patrolroute = [] 
-			     blockedtiles = [] 
-			     height = 0
-			     curPath = 0
-			     movementtype = :PATROLLING 
-				  species = :ONIX
-				  combatTrial = false
-				  alertable = true
-			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable,true)
-			  end
-		  
-		   end
-	    when :MAGMA
-	  
-	  
-	  end
-  
-  
-  
-   $game_temp.cur_spawning==false
-  end
-  def should_spawn?(room,dungeon)
-     return true if dungeon == $game_temp.cur_dungeon && room == $game_temp.cur_room && $game_temp.cur_spawning==false && $game_temp.preventspawns==false
-     return false
-  
-  end
-  def spawnPatroller(dungeon,patroller,room,x,y,species=:GEODUDE,level=20,patrolroute=[],blockedtiles=[],height=0,movementtype=:PATROLLING,curPath=0,combatTrial=false,alertable=false,miniboss=false,dir=false)
-	pokemon = Pokemon.new(species, level)
-   event_id = pbPlaceEncounter(x,y,pokemon,dir)
-   puts [x,y].to_s
-   puts dungeon
-   puts patroller
-   puts room
-   puts event_id
-   if !event_id.nil? && $game_map.events[event_id].is_a?(Game_PokeEvent)
-      event = $game_map.events[event_id]
-	   pkmn = event.pokemon
-     event.pathing = patrolroute
-     event.blockedtiles = blockedtiles
-     event.cur_path = curPath
-     event.movement_type = movementtype
-     event.still_timer = rand(5)+5 if movementtype==:STILLP
-     event.disable_despawn = true
-     event.counter = 7
-     event.intelligent = true
-     event.height_level = height
-	  if combatTrial==true
-	   $game_temp.add_to_combat_hash($game_map.map_id,room,event)
-	  end 
-	  if alertable==true
-	   $game_temp.add_to_alert_alert($game_map.map_id,room,patroller,event)
-	  end 
-	  if miniboss==true
-	    $game_temp.miniboss << event
-		 event.movement_type_locked=true
-		 event.miniboss=true
-       event.move_frequency=get_cur_player.move_frequency
-       event.barreling=true
-       event.move_speed=get_cur_player.move_speed+0.25 
-		 modify_miniboss_stats(dungeon,patroller,room,pkmn)
-	  end
-   end
-   
-   return true if !event_id.nil?
-   return false if event_id.nil?
-  end
-  def get_miniboss_level(pkmn,level)
-   return [2+pbBalancedLevel($player.party),level,pkmn.level].max
-  end
-  
-  def modify_miniboss_stats(dungeon,patroller,room,pkmn)
-   
-      case dungeon
-	    when :STONE
-	      case room
-		    when 6
-		     case patroller
-			   when 0 #Stone Temple - Onix Miniboss
-			     pkmn.level=get_miniboss_level(pkmn,25)
-			     pkmn.item=:FOCUSSASH
-              pkmn.nature=:IMPISH
-			     pkmn.raw_stat_bonus[:HP]*=1.5
-			     pkmn.raw_stat_bonus[:DEFENSE]+=20
-			     pkmn.raw_stat_bonus[:SPECIAL_DEFENSE]+=20
-			     pkmn.raw_stat_bonus[:SPEED]-=20
-			     pkmn.raw_stat_bonus[:SPECIAL_ATTACK]-=10
-			     pkmn.calc_stats
-			  end
-         end
-     end
-  end
 
-def pbMoveTowardCoordinates(event,nux,nuy)
-  maxsize = [$game_map.width, $game_map.height].max
-  return if !pbEventCanReachCoordinates?(event, nux, nuy, maxsize)
-  loop do
-    x = event.x
-    y = event.y
-    event.move_toward_the_coordinate(nux,nuy)
-    break if event.x == x && event.y == y
-	 while event.moving?
 
-    Graphics.update
-    Input.update
-    $scene.update
-	 
-	 
-	 end
-  end
-   return true
 end
 
-def pbAlertPatrollers(room,patrollers,map_id=$game_map.map_id)
- return if $game_temp.alert_alert_empty?(map_id,room,patrollers)
-  altered = $game_temp.get_alerted(map_id,room,patrollers)
-   return if altered.nil?
-   altered.each do |event|
-    event.angy_at_cur_tar = get_cur_player
-	 event.movement_type = :CHASEP
-   end
-end
-###
-def hol_up
- while $game_temp.currently_iterating==true
-    
-  break if $game_temp.currently_iterating==false
- end
-end
 
-def disable_a_switch_for_patrollers(dungeon)
-   $game_temp.currently_iterating=true
-   if false
-   case dungeon
-     when :STONE
-       pbSetSelfSwitch(28,"A",false,12)
-	    pbSetSelfSwitch(29,"A",false,12)
-	    pbSetSelfSwitch(42,"A",false,12)
-	    pbSetSelfSwitch(40,"A",false,12)
-	    pbSetSelfSwitch(68,"A",false,12)
-	    pbSetSelfSwitch(37,"A",false,12)
-	    pbSetSelfSwitch(91,"A",false,12)
-	    pbSetSelfSwitch(92,"A",false,12)
-		
-       pbSetSelfSwitch(53,"A",false,12)
-	    pbSetSelfSwitch(25,"A",false,12)
-	    pbSetSelfSwitch(87,"A",false,12)
-	    pbSetSelfSwitch(81,"A",false,12)
-	    pbSetSelfSwitch(88,"A",false,12)
-	    pbSetSelfSwitch(12,"A",false,12)
-	    pbSetSelfSwitch(78,"A",false,12)
-	    pbSetSelfSwitch(79,"A",false,12)
-	    pbSetSelfSwitch(89,"A",false,12)
-	    pbSetSelfSwitch(61,"A",false,12)
-	    pbSetSelfSwitch(60,"A",false,12)
-	    pbSetSelfSwitch(62,"A",false,12)
-	    pbSetSelfSwitch(63,"A",false,12)
-   
-   
-	    pbSetSelfSwitch(35,"A",false,12)
-	    pbSetSelfSwitch(34,"A",false,12)
-	    pbSetSelfSwitch(33,"A",false,12)
-	    pbSetSelfSwitch(31,"A",false,12)
-	    pbSetSelfSwitch(113,"A",false,12)
-	    pbSetSelfSwitch(110,"A",false,12)
-	    pbSetSelfSwitch(108,"A",false,12)
-	    pbSetSelfSwitch(106,"A",false,12)
-	    pbSetSelfSwitch(109,"A",false,12)
-	    pbSetSelfSwitch(107,"A",false,12)
-	    
-	    pbSetSelfSwitch(114,"A",false,12)
-	    pbSetSelfSwitch(14,"A",false,12)
-	    pbSetSelfSwitch(4,"A",false,12)
-   
-   
-	    pbSetSelfSwitch(70,"A",false,12)
-	    pbSetSelfSwitch(71,"A",false,12)
-	    pbSetSelfSwitch(41,"A",false,12)
-	    pbSetSelfSwitch(24,"A",false,12)
-   end
-   end
 
-   if true
-   case dungeon
-     when :STONE
-       spawnMap = $map_factory.getMap(12)
-	    spawnMap.events.each_key do |key|
-		   event = spawnMap.events[key]
-		   if event.name.include?("ItemPotSpawner") || event.name.include?("temp_patroller") || event.name.include?("doorcloser") || event.name.include?("doorcloser") || event.name.include?("caldoor") || event.name.include?("Trainer")
-		    puts event.name
-		    puts key
-           pbSetSelfSwitch(key,"A",false,12)
-		   end
-		  end
-     	$ExtraEvents.pokemon.each_key do |i|
-	     if $ExtraEvents.pokemon[i].map_id==12
-	       $ExtraEvents.pokemon.delete(i)
-	     end
-      end
-   end
-   end
-   pbWait(5)
-   $game_temp.currently_iterating=false
-end
 
-def get_miniboss_patroller
- return nil if $game_temp.miniboss.empty?
- return $game_temp.miniboss
-end
 
-def set_miniboss_route(route,index=nil)
- bosses = get_miniboss_patroller
- return if bosses.nil?
-   if index.nil?
-  bosses.each do |miniboss|
-    miniboss.pathing = route
-  end
-   else
-   bosses[index].pathing = route
-  end
-end
-def pbEventCanReachCoordinates?(event, x, y, distance)
-  delta_x = (event.direction == 6) ? 1 : (event.direction == 4) ? -1 : 0
-  delta_y = (event.direction == 2) ? 1 : (event.direction == 8) ? -1 : 0
-  case event.direction
-  when 2   # Down
-    real_distance = y - event.y - 1
-  when 4   # Left
-    real_distance = event.x - x - 1
-  when 6   # Right
-    real_distance = x - event.x - event.width
-  when 8   # Up
-    real_distance = event.y - event.height - y
-  end
-    real_distance.to_i.times do |i|
-      return false if !event.can_move_from_coordinate?(event.x + (i * delta_x), event.y + (i * delta_y), event.direction)
-    end
-
-  return true
-end
-class Game_Temp
-  attr_accessor :in_temple
-  attr_accessor :combat_hash
-  attr_accessor :alert_alert
-  attr_accessor :miniboss
-  attr_accessor :cur_dungeon
-  attr_accessor :cur_room
-  attr_accessor :currently_iterating
-  attr_accessor :cur_spawning
-
-  def cur_spawning
-   @cur_spawning = false if @cur_spawning.nil?
-   return @cur_spawning
-  end
-
-  def currently_iterating
-   @currently_iterating = false if @currently_iterating.nil?
-   return @currently_iterating
-  end
-  def in_temple
-   @in_temple = false if @in_temple.nil?
-   return @in_temple
-  end
-  def cur_dungeon
-   @cur_dungeon = :NONE if @cur_dungeon.nil?
-   return @cur_dungeon
-  end
-  def cur_room
-   @cur_room = -1 if @cur_room.nil?
-   return @cur_room
-  end
-  def combat_hash
-   @combat_hash = {} if @combat_hash.nil?
-   return @combat_hash
-  end
-  def miniboss
-   @miniboss = [] if @miniboss.nil?
-   return @miniboss
-  end
-  def alert_alert
-   @alert_alert = {} if @alert_alert.nil?
-   return @alert_alert
-  end
-
-  def combat_hash_empty?(map_id,room)
-   @combat_hash = {} if @combat_hash.nil?
-     return if @combat_hash.nil?
-     return if @combat_hash[[map_id, room]].nil?
-     @combat_hash[[map_id, room]].each_with_index do |event, index|
-	    if !defined?(event.pokemon)
-          @combat_hash[[map_id, room]][index] = nil
-		    next
-	    end
-		  if event.pokemon.fainted?
-       @combat_hash[[map_id, room]][index] = nil
-		    next
-	     end
-     end
-     @combat_hash[[map_id,room]].uniq!
-     @combat_hash[[map_id,room]].compact!
-	  
-     return @combat_hash[[map_id,room]].empty?
-  end
-
-  def alert_alert_empty?(map_id,room,patroller)
-   @alert_alert = {} if @alert_alert.nil?
-   return true if @alert_alert[[map_id, room, patroller]].nil?
-     @alert_alert[[map_id, room, patroller]].each_with_index do |event, index|
-	    if !defined?(event.pokemon)
-          @alert_alert[[map_id, room, patroller]][index] = nil
-		    next
-	    end
-		  if event.pokemon.fainted?
-       @alert_alert[[map_id, room, patroller]][index] = nil
-		    next
-	     end
-     end
-     @alert_alert[[map_id,room, patroller]].uniq!
-     @alert_alert[[map_id,room, patroller]].compact!
-	  
-     return @alert_alert[[map_id,room, patroller]].empty?
-  end
-  
-  def add_to_combat_hash(map_id,room,value)
-   @combat_hash[[map_id,room]]=[] if @combat_hash[[map_id,room]].nil?
-   @combat_hash[[map_id,room]] << value
-  end
-  def add_to_alert_alert(map_id,room,patrollers,value)
-   @alert_alert = {} if @alert_alert.nil?
-   @alert_alert[[map_id,room,patrollers]]=[] if @alert_alert[[map_id,room,patrollers]].nil?
-   @alert_alert[[map_id,room,patrollers]] << value
-  end
-  
-  def get_alerted(map_id,room,patrollers)
-   @alert_alert = {} if @alert_alert.nil?
-     return @alert_alert[[map_id,room,patrollers]]
-  end
-end
- def pbCheckCombatHash(room)
-   return $game_temp.combat_hash_empty?($game_map.map_id,room)
- 
- end
 
 class Game_Character
   def move_toward_the_coordinate(x,y)
@@ -1528,37 +1092,480 @@ end
 
 
 
-class Interpreter
-  def command_201
-    return true if $game_temp.in_battle
-    return false if $game_temp.player_transferring ||
-                    $game_temp.message_window_showing ||
-                    $game_temp.transition_processing
-    # Set up the transfer and the player's new coordinates
-    $game_temp.player_transferring = true
-    if @parameters[0] == 0   # Direct appointment
-      $game_temp.player_new_map_id    = @parameters[1]
-      $game_temp.player_new_x         = @parameters[2]
-      $game_temp.player_new_y         = @parameters[3]
-    else   # Appoint with variables
-      $game_temp.player_new_map_id    = $game_variables[@parameters[1]]
-      $game_temp.player_new_x         = $game_variables[@parameters[2]]
-      $game_temp.player_new_y         = $game_variables[@parameters[3]]
-    end
-    $game_temp.player_new_direction = @parameters[4]
-    @index += 1
-    # If transition happens with a fade, do the fade
-    if @parameters[5] == 0
-      Graphics.freeze
-      $game_temp.transition_processing = true
-      $game_temp.transition_name       = ""
-    end
-    $game_temp.preventspawns=false
-    return false
-  end
 
+def testPokeSpawn(x,y,dir)
+    species = pbChooseSpeciesList
+    if species
+      params = ChooseNumberParams.new
+      params.setRange(1, GameData::GrowthRate.max_level)
+      params.setInitialValue(5)
+      params.setCancelValue(0)
+      level = pbMessageChooseNumber(_INTL("Set the wild {1}'s level.",
+                                          GameData::Species.get(species).name), params)
+      if level > 0
+	pokemon = Pokemon.new(species, level)
+    # trigger event on spawning of pokemon
+    EventHandlers.trigger(:on_wild_pokemon_created_for_spawning, pokemon)
+    pbPlaceEncounter(x,y,pokemon,dir)
+    $PokemonEncounters.reset_step_count # added such that your encounter rate resets after spawning of an overworld pokemon 
+    $game_temp.encounter_type = nil
+    $game_temp.encounter_triggered = true
+      end
+    end
 
 end
+
+
+
+def reset_event_functionality_timer
+     event = pbMapInterpreter.get_self
+ if Input.press?(Input::CTRL) && $DEBUG
+    pbSetSelfSwitch(event.id,"A",false)
+ end
+end
+  def spawnPot
+     event = pbMapInterpreter.get_self
+     x = event.x
+	  y = event.y
+     if pbPlaceObject(x,y,"OvPot")
+	    return true
+	  end
+    return false
+  end
+  def place_patroller(dungeon,room,patroller)
+   $game_temp.cur_spawning==true
+   return false if $game_temp.preventspawns==true
+     puts "Fuck me"
+     return false if dungeon != $game_temp.cur_dungeon
+     return false if room != $game_temp.cur_room
+     event = pbMapInterpreter.get_self
+      case dungeon
+	    when :STONE
+	      case room
+		    when 0
+		     case patroller
+			   when 0
+			     patrolroute = [[72,21],[65,21],[58,21],[58,14],[65,14],[72,14]] 
+			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
+				  species = :GEODUDE
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0)
+			   when 1
+			     patrolroute = [[event.x,event.y],[62,18],[61,15],[69,15]] 
+			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
+				  species = :GEODUDE_1
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0,:STILLP)
+			   when 2
+			     patrolroute = [[72,21],[65,21],[58,21],[58,14],[65,14],[72,14]] 
+			     blockedtiles = [[62,28],[63,28],[64,28],[65,28],[66,28],[67,28],[68,28],[69,28],[65,13]] 
+				  species = :GEODUDE
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,0,:STILLP,4)
+			  end
+			 when 1
+			 when 2
+		     case patroller
+			   when 0
+			     patrolroute = [[event.x,event.y],[3,11],[3,6],[11,6],[12,11]] 
+			     blockedtiles = [[7,15],[7,9],[10,14],[4,14],[7,19],[7,21],[7,4]] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :PATROLLING
+				  species = :GEODUDE
+				  combatTrial = false
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
+			  end
+			 when 3
+		     case patroller
+			   when 0
+			     patrolroute = [] 
+			     blockedtiles = [[92,54],[99,54],[100,54],[101,54],[102,54],[103,54],[99,50],[100,50],[101,50],[102,50],[103,50],[109,54],[109,47]] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :WANDERP
+				  species = :GEODUDE
+				  combatTrial = true
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
+			   when 1
+			     patrolroute = [] 
+			     blockedtiles = [[92,54],[99,54],[100,54],[101,54],[102,54],[103,54],[99,50],[100,50],[101,50],[102,50],[103,50],[99,45],[103,45]] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :WANDERP
+				  species = :GEODUDE_1
+				  combatTrial = true
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
+			  end
+		    when 4
+			 when 5
+		     case patroller
+			   when 0
+			     patrolroute = [] 
+			     blockedtiles = [[32,41]] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :WANDERP 
+				  species = :GRAVELER
+				  combatTrial = false
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
+			   when 1
+			     patrolroute = [] 
+			     blockedtiles = [[32,41]] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :WANDERP 
+				  species = :GRAVELER_1
+				  combatTrial = false
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable)
+			  end
+          when 6
+		     case patroller
+			   when 0
+			     patrolroute = [] 
+			     blockedtiles = [] 
+			     height = 0
+			     curPath = 0
+			     movementtype = :PATROLLING 
+				  species = :ONIX
+				  combatTrial = false
+				  alertable = true
+			     spawnPatroller(dungeon,patroller,room,event.x,event.y,species,20,patrolroute,blockedtiles,height,movementtype,curPath,combatTrial,alertable,true)
+			  end
+		  
+		   end
+	    when :MAGMA
+	  
+	  
+	  end
+  
+  
+  
+   $game_temp.cur_spawning==false
+  end
+  def should_spawn?(room,dungeon)
+     return true if dungeon == $game_temp.cur_dungeon && room == $game_temp.cur_room && $game_temp.cur_spawning==false && $game_temp.preventspawns==false
+     return false
+  
+  end
+  def spawnPatroller(dungeon,patroller,room,x,y,species=:GEODUDE,level=20,patrolroute=[],blockedtiles=[],height=0,movementtype=:PATROLLING,curPath=0,combatTrial=false,alertable=false,miniboss=false,dir=false)
+	pokemon = Pokemon.new(species, level)
+   event_id = pbPlaceEncounter(x,y,pokemon,dir)
+   puts [x,y].to_s
+   puts dungeon
+   puts patroller
+   puts room
+   puts event_id
+   if !event_id.nil? && $game_map.events[event_id].is_a?(Game_PokeEvent)
+      event = $game_map.events[event_id]
+	   pkmn = event.pokemon
+     event.pathing = patrolroute
+     event.blockedtiles = blockedtiles
+     event.cur_path = curPath
+     event.movement_type = movementtype
+     event.still_timer = rand(5)+5 if movementtype==:STILLP
+     event.disable_despawn = true
+     event.counter = 7
+     event.intelligent = true
+     event.height_level = height
+	  if combatTrial==true
+	   $game_temp.add_to_combat_hash($game_map.map_id,room,event)
+	  end 
+	  if alertable==true
+	   $game_temp.add_to_alert_alert($game_map.map_id,room,patroller,event)
+	  end 
+	  if miniboss==true
+	    $game_temp.miniboss << event
+		 event.movement_type_locked=true
+		 event.miniboss=true
+       event.move_frequency=get_cur_player.move_frequency
+       event.barreling=true
+       event.move_speed=get_cur_player.move_speed+0.25 
+		 modify_miniboss_stats(dungeon,patroller,room,pkmn)
+	  end
+   end
+   
+   return true if !event_id.nil?
+   return false if event_id.nil?
+  end
+  def get_miniboss_level(pkmn,level)
+   return [2+pbBalancedLevel($player.party),level,pkmn.level].max
+  end
+  
+  def modify_miniboss_stats(dungeon,patroller,room,pkmn)
+   
+      case dungeon
+	    when :STONE
+	      case room
+		    when 6
+		     case patroller
+			   when 0 #Stone Temple - Onix Miniboss
+			     pkmn.level=get_miniboss_level(pkmn,25)
+			     pkmn.item=:FOCUSSASH
+              pkmn.nature=:IMPISH
+			     pkmn.raw_stat_bonus[:HP]*=1.5
+			     pkmn.raw_stat_bonus[:DEFENSE]+=20
+			     pkmn.raw_stat_bonus[:SPECIAL_DEFENSE]+=20
+			     pkmn.raw_stat_bonus[:SPEED]-=20
+			     pkmn.raw_stat_bonus[:SPECIAL_ATTACK]-=10
+			     pkmn.calc_stats
+			  end
+         end
+     end
+  end
+
+def pbMoveTowardCoordinates(event,nux,nuy)
+  maxsize = [$game_map.width, $game_map.height].max
+  return if !pbEventCanReachCoordinates?(event, nux, nuy, maxsize)
+  loop do
+    x = event.x
+    y = event.y
+    event.move_toward_the_coordinate(nux,nuy)
+    break if event.x == x && event.y == y
+	 while event.moving?
+
+    Graphics.update
+    Input.update
+    $scene.update
+	 
+	 
+	 end
+  end
+   return true
+end
+
+def pbAlertPatrollers(room,patrollers,map_id=$game_map.map_id)
+ return if $game_temp.alert_alert_empty?(map_id,room,patrollers)
+  altered = $game_temp.get_alerted(map_id,room,patrollers)
+   return if altered.nil?
+   altered.each do |event|
+    event.angy_at_cur_tar = get_cur_player
+	 event.movement_type = :CHASEP
+   end
+end
+###
+def hol_up
+  raise 
+ while $game_temp.currently_iterating==true
+    
+  break if $game_temp.currently_iterating==false
+ end
+end
+
+def disable_a_switch_for_patrollers(dungeon)
+   $game_temp.currently_iterating=true
+   if false
+   case dungeon
+     when :STONE
+       pbSetSelfSwitch(28,"A",false,12)
+	    pbSetSelfSwitch(29,"A",false,12)
+	    pbSetSelfSwitch(42,"A",false,12)
+	    pbSetSelfSwitch(40,"A",false,12)
+	    pbSetSelfSwitch(68,"A",false,12)
+	    pbSetSelfSwitch(37,"A",false,12)
+	    pbSetSelfSwitch(91,"A",false,12)
+	    pbSetSelfSwitch(92,"A",false,12)
+		
+       pbSetSelfSwitch(53,"A",false,12)
+	    pbSetSelfSwitch(25,"A",false,12)
+	    pbSetSelfSwitch(87,"A",false,12)
+	    pbSetSelfSwitch(81,"A",false,12)
+	    pbSetSelfSwitch(88,"A",false,12)
+	    pbSetSelfSwitch(12,"A",false,12)
+	    pbSetSelfSwitch(78,"A",false,12)
+	    pbSetSelfSwitch(79,"A",false,12)
+	    pbSetSelfSwitch(89,"A",false,12)
+	    pbSetSelfSwitch(61,"A",false,12)
+	    pbSetSelfSwitch(60,"A",false,12)
+	    pbSetSelfSwitch(62,"A",false,12)
+	    pbSetSelfSwitch(63,"A",false,12)
+   
+   
+	    pbSetSelfSwitch(35,"A",false,12)
+	    pbSetSelfSwitch(34,"A",false,12)
+	    pbSetSelfSwitch(33,"A",false,12)
+	    pbSetSelfSwitch(31,"A",false,12)
+	    pbSetSelfSwitch(113,"A",false,12)
+	    pbSetSelfSwitch(110,"A",false,12)
+	    pbSetSelfSwitch(108,"A",false,12)
+	    pbSetSelfSwitch(106,"A",false,12)
+	    pbSetSelfSwitch(109,"A",false,12)
+	    pbSetSelfSwitch(107,"A",false,12)
+	    
+	    pbSetSelfSwitch(114,"A",false,12)
+	    pbSetSelfSwitch(14,"A",false,12)
+	    pbSetSelfSwitch(4,"A",false,12)
+   
+   
+	    pbSetSelfSwitch(70,"A",false,12)
+	    pbSetSelfSwitch(71,"A",false,12)
+	    pbSetSelfSwitch(41,"A",false,12)
+	    pbSetSelfSwitch(24,"A",false,12)
+   end
+   end
+
+   if true
+   case dungeon
+     when :STONE
+       spawnMap = $map_factory.getMap(12)
+	    spawnMap.events.each_key do |key|
+		   event = spawnMap.events[key]
+		   if event.name.include?("ItemPotSpawner") || event.name.include?("temp_patroller") || event.name.include?("doorcloser") || event.name.include?("doorcloser") || event.name.include?("caldoor") || event.name.include?("Trainer")
+		    puts event.name
+		    puts key
+           pbSetSelfSwitch(key,"A",false,12)
+		   end
+		  end
+     	$ExtraEvents.pokemon.each_key do |i|
+	     if $ExtraEvents.pokemon[i].map_id==12
+	       $ExtraEvents.pokemon.delete(i)
+	     end
+      end
+   end
+   end
+   pbWait(5)
+   $game_temp.currently_iterating=false
+end
+
+def get_miniboss_patroller
+ return nil if $game_temp.miniboss.empty?
+ return $game_temp.miniboss
+end
+
+def set_miniboss_route(route,index=nil)
+ bosses = get_miniboss_patroller
+ return if bosses.nil?
+   if index.nil?
+  bosses.each do |miniboss|
+    miniboss.pathing = route
+  end
+   else
+   bosses[index].pathing = route
+  end
+end
+def pbEventCanReachCoordinates?(event, x, y, distance)
+  delta_x = (event.direction == 6) ? 1 : (event.direction == 4) ? -1 : 0
+  delta_y = (event.direction == 2) ? 1 : (event.direction == 8) ? -1 : 0
+  case event.direction
+  when 2   # Down
+    real_distance = y - event.y - 1
+  when 4   # Left
+    real_distance = event.x - x - 1
+  when 6   # Right
+    real_distance = x - event.x - event.width
+  when 8   # Up
+    real_distance = event.y - event.height - y
+  end
+    real_distance.to_i.times do |i|
+      return false if !event.can_move_from_coordinate?(event.x + (i * delta_x), event.y + (i * delta_y), event.direction)
+    end
+
+  return true
+end
+class Game_Temp
+  attr_accessor :in_temple
+  attr_accessor :combat_hash
+  attr_accessor :alert_alert
+  attr_accessor :miniboss
+  attr_accessor :cur_dungeon
+  attr_accessor :cur_room
+  attr_accessor :currently_iterating
+  attr_accessor :cur_spawning
+
+  def cur_spawning
+   @cur_spawning = false if @cur_spawning.nil?
+   return @cur_spawning
+  end
+
+  def currently_iterating
+   @currently_iterating = false if @currently_iterating.nil?
+   return @currently_iterating
+  end
+  def in_temple
+   @in_temple = false if @in_temple.nil?
+   return @in_temple
+  end
+  def cur_dungeon
+   @cur_dungeon = :NONE if @cur_dungeon.nil?
+   return @cur_dungeon
+  end
+  def cur_room
+   @cur_room = -1 if @cur_room.nil?
+   return @cur_room
+  end
+  def combat_hash
+   @combat_hash = {} if @combat_hash.nil?
+   return @combat_hash
+  end
+  def miniboss
+   @miniboss = [] if @miniboss.nil?
+   return @miniboss
+  end
+  def alert_alert
+   @alert_alert = {} if @alert_alert.nil?
+   return @alert_alert
+  end
+
+  def combat_hash_empty?(map_id,room)
+   @combat_hash = {} if @combat_hash.nil?
+     return if @combat_hash.nil?
+     return if @combat_hash[[map_id, room]].nil?
+     @combat_hash[[map_id, room]].each_with_index do |event, index|
+	    if !defined?(event.pokemon)
+          @combat_hash[[map_id, room]][index] = nil
+		    next
+	    end
+		  if event.pokemon.fainted?
+       @combat_hash[[map_id, room]][index] = nil
+		    next
+	     end
+     end
+     @combat_hash[[map_id,room]].uniq!
+     @combat_hash[[map_id,room]].compact!
+	  
+     return @combat_hash[[map_id,room]].empty?
+  end
+
+  def alert_alert_empty?(map_id,room,patroller)
+   @alert_alert = {} if @alert_alert.nil?
+   return true if @alert_alert[[map_id, room, patroller]].nil?
+     @alert_alert[[map_id, room, patroller]].each_with_index do |event, index|
+	    if !defined?(event.pokemon)
+          @alert_alert[[map_id, room, patroller]][index] = nil
+		    next
+	    end
+		  if event.pokemon.fainted?
+       @alert_alert[[map_id, room, patroller]][index] = nil
+		    next
+	     end
+     end
+     @alert_alert[[map_id,room, patroller]].uniq!
+     @alert_alert[[map_id,room, patroller]].compact!
+	  
+     return @alert_alert[[map_id,room, patroller]].empty?
+  end
+  
+  def add_to_combat_hash(map_id,room,value)
+   @combat_hash[[map_id,room]]=[] if @combat_hash[[map_id,room]].nil?
+   @combat_hash[[map_id,room]] << value
+  end
+  def add_to_alert_alert(map_id,room,patrollers,value)
+   @alert_alert = {} if @alert_alert.nil?
+   @alert_alert[[map_id,room,patrollers]]=[] if @alert_alert[[map_id,room,patrollers]].nil?
+   @alert_alert[[map_id,room,patrollers]] << value
+  end
+  
+  def get_alerted(map_id,room,patrollers)
+   @alert_alert = {} if @alert_alert.nil?
+     return @alert_alert[[map_id,room,patrollers]]
+  end
+end
+ def pbCheckCombatHash(room)
+   return $game_temp.combat_hash_empty?($game_map.map_id,room)
+ 
+ end
 
 
 

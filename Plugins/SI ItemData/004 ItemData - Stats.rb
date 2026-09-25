@@ -520,6 +520,16 @@ class ConsumableStats
     fill_extended_fields
   end 
   
+  def food
+    @food = data.food if @food.nil?
+	return @food 
+  end 
+  
+  def water
+    @water = data.water if @water.nil?
+	return @water 
+  end 
+  
   def se
     data&.se
   end 

@@ -174,6 +174,7 @@ class HeightMapEditor
 
         @tiles << tile
         @tile_lookup[[x, y]] = tile
+		puts [x, y].to_s
       end
     end
   end
@@ -669,9 +670,9 @@ end
       helpWindow
     end
 
-    if Input.triggerex?(LAYER_DOWN_KEY) || Input.jumping_down?
+    if Input.triggerex?(LAYER_DOWN_KEY) || (Input.jumping_down? && !Input.triggerex?(:DOWN))
       change_layer(-1)
-    elsif Input.triggerex?(LAYER_UP_KEY) || Input.jumping_up?
+    elsif Input.triggerex?(LAYER_UP_KEY) || (Input.jumping_up? && !Input.triggerex?(:UP))
       change_layer(+1)
     end
 

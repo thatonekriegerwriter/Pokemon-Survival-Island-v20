@@ -87,7 +87,7 @@ module GameData
 	def uses_bottle?
 	  @bottle 
 	end 
-	
+	alias has_bottle? uses_bottle?
   end 
 end 
  

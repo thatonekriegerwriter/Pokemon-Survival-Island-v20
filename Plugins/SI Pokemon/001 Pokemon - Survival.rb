@@ -152,12 +152,14 @@ end
     return time_delta >= (3600 + rand_amt)
   end 
   
+  alias has_type? hasType?
+  
   def harvest_result
-    return :CHERUBIBALL if @pokemon.species == :CHERUBI
-	return :EGGEDIBLE if @pokemon.species == :CHANSEY
-	return :TROPIUSFRUIT if @pokemon.species == :TROPIUS
-	return :SLOWPOKETAIL if @pokemon.species == :SLOWPOKE
-	return :LEEK if @pokemon.species == :FARFETCHD
+    return :CHERUBIBALL if self.species == :CHERUBI
+	return :EGGEDIBLE if self.species == :CHANSEY
+	return :TROPIUSFRUIT if self.species == :TROPIUS
+	return :SLOWPOKETAIL if self.species == :SLOWPOKE
+	return :LEEK if self.species == :FARFETCHD
     return nil 
   end 
   
@@ -252,6 +254,7 @@ end
 	end 
 	
 	def set_birthday(time=pbGetTimeNow)
+	   @handled_aging==true
 	   @birth_date = time
 	end 
 	

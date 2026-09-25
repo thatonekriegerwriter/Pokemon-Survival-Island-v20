@@ -624,7 +624,7 @@ end
 def pbFishing(hasEncounter, rodType, bait=nil, item_or_encounter)
   $stats.fishing_count += 1
   speedup = $player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)#($player.first_pokemon && [:STICKYHOLD, :SUCTIONCUPS].include?($player.first_pokemon.ability_id)  || $player.activeCharm?(:LURECHARM))
-  speedup = $player.real_fisher(5) unless speedup
+  speedup = $player.real_fisher?(5) unless speedup
   biteChance, hookChance = fishingmodifiers(rodType,speedup,bait)
   bait_name = GameData::Item.get(bait).name if !bait.nil?
   pbFishingBegin

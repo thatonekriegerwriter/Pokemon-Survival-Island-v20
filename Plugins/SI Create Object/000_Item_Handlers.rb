@@ -1276,7 +1276,7 @@ next false
 )
 
 
-ItemHandlers::UseFromBag.add(:POLE,proc{|item, event|
+ItemHandlers::UseFromBox.add(:POLE,proc{|item, event|
   next 0 unless $player.playerstamina>=4
   if pole_range_logic
    #item.decrease_durability(1)
@@ -1288,7 +1288,6 @@ ItemHandlers::UseFromBag.add(:POLE,proc{|item, event|
 
 
 def pole_range_logic
-  
   
   max_range = [$player.playerstamina / 4, 3].min
   amt = 1

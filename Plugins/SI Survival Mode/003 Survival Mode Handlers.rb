@@ -141,22 +141,24 @@ def restore_stamina
   return if $player.running == true
   return if $player.running == false && run_button?
   return if $game_temp.in_menu
-  prereqs = $player.not_acting? && $player.held_item.nil?
-  if prereqs
+  #prereqs = $player.not_acting? && $player.held_item.nil?
+  if $player.held_item.nil?
   
     if $game_player.moved_this_frame == false && $game_player.moved_last_frame == false
-      if rand(5) == 1
+      if rand(2) == 1
         puts "Increase Stamina - No Moving+"
         $player.playerstamina += 1
       end
     elsif $game_player.moved_this_frame == false
-      if rand(10) == 1
+      if rand(4) == 1
         puts "Increase Stamina - No Moving"
         $player.playerstamina += 3
       end
-    elsif rand(40) == 1
+    else
+	  if rand(10) == 1
       puts "Increase Stamina - While Moving"
-      $player.playerstamina += ($player.real_triathlete?(10) ? 9 : 6)
+      $player.playerstamina += ($player.real_triathlete?(10) ? 6 : 3)
+	  end 
     end
 
   end
@@ -195,12 +197,12 @@ def player_stamina_logic
     return
   end
   
-  $player.time_last_stamina += 1 if rand(255) < 1
-  return if $player.time_last_stamina == 50
+  $player.time_last_stamina += 1 #if rand(50) < 1
+  return if $player.time_last_stamina <= 10
   SoundManager.play_se("breath", 100) if $player.playerstamina <= ($player.playermaxstamina / 10)
 
   restore_stamina
-  $player.time_last_stamina = 0
+  $player.time_last_stamina -= 10
 end
   
   EventHandlers.add(:on_frame_update, :stamina,

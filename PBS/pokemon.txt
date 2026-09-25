@@ -1009,7 +1009,7 @@ Category = Fox
 Pokedex = While young, it has six gorgeous tails. When it grows, several new tails are sprouted.
 Generation = 1
 WildItemUncommon = CHARCOAL
-Evolutions = NINETALES,Item,FIRESTONE,VULRECUR,HasMove,WARMFRONT
+Evolutions = NINETALES,Item,FIRESTONE
 #-------------------------------
 [NINETALES]
 Name = Ninetales

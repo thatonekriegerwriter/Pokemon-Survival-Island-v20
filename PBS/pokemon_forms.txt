@@ -256,7 +256,7 @@ Generation = 7
 WildItemCommon = SNOWBALL
 WildItemUncommon = SNOWBALL
 WildItemRare = SNOWBALL
-Evolutions = NINETALES,Item,ICESTONE,VULRECUR,HasMove,COLDFRONT
+Evolutions = NINETALES,Item,ICESTONE
 #-------------------------------
 [VULRECUR,1]
 FormName = Alolan Form

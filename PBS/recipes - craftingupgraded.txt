@@ -10,14 +10,14 @@
 #Flags=
 #-------------------------------
 [POLE]
-Name=Recipe
+Name=Recipe: Vaulting Pole
 Result=POLE
 Yield=1
 Recipe=WOODENSTICKS,10,COPPER2,4,IRON2,4
 Station=UPGRADEDCRAFTINGBENCH
 CookingTime=0
 Type = TOOL
-Locked=false
+Locked=true
 Flags=
 #-------------------------------
 [RAFT]

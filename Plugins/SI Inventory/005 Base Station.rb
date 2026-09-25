@@ -244,6 +244,7 @@ module InventoryScene
       UIHelper.pbShowCommands(sprites["cmdwindow"], helptext, commands, index) { pbUpdate }
     end
     def pbRefresh = nil
+	def pbHardRefresh = nil
     def pbPrepareWindow(window)
      window.visible=true
      window.letterbyletter=false
@@ -358,6 +359,8 @@ module InventoryScene
       sprites["cmdwindow"].visible = false
       sprites["cmdwindow"].viewport = viewport
       sprites["overlay"] = BitmapSprite.new(Graphics.width, Graphics.height, viewport)
+      sprites["msgwindow"].z = 9999
+      sprites["cmdwindow"].z = 9999
       sprites["overlay"].z = 99
     end
 

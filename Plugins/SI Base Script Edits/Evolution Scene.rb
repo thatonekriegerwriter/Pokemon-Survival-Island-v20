@@ -242,7 +242,7 @@ class PokemonEvolutionScene
     pbBGMStop
     # Check for consumed item and check if Pokémon should be duplicated
 	was_owned = $player.owned?(@newspecies)
-    moves_to_learn = @pokemon.evolve_to(@new_species)
+    moves_to_learn = @pokemon.evolve_to(@newspecies)
     # Show Pokédex entry for new species if it hasn't been owned before
     if Settings::SHOW_NEW_SPECIES_POKEDEX_ENTRY_MORE_OFTEN && !was_owned && $player.has_pokedex
       pbMessageDisplay(@sprites["msgwindow"],

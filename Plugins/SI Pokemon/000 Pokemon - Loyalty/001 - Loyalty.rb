@@ -1,6 +1,7 @@
 class Pokemon
   attr_reader :happiness
   attr_reader :loyalty
+  attr_reader :fear
   attr_accessor :time_last_pet
   attr_accessor :time_last_brush
   attr_accessor :time_last_milk
@@ -13,6 +14,7 @@ alias _SI_Pokemon_Loyalty_init initialize
 	species_data = GameData::Species.get(@species)
     @happiness        = species_data.happiness || 100
     @loyalty          = species_data.loyalty || 70
+    @fear          = species_data.fear || 0
     @time_last_pet = pbGetTimeNow.to_i-3600
     @time_last_brush = pbGetTimeNow.to_i-3600
     @time_last_milk = pbGetTimeNow.to_i-3600
@@ -20,6 +22,17 @@ alias _SI_Pokemon_Loyalty_init initialize
     @total_time_working = 0
  end
 
+   def fear
+   @fear = 0 if @fear.nil?
+   return @fear
+   end
+   
+   def reinitialize_hlf
+    @happiness        = species_data.happiness || 100
+    @loyalty          = species_data.loyalty || 70
+    @fear          = species_data.fear || 0
+   end 
+   
    def loyalty_timer
    @loyalty_timer = pbGetTimeNow.to_i if @loyalty_timer.nil?
    return @loyalty_timer

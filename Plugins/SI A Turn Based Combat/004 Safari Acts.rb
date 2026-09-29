@@ -688,10 +688,10 @@ class SafariBattle::Acts::Catch::Ball < SafariBattle::Acts::Catch
      return unless spend_stamina
      $bag.remove(@extra_data,1)
 	 pkmn = target.pokemon
-	 anger = target.attackFactor
+	 assertiveness = target.attackFactor
 	 anxiety = target.escapeFactor
 	 affection = target.catchFactor 
-	 pkmn.mood.set_values(anger, anxiety, affection)
+	 pkmn.mood.set_values(assertiveness, anxiety, affection, pkmn)
      if battle.scene.pbThrowPokeBall(1, @extra_data, target.catchFactor, true)
 	  if @caughtPokemon.length > 0
         battle.pbRecordAndStoreCaughtPokemon

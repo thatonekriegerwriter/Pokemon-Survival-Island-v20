@@ -84,6 +84,7 @@ class PokemonGlobalMetadata
   attr_writer :selected_pokemon
   attr_writer :set_extended_hud
   attr_writer :alt_control_move
+  attr_accessor :set_interact
   attr_writer :hud_storage_for_alt
   attr_writer :junk_ass_multiselect_counter
   attr_writer :display_moves
@@ -103,7 +104,7 @@ class PokemonGlobalMetadata
     return @cur_stored_fishing_rod
   end 
   def ball_hud_enabled
-    @ball_hud_enabled = false if !@ball_hud_enabled
+    @ball_hud_enabled = false if @ball_hud_enabled.nil?
     return @ball_hud_enabled
   end
   def stored_ball_order

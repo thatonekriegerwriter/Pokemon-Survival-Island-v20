@@ -136,6 +136,7 @@
 - [x] Ambient Temp
 
 ### Items
+- [x] Move Pole to being unlocked in first temple, alongside its recipe.
 - [x] Finish the internal data for items. (Pokeball Done. Berry framework done, not details, but those arent required. Styler done. Important part of weapons done. Consumable incomplete.
 - [x] Ocean Trading Xatu
 - [x] Grooming Brush

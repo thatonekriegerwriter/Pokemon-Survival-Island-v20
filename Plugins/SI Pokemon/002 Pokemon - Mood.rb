@@ -16,20 +16,65 @@ end
 
  class Mood
    def initialize
-     @anger =  rand(100)
-	 @anxiety =  rand(100)
-	 @affection =  rand(100)
+     @assertiveness = rand(100) #1-255
+	 @anxiety =  rand(100) #1-255
+	 @affection =  rand(100) #1-255
    end 
    
-   def set_values(anger, anxiety, affection)
-      set_anger(anger)
+   def increase_assertiveness(amt, pkmn)
+     if @anger 
+       @assertiveness = @anger
+	   @anger = nil
+	 end 
+	 @assertiveness = rand(100) if @assertiveness.nil?
+     old_assertiveness = @assertiveness
+     @assertiveness += amt
+
+     ((old_assertiveness / 50) + 1).upto(@assertiveness / 50) do |threshold|
+       pkmn.loyalty += 1
+     end
+   end
+   def increase_affection(amt, pkmn)
+     old_affection = @affection
+     @affection += amt
+
+     ((old_affection / 50) + 1).upto(@affection / 50) do |threshold|
+       pkmn.happiness += 1
+     end
+	  
+   end 
+   def increase_anxiety(amt, pkmn)
+     old_anxiety = @anxiety
+     @anxiety += amt
+
+     ((old_anxiety / 50) + 1).upto(@anxiety / 50) do |threshold|
+       pkmn.fear += 1
+     end
+	  
+   end 
+   
+
+   
+   def set_values(assertiveness, anxiety, affection, pkmn = nil)
+      if @anger 
+       @assertiveness = @anger
+	   @anger = nil
+	  end 
+	  @assertiveness = rand(100) if @assertiveness.nil?
+      set_assertiveness(assertiveness)
       set_anxiety(anxiety)
       set_affection(affection)
+	  if pkmn
+	    pkmn.reinitialize_hlf
+        pkmn.loyalty += @assertiveness / 50
+        pkmn.happiness += @affection / 50
+        pkmn.fear += @anxiety / 50
+	  end 
    end 
    
-   def set_anger(value)
-     @anger = value
-   end 
+   def set_assertiveness(value)
+     @assertiveness = value
+   end
    
    def set_anxiety(value)
      @anxiety = value
@@ -40,11 +85,16 @@ end
    end
    
    def bubble
+      if @anger 
+       @assertiveness = @anger
+	   @anger = nil
+	  end 
+	  @assertiveness = rand(100) if @assertiveness.nil?
      #return :sleepy if tired?
      return :injured if self.hp < self.totalhp / 4
-     return :panic if @anxiety > 180 && @anger > 150
+     return :panic if @anxiety > 180 && @assertiveness > 150
      return :clingy if @anxiety > 150 && @affection > 150
-     return :angry   if @anger > 180
+     return :angry   if @assertiveness > 180
      return :nervous if @anxiety > 180
      return :happy   if @affection > 180
 

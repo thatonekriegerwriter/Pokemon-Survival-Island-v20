@@ -31,7 +31,7 @@ end
      @assertiveness += amt
 
      ((old_assertiveness / 50) + 1).upto(@assertiveness / 50) do |threshold|
-       pkmn.loyalty += 1
+       pkmn.loyalty += 10
      end
    end
    def increase_affection(amt, pkmn)
@@ -39,7 +39,7 @@ end
      @affection += amt
 
      ((old_affection / 50) + 1).upto(@affection / 50) do |threshold|
-       pkmn.happiness += 1
+       pkmn.happiness += 10
      end
 	  
    end 
@@ -48,7 +48,7 @@ end
      @anxiety += amt
 
      ((old_anxiety / 50) + 1).upto(@anxiety / 50) do |threshold|
-       pkmn.fear += 1
+       pkmn.fear += 10
      end
 	  
    end 
@@ -66,9 +66,9 @@ end
       set_affection(affection)
 	  if pkmn
 	    pkmn.reinitialize_hlf
-        pkmn.loyalty += @assertiveness / 50
-        pkmn.happiness += @affection / 50
-        pkmn.fear += @anxiety / 50
+        pkmn.loyalty += @assertiveness / 5
+        pkmn.happiness += @affection / 5
+        pkmn.fear += @anxiety / 5
 	  end 
    end 
    

@@ -337,24 +337,24 @@ class IceBoxStorage
   end
 
 
-  def quantity(item, durability = nil, water = false)
+  def quantity(item, durability = nil, water = nil)
     item = GameData::Item.get(item).id
     return ItemStorageHelper.quantity(@items, item)
   end
 
-  def can_add?(item, qty = 1, durability = nil, water = false)
+  def can_add?(item, qty = 1, durability = nil, water = nil)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.can_add?(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def add(item, qty = 1, durability=nil, water=false)
+  def add(item, qty = 1, durability=nil, water=nil)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.add(@items, MAX_SIZE, MAX_PER_SLOT, item, qty)
   end
 
-  def remove(item, qty = 1, durability = nil, water=false)
+  def remove(item, qty = 1, durability = nil, water=nil)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
     return ItemStorageHelper.remove(@items, item, qty)

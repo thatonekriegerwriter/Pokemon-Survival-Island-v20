@@ -30,6 +30,8 @@
 
 
 ### Placeables
+- [ ] Chairs/Tables
+- [ ] Toys/Plushies for Pokemon
 - [ ] FLAG - Right now, Pokemon only 'sleep' while you share maps with them, a Pokemon working on another map will basically work forever. There does need to be some level of "catch up simulation" when a map is loaded so you don't get 100% effectiveness of your Stationed Pokemon just because you aren't standing by them. Simulated Stamina Loss/Rest Time.
 - [ ] Shelf - Allows you to store multiple crates in one position.
 - [ ] Punch Bag
@@ -90,6 +92,7 @@
 - [ ] Disease
 
 ### Items
+- [ ] Camera — photograph Pokémon during their normal behavior.
 - [ ] Wide Lens for Seed Analyzer (Req: Item Data for Seeds, which is complete)
 - [ ] Zoom Lens for Bee Analyzer (Req: More Complex Bee Data for Bee type Pokemon)
 - [ ] Scope Lens for Pokemon Analyzer (Req: Nothing, all prereqs complete)

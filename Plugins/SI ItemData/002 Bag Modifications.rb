@@ -2,7 +2,7 @@
 
 module ItemStorageHelper
 
-  def self.get_item_data(item,durability=false,water=false)
+  def self.get_item_data(item,durability=nil,water=nil)
       item_slot = ItemData.new(item,durability,water)
       return item_slot
   end
@@ -341,7 +341,7 @@ class PokemonBag
     return ItemStorageHelper.quantity_of_sym(@pockets[pocket], item)
   end
 
-  def has?(item, qty = 1, sym=false,durability = false, water = false)
+  def has?(item, qty = 1, sym=false,durability = nil, water = nil)
     item = item.id if sym==true && item.is_a?(ItemData)
     return quantity_sym(item, durability, water) >= qty if item.is_a?(Symbol)
     return quantity(item, durability, water) >= qty if item.is_a?(ItemData)
@@ -350,7 +350,7 @@ class PokemonBag
   
   alias can_remove? has?
 
-  def can_add?(item, qty = 1, durability = false, water = false)
+  def can_add?(item, qty = 1, durability = nil, water = nil)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
      return if item.durability.is_a?(Numeric) && item.durability <= 0
@@ -364,7 +364,7 @@ class PokemonBag
     )
   end
 
-  def add(item, qty = 1, durability = false, water = false)
+  def add(item, qty = 1, durability = nil, water = nil)
     item_id = GameData::Item.get(item).id if !item.is_a? ItemData
 	 item = ItemStorageHelper.get_item_data(item_id,durability,water) if !item.is_a? ItemData
      return if item.durability.is_a?(Numeric) && item.durability <= 0

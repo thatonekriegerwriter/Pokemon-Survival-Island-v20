@@ -1781,6 +1781,10 @@ end
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#pbTradingScene(RECIPE1)
+	item = ItemData.new(:POKEMONWHIP)
+	$bag.add(item, 1)
+	item = ItemData.new(:WHISTLE)
+	$bag.add(item, 1)
 	 $PokemonGlobal.ball_hud_enabled = true
 	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
 	   $PokemonGlobal.set_item_hud(:INTERACTION,true)
@@ -1976,7 +1980,7 @@ EventHandlers.add(:on_player_interact, :interact_with_through_trees,
  def can_use_in_overworld?(item_id)
    [:SHEARS,:WATERBOTTLE,:GLASSBOTTLE,:POKEMONBRUSH].include?(item_id)
  end 
-
+if false 
 EventHandlers.add(:on_player_interact, :use_on_follower,
   proc {
  	 next if $PokemonGlobal.ball_hud_enabled == false 
@@ -1995,7 +1999,7 @@ EventHandlers.add(:on_player_interact, :use_on_follower,
 	 
   }
 )
-
+end
 EventHandlers.add(:on_player_interact, :check_ov_egg,
   proc {
 	 next if $game_temp.current_pkmn_controlled!=false
@@ -2022,29 +2026,24 @@ EventHandlers.add(:on_player_interact, :check_ov_egg,
 	 sideDisplay(eggstate)
   }
 )
-
-EventHandlers.add(:on_player_interact, :pet_follower,
-  proc {
- 	 next if $PokemonGlobal.ball_hud_enabled == true
-	 next if $game_temp.current_pkmn_controlled!=false
-    facingEvent = $game_player.pbFacingEvent4
-    next if facingEvent.nil?
-    next unless facingEvent.is_a?(Game_PokeEventA)
+ 
+ 
+ def pet_pokemon(facingEvent)
 	pkmn = facingEvent.pokemon
-	 next if pkmn.fainted?
-	 next if pkmn.dead?
-	 next if pkmn.egg?
+	 return if pkmn.fainted?
+	 return if pkmn.dead?
+	 return if pkmn.egg?
     time_delta = pbGetTimeNow.to_i - pkmn.time_last_pet
 	
-	 next if time_delta < 1800
+	 return if time_delta < 1800
 	  pkmn.time_last_pet = pbGetTimeNow.to_i
 	  unless facingEvent.sleeping?
 	  pkmn.update_interacted
 	  amt = 1
-	  amt = 2
+	  amt = 2 if $player.coordinator?(15)
       amt.times do |i|
-       pkmn.changeHappiness("groom")
-       pkmn.changeLoyalty("groom")
+       pkmn.changeHappiness("levelup")
+       pkmn.changeFear("levelup")
       end 
 	  pbItemRestoreHP(pkmn, 20) if $player.real_nurse?(5)
 	  pbSEPlay("pet", 80)
@@ -2062,6 +2061,22 @@ EventHandlers.add(:on_player_interact, :pet_follower,
 	  facingEvent.wake_up
 	  end 
     
+ 
+ 
+ 
+ end 
+EventHandlers.add(:on_player_interact, :pet_follower,
+  proc {
+ 	
+	next if $game_temp.current_pkmn_controlled!=false
+    facingEvent = $game_player.pbFacingEvent4
+    next if facingEvent.nil?
+    next unless facingEvent.is_a?(Game_PokeEventA)
+	if !$PokemonGlobal.ball_hud_enabled || !combat_hud?
+	 $PokemonGlobal.ball_hud_enabled = true 
+	 $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
+	 $PokemonGlobal.set_item_hud(:INTERACTION,true)
+	end 
   }
 )
 
@@ -2180,9 +2195,9 @@ EventHandlers.add(:on_player_interact, :use_item,
     next if $PokemonGlobal.surfing
     next if facingEvent && facingEvent.name[/strengthboulder/i]
     next if facingEvent2 && facingEvent2.name[/BerryPlant/i]
-    next if facingEvent && facingEvent.name[/FollowerPkmn/i]
-    next if facingEvent && defined?(facingEvent.pokemon)==false
-    next if facingEvent && facingEvent.trigger==0
+   # next if facingEvent && facingEvent.name[/FollowerPkmn/i]
+    next if facingEvent && facingEvent.trigger==0 && defined?(facingEvent.type)==false
+    next if facingEvent && facingEvent.trigger==0 && facingEvent.is_a?(Game_OVEvent)
      activate_item_box_item(facingEvent)
 	$OverworldMenu.should_refresh=true 
   }
@@ -2196,7 +2211,6 @@ def activate_item_box_item(passed_event)
     $player.acting=true
 	#This is to actually set the item box.
     active_item=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-	puts active_item.is_a?(String) && $PokemonGlobal.alt_control_move==true
 	return if active_item.nil?
 	 if active_item.is_a?(String) && $PokemonGlobal.alt_control_move==true
 	   direct_pokemon_movement_main
@@ -2222,6 +2236,13 @@ def activate_item_box_item(passed_event)
 	 elsif active_item==:WEAPONS
 	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
 	   $PokemonGlobal.set_weapon_permanent
+	 elsif active_item==:SPEAK
+	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
+	   $PokemonGlobal.set_item_hud(:SPEAK,true)
+	 elsif active_item==:INTERACTION
+	   $PokemonGlobal.cur_stored_pokemon = nil if $PokemonGlobal.cur_stored_pokemon
+	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
+	   $PokemonGlobal.set_item_hud(:INTERACTION,true)
 	 elsif active_item.is_a?(Pokemon::Move)
 	 
         return if !$scene.is_a?(Scene_Map)
@@ -2236,17 +2257,48 @@ def activate_item_box_item(passed_event)
 
 
 	 elsif active_item.is_a?(String)
-	    if !$PokemonGlobal.cur_stored_pokemon.nil?
+	    if $PokemonGlobal.cur_stored_pokemon
 		   event = $PokemonGlobal.cur_stored_pokemon.event 
 	       direct_pokemon_sub(event,get_cur_player) if event
-	     end
+		elsif passed_event.is_a?(Game_PokeEventA)
+		   interact_pokemon_main(passed_event)
+		else
+		   puts active_item
+	    end
+	 elsif active_item.is_a?(ItemData) || active_item.is_a?(Pokemon)
+	  ItemHandlers.triggerUseFromBox(active_item, passed_event)
 	 else
-	ItemHandlers.triggerUseFromBox(active_item, passed_event)
+	  puts active_item.inspect
 	 end
     $player.acting=false
 end
 
+def interact_pokemon_main(passed_event)
+    current_order=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+    case current_order
+	 when "Direct"
+	   $PokemonGlobal.cur_stored_pokemon = passed_event.pokemon
+	 when "Pet"
+	   pet_pokemon(passed_event)
+	 when "Praise"
+	  puts active_item.inspect
+	 when "Scold"
+	  puts active_item.inspect
+	 when "Comfort"
+	  puts active_item.inspect
+	 when "Reassure"
+	  puts active_item.inspect
+	 when "Command"
+	  puts active_item.inspect
+	 when "Dismiss"
+	  puts active_item.inspect
+	 else
+	  puts active_item.inspect
+	end 
 
+
+
+end 
 
 def direct_pokemon_movement_main
     current_order =$PokemonGlobal.stored_ball_order

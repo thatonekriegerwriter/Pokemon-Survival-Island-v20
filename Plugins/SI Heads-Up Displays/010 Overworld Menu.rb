@@ -409,6 +409,8 @@ def get_text_for_title_window
              return "Crops"
 		   when :INTERACTION
              return "Interact"
+		   when :SPEAK
+             return "Talk"
        end
 
   end
@@ -927,7 +929,7 @@ end
     when :CROPS
      name = "Crops"
     when :INTERACTION
-     name = "Interaction"
+     name = "Interact"
     when :PET
      name = "Pet"
     when :SPEAK

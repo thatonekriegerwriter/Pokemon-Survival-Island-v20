@@ -138,11 +138,12 @@ EventHandlers.add(:on_player_step_taken, :nurse_healing,
   end 
   
 def restore_stamina
+  return if $player.playerstamina >= $player.playermaxstamina
   return if $player.running == true
   return if $player.running == false && run_button?
   return if $game_temp.in_menu
-  #prereqs = $player.not_acting? && $player.held_item.nil?
-  if $player.held_item.nil?
+  prereqs = $player.acting==false && $player.held_item.nil? #In this case, acting means the player is performing an activity
+  if prereqs
   
     if $game_player.moved_this_frame == false && $game_player.moved_last_frame == false
       if rand(2) == 1

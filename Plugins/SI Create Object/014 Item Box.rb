@@ -170,6 +170,8 @@ class PokemonGlobalMetadata
     ball_hud_crops_index:   :CROPS,
     ball_hud_fishing_index: :FISHING,
     ball_hud_moves_index:   :MOVES,
+    ball_hud_interaction_index:   :INTERACTION,
+    ball_hud_speak_index:   :SPEAK,
   }.each do |method_name, key|
     define_method(method_name) { hud_tab_indices[key] || 0 }
     define_method("#{method_name}=") { |value| hud_tab_indices[key] = value }
@@ -590,7 +592,7 @@ def get_moves(update_index)
 	         itms << move
 	     
 	       end
-	itms2 = ["Interact","Follow","Wait","Use Item","Hunt","Search","Recall","Wander",:RADIAL]
+	itms2 = [:INTERACTION,"Follow","Wait","Use Item","Hunt","Search","Recall","Wander",:RADIAL]
      itmsf = itms + itms2
 	  $PokemonGlobal.ball_order = itmsf
 	  if update_index==true
@@ -647,7 +649,14 @@ def get_radial(update_index)
 
 end
 
-
+def combat_hud?
+  current_selection = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+  return false if current_selection == :NONE
+  return true if $PokemonGlobal.ball_hud_type==:PKMN
+  return true if $PokemonGlobal.cur_stored_pokemon
+  return true if $PokemonGlobal.ball_hud_type==:ITEM && [:WEAPONS,:TOOL,:BATTLE].include?($PokemonGlobal.ball_hud_item_type)
+  return false 
+end 
   
 def get_item_hud_type(item)
   return :PLACE   if $bag.isPlacableinInventory.include?(item)
@@ -722,7 +731,8 @@ HUDRegistry.register_item_tab(:WEAPONS, source: -> { $bag.isWeaponinInventory },
 HUDRegistry.register_item_tab(:BATTLE,  source: -> { $bag.isBattleIteminInventory }, skip_notebook: true,
                                prepends: -> { [$game_temp.lockontarget == false ? :TOOL : :WEAPONS, :PKMN] })
 HUDRegistry.register_item_tab(:CROPS,   source: -> { $bag.isCropIteminInventory },   skip_notebook: true)
-HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { [:PET, :SPEAK] })
+HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { ["Feed", "Play", "Train", "Rest", "Pet", :SPEAK, "Direct"] })
+HUDRegistry.register_item_tab(:SPEAK, source: -> { [] },     skip_notebook: true, prepends: -> { ["Praise","Scold","Comfort","Reassure","Command","Dismiss", :INTERACTION] },   reset_to_start: true )
 
 # --- ITEM sub-tab toggle cycle ------------------------------------------------
 # PLACE->TOOL->WEAPONS->BATTLE->PLACE. CROPS also feeds back to PLACE but is

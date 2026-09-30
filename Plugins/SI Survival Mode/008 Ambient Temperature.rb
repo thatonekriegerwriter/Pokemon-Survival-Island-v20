@@ -232,7 +232,7 @@ def adjust_body_temperature
 	exposure = 0.0002 * (difference ** 1.5)
 	player_temp += exposure
   end
-   if $player.playertemperature!=player_temp
+   if $player.playertemperature!=player_temp && false 
    puts "Current Map Temperature: #{ambient} C"
    puts "Current Body Temperature: #{$player.playertemperature} C"
    puts "New Body Temperature: #{player_temp} C"

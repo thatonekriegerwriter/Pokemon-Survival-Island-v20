@@ -638,11 +638,12 @@ ItemHandlers::UseFromBox.add(:POKEMONBRUSH,proc { |brush, facingEvent|
    time_delta = pbGetTimeNow.to_i - pkmn.time_last_brush
    next if time_delta < 1800
    pkmn.time_last_brush = pbGetTimeNow.to_i
-   amt = 2
-   amt = 4 if $player.coordinator?(15)
-   amt = 8 if $player.real_breeder?(5)
+   amt = 1
+   amt = 2 if $player.coordinator?(15) || $player.real_breeder?(5)
    amt.times do |i|
-   pkmn.changeLoyalty("groom")
+       pkmn.changeHappiness("groom")
+       pkmn.changeLoyalty("groom")
+       pkmn.changeFear("groom")
    end 
    pbItemRestoreHP(pkmn, 20) if $player.real_nurse?(5)
    if pkmn.species_data.egg_groups.include?(:Flying) && rand(255) < 3

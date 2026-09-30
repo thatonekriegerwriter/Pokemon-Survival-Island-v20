@@ -407,10 +407,12 @@ def get_text_for_title_window
              return "Consumable"
 		   when :CROPS
              return "Crops"
+		   when :INTERACTION
+             return "Interact"
        end
 
   end
-  return "Error"
+  return "NULSTR"
 end
 
   def resetExtendedHUD
@@ -924,6 +926,12 @@ end
      name = "Home"
     when :CROPS
      name = "Crops"
+    when :INTERACTION
+     name = "Interaction"
+    when :PET
+     name = "Pet"
+    when :SPEAK
+     name = "Talk"
     else
      name = "None"
     end

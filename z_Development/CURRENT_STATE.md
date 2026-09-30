@@ -5,7 +5,7 @@
 ### UI
 
 ### Pokemon
-- [x] ...fear stat? Works like Happiness/Loyalty, but its moreso reflective of the negative side. This is starting to map onto mood quite a bit if I do this, so it might be best to *drop* mood, and instead map the "mood values" onto fear/happiness/loyalty. If fear is added, the whips actions would increase fear alongside loyalty.
+- [ ] Wire in Fear effects into obedience/etc.
 - [ ] 'Interaction' menu for petting/grooming/speaking to/whip etc.
 
 ### Placeables

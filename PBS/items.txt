@@ -4304,7 +4304,7 @@ WeaponCooldown = 20
 BattleTimer = 12
 MovementLock = 30
 Move = GRASSWHISTLE
-Flags = Tool,Overworld,Durable
+Flags = Tool,Overworld,Durable,Interaction
 Description = A Whistle used to call all Pokemon on the map to attention.
 #-------------------------------
 [BUCKLER]
@@ -4344,8 +4344,16 @@ Name = Brush
 NamePlural = Brushes
 Pocket = 7
 Price = 0
-Flags = Tool,Overworld,Durable
+Flags = Tool,Overworld,Durable,Interaction
 Description = A brush that can be used to brush your Pokemon.
+#-------------------------------
+[POKEMONWHIP]
+Name = Whip
+NamePlural = Whips
+Pocket = 7
+Price = 0
+Flags = Tool,Overworld,Durable,Interaction
+Description = A whip used for instilling obedience in Pokemon.
 #-------------------------------
 [STONEHAMMER]
 Name = Stone Hammer

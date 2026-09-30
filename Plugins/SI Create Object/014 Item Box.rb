@@ -1,4 +1,52 @@
 
+#===============================================================================
+# HUDRegistry -- the actual place to register new modes/tabs from now on.
+# Nothing here is special-cased for the built-in modes/tabs: they're
+# registered through this same API below, so registering your own works
+# exactly the same way.
+#===============================================================================
+module HUDRegistry
+  # --- Top-level "override" modes (MOVES, FISHING, FAVORITES, RADIAL,
+  # MULTISELECT, PKMN, ITEM, and anything you add). Order matters: earlier
+  # entries take priority. New registrations are inserted before the given
+  # anchor (default :get_pkmn_box) so they outrank the PKMN/ITEM fallbacks
+  # unless you say otherwise.
+  def self.override_modes
+    @override_modes ||= []
+  end
+
+  def self.register_override_mode(build:, active:, before: :get_pkmn_box)
+    entry = { build: build, active: active }
+    idx = override_modes.index { |m| m[:build] == before }
+    idx ? override_modes.insert(idx, entry) : override_modes.push(entry)
+  end
+
+  # --- ITEM sub-tabs (PLACE, TOOL, WEAPONS, BATTLE, CROPS, and anything
+  # you add). See register_item_tab's seeding calls (further down) for what
+  # each keyword argument does.
+  def self.item_tabs
+    @item_tabs ||= {}
+  end
+
+  def self.register_item_tab(key, source:, skip_notebook: false, prepends: nil, reset_to_start: false)
+    item_tabs[key] = { source: source, skip_notebook: skip_notebook, prepends: prepends, reset_to_start: reset_to_start }
+  end
+
+  # --- The ITEM sub-tab toggle cycle (what the toggle button goes to next).
+  def self.item_tab_cycle
+    @item_tab_cycle ||= {}
+  end
+
+  # Splices new_tab in right after an existing tab in the cycle, e.g.
+  # HUDRegistry.insert_item_tab_in_cycle(:INTERACTION, after: :BATTLE)
+  # turns ...BATTLE->PLACE... into ...BATTLE->INTERACTION->PLACE...
+  def self.insert_item_tab_in_cycle(new_tab, after:)
+    old_next = item_tab_cycle[after]
+    item_tab_cycle[after] = new_tab
+    item_tab_cycle[new_tab] = old_next if old_next
+  end
+end
+
 class PokemonGlobalMetadata
   attr_accessor :hud_selector
   attr_accessor :ball_order
@@ -71,20 +119,11 @@ class PokemonGlobalMetadata
   attr_writer :ball_hud_type
   attr_writer :ball_hud_item_type
   attr_writer :ball_hud_item_type_old
-  attr_writer :ball_hud_moves_index
-  attr_writer :ball_hud_fishing_index
-  attr_writer :ball_hud_pkmn_index
-  attr_writer :ball_hud_item_index
-  attr_writer :ball_hud_weapon_index
-  attr_writer :ball_hud_battle_index
-  attr_writer :ball_hud_crops_index
-  attr_writer :ball_hud_place_index
   attr_writer :ball_hud_pkmn_index_old
   attr_writer :ball_hud_item_index_old
   attr_writer :selected_pokemon
   attr_writer :set_extended_hud
   attr_writer :alt_control_move
-  attr_accessor :set_interact
   attr_writer :hud_storage_for_alt
   attr_writer :junk_ass_multiselect_counter
   attr_writer :display_moves
@@ -104,42 +143,36 @@ class PokemonGlobalMetadata
     return @cur_stored_fishing_rod
   end 
   def ball_hud_enabled
-    @ball_hud_enabled = false if @ball_hud_enabled.nil?
+    @ball_hud_enabled = false if !@ball_hud_enabled
     return @ball_hud_enabled
   end
   def stored_ball_order
     @stored_ball_order = nil if !@stored_ball_order
     return @stored_ball_order
   end
-  def ball_hud_weapon_index
-    @ball_hud_weapon_index = 0 if @ball_hud_weapon_index.nil?
-   
-   return @ball_hud_weapon_index
+  # The 8 per-tab index accessors (ball_hud_pkmn_index, ball_hud_item_index,
+  # ball_hud_place_index, ball_hud_weapon_index, ball_hud_battle_index,
+  # ball_hud_crops_index, ball_hud_fishing_index, ball_hud_moves_index) used
+  # to each be a hand-copied ivar+method pair. They're unchanged from the
+  # outside -- same names, same behavior -- but now share one hash so a new
+  # tab's index doesn't need a new copy-pasted accessor.
+  def hud_tab_indices
+    @hud_tab_indices = {} if @hud_tab_indices.nil?
+    return @hud_tab_indices
   end
-  def ball_hud_fishing_index
-    @ball_hud_fishing_index = 0 if @ball_hud_fishing_index.nil?
-   
-   return @ball_hud_fishing_index
-  end
-  
-  def ball_hud_battle_index
-    @ball_hud_battle_index = 0 if @ball_hud_battle_index.nil?
-   
-   return @ball_hud_battle_index
-  end
-  
-  
-  def ball_hud_crops_index
-    @ball_hud_crops_index = 0 if @ball_hud_crops_index.nil?
-   
-   return @ball_hud_crops_index
-  end
-  
-  
-  def ball_hud_moves_index
-    @ball_hud_moves_index = 0 if @ball_hud_moves_index.nil?
-   
-   return @ball_hud_moves_index
+
+  {
+    ball_hud_pkmn_index:    :PKMN,
+    ball_hud_item_index:    :TOOL,
+    ball_hud_place_index:   :PLACE,
+    ball_hud_weapon_index:  :WEAPONS,
+    ball_hud_battle_index:  :BATTLE,
+    ball_hud_crops_index:   :CROPS,
+    ball_hud_fishing_index: :FISHING,
+    ball_hud_moves_index:   :MOVES,
+  }.each do |method_name, key|
+    define_method(method_name) { hud_tab_indices[key] || 0 }
+    define_method("#{method_name}=") { |value| hud_tab_indices[key] = value }
   end
 
 
@@ -267,18 +300,12 @@ end
   end
   
   
+  # Was a `case` with one when-branch per tab; now registered through
+  # HUDRegistry (seeded at the bottom of this file). To add a tab to the
+  # toggle cycle: HUDRegistry.insert_item_tab_in_cycle(:YOURTAB, after: :SOMETAB)
   def ball_hud_item_type_toggle
-	    case @ball_hud_item_type
-		   when :PLACE
-	           set_item_hud(:TOOL)
-		   when :TOOL
-	           set_item_hud(:WEAPONS)
-		   when :WEAPONS
-	           set_item_hud(:BATTLE)
-		   when :BATTLE, :CROPS
-	           set_item_hud(:PLACE)
-		
-		end
+    next_type = HUDRegistry.item_tab_cycle[@ball_hud_item_type]
+    set_item_hud(next_type) if next_type
 	 $OverworldMenu.should_refresh=true 
   end
   
@@ -427,18 +454,9 @@ def set_item_box_index
    elsif $PokemonGlobal.ball_hud_type==:PKMN
 	      $PokemonGlobal.ball_hud_pkmn_index=$PokemonGlobal.ball_hud_index
 	elsif $PokemonGlobal.ball_hud_type==:ITEM
-	    case $PokemonGlobal.ball_hud_item_type
-		   when :PLACE
-	       $PokemonGlobal.ball_hud_place_index=$PokemonGlobal.ball_hud_index
-		   when :TOOL
-	         $PokemonGlobal.ball_hud_item_index=$PokemonGlobal.ball_hud_index
-		   when :WEAPONS
-	         $PokemonGlobal.ball_hud_weapon_index=$PokemonGlobal.ball_hud_index
-		   when :BATTLE
-	         $PokemonGlobal.ball_hud_battle_index=$PokemonGlobal.ball_hud_index
-		   when :CROPS
-	         $PokemonGlobal.ball_hud_crops_index=$PokemonGlobal.ball_hud_index
-		end
+	    # was a `case ball_hud_item_type` with one line per tab; the shared
+	    # hash means this line covers every current and future ITEM tab.
+	    $PokemonGlobal.hud_tab_indices[$PokemonGlobal.ball_hud_item_type] = $PokemonGlobal.ball_hud_index
   else 
     
   end 
@@ -479,6 +497,12 @@ def isSelectedThisItem?(item_id)
 
 end 
 
+#===============================================================================
+# ITEM sub-tabs are registered through HUDRegistry.register_item_tab (seeded
+# at the bottom of this file) -- see that call for what source/skip_notebook/
+# prepends/reset_to_start each do. get_item_box below reads the registry
+# generically, so a newly-registered tab needs no change here.
+#===============================================================================
 def get_item_box(update_index,othersays=nil)
     curItem = $PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
 	 $PokemonGlobal.stored_ball_order = nil
@@ -495,36 +519,20 @@ def get_item_box(update_index,othersays=nil)
 	  $PokemonGlobal.set_item_hud(:TOOL) 
 	  update_index=true
 	 end
-	 basicitems = []
-     basicitems=$bag.isPlacableinInventory if cur_item_hud==:PLACE
-     basicitems=$bag.isWeaponinInventory if cur_item_hud==:WEAPONS
-     basicitems=$bag.isToolinInventory if cur_item_hud==:TOOL
-     basicitems=$bag.isBattleIteminInventory if cur_item_hud==:BATTLE
-     basicitems=$bag.isCropIteminInventory if cur_item_hud==:CROPS
+	 # Was 5 near-identical "basicitems = ... if cur_item_hud==:X" lines, then
+	 # 3 more if-blocks hand-deciding the Notebook/shortcut prepends per tab.
+	 # HUDRegistry.item_tabs (registered at the bottom of this file) is now the only place
+	 # a new ITEM tab needs to be described.
+	 tab = HUDRegistry.item_tabs[cur_item_hud] || {}
+	 basicitems = tab[:source] ? tab[:source].call.dup : []
      basicitems.sort_by! do |item|
       item.is_a?(ItemData) ? item.name : item.to_s
      end
-	
-	 if cur_item_hud!=:WEAPONS && cur_item_hud!=:BATTLE && cur_item_hud!=:CROPS && cur_item_hud!=:FISHING
-     item = ItemData.new(:NOTEBOOK)
-	  basicitems.unshift(item)
-	  end
-	
-	 if cur_item_hud==:WEAPONS || cur_item_hud==:TOOL
-     item = :BATTLE
-	  basicitems.unshift(item)
-	  end
-	 if cur_item_hud==:BATTLE
-     item = :TOOL if $game_temp.lockontarget==false
-     item = :WEAPONS if $game_temp.lockontarget!=false
-	  basicitems.unshift(item)
-     item = :PKMN
-	  basicitems.unshift(item)
-	  end
-     item = :RADIAL
-	 basicitems.unshift(item)
-     item = :NONE
-	 basicitems.unshift(item)
+
+	 basicitems.unshift(ItemData.new(:NOTEBOOK)) unless tab[:skip_notebook] || cur_item_hud==:FISHING
+	 Array(tab[:prepends]&.call).reverse_each { |entry| basicitems.unshift(entry) }
+     basicitems.unshift(:RADIAL)
+     basicitems.unshift(:NONE)
 	 
 	 if (cur_item_hud==:WEAPONS || cur_item_hud==:BATTLE) && update_index==true && basicitems.length > 0 
 	   index = basicitems.index(curItem)
@@ -533,27 +541,17 @@ def get_item_box(update_index,othersays=nil)
 	 end
 	 
     $PokemonGlobal.ball_order=basicitems
-	 if update_index==true && basicitems.length > 0 
-	 if cur_item_hud==:PLACE
-	   $PokemonGlobal.ball_hud_place_index=0 if basicitems.length < $PokemonGlobal.ball_hud_place_index
-	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_place_index
-	 end
-	 if cur_item_hud==:TOOL
-	   $PokemonGlobal.ball_hud_item_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_item_index
-	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_item_index
-	 end
-	 if cur_item_hud==:WEAPONS
-	   $PokemonGlobal.ball_hud_weapon_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_weapon_index
-	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_weapon_index
-	 end
-	 if cur_item_hud==:BATTLE
-	   $PokemonGlobal.ball_hud_battle_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_battle_index
-	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_battle_index
-	 end
-	 if cur_item_hud==:CROPS
-	   $PokemonGlobal.ball_hud_crops_index=basicitems.length-1 if basicitems.length < $PokemonGlobal.ball_hud_crops_index
-	   $PokemonGlobal.ball_hud_index=$PokemonGlobal.ball_hud_crops_index
-	 end
+	 # Was 5 near-identical "if cur_item_hud==:X" blocks (one per tab,
+	 # clamping a stale saved index and restoring it). PLACE is the one
+	 # tab that resets to the start instead of the end when stale --
+	 # everything else keeps that distinction via tab[:reset_to_start].
+	 if update_index==true && basicitems.length > 0
+	   idx = $PokemonGlobal.hud_tab_indices[cur_item_hud] || 0
+	   if basicitems.length < idx
+	     idx = tab[:reset_to_start] ? 0 : basicitems.length - 1
+	   end
+	   $PokemonGlobal.hud_tab_indices[cur_item_hud] = idx
+	   $PokemonGlobal.ball_hud_index = idx
      end
 	 
 
@@ -660,6 +658,11 @@ def get_item_hud_type(item)
 
   return false 
 end
+#===============================================================================
+# Override modes are registered through HUDRegistry.register_override_mode
+# (seeded at the bottom of this file). getCurrentItemOrder below reads the
+# registry directly, so a newly-registered mode needs no change here.
+#===============================================================================
 def getCurrentItemOrder(update_index=false)
  # puts $PokemonGlobal.ball_hud_type
  # puts $PokemonGlobal.ball_hud_index
@@ -671,13 +674,9 @@ def getCurrentItemOrder(update_index=false)
 	  end
 	end
   $PokemonGlobal.ball_order = [] if $PokemonGlobal.ball_order.nil?
-   get_moves(update_index) if $game_temp.favorites_enabled==false && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && !$PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil?
-   get_bait(update_index) if $game_temp.favorites_enabled==false && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && !$PokemonGlobal.cur_stored_fishing_rod.nil? && $PokemonGlobal.cur_stored_pokemon.nil?
-   get_favorites(update_index) if $game_temp.favorites_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?  && $PokemonGlobal.cur_stored_fishing_rod.nil?
-   get_multiselect(update_index) if $PokemonGlobal.alt_control_move==true && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?  && $PokemonGlobal.cur_stored_fishing_rod.nil?
-   get_radial(update_index) if $game_temp.radial_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?  && $PokemonGlobal.cur_stored_fishing_rod.nil?
-   get_pkmn_box(update_index) if $PokemonGlobal.ball_hud_type==:PKMN && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?  && $PokemonGlobal.cur_stored_fishing_rod.nil?
-   get_item_box(update_index) if $PokemonGlobal.ball_hud_type==:ITEM && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil?  && $PokemonGlobal.cur_stored_fishing_rod.nil?
+  HUDRegistry.override_modes.each do |mode|
+    send(mode[:build], update_index) if mode[:active].call
+  end
   $PokemonGlobal.ball_order = [] if $PokemonGlobal.ball_order.nil?
 end
 
@@ -698,3 +697,68 @@ class Game_Player < Game_Character
 	old_gp_update
   end 
 end 
+
+#===============================================================================
+# Seeding the built-ins through HUDRegistry -- not a special case, this is
+# the exact API a new mode or tab would use. To add your own:
+#
+#   HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionItemInInventory })
+#   HUDRegistry.insert_item_tab_in_cycle(:INTERACTION, after: :BATTLE)
+#
+#   HUDRegistry.register_override_mode(build: :get_interaction_picker, active: -> { ... })
+#===============================================================================
+
+# --- ITEM sub-tabs -----------------------------------------------------------
+# source          - proc returning the tab's raw item list
+# skip_notebook   - true if this tab should NOT get the Notebook prepended
+#                   (original: WEAPONS, BATTLE, CROPS skip it)
+# prepends        - proc returning extra entries to prepend, in the order
+#                   the original's sequential unshift calls produced
+# reset_to_start  - true if a stale saved index clamps to 0 instead of the
+#                   tab's last index (original: only PLACE does this)
+HUDRegistry.register_item_tab(:PLACE,   source: -> { $bag.isPlacableinInventory },   reset_to_start: true)
+HUDRegistry.register_item_tab(:TOOL,    source: -> { $bag.isToolinInventory },       prepends: -> { [:BATTLE] })
+HUDRegistry.register_item_tab(:WEAPONS, source: -> { $bag.isWeaponinInventory },     skip_notebook: true, prepends: -> { [:BATTLE] })
+HUDRegistry.register_item_tab(:BATTLE,  source: -> { $bag.isBattleIteminInventory }, skip_notebook: true,
+                               prepends: -> { [$game_temp.lockontarget == false ? :TOOL : :WEAPONS, :PKMN] })
+HUDRegistry.register_item_tab(:CROPS,   source: -> { $bag.isCropIteminInventory },   skip_notebook: true)
+HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { [:PET, :SPEAK] })
+
+# --- ITEM sub-tab toggle cycle ------------------------------------------------
+# PLACE->TOOL->WEAPONS->BATTLE->PLACE. CROPS also feeds back to PLACE but is
+# deliberately not part of the forward cycle (reached only via the radial
+# menu); toggling out of it returns to PLACE.
+HUDRegistry.item_tab_cycle.merge!(
+  PLACE:   :TOOL,
+  TOOL:    :WEAPONS,
+  WEAPONS: :BATTLE,
+  BATTLE:  :PLACE,
+  CROPS:   :TOOL,
+)
+
+# --- Top-level override modes -------------------------------------------------
+# Order matters -- earlier entries take priority. Each was a 7-line chain
+# repeating the same 5 boolean checks (favorites_enabled, alt_control_move,
+# radial_enabled, cur_stored_pokemon, cur_stored_fishing_rod) in a different
+# combination; same priority order, now data instead of copy-pasted
+# conditions. Pushed directly, in exact original order, rather than through
+# register_override_mode's before:-search (seeding needs an exact sequence;
+# register_override_mode is for adding ONE new mode to an already-seeded
+# list afterward, e.g. from a different file, which is what its `before:`
+# default is designed for).
+HUDRegistry.override_modes.push(
+  { build: :get_moves,
+    active: -> { $game_temp.favorites_enabled==false && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && !$PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+  { build: :get_multiselect,
+    active: -> { $PokemonGlobal.alt_control_move==true && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+  { build: :get_bait,
+    active: -> { $game_temp.favorites_enabled==false && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && !$PokemonGlobal.cur_stored_fishing_rod.nil? && $PokemonGlobal.cur_stored_pokemon.nil? } },
+  { build: :get_favorites,
+    active: -> { $game_temp.favorites_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+  { build: :get_radial,
+    active: -> { $game_temp.radial_enabled==true && $PokemonGlobal.alt_control_move==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+  { build: :get_pkmn_box,
+    active: -> { $PokemonGlobal.ball_hud_type==:PKMN && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+  { build: :get_item_box,
+    active: -> { $PokemonGlobal.ball_hud_type==:ITEM && $PokemonGlobal.alt_control_move==false && $game_temp.radial_enabled==false && $game_temp.favorites_enabled==false && $PokemonGlobal.cur_stored_pokemon.nil? && $PokemonGlobal.cur_stored_fishing_rod.nil? } },
+)

@@ -43,6 +43,7 @@
 - [x] Make Relearn Screen a conventional Inventory screen, just without inventory.
 
 ### Pokemon
+- [x] ...fear stat? Works like Happiness/Loyalty, but its moreso reflective of the negative side. This is starting to map onto mood quite a bit if I do this, so it might be best to *drop* mood, and instead map the "mood values" onto fear/happiness/loyalty. If fear is added, the whips actions would increase fear alongside loyalty.
 - [x] Too low happiness for too long begins dragging down loyalty.
 - [x] Overhaul Happiness to be ephemerial.
 - [x] Update happiness calls to call loyalty mods depending on circumstances.

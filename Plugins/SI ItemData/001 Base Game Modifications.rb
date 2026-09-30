@@ -232,6 +232,7 @@ module GameData
     def is_styler?;            return has_flag?("CaptureStyler"); end
     def has_water_meter?;            return has_flag?("WaterDura"); end
     def is_battery?;            return has_flag?("Battery"); end
+    def is_interaction?;            return has_flag?("Interaction"); end
   
   
   

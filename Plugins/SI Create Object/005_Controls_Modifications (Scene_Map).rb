@@ -1781,7 +1781,10 @@ end
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#pbTradingScene(RECIPE1)
-	$bag.add(:RARECANDY, 1)
+	 $PokemonGlobal.ball_hud_enabled = true
+	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
+	   $PokemonGlobal.set_item_hud(:INTERACTION,true)
+#	$bag.add(:RARECANDY, 1)
 	#pbXatuTrade(:OCEAN)
 	#pbMiningGame(:MOUNTAINMINE)
 	#AdventureGuide.show

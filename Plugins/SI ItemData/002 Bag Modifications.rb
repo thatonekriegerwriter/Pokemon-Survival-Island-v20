@@ -240,6 +240,28 @@ class PokemonBag
 	 items = items.uniq { |item| item.id }
     return items
   end
+  
+  
+  def isInteractionIteminInventory
+    items = []
+	$bag.pockets.each do |pocket| 
+	next if pocket.nil?
+	pocket.each do |i| 
+	  next if i.nil?
+	  i[0] = ItemStorageHelper.get_item_data(i[0]) if i[0].is_a?(Symbol)
+	  item = i[0] 
+      itm = GameData::Item.get(item)
+	  if itm.is_interaction?
+      items << item
+	  end
+
+	end
+	end
+	 items = items.uniq { |item| item.id }
+    return items
+  end
+  
+  
   def isBaitIteminInventory
     items = []
 	$bag.pockets.each do |pocket| 

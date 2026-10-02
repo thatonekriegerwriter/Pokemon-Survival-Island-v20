@@ -1577,7 +1577,9 @@ end
 	#  $mouse.set_mode(:FOLLOW)
 	 elsif Input.trigger?(Input::SPECIAL)
 	  amt = $PokemonGlobal.selected_pokemon_cleaned.length
-      $PokemonGlobal.ball_hud_enabled = false if $PokemonGlobal.alt_control_move==true || !$PokemonGlobal.cur_stored_pokemon.nil?
+	   if $PokemonGlobal.alt_control_move==true || !$PokemonGlobal.cur_stored_pokemon.nil?
+      $PokemonGlobal.ball_hud_enabled = false
+	   end 
       if amt==1
 	    pkmn = $PokemonGlobal.selected_pokemon_cleaned[0]
 	   if $PokemonGlobal.cur_stored_pokemon!=pkmn
@@ -1772,6 +1774,7 @@ end
 	   # $PokemonGlobal.set_ball_hud_type($PokemonGlobal.ball_hud_type_old)
       $PokemonGlobal.ball_hud_enabled = true
 	   
+		
 	elsif  Input.press?(Input::NOTEBOOK) && $game_system.menu_disabled==false && $PokemonGlobal.cur_stored_fishing_rod.nil?
 	  $game_temp.notebook_calling=true
     elsif Input.triggerex?(Keys::CONTROLS_LIST["/?"])
@@ -1781,13 +1784,7 @@ end
 	# test_cloning
 	#  pbRelearnMoveScreen
 	#pbTradingScene(RECIPE1)
-	item = ItemData.new(:POKEMONWHIP)
-	$bag.add(item, 1)
-	item = ItemData.new(:WHISTLE)
-	$bag.add(item, 1)
-	 $PokemonGlobal.ball_hud_enabled = true
-	   $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
-	   $PokemonGlobal.set_item_hud(:INTERACTION,true)
+
 #	$bag.add(:RARECANDY, 1)
 	#pbXatuTrade(:OCEAN)
 	#pbMiningGame(:MOUNTAINMINE)
@@ -2072,7 +2069,7 @@ EventHandlers.add(:on_player_interact, :pet_follower,
     facingEvent = $game_player.pbFacingEvent4
     next if facingEvent.nil?
     next unless facingEvent.is_a?(Game_PokeEventA)
-	if !$PokemonGlobal.ball_hud_enabled || !combat_hud?
+	if !$PokemonGlobal.ball_hud_enabled || $PokemonGlobal.ball_hud_enabled && !combat_hud?
 	 $PokemonGlobal.ball_hud_enabled = true 
 	 $PokemonGlobal.set_ball_hud_type(:ITEM,true) 
 	 $PokemonGlobal.set_item_hud(:INTERACTION,true)
@@ -2189,10 +2186,10 @@ EventHandlers.add(:on_player_interact, :use_item,
 	next if $mouse.current_mode==:FOLLOW #&& Input.press?(Input::ALTERNATEMOUSEMODE)
 	next if $mouse.current_mode==:SQUARE 
 	next if !$PokemonGlobal.cur_stored_fishing_rod.nil?
-    facingEvent = $game_player.pbFacingEvent
-    facingEvent2 = $game_player.pbFacingEventIgnoreOverTrigger
     next if $PokemonGlobal.diving
     next if $PokemonGlobal.surfing
+    facingEvent = $game_player.pbFacingEvent
+    facingEvent2 = $game_player.pbFacingEventIgnoreOverTrigger
     next if facingEvent && facingEvent.name[/strengthboulder/i]
     next if facingEvent2 && facingEvent2.name[/BerryPlant/i]
    # next if facingEvent && facingEvent.name[/FollowerPkmn/i]
@@ -2274,8 +2271,8 @@ def activate_item_box_item(passed_event)
 end
 
 def interact_pokemon_main(passed_event)
-    current_order=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
-    case current_order
+    active_item=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+    case active_item
 	 when "Direct"
 	   $PokemonGlobal.cur_stored_pokemon = passed_event.pokemon
 	 when "Pet"

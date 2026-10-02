@@ -6,6 +6,7 @@
 
 ### Pokemon
 - [ ] Wire in Fear effects into obedience/etc.
+- [x] Reset interaction menu returning to stored page
 - [x] 'Interaction' menu for petting/grooming/speaking to/whip etc.
 - [x] Talk command list
 

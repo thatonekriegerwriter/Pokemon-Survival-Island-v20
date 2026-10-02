@@ -28,8 +28,8 @@ module HUDRegistry
     @item_tabs ||= {}
   end
 
-  def self.register_item_tab(key, source:, skip_notebook: false, prepends: nil, reset_to_start: false)
-    item_tabs[key] = { source: source, skip_notebook: skip_notebook, prepends: prepends, reset_to_start: reset_to_start }
+  def self.register_item_tab(key, source:, skip_notebook: false, prepends: nil, appends: nil, reset_to_start: false)
+    item_tabs[key] = { source: source, skip_notebook: skip_notebook, prepends: prepends, appends: appends, reset_to_start: reset_to_start }
   end
 
   # --- The ITEM sub-tab toggle cycle (what the toggle button goes to next).
@@ -113,7 +113,6 @@ class PokemonGlobalMetadata
 end
 
 class PokemonGlobalMetadata
-  attr_writer :ball_hud_enabled #$PokemonGlobal.ball_hud_enabled = true
   attr_writer :ball_hud_index
   attr_writer :stored_ball_order
   attr_writer :ball_hud_type
@@ -143,8 +142,13 @@ class PokemonGlobalMetadata
     return @cur_stored_fishing_rod
   end 
   def ball_hud_enabled
-    @ball_hud_enabled = false if !@ball_hud_enabled
+    @ball_hud_enabled = false if @ball_hud_enabled.nil?
     return @ball_hud_enabled
+  end
+  def ball_hud_enabled=(value)
+    @ball_hud_enabled = value 
+	exit_interaction_menu_if_needed if value == false 
+	
   end
   def stored_ball_order
     @stored_ball_order = nil if !@stored_ball_order
@@ -277,9 +281,23 @@ end
 	end
   
   end
-  
+  INTERACTION_TABS = [:INTERACTION, :SPEAK].freeze
+def exit_interaction_menu_if_needed
+  return unless INTERACTION_TABS.include?(@ball_hud_item_type)
+  @ball_hud_item_type = interaction_origin_tab || :TOOL
+  @interaction_origin_tab = nil
+end
+
+  def interaction_origin_tab
+  return @interaction_origin_tab
+  end
   def set_item_hud(type,update=false)
     set_item_box_index if $PokemonGlobal.alt_control_move==false && update==true
+   if INTERACTION_TABS.include?(type) && !INTERACTION_TABS.include?(@ball_hud_item_type)
+    @interaction_origin_tab = @ball_hud_item_type   # first entry into Interact/Talk: remember where we came from
+   elsif !INTERACTION_TABS.include?(type)
+    @interaction_origin_tab = nil                   # left Interact/Talk normally: clear it
+   end
       @ball_hud_item_type_old=@ball_hud_item_type
 	  @ball_hud_item_type=type
 	getCurrentItemOrder(true) if $PokemonGlobal.alt_control_move==false && update==true
@@ -535,7 +553,7 @@ def get_item_box(update_index,othersays=nil)
 	 Array(tab[:prepends]&.call).reverse_each { |entry| basicitems.unshift(entry) }
      basicitems.unshift(:RADIAL)
      basicitems.unshift(:NONE)
-	 
+     Array(tab[:appends]&.call).each { |entry| basicitems << entry }
 	 if (cur_item_hud==:WEAPONS || cur_item_hud==:BATTLE) && update_index==true && basicitems.length > 0 
 	   index = basicitems.index(curItem)
 	   $PokemonGlobal.ball_hud_weapon_index = index if index
@@ -654,7 +672,7 @@ def combat_hud?
   return false if current_selection == :NONE
   return true if $PokemonGlobal.ball_hud_type==:PKMN
   return true if $PokemonGlobal.cur_stored_pokemon
-  return true if $PokemonGlobal.ball_hud_type==:ITEM && [:WEAPONS,:TOOL,:BATTLE].include?($PokemonGlobal.ball_hud_item_type)
+  return true if $PokemonGlobal.ball_hud_type==:ITEM && [:WEAPONS,:TOOL,:BATTLE, :SPEAK, :INTERACTION].include?($PokemonGlobal.ball_hud_item_type)
   return false 
 end 
   
@@ -731,7 +749,7 @@ HUDRegistry.register_item_tab(:WEAPONS, source: -> { $bag.isWeaponinInventory },
 HUDRegistry.register_item_tab(:BATTLE,  source: -> { $bag.isBattleIteminInventory }, skip_notebook: true,
                                prepends: -> { [$game_temp.lockontarget == false ? :TOOL : :WEAPONS, :PKMN] })
 HUDRegistry.register_item_tab(:CROPS,   source: -> { $bag.isCropIteminInventory },   skip_notebook: true)
-HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { ["Feed", "Play", "Train", "Rest", "Pet", :SPEAK, "Direct"] })
+HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { ["Pet", :SPEAK] }, appends: -> { ["Feed", "Play", "Train", "Rest", "Direct"] } )
 HUDRegistry.register_item_tab(:SPEAK, source: -> { [] },     skip_notebook: true, prepends: -> { ["Praise","Scold","Comfort","Reassure","Command","Dismiss", :INTERACTION] },   reset_to_start: true )
 
 # --- ITEM sub-tab toggle cycle ------------------------------------------------

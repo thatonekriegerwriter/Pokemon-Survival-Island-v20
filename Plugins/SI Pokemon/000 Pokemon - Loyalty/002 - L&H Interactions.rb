@@ -34,9 +34,9 @@ DATA_HASH = {
       :HARDY => 70
     },
     :gains => {
-      :LOVING => {
-
-      },
+#      :LOVING => {
+#
+#      },
       :LONELY => {
         "walking" => [1, 1, 1],
         "levelup" => [5, 4, 3],
@@ -671,9 +671,9 @@ DATA_HASH = {
       :HARDY => 70
     },
     :gains => {
-      :LOVING => {
-
-      },
+ #     :LOVING => {
+#
+ #     },
       :LONELY => {
         "walking" => [1, 1, 1],
         "levelup" => [5, 4, 3],

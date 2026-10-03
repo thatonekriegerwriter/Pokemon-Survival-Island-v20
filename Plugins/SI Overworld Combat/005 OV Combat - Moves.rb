@@ -763,9 +763,8 @@ def resolve_move(attacker, target, move)
   
  #  puts "#{attacker.pokemon.name} Lv#{attacker.pokemon.level} uses #{move.category}. #{move.name} and does #{damage} damage."
   resolve_attack(damage, target, attacker, move, directionals)
-  
-  if attacker.is_a?(Game_PokeEventA) &&
-     (target.nil? || target.pokemon.nil? || target.pokemon.fainted?)
+  attacker.pokemon.changeHappiness("didDamage") if attacker.is_a?(Game_PokeEventA)
+  if attacker.is_a?(Game_PokeEventA) && (target.nil? || target.pokemon.nil? || target.pokemon.fainted?)
     attacker.last_attacked = false
   end
 end 

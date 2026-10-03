@@ -1564,6 +1564,8 @@ end
 
   pkmnless.each do |pokemon_event|
     pokemon = pokemon_event.pokemon
+	pokemon.changeHappiness("battleitem")
+	pokemon.changeLoyalty("battleitem")
     pokemon.gain_ev(caughtmon)
     pokemon.gain_exp_from_overworld(caughtmon)
   end

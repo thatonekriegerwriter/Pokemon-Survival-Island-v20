@@ -2258,7 +2258,7 @@ def activate_item_box_item(passed_event)
 		   event = $PokemonGlobal.cur_stored_pokemon.event 
 	       direct_pokemon_sub(event,get_cur_player) if event
 		elsif passed_event.is_a?(Game_PokeEventA)
-		   interact_pokemon_main(passed_event)
+		   interact_pokemon_main(passed_event, active_item)
 		else
 		   puts active_item
 	    end
@@ -2270,11 +2270,16 @@ def activate_item_box_item(passed_event)
     $player.acting=false
 end
 
-def interact_pokemon_main(passed_event)
-    active_item=$PokemonGlobal.ball_order[$PokemonGlobal.ball_hud_index]
+def interact_pokemon_main(passed_event, active_item)
     case active_item
+	 when "Feed"
+	 when "Play"
+	   pet_pokemon(passed_event)
+	 when "Train"
+	 when "Rest"
 	 when "Direct"
 	   $PokemonGlobal.cur_stored_pokemon = passed_event.pokemon
+	   
 	 when "Pet"
 	   pet_pokemon(passed_event)
 	 when "Praise"
@@ -2282,12 +2287,10 @@ def interact_pokemon_main(passed_event)
 	 when "Scold"
 	  puts active_item.inspect
 	 when "Comfort"
-	  puts active_item.inspect
+	   pet_pokemon(passed_event)
 	 when "Reassure"
 	  puts active_item.inspect
 	 when "Command"
-	  puts active_item.inspect
-	 when "Dismiss"
 	  puts active_item.inspect
 	 else
 	  puts active_item.inspect

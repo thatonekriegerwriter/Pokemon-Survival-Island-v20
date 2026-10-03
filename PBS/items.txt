@@ -1249,8 +1249,8 @@ Flags = Fling_10
 Description = An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
 #-------------------------------
 [BLUESCARF]
-Name = Red Scarf
-NamePlural = Red Scarves
+Name = Blue Scarf
+NamePlural = Blue Scarves
 Pocket = 1
 Price = 3000
 SellPrice = 500

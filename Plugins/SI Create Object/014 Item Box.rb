@@ -750,7 +750,7 @@ HUDRegistry.register_item_tab(:BATTLE,  source: -> { $bag.isBattleIteminInventor
                                prepends: -> { [$game_temp.lockontarget == false ? :TOOL : :WEAPONS, :PKMN] })
 HUDRegistry.register_item_tab(:CROPS,   source: -> { $bag.isCropIteminInventory },   skip_notebook: true)
 HUDRegistry.register_item_tab(:INTERACTION, source: -> { $bag.isInteractionIteminInventory },     skip_notebook: true, prepends: -> { ["Pet", :SPEAK] }, appends: -> { ["Feed", "Play", "Train", "Rest", "Direct"] } )
-HUDRegistry.register_item_tab(:SPEAK, source: -> { [] },     skip_notebook: true, prepends: -> { ["Praise","Scold","Comfort","Reassure","Command","Dismiss", :INTERACTION] },   reset_to_start: true )
+HUDRegistry.register_item_tab(:SPEAK, source: -> { [] },     skip_notebook: true, prepends: -> { ["Praise","Scold","Comfort","Reassure","Command", :INTERACTION] },   reset_to_start: true )
 
 # --- ITEM sub-tab toggle cycle ------------------------------------------------
 # PLACE->TOOL->WEAPONS->BATTLE->PLACE. CROPS also feeds back to PLACE but is

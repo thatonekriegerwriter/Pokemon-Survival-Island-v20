@@ -52,6 +52,7 @@
 - [x] Verify Pokemon sending out in the water.
 - [-] Hide the Stats page? Or at least lock some of it behind items.
 - [x] pkmn.ability can be used to override ability_index, meaning a Pokemon COULD recieve an ability from a parent that isn't the same species using that.
+- [x] Raise Happiness in OV combat while fighting with a Pokemon
 
 ### Sprites
 - [x] Berry Pot 
